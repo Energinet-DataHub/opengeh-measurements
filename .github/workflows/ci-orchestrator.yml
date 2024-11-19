@@ -1,0 +1,30 @@
+﻿name: CI orchestrator
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # License and Markdown Check
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v13
+    with:
+      skip_license_check: true
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
+  # Branch policy status check
+  allow_merge_ci_orchestrator:
+    runs-on: ubuntu-latest
+    needs: [ci_base]
+    if: |
+      always()
+    steps:
+      - name: Verify if merge is allowed
+        run: |
+          echo "${{ toJSON(needs) }}"
+          if [[ ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }} = true ]]; then
+              echo "Failed"
+              exit 1
+          fi
