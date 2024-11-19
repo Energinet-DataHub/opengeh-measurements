@@ -1,0 +1,21 @@
+﻿name: CI orchestrator
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Branch policy status check
+  allow_merge_ci_orchestrator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify if merge is allowed
+        run: |
+          echo "Success"
+
