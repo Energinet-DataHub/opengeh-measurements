@@ -1,0 +1,70 @@
+﻿syntax = "proto3";
+
+package google.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+message NotifyValidatedMeasureData {
+  int32 orchestration_instance_id = 1;
+  int32 metering_point_id = 2;
+  string transaction_id = 3;
+  Timestamp registration = 4;
+  MeteringPointType metering_point_type = 5;
+  Unit quantity_unit = 6;
+  Resolution resolution = 7;
+  TimeInterval timeSeries_time_interval = 8;
+  repeated Points time_series_points = 9;
+
+}
+
+message Points {
+  int32 position = 1;
+  double quantity = 2;
+  QuantityQuality quality = 3;
+}
+
+message TimeInterval {
+  Timestamp start = 1;
+  Timestamp end = 2;
+}
+
+enum QuantityQuality {
+  QUANTITY_QUALITY_UNSPECIFIED = 0;
+  QUANTITY_QUALITY_MISSING = 1;
+  QUANTITY_QUALITY_ESTIMATED = 2;
+  QUANTITY_QUALITY_MEASURED = 3;
+  QUANTITY_QUALITY_CALCULATED = 4;
+}
+
+enum MeteringPointType {
+  METERING_POINT_TYPE_UNSPECIFIED = 0;
+  E17 = 1;
+  E18 = 2;
+  E20 = 3;
+  D01 = 4;
+  D05 = 5;
+  D06 = 6;
+  D07 = 7;
+  D08 = 8;
+  D09 = 9;
+  D10 = 10;
+  D11 = 11;
+  D12 = 12;
+  D14 = 13;
+  D15 = 14;
+  D19 = 15;
+
+}
+
+enum Unit {
+  QUANTITY_UNIT_UNSPECIFIED = 0;
+  QUANTITY_UNIT_KWH = 1;
+  QUANTITY_UNIT_PCS = 2;
+
+}
+
+enum Resolution {
+  RESOLUTION_UNSPECIFIED = 0;
+  RESOLUTION_PT15M = 1;
+  RESOLUTION_PT1H = 2;
+}
