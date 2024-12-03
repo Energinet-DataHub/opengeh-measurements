@@ -5,8 +5,8 @@ package google.protobuf;
 import "google/protobuf/timestamp.proto";
 
 message NotifyValidatedMeasureData {
-  int32 orchestration_instance_id = 1;
-  int32 metering_point_id = 2;
+  string orchestration_instance_id = 1;
+  string metering_point_id = 2;
   string transaction_id = 3;
   Timestamp registration = 4;
   MeteringPointType metering_point_type = 5;
@@ -18,7 +18,7 @@ message NotifyValidatedMeasureData {
 }
 
 message Points {
-  int32 position = 1;
+  int64 position = 1;
   double quantity = 2;
   QuantityQuality quality = 3;
 }
