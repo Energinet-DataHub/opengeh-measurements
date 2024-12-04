@@ -4,95 +4,70 @@ package google.protobuf;
 
 import "google/protobuf/timestamp.proto";
 
-message NotifyValidatedMeasureData {
+message PersistSubmittedTransaction {
   string orchestration_instance_id = 1;
   string metering_point_id = 2;
   string transaction_id = 3;
   Timestamp registration = 4;
   MeteringPointType metering_point_type = 5;
-  Unit quantity_unit = 6;
+  Unit unit = 6;
   Resolution resolution = 7;
-  TimeInterval time_series_time_interval = 8;
-  repeated Point time_series_points = 9;
-
+  Timestamp start = 8;
+  Timestamp end = 9;
+  repeated Point points = 10;
 }
 
 message Point {
   int32 position = 1;
   double quantity = 2;
-  QuantityQuality quality = 3;
+  Quality quality = 3;
 }
 
-message TimeInterval {
-  Timestamp start = 1;
-  Timestamp end = 2;
-}
-
-enum QuantityQuality {
-  QUANTITY_QUALITY_UNSPECIFIED = 0;
-  QUANTITY_QUALITY_MISSING = 1;
-  QUANTITY_QUALITY_ESTIMATED = 2;
-  QUANTITY_QUALITY_MEASURED = 3;
-  QUANTITY_QUALITY_CALCULATED = 4;
+enum Quality {
+  QUALITY_UNSPECIFIED = 0;
+  QUALITY_MISSING = 1;
+  QUALITY_ESTIMATED = 2;
+  QUALITY_MEASURED = 3;
+  QUALITY_CALCULATED = 4;
 }
 
 enum MeteringPointType {
   METERING_POINT_TYPE_UNSPECIFIED = 0;
-  //E17
   CONSUMPTION = 1;
-  //E18
   PRODUCTION = 2;
-  //E20
   EXCHANGE = 3;
-  //D01
   VE_PRODUCTION = 4;
-  //D02
   ANALYSIS = 5;
-  //D03
   NOT_USED = 6;
-  //D04
   SURPLUS_PRODUCTION_GROUP_6 = 7;
-  //D05
   NET_PRODUCTION = 8;
-  //D06
   SUPPLY_TO_GRID = 9;
-  //D07
   CONSUMPTION_FROM_GRID = 10;
-  //D08
   WHOLESALE_SERVICES_INFORMATION = 11;
-  //D09
   OWN_PRODUCTION = 12;
-  //D10
   NET_FROM_GRID = 13;
-  //D11
   NET_TO_GRID = 14;
-  //D12
   TOTAL_CONSUMPTION = 15;
-  //D13
   NET_LOSS_CORRECTION = 16;
-  //D14
   ELECTRICAL_HEATING = 17;
-  //D15
   NET_CONSUMPTION = 18;
-  //D17
   OTHER_CONSUMPTION = 19;
-  //D18
   OTHER_PRODUCTION = 20;
-  //D19
   EFFECT_PAYMENT = 21;
-  //D20
   EXCHANGE_REACTIVE_ENERGY = 22;
-  //D21
   COLLECTIVE_NET_PRODUCTION = 23;
-  //D22
   COLLECTIVE_NET_CONSUMPTION = 24;
 }
 
 enum Unit {
   QUANTITY_UNIT_UNSPECIFIED = 0;
   QUANTITY_UNIT_KWH = 1;
-  QUANTITY_UNIT_PCS = 2;
-
+  QUANTITY_UNIT_MWH = 2;
+  QUANTITY_UNIT_MVARH = 3;
+  QUANTITY_UNIT_KVARH = 4;
+  QUANTITY_UNIT_KW = 5;
+  QUANTITY_UNIT_T = 6;
+  QUANTITY_UNIT_K3 = 7;
 }
 
 enum Resolution {
