@@ -12,7 +12,7 @@ message NotifyValidatedMeasureData {
   MeteringPointType metering_point_type = 5;
   Unit quantity_unit = 6;
   Resolution resolution = 7;
-  TimeInterval timeSeries_time_interval = 8;
+  TimeInterval time_series_time_interval = 8;
   repeated Point time_series_points = 9;
 
 }
