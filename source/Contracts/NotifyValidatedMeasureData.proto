@@ -38,9 +38,12 @@ enum QuantityQuality {
 
 enum MeteringPointType {
   METERING_POINT_TYPE_UNSPECIFIED = 0;
-  E17 = 1;
-  E18 = 2;
-  E20 = 3;
+  //E17
+  CONSUMPTION = 1;
+  //E18
+  PRODUCTION = 2;
+  //E20
+  EXCHANGE = 3;
   D01 = 4;
   D05 = 5;
   D06 = 6;
