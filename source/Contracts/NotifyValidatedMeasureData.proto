@@ -13,11 +13,11 @@ message NotifyValidatedMeasureData {
   Unit quantity_unit = 6;
   Resolution resolution = 7;
   TimeInterval timeSeries_time_interval = 8;
-  repeated Points time_series_points = 9;
+  repeated Point time_series_points = 9;
 
 }
 
-message Points {
+message Point {
   int64 position = 1;
   double quantity = 2;
   QuantityQuality quality = 3;
