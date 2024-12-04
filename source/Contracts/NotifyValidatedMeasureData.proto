@@ -18,7 +18,7 @@ message NotifyValidatedMeasureData {
 }
 
 message Point {
-  int64 position = 1;
+  int32 position = 1;
   double quantity = 2;
   QuantityQuality quality = 3;
 }
