@@ -44,18 +44,30 @@ enum MeteringPointType {
   PRODUCTION = 2;
   //E20
   EXCHANGE = 3;
-  D01 = 4;
-  D05 = 5;
-  D06 = 6;
-  D07 = 7;
-  D08 = 8;
-  D09 = 9;
-  D10 = 10;
-  D11 = 11;
-  D12 = 12;
-  D14 = 13;
-  D15 = 14;
-  D19 = 15;
+  //D01
+  VE_PRODUCTION = 4;
+  //D05
+  NET_PRODUCTION = 5;
+  //D06
+  SUPPLY_TO_GRID = 6;
+  //D07
+  CONSUMPTION_FROM_GRID = 7;
+  //D08
+  WHOLESALE_SERVICES_INFORMATION = 8;
+  //D09
+  OWN_PRODUCTION = 9;
+  //D10
+  NET_FROM_GRID = 10;
+  //D11
+  NET_TO_GRID = 11;
+  //D12
+  TOTAL_CONSUMPTION = 12;
+  //D14
+  ELECTRICAL_HEATING = 13;
+  //D15
+  NET_CONSUMPTION = 14;
+  //D19
+  EFFECT_PAYMENT = 15;
 
 }
 
