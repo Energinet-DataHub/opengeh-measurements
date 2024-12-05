@@ -33,6 +33,12 @@ jobs:
 
   allow_merge_ci_orchestrator_v1:
     runs-on: ubuntu-latest
+    needs:
+      [
+        changes,
+        ci_base,
+        ci_electrical_heating,
+      ]
     if: |
       always()
     steps:
