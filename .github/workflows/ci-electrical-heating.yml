@@ -7,9 +7,6 @@ on:
         description: Has electrical heating changes
         required: true
         type: boolean
-      image_tag:
-        type: string
-        default: latest
 
 jobs:
   databricks_ci_build:
