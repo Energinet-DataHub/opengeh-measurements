@@ -1,0 +1,47 @@
+﻿name: CI Electrical Heating
+
+on:
+  workflow_call:
+    inputs:
+      has_electrical_heating_changes:
+        description: Has electrical heating changes
+        required: true
+        type: boolean
+      image_tag:
+        type: string
+        default: latest
+
+jobs:
+  databricks_ci_build:
+    uses: Energinet-DataHub/.github/.github/workflows/databricks-build-prerelease.yml@v14
+    with:
+      python_version: 3.11.7
+      architecture: x64
+      wheel_working_directory: ./source/electrical_heating
+      multiple_wheels: true
+      should_include_assets: true
+
+  mypy_check:
+    if: ${{ inputs.has_electrical_heating_changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Run pip install and mypy check of files in package
+        shell: bash
+        run: |
+          pip install --upgrade pip
+          pip install mypy types-python-dateutil
+          mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
+
+  black_check:
+    if: ${{ inputs.has_electrical_heating_changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
+        with:
+          options: --check --diff
+          src: ./source/electrical_heating

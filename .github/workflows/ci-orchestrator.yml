@@ -11,6 +11,17 @@ concurrency:
 
 jobs:
 
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
+  ci_electrical_heating:
+    needs: [ changes, ci_docker ]
+    if: ${{ needs.changes.outputs.any_databricks == 'true' }}
+    uses: ./.github/workflows/ci-electrical-heating.yml
+    with:
+      has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
+      image_tag: ${{ needs.outputs.image_tag }}
+
   # Branch policy status check
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-latest
@@ -18,4 +29,3 @@ jobs:
       - name: Verify if merge is allowed
         run: |
           echo "Success"
-
