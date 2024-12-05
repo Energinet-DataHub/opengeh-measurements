@@ -21,13 +21,13 @@ jobs:
     uses: ./.github/workflows/detect-changes.yml
 
   ci_electrical_heating:
-    needs: [ changes ]
+    needs: [changes]
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
     with:
       has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
 
-    #
+  #
   # Branch policy status check
   #
 
