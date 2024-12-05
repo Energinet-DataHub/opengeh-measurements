@@ -9,8 +9,6 @@
 on:
   workflow_call:
     outputs:
-      any_databricks:
-        value: ${{ jobs.changes.outputs.any_databricks }}
       electrical_heating:
         value: ${{ jobs.changes.outputs.electrical_heating }}
 
@@ -20,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      any_databricks: ${{ steps.filter.outputs.any_databricks }}
       electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
     steps:
       # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
@@ -34,7 +31,6 @@ jobs:
         id: filter
         with:
           filters: |
-            any_databricks:
-              - '.github/workflows/ci-electrical-heating.yml'
             electrical_heating:
               - 'source/electrical_heating/**'
+              - '.github/workflows/ci-electrical-heating.yml'
