@@ -11,6 +11,16 @@ concurrency:
 
 jobs:
 
+  #
+  # License and Markdown Check.
+  #
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v13
+    with:
+      skip_license_check: true
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
   changes:
     uses: ./.github/workflows/detect-changes.yml
 
@@ -22,10 +32,25 @@ jobs:
       has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
       image_tag: ${{ needs.outputs.image_tag }}
 
+    #
   # Branch policy status check
+  #
+
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-latest
+    needs:
+      [
+        changes,
+        ci_base,
+        ci_electrical_heating,
+      ]
+    if: |
+      always()
     steps:
       - name: Verify if merge is allowed
         run: |
-          echo "Success"
+          echo "${{ toJSON(needs) }}"
+          if [[ ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }} = true ]]; then
+              echo "Failed"
+              exit 1
+          fi
