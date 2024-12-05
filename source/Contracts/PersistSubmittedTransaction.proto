@@ -6,21 +6,29 @@ import "google/protobuf/timestamp.proto";
 
 message PersistSubmittedTransaction {
   string orchestration_instance_id = 1;
-  string metering_point_id = 2;
-  string transaction_id = 3;
-  Timestamp registration = 4;
-  MeteringPointType metering_point_type = 5;
-  Unit unit = 6;
-  Resolution resolution = 7;
-  Timestamp start = 8;
-  Timestamp end = 9;
-  repeated Point points = 10;
+  OrchestrationType orchestration_type = 2;
+  string metering_point_id = 3;
+  string transaction_id = 4;
+  Timestamp registration = 5;
+  MeteringPointType metering_point_type = 6;
+  Unit unit = 7;
+  Resolution resolution = 8;
+  Timestamp start = 9;
+  Timestamp end = 10;
+  repeated Point points = 11;
 }
 
 message Point {
   int32 position = 1;
   double quantity = 2;
   Quality quality = 3;
+}
+
+enum OrchestrationType {
+  ORCHESTRATION_TYPE_UNSPECIFIED = 0;
+  ORCHESTRATION_TYPE_ELECTRICAL_HEATING = 1;
+  ORCHESTRATION_TYPE_PROCESS_MANAGER = 2;
+  ORCHESTRATION_TYPE_MIGRATIONS = 3;
 }
 
 enum Quality {
