@@ -34,6 +34,6 @@ setup(
     entry_points={
         "console_scripts": [
             "execute    = electrical_heating_job.entry_point:execute",
-          ]
+        ]
     },
 )
