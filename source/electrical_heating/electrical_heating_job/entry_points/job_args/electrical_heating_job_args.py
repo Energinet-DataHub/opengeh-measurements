@@ -3,7 +3,9 @@ import sys
 import configargparse
 from argparse import Namespace
 from telemetry_logging import Logger, logging_configuration
-from source.electrical_heating.electrical_heating_job.entry_points.job_args.electrical_heating_args import ElectricalHeatingArgs
+
+from .electrical_heating_args import ElectricalHeatingArgs
+
 
 def parse_command_line_arguments() -> Namespace:
     return _parse_args_or_throw(sys.argv[1:])
@@ -22,6 +24,7 @@ def parse_job_arguments(
         )
 
         return electrical_heating_args
+
 
 def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
     p = configargparse.ArgParser(
