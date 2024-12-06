@@ -5,13 +5,17 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   #
   # License and Markdown Check.
   #
   ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v13
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
     with:
       skip_license_check: true
     secrets:
