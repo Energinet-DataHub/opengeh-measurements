@@ -16,7 +16,6 @@ jobs:
       architecture: x64
       wheel_working_directory: ./source/electrical_heating
       multiple_wheels: true
-      should_include_assets: true
 
   mypy_check:
     if: ${{ inputs.has_electrical_heating_changes }}
