@@ -1,5 +1,4 @@
-﻿
-def execute() -> None:
+﻿def execute() -> None:
     """
     Entry point for the electrical heating job.
     """
