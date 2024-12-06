@@ -29,6 +29,19 @@ jobs:
     uses: ./.github/workflows/detect-changes.yml
 
   #
+  # CD Docker image
+  #
+
+  cd_docker:
+    needs: changes
+    if: ${{ needs.changes.outputs.docker == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@v13
+    with:
+      docker_changed: ${{ needs.changes.outputs.docker == 'true' }}
+      # 'docker_changed_in_commit' value is same as 'docker_changed' because we want to build and push docker image when docker changed
+      docker_changed_in_commit: ${{ needs.changes.outputs.docker == 'true' }}
+
+  #
   # CD Databricks
   #
 
@@ -43,7 +56,7 @@ jobs:
   # Dispatch deployment request
   #
 
-  dispatch_deploment_event:
+  dispatch_deployment_event:
     if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.electrical_heating == 'true' }}
     runs-on: ubuntu-latest
     needs: [
@@ -81,7 +94,8 @@ jobs:
     needs:
       [
         electrical_heating,
-        dispatch_deploment_event
+        dispatch_deployment_event
+        cd_docker
       ]
     if: |
       always() &&
