@@ -44,7 +44,7 @@ jobs:
   #
 
   dispatch_deploment_event:
-    if: ${{ always() && !cancelled() && !failure() && (needs.changes.outputs.any_databricks == 'true' || needs.changes.outputs.dotnet == 'true' || needs.changes.outputs.db_migrations == 'true') }}
+    if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.electrical_heating == 'true' }}
     runs-on: ubuntu-latest
     needs: [
       changes,
