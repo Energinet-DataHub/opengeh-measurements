@@ -11,6 +11,10 @@ on:
     outputs:
       electrical_heating:
         value: ${{ jobs.changes.outputs.electrical_heating }}
+      docker:
+        value: ${{ jobs.changes.outputs.docker }}
+      docker_in_commit:
+        value: ${{ jobs.changes.outputs.docker_in_commit }}
 
 jobs:
   changes:
@@ -19,6 +23,8 @@ jobs:
     # Set job outputs to values from filter step
     outputs:
       electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
+      docker: ${{ steps.filter.outputs.docker }}
+      docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
       # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
       - name: Checkout repository
@@ -34,3 +40,12 @@ jobs:
             electrical_heating:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
+            docker:
+              - .docker/**
+
+      - name: Package content or build has changed
+        id: docker_changed
+        uses: tj-actions/changed-files@v41
+        with:
+          since_last_remote_commit: true
+          files: .docker/**

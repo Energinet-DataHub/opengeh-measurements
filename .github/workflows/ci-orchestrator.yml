@@ -24,11 +24,19 @@ jobs:
   changes:
     uses: ./.github/workflows/detect-changes.yml
 
+  ci_docker:
+    needs: changes
+    uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@v13
+    with:
+      docker_changed: ${{ needs.changes.outputs.docker == 'true' }}
+      docker_changed_in_commit: ${{ needs.changes.outputs.docker_in_commit == 'true' }}
+
   ci_electrical_heating:
-    needs: [changes]
+    needs: [changes, ci_docker]
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
-
+    with:
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
   #
   # Branch policy status check
   #
