@@ -1,0 +1,36 @@
+﻿name: Detect changes
+
+# DESCRIPTION:
+# This workflow will determine which categories of jobs should be executed,
+# based on detected changes.
+# It should be used by the 'ci-orchestrator.yml' and 'cd.yml' to ensure they both use
+# the same path's to detect changes.
+
+on:
+  workflow_call:
+    outputs:
+      electrical_heating:
+        value: ${{ jobs.changes.outputs.electrical_heating }}
+
+jobs:
+  changes:
+    name: Determine relevant jobs
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
+    steps:
+      # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            electrical_heating:
+              - 'source/electrical_heating/**'
+              - '.github/workflows/ci-electrical-heating.yml'
