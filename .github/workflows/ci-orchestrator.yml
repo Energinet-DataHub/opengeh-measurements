@@ -1,14 +1,19 @@
 ﻿name: CI orchestrator
 
 on:
+  # The workflow is triggered on pull requests to the specified branches.
   pull_request:
     branches:
       - main
 
+# Ensures that only one instance of the workflow runs for a given pull request,
+# canceling any in-progress runs if a new one starts.
 concurrency:
+  # Defines a unique identifier for the concurrency group.
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# Defines the jobs to be run in the workflow.
 jobs:
 
   #
@@ -16,14 +21,21 @@ jobs:
   #
   ci_base:
     uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
+    # 'with' provides inputs to the action by specifying the values of the action's inputs.
     with:
       skip_license_check: true
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
+  #
+  # Detects changes in the repository to determine which jobs need to run.
+  #
   changes:
     uses: ./.github/workflows/detect-changes.yml
 
+  #
+  # Builds and pushes a Docker image if changes are detected in Docker-related files.
+  #
   ci_docker:
     needs: changes
     uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@v13
@@ -31,16 +43,21 @@ jobs:
       docker_changed: ${{ needs.changes.outputs.docker == 'true' }}
       docker_changed_in_commit: ${{ needs.changes.outputs.docker_in_commit == 'true' }}
 
+  #
+  # Runs CI tasks for the component if changes are detected in its files.
+  #
   ci_electrical_heating:
     needs: [changes, ci_docker]
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-  #
-  # Branch policy status check
-  #
 
+  #
+  # Branch policy status check.
+  # Verifies if the merge is allowed by checking the results of the previous jobs.
+  # If any job fails or is canceled, it exits with a failure status.
+  #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-latest
     needs:
@@ -49,6 +66,8 @@ jobs:
         ci_base,
         ci_electrical_heating,
       ]
+    # The condition means that even if any of the jobs listed in the needs section fail or are canceled,
+    # the allow_merge_ci_orchestrator job will still execute.
     if: |
       always()
     steps:

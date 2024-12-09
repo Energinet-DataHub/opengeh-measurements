@@ -3,8 +3,8 @@
 # DESCRIPTION:
 # This workflow will determine which categories of jobs should be executed,
 # based on detected changes.
-# It should be used by the 'ci-orchestrator.yml' and 'cd.yml' to ensure they both use
-# the same path's to detect changes.
+# The workflow should be used by 'ci-orchestrator.yml' and 'cd.yml' to ensure
+# they both use the same path's to detect changes.
 
 on:
   workflow_call:
@@ -26,7 +26,8 @@ jobs:
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
-      # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
+      # For pull requests it's not necessary to check out the code because GitHub REST API
+      # is used to determine changes
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
