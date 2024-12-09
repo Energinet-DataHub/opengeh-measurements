@@ -38,7 +38,7 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return file_path_finder(f"{__file__}/../../..")
+    return file_path_finder(f"{__file__}/../..")
 
 
 @pytest.fixture(scope="session")
