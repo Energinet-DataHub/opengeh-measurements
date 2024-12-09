@@ -2,11 +2,11 @@
 
 import pytest
 
-from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
-    parse_job_arguments,
+from source.electrical_heating.electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
+    parse_job_arguments,
 )
-from electrical_heating_job.entry_points.job_args.environment_variables import (
+from source.electrical_heating.electrical_heating_job.entry_points.job_args.environment_variables import (
     EnvironmentVariable,
 )
 

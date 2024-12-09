@@ -16,6 +16,17 @@ import pytest
 from typing import Callable
 
 
+@pytest.fixture(autouse=True)
+def configure_dummy_logging() -> None:
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+
+    from telemetry_logging.logging_configuration import configure_logging
+
+    configure_logging(
+        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
+    )
+
+
 @pytest.fixture(scope="session")
 def file_path_finder() -> Callable[[str], str]:
     """
