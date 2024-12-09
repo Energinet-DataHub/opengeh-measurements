@@ -62,5 +62,3 @@ def contracts_path(electrical_heating_path: str) -> str:
     actually located in a file located directly in the tests folder.
     """
     return f"{electrical_heating_path}/contracts"
-
-
