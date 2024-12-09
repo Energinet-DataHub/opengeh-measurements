@@ -2,11 +2,11 @@
 
 on:
   workflow_call:
-    has_electrical_heating_job_changes:
-      description: Whether there are changes in the electrical heating job folder
-      required: true
-      type: boolean
     inputs:
+      has_electrical_heating_job_changes:
+        description: Whether there are changes in the electrical heating job folder
+        required: true
+        type: boolean
       image_tag:
         type: string
         default: latest
