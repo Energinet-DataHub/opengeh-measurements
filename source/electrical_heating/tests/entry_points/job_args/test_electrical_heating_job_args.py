@@ -2,12 +2,12 @@
 
 import pytest
 
-from source.electrical_heating.electrical_heating_job.entry_points.job_args.electrical_heating_job_args import \
+from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import \
     parse_job_arguments, parse_command_line_arguments
-from source.electrical_heating.electrical_heating_job.entry_points.job_args.environment_variables import \
+from electrical_heating_job.entry_points.job_args.environment_variables import \
     EnvironmentVariable
 
-DEFAULT_ID = "12345678"
+DEFAULT_ID = "12345678-9fc8-409a-a169-fbd49479d718"
 
 
 def _get_contract_parameters(filename: str) -> list[str]:

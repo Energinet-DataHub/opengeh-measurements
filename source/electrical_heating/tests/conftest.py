@@ -15,6 +15,7 @@ import os
 import pytest
 from typing import Callable
 
+
 @pytest.fixture(scope="session")
 def file_path_finder() -> Callable[[str], str]:
     """
