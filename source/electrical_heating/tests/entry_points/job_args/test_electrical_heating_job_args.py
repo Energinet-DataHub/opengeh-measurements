@@ -63,3 +63,8 @@ def test_when_parameters__parses_parameters_from_contract(
 
     # Assert
     assert actual_args.electrical_heating_id == DEFAULT_ID
+
+
+def test_dummy() -> None:
+    # Assert
+    assert True
