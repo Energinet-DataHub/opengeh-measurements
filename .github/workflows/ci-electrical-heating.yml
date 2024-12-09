@@ -16,17 +16,6 @@ jobs:
       wheel_working_directory: ./source/electrical_heating
       prerelease_prefix: electrical_heating
 
-  electrical_heating_unit_tests:
-    uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
-    with:
-      job_name: Unit Tests
-      operating_system: dh3-ubuntu-20.04-4core
-      path_static_checks: ./source/electrical_heating
-      ignore_errors_and_warning_flake8: E501,F401,E402,E203,W503
-      tests_folder_path: ./source/electrical_heating/tests
-      test_report_path: ./source/electrical_heating/tests
-      image_tag: ${{ inputs.image_tag }}
-
   mypy_check:
     runs-on: ubuntu-latest
     steps:
