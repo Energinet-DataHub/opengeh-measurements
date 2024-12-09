@@ -9,8 +9,8 @@
 on:
   workflow_call:
     outputs:
-      electrical_heating:
-        value: ${{ jobs.changes.outputs.electrical_heating }}
+      electrical_heating_job:
+        value: ${{ jobs.changes.outputs.electrical_heating_job }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
       docker_in_commit:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
+      electrical_heating_job: ${{ steps.filter.outputs.electrical_heating_job }}
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
