@@ -37,7 +37,7 @@ jobs:
         id: filter
         with:
           filters: |
-            electrical_heating:
+            electrical_heating_job:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
             docker:
