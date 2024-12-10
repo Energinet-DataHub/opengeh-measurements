@@ -63,8 +63,8 @@ measurements_bronze = t.StructType(
         # Points
         t.StructField(
             "points",
-             t.ArrayType(_point, containsNull=False),
-             not nullable,
+            t.ArrayType(_point, containsNull=False),
+            not nullable,
         ),
     ]
 )
