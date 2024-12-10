@@ -18,7 +18,7 @@ jobs:
       python_version: 3.11.7
       architecture: x64
       wheel_working_directory: ./source/electrical_heating
-      prerelease_prefix: electrical_heating
+
 
   unit_tests:
     if: ${{ inputs.has_electrical_heating_job_changes }}
