@@ -69,6 +69,7 @@ jobs:
           # from test jobs.
           filter="entry_points/"
 
+          chmod +x ./.devcontainer/check_test_count.sh
           IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh $filter
 
 
