@@ -3,6 +3,11 @@
 bundle:
   name: test_python_wheels
 
+variables:
+    dbw_workspace_url:
+      description: The URL of the Databricks workspace.
+      default: test
+
 include:
   - resources/*.yml
 
@@ -15,12 +20,12 @@ targets:
     mode: development
     default: true
     workspace:
-      host: ${dbw_workspace_url}
+      host: ${var.dbw_workspace_url}
 
   prod:
     mode: production
     workspace:
-      host: ${dbw_workspace_url}
+      host: ${var.dbw_workspace_url}
       root_path: /Workspace/Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
     permissions:
       - user_name: service_principal
