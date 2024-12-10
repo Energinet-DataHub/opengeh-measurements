@@ -9,7 +9,7 @@
 on:
   workflow_call:
     outputs:
-      electrical_heating_job:
+      electrical_heating:
         value: ${{ jobs.changes.outputs.electrical_heating }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
