@@ -3,7 +3,7 @@
 on:
   workflow_call:
     inputs:
-      has_electrical_heating_job_changes:
+      has_electrical_heating_changes:
         description: Whether there are changes in the electrical heating job folder
         required: true
         type: boolean
@@ -21,7 +21,7 @@ jobs:
 
 
   unit_tests:
-    if: ${{ inputs.has_electrical_heating_job_changes }}
+    if: ${{ inputs.has_electrical_heating_changes }}
     strategy:
       fail-fast: false
       matrix:
@@ -44,7 +44,7 @@ jobs:
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
-    if: ${{ inputs.has_electrical_heating_job_changes }}
+    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
 
 
   mypy_check:
-    if: ${{ inputs.has_electrical_heating_job_changes }}
+    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +89,7 @@ jobs:
           mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
 
   black_check:
-    if: ${{ inputs.has_electrical_heating_job_changes }}
+    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

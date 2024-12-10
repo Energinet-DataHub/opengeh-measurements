@@ -33,10 +33,10 @@ jobs:
 
   ci_electrical_heating:
     needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.electrical_heating_job == 'true' }}
+    if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
     with:
-      has_electrical_heating_job_changes: ${{ needs.changes.outputs.electrical_heating_job == 'true' }}
+      has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
   #
