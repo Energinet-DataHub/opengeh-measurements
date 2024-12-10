@@ -15,12 +15,12 @@ targets:
     mode: development
     default: true
     workspace:
-      host: ${workspace_host}
+      host: ${dbw_workspace_url}
 
   prod:
     mode: production
     workspace:
-      host: ${workspace_host}
+      host: ${dbw_workspace_url}
       root_path: /Workspace/Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
     permissions:
       - user_name: service_principal

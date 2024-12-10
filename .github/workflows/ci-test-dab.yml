@@ -26,9 +26,9 @@ jobs:
       - uses: databricks/setup-cli@main
 
       # Validate the Databricks asset bundles.
-#      - run: |
-#          cd ./source/test_python_wheels
-#          databricks bundle validate
+      #- run: |
+      #    cd ./source/test_python_wheels
+      #    databricks bundle validate
 
       - name: Zip files for prerelease
         uses: thedoctor0/zip-release@0.6.2
