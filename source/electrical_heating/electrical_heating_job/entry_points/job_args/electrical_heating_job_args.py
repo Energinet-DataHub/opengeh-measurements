@@ -14,6 +14,9 @@ def parse_command_line_arguments() -> Namespace:
 def parse_job_arguments(
     job_args: Namespace,
 ) -> ElectricalHeatingArgs:
+    """
+    Test
+    """
     logger = Logger(__name__)
     logger.info(f"Command line arguments: {repr(job_args)}")
 
