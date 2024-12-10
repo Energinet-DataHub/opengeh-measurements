@@ -94,7 +94,7 @@ jobs:
     needs:
       [
         electrical_heating,
-        dispatch_deployment_event
+        dispatch_deployment_event,
         cd_docker
       ]
     if: |
