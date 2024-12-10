@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -l
+
 # $1: Mandatory test folder path
 # $2: (Optional) Can be set to specify a filter for running python tests by using 'keyword expressions'.
 # See use of '-k' and 'keyword expressions' here: https://docs.pytest.org/en/7.4.x/how-to/usage.html#specifying-which-tests-to-run
