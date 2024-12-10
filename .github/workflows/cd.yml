@@ -47,7 +47,7 @@ jobs:
 
   electrical_heating:
     needs: changes
-    if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
+    if: ${{ needs.changes.outputs.electrical_heating_job == 'true' }}
     uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
     with:
       release_name_prefix: electrical_heating
