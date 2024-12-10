@@ -2,11 +2,13 @@
 
 import pytest
 
-from electrical_heating_job import parse_job_arguments, parse_command_line_arguments
-from electrical_heating_job import (
+from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
+    parse_command_line_arguments,
+    parse_job_arguments,
+)
+from electrical_heating_job.entry_points.job_args.environment_variables import (
     EnvironmentVariable,
 )
-
 
 DEFAULT_ID = "12345678-9fc8-409a-a169-fbd49479d718"
 
