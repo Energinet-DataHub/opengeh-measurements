@@ -17,7 +17,7 @@ calculations = t.StructType(
         #
         # The ID of the actor that created the orchestration instance
         # that started the calculation
-        t.StructField("orchestration_instance_id", t.StringType(), not nullable),
+        t.StructField("actor_id", t.StringType(), not nullable),
         #
         # The time when the calculation was started (after cluster warm-up)
         # UTC time
