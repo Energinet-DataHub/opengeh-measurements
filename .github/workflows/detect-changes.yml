@@ -9,6 +9,8 @@
 on:
   workflow_call:
     outputs:
+      any:
+        value: ${{ jobs.changes.outputs.any }}
       electrical_heating_job:
         value: ${{ jobs.changes.outputs.electrical_heating_job }}
       docker:
@@ -22,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
+      any: ${{ steps.filter.outputs.any }}
       electrical_heating_job: ${{ steps.filter.outputs.electrical_heating_job }}
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
@@ -37,9 +40,14 @@ jobs:
         id: filter
         with:
           filters: |
-            electrical_heating_job:
-              - 'source/electrical_heating/**'
+            any:
+              - '.github/workflows/cd.yml'
               - '.github/workflows/ci-electrical-heating.yml'
+              - '.devcontainer/docker-compose.yml'
+              - '.docker/requirements.txt'
+              - 'source/electrical_heating/**'
+            electrical_heating_job:
+              - 'source/electrical_heating/electrical_heating_job/**'
             docker:
               - .docker/**
 
