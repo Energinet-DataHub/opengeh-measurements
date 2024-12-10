@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RELEASE_FOLDER_PATH: ./source/test_python_wheels/artifacts
+      RELEASE_FOLDER_PATH: ./source/test_python_wheels
       RELEASE_VERSION: test_${{ github.event.pull_request.number }}
       RELEASE_ZIP_FILENAME: test_${{ github.event.pull_request.number }}.zip
 
