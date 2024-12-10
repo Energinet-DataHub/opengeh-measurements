@@ -70,7 +70,7 @@ jobs:
           # from test jobs.
           filter="entry_points/"
 
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh $filter
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test $filter
 
   mypy_check:
     runs-on: ubuntu-latest
