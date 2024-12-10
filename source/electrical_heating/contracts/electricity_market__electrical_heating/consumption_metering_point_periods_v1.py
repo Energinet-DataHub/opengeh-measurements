@@ -25,12 +25,13 @@ consumption_metering_point_periods_v1 = t.StructType(
         # GRSN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # 2 | 3 | 6 | NULL
+        # 2 | 3 | 4 | 5 | 6 | 99 | NULL
         t.StructField("net_settlement_group", t.IntegerType(), not nullable),
         #
         # The number of the month. 1 is January, 12 is December.
+        # For all but settlement group 6 the month is January.
         t.StructField(
-            "net_settlement_group_6_scheduled_month_meter_reading",
+            "settlement_month",
             t.IntegerType(),
             nullable,
         ),
