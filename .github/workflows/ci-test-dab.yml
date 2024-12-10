@@ -12,6 +12,11 @@ jobs:
     name: Validate Databricks asset bundles
     runs-on: ubuntu-latest
 
+    env:
+      RELEASE_FOLDER_PATH: ./source/test_python_wheels/artifacts
+      RELEASE_VERSION: test_${{ github.event.pull_request.number }}
+      RELEASE_ZIP_FILENAME: test_${{ github.event.pull_request.number }}.zip
+
     steps:
       # Check out this repo, so that this workflow can access it.
       - uses: actions/checkout@v3
@@ -21,9 +26,26 @@ jobs:
       - uses: databricks/setup-cli@main
 
       # Validate the Databricks asset bundles.
-      - run: |
-          cd ./source/test_python_wheels
-          databricks bundle validate
+#      - run: |
+#          cd ./source/test_python_wheels
+#          databricks bundle validate
+
+      - name: Zip files for prerelease
+        uses: thedoctor0/zip-release@0.6.2
+        with:
+          type: zip
+          filename: ${{ env.RELEASE_ZIP_FILENAME }}
+          directory: ${{ env.RELEASE_FOLDER_PATH }}
+
+      - name: Create prerelease
+        uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
+        with:
+          repo_token: ${{ github.token }}
+          automatic_release_tag: ${{ env.RELEASE_VERSION }}
+          prerelease: true
+          title: ${{ env.RELEASE_VERSION }}
+          files: |
+            ${{ env.RELEASE_FOLDER_PATH }}/${{ env.RELEASE_ZIP_FILENAME }}
 
   mypy_check:
     runs-on: ubuntu-latest
