@@ -3,6 +3,5 @@
 # Empty lines and lines starting with '#' are ignores in the tests.
 
 # Required parameters
---electrical-heating-id={electrical-heating-id}
-
-# Optional parameters
+--orchestration-instance-id={orchestration-instance-id}
+--created-by-user-id={created-by-user-id}

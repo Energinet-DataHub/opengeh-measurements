@@ -33,7 +33,8 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
     )
 
     # Run parameters
-    p.add_argument("--electrical-heating-id", type=str, required=True)
+    p.add_argument("orchestration-instance-id", type=str, required=True)
+    p.add_argument("--created-by-user-id", type=str, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
