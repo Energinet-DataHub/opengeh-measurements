@@ -11,7 +11,7 @@ echo "Filter (paths): '$@'"
 # Exit immediately with failure status if any command fails
 set -e
 
-cd source/databricks/calculation_engine/tests/
+cd source/electrical_heating/tests/
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
 
