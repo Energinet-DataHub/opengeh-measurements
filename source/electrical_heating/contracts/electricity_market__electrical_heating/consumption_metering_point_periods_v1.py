@@ -14,8 +14,12 @@ consumption_metering_point_periods_v1 = t.StructType(
         # 2 | 3 | 6 | NULL
         t.StructField("net_settlement_group", t.IntegerType(), not nullable),
         #
-        # The number of the month. 0 is January, 11 is December.
-        t.StructField("net_settlement_group_6_scheduled_meter_reading_date", t.IntegerType(), nullable),
+        # The number of the month. 1 is January, 12 is December.
+        t.StructField(
+            "net_settlement_group_scheduled_month_meter_reading",
+            t.IntegerType(),
+            nullable,
+        ),
         #
         # UTC time
         t.StructField("period_from_date", t.TimestampType(), not nullable),
