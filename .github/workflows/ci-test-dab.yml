@@ -21,7 +21,9 @@ jobs:
       - uses: databricks/setup-cli@main
 
       # Validate the Databricks asset bundles.
-      - run: databricks bundle validate
+      - run: |
+          cd ./source/test_python_wheels
+          databricks bundle validate
 
   mypy_check:
     runs-on: ubuntu-latest
