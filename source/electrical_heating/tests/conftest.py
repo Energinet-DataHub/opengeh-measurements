@@ -17,8 +17,6 @@ from typing import Callable, Generator
 
 import pytest
 
-from source.electrical_heating.test_common.fixtures.fixtures import virtual_environment
-
 
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
@@ -77,6 +75,24 @@ def contracts_path(electrical_heating_path: str) -> str:
     actually located in a file located directly in the tests folder.
     """
     return f"{electrical_heating_path}/contracts"
+
+
+@pytest.fixture(scope="session")
+def virtual_environment() -> Generator:
+    """Fixture ensuring execution in a virtual environment.
+    Uses `virtualenv` instead of conda environments due to problems
+    activating the virtual environment from pytest."""
+
+    # Create and activate the virtual environment
+    subprocess.call(["virtualenv", ".test-pytest"])
+    subprocess.call(
+        "source .test-pytest/bin/activate", shell=True, executable="/bin/bash"
+    )
+
+    yield None
+
+    # Deactivate virtual environment upon test suite tear down
+    subprocess.call("deactivate", shell=True, executable="/bin/bash")
 
 
 @pytest.fixture(scope="session")
