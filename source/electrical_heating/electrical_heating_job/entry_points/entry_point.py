@@ -16,7 +16,7 @@ from electrical_heating_job.entry_points.job_args.electrical_heating_job_args im
 )
 
 
-def start() -> None:
+def execute() -> None:
     applicationinsights_connection_string = os.getenv(
         "APPLICATIONINSIGHTS_CONNECTION_STRING"
     )

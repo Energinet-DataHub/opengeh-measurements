@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import subprocess
+from typing import Callable, Generator
+
 import pytest
-from typing import Callable
+
+from source.electrical_heating.test_common.fixtures.fixtures import virtual_environment
 
 
 @pytest.fixture(autouse=True)
@@ -73,3 +77,26 @@ def contracts_path(electrical_heating_path: str) -> str:
     actually located in a file located directly in the tests folder.
     """
     return f"{electrical_heating_path}/contracts"
+
+
+@pytest.fixture(scope="session")
+def installed_package(
+    virtual_environment: Generator, electrical_heating_path: str
+) -> None:
+    # Build the package wheel
+    os.chdir(electrical_heating_path)
+    subprocess.call("python -m build --wheel", shell=True, executable="/bin/bash")
+
+    # Uninstall the package in case it was left by a cancelled test suite
+    subprocess.call(
+        "pip uninstall -y package",
+        shell=True,
+        executable="/bin/bash",
+    )
+
+    # Install wheel, which will also create console scripts for invoking the entry points of the package
+    subprocess.call(
+        f"pip install {electrical_heating_path}/dist/opengeh_electrical_heating-1.0-py3-none-any.whl",
+        shell=True,
+        executable="/bin/bash",
+    )
