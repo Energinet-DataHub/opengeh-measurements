@@ -14,8 +14,6 @@ targets:
     # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
     mode: development
     default: true
-    workspace:
-      root_path: /Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
 
   prod:
     mode: production
