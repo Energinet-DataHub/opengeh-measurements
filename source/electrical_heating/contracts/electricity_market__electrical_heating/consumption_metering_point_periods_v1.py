@@ -3,6 +3,7 @@ import pyspark.sql.types as t
 nullable = True
 
 # Includes all periods of consumption metering points where electrical heating is registered.
+# Metering point periods where the electrical heating flag is not set must be omitted in the data set.
 #
 # A period is created whenever any of the following transaction types are registered:
 # - CHANGESUP: Leverandørskift (BRS-001)
