@@ -16,17 +16,17 @@ from electrical_heating_job.entry_points.job_args.electrical_heating_job_args im
 )
 
 
-def execute() -> None:
+def start() -> None:
     applicationinsights_connection_string = os.getenv(
         "APPLICATIONINSIGHTS_CONNECTION_STRING"
     )
 
-    execute_with_deps(
+    start_with_deps(
         applicationinsights_connection_string=applicationinsights_connection_string,
     )
 
 
-def execute_with_deps(
+def start_with_deps(
     *,
     cloud_role_name: str = "dbr-electrical-heating",
     applicationinsights_connection_string: str | None = None,
