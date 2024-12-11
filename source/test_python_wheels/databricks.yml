@@ -24,5 +24,3 @@ targets:
     permissions:
       - user_name: service_principal
         level: CAN_MANAGE
-    run_as:
-      user_name: service_principal
