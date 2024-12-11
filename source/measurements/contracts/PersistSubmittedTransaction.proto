@@ -4,31 +4,49 @@ package google.protobuf;
 
 import "google/protobuf/timestamp.proto";
 
+// PersistSubmittedTransaction represents a submitted transaction to be persisted.
 message PersistSubmittedTransaction {
+  // The ID of the orchestration instance.
   string orchestration_instance_id = 1;
+  // The type of orchestration.
   OrchestrationType orchestration_type = 2;
+  // The ID of the metering point.
   string metering_point_id = 3;
+  // The ID of the transaction.
   string transaction_id = 4;
+  // The registration timestamp of the transaction.
   Timestamp registration = 5;
+  // The type of metering point.
   MeteringPointType metering_point_type = 6;
+  // The unit of measurement.
   Unit unit = 7;
+  // The resolution of the measurement.
   Resolution resolution = 8;
+  // The start timestamp of the measurement period.
   Timestamp start = 9;
+  // The end timestamp of the measurement period.
   Timestamp end = 10;
+  // The points of measurement.
   repeated Point points = 11;
 }
 
+// Point represents a single measurement point.
 message Point {
+  // The position of the point in the series.
   int32 position = 1;
+  // The quantity measured at the point.
   double quantity = 2;
+  // The quality of the measurement.
   Quality quality = 3;
 }
 
+// OrchestrationType defines the type of orchestration.
 enum OrchestrationType {
   ORCHESTRATION_TYPE_UNSPECIFIED = 0;
   ORCHESTRATION_TYPE_SUBMITTED_MEASURE_DATA = 1;
 }
 
+// Quality defines the quality of the measurement.
 enum Quality {
   QUALITY_UNSPECIFIED = 0;
   QUALITY_MISSING = 1;
@@ -37,6 +55,7 @@ enum Quality {
   QUALITY_CALCULATED = 4;
 }
 
+// MeteringPointType defines the type of metering point.
 enum MeteringPointType {
   METERING_POINT_TYPE_UNSPECIFIED = 0;
   CONSUMPTION = 1;
@@ -65,6 +84,7 @@ enum MeteringPointType {
   COLLECTIVE_NET_CONSUMPTION = 24;
 }
 
+// Unit defines the unit of measurement.
 enum Unit {
   QUANTITY_UNIT_UNSPECIFIED = 0;
   QUANTITY_UNIT_KWH = 1;
@@ -76,6 +96,7 @@ enum Unit {
   QUANTITY_UNIT_K3 = 7;
 }
 
+// Resolution defines the resolution of the measurement.
 enum Resolution {
   RESOLUTION_UNSPECIFIED = 0;
   RESOLUTION_PT15M = 1;
