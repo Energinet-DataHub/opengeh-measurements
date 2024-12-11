@@ -1,6 +1,0 @@
-# The contract for the parameters of the job.
-#
-# Empty lines and lines starting with '#' are ignores in the tests.
-
---orchestration-instance-id={id}
---actor-id={id}
