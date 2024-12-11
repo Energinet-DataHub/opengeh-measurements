@@ -1,4 +1,5 @@
 ﻿from dataclasses import dataclass
+from uuid import UUID
 
 
 @dataclass
@@ -7,4 +8,5 @@ class ElectricalHeatingArgs:
     Args for the electrical heating job.
     """
 
-    electrical_heating_id: str
+    orchestration_instance_id: UUID
+    actor_id: str
