@@ -15,12 +15,12 @@ targets:
     mode: development
     default: true
     workspace:
-      root_path: ~/Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
 
   prod:
     mode: production
     workspace:
-      root_path: ~/Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
     permissions:
       - user_name: service_principal
         level: CAN_MANAGE
