@@ -9,6 +9,8 @@ nullable = True
 # - ENDSUPPLY: Leveranceophør (BRS-002)
 # - INCCHGSUP: Håndtering af fejlagtigt leverandørskift (BRS-003)
 # - MSTDATSBM: Fremsendelse af stamdata (BRS-006) - Skift af nettoafregningsgrupper
+# - LNKCHLDMP: Tilkobling af D15 til parent i nettoafregningsgruppe 2
+# - ULNKCHLDMP: Afkobling af D15 af parent i nettoafregningsgruppe 2
 # - CLSDWNMP: Nedlæggelse af målepunkt (BRS-007)
 # - MOVEINES: Tilflytning - meldt til elleverandøren (BRS-009)
 # - MOVEOUTES: Fraflytning - meldt til elleverandøren (BRS-010)
