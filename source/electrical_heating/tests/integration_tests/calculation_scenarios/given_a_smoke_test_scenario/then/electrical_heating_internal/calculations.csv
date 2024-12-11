@@ -1,0 +1,2 @@
+calculation_id;orchestration_instance_id;actor_id;execution_start_datetime;execution_stop_datetime
+{UUID};32bef43c-1818-47eb-90aa-d9f61c817211;967ca8a8-d93d-4c2f-8593-3abf592611f8;{TIMESTAMP};{TIMESTAMP}
