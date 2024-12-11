@@ -21,6 +21,3 @@ targets:
     mode: production
     workspace:
       root_path: /Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
-    permissions:
-      - user_name: service_principal
-        level: CAN_MANAGE
