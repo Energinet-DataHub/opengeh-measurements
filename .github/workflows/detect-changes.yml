@@ -37,16 +37,14 @@ jobs:
         id: filter
         with:
           filters: |
-            any:
-              - '.github/workflows/cd.yml'
-              - '.github/workflows/ci-electrical-heating.yml'
-              - '.devcontainer/docker-compose.yml'
-              - '.docker/requirements.txt'
-              - 'source/electrical_heating/**'
             electrical_heating:
               - 'source/electrical_heating/**'
+              - '.github/workflows/ci-electrical-heating.yml'
+              - '.github/workflows/cd.yml'
             docker:
               - .docker/**
+              - '.devcontainer/**'
+              - '.github/workflows/cd.yml'
 
       - name: Package content or build has changed
         id: docker_changed
