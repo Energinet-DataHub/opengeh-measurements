@@ -21,7 +21,7 @@ def parse_job_arguments(
 
         electrical_heating_args = ElectricalHeatingArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
-            created_by_user_id=job_args.created_by_user_id,
+            actor_id=job_args.actor_id,
         )
 
         return electrical_heating_args
@@ -35,7 +35,7 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
-    p.add_argument("--created-by-user-id", type=str, required=True)
+    p.add_argument("--actor-id", type=str, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
