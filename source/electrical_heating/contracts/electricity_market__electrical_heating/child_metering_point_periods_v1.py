@@ -9,13 +9,14 @@ nullable = True
 child_metering_point_periods_v1 = t.StructType(
     [
         #
-        # GRSN number
+        # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # GRSN number
+        # 'supply_to_grid' | 'consumption_from_grid' |
+        # 'electrical_heating' | 'net_consumption'
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
-        # GRSN number
+        # GSRN number
         t.StructField("parent_metering_point_id", t.StringType(), not nullable),
         #
         # The date where the metering point was coupled to the parent metering point
