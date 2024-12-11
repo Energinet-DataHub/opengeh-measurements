@@ -1,4 +1,13 @@
-﻿from electrical_heating_job.entry_points.job_args.electrical_heating_args import (
+﻿import os
+import sys
+from argparse import Namespace
+from collections.abc import Callable
+
+import telemetry_logging.logging_configuration as config
+from opentelemetry.trace import SpanKind
+from telemetry_logging.span_recording import span_record_exception
+
+from electrical_heating_job.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
@@ -8,48 +17,16 @@ from electrical_heating_job.entry_points.job_args.electrical_heating_job_args im
 
 
 def execute() -> None:
-    """
-    Entry point for the electrical heating job.
-    """
-    print("Executing electrical heating job")
-
-
-# Copyright 2020 Energinet DataHub A/S
-#
-# Licensed under the Apache License, Version 2.0 (the "License2");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-import os
-import sys
-from argparse import Namespace
-from collections.abc import Callable
-
-from opentelemetry.trace import SpanKind
-
-import telemetry_logging.logging_configuration as config
-from telemetry_logging.span_recording import span_record_exception
-
-
-def start() -> None:
     applicationinsights_connection_string = os.getenv(
         "APPLICATIONINSIGHTS_CONNECTION_STRING"
     )
 
-    start_with_deps(
+    execute_with_deps(
         applicationinsights_connection_string=applicationinsights_connection_string,
     )
 
 
-def start_with_deps(
+def execute_with_deps(
     *,
     cloud_role_name: str = "dbr-electrical-heating",
     applicationinsights_connection_string: str | None = None,
