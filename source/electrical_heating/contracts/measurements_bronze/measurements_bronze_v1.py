@@ -6,8 +6,8 @@ nullable = True
 _point = t.StructType(
     [
         #
-        # A sequential numbering.
-        # Combined with start and resolution it can be used to determine the observation time
+        # A sequential numbering. Always starting at 1.
+        # Combined with start_datetime and resolution it can be used to determine the observation time
         # of the individual points in the transaction.
         t.StructField("position", t.StringType(), not nullable),
         #
