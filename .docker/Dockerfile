@@ -16,7 +16,7 @@ RUN apt-get update; \
     apt-get remove -y curl; \
     rm -rf /var/lib/apt/lists/*
 
-# This replaces the default spark configuration in the docker image with the ones defined in the sibling file
+# This replaces the default spark configuration in the docker image with the ones defined in the sibling file.
 COPY spark-defaults.conf $SPARK_HOME/conf/
 
 # Install python packages used in pyspark development (keep spark dependent packages alligned)
