@@ -60,6 +60,8 @@ jobs:
       - name: Execute python tests
         shell: bash
         id: test_count
+        env:
+          PYTHONPATH: ./source
         run: |
           # Small hack to get the repository name
           repository=${{ github.repository }}
