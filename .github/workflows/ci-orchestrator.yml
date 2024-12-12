@@ -47,7 +47,7 @@ jobs:
   # Runs CI tasks for the component if changes are detected in its files.
   #
   ci_electrical_heating:
-    needs: [ changes,ci_docker ]
+    needs: [changes,ci_docker]
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
     with:
