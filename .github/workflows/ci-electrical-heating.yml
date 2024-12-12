@@ -42,7 +42,8 @@ jobs:
       # See .docker/entrypoint.py on how to use the filter expression
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
-
+  env:
+    PYTHONPATH: ./source
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
@@ -56,8 +57,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-      - name: Set permissions for test results directory
-        run: chmod -R 777 ./source/electrical_heating/tests
       - name: Execute python tests
         shell: bash
         id: test_count
