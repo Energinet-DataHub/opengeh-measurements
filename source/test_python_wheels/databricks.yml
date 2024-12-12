@@ -20,5 +20,5 @@ targets:
     workspace:
       root_path: /Shared/Bundles/.bundle/${bundle.name}/${bundle.target}
     permissions:
-      - group_name: SEC-G-Datahub-DevelopersAzure
+      - group_name: A_GROUP
         level: CAN_MANAGE
