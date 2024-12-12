@@ -50,7 +50,8 @@ measurements_bronze_v1 = t.StructType(
         # Must be "electrical_heating"
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
-        # Must be "Active Energy"
+        # The product must be the code for "active energy"
+        # Must be: 8716867000030
         t.StructField("product", t.StringType(), not nullable),
         #
         # Metering Unit
