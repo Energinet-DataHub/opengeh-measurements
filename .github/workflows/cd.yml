@@ -21,17 +21,16 @@ on:
       - main
 
 jobs:
+
   #
   # Detect changes to start relevant jobs
   #
-
   changes:
     uses: ./.github/workflows/detect-changes.yml
 
   #
   # CD Docker image
   #
-
   cd_docker:
     needs: changes
     if: ${{ needs.changes.outputs.docker == 'true' }}
@@ -44,7 +43,6 @@ jobs:
   #
   # CD Databricks
   #
-
   electrical_heating:
     needs: changes
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
@@ -55,7 +53,6 @@ jobs:
   #
   # Dispatch deployment request
   #
-
   dispatch_deployment_event:
     if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.electrical_heating == 'true' }}
     runs-on: ubuntu-latest
@@ -89,7 +86,6 @@ jobs:
   #
   # Send notification to teams channel if deployment dispatch failed
   #
-
   dispatch_failed:
     needs:
       [

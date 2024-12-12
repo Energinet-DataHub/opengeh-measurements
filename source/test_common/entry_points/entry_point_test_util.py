@@ -4,7 +4,6 @@ from typing import Any
 
 def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
     try:
-        # Arrange
         entry_point = importlib.metadata.entry_points(
             group="console_scripts", name=entry_point_name
         )
@@ -13,7 +12,7 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
         if not entry_point:
             assert False, f"The {entry_point_name} entry point was not found."
 
-        # Check if the module exists
+        # Check if the module function name exists
         module_name = entry_point[entry_point_name].module
         function_name = entry_point[entry_point_name].value.split(":")[1]
 
@@ -25,6 +24,8 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
                 False
             ), f"The entry point module function {function_name} does not exist in the entry points file."
 
+        # Check if the module can be imported
         importlib.import_module(module_name)
+
     except importlib.metadata.PackageNotFoundError:
         assert False, f"The {entry_point_name} entry point was not found."

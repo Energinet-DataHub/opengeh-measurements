@@ -13,7 +13,7 @@
 # limitations under the License.
 import os
 import subprocess
-from typing import Callable, Generator
+from typing import Generator, Callable
 
 import pytest
 
