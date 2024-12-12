@@ -38,8 +38,6 @@ jobs:
     with:
       has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-    env:
-      PYTHONPATH: ./source/test_common:./source/electrical_heating
 
   #
   # Branch policy status check

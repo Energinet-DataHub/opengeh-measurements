@@ -42,8 +42,7 @@ jobs:
       # See .docker/entrypoint.py on how to use the filter expression
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
-    env:
-      PYTHONPATH: ./source/test_common:./source/electrical_heating
+
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
@@ -73,7 +72,7 @@ jobs:
           filter="entry_points/"
 
           chmod +x ./.devcontainer/check_test_count.sh
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh $filter
+          IMAGE_TAG=${{ inputs.image_tag }} PYTHONPATH=./source/test_common:./source/electrical_heating docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh $filter
 
 
   mypy_check:
