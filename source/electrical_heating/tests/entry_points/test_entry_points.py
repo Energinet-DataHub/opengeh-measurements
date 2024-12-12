@@ -1,7 +1,7 @@
 ﻿import pytest
 
 from electrical_heating_job import entry_points as module
-from ....test_common.entry_points.entry_point_test_util import assert_entry_point_exists
+from test_common import assert_entry_point_exists
 
 
 @pytest.mark.parametrize(
