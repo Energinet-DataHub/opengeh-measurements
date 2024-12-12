@@ -60,7 +60,7 @@ jobs:
         shell: bash
         id: test_count
         env:
-          PYTHONPATH: ./source
+          PYTHONPATH: ./source/test_common
         run: |
           # Small hack to get the repository name
           repository=${{ github.repository }}
