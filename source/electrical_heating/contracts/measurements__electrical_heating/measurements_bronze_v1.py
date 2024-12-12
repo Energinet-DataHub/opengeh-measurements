@@ -21,7 +21,7 @@ _point = t.StructType(
 
 # Electrical heating result is delivered to Measurements
 # as one transaction per metering point id.
-measurements_bronze = t.StructType(
+measurements_bronze_v1 = t.StructType(
     [
         #
         # Must be: "electrical_heating"
