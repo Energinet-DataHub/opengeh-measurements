@@ -20,6 +20,7 @@ jobs:
       wheel_working_directory: ./source/electrical_heating
       prerelease_prefix: electrical_heating
 
+
   unit_tests:
     if: ${{ inputs.has_electrical_heating_changes }}
     strategy:
@@ -41,6 +42,8 @@ jobs:
       # See .docker/entrypoint.py on how to use the filter expression
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
+    env:
+      PYTHONPATH: ./source/test_common:./source/electrical_heating
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
