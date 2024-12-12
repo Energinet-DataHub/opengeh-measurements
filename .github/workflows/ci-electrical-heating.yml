@@ -56,7 +56,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-
+      - name: Set permissions for test results directory
+        run: chmod -R 777 ./source/electrical_heating/tests
       - name: Execute python tests
         shell: bash
         id: test_count
