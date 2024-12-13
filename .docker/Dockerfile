@@ -2,6 +2,8 @@ FROM ghcr.io/energinet-datahub/pyspark-slim:3.5.1-5
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+USER root
+
 RUN apt-get update; \
     # Install git as it is needed by spark
     apt-get install --no-install-recommends -y git; \

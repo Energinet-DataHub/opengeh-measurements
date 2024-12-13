@@ -50,6 +50,5 @@
 	],
 	"appPort": [
 		"5567:5050"
-	],
-	"containerUser": "root"
+	]
 }
