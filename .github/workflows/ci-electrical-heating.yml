@@ -42,8 +42,6 @@ jobs:
       # See .docker/entrypoint.py on how to use the filter expression
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
-      env:
-        PYTHONPATH: ./source/test_common:./source/electrical_heating:./source/
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
