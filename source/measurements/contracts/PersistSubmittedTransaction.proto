@@ -12,12 +12,12 @@ message PersistSubmittedTransaction {
   string metering_point_id = 3;
   string transaction_id = 4;
   Timestamp transaction_creation_datetime = 5;
-  MeteringPointType metering_point_type = 6;
-  string product = 7;
-  Unit unit = 8;
-  Resolution resolution = 9;
-  Timestamp start_datetime = 10;
-  Timestamp end_datetime = 11;
+  Timestamp start_datetime = 6;
+  Timestamp end_datetime = 7;
+  MeteringPointType metering_point_type = 8;
+  string product = 9;
+  Unit unit = 10;
+  Resolution resolution = 11;
   repeated Point points = 12;
 }
 
