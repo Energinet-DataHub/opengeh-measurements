@@ -55,6 +55,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -e ./source/test_common
       - name: Execute python tests
         shell: bash
         id: test_count
