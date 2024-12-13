@@ -14,4 +14,7 @@ def test__entry_point_exists(
     installed_package: None,
     entry_point_name: str,
 ) -> None:
+    """
+    Test that the entry point exists in the installed package.
+    """
     assert_entry_point_exists(entry_point_name, module)
