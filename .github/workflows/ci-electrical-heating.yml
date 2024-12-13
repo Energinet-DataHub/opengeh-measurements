@@ -42,8 +42,7 @@ jobs:
       # See .docker/entrypoint.py on how to use the filter expression
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
-
-
+      pythonpath: ./source/test_common:./source/electrical_heating:./source/
   # Check executed unit tests
   electrical_heating_unit_test_check:
     if: ${{ inputs.has_electrical_heating_changes }}
@@ -59,6 +58,8 @@ jobs:
       - name: Execute python tests
         shell: bash
         id: test_count
+        env:
+          PYTHONPATH: ./source/test_common:./source/electrical_heating:./source/
         run: |
           # Small hack to get the repository name
           repository=${{ github.repository }}
