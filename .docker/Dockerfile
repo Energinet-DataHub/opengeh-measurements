@@ -2,8 +2,6 @@ FROM ghcr.io/energinet-datahub/pyspark-slim:3.5.1-5
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-USER root
-
 RUN apt-get update; \
     # Install git as it is needed by spark
     apt-get install --no-install-recommends -y git; \
@@ -33,7 +31,3 @@ ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
 
 # Dynamically downloading spark dependencies from conf/spark-defaults.conf. This is done to save time in the build pipeline so that we don't need to download on every build.
 RUN spark-shell
-
-# Make $HOME owned by the root, which is the user used in the container
-# This is needed for e.g. commands that create files or folders in $HOME
-RUN sudo chown -R root:users $HOME
