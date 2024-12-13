@@ -1,4 +1,7 @@
-﻿import pytest
+﻿import sys
+
+sys.path.append("../test_common")
+import pytest
 
 from electrical_heating_job import entry_points as module
 from test_common.entry_points.entry_point_test_util import (
