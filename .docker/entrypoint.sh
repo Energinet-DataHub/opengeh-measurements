@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash
 
 # $1: Mandatory test folder path
 # $2: (Optional) Can be set to specify a filter for running python tests by using 'keyword expressions'.
