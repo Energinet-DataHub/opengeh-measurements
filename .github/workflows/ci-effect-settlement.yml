@@ -1,0 +1,98 @@
+﻿name: CI Effect Settlement
+on:
+  workflow_call:
+    inputs:
+      has_effect_settlement_changes:
+        description: Whether there are changes in the job folder
+        required: true
+        type: boolean
+      image_tag:
+        type: string
+        default: latest
+
+jobs:
+  databricks_ci_build:
+    uses: Energinet-DataHub/.github/.github/workflows/databricks-build-prerelease.yml@v14
+    with:
+      python_version: 3.11.7
+      architecture: x64
+      wheel_working_directory: ./source/effect_settlement
+      prerelease_prefix: effect_settlement
+
+  unit_tests:
+    if: ${{ inputs.has_effect_settlement_changes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
+        tests_filter_expression:
+          - name: Effect Settlement
+            paths: entry_points/
+    uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
+    with:
+      job_name: ${{ matrix.tests_filter_expression.name }}
+      operating_system: dh3-ubuntu-20.04-4core
+      path_static_checks: ./source/effect_settlement
+      # documented here: https://github.com/Energinet-DataHub/opengeh-wholesale/tree/main/source/databricks#styling-and-formatting
+      ignore_errors_and_warning_flake8: E501,F401,E402,E203,W503
+      tests_folder_path: ./source/effect_settlement/tests
+      test_report_path: ./source/effect_settlement/tests
+      # See .docker/entrypoint.py on how to use the filter expression
+      tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
+      image_tag: ${{ inputs.image_tag }}
+
+  # Check executed unit tests
+  effect_settlement_unit_test_check:
+    if: ${{ inputs.has_effect_settlement_changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Execute python tests
+        shell: bash
+        id: test_count
+        run: |
+          # Small hack to get the repository name
+          repository=${{ github.repository }}
+          repository_owner=${{ github.repository_owner }}
+          repository_name=${repository/$repository_owner\//}
+
+          # IMPORTANT: When adding a new folder here, one must also add the folder
+          # to one of the test jobs above! This is because this filter contains the sum of all folders
+          # from test jobs.
+          filter="entry_points/"
+
+          chmod +x ./.devcontainer/check_test_count.sh
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh $filter
+
+
+  mypy_check:
+    if: ${{ inputs.has_effect_settlement_changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Run pip install and mypy check of files in package
+        shell: bash
+        run: |
+          pip install --upgrade pip
+          pip install mypy types-python-dateutil
+          mypy ./source/effect_settlement --disallow-untyped-defs --ignore-missing-imports
+
+  black_check:
+    if: ${{ inputs.has_effect_settlement_changes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
+        with:
+          options: --check --diff
+          src: ./source/effect_settlement

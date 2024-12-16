@@ -39,6 +39,14 @@ jobs:
       has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
+  ci_effect_settlement:
+    needs: [ changes, ci_docker ]
+    if: ${{ needs.changes.outputs.effect_settlement == 'true' }}
+    uses: ./.github/workflows/ci-effect-settlement.yml
+    with:
+      has_effect_settlement_changes: ${{ needs.changes.outputs.effect_settlement== 'true' }}
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+
   #
   # Branch policy status check
   #
@@ -49,6 +57,7 @@ jobs:
         changes,
         ci_base,
         ci_electrical_heating,
+        ci_effect_settlement
       ]
     if: |
       always()
