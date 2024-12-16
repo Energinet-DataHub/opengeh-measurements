@@ -1,0 +1,14 @@
+name: Check and Test
+
+on:
+  push:
+    branches:
+      - sondergaard/python-fun
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
