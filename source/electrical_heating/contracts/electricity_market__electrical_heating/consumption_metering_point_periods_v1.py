@@ -2,8 +2,7 @@ import pyspark.sql.types as t
 
 nullable = True
 
-# Includes all periods of consumption metering points where electrical heating is registered.
-# Metering point periods where the electrical heating flag is not set must be omitted from the data set.
+# Includes all periods of consumption metering points where electrical heating is - or has been previously - registered.
 #
 # A period is created whenever any of the following transaction types are registered:
 # - CHANGESUP: Leverandørskift (BRS-001)
@@ -27,6 +26,12 @@ consumption_metering_point_periods_v1 = t.StructType(
         #
         # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
+        #
+        # States whether the metering point has electrical heating in the period
+        # true:  The consumption metering has electrical heating in the stated period
+        # false: The consumption metering point was previously marked as having electrical
+        #        heating in the stated period, but this has been corrected
+        t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
         #
         # 2 | 3 | 4 | 5 | 6 | 99 | NULL
         t.StructField("net_settlement_group", t.IntegerType(), not nullable),
