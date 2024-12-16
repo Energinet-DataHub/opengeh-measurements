@@ -13,6 +13,8 @@ export AZURE_CONFIG_DIR=/home/jovyan/.azure
 export PYSPARK_PYTHON=/opt/conda/bin/python
 export PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
 
+export COVERAGE_FILE=/tmp/.coverage
+
 # Exit immediately with failure status if any command fails
 set -e
 
@@ -23,8 +25,8 @@ cd $1
 coverage run --branch -m pytest -vv --junitxml=pytest-results.xml $2
 
 # Create data for threshold evaluation
-coverage json
+coverage json --data-file=/tmp/.coverage -o /tmp/coverage.json
 # Create human reader friendly HTML report
-coverage html
+coverage html --data-file=/tmp/.coverage -d /tmp/coverage-html
 
 coverage-threshold --line-coverage-min 25
