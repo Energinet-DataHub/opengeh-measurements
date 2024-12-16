@@ -26,7 +26,7 @@ COPY requirements.txt requirements.txt
 RUN pip --no-cache-dir install -r requirements.txt
 
 # Copy source code
-COPY .. $HOME
+COPY ../.. $HOME
 
 # Set misc environment variables required for properly run spark
 # note the amount of memory used on the driver is adjusted here
