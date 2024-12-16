@@ -36,4 +36,4 @@ RUN spark-shell
 
 # Make $HOME owned by the root, which is the user used in the container
 # This is needed for e.g. commands that create files or folders in $HOME
-RUN sudo chown 1000 work
+RUN sudo chown -R 1000 /home/joyvan/work
