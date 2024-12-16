@@ -33,3 +33,7 @@ ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
 
 # Dynamically downloading spark dependencies from conf/spark-defaults.conf. This is done to save time in the build pipeline so that we don't need to download on every build.
 RUN spark-shell
+
+USER root
+RUN usermod --uid 1001 1000
+USER 1000
