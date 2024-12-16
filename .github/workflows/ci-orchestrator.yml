@@ -40,7 +40,7 @@ jobs:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
   ci_capacity_settlement:
-    needs: [ changes, ci_docker ]
+    needs: [changes, ci_docker]
     if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
     uses: ./.github/workflows/ci-capacity-settlement.yml
     with:
