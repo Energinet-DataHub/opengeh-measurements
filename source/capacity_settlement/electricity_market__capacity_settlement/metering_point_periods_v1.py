@@ -2,15 +2,16 @@ import pyspark.sql.types as t
 
 nullable = True
 
-# Metering point periods for consumption metering points (parent) that has a coupled 'capacity_settlement' metering point (child).
+# Metering point periods for consumption metering points (parent) that have a coupled 'capacity_settlement' metering point (child).
 #
-# It represents the timeline of the consumption metering points, where the first period (given by period_from_date/period_from_to)
+# It represents the timeline of the consumption metering points. The first period (given by period_from_date/period_from_to)
 # of each metering point starts when the metering point first time enters 'connected' state - or 'disconnected' if that
-# occurs first. A new period starts only when a 'move-in' occurs, and then the previous period is ended at that same time.
+# occurs first. After that, new period starts when (and only when) a 'move-in' occurs, and the previous period is then
+# terminated at that same time.
 #
-# Only include rows where:
-#   - The period of the parent overlaps (partially of fully) with the period of the child metering point.
-#   - The period of the parent ends after 2024-12-31 23:00:00
+# Only include rows where the period of the parent:
+#   - overlaps (partially of fully) with the period of the child metering point.
+#   - ends after 2024-12-31 23:00:00
 
 metering_point_periods_v1 = t.StructType(
     [
