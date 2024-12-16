@@ -1,0 +1,1 @@
+from entry_points.test_entry_points import assert_entry_point_exists

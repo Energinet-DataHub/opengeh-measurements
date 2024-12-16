@@ -58,8 +58,6 @@ jobs:
       - name: Execute python tests
         shell: bash
         id: test_count
-        env:
-          PYTHONPATH: ./source/test_common:./source/electrical_heating:./source/
         run: |
           # IMPORTANT: When adding a new folder here, one must also add the folder
           # to one of the test jobs above! This is because this filter contains the sum of all folders
