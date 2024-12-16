@@ -5,3 +5,5 @@ ENV PYSPARK_PYTHON=/opt/conda/bin/python
 ENV PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
 
 COPY --chown=jovyan . /app
+
+RUN chmod +x /app/.docker/entrypoint.sh

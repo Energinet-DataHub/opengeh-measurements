@@ -13,5 +13,5 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build CI image
-      run: make image
+    - name: Test electrical heating entry points
+      run: make test_electrical_heating_entry_points

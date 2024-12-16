@@ -18,3 +18,10 @@ image:
 	@IMAGE_NAME=measurements_ci_image && \
     printf "${formatting_header}Building CI image: ${formatting_command}$$IMAGE_NAME${formatting_none}\n" && \
     docker buildx build --platform=linux/amd64 -t measurements_ci_image -f .docker/Dockerfile.ci .
+
+## Test electrical heatine entrypoints
+test_electrical_heating_entry_points: image
+	@IMAGE_NAME=measurements_ci_image && \
+	printf "${formatting_header}Running electrical heating test: ${formatting_command}$$IMAGE_NAME${formatting_none}\n" && \
+	docker run --rm -w /app $$IMAGE_NAME .docker/entrypoint.sh ./source/electrical_heating/tests/entry_points && \
+    docker image rm $$IMAGE_NAME
