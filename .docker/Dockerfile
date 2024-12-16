@@ -34,7 +34,7 @@ ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
 # Dynamically downloading spark dependencies from conf/spark-defaults.conf. This is done to save time in the build pipeline so that we don't need to download on every build.
 RUN spark-shell
 
-# Change the username from jovyan to nayvoj and update the user id to 1001
+# Change the username from jovyan to nayvoj and update the user id to 1001, as that is the user id used in the GitHub Actions runner
 RUN usermod -l nayvoj jovyan && \
     usermod -u 1001 nayvoj && \
     usermod -l jovyan nayvoj
