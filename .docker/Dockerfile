@@ -33,3 +33,7 @@ ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
 
 # Dynamically downloading spark dependencies from conf/spark-defaults.conf. This is done to save time in the build pipeline so that we don't need to download on every build.
 RUN spark-shell
+
+# Make $HOME owned by the root, which is the user used in the container
+# This is needed for e.g. commands that create files or folders in $HOME
+RUN sudo chown -R root:users $HOME

@@ -13,18 +13,11 @@ export AZURE_CONFIG_DIR=/home/joyvan/.azure
 export PYSPARK_PYTHON=/opt/conda/bin/python
 export PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
 
-export COVERAGE_FILE=/tmp/test_folder/.coverage
-
 # Exit immediately with failure status if any command fails
 set -e
 
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
-
-# Copy the test folder to tmp
-cp -r $1 /tmp/test_folder
-
-cd /tmp/test_folder
 
 coverage run --branch -m pytest -vv --junitxml=pytest-results.xml $2
 
