@@ -33,7 +33,7 @@ def start_with_deps(
     parse_command_line_args: Callable[..., Namespace] = parse_command_line_arguments,
     parse_job_args: Callable[..., ElectricalHeatingArgs] = parse_job_arguments,
 ) -> None:
-    """Start overload with explicit dependencies for easier testin."""
+    """Start overload with explicit dependencies for easier testing."""
     config.configure_logging(
         cloud_role_name=cloud_role_name,
         tracer_name="electrical-heating-job",
