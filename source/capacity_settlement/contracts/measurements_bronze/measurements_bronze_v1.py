@@ -11,7 +11,7 @@ _point = t.StructType(
         # of the individual points in the transaction.
         t.StructField("position", t.StringType(), not nullable),
         #
-        # The quantity calculated by the electrical heating job
+        # The quantity calculated by the capacity settlement job
         t.StructField("quantity", t.StringType(), not nullable),
         #
         # Must be: "calculated"
@@ -19,26 +19,25 @@ _point = t.StructType(
     ]
 )
 
-# Electrical heating result is delivered to Measurements
+# Capacity settlement result is delivered to Measurements
 # as one transaction per metering point id.
 measurements_bronze_v1 = t.StructType(
     [
         #
-        # Must be: "electrical_heating"
+        # Must be: "capacity_settlement"
         t.StructField("orchestration_type", t.StringType(), not nullable),
         #
-        # The GUIDvalue of the electrical heating calculation job
+        # The GUID value of the capacity_settlement calculation job
         t.StructField("orchestration_instance_id", t.StringType(), not nullable),
         #
         # Metering Point ID
-        # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # Transaction ID. Created by the electrical heating calculation job.
+        # Transaction ID. Created by the capacity_settlement calculation job.
         t.StructField("transaction_id", t.StringType(), not nullable),
         #
         # A DateTime value indicating when the transaction was created
-        # by the electrical heating calculation job.
+        # by the capacity_settlement calculation job.
         t.StructField("transaction_creation_datetime", t.StringType(), not nullable),
         #
         # The start DateTime of the transaction (the first position’s observation time)
@@ -47,7 +46,7 @@ measurements_bronze_v1 = t.StructType(
         # The end DateTime of the transaction
         t.StructField("end_datetime", t.TimestampType(), not nullable),
         #
-        # Must be "electrical_heating"
+        # Must be "capacity_settlement"
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
         # The product must be the code for "active energy"

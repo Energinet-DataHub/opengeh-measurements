@@ -3,11 +3,10 @@ import pyspark.sql.types as t
 nullable = True
 
 
-# All time series points related to electrical heating.
+# All time series points related to capacity settlement.
 time_series_points_v1 = t.StructType(
     [
         #
-        # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
         t.StructField("quantity", t.DecimalType(18, 3), not nullable),
@@ -19,8 +18,7 @@ time_series_points_v1 = t.StructType(
             not nullable,
         ),
         #
-        # 'consumption' | 'supply_to_grid' | 'consumption_from_grid' |
-        # 'electrical_heating' | 'net_consumption'
+        # 'consumption' | 'capacity_settlement'
         t.StructField("metering_point_type", t.StringType(), not nullable),
     ]
 )
