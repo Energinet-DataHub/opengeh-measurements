@@ -29,7 +29,7 @@ jobs:
         tests_filter_expression:
           - name: Electrical Heating
             paths: entry_points/
-    uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
+    uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@NicolajAaH-patch-1
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
       operating_system: dh3-ubuntu-20.04-4core
