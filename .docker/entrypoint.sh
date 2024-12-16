@@ -22,7 +22,7 @@ set -e
 shopt -s extglob
 
 # Copy the test folder to tmp
-cp $1 /tmp/test_folder
+cp -r $1 /tmp/test_folder
 
 cd /tmp/test_folder
 
