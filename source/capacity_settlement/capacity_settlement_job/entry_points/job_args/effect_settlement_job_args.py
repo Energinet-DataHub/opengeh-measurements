@@ -4,7 +4,7 @@ import configargparse
 from argparse import Namespace
 from telemetry_logging import Logger, logging_configuration
 
-from .effect_settlement_args import EffectSettlementArgs
+from .capacity_settlement_args import CapacitySettlementArgs
 
 
 def parse_command_line_arguments() -> Namespace:
@@ -13,13 +13,13 @@ def parse_command_line_arguments() -> Namespace:
 
 def parse_job_arguments(
     job_args: Namespace,
-) -> EffectSettlementArgs:
+) -> CapacitySettlementArgs:
     logger = Logger(__name__)
     logger.info(f"Command line arguments: {repr(job_args)}")
 
     with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
 
-        electrical_heating_args = EffectSettlementArgs(
+        electrical_heating_args = CapacitySettlementArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
             actor_id=job_args.actor_id,
         )

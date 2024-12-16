@@ -52,12 +52,12 @@ jobs:
     with:
       release_name_prefix: electrical_heating
 
-  effect_settlement:
+  capacity_settlement:
     needs: changes
-    if: ${{ needs.changes.outputs.effect_settlement == 'true' }}
+    if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
     uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
     with:
-      release_name_prefix: effect_settlement
+      release_name_prefix: capacity_settlement
 
   #
   # Dispatch deployment request
@@ -69,7 +69,7 @@ jobs:
     needs: [
       changes,
       electrical_heating,
-      effect_settlement,
+      capacity_settlement,
     ]
     steps:
       - run: echo "${{ toJSON(needs) }}"
@@ -92,7 +92,7 @@ jobs:
           repository: ${{ vars.environment_repository_path }}
           event-type: measurements-deployment-request-domain
           # yamllint disable-line rule:quoted-strings
-          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "electrical_heating": "${{ needs.changes.outputs.electrical_heating }}", "effect_settlement": "${{ needs.changes.outputs.effect_settlement }}"}'
+          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "electrical_heating": "${{ needs.changes.outputs.electrical_heating }}", "capacity_settlement": "${{ needs.changes.outputs.capacity_settlement }}"}'
 
   #
   # Send notification to teams channel if deployment dispatch failed
@@ -102,7 +102,7 @@ jobs:
     needs:
       [
         electrical_heating,
-        effect_settlement,
+        capacity_settlement,
         dispatch_deployment_event,
         cd_docker
       ]

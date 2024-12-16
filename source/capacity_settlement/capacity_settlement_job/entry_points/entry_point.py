@@ -7,8 +7,8 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from effect_settlement_job.entry_points.job_args.effect_settlement_args import (
-    EffectSettlementArgs,
+from capacity_settlement_job.entry_points.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
 )
 
 from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
@@ -29,15 +29,15 @@ def execute() -> None:
 
 def start_with_deps(
     *,
-    cloud_role_name: str = "dbr-effect-settlement",
+    cloud_role_name: str = "dbr-capacity-settlement",
     applicationinsights_connection_string: str | None = None,
     parse_command_line_args: Callable[..., Namespace] = parse_command_line_arguments,
-    parse_job_args: Callable[..., EffectSettlementArgs] = parse_job_arguments,
+    parse_job_args: Callable[..., CapacitySettlementArgs] = parse_job_arguments,
 ) -> None:
     """Start overload with explicit dependencies for easier testing."""
     config.configure_logging(
         cloud_role_name=cloud_role_name,
-        tracer_name="effect-settlement-job",
+        tracer_name="capacity-settlement-job",
         applicationinsights_connection_string=applicationinsights_connection_string,
         extras={"Subsystem": "measurements"},
     )

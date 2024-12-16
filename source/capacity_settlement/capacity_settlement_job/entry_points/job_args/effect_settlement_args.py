@@ -3,6 +3,6 @@ from uuid import UUID
 
 
 @dataclass
-class EffectSettlementArgs:
+class CapacitySettlementArgs:
     orchestration_instance_id: UUID
     actor_id: str
