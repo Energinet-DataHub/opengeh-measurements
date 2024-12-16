@@ -12,3 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Build CI image
+      run: make image

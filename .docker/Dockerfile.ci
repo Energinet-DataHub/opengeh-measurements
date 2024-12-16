@@ -1,0 +1,7 @@
+FROM ghcr.io/energinet-datahub/opengeh-measurements/python-unit-test:latest
+
+ENV AZURE_CONFIG_DIR=/home/jovyan/.azure
+ENV PYSPARK_PYTHON=/opt/conda/bin/python
+ENV PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
+
+COPY --chown=jovyan . /app
