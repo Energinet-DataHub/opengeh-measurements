@@ -1,5 +1,9 @@
 FROM ghcr.io/energinet-datahub/opengeh-measurements/python-unit-test:latest
 
+USER root
+RUN usermod --uid 1001 jovyan
+USER jovyan
+
 ENV AZURE_CONFIG_DIR=/home/jovyan/.azure
 ENV PYSPARK_PYTHON=/opt/conda/bin/python
 ENV PYSPARK_DRIVER_PYTHON=/opt/conda/bin/python
