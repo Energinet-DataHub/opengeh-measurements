@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash
 
 # $1: Mandatory test folder path
 # $2: (Optional) Can be set to specify a filter for running python tests by using 'keyword expressions'.
@@ -7,7 +7,7 @@ echo "Tests folder path: '$1'"
 echo "Filter (paths): '$2'"
 
 # Configure Azure CLI to use token cache which must be mapped as volume from host machine
-export AZURE_CONFIG_DIR=/home/joyvan/.azure
+export AZURE_CONFIG_DIR=/home/jovyan/.azure
 
 # There env vars are important to ensure that the driver and worker nodes in spark are alligned
 export PYSPARK_PYTHON=/opt/conda/bin/python
