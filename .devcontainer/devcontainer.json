@@ -43,8 +43,7 @@
         }
     },
     "containerEnv": {
-        "GRANT_SUDO": "1",
-        "UID": "0"
+        "GRANT_SUDO": "yes"
     },
     "forwardPorts": [
         5567
