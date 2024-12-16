@@ -1,4 +1,4 @@
-﻿name: CI Effect Settlement
+﻿name: CI Capacity Settlement
 on:
   workflow_call:
     inputs:
@@ -26,7 +26,7 @@ jobs:
       matrix:
         # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
         tests_filter_expression:
-          - name: Effect Settlement
+          - name: Capacity Settlement
             paths: entry_points/
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
