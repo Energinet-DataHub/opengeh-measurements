@@ -69,7 +69,7 @@ jobs:
           filter="capacity_settlement_job_tests/entry_points/"
 
           chmod +x ./.devcontainer/check_test_count.sh
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh source/capacity_settlement/tests $filter
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root -w //workspaces/${repository_name} python-unit-test ./.devcontainer/check_test_count.sh .source/capacity_settlement/tests $filter
 
 
   mypy_check:
