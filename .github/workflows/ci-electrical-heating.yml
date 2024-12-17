@@ -63,10 +63,10 @@ jobs:
           # to one of the test jobs above! This is because this filter contains the sum of all folders
           # from test jobs.
           filter="electrical_heating_job_tests/"
-          test_path="./source/electrical_heating/tests"
+          test_path="source/electrical_heating/tests"
 
           chmod +x ./.devcontainer/check_test_count.sh
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh .source/electrical_heating/tests/ $filter
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh $test_path $filter
 
 
   mypy_check:
