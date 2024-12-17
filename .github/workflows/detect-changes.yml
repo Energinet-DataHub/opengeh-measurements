@@ -45,6 +45,7 @@ jobs:
           filters: |
             any_databricks:
               - '.github/workflows/cd.yml'
+              - '.devcontainer/**'
             electrical_heating:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
@@ -53,8 +54,7 @@ jobs:
               - '.github/workflows/ci-capacity-settlement.yml'
             docker:
               - .docker/**
-              - '.devcontainer/**'
-              - '.github/workflows/cd.yml'
+
 
       - name: Package content or build has changed
         id: docker_changed
