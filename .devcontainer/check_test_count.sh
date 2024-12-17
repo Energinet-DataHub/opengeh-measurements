@@ -11,9 +11,9 @@ echo "Filter (paths): '$@'"
 # Exit immediately with failure status if any command fails
 set -e
 
-test_path = $1
+test_path=$1
 
-cd source/$test_path/
+cd "source/$test_path/"
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
 
