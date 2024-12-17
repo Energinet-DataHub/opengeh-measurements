@@ -9,4 +9,3 @@ class ElectricalHeatingArgs:
     """
 
     orchestration_instance_id: UUID
-    actor_id: str

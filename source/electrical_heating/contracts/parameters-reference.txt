@@ -4,4 +4,3 @@
 
 # Required parameters
 --orchestration-instance-id={orchestration-instance-id}
---actor-id={actor-id}
