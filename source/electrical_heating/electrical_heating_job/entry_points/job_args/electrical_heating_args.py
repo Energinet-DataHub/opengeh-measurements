@@ -5,4 +5,3 @@ from uuid import UUID
 @dataclass
 class ElectricalHeatingArgs:
     orchestration_instance_id: UUID
-    actor_id: str
