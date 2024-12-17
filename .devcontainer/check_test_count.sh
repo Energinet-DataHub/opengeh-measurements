@@ -11,6 +11,8 @@ echo "Filter (paths): '$@'"
 # Exit immediately with failure status if any command fails
 set -e
 
+echo "TEST AJW"
+
 test_path=$1
 
 echo "source/$test_path/"
