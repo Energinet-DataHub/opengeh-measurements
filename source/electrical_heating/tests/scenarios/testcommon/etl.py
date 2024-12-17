@@ -8,6 +8,8 @@ README:
 - Other functionality is:
     - A tool to update all test modules in a directory including subdirectories.
     - Documentation on how to write tests (test file, folders, fixture, ...)
+    - CSV column where name begins with "#" is ignored.
+    - Test configuration (as in wholesale implementation) is supported
 """
 
 
