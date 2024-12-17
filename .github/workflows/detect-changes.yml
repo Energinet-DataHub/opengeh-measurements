@@ -45,6 +45,7 @@ jobs:
           filters: |
             any_databricks:
               - '.github/workflows/cd.yml'
+              - '.devcontainer/docker-compose.yml'
             electrical_heating:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
