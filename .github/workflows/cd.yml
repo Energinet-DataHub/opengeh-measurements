@@ -29,7 +29,7 @@ jobs:
     uses: ./.github/workflows/detect-changes.yml
 
   #
-  # CD Docker image
+  # CD Docker image.
   #
 
   cd_docker:
