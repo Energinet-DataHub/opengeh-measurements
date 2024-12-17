@@ -22,7 +22,6 @@ def parse_job_arguments(
 
         electrical_heating_args = CapacitySettlementArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
-            actor_id=job_args.actor_id,
         )
 
         return electrical_heating_args
