@@ -10,11 +10,7 @@ from telemetry_logging.span_recording import span_record_exception
 from capacity_settlement_job.entry_points.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-
-from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
-)
+from capacity_settlement_job.entry_points.job_args.capacity_settlement_job_args import parse_command_line_arguments, parse_job_arguments
 
 
 def execute() -> None:
