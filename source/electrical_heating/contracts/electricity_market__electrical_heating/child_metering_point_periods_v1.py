@@ -4,12 +4,6 @@ nullable = True
 
 # Child metering points related to electrical heating.
 #
-# The data is periodized based on when the child metering point is being
-# - coupled to the parent
-# - decoupled from the parent
-# - connected
-# - closed-down
-#
 # Periods are included when
 # - the metering point is of type
 #   'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
