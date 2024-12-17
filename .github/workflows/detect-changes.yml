@@ -44,8 +44,6 @@ jobs:
               - '.github/workflows/cd.yml'
             docker:
               - .docker/**
-              - '.devcontainer/**'
-              - '.github/workflows/cd.yml'
 
       - name: Package content or build has changed
         id: docker_changed
