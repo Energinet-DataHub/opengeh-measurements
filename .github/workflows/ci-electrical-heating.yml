@@ -65,7 +65,7 @@ jobs:
           filter="electrical_heating_job_tests/"
 
           chmod +x ./.devcontainer/check_test_count.sh
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh electrical_heating/tests $filter
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh "electrical_heating/tests" $filter
 
 
   mypy_check:
