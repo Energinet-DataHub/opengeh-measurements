@@ -1,2 +1,2 @@
-calculation_id;orchestration_instance_id;actor_id;execution_start_datetime;execution_stop_datetime
-IGNORED;00000000-orch-id00-0000-000000000001;00000000-act0-id00-0000-000000000001;IGNORED;IGNORED
+calculation_id;orchestration_instance_id;execution_start_datetime;execution_stop_datetime
+IGNORED;00000000-orch-id00-0000-000000000001;IGNORED;IGNORED
