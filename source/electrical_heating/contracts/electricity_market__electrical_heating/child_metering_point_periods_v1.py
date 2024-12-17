@@ -4,8 +4,18 @@ nullable = True
 
 # Child metering points related to electrical heating.
 #
-# The included metering point types are:
-# 'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
+# The data is periodized based on when the child metering point is being
+# - coupled to the parent
+# - decoupled from the parent
+# - connected
+# - closed-down
+#
+# Periods are included when
+# - the metering point is of type
+#   'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
+# - the metering point is coupled to a parent metering point
+# - the child metering point physical status is connected or disconnected.
+# - the period ends before 2021-01-01
 child_metering_point_periods_v1 = t.StructType(
     [
         #
@@ -25,12 +35,12 @@ child_metering_point_periods_v1 = t.StructType(
         # GSRN number
         t.StructField("parent_metering_point_id", t.StringType(), not nullable),
         #
-        # The date where the metering point was coupled to the parent metering point
+        # See the description of periodization of data above.
         # UTC time
-        t.StructField("coupled_date", t.TimestampType(), not nullable),
+        t.StructField("period_from_date", t.TimestampType(), not nullable),
         #
-        # The date where the metering point was decoupled from the parent metering point
+        # See the description of periodization of data above.
         # UTC time
-        t.StructField("decoupled_date", t.TimestampType(), nullable),
+        t.StructField("period_to_date", t.TimestampType(), nullable),
     ]
 )

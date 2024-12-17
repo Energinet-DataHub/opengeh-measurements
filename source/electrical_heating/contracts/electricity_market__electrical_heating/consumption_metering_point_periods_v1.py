@@ -2,9 +2,9 @@ import pyspark.sql.types as t
 
 nullable = True
 
-# Includes all periods of consumption metering points where electrical heating is - or has been previously - registered.
+# Consumption (parent) metering points related to electrical heating.
 #
-# A period is created whenever any of the following transaction types are registered:
+# The data is periodized based on the occurrence of following transaction types:
 # - CHANGESUP: Leverandørskift (BRS-001)
 # - ENDSUPPLY: Leveranceophør (BRS-002)
 # - INCCHGSUP: Håndtering af fejlagtigt leverandørskift (BRS-003)
@@ -21,6 +21,11 @@ nullable = True
 # - CHGSUPSHRT: Leverandørskift med kort varsel (BRS-043). Findes ikke i DH3
 # - MANCHGSUP: Tvunget leverandørskifte på målepunkt (BRS-044).
 # - MANCOR (HTX): Manuelt korrigering
+#
+# Periods are  included when
+# - the metering point physical status is connected or disconnected
+# - the period ends before 2021-01-01
+# - the electricity heating is or has been registered for the period
 consumption_metering_point_periods_v1 = t.StructType(
     [
         #
@@ -46,9 +51,11 @@ consumption_metering_point_periods_v1 = t.StructType(
             nullable,
         ),
         #
+        # See the description of periodization of data above.
         # UTC time
         t.StructField("period_from_date", t.TimestampType(), not nullable),
         #
+        # See the description of periodization of data above.
         # UTC time
         t.StructField("period_to_date", t.TimestampType(), nullable),
     ]
