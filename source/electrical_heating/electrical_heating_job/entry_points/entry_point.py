@@ -7,10 +7,10 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from electrical_heating_job.entry_points.job_args.electrical_heating_args import (
+from electrical_heating.electrical_heating_job.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
+from electrical_heating.electrical_heating_job.entry_points.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
