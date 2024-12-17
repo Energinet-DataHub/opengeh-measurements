@@ -6,13 +6,13 @@
 # The script must be invoked with a filter matching the paths NOT included in the matrix
 
 # $@: (Optional) Can be set to specify a filter for running python tests at the specified path.
-echo "Filter (paths): '$@'"
+echo "Parameters: '$@'"
 
 # Exit immediately with failure status if any command fails
 set -e
 
 test_path=$1
-echo "Test path: $test_path"
+filter=$2
 cd $test_path
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
@@ -22,7 +22,7 @@ shopt -s extglob
 # 'awk' is used to get the second column of the output which contains the number of tests.
 # 'head' is used to get the first line of the output which contains the number of tests.
 # Example output line returned by the grep filter: 'collected 10 items'
-executed_test_count=$(coverage run --branch -m pytest $@ --collect-only  | grep collected | awk '{print $2}' | head -n 1)
+executed_test_count=$(coverage run --branch -m pytest $filter --collect-only  | grep collected | awk '{print $2}' | head -n 1)
 
 total_test_count=$(coverage run --branch -m pytest --collect-only  | grep collected | awk '{print $2}' | head -n 1)
 
