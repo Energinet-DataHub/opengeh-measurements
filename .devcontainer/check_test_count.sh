@@ -12,7 +12,6 @@ echo "Filter (paths): '$@'"
 set -e
 
 cd source/electrical_heating/tests/
-
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
 
