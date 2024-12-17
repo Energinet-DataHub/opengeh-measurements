@@ -11,7 +11,6 @@ from capacity_settlement_job.entry_points.job_args.environment_variables import 
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
-DEFAULT_ACTOR_ID = "123456789"
 
 
 def _get_contract_parameters(filename: str) -> list[str]:
@@ -20,7 +19,6 @@ def _get_contract_parameters(filename: str) -> list[str]:
         text = text.replace(
             "{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID
         )
-        text = text.replace("{actor-id}", DEFAULT_ACTOR_ID)
         lines = text.splitlines()
         return list(
             filter(lambda line: not line.startswith("#") and len(line) > 0, lines)
@@ -67,4 +65,3 @@ def test_when_parameters__parses_parameters_from_contract(
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
-    assert actual_args.actor_id == DEFAULT_ACTOR_ID
