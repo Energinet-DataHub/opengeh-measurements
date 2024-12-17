@@ -32,7 +32,7 @@ jobs:
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
-      # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
+      # For pull requests it's not necessary to check out the code because GitHub REST API is used to determine changes
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -45,7 +45,6 @@ jobs:
           filters: |
             any_databricks:
               - '.github/workflows/cd.yml'
-              - '.devcontainer/docker-compose.yml'
             electrical_heating:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
