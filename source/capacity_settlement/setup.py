@@ -1,9 +1,9 @@
 ﻿from setuptools import setup, find_packages
 
 setup(
-    name="opengeh-electrical-heating",
+    name="opengeh-capacity-settlement",
     version=1.0,
-    description="Tools for electrical heating",
+    description="Tools for capacity settlement",
     long_description="",
     long_description_content_type="text/markdown",
     license="MIT",
@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "execute    = electrical_heating_job.entry_points.entry_point:execute",
+            "execute    = capacity-settlement_job.entry_points.entry_point:execute",
         ]
     },
 )
