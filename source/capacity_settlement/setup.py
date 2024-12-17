@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "execute    = capacity-settlement_job.entry_points.entry_point:execute",
+            "execute    = capacity_settlement_job.entry_points.entry_point:execute",
         ]
     },
 )
