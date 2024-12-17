@@ -1,2 +1,2 @@
-metering_point_id;date;quantity
-140000000000170201;2024-02-01 23:00:00;999.123
+metering_point_id;date;quantity;#comment
+140000000000170201;2024-02-01 23:00:00;999.123;The sole date where there is both a active consumption metering point and a coupled child metering point and consumption data

@@ -30,6 +30,8 @@ child_metering_point_periods_v1 = t.StructType(
         t.StructField("coupled_date", t.TimestampType(), not nullable),
         #
         # The date where the metering point was decoupled from the parent metering point
+        # Consumption for periods where the child metering point is decoupled from the parent metering point
+        # must not be transferred to the child metering point.
         # UTC time
         t.StructField("decoupled_date", t.TimestampType(), nullable),
     ]
