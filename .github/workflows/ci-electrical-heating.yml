@@ -42,7 +42,7 @@ jobs:
       tests_filter_expression: ${{ matrix.tests_filter_expression.paths }}
       image_tag: ${{ inputs.image_tag }}
 
-  # Check executed unit tests
+  # Check executed unit tests AJW
   electrical_heating_unit_test_check:
     if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
