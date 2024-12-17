@@ -1,7 +1,8 @@
 import argparse
 import sys
-import configargparse
 from argparse import Namespace
+
+import configargparse
 from telemetry_logging import Logger, logging_configuration
 
 from .capacity_settlement_args import CapacitySettlementArgs
@@ -35,7 +36,6 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
-    p.add_argument("--actor-id", type=str, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
