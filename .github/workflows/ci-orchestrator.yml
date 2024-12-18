@@ -36,7 +36,6 @@ jobs:
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: ./.github/workflows/ci-electrical-heating.yml
     with:
-      has_electrical_heating_changes: ${{ needs.changes.outputs.electrical_heating == 'true' }}
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
   ci_capacity_settlement:
@@ -44,7 +43,6 @@ jobs:
     if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
     uses: ./.github/workflows/ci-capacity-settlement.yml
     with:
-      has_capacity_settlement_changes: ${{ needs.changes.outputs.capacity_settlement== 'true' }}
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
   #
