@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from capacity_settlement_job import entry_points as module
+from capacity_settlement import entry_points as module
 from test_common.entry_points.entry_point_test_util import assert_entry_point_exists
 
 
