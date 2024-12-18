@@ -1,5 +1,9 @@
 ﻿from pyspark.sql import SparkSession, DataFrame
 
+from electrical_heating.infrastructure.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabase,
+)
+
 
 class MeasurementsGoldRepository:
     def __init__(
