@@ -18,18 +18,18 @@ def parse_job_arguments(
     logger = Logger(__name__)
     logger.info(f"Command line arguments: {repr(job_args)}")
 
-    with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
+    with logging_configuration.start_span("capacity_settlement.parse_job_arguments"):
 
-        electrical_heating_args = CapacitySettlementArgs(
+        capacity_settlement_args = CapacitySettlementArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
         )
 
-        return electrical_heating_args
+        return capacity_settlement_args
 
 
 def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
     p = configargparse.ArgParser(
-        description="Execute electrical heating calculation",
+        description="Execute capacity settlement calculation",
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter,
     )
 
