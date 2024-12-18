@@ -44,7 +44,7 @@ def start_with_deps(
     with config.get_tracer().start_as_current_span(
         __name__, kind=SpanKind.SERVER
     ) as span:
-        # Try/except added to enable adding custom fields to the exception as,
+        # Try/except added to enable adding custom fields to the exception as,,
         # the span attributes do not appear to be included in the exception.
         try:
 
