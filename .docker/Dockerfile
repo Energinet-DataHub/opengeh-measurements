@@ -39,4 +39,6 @@ RUN usermod -l nayvoj jovyan && \
     usermod -u 1001 nayvoj && \
     usermod -l jovyan nayvoj
 
+RUN echo "test"
+
 RUN usermod -u 1001 jovyan
