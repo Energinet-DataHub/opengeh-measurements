@@ -15,45 +15,52 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
 
     # Read data frames
-    consumption_periods_df = (
+    consumption_metering_point_periods = (
         electricity_market_repository.read_consumption_metering_point_periods()
     )
-    child_periods_df = electricity_market_repository.read_child_metering_point_periods()
-    time_series_df = measurements_gold_repository.read_time_series_points()
+    child_metering_point_periods = (
+        electricity_market_repository.read_child_metering_point_periods()
+    )
+    time_series_points = measurements_gold_repository.read_time_series_points()
 
     # Execute the calculation logic
-    _execute(time_series_df, consumption_periods_df, child_periods_df, args.time_zone)
+    _execute(
+        time_series_points,
+        consumption_metering_point_periods,
+        child_metering_point_periods,
+        args.time_zone,
+    )
 
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
 # This is also the function that will be tested using the `testcommon.etl` framework.
 def _execute(
-    time_series_df: DataFrame,
-    consumption_periods_df: DataFrame,
-    child_periods_df: DataFrame,
+    time_series_points: DataFrame,
+    consumption_metering_point_periods: DataFrame,
+    child_metering_point_periods: DataFrame,
     time_zone: str,
 ) -> DataFrame:
-    time_series_df = convert_utc_to_localtime(
-        time_series_df, mg.ColumnNames.observation_time, time_zone
+    time_series_points = convert_utc_to_localtime(
+        time_series_points, mg.ColumnNames.observation_time, time_zone
     )
 
-    consumption_periods_df = convert_utc_to_localtime(
-        consumption_periods_df, em.ColumnNames.period_from_date, time_zone
+    consumption_metering_point_periods = convert_utc_to_localtime(
+        consumption_metering_point_periods, em.ColumnNames.period_from_date, time_zone
     )
 
-    consumption_periods_df = convert_utc_to_localtime(
-        consumption_periods_df, em.ColumnNames.period_to_date, time_zone
+    consumption_metering_point_periods = convert_utc_to_localtime(
+        consumption_metering_point_periods, em.ColumnNames.period_to_date, time_zone
     )
 
     df = (
-        child_periods_df.alias("child")
+        child_metering_point_periods.alias("child")
         .join(
-            consumption_periods_df.alias("periods"),
+            consumption_metering_point_periods.alias("periods"),
             F.col("child.parent_metering_point_id")
             == F.col("periods.metering_point_id"),
         )
         .join(
-            time_series_df.alias("consumption"),
+            time_series_points.alias("consumption"),
             F.col("child.parent_metering_point_id")
             == F.col("consumption.metering_point_id"),
         )
