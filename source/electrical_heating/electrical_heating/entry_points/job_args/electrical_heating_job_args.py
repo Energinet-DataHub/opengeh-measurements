@@ -5,6 +5,7 @@ from argparse import Namespace
 from telemetry_logging import Logger, logging_configuration
 
 from .electrical_heating_args import ElectricalHeatingArgs
+import electrical_heating.entry_points.job_args.environment_variables as env_vars
 
 
 def parse_command_line_arguments() -> Namespace:
@@ -20,7 +21,9 @@ def parse_job_arguments(
     with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
 
         electrical_heating_args = ElectricalHeatingArgs(
+            catalog_name=env_vars.get_catalog_name(),
             orchestration_instance_id=job_args.orchestration_instance_id,
+            time_zone=env_vars.get_time_zone(),
         )
 
         return electrical_heating_args

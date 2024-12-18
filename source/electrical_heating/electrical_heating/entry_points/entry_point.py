@@ -7,6 +7,7 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
+from electrical_heating.domain import calculation
 from electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
@@ -14,6 +15,7 @@ from electrical_heating.entry_points.job_args.electrical_heating_job_args import
     parse_command_line_arguments,
     parse_job_arguments,
 )
+from electrical_heating.infrastructure.spark_initializor import initialize_spark
 
 
 def execute() -> None:
@@ -59,7 +61,9 @@ def start_with_deps(
                 }
             )
             span.set_attributes(config.get_extras())
-            parse_job_args(command_line_args)
+            args = parse_job_args(command_line_args)
+            spark = initialize_spark()
+            calculation.execute(spark, args)
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:

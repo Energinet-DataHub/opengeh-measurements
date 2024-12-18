@@ -45,6 +45,7 @@ def sys_argv_from_contract(
 def job_environment_variables() -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
+        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
     }
 
 
