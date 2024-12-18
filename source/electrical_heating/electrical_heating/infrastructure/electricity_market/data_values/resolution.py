@@ -2,5 +2,5 @@
 
 
 class Resolution(Enum):
-    hourly = "PT1H"
-    quarterly = "PT15M"
+    HOURLY = "PT1H"
+    QUARTERLY = "PT15M"
