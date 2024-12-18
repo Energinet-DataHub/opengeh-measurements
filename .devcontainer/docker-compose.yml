@@ -1,6 +1,6 @@
 services:
   python-unit-test:
-    image: ghcr.io/energinet-datahub/opengeh-measurements/python-unit-test:${IMAGE_TAG:-latest}
+    image: ghcr.io/energinet-datahub/opengeh-measurements/python-unit-test:${IMAGE_TAG:-latest}:cached
     volumes:
       # Forwards the local Docker socket to the container.
       - /var/run/docker.sock:/var/run/docker-host.sock
