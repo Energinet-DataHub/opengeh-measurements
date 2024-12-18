@@ -26,7 +26,7 @@ jobs:
 
   ci_docker:
     needs: changes
-    uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@v14
+    uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@nhq/cacheDockerImages
     with:
       docker_changed: ${{ needs.changes.outputs.docker == 'true' }}
       docker_changed_in_commit: ${{ needs.changes.outputs.docker_in_commit == 'true' }}
