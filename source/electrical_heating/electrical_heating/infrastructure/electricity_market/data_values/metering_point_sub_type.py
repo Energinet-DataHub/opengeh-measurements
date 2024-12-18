@@ -3,5 +3,5 @@
 
 class MeteringPointSubType(Enum):
     CALCULATED = "calculated"
-    VIRTUAL = "virtual"
     PHYSICAL = "physical"
+    VIRTUAL = "virtual"
