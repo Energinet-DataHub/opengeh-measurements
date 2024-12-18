@@ -9,8 +9,6 @@
 on:
   workflow_call:
     outputs:
-      any_databricks:
-        value: ${{ jobs.changes.outputs.any_databricks }}
       electrical_heating:
         value: ${{ jobs.changes.outputs.electrical_heating }}
       capacity_settlement:
@@ -26,7 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     # Set job outputs to values from filter step
     outputs:
-      any_databricks: ${{ steps.filter.outputs.any_databricks }}
       electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
       capacity_settlement: ${{ steps.filter.outputs.capacity_settlement }}
       docker: ${{ steps.filter.outputs.docker }}
@@ -43,15 +40,16 @@ jobs:
         id: filter
         with:
           filters: |
-            any_databricks:
-              - '.github/workflows/cd.yml'
-              - '.devcontainer/**'
             electrical_heating:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
+              - '.github/workflows/cd.yml'
+              - '.devcontainer/**'
             capacity_settlement:
               - 'source/capacity_settlement/**'
               - '.github/workflows/ci-capacity-settlement.yml'
+              - '.github/workflows/cd.yml'
+              - '.devcontainer/**'
             docker:
               - .docker/**
 

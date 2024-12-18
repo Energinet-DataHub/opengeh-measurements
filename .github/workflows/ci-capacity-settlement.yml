@@ -1,11 +1,8 @@
 ﻿name: CI Capacity Settlement
+
 on:
   workflow_call:
     inputs:
-      has_capacity_settlement_changes:
-        description: Whether there are changes in the job folder
-        required: true
-        type: boolean
       image_tag:
         type: string
         default: latest
@@ -20,7 +17,6 @@ jobs:
       prerelease_prefix: capacity_settlement
 
   unit_tests:
-    if: ${{ inputs.has_capacity_settlement_changes }}
     strategy:
       fail-fast: false
       matrix:
@@ -43,7 +39,6 @@ jobs:
 
   # Check executed unit tests
   capacity_settlement_unit_test_check:
-    if: ${{ inputs.has_capacity_settlement_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +69,6 @@ jobs:
 
 
   mypy_check:
-    if: ${{ inputs.has_capacity_settlement_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +83,6 @@ jobs:
           mypy ./source/capacity_settlement --disallow-untyped-defs --ignore-missing-imports
 
   black_check:
-    if: ${{ inputs.has_capacity_settlement_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
