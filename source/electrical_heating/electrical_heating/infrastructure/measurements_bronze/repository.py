@@ -5,7 +5,7 @@ from electrical_heating.infrastructure.measurements_bronze.database_definitions 
 )
 
 
-class MeasurementsBronzeRepository:
+class Repository:
     def __init__(
         self,
         catalog_name: str,

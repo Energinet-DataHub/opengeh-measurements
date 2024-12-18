@@ -1,5 +1,5 @@
 ﻿from enum import Enum
 
 
-class Resolution(Enum):
+class Quality(Enum):
     CALCULATED = "calculated"
