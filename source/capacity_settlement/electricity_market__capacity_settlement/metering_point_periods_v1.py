@@ -9,9 +9,9 @@ nullable = True
 # occurs first. After that, new period starts when (and only when) a 'move-in' occurs, and the previous period is then
 # terminated at that same time.
 #
-# Only include rows where the period of the parent:
-#   - overlaps (partially of fully) with the period of the child metering point.
-#   - ends after 2024-12-31 23:00:00
+# Exclude rows where the period of the parent
+#   - does not have any overlap with the period of the child metering point.
+#   - ends before 2024-12-31 23:00:00
 
 metering_point_periods_v1 = t.StructType(
     [
