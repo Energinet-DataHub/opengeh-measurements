@@ -1,8 +1,6 @@
 ﻿class ColumnNames:
     end_datetime = "end_datetime"
     metering_point_id = "metering_point_id"
-    metering_point_id = "metering_point_id"
-    metering_point_type = "metering_point_type"
     metering_point_type = "metering_point_type"
     observation_time = "observation_time"
     orchestration_instance_id = "orchestration_instance_id"
@@ -11,7 +9,6 @@
     position = "position"
     product = "product"
     quality = "quality"
-    quantity = "quantity"
     quantity = "quantity"
     resolution = "resolution"
     start_datetime = "start_datetime"
