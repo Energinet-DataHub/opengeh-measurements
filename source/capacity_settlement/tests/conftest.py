@@ -112,7 +112,7 @@ def installed_package(
 
     # Install wheel, which will also create console scripts for invoking the entry points of the package
     subprocess.call(
-        f"pip install {electrical_heating_path}/dist/opengeh_electrical_heating-1.0-py3-none-any.whl",
+        f"pip install {electrical_heating_path}/dist/opengeh_capacity_settlement-1.0-py3-none-any.whl",
         shell=True,
         executable="/bin/bash",
     )
