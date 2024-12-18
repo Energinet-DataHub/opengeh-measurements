@@ -24,8 +24,8 @@ nullable = True
 #
 # Periods are  included when
 # - the metering point physical status is connected or disconnected
-# - the period ends before 2021-01-01
-# - the electricity heating is or has been registered for the period
+# - the period does not end before 2021-01-01
+# - the electrical heating is or has been registered for the period
 consumption_metering_point_periods_v1 = t.StructType(
     [
         #

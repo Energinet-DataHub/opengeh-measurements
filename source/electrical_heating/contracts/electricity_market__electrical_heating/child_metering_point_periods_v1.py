@@ -9,7 +9,7 @@ nullable = True
 #   'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
 # - the metering point is coupled to a parent metering point
 # - the child metering point physical status is connected or disconnected.
-# - the period ends before 2021-01-01
+# - the period does not end before 2021-01-01
 child_metering_point_periods_v1 = t.StructType(
     [
         #
