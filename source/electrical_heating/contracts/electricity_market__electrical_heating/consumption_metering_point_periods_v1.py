@@ -4,7 +4,7 @@ nullable = True
 
 # Consumption (parent) metering points related to electrical heating.
 #
-# The data is periodized based on the occurrence of following transaction types:
+# The data is periodized based on the effect of the following transaction types:
 # - CHANGESUP: Leverandørskift (BRS-001)
 # - ENDSUPPLY: Leveranceophør (BRS-002)
 # - INCCHGSUP: Håndtering af fejlagtigt leverandørskift (BRS-003)
