@@ -44,21 +44,13 @@ jobs:
   #
   # CD Databricks
   #
-
-  electrical_heating_promote_prerelease:
+  
+  databricks_promote_prerelease:
     needs: changes
-    if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
+    if: ${{ needs.changes.outputs.electrical_heating == 'true' || needs.changes.outputs.capacity_settlement == 'true' }}
     uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
     with:
-      release_name_prefix: electrical_heating
-
-
-  capacity_settlement_promote_prerelease:
-    needs: changes
-    if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
-    uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
-    with:
-      release_name_prefix: capacity_settlement
+      release_name_prefix: databricks
 
   #
   # Dispatch deployment request
