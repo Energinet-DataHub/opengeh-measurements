@@ -24,7 +24,7 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     time_series_points = measurements_gold_repository.read_time_series_points()
 
     # Execute the calculation logic
-    _execute(
+    execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
@@ -34,7 +34,7 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
 # This is also the function that will be tested using the `testcommon.etl` framework.
-def _execute(
+def execute_core_logic(
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,
     child_metering_point_periods: DataFrame,
