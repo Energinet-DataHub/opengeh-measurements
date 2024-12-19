@@ -44,7 +44,7 @@ jobs:
   #
   # CD Databricks
   #
-  
+
   databricks_promote_prerelease:
     needs: changes
     if: ${{ needs.changes.outputs.electrical_heating == 'true' || needs.changes.outputs.capacity_settlement == 'true' }}
