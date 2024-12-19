@@ -11,6 +11,8 @@ on:
     outputs:
       electrical_heating:
         value: ${{ jobs.changes.outputs.electrical_heating }}
+      capacity_settlement:
+        value: ${{ jobs.changes.outputs.capacity_settlement }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
       docker_in_commit:
@@ -23,10 +25,11 @@ jobs:
     # Set job outputs to values from filter step
     outputs:
       electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
+      capacity_settlement: ${{ steps.filter.outputs.capacity_settlement }}
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
-      # For pull requests it's not necessary to checkout the code because GitHub REST API is used to determine changes
+      # For pull requests it's not necessary to check out the code because GitHub REST API is used to determine changes
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -41,10 +44,15 @@ jobs:
               - 'source/electrical_heating/**'
               - '.github/workflows/ci-electrical-heating.yml'
               - '.github/workflows/cd.yml'
+              - '.devcontainer/**'
+            capacity_settlement:
+              - 'source/capacity_settlement/**'
+              - '.github/workflows/ci-capacity-settlement.yml'
+              - '.github/workflows/cd.yml'
+              - '.devcontainer/**'
             docker:
               - .docker/**
-              - '.devcontainer/**'
-              - '.github/workflows/cd.yml'
+
 
       - name: Package content or build has changed
         id: docker_changed

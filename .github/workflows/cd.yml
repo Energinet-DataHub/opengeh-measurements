@@ -45,23 +45,32 @@ jobs:
   # CD Databricks
   #
 
-  electrical_heating:
+  electrical_heating_promote_prerelease:
     needs: changes
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
     uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
     with:
       release_name_prefix: electrical_heating
 
+
+  capacity_settlement_promote_prerelease:
+    needs: changes
+    if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
+    with:
+      release_name_prefix: capacity_settlement
+
   #
   # Dispatch deployment request
   #
 
   dispatch_deployment_event:
-    if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.electrical_heating == 'true' }}
+    if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.electrical_heating == 'true' || needs.changes.outputs.capacity_settlement == 'true' }}
     runs-on: ubuntu-latest
     needs: [
       changes,
-      electrical_heating
+      electrical_heating_promote_prerelease,
+      capacity_settlement_promote_prerelease,
     ]
     steps:
       - run: echo "${{ toJSON(needs) }}"
@@ -84,7 +93,7 @@ jobs:
           repository: ${{ vars.environment_repository_path }}
           event-type: measurements-deployment-request-domain
           # yamllint disable-line rule:quoted-strings
-          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "electrical_heating": "${{ needs.changes.outputs.electrical_heating }}"}'
+          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "electrical_heating": "${{ needs.changes.outputs.electrical_heating }}", "capacity_settlement": "${{ needs.changes.outputs.capacity_settlement }}"}'
 
   #
   # Send notification to teams channel if deployment dispatch failed
@@ -93,7 +102,8 @@ jobs:
   dispatch_failed:
     needs:
       [
-        electrical_heating,
+        electrical_heating_promote_prerelease,
+        capacity_settlement_promote_prerelease,
         dispatch_deployment_event,
         cd_docker
       ]
