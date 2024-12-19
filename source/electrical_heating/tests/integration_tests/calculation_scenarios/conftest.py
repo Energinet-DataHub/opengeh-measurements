@@ -55,6 +55,7 @@ def test_cases(spark: SparkSession, request) -> TestCases:
     # Read expected data
     test_cases = []
 
+    # TODO: Move this complexity to class `TestCases` or `TestCase`
     if Path(f"{scenario_path}/then/measurements.csv").exists():
         expected_measurements = read_csv(
             spark, f"{scenario_path}/then/measurements.csv", actual_measurements.schema
