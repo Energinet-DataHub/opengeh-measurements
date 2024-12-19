@@ -6,10 +6,15 @@ from typing import Any
 # TODO: Move to shared library
 class EnvironmentVariable(Enum):
     CATALOG_NAME = "CATALOG_NAME"
+    TIME_ZONE = "TIME_ZONE"
 
 
 def get_catalog_name() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.CATALOG_NAME)
+
+
+def get_time_zone() -> str:
+    return get_env_variable_or_throw(EnvironmentVariable.TIME_ZONE)
 
 
 def get_env_variable_or_throw(variable: EnvironmentVariable) -> Any:
