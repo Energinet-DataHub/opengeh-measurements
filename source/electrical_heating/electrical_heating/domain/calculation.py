@@ -48,32 +48,55 @@ def _execute(
         consumption_metering_point_periods, em.ColumnNames.period_from_date, time_zone
     )
 
-    consumption_metering_point_periods = convert_utc_to_localtime(
-        consumption_metering_point_periods, em.ColumnNames.period_to_date, time_zone
+    child_metering_point_periods = convert_utc_to_localtime(
+        child_metering_point_periods, em.ColumnNames.period_to_date, time_zone
     )
 
-    df = (
+    overlapping_metering_and_child_periods = (
         child_metering_point_periods.alias("child")
         .join(
-            consumption_metering_point_periods.alias("periods"),
+            consumption_metering_point_periods.alias("metering"),
             F.col("child.parent_metering_point_id")
-            == F.col("periods.metering_point_id"),
+            == F.col("metering.metering_point_id"),
+            "inner",
         )
+        .select(
+            F.col("child.metering_point_id").alias("child_metering_point_id"),
+            F.col("child.parent_metering_point_id").alias(
+                "consumption_metering_point_id"
+            ),
+            F.greatest(
+                F.col("child.coupled_date"), F.col("metering.period_from_date")
+            ).alias("period_start"),
+            F.least(
+                F.col("child.decoupled_date"), F.col("metering.period_to_date")
+            ).alias("period_end"),
+        )
+        .where(F.col("period_start") < F.col("period_end"))
+    )
+
+    daily_child_consumption = (
+        overlapping_metering_and_child_periods.alias("period")
         .join(
             time_series_points.alias("consumption"),
-            F.col("child.parent_metering_point_id")
+            F.col("period.consumption_metering_point_id")
             == F.col("consumption.metering_point_id"),
+            "inner",
+        )
+        .filter(
+            (F.col("consumption.observation_time") >= F.col("period.period_start"))
+            & (F.col("consumption.observation_time") < F.col("period.period_end"))
         )
         .groupBy(
-            F.col("child.metering_point_id"),
-            F.date_trunc("day", "observation_time").alias("date"),
+            F.date_trunc("day", "consumption.observation_time").alias("date"),
+            F.col("period.child_metering_point_id").alias("metering_point_id"),
         )
-        .agg(F.sum("quantity").alias("quantity"))
+        .agg(F.sum("consumption.quantity").alias("quantity"))
         .select(
-            F.col("child.metering_point_id"),
+            F.col("metering_point_id"),
             F.col("date"),
             F.col("quantity"),
         )
     )
 
-    return df
+    return daily_child_consumption
