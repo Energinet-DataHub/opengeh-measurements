@@ -1,7 +1,5 @@
 ﻿import pytest
-from testcommon.etl import assert_dataframes, get_then_names
-
-from tests.integration_tests.calculation_scenarios.temp_testcommon import TestCases
+from testcommon.etl import assert_dataframes, get_then_names, TestCases
 
 
 # TODO: Enable calculations.csv (in another PR)
