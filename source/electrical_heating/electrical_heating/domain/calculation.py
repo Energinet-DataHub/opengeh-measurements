@@ -1,5 +1,6 @@
 ﻿from pyspark.sql import DataFrame, SparkSession
 import pyspark.sql.functions as F
+from telemetry_logging import use_span
 
 from electrical_heating.domain.pyspark_functions import convert_utc_to_localtime
 import electrical_heating.infrastructure.measurements_gold as mg
@@ -9,6 +10,7 @@ from electrical_heating.entry_points.job_args.electrical_heating_args import (
 )
 
 
+@use_span()
 def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
@@ -34,6 +36,7 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
 # This is also the function that will be tested using the `testcommon.etl` framework.
+@use_span()
 def execute_core_logic(
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,

@@ -2,6 +2,7 @@
 
 import pytest
 from pyspark.sql import SparkSession
+from telemetry_logging import logging_configuration
 from testcommon.etl import read_csv
 
 from electrical_heating.domain.calculation import execute_core_logic
@@ -21,6 +22,15 @@ from tests.integration_tests.calculation_scenarios.temp_testcommon import (
     TestCases,
     TestCase,
 )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def enable_logging() -> None:
+    """Prevent logging from failing due to missing logging configuration."""
+    logging_configuration.configure_logging(
+        cloud_role_name="some cloud role name",
+        tracer_name="some tracer name",
+    )
 
 
 @pytest.fixture(scope="module")
