@@ -27,7 +27,7 @@ def enable_logging() -> None:
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 
