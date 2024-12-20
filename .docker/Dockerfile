@@ -9,6 +9,8 @@ RUN apt-get update; \
     apt-get install --no-install-recommends -y git; \
     # Curl is temporarily installed in order to download the Azure CLI (consider multi stage build instead)
     apt-get install --no-install-recommends -y curl; \
+    # C++ compiler is needed for some python packages
+    apt-get install --no-install-recommends -y g++; \
     # Install Azure CLI, see https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
     # as it is needed by integration tests
     curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash; \
