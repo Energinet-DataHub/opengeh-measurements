@@ -2,7 +2,10 @@
 import pyspark.sql.functions as F
 from telemetry_logging import use_span
 
-from electrical_heating.domain.pyspark_functions import convert_utc_to_localtime
+from electrical_heating.domain.pyspark_functions import (
+    convert_utc_to_localtime,
+    convert_localtime_to_utc,
+)
 import electrical_heating.infrastructure.measurements_gold as mg
 import electrical_heating.infrastructure.electricity_market as em
 from electrical_heating.entry_points.job_args.electrical_heating_args import (
@@ -104,6 +107,10 @@ def execute_core_logic(
             F.col("date"),
             F.col("quantity"),
         )
+    )
+
+    daily_child_consumption = convert_localtime_to_utc(
+        daily_child_consumption, "date", time_zone
     )
 
     return daily_child_consumption
