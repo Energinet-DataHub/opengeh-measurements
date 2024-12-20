@@ -2,6 +2,7 @@
 import pyspark.sql.functions as F
 
 
+# TODO: switch to using `.select` instead of `.withColumn` for better performance
 def convert_utc_to_localtime(
     df: DataFrame, timestamp_column: str, time_zone: str
 ) -> DataFrame:
@@ -11,6 +12,7 @@ def convert_utc_to_localtime(
     )
 
 
+# TODO: switch to using `.select` instead of `.withColumn` for better performance
 def convert_localtime_to_utc(
     df: DataFrame, timestamp_column: str, time_zone: str
 ) -> DataFrame:
