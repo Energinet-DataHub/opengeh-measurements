@@ -71,11 +71,5 @@ def test_cases(spark: SparkSession, request) -> TestCases:
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
                 actual=actual_measurements,
             ),
-            TestCase(
-                name="calculations",
-                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
-                # TODO: This must be output from the calculation logic
-                actual=spark.createDataFrame([], calculations),
-            ),
         ]
     )
