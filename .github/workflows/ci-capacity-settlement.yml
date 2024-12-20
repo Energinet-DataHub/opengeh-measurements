@@ -23,7 +23,7 @@ jobs:
         # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
         tests_filter_expression:
           - name: Capacity Settlement
-            paths: capacity_settlement/
+            paths: capacity_settlement_tests/
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
