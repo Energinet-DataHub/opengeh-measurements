@@ -25,6 +25,7 @@ from tests.integration_tests.calculation_scenarios.temp_testcommon import (
 
 @pytest.fixture(scope="module")
 def test_cases(spark: SparkSession, request) -> TestCases:
+    # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 
     # Read input data
@@ -52,38 +53,19 @@ def test_cases(spark: SparkSession, request) -> TestCases:
         "Europe/Copenhagen",
     )
 
-    # Read expected data
-    test_cases = []
-
-    # TODO: Move this complexity to class `TestCases` or `TestCase`
-    if Path(f"{scenario_path}/then/measurements.csv").exists():
-        expected_measurements = read_csv(
-            spark, f"{scenario_path}/then/measurements.csv", actual_measurements.schema
-        )
-        test_cases.append(
+    # Return test cases
+    return TestCases(
+        [
             TestCase(
                 name="measurements",
+                expected_csv_path=f"{scenario_path}/then/measurements.csv",
                 actual=actual_measurements,
-                expected=expected_measurements,
-            )
-        )
-
-    if Path(
-        f"{scenario_path}/then/electrical_heating_internal/calculations.csv"
-    ).exists():
-        expected_calculations = read_csv(
-            spark,
-            f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
-            calculations,
-        )
-        test_cases.append(
+            ),
             TestCase(
                 name="calculations",
+                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
                 # TODO: This must be output from the calculation logic
                 actual=spark.createDataFrame([], calculations),
-                expected=expected_calculations,
-            )
-        )
-
-    # Return test cases
-    return TestCases(test_cases)
+            ),
+        ]
+    )
