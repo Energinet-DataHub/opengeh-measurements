@@ -51,6 +51,10 @@ def execute_core_logic(
         consumption_metering_point_periods, em.ColumnNames.period_from_date, time_zone
     )
 
+    child_metering_point_periods = child_metering_point_periods.where(
+        F.col(em.ColumnNames.metering_point_type)
+        == em.MeteringPointType.ELECTRICAL_HEATING.value
+    )
     child_metering_point_periods = convert_utc_to_localtime(
         child_metering_point_periods, em.ColumnNames.period_to_date, time_zone
     )
