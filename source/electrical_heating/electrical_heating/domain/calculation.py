@@ -66,10 +66,10 @@ def execute_core_logic(
                 "consumption_metering_point_id"
             ),
             F.greatest(
-                F.col("child.coupled_date"), F.col("metering.period_from_date")
+                F.col("child.period_from_date"), F.col("metering.period_from_date")
             ).alias("period_start"),
             F.least(
-                F.col("child.decoupled_date"), F.col("metering.period_to_date")
+                F.col("child.period_to_date"), F.col("metering.period_to_date")
             ).alias("period_end"),
         )
         .where(F.col("period_start") < F.col("period_end"))
