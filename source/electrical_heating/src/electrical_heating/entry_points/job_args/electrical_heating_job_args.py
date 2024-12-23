@@ -5,7 +5,7 @@ from argparse import Namespace
 from telemetry_logging import Logger, logging_configuration
 
 from .electrical_heating_args import ElectricalHeatingArgs
-from capacity_settlement import entry_points as env_vars
+from electrical_heating import entry_points as env_vars
 
 
 def parse_command_line_arguments() -> Namespace:
