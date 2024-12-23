@@ -1,0 +1,6 @@
+metering_point_id;quantity;observation_time;metering_point_type;#comment
+170000000000000201;400;2023-12-13 15:00:00;consumption;In period 1. Limit = 31/365*4000 = 339.726
+170000000000000201;5000;2024-01-10 17:15:00;consumption;In period 2. Limit = 4k
+170000000000000202;500.123;2023-12-13 15:00:00;consumption;In period 1. Limit = 40/365*4000 = 438.356
+170000000000000202;700.951;2024-01-10 17:15:00;consumption;In period 2. Limit = 60/366*4000 = 655.738 (leap year, 29 days in feb. 366 days in year total)
+170000000000000203;11;2024-02-29 23:00:00;consumption;Limit = 1/366*4000 = 10.929 (leap year, 366 days in year total)
