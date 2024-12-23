@@ -17,7 +17,7 @@ from source.electrical_heating.src.electrical_heating.entry_points.job_args.elec
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from electrical_heating.infrastructure.spark_initializor import initialize_spark
+from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import initialize_spark
 
 
 def execute() -> None:
