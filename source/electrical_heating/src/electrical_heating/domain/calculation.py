@@ -2,7 +2,7 @@
 import pyspark.sql.functions as F
 from telemetry_logging import use_span
 
-from electrical_heating.domain.pyspark_functions import (
+from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_localtime_to_utc,
     convert_utc_to_localtime,
 )
