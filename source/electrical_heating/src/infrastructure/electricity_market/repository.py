@@ -1,6 +1,6 @@
 ﻿from pyspark.sql import SparkSession, DataFrame
 
-from electrical_heating.infrastructure.electricity_market.database_definitions import (
+from infrastructure.electricity_market.database_definitions import (
     Database,
 )
 

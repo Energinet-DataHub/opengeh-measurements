@@ -1,7 +1,9 @@
 ﻿import pytest
 
-from electrical_heating import entry_points as module
-from test_common.entry_points.entry_point_test_util import assert_entry_point_exists
+import entry_points as module
+from source.electrical_heating.test_common.entry_points.entry_point_test_util import (
+    assert_entry_point_exists,
+)
 
 
 @pytest.mark.parametrize(

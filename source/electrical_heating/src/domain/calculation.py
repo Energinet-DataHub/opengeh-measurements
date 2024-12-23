@@ -6,10 +6,10 @@ from pyspark_functions import (
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )
-import src.infrastructure.measurements_gold as mg
-import src.infrastructure.electricity_market as em
+import infrastructure.measurements_gold as mg
+import infrastructure.electricity_market as em
 
-from src.entry_points.job_args.electrical_heating_args import ElectricalHeatingArgs
+from entry_points.job_args.electrical_heating_args import ElectricalHeatingArgs
 
 
 @use_span()

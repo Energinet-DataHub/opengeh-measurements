@@ -5,14 +5,14 @@ from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
 from testcommon.etl import read_csv, TestCase, TestCases
 
-from electrical_heating.domain.calculation import execute_core_logic
-from electrical_heating.infrastructure.electricity_market.schemas.child_metering_point_periods_v1 import (
+from domain.calculation import execute_core_logic
+from infrastructure.electricity_market.schemas.child_metering_point_periods_v1 import (
     child_metering_point_periods_v1,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
+from infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
     consumption_metering_point_periods_v1,
 )
-from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
 
