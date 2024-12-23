@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from capacity_settlement import entry_points as module
+from source.electrical_heating.src.electrical_heating import entry_points as module
 from source.electrical_heating.test_common.entry_points.entry_point_test_util import (
     assert_entry_point_exists,
 )
