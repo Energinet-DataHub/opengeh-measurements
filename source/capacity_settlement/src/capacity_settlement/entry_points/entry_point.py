@@ -7,7 +7,7 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from capacity_settlement.entry_points.job_args.capacity_settlement_args import (
+from source.capacity_settlement.src.capacity_settlement.entry_points.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 from source.capacity_settlement.src.capacity_settlement.entry_points.job_args.capacity_settlement_job_args import (
