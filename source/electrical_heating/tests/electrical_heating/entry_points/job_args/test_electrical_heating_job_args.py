@@ -3,7 +3,7 @@
 import pytest
 
 
-from capacity_settlement.entry_points.job_args.environment_variables import (
+from electrical_heating.entry_points.job_args.environment_variables import (
     EnvironmentVariable,
 )
 from electrical_heating.entry_points.job_args.electrical_heating_job_args import (
