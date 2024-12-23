@@ -1,6 +1,6 @@
 ﻿from pyspark.sql import SparkSession, DataFrame
 
-from infrastructure.measurements_gold.database_definitions import (
+from electrical_heating.infrastructure.electricity_market.database_definitions import (
     Database,
 )
 
@@ -14,9 +14,14 @@ class Repository:
         self._spark = spark
         self._catalog_name = catalog_name
 
-    def read_time_series_points(self) -> DataFrame:
+    def read_consumption_metering_point_periods(self) -> DataFrame:
         return self._read_view_or_table(
-            Database.TIME_SERIES_POINTS_NAME,
+            Database.CONSUMPTION_METERING_POINT_PERIODS_NAME,
+        )
+
+    def read_child_metering_point_periods(self) -> DataFrame:
+        return self._read_view_or_table(
+            Database.CHILD_METERING_POINT_PERIODS_NAME,
         )
 
     def _read_view_or_table(
