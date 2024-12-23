@@ -10,10 +10,10 @@ from source.electrical_heating.src.electrical_heating.entry_points.job_args.elec
     ElectricalHeatingArgs,
 )
 
-from electrical_heating.infrastructure.electricity_market.repository import (
+from source.electrical_heating.src.electrical_heating.infrastructure.electricity_market.repository import (
     Repository as em,
 )
-from electrical_heating.infrastructure.measurements_gold.repository import (
+from source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold.repository import (
     Repository as mg,
 )
 
