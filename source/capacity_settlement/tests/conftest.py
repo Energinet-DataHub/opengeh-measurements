@@ -63,18 +63,18 @@ def capacity_settlement_path(src_path: str) -> str:
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{src_path}/capacity_settlement"
+    return f"{src_path}/capacity_settlement/src"
 
 
 @pytest.fixture(scope="session")
-def contracts_path(src_path: str) -> str:
+def contracts_path(capacity_settlement_path: str) -> str:
     """
     Returns the source/contract folder path.
     Please note that this only works if current folder haven't been changed prior using
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{src_path}/contracts"
+    return f"{capacity_settlement_path}/contracts"
 
 
 @pytest.fixture(scope="session")
