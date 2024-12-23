@@ -78,7 +78,7 @@ def electrical_heating_path(source_path: str) -> str:
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{source_path}/electrical_heating"
+    return f"{source_path}/electrical_heating/src"
 
 
 @pytest.fixture(scope="session")
