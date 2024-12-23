@@ -10,10 +10,10 @@ from telemetry_logging.span_recording import span_record_exception
 from electrical_heating.domain import calculation
 
 
-from electrical_heating.entry_points.job_args.electrical_heating_args import (
+from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.entry_points.job_args.electrical_heating_job_args import (
+from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
