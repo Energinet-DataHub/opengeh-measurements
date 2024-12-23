@@ -1,9 +1,9 @@
 ﻿from setuptools import setup, find_packages
 
 setup(
-    name="opengeh-electrical-heating",
-    version="1.0",
-    description="Tools for electrical heating",
+    name="opengeh-capacity-settlement",
+    version=1.0,
+    description="Tools for capacity settlement",
     long_description="",
     long_description_content_type="text/markdown",
     license="MIT",
@@ -16,12 +16,11 @@ setup(
         "python-dateutil==2.8.2",
         "azure-monitor-opentelemetry==1.6.4",
         "azure-core==1.32.0",
-        "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@2.5.1#subdirectory=source/telemetry",
-        "opengeh-testcommon @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@2.5.1#subdirectory=source/testcommon",
+        "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@2.4.1#subdirectory=source/telemetry",
     ],
     entry_points={
         "console_scripts": [
-            "execute    = electrical_heating.entry_points.entry_point:execute",
+            "execute    = capacity_settlement.entry_points.entry_point:execute",
         ]
     },
 )

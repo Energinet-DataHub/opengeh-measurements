@@ -16,21 +16,6 @@ import subprocess
 from typing import Callable, Generator
 
 import pytest
-from pyspark.sql import SparkSession
-
-
-@pytest.fixture(scope="module", autouse=True)
-def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
-    yield
-    # Clear the cache after each test module to avoid memory issues
-    spark.catalog.clearCache()
-
-
-@pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
-    session = SparkSession.builder.appName("testcommon").getOrCreate()
-    yield session
-    session.stop()
 
 
 @pytest.fixture(autouse=True)
@@ -71,25 +56,25 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
 
 
 @pytest.fixture(scope="session")
-def electrical_heating_path(source_path: str) -> str:
+def capacity_settlement_path(source_path: str) -> str:
     """
-    Returns the source/electrical_heating/ folder path.
+    Returns the source/capacity_settlement/ folder path.
     Please note that this only works if current folder haven't been changed prior using
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{source_path}/electrical_heating"
+    return f"{source_path}/capacity_settlement"
 
 
 @pytest.fixture(scope="session")
-def contracts_path(electrical_heating_path: str) -> str:
+def contracts_path(capacity_settlement_path: str) -> str:
     """
     Returns the source/contract folder path.
     Please note that this only works if current folder haven't been changed prior using
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{electrical_heating_path}/contracts"
+    return f"{capacity_settlement_path}/contracts"
 
 
 @pytest.fixture(scope="session")
@@ -112,10 +97,10 @@ def virtual_environment() -> Generator:
 
 @pytest.fixture(scope="session")
 def installed_package(
-    virtual_environment: Generator, electrical_heating_path: str
+    virtual_environment: Generator, capacity_settlement_path: str
 ) -> None:
     # Build the package wheel
-    os.chdir(electrical_heating_path)
+    os.chdir(capacity_settlement_path)
     subprocess.call("python -m build --wheel", shell=True, executable="/bin/bash")
 
     # Uninstall the package in case it was left by a cancelled test suite
@@ -127,7 +112,7 @@ def installed_package(
 
     # Install wheel, which will also create console scripts for invoking the entry points of the package
     subprocess.call(
-        f"pip install {electrical_heating_path}/dist/opengeh_electrical_heating-1.0-py3-none-any.whl",
+        f"pip install {capacity_settlement_path}/dist/opengeh_capacity_settlement-1.0-py3-none-any.whl",
         shell=True,
         executable="/bin/bash",
     )
