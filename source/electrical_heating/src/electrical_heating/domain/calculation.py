@@ -2,7 +2,7 @@
 import pyspark.sql.functions as F
 from telemetry_logging import use_span
 
-from electrical_heating.entry_points.job_args.electrical_heating_args import (
+from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 from pyspark_functions import (
