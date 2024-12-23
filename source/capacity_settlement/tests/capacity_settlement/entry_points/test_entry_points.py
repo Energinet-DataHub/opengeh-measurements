@@ -5,8 +5,6 @@ from source.capacity_settlement.test_common.entry_points.entry_point_test_util i
     assert_entry_point_exists,
 )
 
-import sys
-
 
 @pytest.mark.parametrize(
     "entry_point_name",
@@ -18,6 +16,4 @@ def test__entry_point_exists(
     installed_package: None,
     entry_point_name: str,
 ) -> None:
-    print("right here")
-    print(sys.path)
     assert_entry_point_exists(entry_point_name, module)
