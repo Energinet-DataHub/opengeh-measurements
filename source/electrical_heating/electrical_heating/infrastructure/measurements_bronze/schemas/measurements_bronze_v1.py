@@ -27,7 +27,7 @@ measurements_bronze_v1 = t.StructType(
         # Must be: "electrical_heating"
         t.StructField("orchestration_type", t.StringType(), not nullable),
         #
-        # The GUIDvalue of the electrical heating calculation job
+        # The GUID value of the electrical heating calculation job
         t.StructField("orchestration_instance_id", t.StringType(), not nullable),
         #
         # Metering Point ID

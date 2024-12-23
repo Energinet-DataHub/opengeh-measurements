@@ -1,28 +1,20 @@
-﻿# Copyright 2020 Energinet DataHub A/S
-#
-# Licensed under the Apache License, Version 2.0 (the "License2");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-import os
+﻿import os
 from enum import Enum
 from typing import Any
 
 
+# TODO: Move to shared library
 class EnvironmentVariable(Enum):
     CATALOG_NAME = "CATALOG_NAME"
+    TIME_ZONE = "TIME_ZONE"
 
 
 def get_catalog_name() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.CATALOG_NAME)
+
+
+def get_time_zone() -> str:
+    return get_env_variable_or_throw(EnvironmentVariable.TIME_ZONE)
 
 
 def get_env_variable_or_throw(variable: EnvironmentVariable) -> Any:

@@ -3,10 +3,6 @@
 on:
   workflow_call:
     inputs:
-      has_electrical_heating_changes:
-        description: Whether there are changes in the electrical heating job folder
-        required: true
-        type: boolean
       image_tag:
         type: string
         default: latest
@@ -21,14 +17,13 @@ jobs:
       prerelease_prefix: electrical_heating
 
   unit_tests:
-    if: ${{ inputs.has_electrical_heating_changes }}
     strategy:
       fail-fast: false
       matrix:
         # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
         tests_filter_expression:
           - name: Electrical Heating
-            paths: entry_points/
+            paths: electrical_heating_tests/
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
@@ -44,7 +39,6 @@ jobs:
 
   # Check executed unit tests
   electrical_heating_unit_test_check:
-    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,14 +56,14 @@ jobs:
           # IMPORTANT: When adding a new folder here, one must also add the folder
           # to one of the test jobs above! This is because this filter contains the sum of all folders
           # from test jobs.
-          filter="entry_points/"
+          test_path="source/electrical_heating/tests/"
+          filter="electrical_heating_tests/"
 
           chmod +x ./.devcontainer/check_test_count.sh
-          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh $filter
+          IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh $test_path $filter
 
 
   mypy_check:
-    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,7 +78,6 @@ jobs:
           mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
 
   black_check:
-    if: ${{ inputs.has_electrical_heating_changes }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
