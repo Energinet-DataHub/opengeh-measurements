@@ -1,0 +1,27 @@
+[project]
+name = "database-migration"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "opengeh-spark-sql-migrations",
+]
+
+[project.scripts]
+database-migration = "database_migration:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+opengeh-spark-sql-migrations = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/spark_sql_migrations", rev = "mkq/make_migrations_simple" }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
+lint = [
+    "ruff>=0.8.4",
+]
