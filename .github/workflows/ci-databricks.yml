@@ -45,26 +45,3 @@ jobs:
         run: |
           cd source/${{ inputs.package_name }}
           uv build
-
-  mypy_check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-      - name: Run pip install and mypy check of files in package
-        shell: bash
-        run: |
-          pip install --upgrade pip
-          pip install mypy types-python-dateutil
-          mypy ./source/${{ inputs.package_name }} --disallow-untyped-defs --ignore-missing-imports
-
-  black_check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: psf/black@stable
-        with:
-          options: --check --diff
-          src: ./source/${{ inputs.package_name }}

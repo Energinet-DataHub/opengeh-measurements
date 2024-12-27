@@ -17,7 +17,7 @@ def pytest_runtest_setup() -> None:
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
-    warehouse_location = f"database_migration/__spark-warehouse__"
+    warehouse_location = "database_migration/__spark-warehouse__"
 
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
@@ -46,7 +46,7 @@ def spark() -> Generator[SparkSession, None, None]:
         .config("spark.sql.catalogImplementation", "hive")
         .config(
             "javax.jdo.option.ConnectionURL",
-            f"jdbc:derby:;databaseName=database_migration/__metastore_db__;create=true",
+            "jdbc:derby:;databaseName=database_migration/__metastore_db__;create=true",
         )
         .config(
             "javax.jdo.option.ConnectionDriverName",
@@ -68,5 +68,5 @@ def spark() -> Generator[SparkSession, None, None]:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS migrations")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS bronze_schema")
+    spark.sql("CREATE DATABASE IF NOT EXISTS migrations")
+    spark.sql("CREATE DATABASE IF NOT EXISTS bronze_schema")
