@@ -12,11 +12,11 @@ def migrate():
 
 def _configure_spark_sql_migrations():
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name="test",
-        migration_table_name="migrations",
+        migration_schema_name="migrations",
+        migration_table_name="executed_migrations",
         migration_scripts_folder_path="database_migration.migration_scripts",
         substitution_variables={},
-        catalog_name="catalog"
+        catalog_name="spark_catalog"
     )
 
     create_and_configure_container(spark_config)
