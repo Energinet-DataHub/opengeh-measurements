@@ -69,3 +69,4 @@ def spark() -> Generator[SparkSession, None, None]:
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql(f"CREATE DATABASE IF NOT EXISTS migrations")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS bronze_schema")
