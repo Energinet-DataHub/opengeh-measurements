@@ -27,7 +27,7 @@ lint = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=mkq%2Fmake_migrations_simple" }]
+requires-dist = [{ name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&branch=mkq%2Fmake_migrations_simple" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.3.4" }]
@@ -131,7 +131,7 @@ wheels = [
 [[package]]
 name = "opengeh-spark-sql-migrations"
 version = "0.1.2"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=mkq%2Fmake_migrations_simple#32828fd52c2bdbb502dcb956c65abfee1add4b69" }
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&branch=mkq%2Fmake_migrations_simple#32828fd52c2bdbb502dcb956c65abfee1add4b69" }
 dependencies = [
     { name = "delta-spark" },
     { name = "dependency-injector" },
