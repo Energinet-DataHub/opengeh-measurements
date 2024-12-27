@@ -1,5 +1,4 @@
 ﻿from pyspark.sql import SparkSession
-
 import database_migration.migrations as migrations
 
 
