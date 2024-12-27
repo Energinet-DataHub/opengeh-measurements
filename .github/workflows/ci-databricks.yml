@@ -39,7 +39,9 @@ jobs:
           uv run pytest tests
 
       - name: Build Wheel
-        run: uv build
+        run: |
+          cd source/${{ inputs.package_name }}
+          uv build
 
   databricks_ci_build:
     uses: Energinet-DataHub/.github/.github/workflows/databricks-build-prerelease.yml@v14
