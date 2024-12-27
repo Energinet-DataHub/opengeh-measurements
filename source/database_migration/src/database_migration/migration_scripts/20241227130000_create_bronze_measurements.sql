@@ -2,7 +2,7 @@ CREATE TABLE bronze_schema.bronze_time_series_table
 (
     orchestration_type STRING NOT NULL,
     orchestration_instance_id STRING NOT NULL,
-    metering_point_type STRING NOT NULL,
+    metering_point_id STRING NOT NULL,
     transaction_id STRING NOT NULL,
     transaction_creation_datetime TIMESTAMP NOT NULL,
     metering_point_type STRING NOT NULL,
