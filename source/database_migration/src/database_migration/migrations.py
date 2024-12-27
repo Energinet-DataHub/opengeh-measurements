@@ -5,12 +5,12 @@
 )
 
 
-def migrate():
+def migrate() -> None:
     _configure_spark_sql_migrations()
     migration_pipeline.migrate()
 
 
-def _configure_spark_sql_migrations():
+def _configure_spark_sql_migrations() -> None:
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name="migrations",
         migration_table_name="executed_migrations",
