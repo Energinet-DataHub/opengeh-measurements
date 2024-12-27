@@ -17,7 +17,7 @@ def pytest_runtest_setup() -> None:
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
-    warehouse_location = "database_migration/__spark-warehouse__"
+    warehouse_location = "__spark-warehouse__"
 
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
