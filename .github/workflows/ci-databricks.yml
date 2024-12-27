@@ -34,7 +34,9 @@ jobs:
 
       - name: Run tests
         # For example, using `pytest`
-        run: uv run pytest tests
+        run: |
+          cd source/${{ inputs.package_name }}
+          uv run pytest tests
 
       - name: Build Wheel
         run: uv build
