@@ -13,11 +13,11 @@ CREATE TABLE bronze_schema.bronze_time_series_table
     end_datetime TIMESTAMP NOT NULL,
     points ARRAY<
         STRUCT<
-            position INT NOT NULL,
+            position INT,
             quantity DECIMAL(18, 6),
-            quality STRING NOT NULL
+            quality STRING
         >
-    >,
+    > NOT NULL,
     _rescued_data STRING,
     created TIMESTAMP NOT NULL,
     file_path STRING NOT NULL
