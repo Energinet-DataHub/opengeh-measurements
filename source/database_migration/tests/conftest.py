@@ -60,6 +60,12 @@ def spark() -> Generator[SparkSession, None, None]:
         .enableHiveSupport()
     ).getOrCreate()
 
+    _create_schemas(session)
+
     yield session
 
     session.stop()
+
+
+def _create_schemas(spark: SparkSession) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS migrations")
