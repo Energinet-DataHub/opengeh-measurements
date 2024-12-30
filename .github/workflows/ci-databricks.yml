@@ -18,7 +18,7 @@ jobs:
     env:
       RELEASE_FOLDER_PATH: ./source/${{ inputs.package_name }}/dist
       RELEASE_VERSION: core_${{ github.event.pull_request.number }}
-      RELEASE_ZIP_FILENAME: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}.zip
+      RELEASE_ZIP_FILENAME: core_${{ github.event.pull_request.number }}.zip
 
     steps:
       - uses: actions/checkout@v4
