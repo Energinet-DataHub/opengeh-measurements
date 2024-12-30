@@ -49,8 +49,10 @@ jobs:
       - name: Build Wheel
         run: |
           cd source/${{ inputs.package_name }}
+          uv build
+
           mkdir artifact
-          uv build artifact
+          mv dist artifact
 
       - name: Zip files for prerelease
         uses: thedoctor0/zip-release@0.6.2
