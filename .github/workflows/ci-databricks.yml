@@ -49,8 +49,6 @@ jobs:
       - name: Build Wheel
         run: |
           cd source/${{ inputs.package_name }}
-          mkdir artifact
-
           uv build artifact
 
       - name: Zip files for prerelease
