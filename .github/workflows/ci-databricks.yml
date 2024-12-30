@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RELEASE_FOLDER_PATH: ${{ inputs.wheel_working_directory }}/artifacts
+      RELEASE_FOLDER_PATH: ${{ inputs.wheel_working_directory }}
       RELEASE_VERSION: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}
       RELEASE_ZIP_FILENAME: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}.zip
 
