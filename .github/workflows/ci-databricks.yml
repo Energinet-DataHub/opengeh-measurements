@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RELEASE_FOLDER_PATH: ./source/${{ inputs.package_name }}/dist
+      RELEASE_FOLDER_PATH: ./source/${{ inputs.package_name }}/artifact
       RELEASE_VERSION: core_${{ github.event.pull_request.number }}
       RELEASE_ZIP_FILENAME: core_${{ github.event.pull_request.number }}.zip
 
