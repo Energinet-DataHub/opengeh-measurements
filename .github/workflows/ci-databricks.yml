@@ -15,6 +15,11 @@ jobs:
     name: python
     runs-on: ubuntu-latest
 
+    env:
+      RELEASE_FOLDER_PATH: ${{ inputs.wheel_working_directory }}/artifacts
+      RELEASE_VERSION: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}
+      RELEASE_ZIP_FILENAME: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}.zip
+
     steps:
       - uses: actions/checkout@v4
 
@@ -45,3 +50,20 @@ jobs:
         run: |
           cd source/${{ inputs.package_name }}
           uv build
+
+      - name: Zip files for prerelease
+        uses: thedoctor0/zip-release@0.6.2
+        with:
+          type: zip
+          filename: ${{ env.RELEASE_ZIP_FILENAME }}
+          directory: ${{ env.RELEASE_FOLDER_PATH }}
+
+      - name: Create prerelease
+        uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
+        with:
+          repo_token: ${{ github.token }}
+          automatic_release_tag: ${{ env.RELEASE_VERSION }}
+          prerelease: true
+          title: ${{ env.RELEASE_VERSION }}
+          files: |
+            ${{ env.RELEASE_FOLDER_PATH }}/${{ env.RELEASE_ZIP_FILENAME }}
