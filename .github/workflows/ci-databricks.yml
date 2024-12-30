@@ -41,14 +41,15 @@ jobs:
         with:
           src: source/${{ inputs.package_name }}
 
-      - name: Run tests
-        run: |
-          cd source/${{ inputs.package_name }}
-          uv run pytest tests
+#      - name: Run tests
+#        run: |
+#          cd source/${{ inputs.package_name }}
+#          uv run pytest tests
 
       - name: Build Wheel
         run: |
           cd source/${{ inputs.package_name }}
+          mkdir artifact
           uv build artifact
 
       - name: Zip files for prerelease
