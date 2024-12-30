@@ -50,8 +50,8 @@ jobs:
         run: |
           cd source/${{ inputs.package_name }}
           mkdir artifact
-          cd artifact
-          uv build
+
+          uv build artifact
 
       - name: Zip files for prerelease
         uses: thedoctor0/zip-release@0.6.2
