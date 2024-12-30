@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "opengeh-spark-sql-migrations",
+    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@mkq/make_migrations_simple#subdirectory=source/spark_sql_migrations",
 ]
 
 [project.scripts]
