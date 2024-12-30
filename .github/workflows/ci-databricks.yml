@@ -48,7 +48,7 @@ jobs:
 
       - name: Build Wheel
         run: |
-          cd source/${{ inputs.package_name }}
+          cd source/artifact/${{ inputs.package_name }}
           uv build
 
       - name: Zip files for prerelease
