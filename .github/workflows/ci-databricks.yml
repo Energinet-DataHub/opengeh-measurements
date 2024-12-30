@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RELEASE_FOLDER_PATH: dist
+      RELEASE_FOLDER_PATH: ./source/database_migration/<dist
       RELEASE_VERSION: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}
       RELEASE_ZIP_FILENAME: ${{ inputs.package_name }}_${{ github.event.pull_request.number }}.zip
 
