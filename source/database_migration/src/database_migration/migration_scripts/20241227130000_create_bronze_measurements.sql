@@ -1,4 +1,4 @@
-CREATE TABLE bronze_schema.bronze_time_series_table
+CREATE TABLE {bronze_database}.{bronze_measurements_table}
 (
     orchestration_type STRING NOT NULL,
     orchestration_instance_id STRING NOT NULL,
