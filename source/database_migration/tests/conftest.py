@@ -69,4 +69,4 @@ def spark() -> Generator[SparkSession, None, None]:
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_internal")
-    spark.sql("CREATE DATABASE IF NOT EXISTS bronze_schema")
+    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_bronze")
