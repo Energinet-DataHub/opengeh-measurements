@@ -23,5 +23,8 @@ lint = [
     "ruff>=0.8.4",
 ]
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.uv.sources]
 opengeh-spark-sql-migrations = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/spark_sql_migrations", branch = "mkq/make_migrations_simple" }
