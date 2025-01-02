@@ -1,4 +1,12 @@
-﻿# Exclude directory created by wheel creation
+﻿# Exclude virtual environment
+venv
+
+# Exclude pytest and mypy generated folders
+.mypy_cache
+.pytest_cache
+.test-pytest
+
+# Exclude directory created by wheel creation
 *.egg-info
 dist
 build
