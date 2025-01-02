@@ -21,7 +21,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "execute    = electrical_heating.application.entry_points.entry_point:execute",
+            "execute    = electrical_heating.entry_points.entry_point:execute",
         ]
     },
 )
