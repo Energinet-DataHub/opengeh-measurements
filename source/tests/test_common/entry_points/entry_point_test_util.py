@@ -10,8 +10,12 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
             group="console_scripts", name=entry_point_name
         )
 
+        entry_points_list = list(entry_point)
+        entry_points_list.pop(0)
+        entry_point = tuple(entry_points_list)
+
         print(module.__name__)
-        print(module)
+        print(entry_point)
 
         # Check if the entry point exists
         if not entry_point:
