@@ -2,11 +2,10 @@
 
 import pytest
 
-
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.environment_variables import (
+from src.capacity_settlement.application import (
     EnvironmentVariable,
 )
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_job_args import (
+from src.capacity_settlement.application import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
@@ -46,7 +45,6 @@ def sys_argv_from_contract(
 def job_environment_variables() -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
     }
 
 

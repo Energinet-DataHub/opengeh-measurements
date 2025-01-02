@@ -1,18 +1,17 @@
-﻿from pyspark.sql import DataFrame, SparkSession
-import pyspark.sql.functions as F
+﻿import pyspark.sql.functions as F
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_localtime_to_utc,
     convert_utc_to_localtime,
 )
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
-
 from source.electrical_heating.src.electrical_heating.infrastructure import (
     electricity_market as em,
     measurements_gold as mg,
+)
+from ..application.entry_points.job_args.electrical_heating_args import (
+    ElectricalHeatingArgs,
 )
 
 
