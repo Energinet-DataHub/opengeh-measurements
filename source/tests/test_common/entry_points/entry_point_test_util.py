@@ -4,18 +4,17 @@ from typing import Any
 
 def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
     try:
-        # Arrange
-        entry_point = importlib.metadata.entry_points(
+        entry_points = importlib.metadata.entry_points(
             group="console_scripts", name=entry_point_name
         )
 
         # Check if the entry point exists
-        if not entry_point:
+        if not entry_points:
             assert False, f"The {entry_point_name} entry point was not found."
 
         # Check if the module exists
-        module_name = entry_point[entry_point_name].module
-        function_name = entry_point[entry_point_name].value.split(":")[1]
+        module_name = entry_points[entry_point_name].module
+        function_name = entry_points[entry_point_name].value.split(":")[1]
 
         if not hasattr(
             module,

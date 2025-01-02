@@ -7,18 +7,12 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from source.electrical_heating.src.electrical_heating.domain import calculation
-
-
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
+from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
 )
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_job_args import (
+from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
-)
-from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
-    initialize_spark,
 )
 
 
@@ -34,15 +28,15 @@ def execute() -> None:
 
 def start_with_deps(
     *,
-    cloud_role_name: str = "dbr-electrical-heating",
+    cloud_role_name: str = "dbr-capacity-settlement",
     applicationinsights_connection_string: str | None = None,
     parse_command_line_args: Callable[..., Namespace] = parse_command_line_arguments,
-    parse_job_args: Callable[..., ElectricalHeatingArgs] = parse_job_arguments,
+    parse_job_args: Callable[..., CapacitySettlementArgs] = parse_job_arguments,
 ) -> None:
     """Start overload with explicit dependencies for easier testing."""
     config.configure_logging(
         cloud_role_name=cloud_role_name,
-        tracer_name="electrical-heating-job",
+        tracer_name="capacity-settlement-job",
         applicationinsights_connection_string=applicationinsights_connection_string,
         extras={"Subsystem": "measurements"},
     )
@@ -65,9 +59,7 @@ def start_with_deps(
                 }
             )
             span.set_attributes(config.get_extras())
-            args = parse_job_args(command_line_args)
-            spark = initialize_spark()
-            calculation.execute(spark, args)
+            parse_job_args(command_line_args)
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:

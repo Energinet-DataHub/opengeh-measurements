@@ -2,13 +2,12 @@
 
 import pytest
 
-
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.environment_variables import (
-    EnvironmentVariable,
-)
-from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_job_args import (
+from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
+)
+from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.environment_variables import (
+    EnvironmentVariable,
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
@@ -46,7 +45,6 @@ def sys_argv_from_contract(
 def job_environment_variables() -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
     }
 
 
