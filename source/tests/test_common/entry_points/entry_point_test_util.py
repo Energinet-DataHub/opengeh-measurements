@@ -1,21 +1,9 @@
 ﻿import importlib.metadata
-import pkgutil
 from typing import Any
-
-
-def list_all_modules(package_name: str):
-    package = __import__(package_name, fromlist=[""])
-    for module_info in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
-        print(module_info.name)
 
 
 def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
     try:
-        # Arrange
-        # filter on module name
-
-        list_all_modules("source")
-
         entry_point = importlib.metadata.entry_points(
             group="console_scripts", name=entry_point_name
         )
