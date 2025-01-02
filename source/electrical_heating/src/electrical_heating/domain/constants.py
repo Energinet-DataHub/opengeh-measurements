@@ -1,0 +1,2 @@
+ELECTRICAL_HEATING_LIMIT = 4000
+"""Limit in kWh."""

@@ -1,16 +1,18 @@
-﻿import pyspark.sql.functions as F
 from pyspark.sql import DataFrame, SparkSession
+import pyspark.sql.functions as F
+from pyspark.sql import Window
 from telemetry_logging import use_span
+from source.electrical_heating.src.electrical_heating.domain.constants import (
+    ELECTRICAL_HEATING_LIMIT,
+)
 
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
-    convert_localtime_to_utc,
     convert_utc_to_localtime,
+    convert_localtime_to_utc,
 )
-from source.electrical_heating.src.electrical_heating.infrastructure import (
-    electricity_market as em,
-    measurements_gold as mg,
-)
-from ..application.entry_points.job_args.electrical_heating_args import (
+import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
+import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
+from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 
@@ -87,6 +89,10 @@ def execute_core_logic(
         .where(F.col("period_start") < F.col("period_end"))
     )
 
+    metering_id_and_date_window = Window.partitionBy(
+        "metering_point_id", F.year("date")
+    ).orderBy(F.unix_timestamp("date").cast("long"))
+
     daily_child_consumption = (
         overlapping_metering_and_child_periods.alias("period")
         .join(
@@ -108,11 +114,32 @@ def execute_core_logic(
             F.col("metering_point_id"),
             F.col("date"),
             F.col("quantity"),
+            F.sum(F.col("quantity"))
+            .over(metering_id_and_date_window)
+            .alias("cumulative_quantity"),
         )
     )
 
-    daily_child_consumption = convert_localtime_to_utc(
-        daily_child_consumption, "date", time_zone
+    daily_child_consumption_with_limit = daily_child_consumption.select(
+        F.col("metering_point_id"),
+        F.col("date"),
+        F.when(
+            F.col("cumulative_quantity") > ELECTRICAL_HEATING_LIMIT,
+            0,
+        )
+        .when(
+            F.col("cumulative_quantity")
+            >= ELECTRICAL_HEATING_LIMIT + F.col("quantity"),
+            ELECTRICAL_HEATING_LIMIT - F.col("cumulative_quantity"),
+        )
+        .otherwise(
+            F.col("quantity"),
+        )
+        .alias("quantity"),
     )
 
-    return daily_child_consumption
+    daily_child_consumption_with_limit = convert_localtime_to_utc(
+        daily_child_consumption_with_limit, "date", time_zone
+    )
+
+    return daily_child_consumption_with_limit
