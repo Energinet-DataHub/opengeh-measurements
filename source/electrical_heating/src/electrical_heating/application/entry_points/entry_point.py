@@ -10,13 +10,13 @@ from telemetry_logging.span_recording import span_record_exception
 from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
+from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_job_args import (
+    parse_command_line_arguments,
+    parse_job_arguments,
+)
 from source.electrical_heating.src.electrical_heating.domain import calculation
 from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
-)
-from .job_args.electrical_heating_job_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
 )
 
 
