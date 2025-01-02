@@ -16,6 +16,7 @@ from electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 
+
 @use_span()
 def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
@@ -38,6 +39,7 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
         child_metering_point_periods,
         args.time_zone,
     )
+
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
 # This is also the function that will be tested using the `testcommon.etl` framework.
