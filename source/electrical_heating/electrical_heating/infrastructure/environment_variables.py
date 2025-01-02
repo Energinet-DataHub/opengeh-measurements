@@ -1,10 +1,9 @@
 ﻿import os
-from enum import Enum
 from typing import Any
 
 
 # TODO: Move to shared library
-class EnvironmentVariable(Enum):
+class EnvironmentVariable:
     CATALOG_NAME = "CATALOG_NAME"
     TIME_ZONE = "TIME_ZONE"
 
@@ -17,9 +16,9 @@ def get_time_zone() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.TIME_ZONE)
 
 
-def get_env_variable_or_throw(variable: EnvironmentVariable) -> Any:
-    env_variable = os.getenv(variable.name)
+def get_env_variable_or_throw(variable: str) -> Any:
+    env_variable = os.getenv(variable)
     if env_variable is None:
-        raise ValueError(f"Environment variable not found: {variable.name}")
+        raise ValueError(f"Environment variable not found: {variable}")
 
     return env_variable

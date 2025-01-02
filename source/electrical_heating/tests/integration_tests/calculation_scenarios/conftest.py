@@ -60,7 +60,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     return TestCases(
         [
             TestCase(
-                name="measurements",
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
                 actual=actual_measurements,
             ),

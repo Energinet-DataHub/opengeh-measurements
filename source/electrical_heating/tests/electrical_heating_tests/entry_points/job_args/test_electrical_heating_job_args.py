@@ -1,14 +1,11 @@
-﻿from unittest.mock import patch
+﻿import pytest
 
-import pytest
-
-from electrical_heating.entry_points.job_args.electrical_heating_job_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
-)
-from electrical_heating.entry_points.job_args.environment_variables import (
+from electrical_heating.infrastructure.environment_variables import (
     EnvironmentVariable,
 )
+from unittest.mock import patch
+
+from electrical_heating.main import execute
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
 
@@ -44,8 +41,8 @@ def sys_argv_from_contract(
 @pytest.fixture(scope="session")
 def job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
+        EnvironmentVariable.CATALOG_NAME: "some_catalog",
+        EnvironmentVariable.TIME_ZONE: "some_time_zone",
     }
 
 
@@ -54,15 +51,13 @@ def test_when_parameters__parses_parameters_from_contract(
     sys_argv_from_contract: list[str],
 ) -> None:
     """
-    This test ensures that the job accepts
-    the arguments that are provided by the client.
+    This test ensures that the job accepts the command line arguments and passes them to the execute function.
     """
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
-        with patch.dict("os.environ", job_environment_variables):
-            command_line_args = parse_command_line_arguments()
+        with patch("electrical_heating.main._execute") as mock_execute:
             # Act
-            actual_args = parse_job_arguments(command_line_args)
+            execute()
 
     # Assert
-    assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
+    mock_execute.assert_called_once_with(DEFAULT_ORCHESTRATION_INSTANCE_ID)

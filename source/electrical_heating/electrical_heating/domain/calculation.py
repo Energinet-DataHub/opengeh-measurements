@@ -2,15 +2,13 @@
 import pyspark.sql.functions as F
 from telemetry_logging import use_span
 
+from electrical_heating.domain.electrical_heating_args import ElectricalHeatingArgs
 from electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )
 import electrical_heating.infrastructure.measurements_gold as mg
 import electrical_heating.infrastructure.electricity_market as em
-from electrical_heating.entry_points.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
 
 
 @use_span()
