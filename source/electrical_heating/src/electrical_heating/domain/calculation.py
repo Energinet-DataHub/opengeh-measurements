@@ -2,17 +2,17 @@
 import pyspark.sql.functions as F
 from pyspark.sql import Window
 from telemetry_logging import use_span
-from electrical_heating.domain.constants import (
+from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT,
 )
 
-from electrical_heating.domain.pyspark_functions import (
+from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )
-import electrical_heating.infrastructure.measurements_gold as mg
-import electrical_heating.infrastructure.electricity_market as em
-from electrical_heating.entry_points.job_args.electrical_heating_args import (
+import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
+import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
+from source.electrical_heating.src.electrical_heating.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 
