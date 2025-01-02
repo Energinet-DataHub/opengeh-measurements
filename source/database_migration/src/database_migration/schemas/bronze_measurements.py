@@ -12,7 +12,7 @@ calculation_results_bronze_schema = StructType(
     [
         StructField(BronzeMeasurementsConstants.orchestration_type, StringType(), False),
         StructField(BronzeMeasurementsConstants.orchestration_instance_id, StringType(), False),
-        StructField(BronzeMeasurementsConstants.metering_point_type, StringType(), False),
+        StructField(BronzeMeasurementsConstants.metering_point_id, StringType(), False),
         StructField(BronzeMeasurementsConstants.transaction_id, StringType(), False),
         StructField(BronzeMeasurementsConstants.transaction_creation_datetime, TimestampType(), False),
         StructField(BronzeMeasurementsConstants.metering_point_type, StringType(), False),
@@ -27,12 +27,12 @@ calculation_results_bronze_schema = StructType(
             ArrayType(
                 StructType(
                     [
-                        StructField(BronzeMeasurementsConstants.Points.position, IntegerType(), False),
+                        StructField(BronzeMeasurementsConstants.Points.position, IntegerType(), True),
                         StructField(BronzeMeasurementsConstants.Points.quantity, DecimalType(18, 6), True),
-                        StructField(BronzeMeasurementsConstants.Points.quality, StringType(), False),
+                        StructField(BronzeMeasurementsConstants.Points.quality, StringType(), True),
                     ]
                 ),
-                False,
+                True,
             ),
             False,
         ),

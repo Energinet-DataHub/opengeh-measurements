@@ -1,9 +1,10 @@
 ﻿import os
 import pytest
 from pyspark.sql import SparkSession
-from typing import Generator
+from typing import Generator, Callable
 from delta import configure_spark_with_delta_pip
 import database_migration.container as container
+import database_migration.migrations as migrations
 
 
 def pytest_runtest_setup() -> None:
@@ -16,8 +17,8 @@ def pytest_runtest_setup() -> None:
 
 
 @pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
-    warehouse_location = "__spark-warehouse__"
+def spark(tests_path: str) -> Generator[SparkSession, None, None]:
+    warehouse_location = f"{tests_path}/__spark-warehouse__"
 
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
@@ -46,7 +47,7 @@ def spark() -> Generator[SparkSession, None, None]:
         .config("spark.sql.catalogImplementation", "hive")
         .config(
             "javax.jdo.option.ConnectionURL",
-            "jdbc:derby:;databaseName=database_migration/__metastore_db__;create=true",
+            f"jdbc:derby:;databaseName={tests_path}/__metastore_db__;create=true",
         )
         .config(
             "javax.jdo.option.ConnectionDriverName",
@@ -66,6 +67,43 @@ def spark() -> Generator[SparkSession, None, None]:
 
     session.stop()
 
+@pytest.fixture(scope="session")
+def migrate(spark: SparkSession) -> None:
+    migrations.migrate()
+
+@pytest.fixture(scope="session")
+def file_path_finder() -> Callable[[str], str]:
+    """
+    Returns the path of the file.
+    Please note that this only works if current folder haven't been changed prior using `os.chdir()`.
+    The correctness also relies on the prerequisite that this function is actually located in a
+    file located directly in the integration tests folder.
+    """
+
+    def finder(file: str) -> str:
+        return os.path.dirname(os.path.normpath(file))
+
+    return finder
+
+@pytest.fixture(scope="session")
+def source_path(file_path_finder: Callable[[str], str]) -> str:
+    """
+    Returns the <repo-root>/source folder path.
+    Please note that this only works if current folder haven't been changed prior using `os.chdir()`.
+    The correctness also relies on the prerequisite that this function is actually located in a
+    file located directly in the integration tests folder.
+    """
+    return file_path_finder(f"{__file__}/../..")
+
+@pytest.fixture(scope="session")
+def tests_path(source_path: str) -> str:
+    """
+    Returns the <repo-root>/source folder path.
+    Please note that this only works if current folder haven't been changed prior using `os.chdir()`.
+    The correctness also relies on the prerequisite that this function is actually located in a
+    file located directly in the integration tests folder.
+    """
+    return f"{source_path}/MigrationTools/tests"
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_internal")
