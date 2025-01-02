@@ -25,8 +25,8 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 170000000000000201;1;2024-10-26 21:00:00;consumption;Row 1-24 will be aggregated for day 1
 170000000000000201;1;2024-10-26 22:00:00;consumption;
 170000000000000201;1;2024-10-26 23:00:00;consumption;
-170000000000000201;1;2024-10-27 00:00:00;consumption;
-170000000000000201;1;2024-10-27 01:00:00;consumption;
+170000000000000201;1;2024-10-27 00:00:00;consumption;2 o'clock danish local time
+170000000000000201;1;2024-10-27 01:00:00;consumption;2 o'clock danish local time. This is the hour where DST ends.
 170000000000000201;1;2024-10-27 02:00:00;consumption;
 170000000000000201;1;2024-10-27 03:00:00;consumption;
 170000000000000201;1;2024-10-27 04:00:00;consumption;
