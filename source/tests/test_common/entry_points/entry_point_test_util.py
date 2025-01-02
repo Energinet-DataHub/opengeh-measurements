@@ -16,9 +16,6 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
         module_name = entry_points[entry_point_name].module
         function_name = entry_points[entry_point_name].value.split(":")[1]
 
-        print(module_name)
-        print(function_name)
-
         if not hasattr(
             module,
             function_name,
