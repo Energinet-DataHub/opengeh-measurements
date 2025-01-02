@@ -31,6 +31,8 @@ def enable_logging() -> None:
 
 @pytest.fixture(scope="module")
 def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+    """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
+
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 
@@ -62,9 +64,9 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Return test cases
     return TestCases(
         [
+            # TODO: Add calculations.csv test case (in another PR)
             TestCase(
-                name="measurements",
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
+                expected_csv_path=f"{scenario_path}/then/measurements",
                 actual=actual_measurements,
             ),
         ]
