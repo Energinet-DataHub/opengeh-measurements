@@ -66,7 +66,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         [
             # TODO: Add calculations.csv test case (in another PR)
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements",
+                expected_csv_path=f"{scenario_path}/then/measurements.csv",
                 actual=actual_measurements,
             ),
         ]
