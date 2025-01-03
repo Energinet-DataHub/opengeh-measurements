@@ -15,7 +15,7 @@ migrate = "database_migration.migrations:migrate"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "pytest>=8.3.4",
 ]
