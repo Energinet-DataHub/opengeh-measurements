@@ -128,8 +128,11 @@ def execute_core_logic(
             0,
         )
         .when(
-            F.col("cumulative_quantity")
-            >= ELECTRICAL_HEATING_LIMIT + F.col("quantity"),
+            (
+                F.col("cumulative_quantity")
+                >= ELECTRICAL_HEATING_LIMIT + F.col("quantity")
+            )
+            & (F.col("cumulative_quantity") < ELECTRICAL_HEATING_LIMIT),
             ELECTRICAL_HEATING_LIMIT - F.col("cumulative_quantity"),
         )
         .otherwise(
