@@ -1,4 +1,4 @@
-from testcommon.dataframes import AssertDataframesConfiguration
+from dataclasses import dataclass
 
 
 class TestSessionConfiguration:
@@ -15,6 +15,9 @@ class TestSessionConfiguration:
 
 @dataclass
 class ScenarioTestsConfiguration:
+    show_actual_and_expected: bool
+    show_columns_when_actual_and_expected_are_equal: bool
+    show_actual_and_expected_count: bool
 
 
 def _create_scenario_tests_configuration(configuration: dict) -> ScenarioTestsConfiguration:
