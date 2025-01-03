@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from source.electrical_heating.src.electrical_heating.application.entry_points import (
+from source.capacity_settlement.src.capacity_settlement.application.entry_points import (
     entry_point as module,
 )
 from source.tests.test_common.entry_points.entry_point_test_util import (
