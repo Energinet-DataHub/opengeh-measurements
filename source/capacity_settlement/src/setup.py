@@ -2,7 +2,7 @@
 
 setup(
     name="opengeh-capacity-settlement",
-    version=1.0,
+    version="1.0",
     description="Tools for capacity settlement",
     long_description="",
     long_description_content_type="text/markdown",
