@@ -45,6 +45,13 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
+  ci_database_migration:
+    needs: [changes, ci_docker]
+    if: ${{ needs.changes.outputs.database_migration == 'true' }}
+    uses: ./.github/workflows/ci-databricks.yml
+    with:
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+      package_name: database_migration
   #
   # Branch policy status check
   #
