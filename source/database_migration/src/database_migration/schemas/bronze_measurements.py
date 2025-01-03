@@ -5,31 +5,31 @@
     TimestampType,
     ArrayType, IntegerType, DecimalType
 )
-from database_migration.constants.bronze_measurements_constants import BronzeMeasurementsConstants
+from database_migration.constants.bronze_measurements_constants import BronzeMeasurementsColumnNames
 
 
 calculation_results_bronze_schema = StructType(
     [
-        StructField(BronzeMeasurementsConstants.orchestration_type, StringType(), False),
-        StructField(BronzeMeasurementsConstants.orchestration_instance_id, StringType(), False),
-        StructField(BronzeMeasurementsConstants.metering_point_id, StringType(), False),
-        StructField(BronzeMeasurementsConstants.transaction_id, StringType(), False),
-        StructField(BronzeMeasurementsConstants.transaction_creation_datetime, TimestampType(), False),
-        StructField(BronzeMeasurementsConstants.metering_point_type, StringType(), False),
-        StructField(BronzeMeasurementsConstants.product, StringType(), False),
-        StructField(BronzeMeasurementsConstants.unit, StringType(), False),
-        StructField(BronzeMeasurementsConstants.resolution, StringType(), False),
-        StructField(BronzeMeasurementsConstants.start_datetime, TimestampType(), False),
-        StructField(BronzeMeasurementsConstants.end_datetime, TimestampType(), False),
+        StructField(BronzeMeasurementsColumnNames.orchestration_type, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.orchestration_instance_id, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.metering_point_id, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.transaction_id, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), False),
+        StructField(BronzeMeasurementsColumnNames.metering_point_type, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.product, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.unit, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.resolution, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.start_datetime, TimestampType(), False),
+        StructField(BronzeMeasurementsColumnNames.end_datetime, TimestampType(), False),
 
         StructField(
-            BronzeMeasurementsConstants.points,
+            BronzeMeasurementsColumnNames.points,
             ArrayType(
                 StructType(
                     [
-                        StructField(BronzeMeasurementsConstants.Points.position, IntegerType(), True),
-                        StructField(BronzeMeasurementsConstants.Points.quantity, DecimalType(18, 6), True),
-                        StructField(BronzeMeasurementsConstants.Points.quality, StringType(), True),
+                        StructField(BronzeMeasurementsColumnNames.Points.position, IntegerType(), True),
+                        StructField(BronzeMeasurementsColumnNames.Points.quantity, DecimalType(18, 3), True),
+                        StructField(BronzeMeasurementsColumnNames.Points.quality, StringType(), True),
                     ]
                 ),
                 True,
@@ -37,8 +37,8 @@ calculation_results_bronze_schema = StructType(
             False,
         ),
 
-        StructField(BronzeMeasurementsConstants.rescued_data, StringType(), True),
-        StructField(BronzeMeasurementsConstants.created, TimestampType(), False),
-        StructField(BronzeMeasurementsConstants.file_path, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.rescued_data, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.created, TimestampType(), False),
+        StructField(BronzeMeasurementsColumnNames.file_path, StringType(), False),
     ]
 )

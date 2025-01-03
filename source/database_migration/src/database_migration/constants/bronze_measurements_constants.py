@@ -1,4 +1,4 @@
-﻿class BronzeMeasurementsConstants:
+﻿class BronzeMeasurementsColumnNames:
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"

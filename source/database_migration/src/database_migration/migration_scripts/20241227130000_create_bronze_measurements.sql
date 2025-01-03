@@ -14,7 +14,7 @@ CREATE TABLE {bronze_database}.{bronze_measurements_table}
     points ARRAY<
         STRUCT<
             position INT,
-            quantity DECIMAL(18, 6),
+            quantity DECIMAL(18, 3),
             quality STRING
         >
     > NOT NULL,
