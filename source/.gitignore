@@ -1,12 +1,4 @@
-﻿# Exclude virtual environment
-venv
-
-# Exclude pytest and mypy generated folders
-.mypy_cache
-.pytest_cache
-.test-pytest
-
-# Exclude directory created by wheel creation
+﻿# Exclude directory created by wheel creation
 *.egg-info
 dist
 build
@@ -14,3 +6,9 @@ build
 # Exclude files and directory created by codecov
 htmlcov
 coverage.json
+
+# These are included here so vscode explorer hides them when configured to respect the .gitignore file
+venv
+.mypy_cache
+.pytest_cache
+.test-pytest
