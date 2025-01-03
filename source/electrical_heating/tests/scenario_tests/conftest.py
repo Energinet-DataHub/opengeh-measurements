@@ -71,3 +71,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
             ),
         ]
     )
+
+
+@pytest.fixture(scope="session")
+def assert_dataframe_configuration(testsession_configuration: TestSessionConfiguration) -> AssertDataframesConfiguration:
+    return AssertDataframesConfiguration(
+        show_actual_and_expected_count=testsession_configuration.show_actual_and_expected_count,
+        show_actual_and_expected=testsession_configuration.show_actual_and_expected,
+        show_columns_when_actual_and_expected_are_equal=testsession_configuration.show_columns_when_actual_and_expected_are_equal,
+    )
