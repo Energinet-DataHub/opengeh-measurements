@@ -8,12 +8,11 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
             group="console_scripts", name=entry_point_name
         )
 
-        print(f"entry points {entry_points}")
-        print(f"module: {module}")
-
         # Check if the entry point exists
         if not entry_points:
-            assert False, f"The {entry_point_name} entry point was not found."
+            raise AssertionError(
+                f"The {entry_point_name} entry point was not found in the module {module.__name__}."
+            )
 
         # Check if the module exists
         module_name = entry_points[entry_point_name].module
@@ -23,10 +22,10 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
             module,
             function_name,
         ):
-            assert (
-                False
-            ), f"The entry point module function {function_name} does not exist in the entry points file."
+            raise AssertionError(
+                f"The entry point module function {function_name} does not exist in the entry points file."
+            )
 
         importlib.import_module(module_name)
     except importlib.metadata.PackageNotFoundError:
-        assert False, f"The {entry_point_name} entry point was not found."
+        raise AssertionError(f"The {entry_point_name} entry point was not found.")
