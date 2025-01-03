@@ -8,6 +8,9 @@ def assert_entry_point_exists(entry_point_name: str, module: Any) -> None:
             group="console_scripts", name=entry_point_name
         )
 
+        print(f"entry points {entry_points}")
+        print(f"module: {module}")
+
         # Check if the entry point exists
         if not entry_points:
             assert False, f"The {entry_point_name} entry point was not found."
