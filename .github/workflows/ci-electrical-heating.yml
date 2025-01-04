@@ -73,8 +73,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install mypy
-          mypy ./source/electrical_heating --install-types
-          mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
+          mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports --install-types
 
   black_check:
     runs-on: ubuntu-latest
