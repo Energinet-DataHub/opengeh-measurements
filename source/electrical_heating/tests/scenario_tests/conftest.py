@@ -19,7 +19,9 @@ from source.electrical_heating.src.electrical_heating.infrastructure.electricity
 from source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
-from source.electrical_heating.tests.testsession_configuration import TestSessionConfiguration
+from source.electrical_heating.tests.testsession_configuration import (
+    TestSessionConfiguration,
+)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -76,7 +78,9 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
 
 @pytest.fixture(scope="session")
-def assert_dataframe_configuration(testsession_configuration: TestSessionConfiguration) -> AssertDataframesConfiguration:
+def assert_dataframe_configuration(
+    testsession_configuration: TestSessionConfiguration,
+) -> AssertDataframesConfiguration:
     return AssertDataframesConfiguration(
         show_actual_and_expected_count=testsession_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=testsession_configuration.scenario_tests.show_actual_and_expected,

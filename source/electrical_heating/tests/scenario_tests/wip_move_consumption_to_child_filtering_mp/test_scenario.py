@@ -1,12 +1,17 @@
 ﻿import pytest
-from testcommon.dataframes import assert_dataframes_and_schemas, AssertDataframesConfiguration
+from testcommon.dataframes import (
+    assert_dataframes_and_schemas,
+    AssertDataframesConfiguration,
+)
 from testcommon.etl import get_then_names, TestCases
 
 
 # TODO BJM: Apply changes to all scenario tests
 @pytest.mark.parametrize("name", get_then_names())
 def test_get_then_names(
-    name: str, test_cases: TestCases, assert_dataframes_configuration: AssertDataframesConfiguration
+    name: str,
+    test_cases: TestCases,
+    assert_dataframes_configuration: AssertDataframesConfiguration,
 ) -> None:
     test_case = test_cases[name]
 

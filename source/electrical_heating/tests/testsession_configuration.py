@@ -20,11 +20,17 @@ class ScenarioTestsConfiguration:
     show_actual_and_expected_count: bool
 
 
-def _create_scenario_tests_configuration(configuration: dict) -> ScenarioTestsConfiguration:
+def _create_scenario_tests_configuration(
+    configuration: dict,
+) -> ScenarioTestsConfiguration:
     configuration = configuration or {}
 
     return ScenarioTestsConfiguration(
         show_actual_and_expected=configuration.get("show_actual_and_expected", False),
-        show_columns_when_actual_and_expected_are_equal=configuration.get("show_columns_when_actual_and_expected_are_equal", False),
-        show_actual_and_expected_count=configuration.get("show_actual_and_expected_count", False),
+        show_columns_when_actual_and_expected_are_equal=configuration.get(
+            "show_columns_when_actual_and_expected_are_equal", False
+        ),
+        show_actual_and_expected_count=configuration.get(
+            "show_actual_and_expected_count", False
+        ),
     )
