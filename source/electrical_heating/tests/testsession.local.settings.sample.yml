@@ -1,6 +1,7 @@
 # ===============================================================================================
 # This file contains the configuration settings for test sessions.
 # Create a copy of this file and remove the .sample extension and update the values.
+# The content must match the implementation of the class `TestSessionConfiguration`.
 # ===============================================================================================
 
 scenario_tests:

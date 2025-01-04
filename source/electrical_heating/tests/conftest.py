@@ -1,11 +1,9 @@
 import os
-import pprint
 import subprocess
 from pathlib import Path
-from typing import Generator, Any
+from typing import Generator
 
 import pytest
-import yaml
 from pyspark.sql import SparkSession
 
 from testsession_configuration import TestSessionConfiguration
@@ -111,13 +109,4 @@ def installed_package(
 @pytest.fixture(scope="session")
 def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
     settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
-    settings = _load_settings_from_file(settings_file_path)
-    return TestSessionConfiguration(settings)
-
-
-def _load_settings_from_file(file_path: Path) -> dict:
-    if file_path.exists():
-        with file_path.open() as stream:
-            return yaml.safe_load(stream)
-    else:
-        return {}
+    return TestSessionConfiguration.load(settings_file_path)
