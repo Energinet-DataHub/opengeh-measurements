@@ -72,7 +72,7 @@ jobs:
         shell: bash
         run: |
           pip install --upgrade pip
-          pip install mypy types-python-dateutil
+          mypy --install-types
           mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
 
   black_check:
