@@ -13,10 +13,14 @@
 # limitations under the License.
 import os
 import subprocess
-from typing import Callable, Generator
+from pathlib import Path
+from typing import Generator
 
 import pytest
+import yaml
 from pyspark.sql import SparkSession
+
+from testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -44,51 +48,34 @@ def configure_dummy_logging() -> None:
     )
 
 
-@pytest.fixture(scope="session")
-def file_path_finder() -> Callable[[str], str]:
-    """
-    Returns the path of the file.
-    Please note that this only works if current folder haven't been changed prior using
-    `os.chdir()`. The correctness also relies on the prerequisite that this function is
-    actually located in a file located directly in the tests folder.
-    """
-
-    def finder(file: str) -> str:
-        return os.path.dirname(os.path.normpath(file))
-
-    return finder
+def file_path_finder(file: str) -> str:
+    return os.path.dirname(os.path.normpath(file))
 
 
 @pytest.fixture(scope="session")
-def source_path(file_path_finder: Callable[[str], str]) -> str:
+def source_path() -> str:
     """
     Returns the <repo-root>/source folder path.
-    Please note that this only works if current folder haven't been changed prior using
-    `os.chdir()`. The correctness also relies on the prerequisite that this function is
-    actually located in a file located directly in the tests folder.
+    This function must be located in a file directly in the `tests` folder.
     """
     return file_path_finder(f"{__file__}/../..")
 
 
 @pytest.fixture(scope="session")
+def tests_path() -> str:
+    """Returns the tests folder path."""
+    return file_path_finder(f"{__file__}")
+
+
+@pytest.fixture(scope="session")
 def electrical_heating_path(source_path: str) -> str:
-    """
-    Returns the source/electrical_heating/ folder path.
-    Please note that this only works if current folder haven't been changed prior using
-    `os.chdir()`. The correctness also relies on the prerequisite that this function is
-    actually located in a file located directly in the tests folder.
-    """
+    """Returns the source/electrical_heating/ folder path."""
     return f"{source_path}/electrical_heating/src"
 
 
 @pytest.fixture(scope="session")
 def contracts_path(electrical_heating_path: str) -> str:
-    """
-    Returns the source/contract folder path.
-    Please note that this only works if current folder haven't been changed prior using
-    `os.chdir()`. The correctness also relies on the prerequisite that this function is
-    actually located in a file located directly in the tests folder.
-    """
+    """Returns the source/contract folder path."""
     return f"{electrical_heating_path}/contracts"
 
 
@@ -131,3 +118,18 @@ def installed_package(
         shell=True,
         executable="/bin/bash",
     )
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
+    settings_file_path = Path(tests_path) / "test.local.settings.yml"
+    settings = _load_settings_from_file(settings_file_path)
+    return TestSessionConfiguration(settings)
+
+
+def _load_settings_from_file(file_path: Path) -> dict:
+    if file_path.exists():
+        with file_path.open() as stream:
+            return yaml.safe_load(stream)
+    else:
+        return {}
