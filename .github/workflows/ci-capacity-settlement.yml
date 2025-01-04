@@ -78,7 +78,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install mypy
-          mypy ./source/capacity_settlement --disallow-untyped-defs --ignore-missing-imports --install-types
+          mypy ./source/capacity_settlement --disallow-untyped-defs --ignore-missing-imports --install-types --non-interactive
 
   black_check:
     runs-on: ubuntu-latest
