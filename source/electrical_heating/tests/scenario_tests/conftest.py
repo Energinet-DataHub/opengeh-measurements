@@ -78,7 +78,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
 
 @pytest.fixture(scope="session")
-def assert_dataframe_configuration(
+def assert_dataframes_configuration(
     testsession_configuration: TestSessionConfiguration,
 ) -> AssertDataframesConfiguration:
     return AssertDataframesConfiguration(
