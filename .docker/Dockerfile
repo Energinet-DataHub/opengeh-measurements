@@ -42,5 +42,3 @@ RUN usermod -l nayvoj jovyan && \
     usermod -l jovyan nayvoj
 
 RUN usermod -u 1001 jovyan
-
-RUN echo "TODO: Delete this line (forcing CI to rebuild and publish docker image)"
