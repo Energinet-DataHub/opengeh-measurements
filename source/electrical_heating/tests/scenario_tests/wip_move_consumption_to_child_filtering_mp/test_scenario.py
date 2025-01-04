@@ -6,7 +6,6 @@ from testcommon.dataframes import (
 from testcommon.etl import get_then_names, TestCases
 
 
-# TODO BJM: Apply changes to all scenario tests
 @pytest.mark.parametrize("name", get_then_names())
 def test_get_then_names(
     name: str,
