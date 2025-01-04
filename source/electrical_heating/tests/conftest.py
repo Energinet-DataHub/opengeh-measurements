@@ -1,7 +1,8 @@
 import os
+import pprint
 import subprocess
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Any
 
 import pytest
 import yaml
@@ -109,7 +110,7 @@ def installed_package(
 
 @pytest.fixture(scope="session")
 def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
-    settings_file_path = Path(tests_path) / "test.local.settings.yml"
+    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
     settings = _load_settings_from_file(settings_file_path)
     return TestSessionConfiguration(settings)
 

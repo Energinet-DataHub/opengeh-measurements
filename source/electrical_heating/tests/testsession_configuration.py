@@ -9,7 +9,7 @@ class TestSessionConfiguration:
 
     def __init__(self, configuration: dict):
         self.scenario_tests = _create_scenario_tests_configuration(
-            configuration["scenario_tests"]
+            configuration.get("scenario_tests", {})
         )
 
 
@@ -23,8 +23,6 @@ class ScenarioTestsConfiguration:
 def _create_scenario_tests_configuration(
     configuration: dict,
 ) -> ScenarioTestsConfiguration:
-    configuration = configuration or {}
-
     return ScenarioTestsConfiguration(
         show_actual_and_expected=configuration.get("show_actual_and_expected", False),
         show_columns_when_actual_and_expected_are_equal=configuration.get(
