@@ -23,20 +23,21 @@ python-dateutil==2.8.2
 virtualenv==20.24.2
 
 # Other packages
-delta-spark==3.2.0
-databricks-cli==0.18
-dataclasses-json==0.6.7
-pyspark==3.5.1
-dependency_injector==4.43.0
 azure-identity==1.17.1
 azure-keyvault-secrets==4.8.0
 azure-monitor-opentelemetry==1.6.4
 azure-monitor-query==1.4.0
-types-python-dateutil==2.9.0.20241003
-coverage==7.6.8
-pytest==8.3.3
 configargparse==1.7.0
+coverage==7.6.8
+databricks-cli==0.18
+dataclasses-json==0.6.7
+delta-spark==3.2.0
+dependency_injector==4.43.0
+pyspark==3.5.1
 pytest-mock==3.14.0
+pytest==8.3.3
+types-PyYAML==5.4.11
+types-python-dateutil==2.9.0.20241003
 
 # Custom packages
 opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@2.5.3#subdirectory=source/spark_sql_migrations
