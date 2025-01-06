@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run pytest tests --directory source/${{ inputs.package_name }}
+          uv run --directory source/${{ inputs.package_name }} pytest tests
 
       - name: Build Wheel
         run: |
