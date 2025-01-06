@@ -1,12 +1,16 @@
 ﻿from pyspark.sql.types import (
-    StructType,
-    StructField,
+    ArrayType,
+    DecimalType,
+    IntegerType,
     StringType,
+    StructField,
+    StructType,
     TimestampType,
-    ArrayType, IntegerType, DecimalType
 )
-from database_migration.constants.bronze_measurements_constants import BronzeMeasurementsColumnNames
 
+from database_migration.constants.bronze_measurements_constants import (
+    BronzeMeasurementsColumnNames,
+)
 
 calculation_results_bronze_schema = StructType(
     [

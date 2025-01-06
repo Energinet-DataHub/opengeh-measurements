@@ -1,12 +1,14 @@
-﻿import database_migration.substitutions as substitutions
-import os
-from database_migration.constants.database_constants import DatabaseConstants
-from database_migration.constants.table_constants import TableConstants
+﻿import os
+
 from spark_sql_migrations import (
-    migration_pipeline,
     SparkSqlMigrationsConfiguration,
     create_and_configure_container,
+    migration_pipeline,
 )
+
+import database_migration.substitutions as substitutions
+from database_migration.constants.database_constants import DatabaseConstants
+from database_migration.constants.table_constants import TableConstants
 
 
 def migrate() -> None:

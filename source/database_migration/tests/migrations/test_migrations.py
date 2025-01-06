@@ -1,8 +1,11 @@
 ﻿from pyspark.sql import SparkSession
-from database_migration.constants.table_constants import TableConstants
-from database_migration.constants.database_constants import DatabaseConstants
-from database_migration.schemas.bronze_measurements import calculation_results_bronze_schema
+
 import tests.helpers.assert_helper as assert_helper
+from database_migration.constants.database_constants import DatabaseConstants
+from database_migration.constants.table_constants import TableConstants
+from database_migration.schemas.bronze_measurements import (
+    calculation_results_bronze_schema,
+)
 
 
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):

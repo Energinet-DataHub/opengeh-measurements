@@ -1,8 +1,10 @@
 ﻿import os
+from typing import Callable, Generator
+
 import pytest
-from pyspark.sql import SparkSession
-from typing import Generator, Callable
 from delta import configure_spark_with_delta_pip
+from pyspark.sql import SparkSession
+
 import database_migration.migrations as migrations
 
 
