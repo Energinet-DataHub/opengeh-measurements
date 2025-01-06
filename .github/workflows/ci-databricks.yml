@@ -34,22 +34,19 @@ jobs:
 
       - name: Install the project
         run: |
-          cd source/${{ inputs.package_name }}
-          uv sync --all-extras --dev
+          uv sync --all-extras --dev --directory source/${{ inputs.package_name }}
 
-      - uses: astral-sh/ruff-action@v2
-        with:
-          src: source/${{ inputs.package_name }}
+      - name: Ruff Check
+        run: |
+          uv run --directory "source/${{inputs.package_name}}" ruff check
 
       - name: Run tests
         run: |
-          cd source/${{ inputs.package_name }}
-          uv run pytest tests
+          uv run pytest tests --directory source/${{ inputs.package_name }}
 
       - name: Build Wheel
         run: |
-          cd source/${{ inputs.package_name }}
-          uv build
+          uv build --directory source/${{ inputs.package_name }}
 
           mkdir artifact
           mv dist artifact
