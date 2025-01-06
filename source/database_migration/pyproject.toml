@@ -1,5 +1,5 @@
 [project]
-name = "Database Migration"
+name = "database-migration"
 version = "0.1.0"
 description = "Used to create, update and delete tables in databases"
 readme = "README.md"
