@@ -3,7 +3,6 @@ import pytest
 from pyspark.sql import SparkSession
 from typing import Generator, Callable
 from delta import configure_spark_with_delta_pip
-import database_migration.container as container
 import database_migration.migrations as migrations
 
 
@@ -13,8 +12,6 @@ def pytest_runtest_setup() -> None:
     """
     os.environ["CATALOG_NAME"] = "spark_catalog"
 
-    container.create_and_configure_container()
-
 
 @pytest.fixture(scope="session")
 def spark(tests_path: str) -> Generator[SparkSession, None, None]:
@@ -23,12 +20,11 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
         .config("spark.default.parallelism", 1)
-        .config("spark.rdd.compress", False)
         .config("spark.shuffle.compress", False)
         .config("spark.shuffle.spill.compress", False)
         .config("spark.sql.shuffle.partitions", 1)
-        .config("spark.databricks.delta.allowArbitraryProperties.enabled", True)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+        .config("", True)
+        .config("spark.sql.extensions", "ispark.databricks.delta.allowArbitraryProperties.enabledo.delta.sql.DeltaSparkSessionExtension")
         .config(
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",
@@ -59,6 +55,10 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 @pytest.fixture(scope="session")
 def migrate(spark: SparkSession) -> None:
+    """
+        This is actually the main part of all our tests.
+        The reason for being a fixture is that we want to run it only once per session.
+    """
     migrations.migrate()
 
 @pytest.fixture(scope="session")

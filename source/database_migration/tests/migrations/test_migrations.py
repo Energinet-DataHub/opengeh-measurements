@@ -5,10 +5,6 @@ from database_migration.schemas.bronze_measurements import calculation_results_b
 import tests.helpers.assert_helper as assert_helper
 
 
-def test__migrations(spark: SparkSession, migrate):
-    # Assert
-    assert True
-
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
     # Assert
     bronze_measurements = spark.table(f"{DatabaseConstants.bronze_database}.{TableConstants.bronze_measurements_table}")

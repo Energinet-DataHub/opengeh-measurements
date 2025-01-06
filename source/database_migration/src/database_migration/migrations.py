@@ -1,5 +1,5 @@
-﻿import os
-import database_migration.substitutions as substitutions
+﻿import database_migration.substitutions as substitutions
+import os
 from database_migration.constants.database_constants import DatabaseConstants
 from database_migration.constants.table_constants import TableConstants
 from spark_sql_migrations import (
