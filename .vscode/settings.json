@@ -4,8 +4,7 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "flake8.args": [
-        "--max-line-length=200",
-    ],
-    "files.encoding": "utf8"
+    "python.linting.flake8Args": [
+        "--max-line-length=120"
+    ]
 }

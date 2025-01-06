@@ -1,9 +1,10 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
-from testcommon.etl import read_csv, TestCase, TestCases
+from testcommon.dataframes import AssertDataframesConfiguration, read_csv
+from testcommon.etl import TestCase, TestCases
 
 from source.electrical_heating.src.electrical_heating.domain.calculation import (
     execute_core_logic,
@@ -17,6 +18,9 @@ from source.electrical_heating.src.electrical_heating.infrastructure.electricity
 
 from source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
+)
+from source.electrical_heating.tests.testsession_configuration import (
+    TestSessionConfiguration,
 )
 
 
@@ -73,4 +77,15 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
                 actual=calculation_output.measurements,
             ),
         ]
+    )
+
+
+@pytest.fixture(scope="session")
+def assert_dataframes_configuration(
+    test_session_configuration: TestSessionConfiguration,
+) -> AssertDataframesConfiguration:
+    return AssertDataframesConfiguration(
+        show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
+        show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
+        show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )

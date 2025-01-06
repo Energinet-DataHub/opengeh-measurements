@@ -72,8 +72,8 @@ jobs:
         shell: bash
         run: |
           pip install --upgrade pip
-          pip install mypy types-python-dateutil
-          mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports
+          pip install mypy
+          mypy ./source/electrical_heating --disallow-untyped-defs --ignore-missing-imports --install-types --non-interactive
 
   black_check:
     runs-on: ubuntu-latest
