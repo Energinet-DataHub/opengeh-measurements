@@ -38,12 +38,23 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     time_series_points = measurements_gold_repository.read_time_series_points()
 
     # Execute the calculation logic
-    execute_core_logic(
+    _execute()
+
+
+def _execute():
+
+    calculation_output = CalculationOutput()
+
+    calculation_output.measurements = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
+
+    calculation_output.calculations = get_calculations()
+
+    return calculation_output
 
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
@@ -54,7 +65,7 @@ def execute_core_logic(
     consumption_metering_point_periods: DataFrame,
     child_metering_point_periods: DataFrame,
     time_zone: str,
-) -> CalculationOutput:
+) -> DataFrame:
     time_series_points = convert_utc_to_localtime(
         time_series_points, mg.ColumnNames.observation_time, time_zone
     )
@@ -147,8 +158,4 @@ def execute_core_logic(
         daily_child_consumption_with_limit, "date", time_zone
     )
 
-    calculation_output = CalculationOutput()
-    calculation_output.measurements = daily_child_consumption_with_limit
-    calculation_output.calculations = calculations
-
-    return calculation_output
+    return daily_child_consumption_with_limit

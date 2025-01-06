@@ -14,14 +14,9 @@ class Repository:
         self._spark = spark
         self._catalog_name = catalog_name
 
-    def read_consumption_metering_point_periods(self) -> DataFrame:
-        return self._read_view_or_table(
-            Database.CONSUMPTION_METERING_POINT_PERIODS_NAME,
-        )
-
     def read_calculations(self) -> DataFrame:
         return self._read_view_or_table(
-            TODO Database.CHILD_METERING_POINT_PERIODS_NAME,
+            Database.CHILD_METERING_POINT_PERIODS_NAME,
         )
 
     def _read_view_or_table(
