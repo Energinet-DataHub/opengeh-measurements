@@ -48,9 +48,6 @@ jobs:
         run: |
           uv build --directory source/${{ inputs.package_name }}
 
-          mkdir artifact
-          mv dist artifact
-
       - name: Zip files for prerelease
         uses: thedoctor0/zip-release@0.6.2
         with:
