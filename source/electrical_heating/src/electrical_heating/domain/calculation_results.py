@@ -11,4 +11,4 @@ class CalculationOutput:
 
     daily_child_consumption_with_limit: DataFrame | None = None
 
-    calculation: DataFrame | None = None
+    calculations: DataFrame | None = None

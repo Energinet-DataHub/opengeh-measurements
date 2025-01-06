@@ -1,13 +1,10 @@
 import pyspark.sql.functions as F
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
 import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
 import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
 from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT,
 )
@@ -15,30 +12,6 @@ from source.electrical_heating.src.electrical_heating.domain.pyspark_functions i
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )
-
-
-@use_span()
-def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-    # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.catalog_name)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
-
-    # Read data frames
-    consumption_metering_point_periods = (
-        electricity_market_repository.read_consumption_metering_point_periods()
-    )
-    child_metering_point_periods = (
-        electricity_market_repository.read_child_metering_point_periods()
-    )
-    time_series_points = measurements_gold_repository.read_time_series_points()
-
-    # Execute the calculation logic
-    execute_core_logic(
-        time_series_points,
-        consumption_metering_point_periods,
-        child_metering_point_periods,
-        args.time_zone,
-    )
 
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
