@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@mkq/make_migrations_simple#subdirectory=source/spark_sql_migrations",
+    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.0#subdirectory=source/spark_sql_migrations",
 ]
 
 [project.scripts]
@@ -25,6 +25,3 @@ lint = [
 
 [tool.hatch.metadata]
 allow-direct-references = true
-
-[tool.uv.sources]
-opengeh-spark-sql-migrations = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/spark_sql_migrations", branch = "mkq/make_migrations_simple" }
