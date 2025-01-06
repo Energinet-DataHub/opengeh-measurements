@@ -3,7 +3,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal as ehi
+import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal.repository as ehi
 import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
 import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
 from source.electrical_heating.src.electrical_heating.domain.calculation_output import (
@@ -24,22 +24,8 @@ def execute(
     child_metering_point_periods: DataFrame,
     time_series_points: DataFrame,
     time_zone: str,
-) -> None:
-
-    _execute(
-        consumption_metering_point_periods,
-        child_metering_point_periods,
-        time_series_points,
-        time_zone,
-    )
-
-
-def _execute(
-    consumption_metering_point_periods: DataFrame,
-    child_metering_point_periods: DataFrame,
-    time_series_points: DataFrame,
-    time_zone: str,
-):
+    ehi_repository: ehi.Repository,
+) -> CalculationOutput:
 
     calculation_output = CalculationOutput()
 
@@ -50,8 +36,7 @@ def _execute(
         time_zone,
     )
 
-    electrical_heating_repository = ehi.repository.Repository(spark, args.catalog_name)
-    calculation_output.calculation = electrical_heating_repository.read_calculations()
+    calculation_output.calculation = ehi_repository.read_calculations()  # TODO AJW
 
     return calculation_output
 
