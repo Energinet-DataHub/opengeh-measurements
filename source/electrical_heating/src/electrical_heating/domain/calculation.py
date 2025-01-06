@@ -1,16 +1,13 @@
 import pyspark.sql.functions as F
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
-from source.electrical_heating.src.electrical_heating.domain.calculation_output import (
-    CalculationOutput,
-)
+import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal as ehi
 import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
 import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating as ehi
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
+from source.electrical_heating.src.electrical_heating.domain.calculation_output import (
+    CalculationOutput,
 )
 from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT,
@@ -22,37 +19,39 @@ from source.electrical_heating.src.electrical_heating.domain.pyspark_functions i
 
 
 @use_span()
-def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-    # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.catalog_name)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
-    calculations_repository = ehi.Repository(spark, args.catalog_name)
+def execute(
+    consumption_metering_point_periods: DataFrame,
+    child_metering_point_periods: DataFrame,
+    time_series_points: DataFrame,
+    time_zone: str,
+) -> None:
 
-    # Read data frames
-    consumption_metering_point_periods = (
-        electricity_market_repository.read_consumption_metering_point_periods()
+    _execute(
+        consumption_metering_point_periods,
+        child_metering_point_periods,
+        time_series_points,
+        time_zone,
     )
-    child_metering_point_periods = (
-        electricity_market_repository.read_child_metering_point_periods()
-    )
-    time_series_points = measurements_gold_repository.read_time_series_points()
-
-    # Execute the calculation logic
-    _execute()
 
 
-def _execute():
+def _execute(
+    consumption_metering_point_periods: DataFrame,
+    child_metering_point_periods: DataFrame,
+    time_series_points: DataFrame,
+    time_zone: str,
+):
 
     calculation_output = CalculationOutput()
 
-    calculation_output.measurements = execute_core_logic(
+    calculation_output.daily_child_consumption_with_limit = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        args.time_zone,
+        time_zone,
     )
 
-    calculation_output.calculations = get_calculations()
+    electrical_heating_repository = ehi.repository.Repository(spark, args.catalog_name)
+    calculation_output.calculation = electrical_heating_repository.read_calculations()
 
     return calculation_output
 

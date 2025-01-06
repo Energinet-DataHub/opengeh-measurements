@@ -9,5 +9,6 @@ class CalculationOutput:
     Contains the output of a calculation.
     """
 
-    measurements: DataFrame | None = None
-    calculations: DataFrame | None = None
+    daily_child_consumption_with_limit: DataFrame | None = None
+
+    calculation: DataFrame | None = None

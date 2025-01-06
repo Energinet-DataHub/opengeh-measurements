@@ -16,7 +16,7 @@ class Repository:
 
     def read_calculations(self) -> DataFrame:
         return self._read_view_or_table(
-            Database.CHILD_METERING_POINT_PERIODS_NAME,
+            Database.CALCULATIONS_TABLE_NAME,
         )
 
     def _read_view_or_table(

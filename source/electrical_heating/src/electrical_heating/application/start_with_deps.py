@@ -6,10 +6,12 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_args import (
+import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
+import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_job_args import (
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
@@ -54,7 +56,25 @@ def execute_with_deps(
             span.set_attributes(config.get_extras())
             args = parse_job_args(command_line_args)
             spark = initialize_spark()
-            calculation.execute(spark, args)
+
+            electricity_market_repository = em.Repository(spark, args.catalog_name)
+            measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+
+            # Read data frames
+            consumption_metering_point_periods = (
+                electricity_market_repository.read_consumption_metering_point_periods()
+            )
+            child_metering_point_periods = (
+                electricity_market_repository.read_child_metering_point_periods()
+            )
+            time_series_points = measurements_gold_repository.read_time_series_points()
+
+            calculation.execute(
+                consumption_metering_point_periods,
+                child_metering_point_periods,
+                time_series_points,
+                args.time_zone,
+            )
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:

@@ -1,8 +1,6 @@
 ﻿import pytest
 
-from source.electrical_heating.src.electrical_heating.application.entry_points import (
-    start_with_deps as module,
-)
+from source.electrical_heating.src.electrical_heating.application import start_with_deps as module
 from source.tests.test_common.entry_points.entry_point_test_util import (
     assert_entry_point_exists,
 )
