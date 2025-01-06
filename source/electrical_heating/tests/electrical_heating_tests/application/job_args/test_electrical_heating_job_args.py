@@ -2,12 +2,12 @@
 
 import pytest
 
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_job_args import (
+from source.electrical_heating.src.electrical_heating.application.job_args import (
+    EnvironmentVariable,
+)
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_job_arguments,
     parse_command_line_arguments,
-)
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.environment_variables import (
-    EnvironmentVariable,
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
