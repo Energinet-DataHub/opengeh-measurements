@@ -4,9 +4,9 @@ from typing import Callable, Generator
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
-from database_migration.constants.database_names import DatabaseNames
 
 import database_migration.migrations as migrations
+from database_migration.constants.database_names import DatabaseNames
 
 
 def pytest_runtest_setup() -> None:
