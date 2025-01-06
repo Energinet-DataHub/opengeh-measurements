@@ -1,7 +1,4 @@
 ﻿class BronzeMeasurementsColumnNames:
-    """
-    Constants for the column names in the bronze measurements table.
-    """
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"
