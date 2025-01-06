@@ -4,6 +4,7 @@ from typing import Callable, Generator
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
+from database_migration.constants.database_names import DatabaseNames
 
 import database_migration.migrations as migrations
 
@@ -33,8 +34,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",
         )
-        # Enable Hive support for persistence across test sessions
-        .config("spark.sql.catalogImplementation", "hive")
         .config(
             "javax.jdo.option.ConnectionURL",
             f"jdbc:derby:;databaseName={tests_path}/__metastore_db__;create=true",
@@ -105,5 +104,5 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_internal")
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_bronze")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.migrations_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.bronze_database}")
