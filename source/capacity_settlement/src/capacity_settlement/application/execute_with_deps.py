@@ -15,7 +15,7 @@ from source.capacity_settlement.src.capacity_settlement.application.job_args.cap
 )
 
 
-def start_with_deps(
+def execute_with_deps(
     *,
     cloud_role_name: str = "dbr-capacity-settlement",
     applicationinsights_connection_string: str | None = None,
