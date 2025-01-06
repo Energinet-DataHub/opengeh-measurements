@@ -1,9 +1,8 @@
 [project]
-name = "database-migration"
+name = "Database Migration"
 version = "0.1.0"
-description = "Add your description here"
+description = "Used to create, update and delete tables in databases"
 readme = "README.md"
-requires-python = ">=3.10"
 dependencies = [
     "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.0#subdirectory=source/spark_sql_migrations",
 ]
@@ -44,7 +43,7 @@ exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 docstring-code-format = true
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 show-fixes = true
 
 [tool.ruff.lint]
@@ -64,7 +63,6 @@ ignore = [
     "D417",
     "E501",
 ] # Ruff format takes care of line-too-long
-exclude = ["notebooks/*", "src/_deprecated/*"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]

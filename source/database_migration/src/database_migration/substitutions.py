@@ -1,9 +1,9 @@
-﻿from database_migration.constants.database_constants import DatabaseConstants
-from database_migration.constants.table_constants import TableConstants
+﻿from database_migration.constants.database_names import DatabaseNames
+from database_migration.constants.table_names import TableNames
 
 
 def substitutions() -> dict[str, str]:
     return {
-        "{bronze_database}": DatabaseConstants.bronze_database,
-        "{bronze_measurements_table}": TableConstants.bronze_measurements_table,
+        "{bronze_database}": DatabaseNames.bronze_database,
+        "{bronze_measurements_table}": TableNames.bronze_measurements_table,
     }

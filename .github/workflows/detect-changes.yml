@@ -55,7 +55,8 @@ jobs:
               - '.devcontainer/**'
             database_migration:
               - 'source/database_migration/**'
-              - '.devcontainer/**'
+              - '.github/workflows/ci-databricks.yml'
+              - '.github/workflows/cd.yml'
             docker:
               - .docker/**
 
