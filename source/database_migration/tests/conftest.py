@@ -21,12 +21,14 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
+        .config("spark.sql.streaming.schemaInference", True)
         .config("spark.default.parallelism", 1)
+        .config("spark.rdd.compress", False)
         .config("spark.shuffle.compress", False)
         .config("spark.shuffle.spill.compress", False)
         .config("spark.sql.shuffle.partitions", 1)
-        .config("", True)
-        .config("spark.sql.extensions", "ispark.databricks.delta.allowArbitraryProperties.enabledo.delta.sql.DeltaSparkSessionExtension")
+        .config("spark.databricks.delta.allowArbitraryProperties.enabled", True)
+        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config(
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",
@@ -55,13 +57,15 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
     session.stop()
 
+
 @pytest.fixture(scope="session")
 def migrate(spark: SparkSession) -> None:
     """
-        This is actually the main part of all our tests.
-        The reason for being a fixture is that we want to run it only once per session.
+    This is actually the main part of all our tests.
+    The reason for being a fixture is that we want to run it only once per session.
     """
     migrations.migrate()
+
 
 @pytest.fixture(scope="session")
 def file_path_finder() -> Callable[[str], str]:
@@ -77,6 +81,7 @@ def file_path_finder() -> Callable[[str], str]:
 
     return finder
 
+
 @pytest.fixture(scope="session")
 def source_path(file_path_finder: Callable[[str], str]) -> str:
     """
@@ -87,6 +92,7 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
     """
     return file_path_finder(f"{__file__}/../..")
 
+
 @pytest.fixture(scope="session")
 def tests_path(source_path: str) -> str:
     """
@@ -96,6 +102,7 @@ def tests_path(source_path: str) -> str:
     file located directly in the integration tests folder.
     """
     return f"{source_path}/database_migration/tests"
+
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_internal")
