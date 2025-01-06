@@ -3,6 +3,7 @@ name = "database-migration"
 version = "0.1.0"
 description = "Used to create, update and delete tables in databases"
 readme = "README.md"
+requires-python = ">=3.10"
 dependencies = [
     "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.0#subdirectory=source/spark_sql_migrations",
 ]
