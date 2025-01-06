@@ -1,5 +1,4 @@
-﻿import os
-import sys
+﻿import sys
 from argparse import Namespace
 from collections.abc import Callable
 
@@ -20,17 +19,7 @@ from source.electrical_heating.src.electrical_heating.infrastructure.spark_initi
 )
 
 
-def execute() -> None:
-    applicationinsights_connection_string = os.getenv(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    )
-
-    start_with_deps(
-        applicationinsights_connection_string=applicationinsights_connection_string,
-    )
-
-
-def start_with_deps(
+def execute_with_deps(
     *,
     cloud_role_name: str = "dbr-electrical-heating",
     applicationinsights_connection_string: str | None = None,

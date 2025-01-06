@@ -54,7 +54,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Execute the calculation logic
-    actual_measurements = execute_core_logic(
+    calculation_output = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
@@ -64,10 +64,13 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Return test cases
     return TestCases(
         [
-            # TODO: Add calculations.csv test case (in another PR)
+            TestCase(
+                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
+                actual=calculation_output.calculations,
+            ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual_measurements,
+                actual=calculation_output.measurements,
             ),
         ]
     )

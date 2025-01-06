@@ -3,8 +3,12 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
+from source.electrical_heating.src.electrical_heating.domain.calculation_output import (
+    CalculationOutput,
+)
 import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
 import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
+import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating as ehi
 from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
@@ -22,6 +26,7 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+    calculations_repository = ehi.Repository(spark, args.catalog_name)
 
     # Read data frames
     consumption_metering_point_periods = (
@@ -49,7 +54,7 @@ def execute_core_logic(
     consumption_metering_point_periods: DataFrame,
     child_metering_point_periods: DataFrame,
     time_zone: str,
-) -> DataFrame:
+) -> CalculationOutput:
     time_series_points = convert_utc_to_localtime(
         time_series_points, mg.ColumnNames.observation_time, time_zone
     )
@@ -142,4 +147,8 @@ def execute_core_logic(
         daily_child_consumption_with_limit, "date", time_zone
     )
 
-    return daily_child_consumption_with_limit
+    calculation_output = CalculationOutput()
+    calculation_output.measurements = daily_child_consumption_with_limit
+    calculation_output.calculations = calculations
+
+    return calculation_output
