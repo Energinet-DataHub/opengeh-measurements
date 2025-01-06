@@ -3,9 +3,9 @@ import uuid
 from argparse import Namespace
 from collections.abc import Callable
 
+import pyspark.sql.functions as F
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark._typing import F
 from pyspark.sql import SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
@@ -80,9 +80,7 @@ def execute_with_deps(
 
 
 @use_span()
-def _execute_with_deps(
-    spark: SparkSession, args: ElectricalHeatingArgs
-) -> None:
+def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
@@ -122,14 +120,14 @@ def _execute(
     electrical_heating_internal_repository,
     time_series_points,
 ) -> CalculationOutput:
-    # Execute the calculation logic and store it.
+    # Execute the calculation logic.
     calculation_output.daily_child_consumption_with_limit = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
-    # Find the calculation metadata and store it.
+    # Find the calculation metadata
     calculation_output.calculations = (
         electrical_heating_internal_repository.read_calculations().where(
             F.col("calculation_id") == calculation_id
