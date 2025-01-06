@@ -1,4 +1,6 @@
-﻿# Exclude directory created by wheel creation
+﻿testsession.local.settings.yml
+
+# Exclude directory created by wheel creation
 *.egg-info
 dist
 build
