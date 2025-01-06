@@ -1,5 +1,4 @@
-﻿import os
-import sys
+﻿import sys
 from argparse import Namespace
 from collections.abc import Callable
 
@@ -7,23 +6,13 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.capacity_settlement_args import (
-    CapacitySettlementArgs,
-)
-from source.capacity_settlement.src.capacity_settlement.application.entry_points.job_args.capacity_settlement_job_args import (
+from source.capacity_settlement.src.capacity_settlement.application.job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-
-
-def execute() -> None:
-    applicationinsights_connection_string = os.getenv(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    )
-
-    start_with_deps(
-        applicationinsights_connection_string=applicationinsights_connection_string,
-    )
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
+)
 
 
 def start_with_deps(
