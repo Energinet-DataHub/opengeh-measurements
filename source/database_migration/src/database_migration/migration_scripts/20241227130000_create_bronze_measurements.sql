@@ -1,26 +1,26 @@
 CREATE TABLE {bronze_database}.{bronze_measurements_table}
 (
-    orchestration_type STRING NOT NULL,
-    orchestration_instance_id STRING NOT NULL,
-    metering_point_id STRING NOT NULL,
-    transaction_id STRING NOT NULL,
-    transaction_creation_datetime TIMESTAMP NOT NULL,
-    metering_point_type STRING NOT NULL,
-    product STRING NOT NULL,
-    unit STRING NOT NULL,
-    resolution STRING NOT NULL,
-    start_datetime TIMESTAMP NOT NULL,
-    end_datetime TIMESTAMP NOT NULL,
+    orchestration_type STRING,
+    orchestration_instance_id STRING,
+    metering_point_id STRING,
+    transaction_id STRING,
+    transaction_creation_datetime TIMESTAMP,
+    metering_point_type STRING,
+    product STRING,
+    unit STRING,
+    resolution STRING,
+    start_datetime TIMESTAMP,
+    end_datetime TIMESTAMP,
     points ARRAY<
         STRUCT<
             position INT,
             quantity DECIMAL(18, 3),
             quality STRING
         >
-    > NOT NULL,
+    >,
     _rescued_data STRING,
-    created TIMESTAMP NOT NULL,
-    file_path STRING NOT NULL
+    created TIMESTAMP,
+    file_path STRING
 )
 USING DELTA
 TBLPROPERTIES (

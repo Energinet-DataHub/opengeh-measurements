@@ -14,17 +14,17 @@ from database_migration.constants.column_names.bronze_measurements_column_names 
 
 calculation_results_bronze_schema = StructType(
     [
-        StructField(BronzeMeasurementsColumnNames.orchestration_type, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.orchestration_instance_id, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.metering_point_id, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.transaction_id, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), False),
-        StructField(BronzeMeasurementsColumnNames.metering_point_type, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.product, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.unit, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.resolution, StringType(), False),
-        StructField(BronzeMeasurementsColumnNames.start_datetime, TimestampType(), False),
-        StructField(BronzeMeasurementsColumnNames.end_datetime, TimestampType(), False),
+        StructField(BronzeMeasurementsColumnNames.orchestration_type, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.orchestration_instance_id, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.metering_point_id, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.transaction_id, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), True),
+        StructField(BronzeMeasurementsColumnNames.metering_point_type, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.product, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.unit, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.resolution, StringType(), True),
+        StructField(BronzeMeasurementsColumnNames.start_datetime, TimestampType(), True),
+        StructField(BronzeMeasurementsColumnNames.end_datetime, TimestampType(), True),
 
         StructField(
             BronzeMeasurementsColumnNames.points,
@@ -38,11 +38,11 @@ calculation_results_bronze_schema = StructType(
                 ),
                 True,
             ),
-            False,
+            True,
         ),
 
         StructField(BronzeMeasurementsColumnNames.rescued_data, StringType(), True),
-        StructField(BronzeMeasurementsColumnNames.created, TimestampType(), False),
-        StructField(BronzeMeasurementsColumnNames.file_path, StringType(), False),
+        StructField(BronzeMeasurementsColumnNames.created, TimestampType(), True),
+        StructField(BronzeMeasurementsColumnNames.file_path, StringType(), True),
     ]
 )
