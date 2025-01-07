@@ -9,7 +9,7 @@ from source.electrical_heating.src.electrical_heating.application.entry_points.j
     ElectricalHeatingArgs,
 )
 from source.electrical_heating.src.electrical_heating.domain.constants import (
-    ELECTRICAL_HEATING_LIMIT,
+    ELECTRICAL_HEATING_LIMIT_YEARLY,
 )
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
@@ -66,7 +66,7 @@ def execute_core_logic(
         child_metering_point_periods, em.ColumnNames.period_to_date, time_zone
     )
 
-    overlapping_metering_and_child_periods = (
+    metering_points_and_periods = (
         child_metering_point_periods.alias("child")
         .join(
             consumption_metering_point_periods.alias("metering"),
@@ -81,20 +81,32 @@ def execute_core_logic(
             ),
             F.greatest(
                 F.col("child.period_from_date"), F.col("metering.period_from_date")
-            ).alias("period_start"),
+            ).alias("parent_child_overlap_period_start"),
             F.least(
                 F.col("child.period_to_date"), F.col("metering.period_to_date")
-            ).alias("period_end"),
+            ).alias("parent_child_overlap_period_end"),
+            F.explode(
+                F.sequence(
+                    F.year(F.col("metering.period_from_date")),
+                    F.year(F.col("metering.period_to_date")),
+                )
+            ).alias("period_year"),
+            F.col("metering.period_from_date").alias("consumption_period_start"),
+            F.col("metering.period_to_date").alias("consumption_period_end"),
         )
-        .where(F.col("period_start") < F.col("period_end"))
+        .where(
+            F.col("parent_child_overlap_period_start")
+            < F.col("parent_child_overlap_period_end")
+        )
     )
 
-    metering_id_and_date_window = Window.partitionBy(
-        "metering_point_id", F.year("date")
-    ).orderBy(F.unix_timestamp("date").cast("long"))
+    daily_window = Window.partitionBy(
+        "consumption.metering_point_id",
+        F.date_trunc("date", F.col("consumption.observation_time")),
+    )
 
     daily_child_consumption = (
-        overlapping_metering_and_child_periods.alias("period")
+        metering_points_and_periods.alias("period")
         .join(
             time_series_points.alias("consumption"),
             F.col("period.consumption_metering_point_id")
@@ -102,38 +114,95 @@ def execute_core_logic(
             "inner",
         )
         .filter(
-            (F.col("consumption.observation_time") >= F.col("period.period_start"))
-            & (F.col("consumption.observation_time") < F.col("period.period_end"))
+            (
+                F.col("consumption.observation_time")
+                > F.col("period.parent_child_overlap_period_start")
+            )
+            & (
+                F.col("consumption.observation_time")
+                <= F.col("period.parent_child_overlap_period_end")
+            )
         )
-        .groupBy(
-            F.date_trunc("day", "consumption.observation_time").alias("date"),
+        .select(
             F.col("period.child_metering_point_id").alias("metering_point_id"),
+            F.date_trunc("day", F.col("consumption.observation_time")).alias("date"),
+            F.sum(F.col("consumption.quantity")).over(daily_window).alias("quantity"),
+            F.when(
+                F.year(F.col("period.consumption_period_start"))
+                == F.col("period_year"),
+                F.col("period.consumption_period_start"),
+            )
+            .otherwise(F.concat(F.col("period_year").cast("string"), F.lit("-01-01")))
+            .alias("consumption_period_start"),
+            F.when(
+                F.year(F.col("period.consumption_period_end")) == F.col("period_year"),
+                F.col("period.consumption_period_end"),
+            )
+            .otherwise(
+                F.concat((F.col("period_year") + 1).cast("string"), F.lit("-01-01"))
+            )
+            .alias("consumption_period_end"),
         )
-        .agg(F.sum("consumption.quantity").alias("quantity"))
+        .drop_duplicates()
+    )
+
+    daily_consumption_with_period = daily_child_consumption.select(
+        F.col("metering_point_id"),
+        F.col("date"),
+        F.col("quantity"),
+        F.col("consumption_period_start"),
+        F.col("consumption_period_end"),
+        F.round(
+            F.datediff(
+                F.col("consumption_period_start"), F.col("consumption_period_end")
+            )
+            * ELECTRICAL_HEATING_LIMIT_YEARLY
+            / F.when(
+                F.dayofyear(
+                    F.last_day(F.col("consumption_period_start").cast("string"))
+                )
+                == 366,
+                366,
+            ).otherwise(365)
+        ).alias("period_consumption_limit"),
+    )
+
+    period_window = (
+        Window.partitionBy(
+            "metering_point_id",
+            (F.col("date") >= F.date_trunc("day", F.col("consumption_period_start")))
+            & (F.col("date") < F.date_trunc("day", F.col("consumption_period_end"))),
+        )
+        .orderBy(F.col("date"))
+        .rowsBetween(Window.unboundedPreceding, Window.currentRow - 1)
+    )
+
+    period_consumption = (
+        daily_consumption_with_period.alias("daily")
         .select(
             F.col("metering_point_id"),
             F.col("date"),
+            F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
             F.col("quantity"),
-            F.sum(F.col("quantity"))
-            .over(metering_id_and_date_window)
-            .alias("cumulative_quantity"),
+            F.col("period_consumption_limit"),
         )
+        .drop_duplicates()
     )
 
-    daily_child_consumption_with_limit = daily_child_consumption.select(
+    period_consumption_with_limit = period_consumption.select(
         F.col("metering_point_id"),
         F.col("date"),
         F.when(
-            F.col("cumulative_quantity") > ELECTRICAL_HEATING_LIMIT,
+            F.col("cumulative_quantity") > F.col("period_consumption_limit"),
             0,
         )
         .when(
             (
                 F.col("cumulative_quantity")
-                >= ELECTRICAL_HEATING_LIMIT + F.col("quantity")
+                >= F.col("period_consumption_limit") + F.col("quantity")
             )
-            & (F.col("cumulative_quantity") < ELECTRICAL_HEATING_LIMIT),
-            ELECTRICAL_HEATING_LIMIT - F.col("cumulative_quantity"),
+            & (F.col("cumulative_quantity") < F.col("period_consumption_limit")),
+            F.col("period_consumption_limit") - F.col("cumulative_quantity"),
         )
         .otherwise(
             F.col("quantity"),
@@ -141,8 +210,8 @@ def execute_core_logic(
         .alias("quantity"),
     )
 
-    daily_child_consumption_with_limit = convert_localtime_to_utc(
-        daily_child_consumption_with_limit, "date", time_zone
+    period_consumption_with_limit = convert_localtime_to_utc(
+        period_consumption_with_limit, "date", time_zone
     )
 
-    return daily_child_consumption_with_limit
+    return period_consumption_with_limit
