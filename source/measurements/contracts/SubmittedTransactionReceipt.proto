@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+
+package google.protobuf;
+
+option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
+
+message SubmittedTransactionReceipt {
+  string orchestration_instance_id = 1;
+  OrchestrationType orchestration_type = 2;
+}
+
+enum OrchestrationType {
+  OT_UNSPECIFIED = 0;
+  OT_SUBMITTED_MEASURE_DATA = 1;
+}
