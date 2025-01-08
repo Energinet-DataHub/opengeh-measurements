@@ -1,4 +1,8 @@
-﻿from dataclasses import dataclass
+"""
+The content of this module should be in a package in `opengeh-python-packages`. Possibly named `opengeh-app`.
+"""
+
+﻿﻿from dataclasses import dataclass
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
