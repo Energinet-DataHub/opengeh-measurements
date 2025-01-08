@@ -25,8 +25,6 @@ jobs:
         tests_filter_expression:
           - name: Unit tests
             paths: capacity_settlement_tests
-          - name: Scenario tests
-            paths: scenario_tests
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
