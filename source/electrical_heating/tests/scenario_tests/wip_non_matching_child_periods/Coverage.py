@@ -7,34 +7,40 @@ The purpose is to test withdrawal on a period before the transition to quarterly
 ## DESIGN CONSIDERATIONS
 
 CASE 1
-Parent:    |----------------...
-Child:              |-------...
-Added:              ***********
+Parent start/end:   |-------------------...
+Child start/end:                |-------...
+Measurement data:   +++++++++++++++++++++++
+Added to child:                 ***********
 
 CASE 2
-Parent:             |-------...
-Child:     |----------------...
-Added:              ***********
+Parent start/end:               |-------...
+Child start/end:    |-------------------...
+Measurement data:   +++++++++++++++++++++++
+Added to child:                 ***********
 
 CASE 3
-Parent:    |-------------------------------------------|
-Child:          |--------|                  |--------|
-Added:          **********                  **********
+Parent start/end:    |-------------------------------------------|
+Child start/end:        |--------|                  |--------|
+Measurement data:    +++++++++++++++++++++++++++++++++++++++++++++
+Added to child:         **********                  **********
 
 CASE 4
-Parent:         |--------|                  |--------|
-Child:     |-------------------------------------------|
-Added:          **********                  **********
+Parent start/end:       |--------|                  |--------|
+Child start/end:     |-------------------------------------------|
+Measurement data:    +++++++++++++++++++++++++++++++++++++++++++++
+Added to child:         **********                  **********
 
 CASE 5
-Parent:         |--------|                  |--------|
-Child:              |-----------------------------|
-Added:              ******                  *******
+Parent start/end:       |--------|                  |--------|
+Child start/end:            |-----------------------------|
+Measurement data:       +++++++++++++++++++++++++++++++++++++++++++++
+Added to child:             *****                   *******
 
 CASE 6
-Parent:             |-----------------------------|
-Child:          |--------|                  |--------|
-Added:              ******                  *******
+Parent start/end:           |-----------------------------|
+Child start/end:        |--------|                  |--------|
+Measurement data:       +++++++++++++++++++++++++++++++++++++++++++++
+Added to child:             *****                   *******
 
 ## CASES TESTED
 """
