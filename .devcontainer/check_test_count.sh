@@ -13,6 +13,7 @@ set -e
 
 test_path=$1
 filter=$2
+exclude_filter="--ignore=container_tests/"
 cd $test_path
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
@@ -24,7 +25,7 @@ shopt -s extglob
 # Example output line returned by the grep filter: 'collected 10 items'
 executed_test_count=$(coverage run --branch -m pytest $filter --collect-only  | grep collected | awk '{print $2}' | head -n 1)
 
-total_test_count=$(coverage run --branch -m pytest --collect-only  | grep collected | awk '{print $2}' | head -n 1)
+total_test_count=$(coverage run --branch -m pytest $exclude_filter --collect-only  | grep collected | awk '{print $2}' | head -n 1)
 
 echo "Number of tests being executed: $executed_test_count"
 echo "Total number of pytest tests: $total_test_count"
