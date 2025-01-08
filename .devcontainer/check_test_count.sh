@@ -12,7 +12,8 @@ echo "Parameters: '$@'"
 set -e
 
 test_path=$1
-filter=$2
+shift
+filter=$@
 exclude_filter="--ignore=container_tests/"
 cd $test_path
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
