@@ -15,6 +15,7 @@ jobs:
       architecture: x64
       wheel_working_directory: ./source/capacity_settlement/src
       prerelease_prefix: capacity_settlement
+      should_include_assets: true
 
   unit_tests:
     strategy:
