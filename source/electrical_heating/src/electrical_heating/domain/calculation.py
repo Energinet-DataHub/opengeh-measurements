@@ -10,6 +10,7 @@ from source.electrical_heating.src.electrical_heating.application.entry_points.j
 )
 from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
+    ELECTRICAL_HEATING_TYPE,
 )
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
@@ -90,30 +91,57 @@ def execute_core_logic(
                 F.col("metering.period_from_date"),
             ).alias("parent_child_overlap_period_start"),
             F.least(
-                F.coalesce(F.col("child.period_to_date"), F.current_date()),
-                F.coalesce(F.col("metering.period_to_date"), F.current_date()),
+                F.coalesce(
+                    F.col("child.period_to_date"),
+                    F.concat(
+                        (F.year(F.current_date()) + 1).cast("string"),
+                        F.lit("-01-01 00:00:00"),
+                    ).cast("timestamp"),
+                ),
+                F.coalesce(
+                    F.col("metering.period_to_date"),
+                    F.concat(
+                        (F.year(F.current_date()) + 1).cast("string"),
+                        F.lit("-01-01 00:00:00"),
+                    ).cast("timestamp"),
+                ),
             ).alias("parent_child_overlap_period_end"),
             F.explode(
                 F.sequence(
                     F.year(F.col("metering.period_from_date")),
                     F.year(
-                        F.coalesce(F.col("metering.period_to_date"), F.current_date())
+                        F.coalesce(
+                            F.col("metering.period_to_date"),
+                            F.concat(
+                                (F.year(F.current_date()) + 1).cast("string"),
+                                F.lit("-01-01 00:00:00"),
+                            ).cast("timestamp"),
+                        )
                     ),
                 )
             ).alias("period_year"),
             F.col("metering.period_from_date").alias("consumption_period_start"),
-            F.coalesce(F.col("metering.period_to_date"), F.current_date()).alias(
-                "consumption_period_end"
-            ),
+            F.coalesce(
+                F.col("metering.period_to_date"),
+                F.concat(
+                    (F.year(F.current_date()) + 1).cast("string"),
+                    F.lit("-01-01 00:00:00"),
+                ).cast("timestamp"),
+            ).alias("consumption_period_end"),
             F.col("child.period_from_date").alias("child_period_start"),
-            F.coalesce(F.col("child.period_to_date"), F.current_date()).alias(
-                "child_period_end"
-            ),
+            F.coalesce(
+                F.col("child.period_to_date"),
+                F.concat(
+                    (F.year(F.current_date()) + 1).cast("string"),
+                    F.lit("-01-01 00:00:00"),
+                ).cast("timestamp"),
+            ).alias("child_period_end"),
         )
         .where(
             F.col("parent_child_overlap_period_start")
             < F.col("parent_child_overlap_period_end")
         )
+        .where((F.col("child.metering_point_type") == ELECTRICAL_HEATING_TYPE))
     )
 
     print("--- metering_points_and_periods_df ---")
