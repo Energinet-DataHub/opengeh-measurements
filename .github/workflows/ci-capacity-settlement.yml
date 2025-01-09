@@ -29,7 +29,10 @@ jobs:
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
       operating_system: dh3-ubuntu-20.04-4core
+
+      # The path_static_checks parameter specifies the directory where static code analysis tools (such as linters or formatters) should be run.
       path_static_checks: ./source/capacity_settlement
+
       # documented here: https://github.com/Energinet-DataHub/opengeh-wholesale/tree/main/source/databricks#styling-and-formatting
       ignore_errors_and_warning_flake8: E501,F401,E402,E203,W503
       tests_folder_path: ./source/capacity_settlement/tests
