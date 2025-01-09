@@ -10,7 +10,7 @@ from source.electrical_heating.src.electrical_heating.application.entry_points.j
 )
 from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
-    ELECTRICAL_HEATING_TYPE,
+    ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
