@@ -20,7 +20,9 @@ class DataBricksClient:
         return response.run_id
 
     @staticmethod
-    def wait_for_job_completion(self, run_id: int, timeout=300, poll_interval=10):
+    def wait_for_job_completion(
+        self, run_id: int, timeout: int = 300, poll_interval: int = 10
+    ) -> None:
         """
         Waits for a Databricks job to complete.
         """
@@ -47,7 +49,7 @@ class DataBricksClient:
 
 def test__databricks_job_starts_and_stops_successfully(
     container_test_configuration: TestConfiguration,
-):
+) -> None:
     """
     Tests that a Databricks job runs successfully to completion.
     """
