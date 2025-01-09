@@ -1,16 +1,16 @@
-﻿import time
+﻿import os
+import time
 
 import pytest
 from databricks.sdk import WorkspaceClient
 
-JOB_ID = 576172778546244
+from source.tests.test_configuration import TestConfiguration
 
 
 class DataBricksClient:
 
-    # constructor
-    def __init__(self):
-        self.client = WorkspaceClient(host=self.host)
+    def __init__(self, host: str | None, token: str | None):
+        self.client = WorkspaceClient(host=host, token=token)
 
     def start_job(self, job_id: int) -> int:
         """
@@ -45,14 +45,18 @@ class DataBricksClient:
         raise TimeoutError(f"Job did not complete within {timeout} seconds.")
 
 
-@pytest.mark.parametrize("job_id", [JOB_ID])
-def test__databricks_job_starts_and_stops_successfully(job_id):
+def test__databricks_job_starts_and_stops_successfully(
+    container_test_configuration: TestConfiguration,
+):
     """
     Tests that a Databricks job runs successfully to completion.
     """
     try:
         # Arrange
-        client = DataBricksClient()
+        job_id = 576172778546244
+        client = DataBricksClient(
+            os.getenv("DATABRICKS_INSTANCE"), os.getenv("DATABRICKS_TOKEN")
+        )
 
         # Act
         run_id = client.start_job(job_id)

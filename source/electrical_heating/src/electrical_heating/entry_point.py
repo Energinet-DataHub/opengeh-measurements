@@ -1,6 +1,6 @@
 ﻿import os
 
-from source.electrical_heating.src.electrical_heating.application.execute_with_deps import (
+from application.execute_with_deps import (
     execute_with_deps,
 )
 
