@@ -2,11 +2,11 @@
 import uuid
 from argparse import Namespace
 from collections.abc import Callable
+from datetime import datetime, timezone
 
-import pyspark.sql.functions as F
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
@@ -25,6 +25,9 @@ from source.electrical_heating.src.electrical_heating.domain.calculation import 
 )
 from source.electrical_heating.src.electrical_heating.domain.calculation_results import (
     CalculationOutput,
+)
+from source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal.schemas import (
+    calculations as schemas,
 )
 from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
@@ -81,57 +84,82 @@ def execute_with_deps(
 
 @use_span()
 def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
+
+    execution_start_datetime = datetime.now(timezone.utc)
+
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
     electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
 
-    calculation_output = CalculationOutput()
-
-    # Temp. calculation id
-    calculation_id = str(uuid.uuid4())
-
     # Read data frames
+    time_series_points = measurements_gold_repository.read_time_series_points()
+
     consumption_metering_point_periods = (
         electricity_market_repository.read_consumption_metering_point_periods()
     )
+
     child_metering_point_periods = (
         electricity_market_repository.read_child_metering_point_periods()
     )
-    time_series_points = measurements_gold_repository.read_time_series_points()
 
-    _execute(
-        args,
-        calculation_id,
-        calculation_output,
-        child_metering_point_periods,
-        consumption_metering_point_periods,
-        electrical_heating_internal_repository,
+    calculation_output = execute_calculation(
+        spark,
         time_series_points,
+        consumption_metering_point_periods,
+        child_metering_point_periods,
+        args,
+        execution_start_datetime,
     )
 
+    electrical_heating_internal_repository.save(calculation_output.calculations)
 
-def _execute(
-    args,
-    calculation_id,
-    calculation_output,
-    child_metering_point_periods,
-    consumption_metering_point_periods,
-    electrical_heating_internal_repository,
-    time_series_points,
+
+def execute_calculation(
+    spark: SparkSession,
+    time_series_points: DataFrame,
+    consumption_metering_point_periods: DataFrame,
+    child_metering_point_periods: DataFrame,
+    args: ElectricalHeatingArgs,
+    execution_start_datetime: datetime,
 ) -> CalculationOutput:
-    # Execute the calculation logic.
-    calculation_output.daily_child_consumption_with_limit = execute_core_logic(
+
+    calculation_output = CalculationOutput()
+
+    calculation_output.measurements = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
-    # Find the calculation metadata
-    calculation_output.calculations = (
-        electrical_heating_internal_repository.read_calculations().where(
-            F.col("calculation_id") == calculation_id
-        )
+
+    calculation_output.calculations = create_calculation(
+        spark,
+        args.orchestration_instance_id,
+        execution_start_datetime,
+        datetime.now(timezone.utc),
     )
 
     return calculation_output
+
+
+def create_calculation(
+    spark: SparkSession,
+    orchestration_instance_id: uuid,
+    execution_start_datetime: datetime,
+    execution_stop_datetime: datetime,
+) -> DataFrame:
+
+    # TODO Temp. calculation id - refac when calculation id is available
+    calculation_id = str(uuid.uuid4())
+
+    data = [
+        {
+            ehi.ColumnNames.calculation_id: calculation_id,
+            ehi.ColumnNames.orchestration_instance_id: str(orchestration_instance_id),
+            ehi.ColumnNames.execution_start_datetime: execution_start_datetime,
+            ehi.ColumnNames.execution_stop_datetime: execution_stop_datetime,
+        }
+    ]
+
+    return spark.createDataFrame(data, schemas.calculations)

@@ -23,6 +23,7 @@ def execute_core_logic(
     child_metering_point_periods: DataFrame,
     time_zone: str,
 ) -> DataFrame:
+
     time_series_points = convert_utc_to_localtime(
         time_series_points, mg.ColumnNames.observation_time, time_zone
     )

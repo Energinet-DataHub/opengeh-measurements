@@ -1,4 +1,6 @@
-﻿from pathlib import Path
+﻿import uuid
+from datetime import datetime, timezone
+from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession
@@ -7,7 +9,10 @@ from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
 from source.electrical_heating.src.electrical_heating.application.execute_with_deps import (
-    _execute,
+    execute_calculation,
+)
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+    ElectricalHeatingArgs,
 )
 from source.electrical_heating.src.electrical_heating.infrastructure.electricity_market.schemas.child_metering_point_periods_v1 import (
     child_metering_point_periods_v1,
@@ -56,24 +61,32 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_point_periods_v1,
     )
 
-    # Execute the calculation logic
-    calculation_output = _execute(
+    args = ElectricalHeatingArgs(
+        time_zone="Europe/Copenhagen",
+        catalog_name="some_catalog_name",
+        orchestration_instance_id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
+    )
+
+    # Execute the calculation
+    calculation_output = execute_calculation(
+        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        "Europe/Copenhagen",
+        args,
+        datetime.now(timezone.utc),
     )
 
     # Return test cases
     return TestCases(
         [
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/calculations.csv",
+                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
                 actual=calculation_output.calculations,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.daily_child_consumption_with_limit,
+                actual=calculation_output.measurements,
             ),
         ]
     )
