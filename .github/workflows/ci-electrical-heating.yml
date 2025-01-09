@@ -15,6 +15,7 @@ jobs:
       architecture: x64
       wheel_working_directory: ./source/electrical_heating/src
       prerelease_prefix: electrical_heating
+      should_include_assets: true
 
   unit_tests:
     strategy:
@@ -22,7 +23,10 @@ jobs:
       matrix:
         # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
         tests_filter_expression:
-          - name: Electrical Heating
+          - name: Unit tests
+            paths: electrical_heating_tests
+          - name: Scenario tests
+            paths: scenario_tests
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
@@ -55,7 +59,12 @@ jobs:
           # IMPORTANT: When adding a new folder here, one must also add the folder
           # to one of the test jobs above! This is because this filter contains the sum of all folders
           # from test jobs.
+
+          # needed because of mono-repo structure
           test_path="source/electrical_heating/tests/"
+
+          filter="scenario_tests
+          electrical_heating_tests"
 
           chmod +x ./.devcontainer/check_test_count.sh
           IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh $test_path $filter
