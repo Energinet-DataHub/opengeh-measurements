@@ -3,6 +3,7 @@ import time
 
 import pytest
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service.jobs import RunResultState
 
 from source.tests.test_configuration import TestConfiguration
 
@@ -21,7 +22,7 @@ class DataBricksClient:
 
     def wait_for_job_completion(
         self, run_id: int, timeout: int = 300, poll_interval: int = 10
-    ) -> None:
+    ) -> RunResultState:
         """
         Waits for a Databricks job to complete.
         """
@@ -63,7 +64,7 @@ def test__databricks_job_starts_and_stops_successfully(
         run_id = client.start_job(job_id)
 
         # Assert
-        result = client.wait_for_job_completion(client, run_id)
+        result = client.wait_for_job_completion(run_id)
         assert result == "SUCCESS", f"Job did not complete successfully: {result}"
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
