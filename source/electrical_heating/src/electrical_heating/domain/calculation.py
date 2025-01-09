@@ -1,4 +1,4 @@
-﻿import pyspark.sql.functions as F
+﻿from pyspark.sql import functions as F, types as T
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
 from telemetry_logging import use_span
@@ -141,7 +141,12 @@ def execute_core_logic(
             F.col("parent_child_overlap_period_start")
             < F.col("parent_child_overlap_period_end")
         )
-        .where((F.col("child.metering_point_type") == ELECTRICAL_HEATING_TYPE))
+        .where(
+            (
+                F.col("child.metering_point_type")
+                == ELECTRICAL_HEATING_METERING_POINT_TYPE
+            )
+        )
     )
 
     daily_window = Window.partitionBy(
@@ -264,6 +269,7 @@ def execute_core_logic(
         .otherwise(
             F.col("quantity"),
         )
+        .cast(T.DecimalType(38, 3))
         .alias("quantity"),
     ).drop_duplicates()
 
