@@ -37,6 +37,7 @@ pyspark==3.5.1
 pytest-mock==3.14.0
 pytest==8.3.3
 types-python-dateutil==2.9.0.20241003
+databricks-sdk==0.40.0
 
 # Custom packages
 opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations
