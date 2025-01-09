@@ -1,3 +1,3 @@
 ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
-ELECTRICAL_HEATING_TYPE = "electrical_heating"
+ELECTRICAL_HEATING_METERING_POINT_TYPE = "electrical_heating"
