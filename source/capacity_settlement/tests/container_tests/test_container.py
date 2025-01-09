@@ -19,7 +19,6 @@ class DataBricksClient:
         response = self.client.jobs.run_now(job_id=job_id)
         return response.run_id
 
-    @staticmethod
     def wait_for_job_completion(
         self, run_id: int, timeout: int = 300, poll_interval: int = 10
     ) -> None:
