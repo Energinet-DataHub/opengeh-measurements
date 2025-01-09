@@ -1,4 +1,4 @@
-import pyspark.sql.functions as F
+﻿import pyspark.sql.functions as F
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
 from telemetry_logging import use_span
@@ -144,9 +144,6 @@ def execute_core_logic(
         .where((F.col("child.metering_point_type") == ELECTRICAL_HEATING_TYPE))
     )
 
-    print("--- metering_points_and_periods_df ---")
-    metering_points_and_periods.show()
-
     daily_window = Window.partitionBy(
         F.col("consumption.metering_point_id"),
         F.date_trunc("day", F.col("consumption.observation_time")),
@@ -203,9 +200,6 @@ def execute_core_logic(
         .drop_duplicates()
     )
 
-    print("--- daily_child_consumption_df ---")
-    daily_child_consumption.show()
-
     daily_consumption_with_consumption_limit = daily_child_consumption.select(
         F.col("metering_point_id"),
         F.col("date"),
@@ -228,9 +222,6 @@ def execute_core_logic(
         ).alias("period_consumption_limit"),
     )
 
-    print("--- daily_consumption_with_consumption_limit_df ---")
-    daily_consumption_with_consumption_limit.show()
-
     period_window = (
         Window.partitionBy(
             F.col("metering_point_id"),
@@ -252,8 +243,6 @@ def execute_core_logic(
         )
         .drop_duplicates()
     )
-    print("--- period_consumption_df ---")
-    period_consumption.show()
 
     period_consumption_with_limit = period_consumption.select(
         F.col("metering_point_id"),
