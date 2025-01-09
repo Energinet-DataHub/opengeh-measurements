@@ -1,5 +1,4 @@
-﻿import os
-import sys
+﻿import sys
 from argparse import Namespace
 from collections.abc import Callable
 
@@ -7,10 +6,10 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_args import (
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.application.entry_points.job_args.electrical_heating_job_args import (
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
@@ -20,17 +19,7 @@ from source.electrical_heating.src.electrical_heating.infrastructure.spark_initi
 )
 
 
-def execute() -> None:
-    applicationinsights_connection_string = os.getenv(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    )
-
-    start_with_deps(
-        applicationinsights_connection_string=applicationinsights_connection_string,
-    )
-
-
-def start_with_deps(
+def execute_with_deps(
     *,
     cloud_role_name: str = "dbr-electrical-heating",
     applicationinsights_connection_string: str | None = None,
