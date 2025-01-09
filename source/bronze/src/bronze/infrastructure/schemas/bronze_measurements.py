@@ -43,6 +43,5 @@ calculation_results_bronze_schema = StructType(
 
         StructField(BronzeMeasurementsColumnNames.rescued_data, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.created, TimestampType(), True),
-        StructField(BronzeMeasurementsColumnNames.file_path, StringType(), True),
     ]
 )

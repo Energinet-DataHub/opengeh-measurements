@@ -19,8 +19,7 @@ CREATE TABLE {bronze_database}.{bronze_measurements_table}
         >
     >,
     _rescued_data STRING,
-    created TIMESTAMP,
-    file_path STRING
+    created TIMESTAMP
 )
 USING DELTA
 TBLPROPERTIES (
