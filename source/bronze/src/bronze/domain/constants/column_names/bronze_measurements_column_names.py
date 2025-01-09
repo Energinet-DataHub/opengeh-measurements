@@ -13,7 +13,6 @@
     points = "points"
     rescued_data = "_rescued_data"
     created = "created"
-    file_path = "file_path"
 
     class Points:
         """
