@@ -1,5 +1,5 @@
-﻿from database_migration.constants.database_names import DatabaseNames
-from database_migration.constants.table_names import TableNames
+﻿from bronze.domain.constants.database_names import DatabaseNames
+from bronze.domain.constants.table_names import TableNames
 
 
 def substitutions() -> dict[str, str]:

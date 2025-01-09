@@ -2,6 +2,31 @@ version = 1
 requires-python = ">=3.10"
 
 [[package]]
+name = "bronze"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "opengeh-spark-sql-migrations" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+lint = [
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=3.0.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.0.0" },
+    { name = "ruff", marker = "extra == 'lint'", specifier = ">=0.8.4" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -72,31 +97,6 @@ wheels = [
 [package.optional-dependencies]
 toml = [
     { name = "tomli", marker = "python_full_version <= '3.11'" },
-]
-
-[[package]]
-name = "database-migration"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "opengeh-spark-sql-migrations" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "pytest-cov" },
-]
-lint = [
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=3.0.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.0.0" },
-    { name = "ruff", marker = "extra == 'lint'", specifier = ">=0.8.4" },
 ]
 
 [[package]]

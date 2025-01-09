@@ -1,7 +1,7 @@
 [project]
-name = "database-migration"
+name = "bronze"
 version = "0.1.0"
-description = "Used to create, update and delete tables in databases"
+description = "Streaming to the bronze layer"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-migrate = "database_migration.migrations:migrate"
+migrate = "bronze.migrations:migrate"
 
 [build-system]
 requires = ["hatchling"]

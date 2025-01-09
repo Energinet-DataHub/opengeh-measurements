@@ -8,7 +8,7 @@
     TimestampType,
 )
 
-from database_migration.constants.column_names.bronze_measurements_column_names import (
+from bronze.domain.constants.column_names.bronze_measurements_column_names import (
     BronzeMeasurementsColumnNames,
 )
 

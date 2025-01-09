@@ -5,8 +5,8 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import database_migration.migrations as migrations
-from database_migration.constants.database_names import DatabaseNames
+import bronze.application.migrations as migrations
+from bronze.domain.constants.database_names import DatabaseNames
 
 
 def pytest_runtest_setup() -> None:
@@ -100,7 +100,7 @@ def tests_path(source_path: str) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return f"{source_path}/database_migration/tests"
+    return f"{source_path}/bronze/tests"
 
 
 def _create_schemas(spark: SparkSession) -> None:
