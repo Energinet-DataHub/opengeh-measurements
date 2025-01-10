@@ -1,5 +1,6 @@
 ﻿import pytest
-from testcommon.etl import assert_dataframes, get_then_names, TestCases
+from testcommon.dataframes import assert_dataframes
+from testcommon.etl import get_then_names, TestCases
 
 
 @pytest.mark.parametrize("name", get_then_names())
