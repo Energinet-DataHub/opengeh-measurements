@@ -1,16 +1,3 @@
-# Copyright 2020 Energinet DataHub A/S
-#
-# Licensed under the Apache License, Version 2.0 (the "License2");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import logging
 import os
 import subprocess
@@ -20,6 +7,7 @@ from typing import Callable, Generator
 import pytest
 import yaml
 
+from container_tests.databricks_api_client import DatabricksApiClient
 from test_configuration import TestConfiguration
 
 
@@ -140,7 +128,7 @@ def _load_settings_from_file(file_path: Path) -> dict:
 
 
 @pytest.fixture(scope="session")
-def container_test_configuration(
+def test_configuration(
     capacity_settlement_tests_path: str,
 ) -> TestConfiguration:
     """
@@ -157,11 +145,8 @@ def container_test_configuration(
             key: os.getenv(key)
             for key in [
                 "AZURE_KEYVAULT_URL",
-                "AZURE_CLIENT_ID",
-                "AZURE_CLIENT_SECRET",
                 "AZURE_TENANT_ID",
-                "AZURE_SUBSCRIPTION_ID",
-                "DATABRICKS_INSTANCE",
+                "DATABRICKS_HOST",
                 "DATABRICKS_TOKEN",
             ]
             if os.getenv(key) is not None
@@ -182,4 +167,12 @@ def container_test_configuration(
     )
     raise Exception(
         "Failed to load test settings. Ensure that the Azure Key Vault URL is provided in the settings file or as an environment variable."
+    )
+
+
+@pytest.fixture(scope="session")
+def databricks_client(test_configuration: TestConfiguration) -> DatabricksApiClient:
+    return DatabricksApiClient(
+        os.environ["DATABRICKS_HOST"],
+        os.environ["DATABRICKS_TOKEN"],
     )
