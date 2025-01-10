@@ -15,6 +15,7 @@ jobs:
       architecture: x64
       wheel_working_directory: ./source/capacity_settlement/src
       prerelease_prefix: capacity_settlement
+      should_include_assets: true
 
   unit_tests:
     strategy:
@@ -22,7 +23,8 @@ jobs:
       matrix:
         # IMPORTANT: When adding a new folder here it should also be added in the `unit_test_check` job!
         tests_filter_expression:
-          - name: Capacity Settlement
+          - name: Unit tests
+            paths: capacity_settlement_tests
     uses: Energinet-DataHub/.github/.github/workflows/python-ci.yml@v14
     with:
       job_name: ${{ matrix.tests_filter_expression.name }}
@@ -60,7 +62,11 @@ jobs:
           # IMPORTANT: When adding a new folder here, one must also add the folder
           # to one of the test jobs above! This is because this filter contains the sum of all folders
           # from test jobs.
+
+          # needed because of mono-repo structure
           test_path="source/capacity_settlement/tests/"
+
+          filter="capacity_settlement_tests/"
 
           chmod +x ./.devcontainer/check_test_count.sh
           IMAGE_TAG=${{ inputs.image_tag }} docker compose -f .devcontainer/docker-compose.yml run --rm -u root python-unit-test ./.devcontainer/check_test_count.sh $test_path $filter
@@ -77,8 +83,8 @@ jobs:
         shell: bash
         run: |
           pip install --upgrade pip
-          pip install mypy types-python-dateutil
-          mypy ./source/capacity_settlement --disallow-untyped-defs --ignore-missing-imports
+          pip install mypy
+          mypy ./source/capacity_settlement --disallow-untyped-defs --ignore-missing-imports --install-types --non-interactive
 
   black_check:
     runs-on: ubuntu-latest
