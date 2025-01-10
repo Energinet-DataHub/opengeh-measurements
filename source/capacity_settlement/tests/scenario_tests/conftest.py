@@ -6,14 +6,16 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
+from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import \
+    metering_point_periods_v1
 from source.electrical_heating.src.electrical_heating.domain.calculation import (
     execute_core_logic,
 )
 
-from source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from source.capacity_settlement.src.contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
-from source.electrical_heating.tests.testsession_configuration import (
+from source.capacity_settlement.tests.testsession_configuration import (
     TestSessionConfiguration,
 )
 
