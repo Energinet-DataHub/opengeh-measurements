@@ -2,12 +2,13 @@
 
 setup(
     name="opengeh-capacity-settlement",
-    version=1.0,
+    version="1.0",
     description="Tools for capacity settlement",
     long_description="",
     long_description_content_type="text/markdown",
     license="MIT",
     packages=find_packages(exclude=["tests"]),
+    package_dir={"": "source"},
     # Make sure these packages are added to the docker container and pinned to the same versions
     install_requires=[
         "ConfigArgParse==1.7.0",
