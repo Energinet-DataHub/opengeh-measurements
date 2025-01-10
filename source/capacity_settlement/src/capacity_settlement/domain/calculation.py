@@ -1,11 +1,21 @@
 from datetime import datetime
 
 from pyspark.sql import DataFrame, SparkSession, functions as F
-from pyspark.sql.types import StructField, StructType, StringType, TimestampType, FloatType
+from pyspark.sql.types import (
+    StructField,
+    StructType,
+    StringType,
+    TimestampType,
+    FloatType,
+)
 from telemetry_logging import use_span
 
-from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
-from source.capacity_settlement.src.capacity_settlement.infrastructure.spark_initializor import initialize_spark
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
+)
+from source.capacity_settlement.src.capacity_settlement.infrastructure.spark_initializor import (
+    initialize_spark,
+)
 
 
 @use_span()
@@ -24,7 +34,9 @@ def execute_core_logic(
     time_zone: str,
 ) -> DataFrame:
 
-    metering_point_periods = metering_point_periods.withColumn("selection_period_start", F.col("period_from_date")).withColumn("selection_period_end", F.col("period_to_date"))
+    metering_point_periods = metering_point_periods.withColumn(
+        "selection_period_start", F.col("period_from_date")
+    ).withColumn("selection_period_end", F.col("period_to_date"))
 
     # TODO JMG: Remove dummy result and implement the core logic
     return _create_dummy_result()
@@ -37,7 +49,7 @@ def _create_dummy_result() -> DataFrame:
         [
             StructField("metering_point_id", StringType(), True),
             StructField("date", TimestampType(), True),
-            StructField("quantity", FloatType(), True)
+            StructField("quantity", FloatType(), True),
         ]
     )
 
