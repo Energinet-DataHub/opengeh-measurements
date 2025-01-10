@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from pyspark.sql import functions as F, DataFrame, SparkSession, Window
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructField, StructType, StringType, TimestampType, FloatType
 from telemetry_logging import use_span
 
@@ -19,24 +17,54 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 def execute_core_logic(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
-    calculation_period_start: datetime,
-    calculation_period_end: datetime,
     time_zone: str,
 ) -> DataFrame:
-    # Join the DataFrames on metering_point_id
-    metering_point_time_series = metering_point_periods.join(
-        time_series_points,
-        on="metering_point_id",
-        how="inner"
-    ).where(
-        (F.col("observation_time") >= calculation_period_start)
-        & (F.col("observation_time") <= calculation_period_end)
-    )
+    # TODO JMG: Remove dummy result and implement the core logic
+    return _create_dummy_result()
 
-    measurments = metering_point_time_series.groupBy(
-        "metering_point_id",
-        "selection_period_start",
-        "selection_period_end"
-    ).agg(
-        F.avg("quantity").alias("average_quantity")
-    )
+
+def _create_dummy_result() -> DataFrame:
+    spark = initialize_spark()
+    # Define schema
+    schema = StructType([
+        StructField("metering_point_id", StringType(), True),
+        StructField("date", TimestampType(), True),
+        StructField("quantity", FloatType(), True)
+    ])
+
+    # Data
+    data = [
+        ("170000000000000201", "2025-12-31 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-01 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-02 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-03 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-04 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-05 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-06 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-07 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-08 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-09 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-10 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-11 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-12 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-13 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-14 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-15 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-16 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-17 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-18 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-19 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-20 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-21 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-22 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-23 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-24 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-25 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-26 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-27 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-28 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-29 23:00:00", 3.5),
+        ("170000000000000201", "2026-01-30 23:00:00", 3.5)
+    ]
+
+    return spark.createDataFrame(data, schema)
