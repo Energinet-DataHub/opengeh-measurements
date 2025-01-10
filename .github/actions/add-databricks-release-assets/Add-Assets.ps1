@@ -21,5 +21,5 @@ function Add-Assets
         New-Item -Path $destination -ItemType 'directory'
     }
 
-    Move-Item -Path "${WorkingDirectory}/../tests/container_tests" -Destination $destination
+    Move-Item -Path "${WorkingDirectory}/tests/container_tests" -Destination $destination
 }
