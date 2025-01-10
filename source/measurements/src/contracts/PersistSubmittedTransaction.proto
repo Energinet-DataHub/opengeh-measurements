@@ -3,6 +3,7 @@
 package google.protobuf;
 
 import "google/protobuf/timestamp.proto";
+import "DecimalValue.proto";
 
 option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
 
@@ -23,7 +24,7 @@ message PersistSubmittedTransaction {
 
 message Point {
   int32 position = 1;
-  double quantity = 2;
+  DecimalValue quantity = 2;
   Quality quality = 3;
 }
 
@@ -71,12 +72,12 @@ enum MeteringPointType {
 enum Unit {
   U_UNSPECIFIED = 0;
   U_KWH = 1;
-  U_MWH = 2;
-  U_MVARH = 3;
-  U_KVARH = 4;
-  U_KW = 5;
-  U_T = 6;
-  U_K3 = 7;
+  U_KW = 2;
+  U_MW = 3;
+  U_MWH = 4;
+  U_TONNE = 5;
+  U_KVARH = 6;
+  U_MVAR = 7;
 }
 
 enum Resolution {
