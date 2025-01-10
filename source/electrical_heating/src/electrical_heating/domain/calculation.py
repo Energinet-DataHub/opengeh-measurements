@@ -1,13 +1,13 @@
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
-from src.electrical_heating.application.job_args.electrical_heating_args import (
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from src.electrical_heating.domain.constants import (
+from electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT,
 )
-from src.electrical_heating.domain.pyspark_functions import (
+from electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )

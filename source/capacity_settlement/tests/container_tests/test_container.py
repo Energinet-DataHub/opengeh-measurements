@@ -5,7 +5,7 @@ import pytest
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import RunResultState
 
-from source.tests.test_configuration import TestConfiguration
+from test_configuration import TestConfiguration
 
 
 class DataBricksClient:

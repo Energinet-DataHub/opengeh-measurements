@@ -1,6 +1,6 @@
 ﻿import os
 
-from src.capacity_settlement.application.execute_with_deps import (
+from capacity_settlement.application.execute_with_deps import (
     execute_with_deps,
 )
 

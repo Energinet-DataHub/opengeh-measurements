@@ -4,10 +4,10 @@ from collections.abc import Callable
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from src.capacity_settlement.application.job_args.capacity_settlement_args import (
+from capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from src.capacity_settlement.application.job_args.capacity_settlement_job_args import (
+from capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )

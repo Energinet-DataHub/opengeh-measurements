@@ -20,7 +20,7 @@ from typing import Callable, Generator
 import pytest
 import yaml
 
-from source.tests.test_configuration import TestConfiguration
+from test_configuration import TestConfiguration
 
 
 @pytest.fixture(autouse=True)
