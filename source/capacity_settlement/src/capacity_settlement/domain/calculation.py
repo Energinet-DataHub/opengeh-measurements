@@ -48,7 +48,19 @@ def execute_core_logic(
     # average the quantity for each metering point
     metering_point_time_series = metering_point_time_series.groupBy(
         "metering_point_id", "selection_period_start", "selection_period_end"
-    ).agg(F.avg("quantity"))
+    ).agg(F.avg("quantity").alias("average_quantity"))
+
+    # explode between the start and end date
+    metering_point_time_series = metering_point_time_series.withColumn(
+        "date",
+        F.explode(
+            F.sequence(
+                "selection_period_start",
+                "selection_period_end",
+                F.expr("interval 1 day"),
+            )
+        ),
+    )
 
     # TODO JMG: Remove dummy result and implement the core logic
     return _create_dummy_result()

@@ -3,8 +3,12 @@
 import pytest
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
-from testcommon.dataframes import AssertDataframesConfiguration, read_csv
-from testcommon.etl import TestCase, TestCases
+from testcommon.dataframes import (
+    assert_dataframes_and_schemas,
+    AssertDataframesConfiguration,
+    read_csv,
+)
+from testcommon.etl import get_then_names, TestCases
 
 from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
