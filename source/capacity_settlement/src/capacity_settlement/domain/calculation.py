@@ -35,8 +35,20 @@ def execute_core_logic(
 ) -> DataFrame:
 
     metering_point_periods = metering_point_periods.withColumn(
-        "selection_period_start", F.col("period_from_date")
-    ).withColumn("selection_period_end", F.col("period_to_date"))
+        "selection_period_start", F.lit(calculation_period_start)
+    ).withColumn("selection_period_end", F.lit(calculation_period_end))
+
+    metering_point_time_series = time_series_points.join(
+        metering_point_periods, on="metering_point_id", how="inner"
+    ).where(
+        (F.col("observation_time") >= F.col("selection_period_start"))
+        & (F.col("observation_time") <= F.col("selection_period_end"))
+    )
+
+    # average the quantity for each metering point
+    metering_point_time_series = metering_point_time_series.groupBy(
+        "metering_point_id", "selection_period_start", "selection_period_end"
+    ).agg(F.avg("quantity"))
 
     # TODO JMG: Remove dummy result and implement the core logic
     return _create_dummy_result()
