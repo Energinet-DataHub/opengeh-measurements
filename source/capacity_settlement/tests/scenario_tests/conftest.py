@@ -6,11 +6,10 @@ import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
 from testcommon.dataframes import (
-    assert_dataframes_and_schemas,
     AssertDataframesConfiguration,
     read_csv,
 )
-from testcommon.etl import get_then_names, TestCase, TestCases
+from testcommon.etl import TestCase, TestCases
 
 from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
