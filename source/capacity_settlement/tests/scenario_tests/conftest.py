@@ -95,14 +95,8 @@ def create_calculation_args(path: str) -> CapacitySettlementArgs:
     with open(path + "job_parameters.yml", "r") as file:
         job_args = yaml.safe_load(file)[0]
 
-    date_format = "%Y-%m-%d %H:%M:%S"
-
     return CapacitySettlementArgs(
         orchestration_instance_id=job_args["orchestration_instance_id"],
-        calculation_period_start=datetime.strptime(
-            job_args["calculation_period_start"], date_format
-        ),
-        calculation_period_end=datetime.strptime(
-            job_args["calculation_period_end"], date_format
-        ),
+        calculation_period_start=job_args["calculation_period_start"],
+        calculation_period_end=job_args["calculation_period_end"],
     )
