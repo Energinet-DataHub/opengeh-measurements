@@ -3,15 +3,15 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
-import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+import electrical_heating.infrastructure.electricity_market as em
+import electrical_heating.infrastructure.measurements_gold as mg
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.domain.constants import (
+from electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT,
 )
-from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
+from electrical_heating.domain.pyspark_functions import (
     convert_utc_to_localtime,
     convert_localtime_to_utc,
 )
