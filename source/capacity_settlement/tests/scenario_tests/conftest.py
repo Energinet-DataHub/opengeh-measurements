@@ -8,7 +8,7 @@ from testcommon.dataframes import (
     AssertDataframesConfiguration,
     read_csv,
 )
-from testcommon.etl import get_then_names, TestCases
+from testcommon.etl import get_then_names, TestCase, TestCases
 
 from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
