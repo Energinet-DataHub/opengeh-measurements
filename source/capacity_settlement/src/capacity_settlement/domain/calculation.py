@@ -1,4 +1,6 @@
-from pyspark.sql import DataFrame, SparkSession
+from datetime import datetime
+
+from pyspark.sql import DataFrame, SparkSession, functions as F
 from pyspark.sql.types import StructField, StructType, StringType, TimestampType, FloatType
 from telemetry_logging import use_span
 
@@ -17,8 +19,13 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 def execute_core_logic(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
+    calculation_period_start: datetime,
+    calculation_period_end: datetime,
     time_zone: str,
 ) -> DataFrame:
+
+    metering_point_periods = metering_point_periods.withColumn("selection_period_start", F.col("period_from_date")).withColumn("selection_period_end", F.col("period_to_date"))
+
     # TODO JMG: Remove dummy result and implement the core logic
     return _create_dummy_result()
 
@@ -26,11 +33,13 @@ def execute_core_logic(
 def _create_dummy_result() -> DataFrame:
     spark = initialize_spark()
     # Define schema
-    schema = StructType([
-        StructField("metering_point_id", StringType(), True),
-        StructField("date", TimestampType(), True),
-        StructField("quantity", FloatType(), True)
-    ])
+    schema = StructType(
+        [
+            StructField("metering_point_id", StringType(), True),
+            StructField("date", TimestampType(), True),
+            StructField("quantity", FloatType(), True)
+        ]
+    )
 
     # Data
     data = [
@@ -64,7 +73,7 @@ def _create_dummy_result() -> DataFrame:
         ("170000000000000201", "2026-01-27 23:00:00", 3.5),
         ("170000000000000201", "2026-01-28 23:00:00", 3.5),
         ("170000000000000201", "2026-01-29 23:00:00", 3.5),
-        ("170000000000000201", "2026-01-30 23:00:00", 3.5)
+        ("170000000000000201", "2026-01-30 23:00:00", 3.5),
     ]
 
     return spark.createDataFrame(data, schema)
