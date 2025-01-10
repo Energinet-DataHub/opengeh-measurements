@@ -2,8 +2,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructField, StructType, StringType, TimestampType, FloatType
 from telemetry_logging import use_span
 
-from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import \
-    CapacitySettlementArgs
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
 from source.capacity_settlement.src.capacity_settlement.infrastructure.spark_initializor import initialize_spark
 
 
