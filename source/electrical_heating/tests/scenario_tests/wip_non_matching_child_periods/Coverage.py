@@ -8,39 +8,15 @@ The purpose is to test withdrawal on a period before the transition to quarterly
 
 CASE 1
 Parent start/end:   |-------------------...
-Child start/end:                |-------...
+Child start/end:    |---------|
 Measurement data:   +++++++++++++++++++++++
-Added to child:                 ***********
+Added to child:     ***********
 
 CASE 2
-Parent start/end:               |-------...
-Child start/end:    |-------------------...
+Parent start/end:   |-------------------...
+Child start/end:    nothing
 Measurement data:   +++++++++++++++++++++++
-Added to child:                 ***********
-
-CASE 3
-Parent start/end:    |-------------------------------------------|
-Child start/end:        |--------|                  |--------|
-Measurement data:    +++++++++++++++++++++++++++++++++++++++++++++
-Added to child:         **********                  **********
-
-CASE 4
-Parent start/end:       |--------|                  |--------|
-Child start/end:     |-------------------------------------------|
-Measurement data:    +++++++++++++++++++++++++++++++++++++++++++++
-Added to child:         **********                  **********
-
-CASE 5
-Parent start/end:       |--------|                  |--------|
-Child start/end:            |-----------------------------|
-Measurement data:       +++++++++++++++++++++++++++++++++++++++++++++
-Added to child:             *****                   *******
-
-CASE 6
-Parent start/end:           |-----------------------------|
-Child start/end:        |--------|                  |--------|
-Measurement data:       +++++++++++++++++++++++++++++++++++++++++++++
-Added to child:             *****                   *******
+Added to child:     nothing
 
 ## CASES TESTED
 """
