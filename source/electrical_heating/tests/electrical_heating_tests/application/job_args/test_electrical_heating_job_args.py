@@ -1,12 +1,11 @@
 ﻿from unittest.mock import patch
 
 import pytest
-
-from electrical_heating.application.job_args.electrical_heating_job_args import (
+from src.electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_job_arguments,
     parse_command_line_arguments,
 )
-from electrical_heating.application.job_args.environment_variables import (
+from src.electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
 
