@@ -1,6 +1,8 @@
-﻿from pathlib import Path
+﻿from datetime import datetime
+from pathlib import Path
 
 import pytest
+import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
 from testcommon.dataframes import (
@@ -10,6 +12,9 @@ from testcommon.dataframes import (
 )
 from testcommon.etl import get_then_names, TestCase, TestCases
 
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
+)
 from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
 )
@@ -53,10 +58,14 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         metering_point_periods_v1,
     )
 
+    args = create_calculation_args(f"{scenario_path}/when/")
+
     # Execute the calculation logic
     actual_measurements = execute_core_logic(
         time_series_points,
         metering_point_periods,
+        args.calculation_period_start,
+        args.calculation_period_end,
         "Europe/Copenhagen",
     )
 
@@ -80,4 +89,21 @@ def assert_dataframes_configuration(
         show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
+    )
+
+
+def create_calculation_args(path: str) -> CapacitySettlementArgs:
+    with open(path + "job_parameters.yml", "r") as file:
+        job_args = yaml.safe_load(file)[0]
+
+    date_format = "%Y-%m-%d %H:%M:%S"
+
+    return CapacitySettlementArgs(
+        orchestration_instance_id=job_args["orchestration_instance_id"],
+        calculation_period_start=datetime.strptime(
+            job_args["calculation_period_start"], date_format
+        ),
+        calculation_period_end=datetime.strptime(
+            job_args["calculation_period_end"], date_format
+        ),
     )
