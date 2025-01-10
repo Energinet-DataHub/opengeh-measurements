@@ -104,5 +104,4 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.migrations_database}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.bronze_database}")
