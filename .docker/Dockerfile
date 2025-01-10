@@ -28,8 +28,6 @@ COPY source source
 COPY .docker/requirements.txt requirements.txt
 RUN pip --no-cache-dir install -r requirements.txt
 
-COPY source source
-
 # Set misc environment variables required for properly run spark
 # note the amount of memory used on the driver is adjusted here
 ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
