@@ -50,6 +50,10 @@ jobs:
               - '.github/workflows/ci-capacity-settlement.yml'
               - '.github/workflows/cd.yml'
               - '.devcontainer/**'
+            measurements:
+              - 'source/measurements/**'
+            measurements_contracts:
+              - 'source/measurements/src/contracts/**'
             docker:
               - .docker/**
 

@@ -45,6 +45,11 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
+  ci_measurements:
+    needs: changes
+    if: ${{ needs.changes.outputs.measurements == 'true' }}
+    uses: ./.github/workflows/ci-measurements.yml
+
   #
   # Branch policy status check
   #
