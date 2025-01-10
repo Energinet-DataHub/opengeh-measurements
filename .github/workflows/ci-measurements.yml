@@ -8,6 +8,8 @@ jobs:
     uses: ./.github/workflows/detect-changes.yml
 
   compile_proto_descriptors:
+    needs: changes
+    if: ${{ needs.changes.outputs.measurements_contracts == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Compile protobuf file descriptors
