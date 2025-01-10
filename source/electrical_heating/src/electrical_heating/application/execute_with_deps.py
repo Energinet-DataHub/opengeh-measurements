@@ -4,19 +4,18 @@ from collections.abc import Callable
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from telemetry_logging.span_recording import span_record_exception
-
-from electrical_heating.application.job_args.electrical_heating_args import (
+from src.electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.application.job_args.electrical_heating_job_args import (
+from src.electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from electrical_heating.domain import calculation
-from electrical_heating.infrastructure.spark_initializor import (
+from src.electrical_heating.domain import calculation
+from src.electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
+from telemetry_logging.span_recording import span_record_exception
 
 
 def execute_with_deps(

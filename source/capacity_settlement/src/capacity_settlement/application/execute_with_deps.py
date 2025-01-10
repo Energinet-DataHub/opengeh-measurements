@@ -3,14 +3,14 @@ from argparse import Namespace
 from collections.abc import Callable
 
 import telemetry_logging.logging_configuration as config
-from capacity_settlement.application.job_args.capacity_settlement_args import (
+from opentelemetry.trace import SpanKind
+from src.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from capacity_settlement.application.job_args.capacity_settlement_job_args import (
+from src.capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
 

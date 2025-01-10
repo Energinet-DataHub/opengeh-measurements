@@ -1,5 +1,5 @@
 ﻿import pytest
-from electrical_heating import entry_point
+from src.capacity_settlement import entry_point
 
 from source.tests.test_common.entry_points.entry_point_test_util import (
     assert_entry_point_exists,
