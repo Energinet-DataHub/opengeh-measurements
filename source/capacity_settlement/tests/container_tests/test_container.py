@@ -51,10 +51,11 @@ def test__databricks_job_starts_and_stops_successfully(
     container_test_configuration: TestConfiguration,
 ) -> None:
     """
-    Tests that a Databricks job runs successfully to completion.
+    Tests that a Databricks capacity settlement job runs successfully to completion.
     """
     try:
         # Arrange
+        # TODO AJW Change job id to an capacity settlement id
         job_id = 576172778546244
         client = DataBricksClient(
             os.getenv("DATABRICKS_HOST"), os.getenv("DATABRICKS_TOKEN")
