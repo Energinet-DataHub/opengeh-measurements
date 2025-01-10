@@ -6,8 +6,7 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import \
-    metering_point_periods_v1
+from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import metering_point_periods_v1
 from source.electrical_heating.src.electrical_heating.domain.calculation import (
     execute_core_logic,
 )
