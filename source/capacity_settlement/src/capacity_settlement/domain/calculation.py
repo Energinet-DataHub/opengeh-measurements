@@ -12,6 +12,7 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
     # TODO JMG: read data from repository and call the `execute_core_logic` method
     pass
 
+
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
 def execute_core_logic(
