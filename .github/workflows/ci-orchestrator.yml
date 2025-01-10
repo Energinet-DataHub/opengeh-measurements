@@ -47,7 +47,7 @@ jobs:
 
   ci_bronze:
     needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.database_migration == 'true' }}
+    if: ${{ needs.changes.outputs.bronze == 'true' }}
     uses: ./.github/workflows/ci-databricks.yml
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}

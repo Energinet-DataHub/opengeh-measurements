@@ -13,8 +13,8 @@ on:
         value: ${{ jobs.changes.outputs.electrical_heating }}
       capacity_settlement:
         value: ${{ jobs.changes.outputs.capacity_settlement }}
-      database_migration:
-        value: ${{ jobs.changes.outputs.database_migration }}
+      bronze:
+        value: ${{ jobs.changes.outputs.bronze }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
       docker_in_commit:
@@ -28,7 +28,7 @@ jobs:
     outputs:
       electrical_heating: ${{ steps.filter.outputs.electrical_heating }}
       capacity_settlement: ${{ steps.filter.outputs.capacity_settlement }}
-      database_migration: ${{ steps.filter.outputs.database_migration }}
+      bronze: ${{ steps.filter.outputs.bronze }}
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
@@ -53,8 +53,8 @@ jobs:
               - '.github/workflows/ci-capacity-settlement.yml'
               - '.github/workflows/cd.yml'
               - '.devcontainer/**'
-            database_migration:
-              - 'source/database_migration/**'
+            bronze:
+              - 'source/bronze/**'
               - '.github/workflows/ci-databricks.yml'
               - '.github/workflows/cd.yml'
             docker:
