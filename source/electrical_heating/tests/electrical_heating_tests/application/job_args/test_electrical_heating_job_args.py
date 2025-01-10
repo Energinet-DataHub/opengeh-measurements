@@ -2,11 +2,11 @@
 
 import pytest
 
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
+from electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_job_arguments,
     parse_command_line_arguments,
 )
-from source.electrical_heating.src.electrical_heating.application.job_args.environment_variables import (
+from electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
 

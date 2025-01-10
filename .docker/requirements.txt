@@ -43,3 +43,7 @@ databricks-sdk==0.40.0
 opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations
 opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/telemetry
 opengeh-testcommon @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/testcommon
+
+# Local packages (-e means editable, so changes to the source code are immediately available)
+-e source/capacity_settlement
+-e source/electrical_heating

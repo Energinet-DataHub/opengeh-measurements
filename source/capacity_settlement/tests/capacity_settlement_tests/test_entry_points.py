@@ -1,6 +1,6 @@
 ﻿import pytest
+from electrical_heating import entry_point
 
-from source.electrical_heating.src.electrical_heating import entry_point
 from source.tests.test_common.entry_points.entry_point_test_util import (
     assert_entry_point_exists,
 )
