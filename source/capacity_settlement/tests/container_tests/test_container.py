@@ -57,7 +57,7 @@ def test__databricks_job_starts_and_stops_successfully(
         # Arrange
         job_id = 576172778546244
         client = DataBricksClient(
-            os.getenv("DATABRICKS_INSTANCE"), os.getenv("DATABRICKS_TOKEN")
+            os.getenv("DATABRICKS_HOST"), os.getenv("DATABRICKS_TOKEN")
         )
 
         # Act

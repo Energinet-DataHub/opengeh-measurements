@@ -3,10 +3,7 @@
 # Read more about testing in python in Confluence.
 
 AZURE_KEYVAULT_URL: <The url of the key vault>
-AZURE_CLIENT_ID: <The client id of the service principal>
 AZURE_TENANT_ID: <The tenant id of the service principal>
-AZURE_CLIENT_SECRET: <The client secret of the service principal>
-AZURE_SUBSCRIPTION_ID: <The subscription id of the service principal>
 
-DATABRICKS_INSTANCE: <TODO>
+DATABRICKS_HOST: <TODO>
 DATABRICKS_TOKEN: <TODO>
