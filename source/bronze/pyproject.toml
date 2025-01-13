@@ -20,9 +20,7 @@ dev = [
     "opengeh-testcommon",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
-]
-lint = [
-    "ruff>=0.8.4",
+    "ruff>=0.9.1",
 ]
 
 [tool.uv.sources]

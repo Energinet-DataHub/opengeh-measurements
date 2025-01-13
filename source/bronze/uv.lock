@@ -14,8 +14,6 @@ dev = [
     { name = "opengeh-testcommon" },
     { name = "pytest" },
     { name = "pytest-cov" },
-]
-lint = [
     { name = "ruff" },
 ]
 
@@ -27,8 +25,8 @@ dev = [
     { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
+    { name = "ruff", specifier = ">=0.9.1" },
 ]
-lint = [{ name = "ruff", specifier = ">=0.8.4" }]
 
 [[package]]
 name = "colorama"
