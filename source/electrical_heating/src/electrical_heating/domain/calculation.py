@@ -83,6 +83,8 @@ def execute_core_logic(
             F.col("child.parent_metering_point_id").alias(
                 "consumption_metering_point_id"
             ),
+            # here we calculate the overlaping period between the consumption period and the child period
+            # we however assume that there os only one overlapping period between the two periods
             F.greatest(
                 F.col("child.period_from_date"),
                 F.col("metering.period_from_date"),
@@ -125,7 +127,7 @@ def execute_core_logic(
         )
     )
 
-    quater_hour_consumption_periods_per_year = (
+    quarter_hour_consumption_periods_per_year = (
         metering_points_and_periods.alias("period")
         .join(
             time_series_points.alias("consumption"),
@@ -176,7 +178,7 @@ def execute_core_logic(
     )
 
     daily_consumption_with_consumption_limit = (
-        quater_hour_consumption_periods_per_year.select(
+        quarter_hour_consumption_periods_per_year.select(
             F.col("metering_point_id"),
             F.col("date"),
             F.sum(F.col("quantity")).over(daily_window).alias("quantity"),
