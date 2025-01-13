@@ -1,20 +1,11 @@
 from datetime import datetime
 
-from pyspark.sql import DataFrame, SparkSession, functions as F
-from pyspark.sql.types import (
-    StructField,
-    StructType,
-    StringType,
-    TimestampType,
-    FloatType,
-)
+from pyspark.sql import DataFrame, SparkSession, functions as F, Window
+
 from telemetry_logging import use_span
 
 from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
-)
-from source.capacity_settlement.src.capacity_settlement.infrastructure.spark_initializor import (
-    initialize_spark,
 )
 
 
@@ -33,83 +24,64 @@ def execute_core_logic(
     calculation_period_end: datetime,
     time_zone: str,
 ) -> DataFrame:
-
     metering_point_periods = metering_point_periods.withColumn(
-        "selection_period_start", F.lit(calculation_period_start)
+        "selection_period_start", F.add_months(F.lit(calculation_period_end), -12)
     ).withColumn("selection_period_end", F.lit(calculation_period_end))
 
     metering_point_time_series = time_series_points.join(
         metering_point_periods, on="metering_point_id", how="inner"
     ).where(
         (F.col("observation_time") >= F.col("selection_period_start"))
-        & (F.col("observation_time") <= F.col("selection_period_end"))
+        & (F.col("observation_time") < F.col("selection_period_end"))
     )
 
-    # average the quantity for each metering point
-    metering_point_time_series = metering_point_time_series.groupBy(
-        "metering_point_id", "selection_period_start", "selection_period_end"
-    ).agg(F.avg("quantity").alias("average_quantity"))
+    grouping = ["metering_point_id", "selection_period_start", "selection_period_end"]
 
-    # explode between the start and end date
+    window_spec = Window.partitionBy(grouping).orderBy(F.col("quantity").desc())
+
     metering_point_time_series = metering_point_time_series.withColumn(
-        "date",
+        "row_number", F.row_number().over(window_spec)
+    ).filter(F.col("row_number") <= 10)
+
+    # Calculate the average of the top 10 quantities
+    metering_point_time_series = metering_point_time_series.groupBy(grouping).agg(
+        F.avg("quantity").alias("quantity")
+    )
+
+    metering_point_time_series = _explode_to_daily(
+        metering_point_time_series,
+        calculation_period_start,
+        calculation_period_end,
+        time_zone,
+    )
+
+    return metering_point_time_series.select("metering_point_id", "date", "quantity")
+
+
+def _explode_to_daily(
+    df: DataFrame,
+    calculation_period_start: datetime,
+    calculation_period_end: datetime,
+    time_zone: str,
+) -> DataFrame:
+
+    df = df.withColumn(
+        "calculation_period_start",
+        F.lit(calculation_period_start),
+    ).withColumn(
+        "calculation_period_end",
+        F.lit(calculation_period_end),
+    )
+
+    return df.withColumn(
+        "date_local_time",
         F.explode(
             F.sequence(
-                "selection_period_start",
-                "selection_period_end",
+                F.from_utc_timestamp("calculation_period_start", time_zone),
+                F.date_sub(
+                    F.from_utc_timestamp("calculation_period_end", time_zone), 1
+                ),
                 F.expr("interval 1 day"),
             )
         ),
-    )
-
-    # TODO JMG: Remove dummy result and implement the core logic
-    return _create_dummy_result()
-
-
-def _create_dummy_result() -> DataFrame:
-    spark = initialize_spark()
-    # Define schema
-    schema = StructType(
-        [
-            StructField("metering_point_id", StringType(), True),
-            StructField("date", TimestampType(), True),
-            StructField("quantity", FloatType(), True),
-        ]
-    )
-
-    # Data
-    data = [
-        ("170000000000000201", datetime(2025, 12, 31, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 1, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 2, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 3, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 4, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 5, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 6, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 7, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 8, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 9, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 10, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 11, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 12, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 13, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 14, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 15, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 16, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 17, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 18, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 19, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 20, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 21, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 22, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 23, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 24, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 25, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 26, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 27, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 28, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 29, 23, 0, 0), 3.5),
-        ("170000000000000201", datetime(2026, 1, 30, 23, 0, 0), 3.5),
-    ]
-
-    return spark.createDataFrame(data, schema)
+    ).withColumn("date", F.to_utc_timestamp("date_local_time", time_zone))
