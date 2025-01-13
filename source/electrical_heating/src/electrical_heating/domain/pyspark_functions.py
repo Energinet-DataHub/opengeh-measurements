@@ -78,7 +78,7 @@ def begining_of_year(date: Column, years_to_add: int = 0) -> Column:
 def days_in_year(col: Column) -> Column:
     return F.dayofyear(
         F.date_add(
-            begining_of_year(F.col("consumption_period_start"), years_to_add=1),
+            begining_of_year(col, years_to_add=1),
             -1,
         )
     )
