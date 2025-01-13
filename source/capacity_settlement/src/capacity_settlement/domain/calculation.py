@@ -24,38 +24,53 @@ def execute_core_logic(
     calculation_period_end: datetime,
     time_zone: str,
 ) -> DataFrame:
+
+    times_series_points = _filter_on_selection_period(
+        time_series_points, metering_point_periods, calculation_period_end
+    )
+
+    times_series_points = _average_ten_largest_quantities(times_series_points)
+
+    times_series_points = _explode_to_daily(
+        times_series_points,
+        calculation_period_start,
+        calculation_period_end,
+        time_zone,
+    )
+
+    return times_series_points.select("metering_point_id", "date", "quantity")
+
+
+def _filter_on_selection_period(
+    time_series_points: DataFrame,
+    metering_point_periods: DataFrame,
+    calculation_period_end: datetime,
+) -> DataFrame:
     metering_point_periods = metering_point_periods.withColumn(
         "selection_period_start", F.add_months(F.lit(calculation_period_end), -12)
     ).withColumn("selection_period_end", F.lit(calculation_period_end))
 
-    metering_point_time_series = time_series_points.join(
+    return time_series_points.join(
         metering_point_periods, on="metering_point_id", how="inner"
     ).where(
         (F.col("observation_time") >= F.col("selection_period_start"))
         & (F.col("observation_time") < F.col("selection_period_end"))
     )
 
+
+def _average_ten_largest_quantities(
+    df: DataFrame,
+) -> DataFrame:
     grouping = ["metering_point_id", "selection_period_start", "selection_period_end"]
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col("quantity").desc())
 
-    metering_point_time_series = metering_point_time_series.withColumn(
-        "row_number", F.row_number().over(window_spec)
-    ).filter(F.col("row_number") <= 10)
-
-    # Calculate the average of the top 10 quantities
-    metering_point_time_series = metering_point_time_series.groupBy(grouping).agg(
-        F.avg("quantity").alias("quantity")
+    df = df.withColumn("row_number", F.row_number().over(window_spec)).filter(
+        F.col("row_number") <= 10
     )
 
-    metering_point_time_series = _explode_to_daily(
-        metering_point_time_series,
-        calculation_period_start,
-        calculation_period_end,
-        time_zone,
-    )
-
-    return metering_point_time_series.select("metering_point_id", "date", "quantity")
+    df = df.groupBy(grouping).agg(F.avg("quantity").alias("quantity"))
+    return df
 
 
 def _explode_to_daily(
