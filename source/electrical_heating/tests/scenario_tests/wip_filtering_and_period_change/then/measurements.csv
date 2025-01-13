@@ -1,0 +1,4 @@
+metering_point_id;date;quantity;#comment
+140000000000170201;2023-01-03 23:00:00;2.787;Limit is 32.787. Quantity for Jan. 3rd is the same (20), so no new rows are added. But value for Jan. 4th is now 12.787 (up to limit) which is different from previous value of 20.
+140000000000170201;2023-01-04 23:00:00;0;Zero is now added to child, because limit has been hit in new period (was 20 before).
+140000000000170201;2023-01-05 23:00:00;0;Zero is now added to child. No row is added for Jan 7th (first day in new second period) because value is the same, even though it is a new period.
