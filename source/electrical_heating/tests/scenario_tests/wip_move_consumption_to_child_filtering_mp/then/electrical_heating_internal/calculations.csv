@@ -1,2 +1,2 @@
 calculation_id;orchestration_instance_id;execution_start_datetime;execution_stop_datetime;#comment
-IGNORED;00000000-0000-0000-0000-000000000001;IGNORED;IGNORED;Columns with "IGNORED" values are ignored. They are candidates for improving the job and test framework so that they can be tested.
+[IGNORED];00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];Columns with "IGNORED" values are ignored. They are candidates for improving the job and test framework so that they can be tested.
