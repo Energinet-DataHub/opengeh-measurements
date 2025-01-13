@@ -14,7 +14,8 @@ class Repository:
         self._spark = spark
         self._catalog_name = catalog_name
 
-    def save(self, calculation) -> None:
+    def save(self, calculation: DataFrame) -> None:
+        # TODO Will implemented in another PR.
         pass
 
     def _read_view_or_table(
