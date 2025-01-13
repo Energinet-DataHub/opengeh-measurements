@@ -15,8 +15,9 @@ migrate = "bronze.entry_points:migrate"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
+    "opengeh-testcommon",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
 ]
@@ -25,8 +26,8 @@ lint = [
 ]
 
 [tool.uv.sources]
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
 opengeh-spark-sql-migrations = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/spark_sql_migrations", rev = "3.0.0" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -73,3 +74,5 @@ ignore = [
 "tests/*" = ["D", "UP"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+
