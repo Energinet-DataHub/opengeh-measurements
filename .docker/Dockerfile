@@ -19,13 +19,12 @@ RUN apt-get update; \
     rm -rf /var/lib/apt/lists/*
 
 # This replaces the default spark configuration in the docker image with the ones defined in the sibling file
-COPY .docker/spark-defaults.conf $SPARK_HOME/conf/
+COPY spark-defaults.conf $SPARK_HOME/conf/
 
 # Install python packages used in pyspark development (keep spark dependent packages alligned)
 # delta-spark version has to have compatibility with spark version (https://docs.delta.io/latest/releases.html)
 # example (delta 2.2.x = spark 3.3.x)
-COPY source source
-COPY .docker/requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN pip --no-cache-dir install -r requirements.txt
 
 # Set misc environment variables required for properly run spark
