@@ -1,5 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
+from dateutil.relativedelta import relativedelta
 from pyspark.sql import DataFrame, SparkSession, functions as F, Window
 
 from telemetry_logging import use_span
@@ -20,21 +22,21 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 def execute_core_logic(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
-    calculation_period_start: datetime,
-    calculation_period_end: datetime,
+    calculation_month_start: datetime,
+    calculation_month_end: datetime,
     time_zone: str,
 ) -> DataFrame:
 
     times_series_points = _filter_on_selection_period(
-        time_series_points, metering_point_periods, calculation_period_end
+        time_series_points, metering_point_periods, calculation_month_end, time_zone
     )
 
     times_series_points = _average_ten_largest_quantities(times_series_points)
 
     times_series_points = _explode_to_daily(
         times_series_points,
-        calculation_period_start,
-        calculation_period_end,
+        calculation_month_start,
+        calculation_month_end,
         time_zone,
     )
 
@@ -44,11 +46,19 @@ def execute_core_logic(
 def _filter_on_selection_period(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
-    calculation_period_end: datetime,
+    calculation_month_end: datetime,
+    time_zone: str,
 ) -> DataFrame:
+    time_zone_info = ZoneInfo(time_zone)
+    calculation_month_end_local = calculation_month_end.astimezone(time_zone_info)
+    selection_period_start = (
+        calculation_month_end_local - relativedelta(years=1)
+    ).astimezone(ZoneInfo("UTC"))
+    selection_period_end = calculation_month_end
+
     metering_point_periods = metering_point_periods.withColumn(
-        "selection_period_start", F.add_months(F.lit(calculation_period_end), -12)
-    ).withColumn("selection_period_end", F.lit(calculation_period_end))
+        "selection_period_start", F.lit(selection_period_start)
+    ).withColumn("selection_period_end", F.lit(selection_period_end))
 
     return time_series_points.join(
         metering_point_periods, on="metering_point_id", how="inner"
