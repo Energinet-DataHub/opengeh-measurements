@@ -67,9 +67,9 @@ def execute_core_logic(
     metering_points_and_periods = (
         child_metering_point_periods.alias("child")
         .join(
-            consumption_metering_point_periods.alias("metering"),
+            consumption_metering_point_periods.alias("parent"),
             F.col("child.parent_metering_point_id")
-            == F.col("metering.metering_point_id"),
+            == F.col("parent.metering_point_id"),
             "inner",
         )
         .where(
@@ -87,7 +87,7 @@ def execute_core_logic(
             # we however assume that there os only one overlapping period between the two periods
             F.greatest(
                 F.col("child.period_from_date"),
-                F.col("metering.period_from_date"),
+                F.col("parent.period_from_date"),
             ).alias("parent_child_overlap_period_start"),
             F.least(
                 F.coalesce(
@@ -95,24 +95,24 @@ def execute_core_logic(
                     begining_of_year(F.current_date(), years_to_add=1),
                 ),
                 F.coalesce(
-                    F.col("metering.period_to_date"),
+                    F.col("parent.period_to_date"),
                     begining_of_year(F.current_date(), years_to_add=1),
                 ),
             ).alias("parent_child_overlap_period_end"),
             # create a row for each year in the consumption period
             F.explode(
                 F.sequence(
-                    begining_of_year(F.col("metering.period_from_date")),
+                    begining_of_year(F.col("parent.period_from_date")),
                     F.coalesce(
-                        begining_of_year(F.col("metering.period_to_date")),
+                        begining_of_year(F.col("parent.period_to_date")),
                         begining_of_year(F.current_date(), years_to_add=1),
                     ),
                     F.expr("INTERVAL 1 YEAR"),
                 )
             ).alias("period_year"),
-            F.col("metering.period_from_date").alias("consumption_period_start"),
+            F.col("parent.period_from_date").alias("consumption_period_start"),
             F.coalesce(
-                F.col("metering.period_to_date"),
+                F.col("parent.period_to_date"),
                 begining_of_year(F.current_date(), years_to_add=1),
             ).alias("consumption_period_end"),
             F.col("child.period_from_date").alias("child_period_start"),
@@ -150,7 +150,7 @@ def execute_core_logic(
             )
         )
         .select(
-            F.col("period.child_metering_point_id").alias("metering_point_id"),
+            F.col("period.child_metering_point_id").alias("parent_point_id"),
             F.date_trunc("day", F.col("consumption.observation_time")).alias("date"),
             F.when(
                 F.year(F.col("period.consumption_period_start"))
