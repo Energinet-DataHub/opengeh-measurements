@@ -22,6 +22,8 @@ def parse_job_arguments(
 
         capacity_settlement_args = CapacitySettlementArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
+            calculation_period_start=job_args.calculation_period_start,
+            calculation_period_end=job_args.calculation_period_end,
         )
 
         return capacity_settlement_args
@@ -35,6 +37,8 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
+    p.add_argument("--calculation-period-start", type=str, required=True)
+    p.add_argument("--calculation-period-end", type=str, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):

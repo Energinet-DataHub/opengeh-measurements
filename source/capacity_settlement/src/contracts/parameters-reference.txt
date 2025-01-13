@@ -4,3 +4,5 @@
 
 # Required parameters
 --orchestration-instance-id={orchestration-instance-id}
+--calculation-period-start={calculation-period-start}
+--calculation-period-end={calculation-period-end}
