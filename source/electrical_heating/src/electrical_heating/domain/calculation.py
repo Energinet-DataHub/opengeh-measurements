@@ -150,7 +150,7 @@ def execute_core_logic(
             )
         )
         .select(
-            F.col("period.child_metering_point_id").alias("parent_point_id"),
+            F.col("period.child_metering_point_id").alias("metering_point_id"),
             F.date_trunc("day", F.col("consumption.observation_time")).alias("date"),
             F.when(
                 F.year(F.col("period.consumption_period_start"))
