@@ -145,7 +145,7 @@ def execute_calculation(
 
 def create_calculation(
     spark: SparkSession,
-    orchestration_instance_id: uuid,
+    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
     execution_stop_datetime: datetime,
 ) -> DataFrame:
