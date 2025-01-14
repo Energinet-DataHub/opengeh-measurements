@@ -42,7 +42,7 @@ def get_timestamp_columns(df: DataFrame) -> list[str]:
     ]
 
 
-def convert_timezone(df: DataFrame, time_zone: str, to_utc: bool = False) -> DataFrame:
+def _convert_timezone(df: DataFrame, time_zone: str, conversion_func) -> DataFrame:
     """Convert all timestamp/date columns between UTC and local timezone.
 
     Args:
@@ -55,15 +55,20 @@ def convert_timezone(df: DataFrame, time_zone: str, to_utc: bool = False) -> Dat
     if not timestamp_cols:
         return df
 
-    # Select non-timestamp columns as-is
     result_df = df
-
-    conversion_func = convert_localtime_to_utc if to_utc else convert_utc_to_localtime
 
     for col in timestamp_cols:
         result_df = conversion_func(result_df, col, time_zone)
 
     return result_df
+
+
+def convert_from_utc(df: DataFrame, time_zone: str) -> DataFrame:
+    return _convert_timezone(df, time_zone, conversion_func=convert_utc_to_localtime)
+
+
+def convert_to_utc(df: DataFrame, time_zone: str) -> DataFrame:
+    return _convert_timezone(df, time_zone, conversion_func=convert_localtime_to_utc)
 
 
 def begining_of_year(date: Column, years_to_add: int = 0) -> Column:
