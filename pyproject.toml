@@ -1,0 +1,22 @@
+[project]
+name="measurements-mono"
+version="0.1.0"
+dependencies = [
+    "capacity-settlement",
+    "electrical-heating",
+    "uvmono>=0.3.9",
+]
+
+[tool.uv.workspace]
+members = ["packages/capacity_settlement", "packages/electrical_heating", "packages/measurements", "test_package"]
+
+[tool.uv.sources]
+electrical-heating = { workspace = true }
+capacity-settlement = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+
