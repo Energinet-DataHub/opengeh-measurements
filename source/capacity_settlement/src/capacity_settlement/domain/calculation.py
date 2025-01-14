@@ -68,7 +68,6 @@ def _add_selection_period_columns(
     TODO: JMG: Should also support shorter metering point periods
     """
 
-    # Convert to local time zone to ensure correct handling of leap year
     calculation_start_local = datetime(
         calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
     )
@@ -142,5 +141,7 @@ def _explode_to_daily(
     )
 
     df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
+
+    df.show(40)
 
     return df
