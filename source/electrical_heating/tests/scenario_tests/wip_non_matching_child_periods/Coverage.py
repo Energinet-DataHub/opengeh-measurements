@@ -2,7 +2,7 @@ from coverage.all_test_cases import Cases
 
 """
 ## PURPOSE
-The purpose is to test withdrawal on a period before the transition to quarterly results.
+The purpose is to test a scenario where parent period and child period do not overlap. This is really an invalid state, but it can happen i prod, so we include a test for it.
 
 ## DESIGN CONSIDERATIONS
 
