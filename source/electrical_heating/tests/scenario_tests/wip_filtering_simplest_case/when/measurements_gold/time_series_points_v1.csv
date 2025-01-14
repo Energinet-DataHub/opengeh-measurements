@@ -1,0 +1,4 @@
+metering_point_id;quantity;observation_time;metering_point_type;#comment
+170000000000000201;1;2024-01-03 12:00:00;consumption;Parent mp. Jan. 3rd
+140000000000170201;1;2024-01-02 23:00:00;electrical_heating;Written to child mp by previous calculation for Jan. 3rd.
+170000000000000201;1;2024-01-04 12:00:00;consumption;Parent mp. Jan. 4th
