@@ -63,8 +63,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     actual_measurements = execute_core_logic(
         time_series_points,
         metering_point_periods,
-        args.calculation_period_start,
-        args.calculation_period_end,
+        args.calculation_month,
+        args.calculation_year,
         "Europe/Copenhagen",
     )
 
@@ -97,6 +97,6 @@ def create_calculation_args(path: str) -> CapacitySettlementArgs:
 
     return CapacitySettlementArgs(
         orchestration_instance_id=job_args["orchestration_instance_id"],
-        calculation_period_start=job_args["calculation_period_start"],
-        calculation_period_end=job_args["calculation_period_end"],
+        calculation_month=job_args["calculation_month"],
+        calculation_year=job_args["calculation_year"],
     )

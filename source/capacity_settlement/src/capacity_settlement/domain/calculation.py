@@ -31,12 +31,15 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 def execute_core_logic(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
-    calculation_month_start: datetime,
-    calculation_month_end: datetime,
+    calculation_month: int,
+    calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
     metering_point_periods = _add_selection_period_columns(
-        metering_point_periods, calculation_month_end, time_zone
+        metering_point_periods,
+        calculation_month=calculation_month,
+        calculation_year=calculation_year,
+        time_zone=time_zone,
     )
 
     times_series_points = _average_ten_largest_quantities_in_selection_periods(
@@ -44,10 +47,7 @@ def execute_core_logic(
     )
 
     times_series_points = _explode_to_daily(
-        times_series_points,
-        calculation_month_start,
-        calculation_month_end,
-        time_zone,
+        times_series_points, calculation_month, calculation_year, time_zone
     )
 
     return times_series_points.select(
@@ -57,7 +57,8 @@ def execute_core_logic(
 
 def _add_selection_period_columns(
     metering_point_periods: DataFrame,
-    calculation_month_end: datetime,
+    calculation_month: int,
+    calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
     """
@@ -68,13 +69,15 @@ def _add_selection_period_columns(
     """
 
     # Convert to local time zone to ensure correct handling of leap year
-    time_zone_info = ZoneInfo(time_zone)
-    calculation_month_end_local = calculation_month_end.astimezone(time_zone_info)
-    selection_period_start = (
-        calculation_month_end_local - relativedelta(years=1)
-    ).astimezone(ZoneInfo("UTC"))
+    calculation_start_local = datetime(
+        calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
+    )
+    calculation_end_local = calculation_start_local + relativedelta(months=1)
 
-    selection_period_end = calculation_month_end
+    selection_period_start = (
+        calculation_end_local - relativedelta(years=1)
+    ).astimezone(ZoneInfo("UTC"))
+    selection_period_end = calculation_end_local.astimezone(ZoneInfo("UTC"))
 
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start, F.lit(selection_period_start)
@@ -115,26 +118,29 @@ def _average_ten_largest_quantities_in_selection_periods(
 
 def _explode_to_daily(
     df: DataFrame,
-    calculation_month_start: datetime,
-    calculation_month_end: datetime,
+    calculation_month: int,
+    calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
 
-    df = df.withColumn(
-        "calculation_month_start",
-        F.lit(calculation_month_start),
-    ).withColumn(
-        "calculation_month_end",
-        F.lit(calculation_month_end),
+    calculation_start_local = datetime(
+        calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
+    )
+    calculation_end_local = (
+        calculation_start_local + relativedelta(months=1) - relativedelta(days=1)
     )
 
-    return df.withColumn(
-        "date_local_time",
+    df = df.withColumn(
+        "date_local",
         F.explode(
             F.sequence(
-                F.from_utc_timestamp("calculation_month_start", time_zone),
-                F.date_sub(F.from_utc_timestamp("calculation_month_end", time_zone), 1),
+                F.lit(calculation_start_local.date()),
+                F.lit(calculation_end_local.date()),
                 F.expr("interval 1 day"),
             )
         ),
-    ).withColumn(ColumNames.date, F.to_utc_timestamp("date_local_time", time_zone))
+    )
+
+    df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
+
+    return df
