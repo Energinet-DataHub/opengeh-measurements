@@ -214,6 +214,7 @@ def execute_core_logic(
             F.col("quantity"),
             F.col("period_consumption_limit"),
         )
+        .orderBy(F.col("date"))
         .drop_duplicates()
     )
 
@@ -241,8 +242,34 @@ def execute_core_logic(
         .alias("quantity"),
     ).drop_duplicates()
 
-    period_consumption_with_limit = convert_to_utc(
-        period_consumption_with_limit, time_zone
+    compare_previous_calculated_daily_consumption = (
+        period_consumption_with_limit.alias("current")
+        .join(
+            time_series_points.alias("previous"),
+            (
+                (F.col("current.date") == F.col("previous.observation_time"))
+                & (
+                    F.col("current.metering_point_id")
+                    == F.col("previous.metering_point_id")
+                )
+            ),
+            "left",
+        )
+        .where(
+            (
+                (F.col("current.quantity") != F.col("previous.quantity"))
+                | F.col("previous.quantity").isNull()
+            )
+        )
+        .select(
+            F.col("current.metering_point_id"),
+            F.col("current.date"),
+            F.col("current.quantity"),
+        )
     )
 
-    return period_consumption_with_limit
+    compare_previous_calculated_daily_consumption = convert_to_utc(
+        compare_previous_calculated_daily_consumption, time_zone
+    )
+
+    return compare_previous_calculated_daily_consumption
