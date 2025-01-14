@@ -68,15 +68,13 @@ def _add_selection_period_columns(
     TODO: JMG: Should also support shorter metering point periods
     """
 
-    calculation_start_local = datetime(
+    calculation_start_date = datetime(
         calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
     )
-    calculation_end_local = calculation_start_local + relativedelta(months=1)
+    calculation_end_date = calculation_start_date + relativedelta(months=1)
 
-    selection_period_start = (
-        calculation_end_local - relativedelta(years=1)
-    ).astimezone(ZoneInfo("UTC"))
-    selection_period_end = calculation_end_local.astimezone(ZoneInfo("UTC"))
+    selection_period_start = calculation_end_date - relativedelta(years=1)
+    selection_period_end = calculation_end_date
 
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start, F.lit(selection_period_start)
@@ -122,26 +120,24 @@ def _explode_to_daily(
     time_zone: str,
 ) -> DataFrame:
 
-    calculation_start_local = datetime(
+    calculation_start_date = datetime(
         calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
     )
-    calculation_end_local = (
-        calculation_start_local + relativedelta(months=1) - relativedelta(days=1)
+    calculation_end_date = (
+        calculation_start_date + relativedelta(months=1) - relativedelta(days=1)
     )
 
     df = df.withColumn(
         "date_local",
         F.explode(
             F.sequence(
-                F.lit(calculation_start_local.date()),
-                F.lit(calculation_end_local.date()),
+                F.lit(calculation_start_date.date()),
+                F.lit(calculation_end_date.date()),
                 F.expr("interval 1 day"),
             )
         ),
     )
 
     df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
-
-    df.show(40)
 
     return df
