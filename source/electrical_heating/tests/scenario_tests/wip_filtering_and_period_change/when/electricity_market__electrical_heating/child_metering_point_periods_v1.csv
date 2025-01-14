@@ -1,0 +1,3 @@
+metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;period_from_date;period_to_date;#comment
+140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2023-12-31 23:00:00;2024-01-05 23:00:00;
+140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2024-01-05 23:00:00;;
