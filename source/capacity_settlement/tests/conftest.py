@@ -13,10 +13,13 @@
 # limitations under the License.
 import os
 import subprocess
+from pathlib import Path
 from typing import Callable, Generator
 
 import pytest
 from pyspark.sql import SparkSession
+
+from testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -68,6 +71,12 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
     actually located in a file located directly in the tests folder.
     """
     return file_path_finder(f"{__file__}/../..")
+
+
+@pytest.fixture(scope="session")
+def tests_path(file_path_finder: Callable[[str], str]) -> str:
+    """Returns the tests folder path."""
+    return file_path_finder(f"{__file__}")
 
 
 @pytest.fixture(scope="session")
@@ -131,3 +140,9 @@ def installed_package(
         shell=True,
         executable="/bin/bash",
     )
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
+    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)
