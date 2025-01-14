@@ -22,7 +22,7 @@ def parse_job_arguments(
 
         capacity_settlement_args = CapacitySettlementArgs(
             orchestration_instance_id=job_args.orchestration_instance_id,
-            calculation_month=job_args.ca.calculation_month,
+            calculation_month=job_args.calculation_month,
             calculation_year=job_args.calculation_year,
         )
 
