@@ -20,6 +20,9 @@ on:
     branches:
       - main
 
+env:
+  PACKAGES_DIR: source
+
 jobs:
   #
   # Build Package Matrix
@@ -31,39 +34,11 @@ jobs:
       matrix: ${{ steps.package_matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
-      - name: Create Package Matrix
+      - name: Discover Pyproject
+        uses: ./.github/actions/discover-pyproject
         id: package_matrix
-        shell: python
-        run: |
-          import json
-          import os
-          import tomllib
-          from pathlib import Path
-
-          packages = Path("${{ env.PACKAGES_DIR }}").rglob("pyproject.toml")
-          matrix = []
-          for toml in packages:
-              if str(toml.parent) == ".":
-                  continue
-              with open(toml, "rb") as fh:
-                  data = tomllib.load(fh)
-              name = data.get("project", {}).get("name")
-              version = data.get("project", {}).get("version")
-              project_data = {
-                "name": name,
-                "version": version,
-                "path": str(toml.parent)
-              }
-              matrix.append(project_data)
-          include_statement = json.dumps({"inputs": matrix})
-          print(include_statement)
-          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
-              print(f"matrix={include_statement}", file=fh)
-
+        with:
+          path: ${{ env.PACKAGES_DIR }}
   #
   # Deploy
   #
