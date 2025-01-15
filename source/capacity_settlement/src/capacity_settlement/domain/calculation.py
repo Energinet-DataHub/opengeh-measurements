@@ -12,10 +12,12 @@ from source.capacity_settlement.src.capacity_settlement.application.job_args.cap
 
 
 class ColumNames:
+    # Input/output column names from contracts
     date = "date"
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
+    # Ephemeral columns
     selection_period_start = "selection_period_start"
     selection_period_end = "selection_period_end"
 
