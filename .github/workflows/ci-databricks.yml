@@ -16,7 +16,7 @@ jobs:
     with:
       python_version: 3.11.7
       architecture: x64
-      wheel_working_directory: ./source/core/src
+      wheel_working_directory: ./source/${{ inputs.package_name }}/src
       prerelease_prefix: core
 
   uv-build-and-test:
