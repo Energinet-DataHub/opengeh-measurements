@@ -37,6 +37,12 @@ runs:
       run: |
         uv build --directory ${{ inputs.path }}
         mv ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH}}
+    - name: Copy Container Tests
+      shell: bash
+      run: |
+        if [ -d "${{ inputs.path }}/tests/container_tests" ]; then
+            mv ${{ inputs.path }}/tests/container_tests ${{ env.RELEASE_FOLDER_PATH}}
+        fi
     - name: Zip files for prerelease
       uses: thedoctor0/zip-release@0.7.6
       with:
