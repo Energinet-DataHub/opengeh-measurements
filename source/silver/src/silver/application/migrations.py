@@ -6,9 +6,9 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import bronze.domain.substitutions as substitutions
-from bronze.domain.constants.database_names import DatabaseNames
-from bronze.domain.constants.table_names import TableNames
+import silver.domain.substitutions as substitutions
+from silver.domain.constants.database_names import DatabaseNames
+from silver.domain.constants.table_names import TableNames
 
 
 def migrate() -> None:
@@ -21,7 +21,7 @@ def _configure_spark_sql_migrations() -> None:
     catalog_name = os.environ["CATALOG_NAME"]
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=DatabaseNames.bronze_database,
+        migration_schema_name=DatabaseNames.silver_database,
         migration_table_name=TableNames.executed_migrations_table,
         migration_scripts_folder_path="silver.infrastructure.migration_scripts",
         substitution_variables=substitution_variables,
