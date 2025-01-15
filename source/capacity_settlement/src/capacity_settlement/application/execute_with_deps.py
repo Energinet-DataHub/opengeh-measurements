@@ -4,14 +4,15 @@ from collections.abc import Callable
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from capacity_settlement.application.job_args.capacity_settlement_args import (
+from telemetry_logging.span_recording import span_record_exception
+
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from capacity_settlement.application.job_args.capacity_settlement_job_args import (
+from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from telemetry_logging.span_recording import span_record_exception
 
 
 def execute_with_deps(

@@ -1,7 +1,9 @@
 ﻿import pytest
-from capacity_settlement import entry_point
 
-from capacity_settlement_tests.entry_point_test_util import assert_entry_point_exists
+from capacity_settlement import entry_point
+from source.capacity_settlement.tests.capacity_settlement_tests.entry_point_test_util import (
+    assert_entry_point_exists,
+)
 
 
 @pytest.mark.parametrize(
