@@ -35,9 +35,8 @@ runs:
     - name: Build ${{ inputs.name }}
       shell: bash
       run: |
-        uv build --directory ${{ inputs.path }}
-        mv dist ${{ env.RELEASE_FOLDER_PATH}}
-        rm -rf dist
+        mkdir -p ${{ env.RELEASE_FOLDER_PATH}}
+        uv build --directory ${{ inputs.path }} --out-dir ${{ env.RELEASE_FOLDER_PATH}}
     - name: Copy Container Tests from ${{ inputs.name }}
       shell: bash
       run: |
