@@ -100,7 +100,7 @@ jobs:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
       - name: Upload prerelease
-        uses: ./.github/actions/databricks-prerelease
+        uses: ./.github/actions/create-prerelease
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
