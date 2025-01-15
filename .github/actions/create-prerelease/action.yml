@@ -31,14 +31,13 @@ runs:
         cache-suffix: ${{ inputs.name }}
     - name: Sync ${{ inputs.name }}
       shell: bash
-      working-directory: ${{ inputs.path }}
-      run: uv sync
+      run: uv sync --directory ${{ inputs.path }}
     - name: Build ${{ inputs.name }}
       shell: bash
-      working-directory: ${{ inputs.path }}
       run: |
-        uv build
-        mv ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH}}
+        uv build --directory ${{ inputs.path }}
+        mv dist ${{ env.RELEASE_FOLDER_PATH}}
+        rm -rf dist
     - name: Copy Container Tests from ${{ inputs.name }}
       shell: bash
       run: |
