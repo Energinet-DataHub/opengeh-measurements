@@ -1,44 +1,49 @@
-FROM ghcr.io/energinet-datahub/pyspark-slim:3.5.1-5
+# Docker complaines if FROM does not resolve to a valid image. Hence the defaults.
+ARG UBUNTU_VERSION=22.04
+ARG UV_VERSION=0.5.15
+ARG SPARK_VERSION=3.5.4
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
+# Get Spark
+FROM spark:${SPARK_VERSION}-scala2.12-java17-python3-r-ubuntu AS spark
 USER root
+RUN mkdir -p /tmp \
+  && chmod 777 /tmp \
+  && mv /opt/spark// /tmp/spark \
+  && mv /opt/java/openjdk /tmp/java
 
-RUN apt-get update; \
-    # Install git as it is needed by spark
-    apt-get install --no-install-recommends -y git; \
-    # Curl is temporarily installed in order to download the Azure CLI (consider multi stage build instead)
-    apt-get install --no-install-recommends -y curl; \
-    # C++ compiler is needed for some python packages
-    apt-get install --no-install-recommends -y g++; \
-    # Install Azure CLI, see https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
-    # as it is needed by integration tests
-    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash; \
-    # Cleanup apt cache to reduce image size
-    apt-get remove -y curl; \
-    rm -rf /var/lib/apt/lists/*
+# Get uv
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
-# This replaces the default spark configuration in the docker image with the ones defined in the sibling file
-COPY spark-defaults.conf $SPARK_HOME/conf/
+# Base image
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-${UBUNTU_VERSION}
 
-# Install python packages used in pyspark development (keep spark dependent packages alligned)
-# delta-spark version has to have compatibility with spark version (https://docs.delta.io/latest/releases.html)
-# example (delta 2.2.x = spark 3.3.x)
-COPY requirements.txt requirements.txt
-RUN pip --no-cache-dir install -r requirements.txt
+# Install System Dependencies
+RUN apt-get update \
+  && apt-get install -y \
+  git \
+  curl \
+  build-essential \
+  # gnupg2 allows you to sign git commits with GPG
+  gnupg2 \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
 
-# Set misc environment variables required for properly run spark
-# note the amount of memory used on the driver is adjusted here
-ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:$PATH \
-    PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip" \
-    SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info"
 
-# Dynamically downloading spark dependencies from conf/spark-defaults.conf. This is done to save time in the build pipeline so that we don't need to download on every build.
-RUN spark-shell
+# Copy Spark
+ENV JAVA_HOME=/opt/java/openjdk
+ENV SPARK_HOME=/opt/spark
+COPY --from=spark /tmp/spark ${SPARK_HOME}
+COPY --from=spark /tmp/java ${JAVA_HOME}
+ENV PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$PATH
 
-# Change the username from jovyan to nayvoj and update the user id to 1001, as that is the user id used in the GitHub Actions runner
-RUN usermod -l nayvoj jovyan && \
-    usermod -u 1001 nayvoj && \
-    usermod -l jovyan nayvoj
+# Copy uv
+COPY --from=uv /uv /bin
+COPY --from=uv /uvx /bin
+ENV PATH=/bin:$PATH
 
-RUN usermod -u 1001 jovyan
+# Change to non-root user
+ENV USER=vscode
+ENV HOME=/home/$USER
+
+# Reduces the number of .venv directories created
+ENV UV_PROJECT_ENVIRONMENT=/$HOME/.venv

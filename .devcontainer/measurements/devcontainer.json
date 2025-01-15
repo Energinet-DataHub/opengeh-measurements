@@ -1,0 +1,72 @@
+{
+  "name": "measurements",
+  "dockerComposeFile": [
+    "../../.docker/docker-compose.yml"
+  ],
+  "service": "measurements",
+  "shutdownAction": "none",
+  "workspaceFolder": "/workspace/source/measurements",
+  "mounts": [
+    // Persist the command history across container restarts - useful for bash history
+    "source=measurements-bashhistory,target=/commandhistory,type=volume",
+    // Mount the SSH keys for Git - allows you to clone private repositories via ssh
+    "source=measurements-bashhistory,target=/home/vscode/commandhistory,type=volume",
+    // Mount the local system cache directory - speeds up the build process
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+  ],
+  "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "ms-python.python",
+        "ms-vscode-remote.remote-containers"
+      ],
+      "settings": {
+        "git.openRepositoryInParentFolders": "always",
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.testing.pytestArgs": [
+          "tests"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "github.copilot.editor.enableAutoCompletions": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
+        "editor.formatOnSave": true,
+        "ruff.lineLength": 120,
+        "ruff.lint.run": "onSave",
+        "terminal.integrated.inheritEnv": true,
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          },
+          "zsh": {
+            "path": "zsh"
+          },
+          "fish": {
+            "path": "fish"
+          },
+          "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+          },
+          "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+          }
+        }
+      }
+    }
+  }
+}

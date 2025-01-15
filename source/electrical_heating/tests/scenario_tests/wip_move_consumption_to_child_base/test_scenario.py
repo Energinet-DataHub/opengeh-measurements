@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 from testcommon.dataframes import (
     assert_dataframes_and_schemas,
     AssertDataframesConfiguration,

@@ -1,0 +1,27 @@
+name: UV Test
+description: Test a package with UV
+inputs:
+  name:
+    description: The name of the package
+    required: true
+  path:
+    description: The path to the package
+    required: true
+  tests_path:
+    description: The path to the tests
+    required: false
+    default: tests
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+        cache-suffix: ${{ inputs.name }}
+    - name: Sync
+      shell: bash
+      run: uv sync --directory ${{ inputs.path }} --all-extras --dev
+    - name: Test
+      shell: bash
+      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }}

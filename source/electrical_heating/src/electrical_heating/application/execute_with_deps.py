@@ -1,4 +1,6 @@
-﻿import sys
+﻿"""A module."""
+
+import sys
 from argparse import Namespace
 from collections.abc import Callable
 
@@ -6,15 +8,15 @@ import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
+from electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from source.electrical_heating.src.electrical_heating.domain import calculation
-from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
+from electrical_heating.domain import calculation
+from electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
 
@@ -40,7 +42,6 @@ def execute_with_deps(
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
-
             # The command line arguments are parsed to have necessary information for
             # coming log messages
             command_line_args = parse_command_line_args()
