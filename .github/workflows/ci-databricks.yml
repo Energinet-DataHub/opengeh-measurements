@@ -1,0 +1,70 @@
+﻿name: CI Databricks
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        type: string
+        default: latest
+      package_name:
+        type: string
+        required: true
+
+jobs:
+  uv-build-and-test:
+    name: python
+    runs-on: ubuntu-latest
+
+    env:
+      RELEASE_FOLDER_PATH: ./source/${{ inputs.package_name }}/artifact
+      RELEASE_VERSION: core_${{ github.event.pull_request.number }}
+      RELEASE_ZIP_FILENAME: core_${{ github.event.pull_request.number }}.zip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the project
+        run: |
+          uv sync --all-extras --dev --directory source/${{ inputs.package_name }}
+
+      - name: Ruff Check
+        run: |
+          uv run --directory "source/${{inputs.package_name}}" ruff check
+
+      - name: Run tests
+        run: |
+          uv run --directory source/${{ inputs.package_name }} pytest tests
+
+      - name: Build Wheel
+        run: |
+          cd source/${{ inputs.package_name }}
+          uv build
+
+          mkdir artifact
+          mv dist artifact
+
+      - name: Zip files for prerelease
+        uses: thedoctor0/zip-release@0.6.2
+        with:
+          type: zip
+          filename: ${{ env.RELEASE_ZIP_FILENAME }}
+          directory: ${{ env.RELEASE_FOLDER_PATH }}
+
+      - name: Create prerelease
+        uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
+        with:
+          repo_token: ${{ github.token }}
+          automatic_release_tag: ${{ env.RELEASE_VERSION }}
+          prerelease: true
+          title: ${{ env.RELEASE_VERSION }}
+          files: |
+            ${{ env.RELEASE_FOLDER_PATH }}/${{ env.RELEASE_ZIP_FILENAME }}
