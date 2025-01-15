@@ -56,8 +56,8 @@ jobs:
               name = data.get("project", {}).get("name")
               version = data.get("project", {}).get("version")
               project_data = {
-                "name": name, 
-                "version": version, 
+                "name": name,
+                "version": version,
                 "path": str(toml.parent)
               }
               matrix.append(project_data)
