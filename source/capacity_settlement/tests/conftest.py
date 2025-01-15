@@ -11,10 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
+import subprocess
+from pathlib import Path
+from typing import Callable, Generator
+
 import pytest
+from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
+from tests.testsession_configuration import TestSessionConfiguration
+
+
+@pytest.fixture(scope="module", autouse=True)
+def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
+    yield
+    # Clear the cache after each test module to avoid memory issues
+    spark.catalog.clearCache()
+
+
+@pytest.fixture(scope="session")
+def spark() -> Generator[SparkSession, None, None]:
+    session = SparkSession.builder.appName("testcommon").getOrCreate()
+    yield session
+    session.stop()
 
 
 @pytest.fixture(autouse=True)
@@ -34,3 +55,9 @@ def contracts_path() -> str:
     actually located in a file located directly in the tests folder.
     """
     return f"{PROJECT_ROOT}/contracts"
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
+    settings_file_path = PROJECT_ROOT / "tests" / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)
