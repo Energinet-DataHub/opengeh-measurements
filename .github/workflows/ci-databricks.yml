@@ -11,6 +11,14 @@ on:
         required: true
 
 jobs:
+  databricks_ci_build:
+    uses: Energinet-DataHub/.github/.github/workflows/databricks-build-prerelease.yml@v14
+    with:
+      python_version: 3.11.7
+      architecture: x64
+      wheel_working_directory: ./source/core/src
+      prerelease_prefix: core
+
   uv-build-and-test:
     name: python
     runs-on: ubuntu-latest
