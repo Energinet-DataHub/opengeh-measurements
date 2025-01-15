@@ -23,7 +23,7 @@ def _configure_spark_sql_migrations() -> None:
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.bronze_database,
         migration_table_name=TableNames.executed_migrations_table,
-        migration_scripts_folder_path="silver.infrastructure.migration_scripts",
+        migration_scripts_folder_path="bronze.infrastructure.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
     )
