@@ -11,7 +11,6 @@ concurrency:
 
 env:
   PACKAGES_DIR: source
-  UBUNTU_VERSION: ubuntu-24.04
 
 jobs:
   #
@@ -29,7 +28,7 @@ jobs:
   #
   ci_matrix:
     name: Build Package Matrix
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.package_matrix.outputs.matrix }}
     steps:
@@ -66,7 +65,7 @@ jobs:
   #
   ci_test:
     name: Test Packages
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ubuntu-24.04
     needs: ci_matrix
     strategy:
       matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
@@ -114,7 +113,7 @@ jobs:
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ubuntu-24.04
     needs: [ci_base, ci_matrix, ci_test]
     if: |
       always()
