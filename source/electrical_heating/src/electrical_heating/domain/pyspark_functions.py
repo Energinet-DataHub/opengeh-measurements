@@ -1,6 +1,7 @@
 ﻿from pyspark.sql import DataFrame
 from pyspark.sql import functions as F, types as T
 from pyspark.sql import Column
+from typing import Callable
 
 
 def convert_utc_to_localtime(
@@ -42,7 +43,11 @@ def get_timestamp_columns(df: DataFrame) -> list[str]:
     ]
 
 
-def _convert_timezone(df: DataFrame, time_zone: str, conversion_func) -> DataFrame:
+def _convert_timezone(
+    df: DataFrame,
+    time_zone: str,
+    conversion_func: Callable[[DataFrame, str, str], DataFrame],
+) -> DataFrame:
     """Convert all timestamp/date columns between UTC and local timezone.
 
     Args:
