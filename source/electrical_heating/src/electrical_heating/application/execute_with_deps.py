@@ -30,8 +30,6 @@ from source.electrical_heating.src.electrical_heating.infrastructure.electrical_
     calculations as schemas,
 )
 from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
-from electrical_heating.domain import calculation
-from electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
 
