@@ -11,6 +11,7 @@ concurrency:
 
 env:
   PACKAGES_DIR: source
+  UBUNTU_VERSION: ubuntu-24.04
 
 jobs:
   #
@@ -28,7 +29,7 @@ jobs:
   #
   ci_matrix:
     name: Build Package Matrix
-    runs-on: ubuntu-24.04
+    runs-on: ${{ env.UBUNTU_VERSION }}
     outputs:
       matrix: ${{ steps.package_matrix.outputs.matrix }}
     steps:
@@ -64,7 +65,8 @@ jobs:
   # Test Packages
   #
   ci_test:
-    runs-on: ubuntu-24.04
+    name: Test Packages
+    runs-on: ${{ env.UBUNTU_VERSION }}
     needs: ci_matrix
     strategy:
       matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
@@ -92,19 +94,27 @@ jobs:
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
+      - name: Upload prerelease
+        uses: ./.github/actions/databricks-prerelease
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          name: ${{ matrix.inputs.name }}
+          path: ${{ matrix.inputs.path }}
+          issue-number: ${{ github.event.pull_request.number }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  ci_bronze:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.bronze == 'true' }}
-    uses: ./.github/workflows/ci-databricks.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-      package_name: bronze
+  # ci_bronze:
+  #   needs: [changes, ci_docker]
+  #   if: ${{ needs.changes.outputs.bronze == 'true' }}
+  #   uses: ./.github/workflows/ci-databricks.yml
+  #   with:
+  #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+  #     package_name: bronze
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.UBUNTU_VERSION }}
     needs: [ci_base, ci_matrix, ci_test]
     if: |
       always()
