@@ -60,6 +60,13 @@ jobs:
     with:
       release_name_prefix: capacity_settlement
 
+  core_promote_prerelease:
+    needs: changes
+    if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
+    with:
+      release_name_prefix: core      
+
   #
   # Dispatch deployment request
   #
@@ -125,6 +132,37 @@ jobs:
           client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "electrical_heating": "${{ needs.changes.outputs.electrical_heating }}"}'
 
 
+  dispatch_deployment_event_core:
+    if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.core == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [
+      changes,
+      core_promote_prerelease,
+    ]
+    steps:
+      - run: echo "${{ toJSON(needs) }}"
+
+      - name: Find associated pull request
+        uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
+        id: find_pull_request
+
+      - uses: Energinet-DataHub/.github/.github/actions/github-create-token@v14
+        name: Generate Github token
+        id: generate_token
+        with:
+          app_id: ${{ vars.dh3serviceaccount_appid }}
+          private_key: ${{ secrets.dh3serviceaccount_privatekey }}
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          repository: ${{ vars.environment_repository_path }}
+          event-type: measurements-core-deployment-request-domain
+          # yamllint disable-line rule:quoted-strings
+          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "core": "${{ needs.changes.outputs.core }}"}'
+
+
   #
   # Send notification to teams channel if deployment dispatch failed
   #
@@ -134,8 +172,10 @@ jobs:
       [
         electrical_heating_promote_prerelease,
         capacity_settlement_promote_prerelease,
+        core_promote_prerelease,
         dispatch_deployment_event_capacity_settlement,
         dispatch_deployment_event_electrical_heating,
+        dispatch_deployment_event_core,
         cd_docker
       ]
     if: |
