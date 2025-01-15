@@ -5,7 +5,7 @@ from telemetry_logging import use_span
 
 import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
 import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+from src.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 from source.electrical_heating.src.electrical_heating.domain.constants import (
