@@ -34,7 +34,7 @@ allow-direct-references = true
 addopts = """
 --cov-report=term \
 --cov-report=xml:coverage.xml \
---cov=database-migration \
+--cov=bronze \
 -ra
 -vv"""
 
