@@ -54,7 +54,13 @@ jobs:
               with open(toml, "rb") as fh:
                   data = tomllib.load(fh)
               name = data.get("project", {}).get("name")
-              matrix.append({"name": name, "path": str(toml.parent)})
+              version = data.get("project", {}).get("version")
+              project_data = {
+                "name": name, 
+                "version": version, 
+                "path": str(toml.parent)
+              }
+              matrix.append(project_data)
           include_statement = json.dumps({"inputs": matrix})
           print(include_statement)
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
