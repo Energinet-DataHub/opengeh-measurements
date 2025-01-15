@@ -2,20 +2,21 @@
 name="measurements-mono"
 version="0.1.0"
 dependencies = [
-    "capacity-settlement",
-    "electrical-heating",
-    "uvmono>=0.3.9",
+    "capacity_settlement",
+    "electrical_heating",
 ]
+requires-python = ">=3.10"
 
 [tool.uv.workspace]
-members = ["packages/capacity_settlement", "packages/electrical_heating", "packages/measurements", "test_package"]
+members = ["source/capacity_settlement", "source/electrical_heating", "source/measurements", "test_package"]
 
 [tool.uv.sources]
-electrical-heating = { workspace = true }
-capacity-settlement = { workspace = true }
+electrical_heating = { workspace = true }
+capacity_settlement = { workspace = true }
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.0.1",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
 ]
