@@ -5,7 +5,7 @@ description = "Streaming to the bronze layer"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "opengeh-spark-sql-migrations=https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations",
+    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations",
 ]
 
 [project.scripts]
