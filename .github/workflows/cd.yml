@@ -60,6 +60,7 @@ jobs:
     with:
       release_name_prefix: capacity_settlement
 
+
   core_promote_prerelease:
     needs: changes
     if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
