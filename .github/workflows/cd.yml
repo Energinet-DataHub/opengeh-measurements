@@ -80,8 +80,7 @@ jobs:
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
-          repository_name: measurements
-          repository_path: ${{ vars.environment_repository_path }}
+          repository: ${{ vars.environment_repository_path }}
           app_id: ${{ vars.dh3serviceaccount_appid }}
           private_key: ${{ secrets.dh3serviceaccount_privatekey }}
 
