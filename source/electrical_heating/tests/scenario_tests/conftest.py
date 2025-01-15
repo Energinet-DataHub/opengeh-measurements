@@ -1,4 +1,6 @@
-﻿from pathlib import Path
+﻿import uuid
+from datetime import datetime, timezone
+from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession
@@ -6,8 +8,11 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from source.electrical_heating.src.electrical_heating.domain.calculation import (
-    execute_core_logic,
+from source.electrical_heating.src.electrical_heating.application.execute_with_deps import (
+    execute_calculation,
+)
+from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+    ElectricalHeatingArgs,
 )
 from source.electrical_heating.src.electrical_heating.infrastructure.electricity_market.schemas.child_metering_point_periods_v1 import (
     child_metering_point_periods_v1,
@@ -15,7 +20,6 @@ from source.electrical_heating.src.electrical_heating.infrastructure.electricity
 from source.electrical_heating.src.electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
     consumption_metering_point_periods_v1,
 )
-
 from source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
@@ -57,21 +61,32 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_point_periods_v1,
     )
 
-    # Execute the calculation logic
-    actual_measurements = execute_core_logic(
+    args = ElectricalHeatingArgs(
+        time_zone="Europe/Copenhagen",
+        catalog_name="some_catalog_name",
+        orchestration_instance_id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
+    )
+
+    # Execute the calculation
+    calculation_output = execute_calculation(
+        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        "Europe/Copenhagen",
+        args,
+        datetime.now(timezone.utc),
     )
 
     # Return test cases
     return TestCases(
         [
-            # TODO: Add calculations.csv test case (in another PR)
+            TestCase(
+                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
+                actual=calculation_output.calculations,
+            ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual_measurements,
+                actual=calculation_output.measurements,
             ),
         ]
     )

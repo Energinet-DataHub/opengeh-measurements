@@ -41,3 +41,7 @@ class ScenarioTestsConfiguration:
         self.show_actual_and_expected_count = configuration.get(
             "show_actual_and_expected_count", False
         )
+
+        self.ignore_extra_columns_in_actual = configuration.get(
+            "ignore_extra_columns_in_actual", True
+        )
