@@ -13,7 +13,8 @@ from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
-    convert_timezone,
+    convert_from_utc,
+    convert_to_utc,
     begining_of_year,
     days_in_year,
 )
@@ -56,13 +57,13 @@ def execute_core_logic(
         F.col(em.ColumnNames.metering_point_type)
         == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
-    consumption_metering_point_periods = convert_timezone(
-        consumption_metering_point_periods, time_zone, to_utc=False
+    consumption_metering_point_periods = convert_from_utc(
+        consumption_metering_point_periods, time_zone
     )
-    child_metering_point_periods = convert_timezone(
-        child_metering_point_periods, time_zone, to_utc=False
+    child_metering_point_periods = convert_from_utc(
+        child_metering_point_periods, time_zone
     )
-    time_series_points = convert_timezone(time_series_points, time_zone, to_utc=False)
+    time_series_points = convert_from_utc(time_series_points, time_zone)
 
     metering_points_and_periods = (
         child_metering_point_periods.alias("child")
@@ -213,6 +214,7 @@ def execute_core_logic(
             F.col("quantity"),
             F.col("period_consumption_limit"),
         )
+        .orderBy(F.col("date"))
         .drop_duplicates()
     )
 
@@ -240,8 +242,34 @@ def execute_core_logic(
         .alias("quantity"),
     ).drop_duplicates()
 
-    period_consumption_with_limit = convert_timezone(
-        period_consumption_with_limit, time_zone, to_utc=True
+    compare_previous_calculated_daily_consumption = (
+        period_consumption_with_limit.alias("current")
+        .join(
+            time_series_points.alias("previous"),
+            (
+                (F.col("current.date") == F.col("previous.observation_time"))
+                & (
+                    F.col("current.metering_point_id")
+                    == F.col("previous.metering_point_id")
+                )
+            ),
+            "left",
+        )
+        .where(
+            (
+                (F.col("current.quantity") != F.col("previous.quantity"))
+                | F.col("previous.quantity").isNull()
+            )
+        )
+        .select(
+            F.col("current.metering_point_id"),
+            F.col("current.date"),
+            F.col("current.quantity"),
+        )
     )
 
-    return period_consumption_with_limit
+    compare_previous_calculated_daily_consumption = convert_to_utc(
+        compare_previous_calculated_daily_consumption, time_zone
+    )
+
+    return compare_previous_calculated_daily_consumption
