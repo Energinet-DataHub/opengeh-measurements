@@ -53,6 +53,8 @@ jobs:
               - '.github/workflows/ci-capacity-settlement.yml'
               - '.github/workflows/cd.yml'
               - '.devcontainer/**'
+            core:
+              - 'source/bronze/**'
             bronze:
               - 'source/bronze/**'
               - '.github/workflows/ci-databricks.yml'
