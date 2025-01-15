@@ -17,7 +17,7 @@ setup(
         "python-dateutil==2.8.2",
         "azure-monitor-opentelemetry==1.6.4",
         "azure-core==1.32.0",
-        "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/telemetry",
+        "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.3#subdirectory=source/telemetry",
     ],
     entry_points={
         "console_scripts": [
