@@ -18,11 +18,11 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=3.0.0" }]
+requires-dist = [{ name = "opengeh-spark-sql-migrations", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fspark_sql_migrations&rev=3.0.3" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1" },
+    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.3" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.9.1" },
@@ -209,7 +209,7 @@ dependencies = [
 [[package]]
 name = "opengeh-testcommon"
 version = "0.0.4"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1#9dfc33c2a5c53c91249e632550eea93415ea6013" }
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.3#9dfc33c2a5c53c91249e632550eea93415ea6013" }
 dependencies = [
     { name = "delta-spark" },
     { name = "pyspark" },
