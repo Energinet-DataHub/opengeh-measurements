@@ -148,6 +148,7 @@ dependencies = [
 dev = [
     { name = "commitizen" },
     { name = "mypy" },
+    { name = "opengeh-testcommon" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -169,6 +170,7 @@ requires-dist = [
 dev = [
     { name = "commitizen", specifier = ">=4.1.0" },
     { name = "mypy", specifier = ">=1.14.1" },
+    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1" },
     { name = "pre-commit", specifier = ">=4.0.1" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
@@ -689,6 +691,16 @@ dependencies = [
     { name = "azure-keyvault-secrets" },
     { name = "azure-monitor-opentelemetry" },
     { name = "azure-monitor-query" },
+]
+
+[[package]]
+name = "opengeh-testcommon"
+version = "0.0.4"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1#9dfc33c2a5c53c91249e632550eea93415ea6013" }
+dependencies = [
+    { name = "delta-spark" },
+    { name = "pyspark" },
+    { name = "pyyaml" },
 ]
 
 [[package]]
