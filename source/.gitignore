@@ -1,4 +1,4 @@
-﻿testsession.local.settings.yml
+﻿*.local.settings.yml
 
 # Exclude directory created by wheel creation
 *.egg-info
