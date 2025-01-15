@@ -61,6 +61,9 @@ jobs:
               - 'source/silver/**'
             bronze:
               - 'source/bronze/**'
+              - '.github/workflows/ci-databricks.yml'
+              - '.github/workflows/cd.yml'
+            silver:
               - 'source/silver/**'
               - '.github/workflows/ci-databricks.yml'
               - '.github/workflows/cd.yml'
