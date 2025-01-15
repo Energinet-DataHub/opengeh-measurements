@@ -5,6 +5,23 @@ from pathlib import Path
 from typing import Callable, Generator
 
 import pytest
+from pyspark.sql import SparkSession
+
+from testsession_configuration import TestSessionConfiguration
+
+
+@pytest.fixture(scope="module", autouse=True)
+def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
+    yield
+    # Clear the cache after each test module to avoid memory issues
+    spark.catalog.clearCache()
+
+
+@pytest.fixture(scope="session")
+def spark() -> Generator[SparkSession, None, None]:
+    session = SparkSession.builder.appName("testcommon").getOrCreate()
+    yield session
+    session.stop()
 import yaml
 
 from container_tests.databricks_api_client import DatabricksApiClient
@@ -54,6 +71,12 @@ def capacity_settlement_tests_path(source_path: str) -> str:
     Returns the tests folder path for capacity settlement.
     """
     return f"{source_path}/capacity_settlement/tests"
+
+
+@pytest.fixture(scope="session")
+def tests_path(file_path_finder: Callable[[str], str]) -> str:
+    """Returns the tests folder path."""
+    return file_path_finder(f"{__file__}")
 
 
 @pytest.fixture(scope="session")
@@ -176,3 +199,9 @@ def databricks_client(test_configuration: TestConfiguration) -> DatabricksApiCli
         os.environ["DATABRICKS_HOST"],
         os.environ["DATABRICKS_TOKEN"],
     )
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
+    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)

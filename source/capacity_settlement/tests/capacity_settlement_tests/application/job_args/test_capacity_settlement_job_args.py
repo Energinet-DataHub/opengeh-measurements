@@ -10,6 +10,8 @@ from capacity_settlement.application.job_args.environment_variables import (
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
+DEFAULT_CALCULATION_MONTH = 1
+DEFAULT_CALCULATION_YEAR = 2021
 
 
 def _get_contract_parameters(filename: str) -> list[str]:
@@ -18,6 +20,8 @@ def _get_contract_parameters(filename: str) -> list[str]:
         text = text.replace(
             "{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID
         )
+        text = text.replace("{calculation-month}", str(DEFAULT_CALCULATION_MONTH))
+        text = text.replace("{calculation-year}", str(DEFAULT_CALCULATION_YEAR))
         lines = text.splitlines()
         return list(
             filter(lambda line: not line.startswith("#") and len(line) > 0, lines)

@@ -15,3 +15,5 @@ venv
 .mypy_cache
 .pytest_cache
 .test-pytest
+.lock
+*/pyvenv.cfg
