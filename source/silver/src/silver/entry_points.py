@@ -1,4 +1,4 @@
-﻿import silver.application.migrations as migrations
+﻿import silver.application.services.migrations as migrations
 
 
 def migrate() -> None:

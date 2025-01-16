@@ -8,11 +8,11 @@
     TimestampType,
 )
 
-from silver.domain.constants.column_names.silver_measurements_column_names import (
+from silver.domain.constants.columns.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
 
-calculation_results_silver_schema = StructType(
+silver_measurements_schema = StructType(
     [
         StructField(SilverMeasurementsColumnNames.orchestration_type, StringType(), True),
         StructField(SilverMeasurementsColumnNames.orchestration_instance_id, StringType(), True),

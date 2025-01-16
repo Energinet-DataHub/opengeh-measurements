@@ -5,7 +5,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import silver.application.migrations as migrations
+import silver.application.services.migrations as migrations
 from silver.domain.constants.database_names import DatabaseNames
 
 
