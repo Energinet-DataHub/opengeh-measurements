@@ -5,6 +5,6 @@
     quality = "quality"
     metering_point_type = "metering_point_type"
     transaction_id = "transaction_id"
-    transaction_creation_date = "transaction_creation_date"
+    transaction_creation_datetime = "transaction_creation_datetime"
     created = "created"
     modified = "modified"

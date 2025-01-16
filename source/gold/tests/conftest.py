@@ -22,13 +22,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
     session = configure_spark_with_delta_pip(
         SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
-        .config("spark.sql.streaming.schemaInference", True)
-        .config("spark.default.parallelism", 1)
-        .config("spark.rdd.compress", False)
-        .config("spark.shuffle.compress", False)
-        .config("spark.shuffle.spill.compress", False)
-        .config("spark.sql.shuffle.partitions", 1)
-        .config("spark.databricks.delta.allowArbitraryProperties.enabled", True)
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config(
             "spark.sql.catalog.spark_catalog",
@@ -38,15 +31,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
             "javax.jdo.option.ConnectionURL",
             f"jdbc:derby:;databaseName={tests_path}/__metastore_db__;create=true",
         )
-        .config(
-            "javax.jdo.option.ConnectionDriverName",
-            "org.apache.derby.jdbc.EmbeddedDriver",
-        )
-        .config("javax.jdo.option.ConnectionUserName", "APP")
-        .config("javax.jdo.option.ConnectionPassword", "mine")
-        .config("datanucleus.autoCreateSchema", "true")
-        .config("hive.metastore.schema.verification", "false")
-        .config("hive.metastore.schema.verification.record.version", "false")
         .enableHiveSupport()
     ).getOrCreate()
 
@@ -100,7 +84,7 @@ def tests_path(source_path: str) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return f"{source_path}/bronze/tests"
+    return f"{source_path}/gold/tests"
 
 
 def _create_schemas(spark: SparkSession) -> None:
