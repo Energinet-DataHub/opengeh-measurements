@@ -21,6 +21,7 @@ CREATE TABLE {silver_database}.{silver_measurements_table}
     created TIMESTAMP
 )
 USING DELTA
+CLUSTER BY (transaction_id, transaction_creation_datetime, metering_point_id, start_datetime)
 TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,
