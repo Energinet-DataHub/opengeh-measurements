@@ -8,7 +8,7 @@ services:
       - ..:${HOME}/work/opengeh-measurements:cached
       # Map to Azure CLI token cache location (on Linux)
       - "${HOME}/.azure:/home/jovyan/.azure"
-    working_dir: ${HOME}/work/opengeh-measurements
+    working_dir: ${HOME}/work/opengeh-measurements/source/capacity_settlement
     environment:
       # Pass the environment variables from your shell straight through to your containers.
       # No warning is issued if the variable in the shell environment is not set.
