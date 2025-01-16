@@ -1,2 +1,3 @@
 metering_point_id;date;quantity;#comment
-140000000000170201;2024-01-01 23:00:00;1.858;Limit is 21.858. Quantity for Jan. 1std is the same (20), so no new rows are added. But value for Jan. 2nd is now 12.787 (up to limit) which is different from previous value of 20.
+140000000000170201;2024-01-01 23:00:00;12.787;Limit is 32.786. Quantity for Jan. 1std is the same (20), so no new rows are added. But value for Jan. 2nd is now 12.787 (up to limit) which is different from previous value of 20.
+140000000000170201;2024-01-02 23:00:00;0;
