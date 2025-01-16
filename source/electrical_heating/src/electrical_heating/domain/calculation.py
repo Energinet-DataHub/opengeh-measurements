@@ -214,7 +214,6 @@ def execute_core_logic(
             F.col("quantity"),
             F.col("period_consumption_limit"),
         )
-        .orderBy(F.col("date"))
         .drop_duplicates()
     )
 
@@ -242,7 +241,7 @@ def execute_core_logic(
         .alias("quantity"),
     ).drop_duplicates()
 
-    compare_previous_calculated_daily_consumption = (
+    changed_consumption = (
         period_consumption_with_limit.alias("current")
         .join(
             time_series_points.alias("previous"),
@@ -268,8 +267,6 @@ def execute_core_logic(
         )
     )
 
-    compare_previous_calculated_daily_consumption = convert_to_utc(
-        compare_previous_calculated_daily_consumption, time_zone
-    )
+    changed_consumption = convert_to_utc(changed_consumption, time_zone)
 
-    return compare_previous_calculated_daily_consumption
+    return changed_consumption
