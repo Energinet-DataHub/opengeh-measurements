@@ -18,7 +18,7 @@ on:
       bronze:
         value: ${{ jobs.changes.outputs.bronze }}
       gold:
-        value: ${{ jobs.changes.outputs.gold }}        
+        value: ${{ jobs.changes.outputs.gold }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
       docker_in_commit:
@@ -70,7 +70,7 @@ jobs:
             gold:
               - 'source/gold/**'
               - '.github/workflows/ci-databricks.yml'
-              - '.github/workflows/cd.yml'              
+              - '.github/workflows/cd.yml'
             docker:
               - .docker/**
 

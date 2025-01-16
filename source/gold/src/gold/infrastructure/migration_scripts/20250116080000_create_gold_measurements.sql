@@ -1,6 +1,6 @@
 CREATE TABLE {gold_database}.{gold_measurements_table}
 (
-    metering_point_type STRING,
+    metering_point_id STRING,
     observation_time TIMESTAMP,
     quantity DECIMAL(18, 3),
     quality STRING,
