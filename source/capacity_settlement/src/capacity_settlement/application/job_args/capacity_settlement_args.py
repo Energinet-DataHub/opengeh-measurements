@@ -6,5 +6,5 @@ from uuid import UUID
 @dataclass
 class CapacitySettlementArgs:
     orchestration_instance_id: UUID
-    calculation_period_start: datetime
-    calculation_period_end: datetime
+    calculation_month: int
+    calculation_year: int
