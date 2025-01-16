@@ -2,9 +2,6 @@
 
 import pytest
 
-import sys
-import os
-
 from capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
@@ -12,9 +9,6 @@ from capacity_settlement.application.job_args.capacity_settlement_job_args impor
 from capacity_settlement.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
-
-# Add the 'src' directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
 DEFAULT_CALCULATION_MONTH = 1
