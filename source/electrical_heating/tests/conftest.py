@@ -6,7 +6,9 @@ from typing import Generator
 import pytest
 from pyspark.sql import SparkSession
 
-from testsession_configuration import TestSessionConfiguration
+from source.electrical_heating.tests.testsession_configuration import (
+    TestSessionConfiguration,
+)
 
 
 @pytest.fixture(scope="module", autouse=True)
