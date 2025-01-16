@@ -65,7 +65,9 @@ def execute_core_logic(
     )
     time_series_points = convert_from_utc(time_series_points, time_zone)
 
-    metering_points_and_periods = (
+    # prepare child metering points and parent metering points
+
+    join_child_to_parent_metering_point = (
         child_metering_point_periods.alias("child")
         .join(
             consumption_metering_point_periods.alias("parent"),
@@ -128,71 +130,149 @@ def execute_core_logic(
         )
     )
 
-    quarter_hour_consumption_periods_per_year = (
-        metering_points_and_periods.alias("period")
-        .join(
-            time_series_points.alias("consumption"),
-            F.col("period.consumption_metering_point_id")
-            == F.col("consumption.metering_point_id"),
-            "inner",
+    split_consumption_period_by_year = join_child_to_parent_metering_point.select(
+        F.col("child_metering_point_id"),
+        F.col("consumption_metering_point_id"),
+        F.col("parent_child_overlap_period_start"),
+        F.col("parent_child_overlap_period_end"),
+        F.col("period_year"),
+        F.col("child_period_start"),
+        F.col("child_period_end"),
+        F.when(
+            F.year(F.col("consumption_period_start")) == F.year(F.col("period_year")),
+            F.col("consumption_period_start"),
         )
-        .where(
-            (
-                F.col("consumption.observation_time")
-                >= F.col("period.parent_child_overlap_period_start")
-            )
-            & (
-                F.col("consumption.observation_time")
-                < F.col("period.parent_child_overlap_period_end")
-            )
-            & (
-                F.year(F.col("consumption.observation_time"))
-                == F.year(F.col("period.period_year"))
-            )
+        .otherwise(begining_of_year(date=F.col("period_year")))
+        .alias("consumption_period_start"),
+        F.when(
+            F.year(F.col("consumption_period_end")) == F.year(F.col("period_year")),
+            F.col("consumption_period_end"),
         )
-        .select(
-            F.col("period.child_metering_point_id").alias("metering_point_id"),
-            F.date_trunc("day", F.col("consumption.observation_time")).alias("date"),
-            F.when(
-                F.year(F.col("period.consumption_period_start"))
-                == F.year(F.col("period_year")),
-                F.col("period.consumption_period_start"),
+        .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
+        .alias("consumption_period_end"),
+    )
+
+    calculate_period_consumption_limit = split_consumption_period_by_year.select(
+        "*",
+        (
+            F.datediff(
+                F.col("consumption_period_end"), F.col("consumption_period_start")
             )
-            .otherwise(begining_of_year(date=F.col("period_year")))
-            .alias("consumption_period_start"),
-            F.when(
-                F.year(F.col("period.consumption_period_end"))
-                == F.year(F.col("period_year")),
-                F.col("period.consumption_period_end"),
-            )
-            .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
-            .alias("consumption_period_end"),
-            F.col("quantity"),
-            F.col("observation_time"),
-        )
+            * ELECTRICAL_HEATING_LIMIT_YEARLY
+            / days_in_year(F.col("consumption_period_start"))
+        ).alias("period_consumption_limit"),
+    )
+
+    # prepare consumption time series data
+
+    consumption_time_series_with_date = time_series_points.select(
+        "*",
+        F.date_trunc("day", F.col("observation_time")).alias("date"),
     )
 
     # for aggreating comsumption from every 15 minutes to daily
     daily_window = Window.partitionBy(
         F.col("metering_point_id"),
-        F.date_trunc("day", F.col("observation_time")),
+        F.col("date"),
     )
 
-    daily_consumption_with_consumption_limit = (
-        quarter_hour_consumption_periods_per_year.select(
+    daily_consumption = consumption_time_series_with_date.select(
+        F.col("metering_point_id"),
+        F.col("date"),
+        F.sum(F.col("quantity")).over(daily_window).alias("quantity"),
+    ).drop_duplicates()
+
+    unique_child_parent_metering_id = child_metering_point_periods.select(
+        F.col("metering_point_id").alias("child_metering_point_id"),
+        F.col("parent_metering_point_id"),
+    ).drop_duplicates()
+
+    join_unique_child_and_parent_id_to_consumption_daily = (
+        daily_consumption.alias("consumption")
+        .join(
+            unique_child_parent_metering_id.alias("id"),
+            F.col("consumption.metering_point_id")
+            == F.col("id.parent_metering_point_id"),
+            "left",
+        )
+        .select(
+            F.col("consumption.metering_point_id").alias("metering_point_id"),
+            F.col("consumption.date").alias("date"),
+            F.col("consumption.quantity").alias("quantity"),
+            F.col("id.child_metering_point_id").alias("child_metering_point_id"),
+        )
+    )
+    consumption = join_unique_child_and_parent_id_to_consumption_daily.where(
+        F.col("child_metering_point_id").isNotNull()
+    )
+
+    previously_calculated_consumption = (
+        join_unique_child_and_parent_id_to_consumption_daily.where(
+            F.col("child_metering_point_id").isNull()
+        ).select(
             F.col("metering_point_id"),
             F.col("date"),
-            F.sum(F.col("quantity")).over(daily_window).alias("quantity"),
-            F.col("consumption_period_start"),
-            F.col("consumption_period_end"),
+            F.col("quantity"),
+        )
+    )
+
+    join_consumption_to_previously_calculated_consumption = (
+        consumption.alias("consumption")
+        .join(
+            previously_calculated_consumption.alias("previous"),
             (
-                F.datediff(
-                    F.col("consumption_period_end"), F.col("consumption_period_start")
+                (
+                    F.col("consumption.child_metering_point_id")
+                    == F.col("previous.metering_point_id")
                 )
-                * ELECTRICAL_HEATING_LIMIT_YEARLY
-                / days_in_year(F.col("consumption_period_start"))
-            ).alias("period_consumption_limit"),
-        ).drop_duplicates()
+                & (F.col("consumption.date") == F.col("previous.date"))
+            ),
+            "left",
+        )
+        .select(
+            F.col("consumption.metering_point_id").alias("metering_point_id"),
+            F.col("consumption.date").alias("date"),
+            F.col("consumption.quantity").alias("quantity"),
+            F.col("previous.quantity").alias("previously_calculated_quantity"),
+        )
+    )
+
+    # here conumption time series and metering points data is joined
+    join_consumption_to_metering_points = (
+        join_consumption_to_previously_calculated_consumption.alias("consumption")
+        .join(
+            calculate_period_consumption_limit.alias("metering_point"),
+            F.col("consumption.metering_point_id")
+            == F.col("metering_point.consumption_metering_point_id"),
+            "inner",
+        )
+        .where(
+            (
+                F.col("consumption.date")
+                >= F.col("metering_point.parent_child_overlap_period_start")
+            )
+            & (
+                F.col("consumption.date")
+                < F.col("metering_point.parent_child_overlap_period_end")
+            )
+            & (
+                F.year(F.col("consumption.date"))
+                == F.year(F.col("metering_point.period_year"))
+            )
+        )
+        .select(
+            F.col("metering_point.consumption_period_start"),
+            F.col("metering_point.consumption_period_end"),
+            F.col("consumption.metering_point_id").alias("metering_point_id"),
+            F.col("consumption.date").alias("date"),
+            F.col("consumption.quantity").alias("quantity"),
+            F.col("metering_point.period_consumption_limit").alias(
+                "period_consumption_limit"
+            ),
+            F.col("consumption.previously_calculated_quantity").alias(
+                "previously_calculated_quantity"
+            ),
+        )
     )
 
     period_window = (
@@ -205,21 +285,16 @@ def execute_core_logic(
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
 
-    period_consumption = (
-        daily_consumption_with_consumption_limit.alias("daily")
-        .select(
-            F.col("metering_point_id"),
-            F.col("date"),
-            F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
-            F.col("quantity"),
-            F.col("period_consumption_limit"),
-        )
-        .drop_duplicates()
-    )
-
-    period_consumption_with_limit = period_consumption.select(
+    period_consumption = join_consumption_to_metering_points.select(
+        F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
         F.col("metering_point_id"),
         F.col("date"),
+        F.col("quantity"),
+        F.col("period_consumption_limit"),
+        F.col("previously_calculated_quantity"),
+    ).drop_duplicates()
+
+    period_consumption_with_limit = period_consumption.select(
         F.when(
             (F.col("cumulative_quantity") >= F.col("period_consumption_limit"))
             & (
@@ -239,34 +314,25 @@ def execute_core_logic(
         )
         .cast(T.DecimalType(38, 3))
         .alias("quantity"),
+        F.col("cumulative_quantity"),
+        F.col("metering_point_id"),
+        F.col("date"),
+        F.col("period_consumption_limit"),
+        F.col("previously_calculated_quantity"),
     ).drop_duplicates()
 
-    changed_consumption = (
-        period_consumption_with_limit.alias("current")
-        .join(
-            time_series_points.alias("previous"),
-            (
-                (F.col("current.date") == F.col("previous.observation_time"))
-                & (
-                    F.col("current.metering_point_id")
-                    == F.col("previous.metering_point_id")
-                )
-            ),
-            "left",
+    compare_previous_calculated_daily_consumption = period_consumption_with_limit.where(
+        (
+            (F.col("quantity") != F.col("previously_calculated_quantity"))
+            | F.col("previously_calculated_quantity").isNull()
         )
-        .where(
-            (
-                (F.col("current.quantity") != F.col("previous.quantity"))
-                | F.col("previous.quantity").isNull()
-            )
-        )
-        .select(
-            F.col("current.metering_point_id"),
-            F.col("current.date"),
-            F.col("current.quantity"),
-        )
+    ).select(
+        F.col("date"),
+        F.col("quantity"),
     )
 
-    changed_consumption = convert_to_utc(changed_consumption, time_zone)
+    compare_previous_calculated_daily_consumption = convert_to_utc(
+        compare_previous_calculated_daily_consumption, time_zone
+    )
 
-    return changed_consumption
+    return compare_previous_calculated_daily_consumption
