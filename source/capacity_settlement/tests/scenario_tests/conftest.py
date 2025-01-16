@@ -1,5 +1,4 @@
-﻿from datetime import datetime
-from pathlib import Path
+﻿from pathlib import Path
 
 import pytest
 import yaml
@@ -11,22 +10,20 @@ from testcommon.dataframes import (
 )
 from testcommon.etl import TestCase, TestCases
 
-from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
+from capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from source.capacity_settlement.src.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
+from contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
 )
-from source.capacity_settlement.src.capacity_settlement.domain.calculation import (
+from capacity_settlement.domain.calculation import (
     execute_core_logic,
 )
 
-from source.capacity_settlement.src.contracts.measurements_gold.time_series_points_v1 import (
+from contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
-from source.capacity_settlement.tests.testsession_configuration import (
-    TestSessionConfiguration,
-)
+from testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="session", autouse=True)

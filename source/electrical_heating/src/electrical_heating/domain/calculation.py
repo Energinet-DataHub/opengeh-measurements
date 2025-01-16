@@ -3,16 +3,16 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import Window
 from telemetry_logging import use_span
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
-import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+import electrical_heating.infrastructure.electricity_market as em
+import electrical_heating.infrastructure.measurements_gold as mg
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.domain.constants import (
+from electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
-from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
+from electrical_heating.domain.pyspark_functions import (
     convert_timezone,
     begining_of_year,
     days_in_year,

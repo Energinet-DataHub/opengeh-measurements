@@ -5,7 +5,9 @@ from argparse import Namespace
 import configargparse
 from telemetry_logging import Logger, logging_configuration
 
-from .capacity_settlement_args import CapacitySettlementArgs
+from capacity_settlement.application.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
+)
 
 
 def parse_command_line_arguments() -> Namespace:
