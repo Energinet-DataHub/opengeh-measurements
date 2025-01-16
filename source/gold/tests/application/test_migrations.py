@@ -8,7 +8,7 @@ from gold.infrastructure.schemas.gold_measurements import (
 )
 
 
-def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
+def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrations_executed):
     # Assert
     gold_measurements = spark.table(f"{DatabaseNames.gold_database}.{TableNames.gold_measurements_table}")
     assert_schemas.assert_schema(actual=gold_measurements.schema, expected=measurements_gold_schema)

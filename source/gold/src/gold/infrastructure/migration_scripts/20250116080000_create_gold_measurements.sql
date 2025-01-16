@@ -16,3 +16,4 @@ TBLPROPERTIES (
     delta.autoOptimize.autoCompact = false,
     delta.deletedFileRetentionDuration = 'interval 30 days'
 )
+CLUSTER BY (metering_point_id, observation_time, transaction_creation_datetime)

@@ -42,7 +42,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 @pytest.fixture(scope="session")
-def migrate(spark: SparkSession) -> None:
+def migrations_executed(spark: SparkSession) -> None:
     """
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
