@@ -1,2 +1,2 @@
 metering_point_id;period_from_date;period_to_date;child_metering_point_id;coupled_date;decoupled_date;#comment
-170000000000000201;2020-01-31T23:00:00Z;;900000000000000001;2024-12-31T23:00:00Z;;
+170000000000000201;2020-01-31 23:00:00;;900000000000000001;2024-12-31 23:00:00;;
