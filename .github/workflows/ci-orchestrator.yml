@@ -52,6 +52,14 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
       package_name: bronze
+
+  ci_gold:
+    needs: [changes, ci_docker]
+    if: ${{ needs.changes.outputs.gold == 'true' }}
+    uses: ./.github/workflows/ci-databricks.yml
+    with:
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+      package_name: gold
   #
   # Branch policy status check
   #

@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-gold = "gold:main"
+migrate = "gold.entry_points:migrate"
 
 [build-system]
 requires = ["hatchling"]
