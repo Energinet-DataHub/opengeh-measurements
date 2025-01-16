@@ -4,6 +4,7 @@ from electrical_heating.application.execute_with_deps import (
     execute_with_deps,
 )
 
+# Test
 
 def execute() -> None:
     applicationinsights_connection_string = os.getenv(
