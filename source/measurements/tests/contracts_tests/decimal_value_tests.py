@@ -1,8 +1,8 @@
 ﻿import pytest
 from source.measurements.src.contracts.decimal_value import DecimalValue
 
-def test__from_decimal(
-) -> None:
+
+def test__from_decimal() -> None:
     # Arrange
     value = 12345.6789
 
@@ -14,8 +14,7 @@ def test__from_decimal(
     assert result.nanos == 678900000
 
 
-def test__to_decimal(
-) -> None:
+def test__to_decimal() -> None:
     # Arrange
     value = DecimalValue(12345, 678900000)
 
@@ -26,8 +25,7 @@ def test__to_decimal(
     assert result == 12345.6789
 
 
-def test__negative_value(
-) -> None:
+def test__negative_value() -> None:
     # Arrange
     value = -12345.6789
 

@@ -22,6 +22,8 @@ def spark() -> Generator[SparkSession, None, None]:
     session = SparkSession.builder.appName("testcommon").getOrCreate()
     yield session
     session.stop()
+
+
 import yaml
 
 from container_tests.databricks_api_client import DatabricksApiClient
