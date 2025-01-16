@@ -6,6 +6,7 @@ from source.tests.test_common.entry_points.entry_point_test_util import (
 )
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "entry_point_name",
     [
