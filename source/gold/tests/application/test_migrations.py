@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 
 from gold.domain.constants.database_names import DatabaseNames
 from gold.domain.constants.table_names import TableNames
-from gold.infrastructure.schemas.gold_measurements import (
+from gold.domain.schemas.gold_measurements import (
     measurements_gold_schema,
 )
 

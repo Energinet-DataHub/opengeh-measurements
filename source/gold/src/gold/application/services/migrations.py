@@ -6,7 +6,7 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import gold.domain.substitutions as substitutions
+import gold.infrastructure.migration_scripts.substitutions as substitutions
 from gold.domain.constants.database_names import DatabaseNames
 from gold.domain.constants.table_names import TableNames
 
