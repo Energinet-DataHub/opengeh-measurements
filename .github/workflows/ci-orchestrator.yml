@@ -52,6 +52,14 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
       package_name: bronze
+
+  ci_silver:
+    needs: [changes, ci_docker]
+    if: ${{ needs.changes.outputs.silver == 'true' }}
+    uses: ./.github/workflows/ci-databricks.yml
+    with:
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+      package_name: silver
   #
   # Branch policy status check
   #
@@ -62,7 +70,9 @@ jobs:
         changes,
         ci_base,
         ci_electrical_heating,
-        ci_capacity_settlement
+        ci_capacity_settlement,
+        ci_bronze,
+        ci_silver,
       ]
     if: |
       always()

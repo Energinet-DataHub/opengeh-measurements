@@ -5,7 +5,7 @@ description = "Streaming to the bronze layer"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "opengeh-spark-sql-migrations",
+    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations",
 ]
 
 [project.scripts]
@@ -24,7 +24,6 @@ dev = [
 ]
 
 [tool.uv.sources]
-opengeh-spark-sql-migrations = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/spark_sql_migrations", rev = "3.0.0" }
 opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
 
 [tool.hatch.metadata]
@@ -34,7 +33,7 @@ allow-direct-references = true
 addopts = """
 --cov-report=term \
 --cov-report=xml:coverage.xml \
---cov=database-migration \
+--cov=bronze \
 -ra
 -vv"""
 
