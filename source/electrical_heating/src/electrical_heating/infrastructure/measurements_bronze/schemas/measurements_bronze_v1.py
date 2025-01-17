@@ -3,7 +3,7 @@ import pyspark.sql.types as t
 nullable = True
 
 
-_point = t.StructType(
+point = t.StructType(
     [
         #
         # A sequential numbering. Always starting at 1.
@@ -64,7 +64,7 @@ measurements_bronze_v1 = t.StructType(
         # Points
         t.StructField(
             "points",
-            t.ArrayType(_point, containsNull=False),
+            t.ArrayType(point, containsNull=False),
             not nullable,
         ),
     ]
