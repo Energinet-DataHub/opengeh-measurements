@@ -58,9 +58,7 @@ def execute_core_logic(
     consumption_metering_point_periods = convert_from_utc(
         consumption_metering_point_periods, time_zone
     )
-    child_metering_point_periods = convert_from_utc(
-        child_metering_point_periods, time_zone
-    )
+    child_metering_point_periods = convert_from_utc(child_metering_points, time_zone)
     time_series_points = convert_from_utc(time_series_points, time_zone)
 
     # prepare child metering points and parent metering points
