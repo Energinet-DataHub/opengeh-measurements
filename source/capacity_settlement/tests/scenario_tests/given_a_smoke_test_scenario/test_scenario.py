@@ -7,7 +7,7 @@ from testcommon.etl import get_then_names, TestCases
 
 
 @pytest.mark.parametrize("name", get_then_names())
-def test_get_then_names(
+def test_case(
     name: str,
     test_cases: TestCases,
     assert_dataframes_configuration: AssertDataframesConfiguration,
