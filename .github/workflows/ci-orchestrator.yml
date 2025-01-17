@@ -80,7 +80,9 @@ jobs:
         ci_base,
         ci_electrical_heating,
         ci_capacity_settlement,
-        ci_gold
+        ci_bronze,
+        ci_silver,
+        ci_gold,
       ]
     if: |
       always()
