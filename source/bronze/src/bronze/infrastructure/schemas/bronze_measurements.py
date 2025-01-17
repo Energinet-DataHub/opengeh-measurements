@@ -11,6 +11,7 @@
 from bronze.domain.constants.column_names.bronze_measurements_column_names import (
     BronzeMeasurementsColumnNames,
 )
+
 bronze_measurements_schema = StructType(
     [
         StructField(BronzeMeasurementsColumnNames.orchestration_type, StringType(), True),
