@@ -11,7 +11,7 @@ nullable = True
 # - MSTDATSBM: Fremsendelse af stamdata (BRS-006) - Skift af nettoafregningsgrupper
 # - LNKCHLDMP: Tilkobling af D15 til parent i nettoafregningsgruppe 2
 # - ULNKCHLDMP: Afkobling af D15 af parent i nettoafregningsgruppe 2
-# - CLSDWNMP: Nedlæggelse af målepunkt (BRS-007)
+# - ULNKCHLDMP: Afkobling af D14 af parent
 # - MOVEINES: Tilflytning - meldt til elleverandøren (BRS-009)
 # - MOVEOUTES: Fraflytning - meldt til elleverandøren (BRS-010)
 # - INCMOVEAUT: Fejlagtig flytning - Automatisk (BRS-011)

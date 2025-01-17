@@ -100,7 +100,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
     )
 
     child_metering_point_periods = (
-        electricity_market_repository.read_child_metering_point_periods()
+        electricity_market_repository.read_child_metering_points()
     )
 
     calculation_output = execute_calculation(
