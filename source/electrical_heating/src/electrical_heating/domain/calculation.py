@@ -263,7 +263,7 @@ def execute_core_logic(
         .select(
             F.col("metering_point.consumption_period_start"),
             F.col("metering_point.consumption_period_end"),
-            F.col("consumption.metering_point_id").alias("metering_point_id"),
+            F.col("metering_point.child_metering_point_id").alias("metering_point_id"),
             F.col("consumption.date").alias("date"),
             F.col("consumption.quantity").alias("quantity"),
             F.col("metering_point.period_consumption_limit").alias(
@@ -327,6 +327,7 @@ def execute_core_logic(
             | F.col("previously_calculated_quantity").isNull()
         )
     ).select(
+        F.col("metering_point_id"),
         F.col("date"),
         F.col("quantity"),
     )
