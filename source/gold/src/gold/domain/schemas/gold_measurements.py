@@ -10,7 +10,7 @@ from gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
 
-measurements_gold_schema = StructType(
+gold_measurements_schema = StructType(
     [
         StructField(GoldMeasurementsColumnNames.metering_point_id, StringType(), True),
         StructField(GoldMeasurementsColumnNames.observation_time, TimestampType(), True),
