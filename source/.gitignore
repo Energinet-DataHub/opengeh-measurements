@@ -8,7 +8,6 @@ build
 # Exclude files and directory created by codecov
 htmlcov
 coverage.json
-*uv.lock
 
 # These are included here so vscode explorer hides them when configured to respect the .gitignore file
 venv
