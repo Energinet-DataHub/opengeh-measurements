@@ -60,6 +60,15 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
       package_name: silver
+
+  ci_gold:
+    needs: [changes, ci_docker]
+    if: ${{ needs.changes.outputs.gold == 'true' }}
+    uses: ./.github/workflows/ci-databricks.yml
+    with:
+      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+      package_name: gold
+
   #
   # Branch policy status check
   #
@@ -73,6 +82,7 @@ jobs:
         ci_capacity_settlement,
         ci_bronze,
         ci_silver,
+        ci_gold,
       ]
     if: |
       always()
