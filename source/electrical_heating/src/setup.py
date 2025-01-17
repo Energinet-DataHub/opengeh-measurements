@@ -18,6 +18,7 @@ setup(
         "azure-core==1.32.0",
         "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/telemetry",
         "opengeh-testcommon @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/testcommon",
+        "opengeh-pyspark-functions @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/pyspark-functions",
     ],
     entry_points={
         "console_scripts": [
