@@ -6,9 +6,6 @@
 echo "Tests folder path: '$1'"
 echo "Filter (paths): '$2'"
 
-# Add the source directory to the PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:/home/runner/work/opengeh-measurements/source
-
 # Configure Azure CLI to use token cache which must be mapped as volume from host machine
 export AZURE_CONFIG_DIR=/home/jovyan/.azure
 
