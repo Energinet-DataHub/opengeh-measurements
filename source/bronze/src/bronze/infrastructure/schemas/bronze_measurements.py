@@ -12,7 +12,7 @@ from bronze.domain.constants.column_names.bronze_measurements_column_names impor
     BronzeMeasurementsColumnNames,
 )
 
-calculation_results_bronze_schema = StructType(
+bronze_measurements_schema = StructType(
     [
         StructField(
             BronzeMeasurementsColumnNames.orchestration_type, StringType(), True
