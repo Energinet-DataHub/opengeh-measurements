@@ -38,7 +38,7 @@ jobs:
             is_changed:
               - source/bronze/src/bronze/infrastructure/contracts/**
       - name: Compile protobuf descriptor files
-        uses: .github/actions/compile-proto
+        uses: ./.github/actions/compile-proto
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
 
   #
