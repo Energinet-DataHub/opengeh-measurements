@@ -27,7 +27,15 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
-        "git.openRepositoryInParentFolders": "always",
+        "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
+        "files.eol": "\n", // Use LF line endings
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
+        "editor.formatOnSave": true,
+        "ruff.lineLength": 120,
+        "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.testing.pytestArgs": [
@@ -44,13 +52,6 @@
             "source.fixAll.ruff": "always" // Run the Ruff formatter on save
           }
         },
-        "editor.tabSize": 2,
-        "editor.rulers": [
-          120
-        ],
-        "editor.formatOnSave": true,
-        "ruff.lineLength": 120,
-        "ruff.lint.run": "onSave",
         "terminal.integrated.inheritEnv": true,
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
