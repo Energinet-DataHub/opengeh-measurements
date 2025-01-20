@@ -1,22 +1,22 @@
-﻿from pyspark.sql import functions as F, types as T
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql import Window
+﻿from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
 from telemetry_logging import use_span
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
-import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+import src.electrical_heating.infrastructure.electricity_market as em
+import src.electrical_heating.infrastructure.measurements_gold as mg
+from src.electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.domain.constants import (
+from src.electrical_heating.domain.constants import (
+    CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
-    CONSUMPTION_METERING_POINT_TYPE,
 )
-from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
+from src.electrical_heating.domain.pyspark_functions import (
+    begining_of_year,
     convert_from_utc,
     convert_to_utc,
-    begining_of_year,
     days_in_year,
 )
 
@@ -373,10 +373,7 @@ def join_child_to_parent_metering_point(df1: DataFrame, df2: DataFrame) -> DataF
             "inner",
         )
         .where(
-            (
-                F.col("child.metering_point_type")
-                == ELECTRICAL_HEATING_METERING_POINT_TYPE
-            )
+            F.col("child.metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE
         )
         .select(
             F.col("child.metering_point_id").alias("child_metering_point_id"),
