@@ -69,7 +69,7 @@ def execute_core_logic(
     electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
     # prepare child metering points and parent metering points
-    points = join_child_to_parent_metering_point(parent_points, child_points)
+    points = join_child_to_parent_metering_point(child_points, parent_points)
     points = handle_null_in_to_date_columns(points)
     points = find_parent_child_overlap_period(points)
     points = split_consumption_period_by_year(points)
@@ -78,9 +78,7 @@ def execute_core_logic(
     # prepare consumption time series data
     consumption_daily = to_daily(consumption)
     electrical_heating_daily = to_daily(electrical_heating)
-
     parent_child_points_id = unique_child_parent_metering_id(child_points)
-
     consumption_with_child_points_id = join_unique_child_and_parent_id(
         consumption_daily, parent_child_points_id
     )
@@ -204,7 +202,7 @@ def join_parent_on_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
     )
 
 
-def join_on_child_point_id(df1, df2):
+def join_on_child_point_id(df1: DataFrame, df2: DataFrame) -> DataFrame:
     return (
         df1.alias("consumption")
         .join(
@@ -368,13 +366,11 @@ def handle_null_in_to_date_columns(df: DataFrame) -> DataFrame:
     )
 
 
-def join_child_to_parent_metering_point(
-    consumption_metering_point_periods, child_metering_point_periods
-):
+def join_child_to_parent_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
     return (
-        child_metering_point_periods.alias("child")
+        df1.alias("child")
         .join(
-            consumption_metering_point_periods.alias("parent"),
+            df2.alias("parent"),
             F.col("child.parent_metering_point_id")
             == F.col("parent.metering_point_id"),
             "inner",
