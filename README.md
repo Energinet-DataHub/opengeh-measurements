@@ -37,9 +37,9 @@ Contains source code.
 
 Prerequisites: Docker Desktop and VSCode
 
-- Install extension "Dev Containers" in VSCode 
+- Install extension "Dev Containers" in VSCode
 - Press F1, find and select "Dev Containers: Rebuild and Reopen in Container"
 - Select the container you want to build, fx. "capacity-settlement"
-  - *If the build fails try removing .uv_cache*
+    - *If the build fails try removing .uv_cache*
 - To switch between containers press F1 and select "Dev Containers: Switch Container"
 - Open the "Testing" panel to the left to discover all test
