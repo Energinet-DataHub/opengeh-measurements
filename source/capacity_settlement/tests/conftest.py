@@ -11,10 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
-import subprocess
-from pathlib import Path
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 from pyspark.sql import SparkSession

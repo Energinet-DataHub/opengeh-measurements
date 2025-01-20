@@ -1,6 +1,4 @@
-﻿import pytest
-
-from capacity_settlement import entry_point as module
+﻿
 
 
 # @pytest.mark.parametrize(
