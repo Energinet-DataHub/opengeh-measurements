@@ -5,7 +5,9 @@ import pytest
 from pyspark.sql import SparkSession
 
 from tests import PROJECT_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
+from tests.testsession_configuration import (
+    TestSessionConfiguration,
+)
 from telemetry_logging.logging_configuration import configure_logging
 
 
