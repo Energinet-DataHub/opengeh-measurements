@@ -7,7 +7,7 @@ runs:
     - name: Install Protoc
       uses: arduino/setup-protoc@v3
 
-    - name: Call include assets script
+    - name: Compile descriptor files
       shell: bash
       run: |
         pushd './source/bronze/src/bronze/infrastructure/contracts'

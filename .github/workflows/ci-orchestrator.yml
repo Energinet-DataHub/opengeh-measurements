@@ -27,7 +27,7 @@ jobs:
   # Compile Protobuf Contracts
   #
   ci_bronze_contracts:
-    name: Compile Protobuf descriptor files constituting contracts
+    name: Compile Protobuf Contracts
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
