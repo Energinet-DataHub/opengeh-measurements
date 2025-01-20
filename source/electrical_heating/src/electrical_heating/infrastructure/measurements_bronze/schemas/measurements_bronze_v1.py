@@ -12,7 +12,7 @@ point = t.StructType(
         t.StructField("position", t.StringType(), not nullable),
         #
         # The quantity calculated by the electrical heating job
-        t.StructField("quantity", t.StringType(), not nullable),
+        t.StructField("quantity", t.DecimalType(18, 3), not nullable),
         #
         # Must be: "calculated"
         t.StructField("quality", t.StringType(), not nullable),
@@ -39,13 +39,7 @@ measurements_bronze_v1 = t.StructType(
         #
         # A DateTime value indicating when the transaction was created
         # by the electrical heating calculation job.
-        t.StructField("transaction_creation_datetime", t.StringType(), not nullable),
-        #
-        # The start DateTime of the transaction (the first position’s observation time)
-        t.StructField("start_datetime", t.TimestampType(), not nullable),
-        #
-        # The end DateTime of the transaction
-        t.StructField("end_datetime", t.TimestampType(), not nullable),
+        t.StructField("transaction_creation_datetime", t.TimestampType(), not nullable),
         #
         # Must be "electrical_heating"
         t.StructField("metering_point_type", t.StringType(), not nullable),
@@ -60,6 +54,12 @@ measurements_bronze_v1 = t.StructType(
         #
         # Must be: "PT1H"
         t.StructField("resolution", t.StringType(), not nullable),
+        #
+        # The start DateTime of the transaction (the first position’s observation time)
+        t.StructField("start_datetime", t.TimestampType(), not nullable),
+        #
+        # The end DateTime of the transaction
+        t.StructField("end_datetime", t.TimestampType(), not nullable),
         #
         # Points
         t.StructField(
