@@ -81,6 +81,11 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  ci_bronze_contracts:
+    needs: [changes]
+    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
+    uses: ./.github/actions/compile-proto
+
   # ci_bronze:
   #   needs: [changes, ci_docker]
   #   if: ${{ needs.changes.outputs.bronze == 'true' }}
