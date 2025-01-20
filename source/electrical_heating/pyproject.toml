@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.scripts]
-electrical-heating = "electrical_heating.entry_point:execute"
+electrical_heating = "electrical_heating.entry_point:execute"
 
 [build-system]
 requires = [
