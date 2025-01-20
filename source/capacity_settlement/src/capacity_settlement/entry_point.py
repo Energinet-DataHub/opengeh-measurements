@@ -1,8 +1,8 @@
-﻿import os
+﻿"""Entry point for the capacity-settlement application."""
 
-from source.capacity_settlement.src.capacity_settlement.application.execute_with_deps import (
-    execute_with_deps,
-)
+import os
+
+from capacity_settlement.application.execute_with_deps import execute_with_deps
 
 
 def execute() -> None:
