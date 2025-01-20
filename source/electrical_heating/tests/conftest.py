@@ -5,16 +5,16 @@ from typing import Generator
 
 import pytest
 from pyspark.sql import SparkSession
-from pyspark.sql.types import ArrayType
+from pyspark.sql.types import ArrayType, Row
+from testcommon.dataframes import assert_schema
 
-from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import point
-from source.capacity_settlement.src.contracts.measurements_bronze.measurements_bronze_v1 import measurements_bronze_v1
-from source.electrical_heating.src.electrical_heating.infrastructure.measurements_bronze.database_definitions import MeasurementsBronzeDatabase
-from source.electrical_heating.tests.testsession_configuration import (
-    TestSessionConfiguration,
-)
-from source.electrical_heating.tests.utils.delta_table_utils import create_delta_table, read_from_csv, write_dataframe_to_table
+from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import point, measurements_bronze_v1
+from electrical_heating.infrastructure.measurements_bronze.database_definitions import MeasurementsBronzeDatabase
 import pyspark.sql.functions as F
+
+from testsession_configuration import TestSessionConfiguration
+from utils.delta_table_utils import create_delta_table, read_from_csv, write_dataframe_to_table
+
 
 @pytest.fixture(scope="module", autouse=True)
 def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
@@ -132,23 +132,35 @@ def write_to_delta(spark: SparkSession, test_files_folder_path: str) -> None:
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
         table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
         schema=measurements_bronze_v1,
-        table_location=f"{MeasurementsBronzeDatabase.DATABASE_NAME}/{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}",
+        table_location=f"test1/{MeasurementsBronzeDatabase.DATABASE_NAME}/{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}",
     )
 
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
-    measurements = read_from_csv(spark, file_name)
+    measurements = read_from_csv(spark, file_name, schema=measurements_bronze_v1)
 
     measurements.show()
-
     measurements = measurements.withColumn(
         "points",
         F.from_json(F.col("points"), ArrayType(point)),
     )
+    measurements = measurements.withColumn(
+        "start_datetime",
+        F.to_timestamp(F.col("start_datetime"), "yyyy-MM-dd HH:mm:ss"),
+    ).withColumn(
+        "end_datetime",
+        F.to_timestamp(F.col("end_datetime"), "yyyy-MM-dd HH:mm:ss"))
+
+    measurements = spark.createDataFrame(measurements.rdd, schema=measurements_bronze_v1, verifySchema=True)
 
     measurements.show()
 
+    print(measurements_bronze_v1)
+    measurements.printSchema()
+
+    assert_schema(measurements.schema, measurements_bronze_v1)
+
     write_dataframe_to_table(
-        df = measurements,
+        df = spark.createDataFrame([Row("a")], schema=measurements_bronze_v1),
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
         table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
     )

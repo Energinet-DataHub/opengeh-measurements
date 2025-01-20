@@ -9,8 +9,9 @@ def read_from_csv(
     spark: SparkSession,
     file_name: str,
     sep: str = ";",
+    schema: StructType = None,
 ) -> DataFrame:
-    return spark.read.csv(file_name, header=True, sep=sep)
+    return spark.read.csv(file_name, header=True, sep=sep, schema=schema)
 
 
 def write_dataframe_to_table(df: DataFrame, database_name: str, table_name: str, mode: str = "overwrite") -> None:
