@@ -19,6 +19,8 @@ on:
         value: ${{ jobs.changes.outputs.bronze }}
       silver:
         value: ${{ jobs.changes.outputs.silver }}
+      gold:
+        value: ${{ jobs.changes.outputs.gold }}
       docker:
         value: ${{ jobs.changes.outputs.docker }}
       docker_in_commit:
@@ -35,6 +37,7 @@ jobs:
       core: ${{ steps.filter.outputs.core }}
       bronze: ${{ steps.filter.outputs.bronze }}
       silver: ${{ steps.filter.outputs.silver }}
+      gold: ${{ steps.filter.outputs.gold }}
       docker: ${{ steps.filter.outputs.docker }}
       docker_in_commit: ${{ steps.docker_changed.outputs.any_changed }}
     steps:
@@ -62,6 +65,7 @@ jobs:
             core:
               - 'source/bronze/**'
               - 'source/silver/**'
+              - 'source/gold/**'
               - '.github/workflows/cd.yml'
             bronze:
               - 'source/bronze/**'
@@ -69,6 +73,10 @@ jobs:
               - '.github/workflows/cd.yml'
             silver:
               - 'source/silver/**'
+              - '.github/workflows/ci-databricks.yml'
+              - '.github/workflows/cd.yml'
+            gold:
+              - 'source/gold/**'
               - '.github/workflows/ci-databricks.yml'
               - '.github/workflows/cd.yml'
             docker:
