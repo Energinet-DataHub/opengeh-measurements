@@ -6,7 +6,7 @@ from testcommon.dataframes import (
 from testcommon.etl import TestCases, get_then_names
 
 
-@pytest.skip("WIP")
+@pytest.mark.skip(reason="WIP")
 @pytest.mark.parametrize("name", get_then_names())
 def test_case(
     name: str,
