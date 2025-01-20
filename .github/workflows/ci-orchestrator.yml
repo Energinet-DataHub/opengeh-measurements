@@ -24,18 +24,22 @@ jobs:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
-  # Detect changes to determine workflows to run
-  #
-  changes:
-    uses: ./.github/workflows/detect-changes.yml
-
-  #
-  # Build Protobuf Contracts
+  # Compile Protobuf Contracts
   #
   ci_bronze_contracts:
-    needs: [changes]
-    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
-    uses: ./.github/actions/compile-proto
+    name: Compile Protobuf descriptor files constituting contracts
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check if contract files has changed
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            is_changed:
+              - source/bronze/src/bronze/infrastructure/contracts**
+      - name: Compile protobuf descriptor files
+        uses: .github/actions/compile-proto
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
 
   #
   # Build Package Matrix
@@ -102,6 +106,7 @@ jobs:
   #   with:
   #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
   #     package_name: bronze
+
   #
   # Branch policy status check
   #
