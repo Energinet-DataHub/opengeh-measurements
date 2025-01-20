@@ -15,6 +15,7 @@ dependencies = [
     "opengeh-telemetry",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
+    "electrical_heating @ {root:uri}/../electrical_heating"
 ]
 
 [project.scripts]
@@ -25,6 +26,9 @@ requires = [
     "hatchling",
 ]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=capacity_settlement -ra\n-vv"
