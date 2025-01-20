@@ -17,8 +17,6 @@ jobs:
 
     env:
       RELEASE_FOLDER_PATH: ./source/${{ inputs.package_name }}/artifact
-      RELEASE_VERSION: core_${{ github.event.pull_request.number }}
-      RELEASE_ZIP_FILENAME: core_${{ github.event.pull_request.number }}.zip
 
     steps:
       - uses: actions/checkout@v4
@@ -52,19 +50,25 @@ jobs:
           mkdir artifact
           mv dist artifact
 
+      - name: Get releaseversion strings
+        id: get_releaseversion_strings
+        uses: Energinet-Datahub/.github/.github/actions/github-get-releaseversion-strings@v14
+        with:
+          release_name_prefix: core
+
       - name: Zip files for prerelease
         uses: thedoctor0/zip-release@0.6.2
         with:
           type: zip
-          filename: ${{ env.RELEASE_ZIP_FILENAME }}
+          filename: ${{ steps.get_releaseversion_strings.outputs.release_zip_filename }}
           directory: ${{ env.RELEASE_FOLDER_PATH }}
 
       - name: Create prerelease
         uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
         with:
           repo_token: ${{ github.token }}
-          automatic_release_tag: ${{ env.RELEASE_VERSION }}
+          automatic_release_tag: ${{ steps.get_releaseversion_strings.outputs.release_version }}
           prerelease: true
-          title: ${{ env.RELEASE_VERSION }}
+          title: ${{ steps.get_releaseversion_strings.outputs.release_version }}
           files: |
-            ${{ env.RELEASE_FOLDER_PATH }}/${{ env.RELEASE_ZIP_FILENAME }}
+            ${{ env.RELEASE_FOLDER_PATH }}/${{ steps.get_releaseversion_strings.outputs.release_zip_filename }}

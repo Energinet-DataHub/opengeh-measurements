@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - main
+  merge_group:
+    types: [checks_requested]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -55,10 +57,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Print Inputs
         run: |
           echo "Path: ${{ matrix.inputs.path }}"
           echo "Name: ${{ matrix.inputs.name }}"
+
       - name: Check if ${{ matrix.inputs.name }} has changed
         uses: dorny/paths-filter@v3
         id: changes
@@ -66,19 +70,25 @@ jobs:
           filters: |
             is_changed:
               - ${{ matrix.inputs.path }}/**
+
       - name: Test ${{ matrix.inputs.name }}
         uses: ./.github/actions/uvtest
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
+
+      - name: Find associated pull request
+        uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
+        id: find_pull_request
+
       - name: Upload prerelease
         uses: ./.github/actions/create-prerelease
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ steps.find_pull_request.outputs.pull_request_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # ci_bronze:
