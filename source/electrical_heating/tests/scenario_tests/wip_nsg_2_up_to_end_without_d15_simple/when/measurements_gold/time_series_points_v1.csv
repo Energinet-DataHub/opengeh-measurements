@@ -1,4 +1,0 @@
-metering_point_id;quantity;observation_time;metering_point_type;#comment
-170000000000000201;1;2024-01-02 23:00:00;consumption;nsg2 - no end date - without D15
-150000000000170202;1;2024-01-02 23:00:00;net_consumption;nsg2 - no end date - with D15
-170000000000000202;10;2024-01-02 23:00:00;consumption;nsg2 - no end date - with D15 - it should not use this quantity, but quantity from D15 instead
