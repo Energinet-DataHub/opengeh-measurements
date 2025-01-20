@@ -36,8 +36,13 @@
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true,
         "github.copilot.editor.enableAutoCompletions": true,
+        "python.languageServer": "Pylance", // Use Pylance as the language server        "python.analysis.languageServerMode": "full", // Use the full language server mode
+        "python.analysis.autoFormatStrings": true, // Automatically format strings
         "[python]": {
-          "editor.defaultFormatter": "charliermarsh.ruff"
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "always" // Run the Ruff formatter on save
+          }
         },
         "editor.tabSize": 2,
         "editor.rulers": [
