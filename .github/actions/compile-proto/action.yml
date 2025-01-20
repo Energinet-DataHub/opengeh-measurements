@@ -6,14 +6,12 @@ runs:
   steps:
     - name: Install Protoc
       uses: arduino/setup-protoc@v3
-      with:
-        version: '23.x'
 
     - name: Call include assets script
       shell: bash
       run: |
         pushd './source/bronze/src/bronze/infrastructure/contracts'
         mkdir ./assets
-        protoc --include_imports --descriptor_set_out=../assets/persist_submitted_transaction.binpb PersistSubmittedTransaction.proto
-        protoc --include_imports --descriptor_set_out=../assets/submitted_transaction_persisted.binpb SubmittedTransactionPersisted.proto
+        protoc --include_imports --descriptor_set_out=assets/persist_submitted_transaction.binpb PersistSubmittedTransaction.proto
+        protoc --include_imports --descriptor_set_out=assets/submitted_transaction_persisted.binpb SubmittedTransactionPersisted.proto
         popd
