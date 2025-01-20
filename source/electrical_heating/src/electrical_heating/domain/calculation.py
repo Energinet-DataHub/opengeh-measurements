@@ -11,6 +11,7 @@ from source.electrical_heating.src.electrical_heating.application.job_args.elect
 from source.electrical_heating.src.electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
+    CONSUMPTION_METERING_POINT_TYPE,
 )
 from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
     convert_from_utc,
@@ -51,123 +52,72 @@ def execute_core_logic(
     child_metering_points: DataFrame,
     time_zone: str,
 ) -> DataFrame:
-    child_metering_points = child_metering_points.where(
+    child_points = child_metering_points.where(
         F.col(em.ColumnNames.metering_point_type)
         == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
-    consumption_metering_point_periods = convert_from_utc(
-        consumption_metering_point_periods, time_zone
+    consumption = time_series_points.where(
+        F.col("metering_point_type") == CONSUMPTION_METERING_POINT_TYPE
     )
-    child_metering_point_periods = convert_from_utc(child_metering_points, time_zone)
-    time_series_points = convert_from_utc(time_series_points, time_zone)
+    electrical_heating = time_series_points.where(
+        F.col("metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE
+    )
+
+    parent_points = convert_from_utc(consumption_metering_point_periods, time_zone)
+    child_points = convert_from_utc(child_points, time_zone)
+    consumption = convert_from_utc(consumption, time_zone)
+    electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
     # prepare child metering points and parent metering points
-
-    join_child_to_parent_metering_point_df = join_child_to_parent_metering_point(
-        consumption_metering_point_periods, child_metering_point_periods
-    )
-    handle_null_in_to_date_columns_df = handle_null_in_to_date_columns(
-        join_child_to_parent_metering_point_df
-    )
-    find_parent_child_overlap_period_df = find_parent_child_overlap_period(
-        handle_null_in_to_date_columns_df
-    )
-    split_consumption_period_by_year_df = split_consumption_period_by_year(
-        find_parent_child_overlap_period_df
-    )
-    calculate_period_consumption_limit_df = calculate_period_consumption_limit(
-        split_consumption_period_by_year_df
-    )
+    points = join_child_to_parent_metering_point(parent_points, child_points)
+    points = handle_null_in_to_date_columns(points)
+    points = find_parent_child_overlap_period(points)
+    points = split_consumption_period_by_year(points)
+    points = calculate_period_consumption_limit(points)
 
     # prepare consumption time series data
+    consumption_daily = to_daily(consumption)
+    electrical_heating_daily = to_daily(electrical_heating)
 
-    # for aggreating comsumption from every 15 minutes to daily
+    parent_child_points_id = unique_child_parent_metering_id(child_points)
 
-    consumption_time_series_to_daily_df = consumption_time_series_to_daily(
-        time_series_points
+    consumption_with_child_points_id = join_unique_child_and_parent_id(
+        consumption_daily, parent_child_points_id
     )
-
-    unique_child_parent_metering_id_df = unique_child_parent_metering_id(
-        child_metering_point_periods
-    )
-
-    join_unique_child_and_parent_id_to_consumption_daily_df = (
-        join_unique_child_and_parent_id_to_consumption_daily(
-            consumption_time_series_to_daily_df, unique_child_parent_metering_id_df
-        )
-    )
-
-    non_calculated_consumption_df = non_calculated_consumption(
-        join_unique_child_and_parent_id_to_consumption_daily_df
-    )
-
-    previously_calculated_consumption_df = previously_calculated_consumption(
-        join_unique_child_and_parent_id_to_consumption_daily_df
-    )
-
-    join_consumption_to_previously_calculated_consumption_df = (
-        join_consumption_to_previously_calculated_consumption(
-            non_calculated_consumption_df, previously_calculated_consumption_df
-        )
+    consumption = join_on_child_point_id(
+        consumption_with_child_points_id, electrical_heating_daily
     )
 
     # here conumption time series and metering points data is joined
-    join_consumption_to_metering_points = (
-        join_consumption_to_previously_calculated_consumption.alias("consumption")
-        .join(
-            calculate_period_consumption_limit.alias("metering_point"),
-            F.col("consumption.metering_point_id")
-            == F.col("metering_point.parent_metering_point_id"),
-            "inner",
-        )
-        .select(
-            F.col("metering_point.parent_period_start").alias("parent_period_start"),
-            F.col("metering_point.parent_period_end").alias("parent_period_end"),
-            F.col("metering_point.child_metering_point_id").alias("metering_point_id"),
-            F.col("consumption.date").alias("date"),
-            F.col("consumption.quantity").alias("quantity"),
-            F.col("metering_point.period_consumption_limit").alias(
-                "period_consumption_limit"
-            ),
-            F.col("consumption.previously_calculated_quantity").alias(
-                "previously_calculated_quantity"
-            ),
-            F.col("metering_point.parent_child_overlap_period_start").alias(
-                "parent_child_overlap_period_start"
-            ),
-            F.col("metering_point.parent_child_overlap_period_end").alias(
-                "parent_child_overlap_period_end"
-            ),
-        )
+    consumption_with_points = join_parent_on_metering_point(
+        consumption,
+        points,
     )
-    filter_for_parent_child_overlap_period_and_year = (
-        join_consumption_to_metering_points.where(
-            (F.col("date") >= F.col("parent_child_overlap_period_start"))
-            & (F.col("date") < F.col("metering_point.parent_child_overlap_period_end"))
-            & (F.year(F.col("date")) == F.year(F.col("period_year")))
-        )
-    )
+    consumption = filter_parent_child_overlap_period_and_year(consumption_with_points)
+    consumption = aggregate_quantity_over_period(consumption)
+    consumption = impose_period_quantity_limit(consumption)
+    consumption = compare_previous_calculated_daily_consumption(consumption)
 
-    period_window = (
-        Window.partitionBy(
-            F.col("metering_point_id"),
-            F.col("parent_period_start"),
-            F.col("parent_period_end"),
-        )
-        .orderBy(F.col("date"))
-        .rowsBetween(Window.unboundedPreceding, Window.currentRow)
-    )
+    consumption = convert_to_utc(consumption, time_zone)
 
-    period_consumption = filter_for_parent_child_overlap_period_and_year.select(
-        F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
+    return consumption
+
+
+def compare_previous_calculated_daily_consumption(df: DataFrame) -> DataFrame:
+    return df.where(
+        (
+            (F.col("quantity") != F.col("previously_electric_heating_quantity"))
+            | F.col("previously_electric_heating_quantity").isNull()
+        )
+    ).select(
         F.col("metering_point_id"),
         F.col("date"),
         F.col("quantity"),
-        F.col("period_consumption_limit"),
-        F.col("previously_calculated_quantity"),
-    ).drop_duplicates()
+    )
 
-    period_consumption_with_limit = period_consumption.select(
+
+def impose_period_quantity_limit(df: DataFrame) -> DataFrame:
+    return df.select(
         F.when(
             (F.col("cumulative_quantity") >= F.col("period_consumption_limit"))
             & (
@@ -191,38 +141,80 @@ def execute_core_logic(
         F.col("metering_point_id"),
         F.col("date"),
         F.col("period_consumption_limit"),
-        F.col("previously_calculated_quantity"),
+        F.col("previously_electric_heating_quantity"),
     ).drop_duplicates()
 
-    compare_previous_calculated_daily_consumption = period_consumption_with_limit.where(
-        (
-            (F.col("quantity") != F.col("previously_calculated_quantity"))
-            | F.col("previously_calculated_quantity").isNull()
+
+def aggregate_quantity_over_period(df: DataFrame) -> DataFrame:
+    period_window = (
+        Window.partitionBy(
+            F.col("metering_point_id"),
+            F.col("parent_period_start"),
+            F.col("parent_period_end"),
         )
-    ).select(
+        .orderBy(F.col("date"))
+        .rowsBetween(Window.unboundedPreceding, Window.currentRow)
+    )
+    return df.select(
+        F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
         F.col("metering_point_id"),
         F.col("date"),
         F.col("quantity"),
+        F.col("period_consumption_limit"),
+        F.col("previously_electric_heating_quantity"),
+    ).drop_duplicates()
+
+
+def filter_parent_child_overlap_period_and_year(df: DataFrame) -> DataFrame:
+    return df.where(
+        (F.col("date") >= F.col("parent_child_overlap_period_start"))
+        & (F.col("date") < F.col("metering_point.parent_child_overlap_period_end"))
+        & (F.year(F.col("date")) == F.year(F.col("period_year")))
     )
 
-    compare_previous_calculated_daily_consumption = convert_to_utc(
-        compare_previous_calculated_daily_consumption, time_zone
-    )
 
-    return compare_previous_calculated_daily_consumption
-
-
-def join_consumption_to_previously_calculated_consumption(df1, df2):
+def join_parent_on_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
     return (
         df1.alias("consumption")
         .join(
-            df2.alias("previous"),
+            df2.alias("metering_point"),
+            F.col("consumption.metering_point_id")
+            == F.col("metering_point.parent_metering_point_id"),
+            "inner",
+        )
+        .select(
+            F.col("metering_point.parent_period_start").alias("parent_period_start"),
+            F.col("metering_point.parent_period_end").alias("parent_period_end"),
+            F.col("metering_point.child_metering_point_id").alias("metering_point_id"),
+            F.col("consumption.date").alias("date"),
+            F.col("consumption.quantity").alias("quantity"),
+            F.col("metering_point.period_consumption_limit").alias(
+                "period_consumption_limit"
+            ),
+            F.col("consumption.previously_electric_heating_quantity").alias(
+                "previously_electric_heating_quantity"
+            ),
+            F.col("metering_point.parent_child_overlap_period_start").alias(
+                "parent_child_overlap_period_start"
+            ),
+            F.col("metering_point.parent_child_overlap_period_end").alias(
+                "parent_child_overlap_period_end"
+            ),
+        )
+    )
+
+
+def join_on_child_point_id(df1, df2):
+    return (
+        df1.alias("consumption")
+        .join(
+            df2.alias("electric_heating"),
             (
                 (
                     F.col("consumption.child_metering_point_id")
-                    == F.col("previous.metering_point_id")
+                    == F.col("electric_heating.metering_point_id")
                 )
-                & (F.col("consumption.date") == F.col("previous.date"))
+                & (F.col("consumption.date") == F.col("electric_heating.date"))
             ),
             "left",
         )
@@ -230,26 +222,14 @@ def join_consumption_to_previously_calculated_consumption(df1, df2):
             F.col("consumption.metering_point_id").alias("metering_point_id"),
             F.col("consumption.date").alias("date"),
             F.col("consumption.quantity").alias("quantity"),
-            F.col("previous.quantity").alias("previously_calculated_quantity"),
+            F.col("electric_heating.quantity").alias(
+                "previously_electric_heating_quantity"
+            ),
         )
     )
 
 
-def previously_calculated_consumption(df: DataFrame) -> DataFrame:
-    return df.where(F.col("child_metering_point_id").isNull()).select(
-        F.col("metering_point_id"),
-        F.col("date"),
-        F.col("quantity"),
-    )
-
-
-def non_calculated_consumption(df: DataFrame) -> DataFrame:
-    return df.where(F.col("child_metering_point_id").isNotNull())
-
-
-def join_unique_child_and_parent_id_to_consumption_daily(
-    df1: DataFrame, df2: DataFrame
-) -> DataFrame:
+def join_unique_child_and_parent_id(df1: DataFrame, df2: DataFrame) -> DataFrame:
     return (
         df1.alias("consumption")
         .join(
@@ -274,13 +254,12 @@ def unique_child_parent_metering_id(df: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-daily_window = Window.partitionBy(
-    F.col("metering_point_id"),
-    F.col("date"),
-)
+def to_daily(df: DataFrame) -> DataFrame:
+    daily_window = Window.partitionBy(
+        F.col("metering_point_id"),
+        F.col("date"),
+    )
 
-
-def consumption_time_series_to_daily(df: DataFrame) -> DataFrame:
     return (
         df.select(
             "*",
