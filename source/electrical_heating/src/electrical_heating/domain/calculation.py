@@ -75,42 +75,47 @@ def execute_core_logic(
     points = split_consumption_period_by_year(points)
     points = calculate_period_consumption_limit(points)
 
-    # prepare consumption time series data
+    # prepare consumption and electrical heating time series data
     consumption_daily = to_daily(consumption)
-    electrical_heating_daily = to_daily(electrical_heating)
-    parent_child_points_id = unique_child_parent_metering_id(child_points)
-    consumption_with_child_points_id = join_unique_child_and_parent_id(
-        consumption_daily, parent_child_points_id
-    )
-    consumption = join_on_child_point_id(
-        consumption_with_child_points_id, electrical_heating_daily
-    )
+    previous_electrical_heating = to_daily(electrical_heating)
 
     # here conumption time series and metering points data is joined
     consumption_with_points = join_parent_on_metering_point(
-        consumption,
+        consumption_daily,
         points,
     )
     consumption = filter_parent_child_overlap_period_and_year(consumption_with_points)
     consumption = aggregate_quantity_over_period(consumption)
-    consumption = impose_period_quantity_limit(consumption)
-    consumption = compare_previous_calculated_daily_consumption(consumption)
+    electrical_heating = impose_period_quantity_limit(consumption)
+    electrical_heating = filter_unchanged_electrical_heating(
+        electrical_heating, previous_electrical_heating
+    )
 
-    consumption = convert_to_utc(consumption, time_zone)
+    electrical_heating = convert_to_utc(electrical_heating, time_zone)
 
-    return consumption
+    return electrical_heating
 
 
-def compare_previous_calculated_daily_consumption(df: DataFrame) -> DataFrame:
-    return df.where(
-        (
-            (F.col("quantity") != F.col("previously_electric_heating_quantity"))
-            | F.col("previously_electric_heating_quantity").isNull()
+def filter_unchanged_electrical_heating(df1: DataFrame, df2: DataFrame) -> DataFrame:
+    return (
+        df1.alias("current")
+        .join(
+            df2.alias("previous"),
+            (
+                (
+                    F.col("current.metering_point_id")
+                    == F.col("previous.metering_point_id")
+                )
+                & (F.col("current.date") == F.col("previous.date"))
+                & (F.col("current.quantity") == F.col("previous.quantity"))
+            ),
+            "left_anti",
         )
-    ).select(
-        F.col("metering_point_id"),
-        F.col("date"),
-        F.col("quantity"),
+        .select(
+            F.col("current.metering_point_id"),
+            F.col("current.date"),
+            F.col("current.quantity"),
+        )
     )
 
 
@@ -139,7 +144,6 @@ def impose_period_quantity_limit(df: DataFrame) -> DataFrame:
         F.col("metering_point_id"),
         F.col("date"),
         F.col("period_consumption_limit"),
-        F.col("previously_electric_heating_quantity"),
     ).drop_duplicates()
 
 
@@ -159,7 +163,6 @@ def aggregate_quantity_over_period(df: DataFrame) -> DataFrame:
         F.col("date"),
         F.col("quantity"),
         F.col("period_consumption_limit"),
-        F.col("previously_electric_heating_quantity"),
     ).drop_duplicates()
 
 
@@ -189,9 +192,6 @@ def join_parent_on_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
             F.col("metering_point.period_consumption_limit").alias(
                 "period_consumption_limit"
             ),
-            F.col("consumption.previously_electric_heating_quantity").alias(
-                "previously_electric_heating_quantity"
-            ),
             F.col("metering_point.parent_child_overlap_period_start").alias(
                 "parent_child_overlap_period_start"
             ),
@@ -220,9 +220,6 @@ def join_on_child_point_id(df1: DataFrame, df2: DataFrame) -> DataFrame:
             F.col("consumption.metering_point_id").alias("metering_point_id"),
             F.col("consumption.date").alias("date"),
             F.col("consumption.quantity").alias("quantity"),
-            F.col("electric_heating.quantity").alias(
-                "previously_electric_heating_quantity"
-            ),
         )
     )
 
