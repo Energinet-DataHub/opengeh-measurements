@@ -30,6 +30,8 @@ jobs:
     name: Compile Protobuf descriptor files constituting contracts
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Check if contract files has changed
         uses: dorny/paths-filter@v3
         id: changes
