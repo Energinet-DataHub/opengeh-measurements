@@ -1,16 +1,8 @@
-﻿import pytest
-import tomli
+﻿import tomli
 
 from tests import PROJECT_ROOT
 
 
-@pytest.mark.skip
-@pytest.mark.parametrize(
-    "entry_point_name",
-    [
-        "execute",
-    ],
-)
 def test__entry_point_exists() -> None:
     with open(PROJECT_ROOT / "pyproject.toml", "rb") as file:
         pyproject = tomli.load(file)
