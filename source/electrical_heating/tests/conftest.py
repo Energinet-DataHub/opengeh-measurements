@@ -1,23 +1,33 @@
+### This file contains the fixtures that are used in the tests. ###
+
+import os
+import sys
 from pathlib import Path
 from typing import Generator
 
+import pyspark.sql.functions as F
 import pytest
+from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.types import ArrayType, Row
+from telemetry_logging.logging_configuration import configure_logging
 from testcommon.dataframes import assert_schema
 
-from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import point, measurements_bronze_v1
-from electrical_heating.infrastructure.measurements_bronze.database_definitions import MeasurementsBronzeDatabase
-import pyspark.sql.functions as F
-
-from testsession_configuration import TestSessionConfiguration
-from utils.delta_table_utils import create_delta_table, read_from_csv, write_dataframe_to_table
-from telemetry_logging.logging_configuration import configure_logging
-
-from tests import PROJECT_ROOT
-from tests.testsession_configuration import (
-    TestSessionConfiguration,
+from electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+    MeasurementsBronzeDatabase,
 )
+from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+    measurements_bronze_v1,
+    point,
+)
+from tests import PROJECT_ROOT
+from tests.testsession_configuration import TestSessionConfiguration
+from tests.utils.delta_table_utils import (
+    create_delta_table,
+    read_from_csv,
+    write_dataframe_to_table,
+)
+
 
 @pytest.fixture(scope="module", autouse=True)
 def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
@@ -28,7 +38,15 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
-    session = SparkSession.builder.appName("testcommon").getOrCreate()
+    session = (
+        SparkSession.builder.appName("testcommon")
+        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+        .config(
+            "spark.sql.catalog.spark_catalog",
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+        )
+    )
+    session = configure_spark_with_delta_pip(session).getOrCreate()
     yield session
     session.stop()
 
@@ -67,41 +85,51 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def write_to_delta(spark: SparkSession, test_files_folder_path: str) -> None:
-
     create_delta_table(
         spark,
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
         table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
         schema=measurements_bronze_v1,
-        table_location=f"test1/{MeasurementsBronzeDatabase.DATABASE_NAME}/{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}",
+        table_location=f"{MeasurementsBronzeDatabase.DATABASE_NAME}/{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}",
     )
 
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
-    measurements = read_from_csv(spark, file_name, schema=measurements_bronze_v1)
+    measurements = read_from_csv(spark, file_name)
 
     measurements.show()
     measurements = measurements.withColumn(
         "points",
         F.from_json(F.col("points"), ArrayType(point)),
     )
-    measurements = measurements.withColumn(
-        "start_datetime",
-        F.to_timestamp(F.col("start_datetime"), "yyyy-MM-dd HH:mm:ss"),
-    ).withColumn(
-        "end_datetime",
-        F.to_timestamp(F.col("end_datetime"), "yyyy-MM-dd HH:mm:ss"))
+    measurements = (
+        measurements.withColumn(
+            "start_datetime",
+            F.to_timestamp(F.col("start_datetime"), "yyyy-MM-dd HH:mm:ss"),
+        )
+        .withColumn(
+            "end_datetime", F.to_timestamp(F.col("end_datetime"), "yyyy-MM-dd HH:mm:ss")
+        )
+        .withColumn(
+            "transaction_creation_datetime",
+            F.to_timestamp(
+                F.col("transaction_creation_datetime"), "yyyy-MM-dd HH:mm:ss"
+            ),
+        )
+    )
 
-    measurements = spark.createDataFrame(measurements.rdd, schema=measurements_bronze_v1, verifySchema=True)
+    measurements = spark.createDataFrame(
+        measurements.rdd, schema=measurements_bronze_v1, verifySchema=True
+    )
 
     measurements.show()
 
-    print(measurements_bronze_v1)
+    # print(measurements_bronze_v1)
     measurements.printSchema()
 
     assert_schema(measurements.schema, measurements_bronze_v1)
 
     write_dataframe_to_table(
-        df = spark.createDataFrame([Row("a")], schema=measurements_bronze_v1),
+        df=measurements,
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
         table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
     )
