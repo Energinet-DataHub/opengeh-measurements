@@ -6,7 +6,7 @@ from pyspark.sql import DataFrame, SparkSession, functions as F, Window
 
 from telemetry_logging import use_span
 
-from source.capacity_settlement.src.capacity_settlement.application.job_args.capacity_settlement_args import (
+from capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 

@@ -9,8 +9,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-jobs:
+env:
+  PACKAGES_DIR: source
 
+jobs:
   #
   # License and Markdown Check
   #
@@ -21,69 +23,77 @@ jobs:
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
-  changes:
-    uses: ./.github/workflows/detect-changes.yml
+  #
+  # Build Package Matrix
+  #
+  ci_matrix:
+    name: Build Package Matrix
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.package_matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Discover Pyproject
+        uses: ./.github/actions/discover-pyproject
+        id: package_matrix
+        with:
+          path: ${{ env.PACKAGES_DIR }}
 
-  ci_docker:
-    needs: changes
-    uses: Energinet-DataHub/.github/.github/workflows/python-build-and-push-docker-image.yml@v14
-    with:
-      docker_changed: ${{ needs.changes.outputs.docker == 'true' }}
-      docker_changed_in_commit: ${{ needs.changes.outputs.docker_in_commit == 'true' }}
+  #
+  # Test Packages
+  #
+  ci_test:
+    name: Test Packages
+    runs-on: ubuntu-24.04
+    needs: ci_matrix
+    strategy:
+      matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Print Inputs
+        run: |
+          echo "Path: ${{ matrix.inputs.path }}"
+          echo "Name: ${{ matrix.inputs.name }}"
+      - name: Check if ${{ matrix.inputs.name }} has changed
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            is_changed:
+              - ${{ matrix.inputs.path }}/**
+      - name: Test ${{ matrix.inputs.name }}
+        uses: ./.github/actions/uvtest
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          name: ${{ matrix.inputs.name }}
+          path: ${{ matrix.inputs.path }}
+      - name: Upload prerelease
+        uses: ./.github/actions/create-prerelease
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          name: ${{ matrix.inputs.name }}
+          path: ${{ matrix.inputs.path }}
+          issue-number: ${{ github.event.pull_request.number }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  ci_electrical_heating:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.electrical_heating == 'true' }}
-    uses: ./.github/workflows/ci-electrical-heating.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-
-  ci_capacity_settlement:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.capacity_settlement == 'true' }}
-    uses: ./.github/workflows/ci-capacity-settlement.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-
-  ci_bronze:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.bronze == 'true' }}
-    uses: ./.github/workflows/ci-databricks.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-      package_name: bronze
-
-  ci_silver:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.silver == 'true' }}
-    uses: ./.github/workflows/ci-databricks.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-      package_name: silver
-
-  ci_gold:
-    needs: [changes, ci_docker]
-    if: ${{ needs.changes.outputs.gold == 'true' }}
-    uses: ./.github/workflows/ci-databricks.yml
-    with:
-      image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-      package_name: gold
-
+  # ci_bronze:
+  #   needs: [changes, ci_docker]
+  #   if: ${{ needs.changes.outputs.bronze == 'true' }}
+  #   uses: ./.github/workflows/ci-databricks.yml
+  #   with:
+  #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
+  #     package_name: bronze
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
-    runs-on: ubuntu-latest
-    needs:
-      [
-        changes,
-        ci_base,
-        ci_electrical_heating,
-        ci_capacity_settlement,
-        ci_bronze,
-        ci_silver,
-        ci_gold,
-      ]
+    runs-on: ubuntu-24.04
+    needs: [ci_base, ci_matrix, ci_test]
     if: |
       always()
     steps:
