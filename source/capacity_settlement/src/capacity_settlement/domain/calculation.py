@@ -2,8 +2,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
-from pyspark.sql import DataFrame, SparkSession, functions as F, Window
-
+from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import functions as F
 from telemetry_logging import use_span
 
 from capacity_settlement.application.job_args.capacity_settlement_args import (
@@ -63,13 +63,11 @@ def _add_selection_period_columns(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-    """
-    Adds the selection period columns to the metering point periods DataFrame.
+    """Adds the selection period columns to the metering point periods DataFrame.
     The selection period is the period used to calculate the average of the ten largest quantities.
     The selection period is the last year up to the end of the calculation month.
     TODO: JMG: Should also support shorter metering point periods
     """
-
     calculation_start_date = datetime(
         calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
     )
@@ -121,7 +119,6 @@ def _explode_to_daily(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-
     calculation_start_date = datetime(
         calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
     )
