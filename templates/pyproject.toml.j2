@@ -1,19 +1,8 @@
-[project]
-name = "silver"
-version = "0.1.0"
-description = "Streaming to the silver layer"
-readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations",
-]
-
-[project.scripts]
-migrate = "silver.entry_points:migrate"
-
 [dependency-groups]
 dev = [
-    "opengeh-testcommon",
+    "commitizen>=4.1.0",
+    "mypy>=1.14.1",
+    "pre-commit>=4.0.1",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
     "ruff>=0.9.1",
@@ -29,7 +18,7 @@ build-backend = "hatchling.build"
 allow-direct-references = true
 
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=silver -ra -vv"
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov={{ package_name }} -ra -vv"
 
 [tool.coverage.report]
 fail_under = 0
@@ -76,7 +65,3 @@ exclude = [
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.uv.sources.opengeh-testcommon]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/testcommon"
-rev = "3.0.1"
