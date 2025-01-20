@@ -5,8 +5,8 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import silver.application.services.migrations as migrations
-from silver.domain.constants.database_names import DatabaseNames
+import source.silver.src.silver.infrastructure.migrations.migrations as migrations
+from source.silver.src.silver.infrastructure.silver.database_names import DatabaseNames
 
 
 def pytest_runtest_setup() -> None:
@@ -14,6 +14,7 @@ def pytest_runtest_setup() -> None:
     This function is called before each test function is executed.
     """
     os.environ["CATALOG_NAME"] = "spark_catalog"
+    os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
 
 
 @pytest.fixture(scope="session")
@@ -101,6 +102,18 @@ def tests_path(source_path: str) -> str:
     file located directly in the integration tests folder.
     """
     return f"{source_path}/silver/tests"
+
+
+@pytest.fixture(autouse=True)
+def configure_dummy_logging() -> None:
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+
+    from telemetry_logging.logging_configuration import configure_logging
+
+    configure_logging(
+        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
+    )
+
 
 
 def _create_schemas(spark: SparkSession) -> None:
