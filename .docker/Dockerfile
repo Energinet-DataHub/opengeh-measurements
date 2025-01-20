@@ -25,6 +25,8 @@ RUN apt-get update \
   build-essential \
   # gnupg2 allows you to sign git commits with GPG
   gnupg2 \
+  gcc \
+  python3-dev \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
