@@ -14,9 +14,6 @@ from electrical_heating.application.execute_with_deps import (
 from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.child_metering_point_periods_v1 import (
-    child_metering_point_periods_v1,
-)
 from electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
     consumption_metering_point_periods_v1,
 )

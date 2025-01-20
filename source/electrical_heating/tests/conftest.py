@@ -3,12 +3,12 @@ from typing import Generator
 
 import pytest
 from pyspark.sql import SparkSession
+from telemetry_logging.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
-from telemetry_logging.logging_configuration import configure_logging
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -43,7 +43,7 @@ def tests_path() -> str:
 @pytest.fixture(scope="session")
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
-    return f"{PROJECT_ROOT}/contracts"
+    return (PROJECT_ROOT / "contracts").as_posix()
 
 
 @pytest.fixture(scope="session")
