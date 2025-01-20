@@ -8,10 +8,7 @@ runs:
       shell: bash
       run: |
           pushd './source/bronze/src/infrastructure/contracts'
-          rm -rf ./proto ./assets
-          mkdir ./proto ./assets
-          cp -r **.proto ./proto
-          pushd ./proto
+          mkdir ./assets
           protoc --include_imports --descriptor_set_out=../assets/persist_submitted_transaction.binpb PersistSubmittedTransaction.proto
           protoc --include_imports --descriptor_set_out=../assets/submitted_transaction_persisted.binpb SubmittedTransactionPersisted.proto
           popd

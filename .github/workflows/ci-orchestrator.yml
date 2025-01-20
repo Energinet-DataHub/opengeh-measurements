@@ -24,6 +24,20 @@ jobs:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
+  # Detect changes to determine workflows to run
+  #
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
+  #
+  # Build Protobuf Contracts
+  #
+  ci_bronze_contracts:
+    needs: [changes]
+    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
+    uses: ./.github/actions/compile-proto
+
+  #
   # Build Package Matrix
   #
   ci_matrix:
@@ -81,11 +95,6 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  ci_bronze_contracts:
-    needs: [changes]
-    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
-    uses: ./.github/actions/compile-proto
-
   # ci_bronze:
   #   needs: [changes, ci_docker]
   #   if: ${{ needs.changes.outputs.bronze == 'true' }}
@@ -98,7 +107,7 @@ jobs:
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_base, ci_matrix, ci_test]
+    needs: [ci_base, ci_matrix, ci_test, ci_bronze_contracts]
     if: |
       always()
     steps:
