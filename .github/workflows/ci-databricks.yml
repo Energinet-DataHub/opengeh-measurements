@@ -11,6 +11,14 @@ on:
         required: true
 
 jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
+  compile-proto-contracts:
+    needs: changes
+    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
+    uses: ./.github/workflows/ci-measurements.yml
+
   uv-build-and-test:
     name: python
     runs-on: ubuntu-latest

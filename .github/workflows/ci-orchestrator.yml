@@ -45,6 +45,11 @@ jobs:
     with:
       image_tag: ${{ needs.ci_docker.outputs.image_tag }}
 
+  ci_bronze_contracts:
+    needs: [changes]
+    if: ${{ needs.changes.outputs.bronze_contracts == 'true' }}
+    uses: ./.github/actions/compile-proto
+
   ci_bronze:
     needs: [changes, ci_docker]
     if: ${{ needs.changes.outputs.bronze == 'true' }}
