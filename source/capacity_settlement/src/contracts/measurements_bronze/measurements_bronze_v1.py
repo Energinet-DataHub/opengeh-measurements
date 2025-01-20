@@ -12,7 +12,7 @@ _point = t.StructType(
         t.StructField("position", t.StringType(), not nullable),
         #
         # The quantity calculated by the capacity settlement job
-        t.StructField("quantity", t.StringType(), not nullable),
+        t.StructField("quantity", t.DecimalType(18, 3), not nullable),
         #
         # Must be: "calculated"
         t.StructField("quality", t.StringType(), not nullable),
@@ -27,24 +27,19 @@ measurements_bronze_v1 = t.StructType(
         # Must be: "capacity_settlement"
         t.StructField("orchestration_type", t.StringType(), not nullable),
         #
-        # The GUID value of the capacity_settlement calculation job
+        # The GUID value of the capacity settlement calculation job
         t.StructField("orchestration_instance_id", t.StringType(), not nullable),
         #
         # Metering Point ID
+        # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # Transaction ID. Created by the capacity_settlement calculation job.
+        # Transaction ID. Created by the capacity settlement calculation job.
         t.StructField("transaction_id", t.StringType(), not nullable),
         #
         # A DateTime value indicating when the transaction was created
-        # by the capacity_settlement calculation job.
-        t.StructField("transaction_creation_datetime", t.StringType(), not nullable),
-        #
-        # The start DateTime of the transaction (the first position’s observation time)
-        t.StructField("start_datetime", t.TimestampType(), not nullable),
-        #
-        # The end DateTime of the transaction
-        t.StructField("end_datetime", t.TimestampType(), not nullable),
+        # by the capacity settlement calculation job.
+        t.StructField("transaction_creation_datetime", t.TimestampType(), not nullable),
         #
         # Must be "capacity_settlement"
         t.StructField("metering_point_type", t.StringType(), not nullable),
@@ -59,6 +54,12 @@ measurements_bronze_v1 = t.StructType(
         #
         # Must be: "PT1H"
         t.StructField("resolution", t.StringType(), not nullable),
+        #
+        # The start DateTime of the transaction (the first position’s observation time)
+        t.StructField("start_datetime", t.TimestampType(), not nullable),
+        #
+        # The end DateTime of the transaction
+        t.StructField("end_datetime", t.TimestampType(), not nullable),
         #
         # Points
         t.StructField(
