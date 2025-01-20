@@ -7,8 +7,7 @@ runs:
     - name: Call include assets script
       shell: bash
       run: |
-          pwd
-          pushd './source/bronze/src/infrastructure/contracts'
+          pushd './source/bronze/src/bronze/infrastructure/contracts'
           mkdir ./assets
           protoc --include_imports --descriptor_set_out=../assets/persist_submitted_transaction.binpb PersistSubmittedTransaction.proto
           protoc --include_imports --descriptor_set_out=../assets/submitted_transaction_persisted.binpb SubmittedTransactionPersisted.proto
