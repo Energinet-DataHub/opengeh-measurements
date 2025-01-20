@@ -9,5 +9,5 @@ def test__entry_point_exists() -> None:
         project = pyproject.get("project", {})
 
     package_name = project.get("name")
-    scripts = pyproject.get("scripts", {})
+    scripts = project.get("scripts", {})
     assert package_name in scripts, f"Package {package_name} not found in scripts"
