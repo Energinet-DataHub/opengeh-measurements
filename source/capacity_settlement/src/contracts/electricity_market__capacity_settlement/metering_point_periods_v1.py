@@ -29,12 +29,12 @@ metering_point_periods_v1 = t.StructType(
         # ID of the child metering point, which is of type 'capacity_settlement'
         t.StructField("child_metering_point_id", t.StringType(), not nullable),
         #
-        # The date where the child metering point (of type 'capacity_settlement') was coupled to the parent metering point
+        # The date where the child metering point (of type 'capacity_settlement') was created
         # UTC time
-        t.StructField("coupled_date", t.TimestampType(), not nullable),
+        t.StructField("child_period_from_date", t.TimestampType(), not nullable),
         #
-        # The date where the child metering point (of type 'capacity_settlement') was decoupled from the parent metering point
+        # The date where the child metering point (of type 'capacity_settlement') was closed down
         # UTC time
-        t.StructField("decoupled_date", t.TimestampType(), nullable),
+        t.StructField("child_period_to_date", t.TimestampType(), nullable),
     ]
 )
