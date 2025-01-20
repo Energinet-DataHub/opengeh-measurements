@@ -34,6 +34,7 @@ Contains notes and documentation stored in `*.md` files.
 Contains source code.
 
 ## Getting started
+
 Prerequisites: Docker Desktop and VSCode
 
 - Install extension "Dev Containers" in VSCode 
