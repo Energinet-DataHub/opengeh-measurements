@@ -18,6 +18,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "GitHub.copilot",
         "ms-python.mypy-type-checker",
         "charliermarsh.ruff",
         "redhat.vscode-yaml",
@@ -26,7 +27,15 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
-        "git.openRepositoryInParentFolders": "always",
+        "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
+        "files.eol": "\n", // Use LF line endings
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
+        "editor.formatOnSave": true,
+        "ruff.lineLength": 120,
+        "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.testing.pytestArgs": [
@@ -35,16 +44,15 @@
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true,
         "github.copilot.editor.enableAutoCompletions": true,
+        "python.languageServer": "Pylance", // Use Pylance as the language server        
+        "python.analysis.languageServerMode": "full", // Use the full language server mode
+        "python.analysis.autoFormatStrings": true, // Automatically format strings
         "[python]": {
-          "editor.defaultFormatter": "charliermarsh.ruff"
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "always" // Run the Ruff formatter on save
+          }
         },
-        "editor.tabSize": 2,
-        "editor.rulers": [
-          120
-        ],
-        "editor.formatOnSave": true,
-        "ruff.lineLength": 120,
-        "ruff.lint.run": "onSave",
         "terminal.integrated.inheritEnv": true,
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
