@@ -1,5 +1,6 @@
-from pyspark.sql import functions as F, types as T
 from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
 from telemetry_logging import use_span
 
 import electrical_heating.infrastructure.electricity_market as em
@@ -12,8 +13,8 @@ from electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
 from electrical_heating.domain.pyspark_functions import (
-    convert_timezone,
     begining_of_year,
+    convert_timezone,
     days_in_year,
 )
 
@@ -70,10 +71,7 @@ def execute_core_logic(
             "inner",
         )
         .where(
-            (
-                F.col("child.metering_point_type")
-                == ELECTRICAL_HEATING_METERING_POINT_TYPE
-            )
+            F.col("child.metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE
         )
         .select(
             F.col("child.metering_point_id").alias("child_metering_point_id"),

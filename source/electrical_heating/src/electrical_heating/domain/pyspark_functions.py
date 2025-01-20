@@ -1,6 +1,6 @@
 import pyspark.sql.functions as F
-from pyspark.sql import functions as F, types as T
 from pyspark.sql import Column, DataFrame
+from pyspark.sql import types as T
 
 
 def convert_utc_to_localtime(

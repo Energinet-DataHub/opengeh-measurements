@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
@@ -85,7 +85,6 @@ def execute_with_deps(
 
 @use_span()
 def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-
     execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
@@ -124,7 +123,6 @@ def execute_calculation(
     args: ElectricalHeatingArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
-
     calculation_output = CalculationOutput()
 
     calculation_output.measurements = execute_core_logic(
@@ -150,7 +148,6 @@ def create_calculation(
     execution_start_datetime: datetime,
     execution_stop_datetime: datetime,
 ) -> DataFrame:
-
     # TODO Temp. calculation id - refac when calculation id is available
     calculation_id = str(uuid.uuid4())
 
