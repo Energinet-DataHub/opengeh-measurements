@@ -20,11 +20,25 @@ dependencies = [
 [project.scripts]
 electrical_heating = "electrical_heating.entry_point:execute"
 
+[dependency-groups]
+dev = [
+    "commitizen>=4.1.0",
+    "mypy>=1.14.1",
+    "opengeh-testcommon",
+    "pre-commit>=4.0.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.1",
+]
+
 [build-system]
 requires = [
     "hatchling",
 ]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
@@ -74,17 +88,12 @@ exclude = [
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.uv.sources]
-opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
+[tool.uv.sources.opengeh-telemetry]
+git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
+subdirectory = "source/telemetry"
+rev = "3.0.1"
 
-[dependency-groups]
-dev = [
-    "commitizen>=4.1.0",
-    "mypy>=1.14.1",
-    "opengeh-testcommon",
-    "pre-commit>=4.0.1",
-    "pytest>=8.3.4",
-    "pytest-cov>=6.0.0",
-    "ruff>=0.9.1",
-]
+[tool.uv.sources.opengeh-testcommon]
+git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
+subdirectory = "source/testcommon"
+rev = "3.0.1"
