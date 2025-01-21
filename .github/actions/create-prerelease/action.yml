@@ -39,7 +39,7 @@ runs:
       shell: bash
       run: |
         mkdir -p ${{ env.RELEASE_FOLDER_PATH}}/dist
-        uv build --directory ${{ inputs.path }} --out-dir ${{ inputs.github_workspace }}/dist/${{ env.RELEASE_FOLDER_PATH}}
+        uv build --directory ${{ inputs.path }} --out-dir ${{ inputs.github_workspace }}/${{ env.RELEASE_FOLDER_PATH}}/dist
     - name: Copy Container Tests from ${{ inputs.name }}
       shell: bash
       run: |
