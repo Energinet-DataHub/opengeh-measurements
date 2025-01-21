@@ -1,5 +1,6 @@
 .tool-versions
 .DS_Store
+.ruff_cache
 _deprecated/
 # Byte-compiled / optimized / DLL files
 __pycache__/

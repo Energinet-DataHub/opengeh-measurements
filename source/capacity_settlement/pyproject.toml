@@ -3,7 +3,9 @@ name = "capacity_settlement"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [{ name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" }]
+authors = [
+    { name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" },
+]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -19,18 +21,37 @@ dependencies = [
 [project.scripts]
 capacity_settlement = "capacity_settlement.entry_point:execute"
 
+[dependency-groups]
+dev = [
+    "commitizen>=4.1.0",
+    "mypy>=1.14.1",
+    "opengeh-testcommon",
+    "pre-commit>=4.0.1",
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.1",
+]
+
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=capacity_settlement -ra\n-vv"
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=capacity_settlement -ra -vv"
 norecursedirs = ["container_tests"]
 
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+]
 
 [tool.ruff]
 line-length = 88
@@ -40,27 +61,41 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "D", "D401", "T201", "UP"]
-ignore = ["UP006", "UP007", "UP035", "D417", "E501"]
-exclude = ["notebooks/*"]
+select = [
+    "D",
+    "D401",
+    "E",
+    "F",
+    "I",
+    "T201",
+    "UP",
+]
+ignore = [
+    "D417",
+    "E501",
+    "UP006",
+    "UP007",
+    "UP035",
+]
+exclude = [
+    "notebooks/*",
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "UP"]
+"tests/*" = [
+    "D",
+    "UP",
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.uv.sources]
-opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
+[tool.uv.sources.opengeh-telemetry]
+git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
+subdirectory = "source/telemetry"
+rev = "3.0.1"
 
-[dependency-groups]
-dev = [
-    "commitizen>=4.1.0",
-    "mypy>=1.14.1",
-    "pre-commit>=4.0.1",
-    "pytest>=8.3.4",
-    "pytest-cov>=6.0.0",
-    "ruff>=0.9.1",
-    "opengeh-testcommon",
-]
+[tool.uv.sources.opengeh-testcommon]
+git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
+subdirectory = "source/testcommon"
+rev = "3.0.1"
