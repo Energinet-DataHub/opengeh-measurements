@@ -1,6 +1,6 @@
 ﻿import pytest
 
-from source.silver.src.silver.entry_points import entry_point as module
+from source.silver.src.silver import entry_points as module
 from source.tests.test_common.entry_points.entry_point_test_util import (
     assert_entry_point_exists,
 )
@@ -14,7 +14,6 @@ from source.tests.test_common.entry_points.entry_point_test_util import (
     ],
 )
 def test__entry_point_exists(
-    installed_package: None,
     entry_point_name: str,
 ) -> None:
     assert_entry_point_exists(entry_point_name, module)

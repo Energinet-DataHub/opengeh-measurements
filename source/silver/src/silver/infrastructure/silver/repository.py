@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
-from source.silver.src.silver.infrastructure.silver.database_names import DatabaseNames
-from source.silver.src.silver.infrastructure.silver.table_names import TableNames
+from silver.infrastructure.silver.database_names import DatabaseNames
+from silver.infrastructure.silver.table_names import TableNames
 
 class Repository:
     def __init__(

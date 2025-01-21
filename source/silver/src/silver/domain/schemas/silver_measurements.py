@@ -8,7 +8,7 @@
     TimestampType,
 )
 
-from source.silver.src.silver.domain.constants.columns.silver_measurements_column_names import (
+from silver.domain.constants.columns.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
 

@@ -7,15 +7,15 @@ from opentelemetry.trace import SpanKind
 from telemetry_logging.span_recording import span_record_exception
 from telemetry_logging import use_span
 
-from source.silver.src.silver.infrastructure.silver.container_names import ContainerNames
-from source.silver.src.silver.infrastructure.silver.table_names import TableNames
-from source.silver.src.silver.infrastructure.spark_initializer import initialize_spark
-from source.silver.src.silver.infrastructure.path_helper import path_helper
-from source.silver.src.silver.infrastructure.environment_variables import environment_helper
-import source.silver.src.silver.infrastructure.bronze.repository as measurements_bronze_repository
-import source.silver.src.silver.infrastructure.silver.repository as measurements_silver_repository
+from silver.infrastructure.silver.container_names import ContainerNames
+from silver.infrastructure.silver.table_names import TableNames
+from silver.infrastructure.spark_initializer import initialize_spark
+from silver.infrastructure.path_helper import get_checkpoint_path
+from silver.infrastructure.environment_variables import get_catalog_name, get_datalake_storage_account
+import silver.infrastructure.bronze.repository as measurements_bronze_repository
+import silver.infrastructure.silver.repository as measurements_silver_repository
 
-def execute_(
+def execute(
     cloud_role_name: str = "dbr-measurements-silver",
     applicationinsights_connection_string: str | None = None,        
 ) -> None:    
@@ -40,9 +40,9 @@ def execute_(
 
 @use_span()
 def _execute(spark: SparkSession) -> None:
-    catalog_name = environment_helper.get_catalog_name()
-    datalake_storage_account_name = environment_helper.get_data_lake_storage
-    checkpoint_path = path_helper.get_checkpoint_path(
+    catalog_name = get_catalog_name()
+    datalake_storage_account_name = get_datalake_storage_account()
+    checkpoint_path = get_checkpoint_path(
         datalake_storage_account_name, 
         ContainerNames.silver_container, 
         TableNames.silver_measurements_table
@@ -53,4 +53,3 @@ def _execute(spark: SparkSession) -> None:
     
     df_bronze_measurements = bronze_repository.read_measurements()
     silver_repository.write_measurements(df_bronze_measurements)
-    

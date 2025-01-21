@@ -1,4 +1,5 @@
 ﻿import os
+import subprocess
 from typing import Callable, Generator
 
 import pytest
@@ -58,6 +59,10 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     session.stop()
 
 
+def _create_schemas(spark: SparkSession) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
+
+
 @pytest.fixture(scope="session")
 def migrate(spark: SparkSession) -> None:
     """
@@ -113,8 +118,3 @@ def configure_dummy_logging() -> None:
     configure_logging(
         cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
     )
-
-
-
-def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
