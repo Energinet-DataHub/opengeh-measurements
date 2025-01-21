@@ -10,7 +10,7 @@ import pyspark.sql.functions as F
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
-from pyspark.sql.types import ArrayType, Row
+from pyspark.sql.types import ArrayType
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.dataframes import assert_schema
 
@@ -87,7 +87,7 @@ def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
 
 @pytest.fixture(scope="session")
 def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/test_files"
+    return f"{tests_path}/utils/test_files"
 
 
 @pytest.fixture(scope="session")
