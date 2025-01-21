@@ -26,6 +26,9 @@ class DatabricksApiClient:
 
         while time.time() - start_time < timeout:
             run_status = self.client.jobs.get_run(run_id=run_id)
+            if run_status.state is None:
+                raise Exception("Job run status state is None")
+
             lifecycle_state = run_status.state.life_cycle_state
             result_state = run_status.state.result_state
 
