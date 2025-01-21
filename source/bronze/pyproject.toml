@@ -10,6 +10,7 @@ dependencies = [
 
 [project.scripts]
 migrate = "bronze.entry_points:migrate"
+ingest_submitted_transactions = "bronze.entry_points:ingest_submitted_transactions"
 
 [dependency-groups]
 dev = [
