@@ -1,6 +1,12 @@
 ﻿from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
+from pyspark_functions.functions import (
+    begining_of_year,
+    convert_from_utc,
+    convert_to_utc,
+    days_in_year,
+)
 from telemetry_logging import use_span
 
 import electrical_heating.infrastructure.electricity_market as em
@@ -12,12 +18,6 @@ from src.electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
-)
-from src.electrical_heating.domain.pyspark_functions import (
-    begining_of_year,
-    convert_from_utc,
-    convert_to_utc,
-    days_in_year,
 )
 
 
@@ -71,22 +71,22 @@ def execute_core_logic(
     electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
     # prepare child metering points and parent metering points
-    points = join_child_to_parent_metering_point(
+    metering_point = join_child_to_parent_metering_point(
         child_metering_points, parent_metering_points
     )
-    points = handle_null_in_to_date_columns(points)
-    points = find_parent_child_overlap_period(points)
-    points = split_consumption_period_by_year(points)
-    points = calculate_period_consumption_limit(points)
+    metering_point = close_open_ended_periods(metering_point)
+    metering_point = find_parent_child_overlap_period(metering_point)
+    metering_point = split_consumption_period_by_year(metering_point)
+    metering_point = calculate_period_consumption_limit(metering_point)
 
     # prepare consumption and electrical heating time series data
-    consumption_daily = to_daily(consumption)
-    previous_electrical_heating = to_daily(electrical_heating)
+    consumption_daily = calculate_daily_quantity(consumption)
+    previous_electrical_heating = calculate_daily_quantity(electrical_heating)
 
     # here conumption time series and metering points data is joined
     consumption_with_points = join_parent_on_metering_point(
         consumption_daily,
-        points,
+        metering_point,
     )
     consumption = filter_parent_child_overlap_period_and_year(consumption_with_points)
     consumption = aggregate_quantity_over_period(consumption)
@@ -253,7 +253,7 @@ def unique_child_parent_metering_id(df: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-def to_daily(df: DataFrame) -> DataFrame:
+def calculate_daily_quantity(df: DataFrame) -> DataFrame:
     daily_window = Window.partitionBy(
         F.col("metering_point_id"),
         F.col("date"),
@@ -322,35 +322,31 @@ def split_consumption_period_by_year(df: DataFrame) -> DataFrame:
 
 
 def find_parent_child_overlap_period(df: DataFrame) -> DataFrame:
-    return (
-        df.select(
-            "*",
-            # here we calculate the overlaping period between the consumption period and the child period
-            # we however assume that there os only one overlapping period between the two periods
-            ###
-            F.greatest(
-                F.col("child_period_start"),
-                F.col("parent_period_start"),
-            ).alias("parent_child_overlap_period_start"),
-            F.least(
-                F.coalesce(
-                    F.col("child_period_end"),
-                    begining_of_year(F.current_date(), years_to_add=1),
-                ),
-                F.coalesce(
-                    F.col("parent_period_end"),
-                    begining_of_year(F.current_date(), years_to_add=1),
-                ),
-            ).alias("parent_child_overlap_period_end"),
-        ).where(
-            F.col("parent_child_overlap_period_start")
-            < F.col("parent_child_overlap_period_end")
-        )
-        ###
+    return df.select(
+        "*",
+        # here we calculate the overlaping period between the consumption period and the child period
+        # we however assume that there os only one overlapping period between the two periods
+        F.greatest(
+            F.col("child_period_start"),
+            F.col("parent_period_start"),
+        ).alias("parent_child_overlap_period_start"),
+        F.least(
+            F.coalesce(
+                F.col("child_period_end"),
+                begining_of_year(F.current_date(), years_to_add=1),
+            ),
+            F.coalesce(
+                F.col("parent_period_end"),
+                begining_of_year(F.current_date(), years_to_add=1),
+            ),
+        ).alias("parent_child_overlap_period_end"),
+    ).where(
+        F.col("parent_child_overlap_period_start")
+        < F.col("parent_child_overlap_period_end")
     )
 
 
-def handle_null_in_to_date_columns(df: DataFrame) -> DataFrame:
+def close_open_ended_periods(df: DataFrame) -> DataFrame:
     return df.select(
         F.coalesce(
             F.col("parent_period_end"),
