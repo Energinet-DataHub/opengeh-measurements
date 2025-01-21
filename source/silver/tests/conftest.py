@@ -1,14 +1,12 @@
 ﻿import os
-import subprocess
 from typing import Callable, Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import source.silver.src.silver.infrastructure.migrations.migrations as migrations
-from source.silver.src.silver.infrastructure.silver.database_names import DatabaseNames
-
+import silver.infrastructure.migrations.migrations as migrations
+from silver.infrastructure.silver.database_names import DatabaseNames
 
 def pytest_runtest_setup() -> None:
     """

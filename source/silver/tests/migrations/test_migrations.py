@@ -1,9 +1,9 @@
 ﻿import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from source.silver.src.silver.infrastructure.silver.database_names import DatabaseNames
-from source.silver.src.silver.infrastructure.silver.table_names import TableNames
-from source.silver.src.silver.domain.schemas.silver_measurements import (
+from silver.infrastructure.silver.database_names import DatabaseNames
+from silver.infrastructure.silver.table_names import TableNames
+from silver.domain.schemas.silver_measurements import (
     silver_measurements_schema,
 )
 

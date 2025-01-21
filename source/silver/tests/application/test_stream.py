@@ -1,7 +1,7 @@
 import pytest
 from unittest import mock
 from pyspark.sql import SparkSession
-from source.silver.src.silver.application.stream import execute
+from silver.application.stream import execute
 
 
 @mock.patch("source.silver.src.silver.application.stream.measurements_silver_repository")

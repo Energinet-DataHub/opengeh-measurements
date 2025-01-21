@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
-from source.silver.src.silver.infrastructure.bronze.database_names import DatabaseNames
-from source.silver.src.silver.infrastructure.bronze.table_names import TableNames
-from source.silver.src.silver.infrastructure.bronze.options import BRONZE_CALCULATED_OPTIONS
+from silver.infrastructure.bronze.database_names import DatabaseNames
+from silver.infrastructure.bronze.table_names import TableNames
+from silver.infrastructure.bronze.options import BRONZE_CALCULATED_OPTIONS
 
 class Repository:
     def __init__(
