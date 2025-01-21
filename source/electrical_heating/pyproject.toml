@@ -3,9 +3,7 @@ name = "electrical_heating"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" },
-]
+authors = [{ name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" }]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -21,21 +19,17 @@ dependencies = [
 electrical_heating = "electrical_heating.entry_point:execute"
 
 [build-system]
-requires = [
-    "hatchling",
-]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
+norecursedirs = ["container_tests"]
 
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = [
-    "pragma: no cover",
-    "raise NotImplementedError",
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [tool.ruff]
 line-length = 88
@@ -45,31 +39,12 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "E",
-    "F",
-    "I",
-    "D",
-    "D401",
-    "T201",
-    "UP",
-]
-ignore = [
-    "UP006",
-    "UP007",
-    "UP035",
-    "D417",
-    "E501",
-]
-exclude = [
-    "notebooks/*",
-]
+select = ["E", "F", "I", "D", "D401", "T201", "UP"]
+ignore = ["UP006", "UP007", "UP035", "D417", "E501"]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "D",
-    "UP",
-]
+"tests/*" = ["D", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
