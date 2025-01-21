@@ -24,6 +24,26 @@ jobs:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
+  # Compile Protobuf Contracts
+  #
+  ci_bronze_contracts:
+    name: Compile Protobuf Contracts
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check if contract files has changed
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            is_changed:
+              - source/bronze/src/bronze/infrastructure/contracts/**
+      - name: Compile protobuf descriptor files
+        uses: ./.github/actions/compile-proto
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+
+  #
   # Build Package Matrix
   #
   ci_matrix:
@@ -88,12 +108,13 @@ jobs:
   #   with:
   #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
   #     package_name: bronze
+
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_base, ci_matrix, ci_test]
+    needs: [ci_base, ci_matrix, ci_test, ci_bronze_contracts]
     if: |
       always()
     steps:
