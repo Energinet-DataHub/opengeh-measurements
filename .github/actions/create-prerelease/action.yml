@@ -1,0 +1,64 @@
+name: UV Test
+description: Test a package with UV
+inputs:
+  name:
+    description: The name of the package
+    required: true
+  path:
+    description: The path to the package
+    required: true
+  issue-number:
+    description: The issue number
+    required: true
+    default: ${{ github.event.pull_request.number }}
+  github_token:
+    description: The GitHub token
+    required: true
+    default: ${{ github.token }}
+  github_workspace:
+    description: The GitHub workspace
+    required: true
+    default: ${{ github.workspace }}
+runs:
+  using: composite
+  steps:
+    - name: Setup Environment
+      shell: bash
+      run: |
+        echo "RELEASE_VERSION=${{ inputs.name }}_${{ inputs.issue-number }}" >> $GITHUB_ENV
+        echo "RELEASE_FOLDER_PATH=${{ inputs.path }}/artifacts" >> $GITHUB_ENV
+        echo "RELEASE_ZIP_FILENAME=${{ inputs.name }}_${{ inputs.issue-number }}.zip" >> $GITHUB_ENV
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+        cache-suffix: ${{ inputs.name }}
+    - name: Sync ${{ inputs.name }}
+      shell: bash
+      run: uv sync --directory ${{ inputs.path }}
+    - name: Build ${{ inputs.name }}
+      shell: bash
+      run: |
+        mkdir -p ${{ env.RELEASE_FOLDER_PATH}}
+        uv build --directory ${{ inputs.path }} --out-dir ${{ inputs.github_workspace }}/${{ env.RELEASE_FOLDER_PATH}}
+    - name: Copy Container Tests from ${{ inputs.name }}
+      shell: bash
+      run: |
+        if [ -d "${{ inputs.path }}/tests/container_tests" ]; then
+            mv ${{ inputs.path }}/tests/container_tests ${{ env.RELEASE_FOLDER_PATH}}
+        fi
+    - name: Zip files for ${{ inputs.name }} prerelease
+      uses: thedoctor0/zip-release@0.7.6
+      with:
+        type: zip
+        filename: ${{ env.RELEASE_ZIP_FILENAME }}
+        directory: ${{ env.RELEASE_FOLDER_PATH }}
+    - name: Create prerelease for ${{ inputs.name }}
+      uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
+      with:
+        repo_token: ${{ inputs.github_token }}
+        automatic_release_tag: ${{ env.RELEASE_VERSION }}
+        prerelease: true
+        title: ${{ env.RELEASE_VERSION }}
+        files: |
+          ${{ env.RELEASE_FOLDER_PATH }}/${{ env.RELEASE_ZIP_FILENAME }}

@@ -1,0 +1,34 @@
+services:
+    capacity-settlement:
+        build:
+            args:
+                SPARK_VERSION: 3.5.4
+                UBUNTU_VERSION: '22.04'
+                UV_VERSION: 0.5.15
+            context: ..
+            dockerfile: .docker/Dockerfile
+        command: sleep infinity
+        volumes:
+        - ..:/workspace:cached
+    electrical-heating:
+        build:
+            args:
+                SPARK_VERSION: 3.5.4
+                UBUNTU_VERSION: '22.04'
+                UV_VERSION: 0.5.15
+            context: ..
+            dockerfile: .docker/Dockerfile
+        command: sleep infinity
+        volumes:
+        - ..:/workspace:cached
+    measurements:
+        build:
+            args:
+                SPARK_VERSION: 3.5.4
+                UBUNTU_VERSION: '22.04'
+                UV_VERSION: 0.5.15
+            context: ..
+            dockerfile: .docker/Dockerfile
+        command: sleep infinity
+        volumes:
+        - ..:/workspace:cached
