@@ -1,6 +1,6 @@
-﻿from pyspark.sql import SparkSession, DataFrame
+﻿from pyspark.sql import DataFrame, SparkSession
 
-from source.electrical_heating.src.electrical_heating.infrastructure.electricity_market.database_definitions import (
+from electrical_heating.infrastructure.electricity_market.database_definitions import (
     Database,
 )
 
@@ -19,9 +19,9 @@ class Repository:
             Database.CONSUMPTION_METERING_POINT_PERIODS_NAME,
         )
 
-    def read_child_metering_point_periods(self) -> DataFrame:
+    def read_child_metering_points(self) -> DataFrame:
         return self._read_view_or_table(
-            Database.CHILD_METERING_POINT_PERIODS_NAME,
+            Database.CHILD_METERING_POINTS_NAME,
         )
 
     def _read_view_or_table(

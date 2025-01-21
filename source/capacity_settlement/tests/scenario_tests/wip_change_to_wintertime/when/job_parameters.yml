@@ -1,3 +1,3 @@
 - orchestration_instance_id: 00000000-orch-id00-0000-000000000001
-- calculation_period_start: 2025-09-30 22:00:00
-- calculation_period_end: 2025-10-30 23:00:00
+  calculation_month: 10
+  calculation_year: 2025

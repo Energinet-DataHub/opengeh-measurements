@@ -1,18 +1,17 @@
-﻿from pyspark.sql import functions as F, types as T
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql import Window
+from pyspark.sql import functions as F, types as T
+from pyspark.sql import DataFrame, SparkSession, Window
 from telemetry_logging import use_span
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
-import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+import electrical_heating.infrastructure.electricity_market as em
+import electrical_heating.infrastructure.measurements_gold as mg
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.domain.constants import (
+from electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
-from source.electrical_heating.src.electrical_heating.domain.pyspark_functions import (
+from electrical_heating.domain.pyspark_functions import (
     convert_timezone,
     begining_of_year,
     days_in_year,
@@ -29,16 +28,14 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     consumption_metering_point_periods = (
         electricity_market_repository.read_consumption_metering_point_periods()
     )
-    child_metering_point_periods = (
-        electricity_market_repository.read_child_metering_point_periods()
-    )
+    child_metering_points = electricity_market_repository.read_child_metering_points()
     time_series_points = measurements_gold_repository.read_time_series_points()
 
     # Execute the calculation logic
     execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
-        child_metering_point_periods,
+        child_metering_points,
         args.time_zone,
     )
 
@@ -49,23 +46,23 @@ def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
 def execute_core_logic(
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,
-    child_metering_point_periods: DataFrame,
+    child_metering_points: DataFrame,
     time_zone: str,
 ) -> DataFrame:
-    child_metering_point_periods = child_metering_point_periods.where(
+    child_metering_points = child_metering_points.where(
         F.col(em.ColumnNames.metering_point_type)
         == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
     consumption_metering_point_periods = convert_timezone(
         consumption_metering_point_periods, time_zone, to_utc=False
     )
-    child_metering_point_periods = convert_timezone(
-        child_metering_point_periods, time_zone, to_utc=False
+    child_metering_points = convert_timezone(
+        child_metering_points, time_zone, to_utc=False
     )
     time_series_points = convert_timezone(time_series_points, time_zone, to_utc=False)
 
     metering_points_and_periods = (
-        child_metering_point_periods.alias("child")
+        child_metering_points.alias("child")
         .join(
             consumption_metering_point_periods.alias("parent"),
             F.col("child.parent_metering_point_id")
@@ -86,12 +83,12 @@ def execute_core_logic(
             # here we calculate the overlaping period between the consumption period and the child period
             # we however assume that there os only one overlapping period between the two periods
             F.greatest(
-                F.col("child.period_from_date"),
+                F.col("child.coupled_date"),
                 F.col("parent.period_from_date"),
             ).alias("parent_child_overlap_period_start"),
             F.least(
                 F.coalesce(
-                    F.col("child.period_to_date"),
+                    F.col("child.uncoupled_date"),
                     begining_of_year(F.current_date(), years_to_add=1),
                 ),
                 F.coalesce(
@@ -115,9 +112,9 @@ def execute_core_logic(
                 F.col("parent.period_to_date"),
                 begining_of_year(F.current_date(), years_to_add=1),
             ).alias("consumption_period_end"),
-            F.col("child.period_from_date").alias("child_period_start"),
+            F.col("child.coupled_date").alias("child_period_start"),
             F.coalesce(
-                F.col("child.period_to_date"),
+                F.col("child.uncoupled_date"),
                 begining_of_year(F.current_date(), years_to_add=1),
             ).alias("child_period_end"),
         )
