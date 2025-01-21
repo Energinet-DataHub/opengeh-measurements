@@ -1,4 +1,6 @@
-﻿import sys
+"""A module."""
+
+import sys
 import uuid
 from argparse import Namespace
 from collections.abc import Callable
@@ -10,26 +12,26 @@ from pyspark.sql import SparkSession, DataFrame
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-import source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal as ehi
-import source.electrical_heating.src.electrical_heating.infrastructure.electricity_market as em
-import source.electrical_heating.src.electrical_heating.infrastructure.measurements_gold as mg
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_args import (
+import electrical_heating.infrastructure.electrical_heating_internal as ehi
+import electrical_heating.infrastructure.electricity_market as em
+import electrical_heating.infrastructure.measurements_gold as mg
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from source.electrical_heating.src.electrical_heating.application.job_args.electrical_heating_job_args import (
+from electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from source.electrical_heating.src.electrical_heating.domain.calculation import (
+from electrical_heating.domain.calculation import (
     execute_core_logic,
 )
-from source.electrical_heating.src.electrical_heating.domain.calculation_results import (
+from electrical_heating.domain.calculation_results import (
     CalculationOutput,
 )
-from source.electrical_heating.src.electrical_heating.infrastructure.electrical_heating_internal.schemas import (
+from electrical_heating.infrastructure.electrical_heating_internal.schemas import (
     calculations as schemas,
 )
-from source.electrical_heating.src.electrical_heating.infrastructure.spark_initializor import (
+from electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
 
@@ -55,7 +57,6 @@ def execute_with_deps(
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
-
             # The command line arguments are parsed to have necessary information for
             # coming log messages
             command_line_args = parse_command_line_args()
