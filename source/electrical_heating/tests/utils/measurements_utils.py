@@ -38,3 +38,5 @@ def create_measurements_dataframe(
     )
 
     assert_schema(measurements.schema, measurements_bronze_v1)
+
+    return measurements
