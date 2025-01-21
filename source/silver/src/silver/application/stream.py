@@ -1,19 +1,25 @@
+"""This module contains the implementation for executing the measurements-silver job."""
+
 import sys
-from pyspark.sql.functions import from_unixtime, unix_timestamp
-from pyspark.sql import SparkSession
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from telemetry_logging.span_recording import span_record_exception
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_unixtime, unix_timestamp
 from telemetry_logging import use_span
+from telemetry_logging.span_recording import span_record_exception
 
+import silver.infrastructure.bronze.repository as measurements_bronze_repository
+import silver.infrastructure.silver.repository as measurements_silver_repository
+from silver.infrastructure.environment_variables import (
+    get_catalog_name,
+    get_datalake_storage_account,
+)
+from silver.infrastructure.path_helper import get_checkpoint_path
 from silver.infrastructure.silver.container_names import ContainerNames
 from silver.infrastructure.silver.table_names import TableNames
 from silver.infrastructure.spark_initializer import initialize_spark
-from silver.infrastructure.path_helper import get_checkpoint_path
-from silver.infrastructure.environment_variables import get_catalog_name, get_datalake_storage_account
-import silver.infrastructure.bronze.repository as measurements_bronze_repository
-import silver.infrastructure.silver.repository as measurements_silver_repository
+
 
 def execute(
     cloud_role_name: str = "dbr-measurements-silver",
@@ -49,7 +55,7 @@ def _execute(spark: SparkSession) -> None:
     )
 
     bronze_repository = measurements_bronze_repository.Repository(spark, catalog_name)
-    silver_repository = measurements_silver_repository.Repository(spark, catalog_name, checkpoint_path)
+    silver_repository = measurements_silver_repository.Repository(catalog_name, checkpoint_path)
     
-    df_bronze_measurements = bronze_repository.read_measurements()
-    silver_repository.write_measurements(df_bronze_measurements)
+    df_bronze_calculated_measurements = bronze_repository.read_calculated_measurements()
+    silver_repository.write_measurements(df_bronze_calculated_measurements)

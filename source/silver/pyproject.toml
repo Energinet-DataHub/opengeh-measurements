@@ -10,8 +10,8 @@ dependencies = [
 ]
 
 [project.scripts]
-execute_silver_stream = "silver.entry_points:execute_silver_stream"
-migrate = "silver.entry_points:migrate"
+execute_silver_stream = "entry_points:execute_silver_stream"
+migrate = "entry_points:migrate"
 
 [dependency-groups]
 dev = [

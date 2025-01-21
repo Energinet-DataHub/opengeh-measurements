@@ -1,13 +1,15 @@
-import pytest
 from unittest import mock
+
+import pytest
 from pyspark.sql import SparkSession
+
 from silver.application.stream import execute
 
 
-@mock.patch("source.silver.src.silver.application.stream.measurements_silver_repository")
-@mock.patch("source.silver.src.silver.application.stream.measurements_bronze_repository")
-@mock.patch("source.silver.src.silver.application.stream.config")
-@mock.patch("source.silver.src.silver.application.stream.initialize_spark")
+@mock.patch("silver.application.stream.measurements_silver_repository")
+@mock.patch("silver.application.stream.measurements_bronze_repository")
+@mock.patch("silver.application.stream.config")
+@mock.patch("silver.application.stream.initialize_spark")
 def test__execute__should_be_success(
     mock_initialize_spark,
     mock_config,
@@ -27,8 +29,9 @@ def test__execute__should_be_success(
     mock_measurements_bronze_repository.Repository.assert_called_once()
     mock_measurements_silver_repository.Repository.assert_called_once()
 
-@mock.patch("source.silver.src.silver.application.stream.span_record_exception")
-@mock.patch("source.silver.src.silver.application.stream.initialize_spark")
+
+@mock.patch("silver.application.stream.span_record_exception")
+@mock.patch("silver.application.stream.initialize_spark")
 def test__execute__should_throw_exception(
     mock_initialize_spark,
     mock_span_record_exception,
@@ -41,6 +44,6 @@ def test__execute__should_throw_exception(
         execute()
 
     # Assert
-    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.type is SystemExit
     assert pytest_wrapped_e.value.code == 4
     mock_span_record_exception.assert_called_once()
