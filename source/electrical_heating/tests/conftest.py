@@ -86,11 +86,6 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def default_catalog() -> str:
-    return "hive_metastore"
-
-
-@pytest.fixture(scope="session")
 def measurements_dataframe(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 

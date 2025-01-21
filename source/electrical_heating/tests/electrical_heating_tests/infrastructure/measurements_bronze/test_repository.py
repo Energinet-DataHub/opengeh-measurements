@@ -5,10 +5,9 @@ from electrical_heating.infrastructure.measurements_bronze.repository import Rep
 def test__write_measurements__can_be_read(
     spark: SparkSession,
     measurements_dataframe: DataFrame,
-    default_catalog: str,
 ) -> None:
     # Arrange
-    repository = Repository(spark, default_catalog)
+    repository = Repository(spark)
     excepted_count = measurements_dataframe.count()
 
     # Act
