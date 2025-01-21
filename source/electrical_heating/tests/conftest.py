@@ -1,6 +1,7 @@
 ### This file contains the fixtures that are used in the tests. ###
 
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Generator
@@ -23,6 +24,7 @@ from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
+    create_database,
     create_delta_table,
     read_from_csv,
     write_dataframe_to_table,
@@ -31,13 +33,18 @@ from tests.utils.delta_table_utils import (
 
 @pytest.fixture(scope="module", autouse=True)
 def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
+    """
+    Clear the cache after each test module to avoid memory issues.
+    """
     yield
-    # Clear the cache after each test module to avoid memory issues
     spark.catalog.clearCache()
 
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
+    """
+    Create a Spark session with Delta Lake enabled.
+    """
     session = (
         SparkSession.builder.appName("testcommon")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
@@ -85,6 +92,8 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def write_to_delta(spark: SparkSession, test_files_folder_path: str) -> None:
+    create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
+
     create_delta_table(
         spark,
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
@@ -96,7 +105,6 @@ def write_to_delta(spark: SparkSession, test_files_folder_path: str) -> None:
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
-    measurements.show()
     measurements = measurements.withColumn(
         "points",
         F.from_json(F.col("points"), ArrayType(point)),
@@ -120,11 +128,6 @@ def write_to_delta(spark: SparkSession, test_files_folder_path: str) -> None:
     measurements = spark.createDataFrame(
         measurements.rdd, schema=measurements_bronze_v1, verifySchema=True
     )
-
-    measurements.show()
-
-    # print(measurements_bronze_v1)
-    measurements.printSchema()
 
     assert_schema(measurements.schema, measurements_bronze_v1)
 

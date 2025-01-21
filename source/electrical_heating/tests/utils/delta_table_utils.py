@@ -1,6 +1,8 @@
 ﻿# TODO AJW: This is a copy of the function from the wholesale codebase.
 # This should be moved to a shared location when the time comes.
 
+import os
+import shutil
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType
 
@@ -26,13 +28,21 @@ def create_delta_table(
     table_location: str,
     schema: StructType,
 ) -> None:
-    print(f"{database_name}.{table_name} write")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database_name}")
+    if os.path.exists(table_location) and os.listdir(table_location):
+        # Clear the location if it is not empty
+        shutil.rmtree(table_location)
 
     sql_schema = _struct_type_to_sql_schema(schema)
     spark.sql(
         f"CREATE TABLE IF NOT EXISTS {database_name}.{table_name} ({sql_schema}) USING DELTA LOCATION '{table_location}'"
     )
+
+    print(f"Created Delta table {database_name}.{table_name} at {table_location}.")  # noqa: T201
+
+
+def create_database(spark: SparkSession, database_name: str) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database_name}")
+    print(f"Created database {database_name}.")  # noqa: T201
 
 
 def _struct_type_to_sql_schema(schema: StructType) -> str:
