@@ -101,6 +101,7 @@ jobs:
       - name: Find associated pull request
         uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
         id: find_pull_request
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
 
       - name: Upload prerelease
         uses: ./.github/actions/create-prerelease
@@ -110,14 +111,6 @@ jobs:
           path: ${{ matrix.inputs.path }}
           issue-number: ${{ steps.find_pull_request.outputs.pull_request_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-  # ci_bronze:
-  #   needs: [changes, ci_docker]
-  #   if: ${{ needs.changes.outputs.bronze == 'true' }}
-  #   uses: ./.github/workflows/ci-databricks.yml
-  #   with:
-  #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-  #     package_name: bronze
 
   #
   # Branch policy status check
