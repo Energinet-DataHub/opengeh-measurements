@@ -6,9 +6,9 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import silver.infrastructure.migrations.substitutions as substitutions
-from silver.infrastructure.migrations.database_names import DatabaseNames
-from silver.infrastructure.migrations.table_names import TableNames
+import silver.migrations.substitutions as substitutions
+from silver.migrations.database_names import DatabaseNames
+from silver.migrations.table_names import TableNames
 
 
 def migrate() -> None:

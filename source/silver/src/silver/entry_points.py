@@ -1,5 +1,5 @@
 ﻿import os
-import silver.infrastructure.migrations.migrations as migrations
+import silver.migrations.migrations as migrations
 import silver.application.stream as silver_stream
 
 
