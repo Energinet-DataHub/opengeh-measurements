@@ -1,7 +1,6 @@
 # /// script
 # dependencies = [
 #       "jinja2>=3.1.5",
-#       "mergedeep>=1.3.4",
 #       "tomli-w>=1.2.0",
 #       "tomli>=1.2.0",
 # ]
@@ -9,9 +8,24 @@
 
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-import mergedeep  # type: ignore
 import tomli
 import tomli_w
+
+
+def merge_dicts_custom(d1: dict, d2: dict) -> dict:
+    for key, value in d2.items():
+        if key in d1:
+            if isinstance(d1[key], dict) and isinstance(value, dict):
+                merge_dicts_custom(d1[key], value)
+            elif isinstance(d1[key], list) and isinstance(value, list):
+                # Customize list merging (e.g., concatenate, deduplicate, etc.)
+                d1[key] = sorted(list(set(d1[key] + value)))
+            else:
+                d1[key] = value  # Overwrite for other types
+        else:
+            d1[key] = value
+    return d1
+
 
 PACKAGE_DIR = Path("source")
 DEVCONTAINER_DIR = Path(".devcontainer")
@@ -36,11 +50,9 @@ def main():
 
         ## Sync pyproject.toml
         pyproject_template = render("pyproject.toml.j2", package_name=package_name)
-        merged = mergedeep.merge(
-            {"project": pyproject.get("project", {})},
-            tomli.loads(pyproject_template),
+        merged = merge_dicts_custom(
             pyproject,
-            strategy=mergedeep.Strategy.REPLACE,
+            tomli.loads(pyproject_template),
         )
         with open(pyproject_path, "wb") as f:
             tomli_w.dump(merged, f, multiline_strings=False)

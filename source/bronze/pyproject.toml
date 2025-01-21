@@ -13,9 +13,12 @@ migrate = "bronze.entry_points:migrate"
 
 [dependency-groups]
 dev = [
+    "commitizen>=4.1.0",
+    "mypy>=1.14.1",
     "opengeh-testcommon",
-    "pytest>=8.3.4",
+    "pre-commit>=4.0.1",
     "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
     "ruff>=0.9.1",
 ]
 
@@ -48,20 +51,20 @@ docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
+    "D",
+    "D401",
     "E",
     "F",
     "I",
-    "D",
-    "D401",
     "T201",
     "UP",
 ]
 ignore = [
+    "D417",
+    "E501",
     "UP006",
     "UP007",
     "UP035",
-    "D417",
-    "E501",
 ]
 exclude = [
     "notebooks/*",
