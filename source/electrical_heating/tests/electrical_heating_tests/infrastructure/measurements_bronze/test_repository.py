@@ -1,13 +1,14 @@
-﻿from pyspark.sql import DataFrame
+﻿from pyspark.sql import DataFrame, SparkSession
 from electrical_heating.infrastructure.measurements_bronze.repository import Repository
 
 
 def test__write_measurements__can_be_read(
+    spark: SparkSession,
     measurements_dataframe: DataFrame,
     default_catalog: str,
 ) -> None:
     # Arrange
-    repository = Repository(default_catalog)
+    repository = Repository(spark, default_catalog)
     excepted_count = measurements_dataframe.count()
 
     # Act
