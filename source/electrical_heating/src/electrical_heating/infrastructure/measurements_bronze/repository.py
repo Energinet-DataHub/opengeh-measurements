@@ -21,7 +21,7 @@ class Repository:
             self._full_table_path = f"{self._database_name}.{self._measurements_table_name}"
 
     def write_measurements(self, df: DataFrame) -> None:
-        df.writeTo(
+        df.write.saveAsTable(
             self._full_table_path
         )
 
