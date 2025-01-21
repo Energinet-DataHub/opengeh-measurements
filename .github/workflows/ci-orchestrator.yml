@@ -112,14 +112,6 @@ jobs:
           issue-number: ${{ steps.find_pull_request.outputs.pull_request_number }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  # ci_bronze:
-  #   needs: [changes, ci_docker]
-  #   if: ${{ needs.changes.outputs.bronze == 'true' }}
-  #   uses: ./.github/workflows/ci-databricks.yml
-  #   with:
-  #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-  #     package_name: bronze
-
   #
   # Branch policy status check
   #
