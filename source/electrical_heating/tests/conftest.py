@@ -45,6 +45,9 @@ def spark() -> Generator[SparkSession, None, None]:
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",
         )
+        # Enable Hive support for persistence across test sessions
+        .config("spark.sql.catalogImplementation", "hive")
+        .enableHiveSupport()
     )
     session = configure_spark_with_delta_pip(session).getOrCreate()
     yield session
@@ -84,10 +87,8 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def default_catalog(spark: SparkSession) -> str:
-    default_catalog_name = "default_catalog"
-    create_catalog(spark, default_catalog_name)
-    return default_catalog_name
+def default_catalog() -> str:
+    return "hive_metastore"
 
 
 @pytest.fixture(scope="session")
