@@ -6,6 +6,7 @@ from capacity_settlement.application.execute_with_deps import execute_with_deps
 
 
 def execute() -> None:
+    """Execute the capacity-settlement application."""
     applicationinsights_connection_string = os.getenv(
         "APPLICATIONINSIGHTS_CONNECTION_STRING"
     )
