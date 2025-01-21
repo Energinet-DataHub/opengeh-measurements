@@ -14,7 +14,7 @@
     // Mount the local system cache directory - speeds up the build process
     "source=${localEnv:HOME}/.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
-  "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "postStartCommand": "uv sync --cache-dir '/workspace/.uv_cache' && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
   "customizations": {
     "vscode": {
       "extensions": [
