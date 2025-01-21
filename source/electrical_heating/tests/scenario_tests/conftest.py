@@ -23,7 +23,7 @@ from electrical_heating.infrastructure.electricity_market.schemas.consumption_me
 from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
-from testsession_configuration import (
+from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
 

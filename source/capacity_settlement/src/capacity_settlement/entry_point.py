@@ -1,4 +1,6 @@
-﻿import os
+﻿"""Entry point for the capacity-settlement application."""
+
+import os
 
 from capacity_settlement.application.execute_with_deps import execute_with_deps
 

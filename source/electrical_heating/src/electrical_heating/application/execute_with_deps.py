@@ -1,4 +1,6 @@
-﻿import sys
+"""A module."""
+
+import sys
 import uuid
 from argparse import Namespace
 from collections.abc import Callable
@@ -55,7 +57,6 @@ def execute_with_deps(
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
-
             # The command line arguments are parsed to have necessary information for
             # coming log messages
             command_line_args = parse_command_line_args()

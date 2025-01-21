@@ -6,8 +6,12 @@ from typing import Callable, Generator
 
 import pytest
 from pyspark.sql import SparkSession
+from telemetry_logging.logging_configuration import configure_logging
+import yaml
 
-from testsession_configuration import TestSessionConfiguration
+from container_tests.databricks_api_client import DatabricksApiClient
+from tests import PROJECT_ROOT
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -24,18 +28,9 @@ def spark() -> Generator[SparkSession, None, None]:
     session.stop()
 
 
-import yaml
-
-from container_tests.databricks_api_client import DatabricksApiClient
-from test_configuration import TestConfiguration
-
-
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-
-    from telemetry_logging.logging_configuration import configure_logging
-
     configure_logging(
         cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
     )
@@ -94,116 +89,17 @@ def capacity_settlement_path(source_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def contracts_path(capacity_settlement_path: str) -> str:
+def contracts_path() -> str:
     """
     Returns the source/contract folder path.
     Please note that this only works if current folder haven't been changed prior using
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{capacity_settlement_path}/contracts"
+    return f"{PROJECT_ROOT}/contracts"
 
 
 @pytest.fixture(scope="session")
-def virtual_environment() -> Generator:
-    """Fixture ensuring execution in a virtual environment.
-    Uses `virtualenv` instead of conda environments due to problems
-    activating the virtual environment from pytest."""
-
-    # Create and activate the virtual environment
-    subprocess.call(["virtualenv", ".test-pytest"])
-    subprocess.call(
-        "source .test-pytest/bin/activate", shell=True, executable="/bin/bash"
-    )
-
-    yield None
-
-    # Deactivate virtual environment upon test suite tear down
-    subprocess.call("deactivate", shell=True, executable="/bin/bash")
-
-
-@pytest.fixture(scope="session")
-def installed_package(
-    virtual_environment: Generator, capacity_settlement_path: str
-) -> None:
-    # Build the package wheel
-    os.chdir(capacity_settlement_path)
-    subprocess.call("python -m build --wheel", shell=True, executable="/bin/bash")
-
-    # Uninstall the package in case it was left by a cancelled test suite
-    subprocess.call(
-        "pip uninstall -y package",
-        shell=True,
-        executable="/bin/bash",
-    )
-
-    # Install wheel, which will also create console scripts for invoking the entry points of the package
-    subprocess.call(
-        f"pip install {capacity_settlement_path}/dist/opengeh_capacity_settlement-1.0-py3-none-any.whl",
-        shell=True,
-        executable="/bin/bash",
-    )
-
-
-def _load_settings_from_file(file_path: Path) -> dict:
-    if file_path.exists():
-        with file_path.open() as stream:
-            return yaml.safe_load(stream)
-    else:
-        return {}
-
-
-@pytest.fixture(scope="session")
-def test_configuration(
-    capacity_settlement_tests_path: str,
-) -> TestConfiguration:
-    """
-    Load settings for tests either from a local YAML settings file or from environment variables.
-    Proceeds even if certain Azure-related keys are not present in the settings file.
-    """
-
-    settings_file_path = (
-        Path(capacity_settlement_tests_path) / "test.local.settings.yml"
-    )
-
-    def load_settings_from_env() -> dict:
-        return {
-            key: os.getenv(key)
-            for key in [
-                "AZURE_KEYVAULT_URL",
-                "AZURE_TENANT_ID",
-                "DATABRICKS_HOST",
-                "DATABRICKS_TOKEN",
-            ]
-            if os.getenv(key) is not None
-        }
-
-    settings = _load_settings_from_file(settings_file_path) or load_settings_from_env()
-
-    # Set environment variables from loaded settings
-    for key, value in settings.items():
-        if value is not None:
-            os.environ[key] = value
-
-    if "AZURE_KEYVAULT_URL" in settings:
-        return TestConfiguration(azure_keyvault_url=settings["AZURE_KEYVAULT_URL"])
-
-    logging.error(
-        f"Test configuration could not be loaded from {settings_file_path} or environment variables."
-    )
-    raise Exception(
-        "Failed to load test settings. Ensure that the Azure Key Vault URL is provided in the settings file or as an environment variable."
-    )
-
-
-@pytest.fixture(scope="session")
-def databricks_client(test_configuration: TestConfiguration) -> DatabricksApiClient:
-    return DatabricksApiClient(
-        os.environ["DATABRICKS_HOST"],
-        os.environ["DATABRICKS_TOKEN"],
-    )
-
-
-@pytest.fixture(scope="session")
-def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
-    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
+def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
+    settings_file_path = PROJECT_ROOT / "tests" / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)

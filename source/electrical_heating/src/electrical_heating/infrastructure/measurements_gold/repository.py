@@ -1,4 +1,4 @@
-﻿from pyspark.sql import SparkSession, DataFrame
+﻿from pyspark.sql import DataFrame, SparkSession
 
 from electrical_heating.infrastructure.measurements_gold.database_definitions import (
     Database,

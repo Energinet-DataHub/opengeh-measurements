@@ -1,6 +1,5 @@
-﻿from pyspark.sql import functions as F, types as T
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql import Window
+from pyspark.sql import functions as F, types as T
+from pyspark.sql import DataFrame, SparkSession, Window
 from telemetry_logging import use_span
 
 import electrical_heating.infrastructure.electricity_market as em

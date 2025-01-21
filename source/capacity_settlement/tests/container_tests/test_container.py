@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 
 from container_tests.databricks_api_client import DatabricksApiClient
 

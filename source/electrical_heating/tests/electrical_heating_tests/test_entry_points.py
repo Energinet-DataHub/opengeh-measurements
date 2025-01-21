@@ -1,18 +1,13 @@
-﻿import pytest
-from electrical_heating import entry_point
+import tomli
 
-from electrical_heating_tests.entry_point_test_util import assert_entry_point_exists
+from tests import PROJECT_ROOT
 
 
-@pytest.mark.skip
-@pytest.mark.parametrize(
-    "entry_point_name",
-    [
-        "execute",
-    ],
-)
-def test__entry_point_exists(
-    installed_package: None,
-    entry_point_name: str,
-) -> None:
-    assert_entry_point_exists(entry_point_name, entry_point)
+def test__entry_point_exists() -> None:
+    with open(PROJECT_ROOT / "pyproject.toml", "rb") as file:
+        pyproject = tomli.load(file)
+        project = pyproject.get("project", {})
+
+    package_name = project.get("name")
+    scripts = project.get("scripts", {})
+    assert package_name in scripts, f"Package {package_name} not found in scripts"
