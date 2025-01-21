@@ -71,27 +71,27 @@ def execute_core_logic(
     electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
     # prepare child metering points and parent metering points
-    metering_point = join_child_to_parent_metering_point(
+    metering_point = _join_child_to_parent_metering_point(
         child_metering_points, parent_metering_points
     )
-    metering_point = close_open_ended_periods(metering_point)
-    metering_point = find_parent_child_overlap_period(metering_point)
-    metering_point = split_consumption_period_by_year(metering_point)
-    metering_point = calculate_period_consumption_limit(metering_point)
+    metering_point = _close_open_ended_periods(metering_point)
+    metering_point = _find_parent_child_overlap_period(metering_point)
+    metering_point = _split_consumption_period_by_year(metering_point)
+    metering_point = _calculate_period_consumption_limit(metering_point)
 
     # prepare consumption and electrical heating time series data
-    consumption_daily = calculate_daily_quantity(consumption)
-    previous_electrical_heating = calculate_daily_quantity(electrical_heating)
+    consumption_daily = _calculate_daily_quantity(consumption)
+    previous_electrical_heating = _calculate_daily_quantity(electrical_heating)
 
     # here conumption time series and metering points data is joined
-    consumption_with_points = join_parent_on_metering_point(
+    consumption_with_points = _join_parent_on_metering_point(
         consumption_daily,
         metering_point,
     )
-    consumption = filter_parent_child_overlap_period_and_year(consumption_with_points)
-    consumption = aggregate_quantity_over_period(consumption)
-    electrical_heating = impose_period_quantity_limit(consumption)
-    electrical_heating = filter_unchanged_electrical_heating(
+    consumption = _filter_parent_child_overlap_period_and_year(consumption_with_points)
+    consumption = _aggregate_quantity_over_period(consumption)
+    electrical_heating = _impose_period_quantity_limit(consumption)
+    electrical_heating = _filter_unchanged_electrical_heating(
         electrical_heating, previous_electrical_heating
     )
 
@@ -100,11 +100,14 @@ def execute_core_logic(
     return electrical_heating
 
 
-def filter_unchanged_electrical_heating(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def _filter_unchanged_electrical_heating(
+    newly_calculated_electrical_heating: DataFrame,
+    electrical_heating_from_before: DataFrame,
+) -> DataFrame:
     return (
-        df1.alias("current")
+        newly_calculated_electrical_heating.alias("current")
         .join(
-            df2.alias("previous"),
+            electrical_heating_from_before.alias("previous"),
             (
                 (
                     F.col("current.metering_point_id")
@@ -123,8 +126,8 @@ def filter_unchanged_electrical_heating(df1: DataFrame, df2: DataFrame) -> DataF
     )
 
 
-def impose_period_quantity_limit(df: DataFrame) -> DataFrame:
-    return df.select(
+def _impose_period_quantity_limit(time_series_consumption: DataFrame) -> DataFrame:
+    return time_series_consumption.select(
         F.when(
             (F.col("cumulative_quantity") >= F.col("period_consumption_limit"))
             & (
@@ -151,7 +154,7 @@ def impose_period_quantity_limit(df: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-def aggregate_quantity_over_period(df: DataFrame) -> DataFrame:
+def _aggregate_quantity_over_period(time_series_consumption: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
             F.col("metering_point_id"),
@@ -161,7 +164,7 @@ def aggregate_quantity_over_period(df: DataFrame) -> DataFrame:
         .orderBy(F.col("date"))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
-    return df.select(
+    return time_series_consumption.select(
         F.sum(F.col("quantity")).over(period_window).alias("cumulative_quantity"),
         F.col("metering_point_id"),
         F.col("date"),
@@ -170,19 +173,24 @@ def aggregate_quantity_over_period(df: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-def filter_parent_child_overlap_period_and_year(df: DataFrame) -> DataFrame:
-    return df.where(
+def _filter_parent_child_overlap_period_and_year(
+    time_series_consumption: DataFrame,
+) -> DataFrame:
+    return time_series_consumption.where(
         (F.col("date") >= F.col("parent_child_overlap_period_start"))
         & (F.col("date") < F.col("metering_point.parent_child_overlap_period_end"))
         & (F.year(F.col("date")) == F.year(F.col("period_year")))
     )
 
 
-def join_parent_on_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def _join_parent_on_metering_point(
+    time_series_consumption: DataFrame,
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
     return (
-        df1.alias("consumption")
+        time_series_consumption.alias("consumption")
         .join(
-            df2.alias("metering_point"),
+            parent_and_child_metering_point_and_periods.alias("metering_point"),
             F.col("consumption.metering_point_id")
             == F.col("metering_point.parent_metering_point_id"),
             "inner",
@@ -253,14 +261,14 @@ def unique_child_parent_metering_id(df: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-def calculate_daily_quantity(df: DataFrame) -> DataFrame:
+def _calculate_daily_quantity(time_series: DataFrame) -> DataFrame:
     daily_window = Window.partitionBy(
         F.col("metering_point_id"),
         F.col("date"),
     )
 
     return (
-        df.select(
+        time_series.select(
             "*",
             F.date_trunc("day", F.col("observation_time")).alias("date"),
         )
@@ -273,8 +281,10 @@ def calculate_daily_quantity(df: DataFrame) -> DataFrame:
     )
 
 
-def calculate_period_consumption_limit(df: DataFrame) -> DataFrame:
-    return df.select(
+def _calculate_period_consumption_limit(
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
+    return parent_and_child_metering_point_and_periods.select(
         "*",
         (
             F.datediff(F.col("parent_period_end"), F.col("parent_period_start"))
@@ -284,8 +294,10 @@ def calculate_period_consumption_limit(df: DataFrame) -> DataFrame:
     )
 
 
-def split_consumption_period_by_year(df: DataFrame) -> DataFrame:
-    return df.select(
+def _split_consumption_period_by_year(
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
+    return parent_and_child_metering_point_and_periods.select(
         "*",
         # create a row for each year in the consumption period
         F.explode(
@@ -321,8 +333,10 @@ def split_consumption_period_by_year(df: DataFrame) -> DataFrame:
     )
 
 
-def find_parent_child_overlap_period(df: DataFrame) -> DataFrame:
-    return df.select(
+def _find_parent_child_overlap_period(
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
+    return parent_and_child_metering_point_and_periods.select(
         "*",
         # here we calculate the overlaping period between the consumption period and the child period
         # we however assume that there os only one overlapping period between the two periods
@@ -346,8 +360,10 @@ def find_parent_child_overlap_period(df: DataFrame) -> DataFrame:
     )
 
 
-def close_open_ended_periods(df: DataFrame) -> DataFrame:
-    return df.select(
+def _close_open_ended_periods(
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
+    return parent_and_child_metering_point_and_periods.select(
         F.coalesce(
             F.col("parent_period_end"),
             begining_of_year(F.current_date(), years_to_add=1),
@@ -363,11 +379,14 @@ def close_open_ended_periods(df: DataFrame) -> DataFrame:
     )
 
 
-def join_child_to_parent_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def _join_child_to_parent_metering_point(
+    child_metering_point_and_periods: DataFrame,
+    parent_metering_point_and_periods: DataFrame,
+) -> DataFrame:
     return (
-        df1.alias("child")
+        child_metering_point_and_periods.alias("child")
         .join(
-            df2.alias("parent"),
+            parent_metering_point_and_periods.alias("parent"),
             F.col("child.parent_metering_point_id")
             == F.col("parent.metering_point_id"),
             "inner",
