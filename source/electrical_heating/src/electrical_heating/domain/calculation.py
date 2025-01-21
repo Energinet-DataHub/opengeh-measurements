@@ -3,9 +3,9 @@ from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from telemetry_logging import use_span
 
-import src.electrical_heating.infrastructure.electricity_market as em
-import src.electrical_heating.infrastructure.measurements_gold as mg
-from src.electrical_heating.application.job_args.electrical_heating_args import (
+import electrical_heating.infrastructure.electricity_market as em
+import electrical_heating.infrastructure.measurements_gold as mg
+from electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
 from src.electrical_heating.domain.constants import (
@@ -52,7 +52,7 @@ def execute_core_logic(
     child_metering_points: DataFrame,
     time_zone: str,
 ) -> DataFrame:
-    child_points = child_metering_points.where(
+    child_metering_points = child_metering_points.where(
         F.col(em.ColumnNames.metering_point_type)
         == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
@@ -63,13 +63,17 @@ def execute_core_logic(
         F.col("metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE
     )
 
-    parent_points = convert_from_utc(consumption_metering_point_periods, time_zone)
-    child_points = convert_from_utc(child_points, time_zone)
+    parent_metering_points = convert_from_utc(
+        consumption_metering_point_periods, time_zone
+    )
+    child_metering_points = convert_from_utc(child_metering_points, time_zone)
     consumption = convert_from_utc(consumption, time_zone)
     electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
     # prepare child metering points and parent metering points
-    points = join_child_to_parent_metering_point(child_points, parent_points)
+    points = join_child_to_parent_metering_point(
+        child_metering_points, parent_metering_points
+    )
     points = handle_null_in_to_date_columns(points)
     points = find_parent_child_overlap_period(points)
     points = split_consumption_period_by_year(points)
@@ -202,7 +206,7 @@ def join_parent_on_metering_point(df1: DataFrame, df2: DataFrame) -> DataFrame:
     )
 
 
-def join_on_child_point_id(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def join_on_child_metering_point_id(df1: DataFrame, df2: DataFrame) -> DataFrame:
     return (
         df1.alias("consumption")
         .join(
