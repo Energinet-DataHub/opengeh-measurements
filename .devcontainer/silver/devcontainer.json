@@ -8,8 +8,8 @@
   "workspaceFolder": "/workspace/source/silver",
   "postStartCommand": "uv sync --cache-dir '/workspace/.uv_cache' && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
   "containerEnv": {
-      "UV_CACHE_DIR": "/workspace/.uv_cache",
-      "UV_PROJECT_ENVIRONMENT": "/workspace/.venv"
+    "UV_CACHE_DIR": "/workspace/.uv_cache",
+    "UV_PROJECT_ENVIRONMENT": "/workspace/.venv"
   },
   "mounts": [
     // Persist the command history across container restarts - useful for bash history
