@@ -7,7 +7,6 @@
   "remoteUser": "vscode",
   "shutdownAction": "none",
   "workspaceFolder": "/workspace/source/gold",
-  // "postCreateCommand": "sudo chown -R vscode:vscode /workspace/.cache",
   "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
@@ -20,7 +19,7 @@
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local system cache directory - speeds up the build process
-    "source=../../.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+    "source=../.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
