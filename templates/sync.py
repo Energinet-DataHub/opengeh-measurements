@@ -7,9 +7,9 @@
 # ///
 
 from pathlib import Path
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader  # type: ignore
 import tomli
-import tomli_w
+import tomli_w  # type: ignore
 
 
 def merge_dicts_custom(d1: dict, d2: dict) -> dict:
