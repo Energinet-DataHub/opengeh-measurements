@@ -33,6 +33,8 @@ class DatabricksApiClient:
             result_state = run_status.state.result_state
 
             if lifecycle_state == "TERMINATED":
+                if result_state is None:
+                    raise Exception("Job terminated but result state is None")
                 return result_state
             elif lifecycle_state == "INTERNAL_ERROR":
                 raise Exception(
