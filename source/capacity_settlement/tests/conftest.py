@@ -1,15 +1,10 @@
-import logging
 import os
-import subprocess
-from pathlib import Path
 from typing import Callable, Generator
 
 import pytest
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
-import yaml
 
-from container_tests.databricks_api_client import DatabricksApiClient
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
@@ -88,7 +83,6 @@ def capacity_settlement_path(source_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def contracts_path(capacity_settlement_path: str) -> str:
 def contracts_path() -> str:
     """
     Returns the source/contract folder path.
