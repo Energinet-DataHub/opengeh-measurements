@@ -101,6 +101,7 @@ jobs:
       - name: Find associated pull request
         uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
         id: find_pull_request
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
 
       - name: Upload prerelease
         uses: ./.github/actions/create-prerelease
