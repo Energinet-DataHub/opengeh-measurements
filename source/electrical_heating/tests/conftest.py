@@ -20,7 +20,6 @@ from tests.utils.delta_table_utils import (
     create_database,
     create_delta_table,
     read_from_csv,
-    create_catalog,
 )
 
 
