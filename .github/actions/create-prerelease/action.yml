@@ -10,14 +10,13 @@ inputs:
   issue-number:
     description: The issue number
     required: true
-    default: ${{ github.event.pull_request.number }}
   github_token:
     description: The GitHub token
-    required: true
+    required: false
     default: ${{ github.token }}
   github_workspace:
     description: The GitHub workspace
-    required: true
+    required: false
     default: ${{ github.workspace }}
 runs:
   using: composite
