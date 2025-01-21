@@ -32,4 +32,3 @@ services:
         command: sleep infinity
         volumes:
         - ..:/workspace:cached
-version: '3'
