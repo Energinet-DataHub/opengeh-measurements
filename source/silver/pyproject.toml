@@ -14,6 +14,7 @@ migrate = "silver.entry_points:migrate"
 [dependency-groups]
 dev = [
     "opengeh-testcommon",
+    "pre-commit>=4.1.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
     "ruff>=0.9.1",
