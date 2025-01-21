@@ -84,9 +84,12 @@ jobs:
           app_id: ${{ vars.dh3serviceaccount_appid }}
           private_key: ${{ secrets.dh3serviceaccount_privatekey }}
 
-      - name: Notify Team of Failed Deployment Dispatch
-        uses: ./.github/actions/notify-team
+      - name: Notify Team of failed deployment
+        uses: Energinet-DataHub/.github/.github/actions/send-email@v14
         if: ${{ steps.changes.outputs.is_changed == 'true' && failure() }}
         with:
-          team_name: Mandalorian
+          sendgrid-api-key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
+          team-name: Mandalorian
+          to: ${{ vars.email_mandalorian }}
+          from: ${{ vars.email_internal_sender }}
           subject: "Deployment dispatched: Measurements - ${{ matrix.inputs.name }}"
