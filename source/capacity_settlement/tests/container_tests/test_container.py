@@ -1,6 +1,6 @@
-import pytest
+﻿import pytest
 
-from container_tests.databricks_api_client import DatabricksApiClient
+from tests.container_tests.databricks_api_client import DatabricksApiClient
 
 
 def test__databricks_job_starts_and_stops_successfully(
