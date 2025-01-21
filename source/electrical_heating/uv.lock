@@ -465,6 +465,7 @@ dependencies = [
     { name = "opengeh-telemetry" },
     { name = "pyspark" },
     { name = "python-dateutil" },
+    { name = "tomli" },
 ]
 
 [package.dev-dependencies]
@@ -487,6 +488,7 @@ requires-dist = [
     { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.0.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
+    { name = "tomli", specifier = ">=2.2.1" },
 ]
 
 [package.metadata.requires-dev]
