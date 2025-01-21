@@ -46,6 +46,11 @@ def create_database(spark: SparkSession, database_name: str) -> None:
     print(f"Created database {database_name}.")  # noqa: T201
 
 
+def create_catalog(spark: SparkSession, catalog_name: str) -> None:
+    spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog_name}")
+    print(f"Created catalog {catalog_name}.")  # noqa: T201
+
+
 def _struct_type_to_sql_schema(schema: StructType) -> str:
     schema_string = ""
     for field in schema.fields:

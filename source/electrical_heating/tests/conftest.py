@@ -2,11 +2,9 @@
 from pathlib import Path
 from typing import Generator
 
-import pyspark.sql.functions as F
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession
-from pyspark.sql.types import ArrayType
+from pyspark.sql import SparkSession, DataFrame
 from telemetry_logging.logging_configuration import configure_logging
 
 from electrical_heating.infrastructure.measurements_bronze.database_definitions import (
@@ -22,7 +20,7 @@ from tests.utils.delta_table_utils import (
     create_database,
     create_delta_table,
     read_from_csv,
-    write_dataframe_to_table,
+    create_catalog,
 )
 
 
@@ -86,7 +84,14 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def create_measurements_delta_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def default_catalog(spark: SparkSession) -> str:
+    default_catalog_name = "default_catalog"
+    create_catalog(spark, default_catalog_name)
+    return default_catalog_name
+
+
+@pytest.fixture(scope="session")
+def measurements_dataframe(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_delta_table(
@@ -100,10 +105,4 @@ def create_measurements_delta_table(spark: SparkSession, test_files_folder_path:
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
-    measurements = create_measurements_dataframe(spark, measurements)
-
-    write_dataframe_to_table(
-        df=measurements,
-        database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
-        table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
-    )
+    return create_measurements_dataframe(spark, measurements)
