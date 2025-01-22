@@ -12,7 +12,7 @@ class MeasurementsStreamProcessor:
 
     def stream_measurements_silver_to_gold(self, silver_source_table: str, gold_target_table: str, query_name: str) -> None:
         df_silver_stream = self.silver_repository.read_stream(silver_source_table)
-        self.gold_repository.start_stream(df_silver_stream, query_name, gold_target_table, self.silver_to_measurements_gold_pipeline)
+        self.gold_repository.start_write_stream(df_silver_stream, query_name, gold_target_table, self.silver_to_measurements_gold_pipeline)
 
     def silver_to_measurements_gold_pipeline(self, df_silver: DataFrame, batch_id: int) -> None:
         exploded_records = explode_silver_points(df_silver)
