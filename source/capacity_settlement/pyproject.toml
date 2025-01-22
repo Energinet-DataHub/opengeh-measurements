@@ -14,8 +14,6 @@ dependencies = [
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
     "databricks-sdk==0.41.0",
-    "azure-identity==1.19.0",
-    "azure-keyvault-secrets==4.9.0",
 ]
 
 [project.scripts]
