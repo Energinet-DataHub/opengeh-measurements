@@ -5,8 +5,7 @@ import sys
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_unixtime, unix_timestamp
-from telemetry_logging import use_span
+from telemetry_logging import use_span, Logger
 from telemetry_logging.span_recording import span_record_exception
 
 import silver.infrastructure.bronze.repository as measurements_bronze_repository
@@ -19,6 +18,7 @@ from silver.infrastructure.path_helper import get_checkpoint_path
 from silver.infrastructure.silver.container_names import ContainerNames
 from silver.infrastructure.silver.table_names import TableNames
 from silver.infrastructure.spark_initializer import initialize_spark
+from silver.application.transform import transform
 
 
 def execute(
@@ -55,7 +55,10 @@ def _execute(spark: SparkSession) -> None:
     )
 
     bronze_repository = measurements_bronze_repository.Repository(spark, catalog_name)
-    silver_repository = measurements_silver_repository.Repository(catalog_name, checkpoint_path)
+    silver_repository = measurements_silver_repository.Repository(catalog_name, checkpoint_path, transform)
     
     df_bronze_calculated_measurements = bronze_repository.read_calculated_measurements()
-    silver_repository.write_measurements(df_bronze_calculated_measurements)
+    silver_repository.write_measurements(df_bronze_calculated_measurements, )
+    log = Logger(__name__)
+    log.info(f"Succesfully wrote calculated measurements to {TableNames.silver_measurements_table}")
+
