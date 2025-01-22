@@ -9,7 +9,7 @@ from databricks.sdk.service.jobs import RunResultState
 class DatabricksApiClient:
 
     def __init__(self) -> None:
-        self.client = WorkspaceClient(host=os.environ['WORKSPACE_URL'], token=os.environ['DATABRICKS_TOKEN'])
+        self.client = WorkspaceClient(host=f"https://{os.environ['WORKSPACE_URL']}", token=os.environ['DATABRICKS_TOKEN'])
 
     def start_job(self, job_id: int) -> int:
         """
