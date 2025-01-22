@@ -10,7 +10,7 @@ class DeltaSilverReader(SilverReader):
         self.spark = spark
         self.config = config
 
-    def read(self) -> DataFrame:
+    def read_stream(self) -> DataFrame:
         return (self.spark.readStream
                 .format("delta")
                 .options(**self.config.read_options)

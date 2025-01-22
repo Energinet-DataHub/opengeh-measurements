@@ -9,9 +9,9 @@ class StreamProcessor:
         self.gold_writer = gold_writer
 
     def execute_silver_to_gold_stream(self) -> None:
-        records = self.silver_reader.read()
-        self.gold_writer.start(records, self.silver_to_gold_pipeline)
+        records = self.silver_reader.read_stream()
+        self.gold_writer.start_stream(records, self.silver_to_gold_pipeline)
 
     def silver_to_gold_pipeline(self, df_silver, batch_id: int) -> None:
         exploded_records = explode_silver_points(df_silver)
-        self.gold_writer.write(exploded_records)
+        self.gold_writer.append(exploded_records)

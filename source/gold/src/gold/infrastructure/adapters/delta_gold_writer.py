@@ -11,7 +11,7 @@ class DeltaGoldWriter(GoldWriter):
         config.validate()
         self.config = config
 
-    def start(self, records: DataFrame, batch_operation: Callable[["DataFrame", int], None]) -> None:
+    def start_stream(self, records: DataFrame, batch_operation: Callable[["DataFrame", int], None]) -> None:
         (records.writeStream
          .format("delta")
          .queryName(self.config.query_name)
@@ -21,5 +21,5 @@ class DeltaGoldWriter(GoldWriter):
          .start()
          .awaitTermination())
 
-    def write(self, df: DataFrame) -> None:
+    def append(self, df: DataFrame) -> None:
         df.write.format("delta").mode("append").saveAsTable(self.config.gold_path)

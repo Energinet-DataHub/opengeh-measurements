@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame
 
 class SilverReader(ABC):
     @abstractmethod
-    def read(self) -> DataFrame:
+    def read_stream(self) -> DataFrame:
         """
         Define a Streaming DataFrame on a Table.
         """
