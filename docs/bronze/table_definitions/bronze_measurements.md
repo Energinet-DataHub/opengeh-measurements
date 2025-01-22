@@ -6,7 +6,7 @@
 | orchestration_instance_id | StringType | True | - | - |
 | metering_point_id | StringType | True | The GSRN number that uniquely identifies the metering point | Exactly 18 digits |
 | transaction_id | StringType | True | Contains an ID for the specific time series transaction, provided by the sender or the source system. Uniqueness not guaranteed | - |
-| transaction_creation_datetime | TimestampType | True | Contains the local Danish time for when the time series data was persisted in source system | - |
+| transaction_creation_datetime | TimestampType | True | Contains the UTC time for when the time series data was persisted in source system | - |
 | metering_point_type | StringType | True | - | - |
 | product | StringType | True | - | - |
 | unit | StringType | True | - | - |

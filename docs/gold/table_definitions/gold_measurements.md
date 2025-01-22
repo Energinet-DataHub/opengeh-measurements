@@ -10,6 +10,6 @@ This table contains measurements which is presented as one measurement value per
 | quality | StringType | True | The quality of the energy quantity. | - |
 | metering_point_type | StringType | True | - | - |
 | transaction_id | StringType | True | Contains an ID for the specific time series transaction, provided by the sender or the source system. Uniqueness not guaranteed | - |
-| transaction_creation_datetime | TimestampType | True | Contains the local Danish time for when the time series data was persisted in source system | - |
+| transaction_creation_datetime | TimestampType | True | Contains the UTC time for when the time series data was persisted in source system | - |
 | created | TimestampType | True | - | - |
 | modified | TimestampType | True | - | - |
