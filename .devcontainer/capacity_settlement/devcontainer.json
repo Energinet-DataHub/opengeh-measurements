@@ -7,10 +7,9 @@
   "remoteUser": "vscode",
   "shutdownAction": "none",
   "workspaceFolder": "/workspace/source/capacity_settlement",
-  "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
-    "PRE_COMMIT_HOME": "/home/vscode/.cache/pre-commit",
     "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy"
   },
   "mounts": [
