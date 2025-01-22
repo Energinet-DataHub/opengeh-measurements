@@ -7,7 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 
 class DatabricksApiClient:
 
-    def __init__(self, host: str | None, token: str | None):
+    def __init__(self, host: str | None, token: str | None) -> None:
         self.client = WorkspaceClient(host=host, token=token)
 
     def start_job(self, job_id: int) -> int:
@@ -48,6 +48,7 @@ class DatabricksApiClient:
 
 
 def test__databricks_job_starts_and_stops_successfully(
+    databricks_client: DatabricksApiClient,
 ) -> None:
     """
     Tests that a Databricks capacity settlement job runs successfully to completion.
@@ -57,10 +58,10 @@ def test__databricks_job_starts_and_stops_successfully(
         job_id = 195320213583647
 
         # Act
-        run_id = DatabricksApiClient.start_job(job_id)
+        run_id = databricks_client.start_job(job_id)
 
         # Assert
-        result = DatabricksApiClient.wait_for_job_completion(run_id)
+        result = databricks_client.wait_for_job_completion(run_id)
         assert result == "SUCCESS", f"Job did not complete successfully: {result}"
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
