@@ -3,14 +3,15 @@
 from pyspark.sql import DataFrame
 
 from gold.application.ports.gold_repository import GoldRepository
-from gold.entry_points import get_datalake_storage_account
 from gold.infrastructure.config.database_names import DatabaseNames
-from gold.infrastructure.shared_helpers import get_full_table_name, get_checkpoint_path
+from gold.infrastructure.shared_helpers import get_full_table_name, get_checkpoint_path, get_env_variable_or_throw, \
+    EnvironmentVariable
 
 
 class DeltaGoldRepository(GoldRepository):
     def start_write_stream(self, df_source_stream: DataFrame, query_name: str, table_name: str, batch_operation: Callable[["DataFrame", int], None]) -> None:
-        checkpoint_location = get_checkpoint_path(get_datalake_storage_account(), DatabaseNames.gold_database, table_name)
+        datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
+        checkpoint_location = get_checkpoint_path(datalake_storage_account, DatabaseNames.gold_database, table_name)
         (df_source_stream.writeStream
          .format("delta")
          .queryName(query_name)

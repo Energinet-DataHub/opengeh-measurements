@@ -2,6 +2,8 @@
 import os
 from enum import Enum
 from typing import Any
+from pyspark import SparkConf
+from pyspark.sql.session import SparkSession
 
 
 def get_storage_base_path(
@@ -36,3 +38,12 @@ def get_env_variable_or_throw(variable: EnvironmentVariable) -> Any:
         raise ValueError(f"Environment variable not found: {variable.name}")
 
     return env_variable
+
+
+def initialize_spark() -> SparkSession:
+    spark_conf = (
+        SparkConf(loadDefaults=True)
+        .set("spark.sql.session.timeZone", "UTC")
+        .set("spark.sql.shuffle.partitions", "auto")
+    )
+    return SparkSession.builder.config(conf=spark_conf).getOrCreate()
