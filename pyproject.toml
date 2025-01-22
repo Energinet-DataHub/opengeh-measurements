@@ -1,0 +1,14 @@
+[project]
+name="measurements-mono"
+version="0.1.0"
+dependencies = [
+]
+requires-python = ">=3.10"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+
