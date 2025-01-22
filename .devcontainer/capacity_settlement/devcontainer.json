@@ -4,12 +4,14 @@
     "../../.docker/docker-compose.yml"
   ],
   "service": "capacity_settlement",
+  "remoteUser": "vscode",
   "shutdownAction": "none",
   "workspaceFolder": "/workspace/source/capacity_settlement",
-  "postStartCommand": "uv sync --cache-dir '/workspace/.uv_cache' && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
   "containerEnv": {
-    "UV_CACHE_DIR": "/workspace/.uv_cache",
-    "UV_PROJECT_ENVIRONMENT": "/workspace/.venv"
+    "UV_CACHE_DIR": "/home/vscode/.cache/uv",
+    "PRE_COMMIT_HOME": "/home/vscode/.cache/pre-commit",
+    "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy"
   },
   "mounts": [
     // Persist the command history across container restarts - useful for bash history
@@ -17,7 +19,7 @@
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local system cache directory - speeds up the build process
-    "source=${localEnv:HOME}/.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+    "source=../.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
@@ -31,6 +33,11 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
+        "search.exclude": {
+          "**/.git": true,
+          "**/.cache": true,
+          "**/.venv": true
+        },
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
         "editor.tabSize": 2,
@@ -41,10 +48,12 @@
         "ruff.lineLength": 120,
         "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
-        "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.testing.pytestArgs": [
           "tests"
         ],
+        "python.analysis.include": ["/workspace/source/capacity_settlement/**/*"], 
+        "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true,
         "github.copilot.editor.enableAutoCompletions": true,
