@@ -55,7 +55,7 @@ def test__databricks_job_starts_and_stops_successfully(
     """
     try:
         # TODO AJW Arrange - Change job id to an capacity settlement job id - currently it's an electrical heating job id
-        job_id = 576172778546244
+        job_id = 195320213583647
 
         # Act
         run_id = databricks_client.start_job(job_id)
