@@ -9,9 +9,9 @@ from gold.infrastructure.shared_helpers import get_full_table_name, get_checkpoi
 
 
 class DeltaGoldRepository(GoldRepository):
-    def start_write_stream(self, records: DataFrame, query_name: str, table_name: str, batch_operation: Callable[["DataFrame", int], None]) -> None:
+    def start_write_stream(self, df_source_stream: DataFrame, query_name: str, table_name: str, batch_operation: Callable[["DataFrame", int], None]) -> None:
         checkpoint_location = get_checkpoint_path(get_datalake_storage_account(), DatabaseNames.gold_database, table_name)
-        (records.writeStream
+        (df_source_stream.writeStream
          .format("delta")
          .queryName(query_name)
          .option("checkpointLocation", checkpoint_location)
