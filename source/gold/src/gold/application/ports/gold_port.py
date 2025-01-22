@@ -4,7 +4,7 @@ from typing import Callable
 from pyspark.sql import DataFrame
 
 
-class GoldRepository(ABC):
+class GoldPort(ABC):
     @abstractmethod
     def start_write_stream(self, df_source_stream: DataFrame, query_name: str, table_name: str, batch_operation: Callable[["DataFrame", int], None]) -> None:
         """

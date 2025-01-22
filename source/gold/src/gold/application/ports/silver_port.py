@@ -4,7 +4,7 @@ from typing import Optional
 from pyspark.sql import DataFrame
 
 
-class SilverRepository(ABC):
+class SilverPort(ABC):
     @abstractmethod
     def read_stream(self, table_name, read_options: Optional[dict] = None) -> DataFrame:
         """

@@ -2,12 +2,12 @@
 
 from pyspark.sql import SparkSession, DataFrame
 
-from gold.application.ports.silver_repository import SilverRepository
+from gold.application.ports.silver_port import SilverPort
 from gold.infrastructure.config.database_names import DatabaseNames
 from gold.infrastructure.shared_helpers import get_full_table_name
 
 
-class DeltaSilverRepository(SilverRepository):
+class DeltaSilverAdapter(SilverPort):
     def __init__(self, spark: SparkSession):
         self.spark = spark
 
