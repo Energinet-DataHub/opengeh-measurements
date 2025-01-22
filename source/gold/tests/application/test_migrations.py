@@ -1,8 +1,8 @@
 ﻿import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from gold.domain.constants.database_names import DatabaseNames
-from gold.domain.constants.table_names import TableNames
+from gold.infrastructure.config.database_names import DatabaseNames
+from gold.infrastructure.config.table_names import TableNames
 from gold.domain.schemas.gold_measurements import (
     gold_measurements_schema,
 )

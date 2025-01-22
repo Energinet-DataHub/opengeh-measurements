@@ -1,3 +1,4 @@
-﻿class DatabaseNames:
+class DatabaseNames:
     # Should probably be an environment variable because it is created in Terraform.
     gold_database = "measurements_gold"
+    silver_database = "measurements_silver"

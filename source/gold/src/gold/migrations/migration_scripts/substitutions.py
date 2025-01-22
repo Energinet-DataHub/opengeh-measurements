@@ -1,5 +1,5 @@
-﻿from gold.domain.constants.database_names import DatabaseNames
-from gold.domain.constants.table_names import TableNames
+﻿from gold.infrastructure.config.database_names import DatabaseNames
+from gold.infrastructure.config.table_names import TableNames
 
 
 def substitutions() -> dict[str, str]:
