@@ -58,7 +58,7 @@ def _execute(spark: SparkSession) -> None:
     silver_repository = measurements_silver_repository.Repository(catalog_name, checkpoint_path, transform)
     
     df_bronze_calculated_measurements = bronze_repository.read_calculated_measurements()
-    silver_repository.write_measurements(df_bronze_calculated_measurements, )
+    silver_repository.write_measurements(df_bronze_calculated_measurements)
     log = Logger(__name__)
     log.info(f"Succesfully wrote calculated measurements to {TableNames.silver_measurements_table}")
 
