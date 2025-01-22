@@ -11,63 +11,74 @@ dependencies = [
 [project.scripts]
 migrate = "gold.entry_points:migrate"
 
+[dependency-groups]
+dev = [
+    "commitizen>=4.1.0",
+    "mypy>=1.14.1",
+    "opengeh-testcommon",
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.1",
+]
+
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.pytest.ini_options]
-addopts = """
---cov-report=term \
---cov-report=xml:coverage.xml \
---cov=gold \
--ra
--vv"""
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=gold -ra -vv"
 
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+]
+
+[tool.ruff]
+line-length = 88
+show-fixes = true
 
 [tool.ruff.format]
 docstring-code-format = true
 
-[tool.ruff]
-line-length = 100
-show-fixes = true
-
 [tool.ruff.lint]
 select = [
-    "E",    # pycodestyle
-    "F",    # pyflakes
-    "I",    # isort
-    "D401", # First line should be in imperative mood
+    "D",
+    "D401",
+    "E",
+    "F",
+    "I",
+    "T201",
     "UP",
 ]
 ignore = [
-    "UP006",
-    "UP007",
-    # We actually do want to import from typing_extensions
-    "UP035",
-    # Relax the convention by _not_ requiring documentation for every function parameter.
     "D417",
     "E501",
-] # Ruff format takes care of line-too-long
+    "UP006",
+    "UP007",
+    "UP035",
+]
+exclude = [
+    "notebooks/*",
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "UP"]
+"tests/*" = [
+    "D",
+    "UP",
+]
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[dependency-groups]
-dev = [
-    "opengeh-testcommon",
-    "pytest>=8.3.4",
-    "pytest-cov>=6.0.0",
-    "ruff>=0.9.1",
-]
-
-[tool.uv.sources]
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
+[tool.uv.sources.opengeh-testcommon]
+git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
+subdirectory = "source/testcommon"
+rev = "3.0.1"

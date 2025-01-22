@@ -1,19 +1,24 @@
 {
-  "name": "electrical-heating",
+  "name": "gold",
   "dockerComposeFile": [
     "../../.docker/docker-compose.yml"
   ],
-  "service": "electrical-heating",
+  "service": "gold",
+  "remoteUser": "vscode",
   "shutdownAction": "none",
-  "workspaceFolder": "/workspace/source/electrical_heating",
-  "postStartCommand": "uv sync --cache-dir /workspace/.uv_cache && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "workspaceFolder": "/workspace/source/gold",
+  "postStartCommand": "uv sync",
+  "containerEnv": {
+    "UV_CACHE_DIR": "/home/vscode/.cache/uv",
+    "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy"
+  },
   "mounts": [
     // Persist the command history across container restarts - useful for bash history
-    "source=electrical-heating-bashhistory,target=/commandhistory,type=volume",
+    "source=gold-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local system cache directory - speeds up the build process
-    "source=${localEnv:HOME}/.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+    "source=../.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
@@ -27,8 +32,14 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
+        "search.exclude": {
+          "**/.git": true,
+          "**/.cache": true,
+          "**/.venv": true
+        },
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
+        "files.autoSave": "onFocusChange", // Automatically save files when focus changes
         "editor.tabSize": 2,
         "editor.rulers": [
           120
@@ -41,6 +52,8 @@
         "python.testing.pytestArgs": [
           "tests"
         ],
+        "python.analysis.include": ["/workspace/source/gold/**/*"], 
+        "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true,
         "github.copilot.editor.enableAutoCompletions": true,
