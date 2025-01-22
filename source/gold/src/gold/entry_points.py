@@ -18,8 +18,7 @@ def stream_silver_to_gold_measurements() -> None:
 
     silver_source_table = TableNames.silver_measurements_table
     gold_target_table = TableNames.gold_measurements_table
-    query_name = "measurements_silver_to_gold"
-    measurements_stream_processor = MeasurementsStreamProcessor(silver_repository, silver_source_table, gold_repository, gold_target_table, query_name)
+    measurements_stream_processor = MeasurementsStreamProcessor(silver_repository, silver_source_table, gold_repository, gold_target_table)
     measurements_stream_processor.stream_measurements_silver_to_gold()
 
 
