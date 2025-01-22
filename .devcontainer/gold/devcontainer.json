@@ -39,6 +39,7 @@
         },
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
+        "files.autoSave": "onFocusChange", // Automatically save files when focus changes
         "editor.tabSize": 2,
         "editor.rulers": [
           120
