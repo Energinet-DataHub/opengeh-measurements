@@ -8,7 +8,7 @@ class StreamProcessor:
         self.silver_reader = silver_reader
         self.gold_writer = gold_writer
 
-    def execute_silver_to_gold_stream(self):
+    def execute_silver_to_gold_stream(self) -> None:
         records = self.silver_reader.read()
         self.gold_writer.start(records, self.silver_to_gold_pipeline)
 
