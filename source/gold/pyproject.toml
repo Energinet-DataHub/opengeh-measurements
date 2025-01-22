@@ -11,7 +11,7 @@ dependencies = [
 
 [project.scripts]
 migrate = "gold.entry_points:migrate_gold"
-stream = "gold.entry_points:stream_silver_to_gold"
+stream = "gold.entry_points:stream_silver_to_gold_measurements"
 
 [dependency-groups]
 dev = [

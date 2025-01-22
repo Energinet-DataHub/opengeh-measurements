@@ -13,7 +13,7 @@ def migrate_gold() -> None:
     migrations_runner.migrate()
 
 
-def stream_silver_to_gold() -> None:
+def stream_silver_to_gold_measurements() -> None:
     spark = _initialize_spark()
     silver_repository = DeltaSilverRepository(spark)
     gold_repository = DeltaGoldRepository()
