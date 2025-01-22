@@ -1,10 +1,7 @@
-class DeltaSilverReaderConfig:
-    def __init__(self, full_silver_table_name: str, read_options: dict[str, str]):
-        self.full_silver_table_name = full_silver_table_name
-        self.read_options = read_options
+class DeltaSilverRepositoryConfig:
+    def __init__(self, silver_database: str):
+        self.silver_database = silver_database
 
     def validate(self):
-        if not self.full_silver_table_name:
-            raise ValueError("full_silver_table_name must not be empty")
-        if not isinstance(self.read_options, dict):
-            raise ValueError("read_options must be a dictionary")
+        if not self.silver_database:
+            raise ValueError("silver_database must not be empty")
