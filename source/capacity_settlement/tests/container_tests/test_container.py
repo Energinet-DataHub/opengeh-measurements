@@ -1,22 +1,15 @@
-﻿import time
+﻿import os
+import time
 
 import pytest
-from azure.identity import DefaultAzureCredential
-from azure.keyvault.secrets import SecretClient
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import RunResultState
 
 
 class DatabricksApiClient:
 
-    def __init__(self, key_vault_name: str, host_secret_name: str, token_secret_name: str) -> None:
-        key_vault_uri = f"https://{key_vault_name}.vault.azure.net"
-        credential = DefaultAzureCredential()
-        client = SecretClient(vault_url=key_vault_uri, credential=credential)
-
-        host = client.get_secret(host_secret_name).value
-        token = client.get_secret(token_secret_name).value
-        self.client = WorkspaceClient(host=host, token=token)
+    def __init__(self) -> None:
+        self.client = WorkspaceClient(host=os.environ['WORKSPACE_URL'], token=os.environ['DATABRICKS_TOKEN'])
 
     def start_job(self, job_id: int) -> int:
         """
@@ -56,17 +49,12 @@ class DatabricksApiClient:
 
 
 def test__databricks_job_starts_and_stops_successfully(
+    databricks_client: DatabricksApiClient,
 ) -> None:
     """
     Tests that a Databricks capacity settlement job runs successfully to completion.
     """
     try:
-        databricks_client = DatabricksApiClient(
-            key_vault_name="kvmmcoredwe002",
-            host_secret_name="dbw-workspace-url",
-            token_secret_name="dbw-workspace-token",
-        )
-                
         job_id = 195320213583647
 
         # Act
