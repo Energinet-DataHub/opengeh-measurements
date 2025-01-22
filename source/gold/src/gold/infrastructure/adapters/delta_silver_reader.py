@@ -11,4 +11,7 @@ class DeltaSilverReader(SilverReader):
         self.config = config
 
     def read(self) -> DataFrame:
-        return self.spark.readStream.format("delta").options(**self.config.read_options).table(self.config.silver_path)
+        return (self.spark.readStream
+                .format("delta")
+                .options(**self.config.read_options)
+                .table(self.config.full_silver_table_name))

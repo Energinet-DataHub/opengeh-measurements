@@ -7,9 +7,9 @@ from pyspark.sql import DataFrame
 class GoldWriter(ABC):
     @abstractmethod
     def start(self, records: DataFrame, batch_operation: Callable[["DataFrame", int], None]):
-        """Start the Gold Delta table writer, using the provided batch operation."""
+        """Starts a streaming query to process data in micro-batches, given a read stream and a batch operation."""
 
     @abstractmethod
     def write(self, records: DataFrame):
-        """Write records to the Gold Delta table"""
+        """Write records to the Gold Delta table, using the append method."""
         pass
