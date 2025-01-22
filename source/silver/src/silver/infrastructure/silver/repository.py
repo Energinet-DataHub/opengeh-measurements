@@ -1,4 +1,5 @@
 from tracemalloc import start
+from typing import Callable
 from pyspark.sql import DataFrame
 from silver.infrastructure.silver.database_names import DatabaseNames
 from silver.infrastructure.silver.table_names import TableNames
@@ -8,21 +9,24 @@ class Repository:
         self,
         catalog_name: str,
         checkpoint_path: str,
+        transformer: Callable,
     ) -> None:
         self._checkpoint_path = checkpoint_path
-        self._catalog_name = catalog_name
+        self._catalog_name = catalog_name        
+        self._transformer = transformer
 
     def write_measurements(self, df: DataFrame) -> None:
         df_stream_query = df.writeStream \
             .queryName("bronze_to_silver_measurements_streaming") \
             .option("checkpointLocation", self._checkpoint_path) \
             .format("delta") \
-            .foreachBatch(self.insert_measurements) \
+            .foreachBatch(self._insert_measurements) \
             .start()
         df_stream_query.awaitTermination()
 
 
-    def insert_measurements(self, df: DataFrame, batchId: int) -> None:
+    def _insert_measurements(self, df: DataFrame, batchId: int) -> None:
+         df = self._transformer(df)
          df.write \
             .format("delta") \
             .mode("append") \
