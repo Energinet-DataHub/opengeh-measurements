@@ -60,8 +60,12 @@ runs:
     - name: Copy Container Tests from ${{ inputs.path }}
       shell: bash
       run: |
-        if [ -d "${{ inputs.path }}/tests/container_tests" ]; then
-            mv ${{ inputs.path }}/tests/container_tests ${{ env.DIST_DIR }}
+        CONTAINER_TEST_PATH="${{ inputs.path }}/tests/container_tests"
+        if [ -d "$CONTAINER_TEST_PATH" ]; then
+            if [ -d "$CONTAINER_TEST_PATH/__pycache__" ]; then
+                rm -rf $CONTAINER_TEST_PATH/__pycache__
+            fi
+            mv $CONTAINER_TEST_PATH ${{ env.DIST_DIR }}
         fi
 
     - name: Upload Artifacts
