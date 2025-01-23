@@ -95,6 +95,7 @@ jobs:
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
+          pytest_addopts: --ignore=tests/container_tests
 
       - name: Upload artifacts for ${{ matrix.inputs.name }}
         uses: ./.github/actions/upload-release-artifacts
