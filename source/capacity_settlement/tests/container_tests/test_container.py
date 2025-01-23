@@ -10,16 +10,8 @@ class DatabricksApiClient:
 
     def __init__(self) -> None:
         databricks_token = os.getenv('DATABRICKS_TOKEN')
-        if databricks_token:
-            print("Databricks token retrieved successfully.")
-        else:
-            print("Databricks token not found.")
-        
         databricks_host = os.getenv('WORKSPACE_URL')
-        if databricks_host:
-            print("Databricks host retrieved successfully.")
-        else:
-            print("Databricks host not found.")
+        
         self.client = WorkspaceClient(host=databricks_host, token=databricks_token)
 
     def start_job(self, job_id: int) -> int:
