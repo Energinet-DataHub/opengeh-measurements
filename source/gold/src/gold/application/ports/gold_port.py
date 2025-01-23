@@ -6,7 +6,13 @@ from pyspark.sql import DataFrame
 
 class GoldPort(ABC):
     @abstractmethod
-    def start_write_stream(self, df_source_stream: DataFrame, query_name: str, table_name: str, batch_operation: Callable[["DataFrame", int], None]) -> None:
+    def start_write_stream(
+        self,
+        df_source_stream: DataFrame,
+        query_name: str,
+        table_name: str,
+        batch_operation: Callable[["DataFrame", int], None],
+    ) -> None:
         """Start a streaming write operation to a Gold Delta table with the specified configurations.
 
         Args:

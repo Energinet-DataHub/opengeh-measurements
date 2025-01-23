@@ -19,5 +19,7 @@ def stream_silver_to_gold_measurements() -> None:
 
     silver_source_table = TableNames.silver_measurements_table
     gold_target_table = TableNames.gold_measurements_table
-    measurements_stream_processor = StreamProcessorMeasurements(silver_port, silver_source_table, gold_port, gold_target_table)
+    measurements_stream_processor = StreamProcessorMeasurements(
+        silver_port, silver_source_table, gold_port, gold_target_table
+    )
     measurements_stream_processor.stream_measurements_silver_to_gold()
