@@ -7,10 +7,9 @@
   "remoteUser": "vscode",
   "shutdownAction": "none",
   "workspaceFolder": "/workspace/source/bronze",
-  "postStartCommand": "uv sync && uv run pre-commit install && uv run pre-commit install --hook-type commit-msg",
+  "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
-    "PRE_COMMIT_HOME": "/home/vscode/.cache/pre-commit",
     "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy"
   },
   "mounts": [
@@ -40,6 +39,7 @@
         },
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
+        "files.autoSave": "onFocusChange", // Automatically save files when focus changes
         "editor.tabSize": 2,
         "editor.rulers": [
           120
