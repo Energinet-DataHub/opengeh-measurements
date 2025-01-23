@@ -116,7 +116,8 @@ jobs:
     runs-on: ubuntu-24.04
     needs: ci_test
     outputs:
-      matrix: ${{ steps.list_artifacts.outputs.matrix }}
+      matrix: ${{ steps.create_matrix.outputs.matrix }}
+      any_artifact: ${{ steps.list_artifacts.outputs.any_artifact }}
     steps:
       - name: Download Core Artifacts
         uses: actions/download-artifact@v4
@@ -133,12 +134,19 @@ jobs:
           merge-multiple: true
 
       - name: List Artifacts Contents
+        id: list_artifacts
         run: |
-          ls -alR "${{ github.workspace }}/dist"
+          if [ -d "${{ github.workspace }}/dist" ]; then
+              ls -alR "${{ github.workspace }}/dist"
+              echo "any_artifact=true" >> $GITHUB_OUTPUT
+          else
+              echo "any_artifact=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create release matrix
         shell: python
-        id: list_artifacts
+        if: ${{ steps.list_contents.outputs.any_artifact == 'true' }}
+        id: create_matrix
         run: |
           from pathlib import Path
           import json
@@ -156,6 +164,7 @@ jobs:
     name: Create prerelease
     runs-on: ubuntu-24.04
     needs: ci_prepare_prerelease
+    if: ${{ needs.ci_prepare_prerelease.outputs.any_artifact == 'true' }}
     strategy:
       matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
     steps:
