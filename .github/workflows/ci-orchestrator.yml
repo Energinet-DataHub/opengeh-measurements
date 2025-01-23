@@ -145,10 +145,12 @@ jobs:
           from pathlib import Path
           import json
           import os
-          artifact_folders = [p for p in Path("${{ github.workspace }}/dist").iterdir() if p.is_dir()]
-          artifacts = [{"name": p.name, "path": str(p)} for p in artifact_folders]
+          artifacts = []
+          for p in Path("${{ github.workspace }}/dist").iterdir():
+              if p.is_dir():
+                  artifacts.append({"name": p.name, "path": str(p)})
+          print(json.dumps({"inputs": artifacts}, indent=2))
           include_statement = json.dumps({"inputs": artifacts})
-          print(include_statement)
           with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               print(f"matrix={include_statement}", file=fh)
 
