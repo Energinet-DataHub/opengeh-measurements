@@ -2,8 +2,6 @@
 import os
 from enum import Enum
 from typing import Any
-from pyspark import SparkConf
-from pyspark.sql.session import SparkSession
 
 
 def get_storage_base_path(

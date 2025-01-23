@@ -1,7 +1,8 @@
-﻿from gold.application.ports.gold_port import GoldPort
+﻿from pyspark.sql.dataframe import DataFrame
+
+from gold.application.ports.gold_port import GoldPort
 from gold.application.ports.silver_port import SilverPort
 from gold.domain.streams.silver_to_gold.transformations import explode_silver_points
-from pyspark.sql.dataframe import DataFrame
 
 
 class StreamProcessorMeasurements:

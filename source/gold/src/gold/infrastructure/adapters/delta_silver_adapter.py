@@ -1,6 +1,6 @@
 ﻿from typing import Optional
 
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 
 from gold.application.ports.silver_port import SilverPort
 from gold.infrastructure.config.database_names import DatabaseNames

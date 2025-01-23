@@ -1,8 +1,12 @@
 ﻿from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, explode
 
-from gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
-from gold.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
+from gold.domain.constants.column_names.gold_measurements_column_names import (
+    GoldMeasurementsColumnNames,
+)
+from gold.domain.constants.column_names.silver_measurements_column_names import (
+    SilverMeasurementsColumnNames,
+)
 
 
 def explode_silver_points(df: DataFrame) -> DataFrame:
