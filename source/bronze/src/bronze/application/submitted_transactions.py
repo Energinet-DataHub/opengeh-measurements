@@ -15,9 +15,7 @@
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 
-from bronze.application.settings.submitted_transactions_stream_settings import (
-    SubmittedTransactionsStreamSettings,
-)
+from bronze.application.settings.submitted_transactions_stream_settings import SubmittedTransactionsStreamSettings
 
 
 def submit_transactions() -> None:
