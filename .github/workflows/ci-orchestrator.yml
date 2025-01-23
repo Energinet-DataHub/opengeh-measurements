@@ -140,6 +140,7 @@ jobs:
               ls -alR "${{ github.workspace }}/dist"
               echo "any_artifact=true" >> $GITHUB_OUTPUT
           else
+              echo "No artifacts found"
               echo "any_artifact=false" >> $GITHUB_OUTPUT
           fi
 
