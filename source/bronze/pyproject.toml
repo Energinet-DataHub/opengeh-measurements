@@ -21,12 +21,11 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
+    "pydantic>=2.10.5",
 ]
 
 [build-system]
-requires = [
-    "hatchling",
-]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
@@ -38,44 +37,22 @@ addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=bronze -ra -vv"
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = [
-    "pragma: no cover",
-    "raise NotImplementedError",
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 show-fixes = true
 
 [tool.ruff.format]
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "D",
-    "D401",
-    "E",
-    "F",
-    "I",
-    "T201",
-    "UP",
-]
-ignore = [
-    "D417",
-    "E501",
-    "UP006",
-    "UP007",
-    "UP035",
-]
-exclude = [
-    "notebooks/*",
-]
+select = ["D", "D401", "E", "F", "I", "T201", "UP"]
+ignore = ["D417", "E501", "UP006", "UP007", "UP035"]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "D",
-    "UP",
-]
+"tests/*" = ["D", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

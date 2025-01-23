@@ -15,36 +15,21 @@
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 
-import bronze.infrastructure.environment_variables as env_vars
+from bronze.application.settings.submitted_transactions_stream_settings import (
+    SubmittedTransactionsStreamSettings,
+)
 
 
 def submit_transactions() -> None:
-    evhns_endpoint = f"{env_vars.get_event_hub_namespace()}.servicebus.windows.net"
-    evh_instance = env_vars.get_event_hub_instance()
-    client_id = env_vars.get_spn_app_id()
-    client_secret = env_vars.get_spn_app_secret()
-    sasl_config = f'kafkashaded.org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required clientId="{client_id}" clientSecret="{client_secret}" scope="https://{evhns_endpoint}/.default" ssl.protocol="SSL";'
-
-    kafka_options = {
-        "kafka.bootstrap.servers": f"{evhns_endpoint}:9093",
-        "kafka.sasl.jaas.config": sasl_config,
-        "kafka.sasl.oauthbearer.token.endpoint.url": f"https://login.microsoft.com/{tenant_id}/oauth2/v2.0/token",
-        "subscribe": evh_instance,
-        "startingOffsets": "latest",
-        "kafka.security.protocol": "SASL_SSL",
-        "kafka.sasl.mechanism": "OAUTHBEARER",
-        "kafka.sasl.login.callback.handler.class": "kafkashaded.org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler",
-    }
+    kafka_options = SubmittedTransactionsStreamSettings().create_kafka_options()
 
     spark = initialize_spark()
-    spark.readStream.format("kafka").options(**kafka_options).load().writeStream.format(
-        "delta"
-    ).option("checkpointLocation", "checkpointReceiving").toTable(
-        "submitted_transactions"
-    )
+
+    spark.readStream.format("kafka").options(**kafka_options).load().writeStream.format("delta").option(
+        "checkpointLocation", "checkpointReceiving"
+    ).toTable("submitted_transactions")
 
 
 def initialize_spark() -> SparkSession:
-    # Set spark config with the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True).set("spark.sql.session.timeZone", "UTC")
     return SparkSession.builder.config(conf=spark_conf).getOrCreate()
