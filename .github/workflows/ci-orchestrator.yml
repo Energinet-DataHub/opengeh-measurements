@@ -11,6 +11,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
 env:
   PACKAGES_DIR: source
   CORE_REGEX: bronze|silver|gold
@@ -73,10 +78,6 @@ jobs:
     needs: ci_matrix
     strategy:
       matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,10 +115,6 @@ jobs:
     name: Prepare prerelease
     runs-on: ubuntu-24.04
     needs: ci_test
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
     outputs:
       matrix: ${{ steps.list_artifacts.outputs.matrix }}
     steps:
@@ -159,10 +156,6 @@ jobs:
     name: Create prerelease
     runs-on: ubuntu-24.04
     needs: ci_prepare_prerelease
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
     strategy:
       matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
     steps:
