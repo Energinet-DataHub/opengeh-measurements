@@ -11,8 +11,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
 env:
   PACKAGES_DIR: source
+  CORE_REGEX: bronze|silver|gold
+  CORE_PREFIX: core
+  NONCORE_PREFIX: bundle
 
 jobs:
   #
@@ -70,18 +78,9 @@ jobs:
     needs: ci_matrix
     strategy:
       matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Print Inputs
-        run: |
-          echo "Path: ${{ matrix.inputs.path }}"
-          echo "Name: ${{ matrix.inputs.name }}"
 
       - name: Check if ${{ matrix.inputs.name }} has changed
         uses: dorny/paths-filter@v3
@@ -97,27 +96,107 @@ jobs:
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
+          pytest_addopts: --ignore=tests/container_tests
 
-      - name: Find associated pull request
-        uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
-        id: find_pull_request
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-
-      - name: Upload prerelease
-        uses: ./.github/actions/create-prerelease
+      - name: Upload artifacts for ${{ matrix.inputs.name }}
+        uses: ./.github/actions/upload-release-artifacts
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          issue-number: ${{ steps.find_pull_request.outputs.pull_request_number }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          core_regex: ${{ env.CORE_REGEX }}
+          core_prefix: ${{ env.CORE_PREFIX }}
+          noncore_prefix: ${{ env.NONCORE_PREFIX }}
+
+  #
+  # Prepare Release Matrix
+  #
+  ci_prepare_prerelease:
+    name: Prepare prerelease
+    runs-on: ubuntu-24.04
+    needs: ci_test
+    outputs:
+      matrix: ${{ steps.list_artifacts.outputs.matrix }}
+    steps:
+      - name: Download Core Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
+          merge-multiple: true
+
+      - name: Download Bundle Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.NONCORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/
+          merge-multiple: true
+
+      - name: List Artifacts Contents
+        run: |
+          ls -alR "${{ github.workspace }}/dist"
+
+      - name: Create release matrix
+        shell: python
+        id: list_artifacts
+        run: |
+          from pathlib import Path
+          import json
+          import os
+          artifacts = []
+          for p in Path("${{ github.workspace }}/dist").iterdir():
+              if p.is_dir():
+                  artifacts.append({"name": p.name, "path": str(p)})
+          print(json.dumps({"inputs": artifacts}, indent=2))
+          include_statement = json.dumps({"inputs": artifacts})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              print(f"matrix={include_statement}", file=fh)
+
+  ci_create_prerelease:
+    name: Create prerelease
+    runs-on: ubuntu-24.04
+    needs: ci_prepare_prerelease
+    strategy:
+      matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Core Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
+          merge-multiple: true
+
+      - name: Download Bundle Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.NONCORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/
+          merge-multiple: true
+
+      - name: Create prerelease for ${{ matrix.inputs.name }}
+        uses: ./.github/actions/create-prerelease
+        with:
+          name: ${{ matrix.inputs.name }}
+          path: ${{ matrix.inputs.path }}
+          issue-number: ${{ github.event.number }}
 
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_base, ci_matrix, ci_test, ci_bronze_contracts]
+    needs:
+      [
+        ci_base,
+        ci_bronze_contracts,
+        ci_matrix,
+        ci_test,
+        ci_prepare_prerelease,
+        ci_create_prerelease,
+      ]
     if: |
       always()
     steps:
