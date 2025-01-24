@@ -90,6 +90,6 @@ jobs:
         with:
           sendgrid-api-key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
           team-name: Measurements
-          to: a8aea467.energinet.onmicrosoft.com@emea.teams.ms
+          to: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
           from: ${{ vars.email_internal_sender }}
-          subject: "Deployment dispatched: Measurements - ${{ matrix.inputs.name }}"
+          subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
