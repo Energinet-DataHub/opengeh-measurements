@@ -3,9 +3,6 @@ name = "capacity_settlement"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" },
-]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -51,7 +48,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 show-fixes = true
 
 [tool.ruff.format]
@@ -68,6 +65,13 @@ select = [
     "UP",
 ]
 ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D106",
+    "D107",
     "D417",
     "E501",
     "UP006",

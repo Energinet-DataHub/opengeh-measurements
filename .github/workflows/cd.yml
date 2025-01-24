@@ -43,7 +43,7 @@ jobs:
   # Deploy
   #
   cd_promote_prerelease:
-    name: Test Packages
+    name: Promote prerelease
     runs-on: ubuntu-24.04
     needs: ci_matrix
     strategy:
@@ -89,7 +89,7 @@ jobs:
         if: ${{ steps.changes.outputs.is_changed == 'true' && failure() }}
         with:
           sendgrid-api-key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
-          team-name: Mandalorian
-          to: ${{ vars.email_mandalorian }}
+          team-name: Measurements
+          to: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
           from: ${{ vars.email_internal_sender }}
-          subject: "Deployment dispatched: Measurements - ${{ matrix.inputs.name }}"
+          subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
