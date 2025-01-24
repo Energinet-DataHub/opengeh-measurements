@@ -54,9 +54,7 @@ def spark() -> Generator[SparkSession, None, None]:
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
 
-    configure_logging(
-        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
-    )
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")
@@ -83,9 +81,7 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def create_measurements_delta_table(
-    spark: SparkSession, test_files_folder_path: str
-) -> None:
+def create_measurements_delta_table(spark: SparkSession, test_files_folder_path: str) -> None:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(
