@@ -1,4 +1,4 @@
-# Gold
+# Gold Layer
 
 This python package handles streaming from the silver layer, to the gold layer.
 
