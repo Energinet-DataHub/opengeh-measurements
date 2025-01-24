@@ -51,15 +51,23 @@ class DatabricksApiClient:
         raise TimeoutError(f"Job did not complete within {timeout} seconds.")
 
 
-def test__databricks_job_starts_and_stops_successfully(
+def test__databricks_job_starts_and_stops_successfully(  
 ) -> None:
     """
     Tests that a Databricks capacity settlement job runs successfully to completion.
     """
     try:
-        job_id = 195320213583647
+        # Arrange
+        job_id = None
+        job_list = DatabricksApiClient().client.jobs.list()
+        for job in job_list:
+            if job.settings is not None and job.settings.name == "CapacitySettlement":
+                job_id = job.job_id
+                break
 
         # Act
+        if job_id is None:
+            pytest.fail("Job ID for 'CapacitySettlement' not found.")
         run_id = DatabricksApiClient().start_job(job_id)
 
         # Assert
