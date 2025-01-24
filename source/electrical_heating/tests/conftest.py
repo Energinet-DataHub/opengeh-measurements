@@ -4,7 +4,7 @@ from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
@@ -56,9 +56,7 @@ def spark() -> Generator[SparkSession, None, None]:
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
 
-    configure_logging(
-        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
-    )
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")
@@ -85,9 +83,7 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def create_measurements_delta_table(
-    spark: SparkSession, test_files_folder_path: str
-) -> None:
+def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(
