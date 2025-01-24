@@ -58,8 +58,9 @@ def test__databricks_job_starts_and_stops_successfully(
     """
     try:
         # Arrange
+        databricksApiClient = DatabricksApiClient()
         job_id = None
-        job_list = DatabricksApiClient().client.jobs.list()
+        job_list = databricksApiClient.client.jobs.list()
         for job in job_list:
             if job.settings is not None and job.settings.name == "CapacitySettlement":
                 job_id = job.job_id
@@ -68,10 +69,10 @@ def test__databricks_job_starts_and_stops_successfully(
         # Act
         if job_id is None:
             pytest.fail("Job ID for 'CapacitySettlement' not found.")
-        run_id = DatabricksApiClient().start_job(job_id)
+        run_id = databricksApiClient.start_job(job_id)
 
         # Assert
-        result = DatabricksApiClient().wait_for_job_completion(run_id)
+        result = databricksApiClient.wait_for_job_completion(run_id)
         assert result == "SUCCESS", f"Job did not complete successfully: {result}"
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
