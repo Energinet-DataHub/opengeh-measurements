@@ -36,6 +36,6 @@ def _execute_calculated_silver_stream(spark: SparkSession) -> None:
     silver_repository = measurements_silver_repository.Repository(transform_calculated_measurements)
 
     log = Logger(__name__)
-    log.info("test that the logger report to appinsights")
+    log.info("Test that the logger report to appinsights")
     df_bronze_calculated_measurements = bronze_repository.read_calculated_measurements()
     silver_repository.write_measurements(df_bronze_calculated_measurements)
