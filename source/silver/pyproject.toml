@@ -1,5 +1,5 @@
 [project]
-name = "silver"
+name = "opengeh_silver"
 version = "0.1.0"
 description = "Streaming to the silver layer"
 readme = "README.md"
@@ -29,6 +29,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/silver"]
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=silver -ra -vv"
