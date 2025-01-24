@@ -14,6 +14,17 @@ class DatabricksApiClient:
         
         self.client = WorkspaceClient(host=databricks_host, token=databricks_token)
 
+    def get_job_id(self, job_name: str) -> int:
+        """
+        Gets the job ID for a Databricks job.
+        """
+        job_list = self.client.jobs.list()
+        for job in job_list:
+            if job.settings is not None and job.settings.name == job_name:
+                if job.job_id is not None:
+                    return job.job_id
+        raise Exception(f"Job '{job_name}' not found.")
+
     def start_job(self, job_id: int) -> int:
         """
         Starts a Databricks job using the Databricks SDK and returns the run ID.
@@ -59,16 +70,9 @@ def test__databricks_job_starts_and_stops_successfully(
     try:
         # Arrange
         databricksApiClient = DatabricksApiClient()
-        job_id = None
-        job_list = databricksApiClient.client.jobs.list()
-        for job in job_list:
-            if job.settings is not None and job.settings.name == "CapacitySettlement":
-                job_id = job.job_id
-                break
+        job_id = databricksApiClient.get_job_id("CapacitySettlement")
 
         # Act
-        if job_id is None:
-            pytest.fail("Job ID for 'CapacitySettlement' not found.")
         run_id = databricksApiClient.start_job(job_id)
 
         # Assert
