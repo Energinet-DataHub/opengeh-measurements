@@ -3,7 +3,6 @@ name = "electrical_heating"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [{ name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" }]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -87,6 +86,6 @@ exclude = [
 convention = "google"
 
 [tool.uv.sources]
-opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
-opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.0" }
+opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.1.1" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.1.1" }
+opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.1" }
