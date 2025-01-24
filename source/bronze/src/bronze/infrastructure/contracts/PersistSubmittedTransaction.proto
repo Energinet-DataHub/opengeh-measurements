@@ -8,18 +8,19 @@ import "DecimalValue.proto";
 option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
 
 message PersistSubmittedTransaction {
-  string orchestration_instance_id = 1;
-  OrchestrationType orchestration_type = 2;
-  string metering_point_id = 3;
-  string transaction_id = 4;
-  Timestamp transaction_creation_datetime = 5;
-  Timestamp start_datetime = 6;
-  Timestamp end_datetime = 7;
-  MeteringPointType metering_point_type = 8;
-  string product = 9;
-  Unit unit = 10;
-  Resolution resolution = 11;
-  repeated Point points = 12;
+  string version = 1;
+  string orchestration_instance_id = 2;
+  OrchestrationType orchestration_type = 3;
+  string metering_point_id = 4;
+  string transaction_id = 5;
+  Timestamp transaction_creation_datetime = 6;
+  Timestamp start_datetime = 7;
+  Timestamp end_datetime = 8;
+  MeteringPointType metering_point_type = 9;
+  string product = 10;
+  Unit unit = 11;
+  Resolution resolution = 12;
+  repeated Point points = 13;
 }
 
 message Point {

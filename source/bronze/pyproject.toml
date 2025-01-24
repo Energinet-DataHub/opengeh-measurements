@@ -16,7 +16,6 @@ dev = [
     "commitizen>=4.1.0",
     "mypy>=1.14.1",
     "opengeh-testcommon",
-    "pre-commit>=4.0.1",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
@@ -43,7 +42,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 show-fixes = true
 
 [tool.ruff.format]
@@ -60,6 +59,13 @@ select = [
     "UP",
 ]
 ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D106",
+    "D107",
     "D417",
     "E501",
     "UP006",
