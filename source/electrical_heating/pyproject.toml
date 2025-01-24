@@ -87,6 +87,6 @@ exclude = [
 convention = "google"
 
 [tool.uv.sources]
-opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
-opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.0" }
+opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.1.1" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.1.1" }
+opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.1" }
