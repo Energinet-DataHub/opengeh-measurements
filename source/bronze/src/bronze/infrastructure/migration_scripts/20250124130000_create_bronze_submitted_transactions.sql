@@ -1,4 +1,4 @@
-CREATE TABLE {bronze_database}.{bronze_submitted_transactions}
+CREATE TABLE {bronze_database}.{bronze_submitted_transactions_table}
 (
     key BINARY,
     value BINARY,
@@ -6,7 +6,7 @@ CREATE TABLE {bronze_database}.{bronze_submitted_transactions}
     partition INT,
     offset LONG,
     timestamp TIMESTAMP,
-    timestamp_type INT,
+    timestampType INT
 )
 USING DELTA
 TBLPROPERTIES (

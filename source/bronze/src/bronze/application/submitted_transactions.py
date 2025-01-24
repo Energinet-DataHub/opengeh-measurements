@@ -9,9 +9,7 @@ def submit_transactions() -> None:
 
     spark = initialize_spark()
 
-    spark.readStream.format("kafka").options(**kafka_options).load().writeStream.format("delta").option(
-        "checkpointLocation", "checkpointReceiving"
-    ).toTable("submitted_transactions")
+    spark.readStream.format("kafka").options(**kafka_options).load().writeTo("bronze_submitted_transactions_table")
 
 
 def initialize_spark() -> SparkSession:

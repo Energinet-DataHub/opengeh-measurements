@@ -6,7 +6,6 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 import bronze.application.migrations as migrations
-import bronze.application.submitted_transactions as submitted_transactions
 from bronze.domain.constants.database_names import DatabaseNames
 
 
@@ -65,15 +64,6 @@ def migrate(spark: SparkSession) -> None:
     The reason for being a fixture is that we want to run it only once per session.
     """
     migrations.migrate()
-
-
-@pytest.fixture(scope="session")
-def submit_transactions(spark: SparkSession) -> None:
-    """
-    This is actually the main part of all our tests.
-    The reason for being a fixture is that we want to run it only once per session.
-    """
-    submitted_transactions.submit_transactions()
 
 
 @pytest.fixture(scope="session")
