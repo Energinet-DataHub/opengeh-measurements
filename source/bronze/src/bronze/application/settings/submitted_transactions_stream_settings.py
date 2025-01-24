@@ -1,12 +1,12 @@
-from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 
 
+class SubmittedTransactionsStreamSettings(BaseSettings):
     event_hub_namespace: str
     event_hub_instance: str
     tenant_id: str
     spn_app_id: str
     spn_app_secret: str
-class SubmittedTransactionsStreamSettings(BaseModel):
 
     class Config:
         case_sensitive = False
