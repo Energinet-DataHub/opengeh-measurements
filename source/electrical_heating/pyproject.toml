@@ -40,7 +40,8 @@ allow-direct-references = true
 packages = ["src/electrical_heating"]
 
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
+# -s ensures that print("<text>") is written to output. 
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0
@@ -55,15 +56,7 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "D",
-    "D401",
-    "E",
-    "F",
-    "I",
-    "T201",
-    "UP",
-]
+select = ["D", "D401", "E", "F", "I", "T201", "UP"]
 ignore = [
     "D100",
     "D101",
@@ -78,9 +71,7 @@ ignore = [
     "UP007",
     "UP035",
 ]
-exclude = [
-    "notebooks/*",
-]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]
