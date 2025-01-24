@@ -146,7 +146,7 @@ jobs:
 
       - name: Create release matrix
         shell: python
-        if: ${{ steps.list_contents.outputs.any_artifact == 'true' }}
+        if: ${{ steps.list_artifacts.outputs.any_artifact == 'true' }}
         id: create_matrix
         run: |
           from pathlib import Path
