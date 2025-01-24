@@ -1,5 +1,5 @@
 [project]
-name = "capacity_settlement"
+name = "opengeh_capacity_settlement"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -36,6 +36,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/capacity_settlement"]
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=capacity_settlement -ra -vv"

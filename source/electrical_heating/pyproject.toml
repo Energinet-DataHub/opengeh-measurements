@@ -1,5 +1,5 @@
 [project]
-name = "electrical_heating"
+name = "opengeh_electrical_heating"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-electrical_heating = "electrical_heating.entry_point:execute"
+execute = "electrical_heating.entry_point:execute"
 
 [dependency-groups]
 dev = [
@@ -35,6 +35,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/electrical_heating"]
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
