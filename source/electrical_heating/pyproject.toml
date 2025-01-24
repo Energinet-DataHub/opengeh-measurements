@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-electrical_heating = "electrical_heating.entry_point:execute"
+execute = "electrical_heating.entry_point:execute"
 
 [dependency-groups]
 dev = [
