@@ -22,9 +22,7 @@ dev = [
 ]
 
 [build-system]
-requires = [
-    "hatchling",
-]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
@@ -34,15 +32,13 @@ allow-direct-references = true
 packages = ["src/bronze"]
 
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=bronze -ra -vv"
+# -s ensures that print("<text>") is written to output. 
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=bronze -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = [
-    "pragma: no cover",
-    "raise NotImplementedError",
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [tool.ruff]
 line-length = 120
@@ -52,15 +48,7 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "D",
-    "D401",
-    "E",
-    "F",
-    "I",
-    "T201",
-    "UP",
-]
+select = ["D", "D401", "E", "F", "I", "T201", "UP"]
 ignore = [
     "D100",
     "D101",
@@ -75,15 +63,10 @@ ignore = [
     "UP007",
     "UP035",
 ]
-exclude = [
-    "notebooks/*",
-]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "D",
-    "UP",
-]
+"tests/*" = ["D", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

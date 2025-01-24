@@ -41,8 +41,8 @@ allow-direct-references = true
 packages = ["src/electrical_heating"]
 
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
-norecursedirs = ["container_tests"]
+# -s ensures that print("<text>") is written to output.
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0
