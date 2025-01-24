@@ -32,3 +32,15 @@ Contains notes and documentation stored in `*.md` files.
 ### `source`
 
 Contains source code.
+
+## Getting started
+
+Prerequisites: Docker Desktop and VSCode
+
+- Open VSCode
+- Install extension "Dev Containers"
+- Press F1, find and select "Dev Containers: Rebuild and Reopen in Container"
+- Select the container you want to build, e.g. "capacity-settlement"
+    - *If the build fails try removing the folder `.uv_cache` in the repo root folder
+- To switch between containers press F1 and select "Dev Containers: Switch Container"
+- Open the "Testing" panel to the left to discover and run tests

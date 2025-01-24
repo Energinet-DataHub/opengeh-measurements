@@ -4,13 +4,23 @@ on:
   pull_request:
     branches:
       - main
+  merge_group:
+    types: [checks_requested]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
 
 env:
   PACKAGES_DIR: source
+  CORE_REGEX: bronze|silver|gold
+  CORE_PREFIX: core
+  NONCORE_PREFIX: bundle
 
 jobs:
   #
@@ -68,17 +78,10 @@ jobs:
     needs: ci_matrix
     strategy:
       matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Print Inputs
-        run: |
-          echo "Path: ${{ matrix.inputs.path }}"
-          echo "Name: ${{ matrix.inputs.name }}"
+
       - name: Check if ${{ matrix.inputs.name }} has changed
         uses: dorny/paths-filter@v3
         id: changes
@@ -86,35 +89,124 @@ jobs:
           filters: |
             is_changed:
               - ${{ matrix.inputs.path }}/**
+
       - name: Test ${{ matrix.inputs.name }}
         uses: ./.github/actions/uvtest
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-      - name: Upload prerelease
-        uses: ./.github/actions/create-prerelease
+          pytest_addopts: --ignore=tests/container_tests
+
+      - name: Upload artifacts for ${{ matrix.inputs.name }}
+        uses: ./.github/actions/upload-release-artifacts
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          issue-number: ${{ github.event.pull_request.number }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          core_regex: ${{ env.CORE_REGEX }}
+          core_prefix: ${{ env.CORE_PREFIX }}
+          noncore_prefix: ${{ env.NONCORE_PREFIX }}
 
-  # ci_bronze:
-  #   needs: [changes, ci_docker]
-  #   if: ${{ needs.changes.outputs.bronze == 'true' }}
-  #   uses: ./.github/workflows/ci-databricks.yml
-  #   with:
-  #     image_tag: ${{ needs.ci_docker.outputs.image_tag }}
-  #     package_name: bronze
+  #
+  # Prepare Release Matrix
+  #
+  ci_prepare_prerelease:
+    name: Prepare prerelease
+    runs-on: ubuntu-24.04
+    needs: ci_test
+    outputs:
+      matrix: ${{ steps.create_matrix.outputs.matrix }}
+      any_artifact: ${{ steps.list_artifacts.outputs.any_artifact }}
+    steps:
+      - name: Download Core Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
+          merge-multiple: true
+
+      - name: Download Bundle Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.NONCORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/
+          merge-multiple: true
+
+      - name: List Artifacts Contents
+        id: list_artifacts
+        run: |
+          if [ -d "${{ github.workspace }}/dist" ]; then
+              ls -alR "${{ github.workspace }}/dist"
+              echo "any_artifact=true" >> $GITHUB_OUTPUT
+          else
+              echo "No artifacts found"
+              echo "any_artifact=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release matrix
+        shell: python
+        if: ${{ steps.list_contents.outputs.any_artifact == 'true' }}
+        id: create_matrix
+        run: |
+          from pathlib import Path
+          import json
+          import os
+          artifacts = []
+          for p in Path("${{ github.workspace }}/dist").iterdir():
+              if p.is_dir():
+                  artifacts.append({"name": p.name, "path": str(p)})
+          print(json.dumps({"inputs": artifacts}, indent=2))
+          include_statement = json.dumps({"inputs": artifacts})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              print(f"matrix={include_statement}", file=fh)
+
+  ci_create_prerelease:
+    name: Create prerelease
+    runs-on: ubuntu-24.04
+    needs: ci_prepare_prerelease
+    if: ${{ needs.ci_prepare_prerelease.outputs.any_artifact == 'true' }}
+    strategy:
+      matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Core Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
+          merge-multiple: true
+
+      - name: Download Bundle Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.NONCORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/
+          merge-multiple: true
+
+      - name: Create prerelease for ${{ matrix.inputs.name }}
+        uses: ./.github/actions/create-prerelease
+        with:
+          name: ${{ matrix.inputs.name }}
+          path: ${{ matrix.inputs.path }}
+          issue-number: ${{ github.event.number }}
 
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_base, ci_matrix, ci_test, ci_bronze_contracts]
+    needs:
+      [
+        ci_base,
+        ci_bronze_contracts,
+        ci_matrix,
+        ci_test,
+        ci_prepare_prerelease,
+        ci_create_prerelease,
+      ]
     if: |
       always()
     steps:
