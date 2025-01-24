@@ -5,7 +5,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import bronze.migrations.migrations as migrations
+import bronze.migrations.migrations_runner as migrations_runner
 from bronze.domain.constants.database_names import DatabaseNames
 
 
@@ -63,7 +63,7 @@ def migrate(spark: SparkSession) -> None:
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
     """
-    migrations.migrate()
+    migrations_runner.migrate()
 
 
 @pytest.fixture(scope="session")
