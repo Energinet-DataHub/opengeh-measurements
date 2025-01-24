@@ -7,7 +7,7 @@ from spark_sql_migrations import (
 )
 
 import silver.migrations.substitutions as substitutions
-from silver.infrastructure.utils.env_vars_utils import get_catalog_name
+from silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 from silver.migrations.database_names import DatabaseNames
 from silver.migrations.table_names import TableNames
 

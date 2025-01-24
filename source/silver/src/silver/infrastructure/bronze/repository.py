@@ -3,7 +3,7 @@ from pyspark.sql import DataFrame, SparkSession
 from silver.infrastructure.bronze.database_names import DatabaseNames
 from silver.infrastructure.bronze.options import BRONZE_CALCULATED_OPTIONS
 from silver.infrastructure.bronze.table_names import TableNames
-from silver.infrastructure.utils.env_vars_utils import get_catalog_name
+from silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
 class Repository:

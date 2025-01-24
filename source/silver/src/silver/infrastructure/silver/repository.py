@@ -2,13 +2,13 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
-from silver.infrastructure.silver.database_names import DatabaseNames
-from silver.infrastructure.silver.table_names import TableNames
-from silver.infrastructure.utils.env_vars_utils import (
+from silver.infrastructure.helpers.environment_variable_helper import (
     get_catalog_name,
     get_datalake_storage_account,
 )
-from silver.infrastructure.utils.path_utils import get_checkpoint_path
+from silver.infrastructure.helpers.path_helper import get_checkpoint_path
+from silver.infrastructure.silver.database_names import DatabaseNames
+from silver.infrastructure.silver.table_names import TableNames
 
 
 class Repository:

@@ -8,8 +8,8 @@ from telemetry_logging.span_recording import span_record_exception
 
 import silver.infrastructure.bronze.repository as measurements_bronze_repository
 import silver.infrastructure.silver.repository as measurements_silver_repository
+from silver.application.config.spark import initialize_spark
 from silver.domain.transform_calculated_measurements import transform_calculated_measurements
-from silver.infrastructure.utils.spark_initializer import initialize_spark
 
 
 def execute_calculated_silver_stream(applicationinsights_connection_string: str = None) -> None:
