@@ -1,4 +1,4 @@
-﻿import os
+import os
 from typing import Callable, Generator
 
 import pytest
@@ -8,10 +8,12 @@ from pyspark.sql import SparkSession
 import silver.migrations.migrations as migrations
 from silver.infrastructure.silver.database_names import DatabaseNames
 
+
 def pytest_runtest_setup() -> None:
     """
     This function is called before each test function is executed.
     """
+    os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"] = "app_conn_str"
     os.environ["CATALOG_NAME"] = "spark_catalog"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
 
@@ -110,9 +112,6 @@ def tests_path(source_path: str) -> str:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-
     from telemetry_logging.logging_configuration import configure_logging
 
-    configure_logging(
-        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
-    )
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")

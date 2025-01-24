@@ -1,4 +1,4 @@
-﻿from pyspark import SparkConf
+from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 
 

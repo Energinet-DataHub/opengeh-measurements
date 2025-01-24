@@ -1,4 +1,4 @@
-﻿from silver.infrastructure.silver.database_names import DatabaseNames
+from silver.infrastructure.silver.database_names import DatabaseNames
 from silver.infrastructure.silver.table_names import TableNames
 
 

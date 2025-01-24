@@ -1,4 +1,4 @@
-﻿import testcommon.dataframes.assert_schemas as assert_schemas
+import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 from silver.domain.schemas.silver_measurements import (

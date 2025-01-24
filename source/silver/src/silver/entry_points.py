@@ -1,15 +1,10 @@
-﻿import os
-import silver.migrations.migrations as migrations
 import silver.application.stream as silver_stream
+import silver.migrations.migrations as migrations
+from silver.infrastructure.services.env_vars_utils import get_applicationinsights_connection_string
 
 
 def execute_silver_stream() -> None:
-    applicationinsights_connection_string = os.getenv(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    )
-    silver_stream.execute(
-        applicationinsights_connection_string=applicationinsights_connection_string,
-    )
+    silver_stream.execute(get_applicationinsights_connection_string())
 
 
 def migrate() -> None:
