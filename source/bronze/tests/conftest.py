@@ -5,7 +5,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import bronze.application.migrations as migrations
+import bronze.migrations.migrations as migrations
 from bronze.domain.constants.database_names import DatabaseNames
 
 
