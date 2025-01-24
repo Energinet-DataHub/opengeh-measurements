@@ -4,8 +4,9 @@ from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
+from testcommon.delta_lake import create_database, create_table
 
 from electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
@@ -15,12 +16,10 @@ from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_
 )
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
-from tests.utils.measurements_utils import create_measurements_dataframe
 from tests.utils.delta_table_utils import (
-    create_database,
-    create_delta_table,
     read_from_csv,
 )
+from tests.utils.measurements_utils import create_measurements_dataframe
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -86,10 +85,12 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements_dataframe(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
+def create_measurements_delta_table(
+    spark: SparkSession, test_files_folder_path: str
+) -> None:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
-    create_delta_table(
+    create_table(
         spark,
         database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
         table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
