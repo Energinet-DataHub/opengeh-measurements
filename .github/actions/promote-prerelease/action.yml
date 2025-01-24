@@ -26,7 +26,10 @@ runs:
         gh release edit ${{ steps.set_release_name.outputs.release_name }} --prerelease=false
 
         echo 'Deleting ${{ inputs.release_name_prefix }}_latest if exists'
-        gh release delete ${{ inputs.release_name_prefix }}_latest --yes
+        RELEASE_EXISTS=$(gh release view ${{ inputs.release_name_prefix }}_latest --json name)
+        if [ $? -eq 0 ]; then
+          gh release delete ${{ inputs.release_name_prefix }}_latest --yes
+        fi
 
         echo 'Creating new ${{ inputs.release_name_prefix }}_latest'
         gh release create ${{ inputs.release_name_prefix }}_latest --title ${{ inputs.release_name_prefix }}_latest --notes "RELEASE_NAME=${{ steps.set_release_name.outputs.release_name }}" --latest

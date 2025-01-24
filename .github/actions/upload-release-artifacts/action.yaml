@@ -1,0 +1,76 @@
+name: Upload Release Artifacts
+description: Upload release artifacts
+inputs:
+  name:
+    description: The name of the package
+    required: true
+  path:
+    description: The path to the package
+    required: true
+  core_regex:
+    description: The regex for core packages (e.g. "package1|package2")
+    required: true
+  core_prefix:
+    description: The prefix for core packages (e.g. "core")
+    required: true
+    default: core
+  noncore_prefix:
+    description: The prefix for non-core packages (e.g. "bundle")
+    required: true
+    default: bundle
+  github_workspace:
+    description: The path to the github workspace
+    required: true
+    default: ${{ github.workspace }}
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+        cache-suffix: ${{ inputs.name }}
+
+    - name: Create artifact variables
+      shell: bash
+      run: |
+        RELEASE_DIR="${{ github.workspace }}/${{ inputs.path }}/artifacts"
+        case "${{ inputs.name }}" in
+            ${{ env.CORE_REGEX }})
+                ARTIFACT_NAME=${{ inputs.core_prefix }}-${{ inputs.name }}
+                DIST_DIR="$RELEASE_DIR"
+                ;;
+            *)
+                ARTIFACT_NAME=${{ inputs.noncore_prefix }}-${{ inputs.name }}
+                DIST_DIR="$RELEASE_DIR/${{ inputs.name }}"
+                ;;
+        esac
+        echo "RELEASE_DIR=$RELEASE_DIR" >> $GITHUB_ENV
+        echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+        echo "DIST_DIR=$DIST_DIR" >> $GITHUB_ENV
+
+    - name: Sync ${{ inputs.path }}
+      shell: bash
+      run: uv sync --directory ${{ inputs.path }}
+
+    - name: Build ${{ inputs.path }}
+      shell: bash
+      run: uv build --wheel --directory ${{ inputs.path }} --out-dir ${{ env.DIST_DIR }}/dist
+
+    - name: Copy Container Tests from ${{ inputs.path }}
+      shell: bash
+      run: |
+        CONTAINER_TEST_PATH="${{ inputs.path }}/tests/container_tests"
+        if [ -d "$CONTAINER_TEST_PATH" ]; then
+            if [ -d "$CONTAINER_TEST_PATH/__pycache__" ]; then
+                rm -rf $CONTAINER_TEST_PATH/__pycache__
+            fi
+            mv $CONTAINER_TEST_PATH ${{ env.DIST_DIR }}
+        fi
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ env.RELEASE_DIR }}
+        if-no-files-found: error
