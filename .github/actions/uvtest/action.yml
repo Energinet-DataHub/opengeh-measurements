@@ -11,6 +11,10 @@ inputs:
     description: The path to the tests
     required: false
     default: tests
+  pytest_addopts:
+    description: Additional arguments to pass to pytest
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
@@ -24,4 +28,4 @@ runs:
       run: uv sync --directory ${{ inputs.path }} --all-extras --dev
     - name: Test
       shell: bash
-      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }}
+      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}

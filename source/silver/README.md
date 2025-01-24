@@ -1,4 +1,4 @@
-# Silver
+# Silver Layer
 
 This python package handles streaming from the bronze layer, to the silver layer.
 

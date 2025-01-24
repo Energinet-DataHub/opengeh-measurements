@@ -3,9 +3,7 @@ name = "electrical_heating"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" },
-]
+authors = [{ name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" }]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -15,6 +13,7 @@ dependencies = [
     "opengeh-telemetry",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
+    "opengeh-pyspark",
     "tomli>=2.2.1",
 ]
 
@@ -32,9 +31,7 @@ dev = [
 ]
 
 [build-system]
-requires = [
-    "hatchling",
-]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
@@ -46,10 +43,7 @@ addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heat
 [tool.coverage.report]
 fail_under = 0
 show_missing = true
-exclude_lines = [
-    "pragma: no cover",
-    "raise NotImplementedError",
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [tool.ruff]
 line-length = 120
@@ -87,20 +81,12 @@ exclude = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "D",
-    "UP",
-]
+"tests/*" = ["D", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.uv.sources.opengeh-telemetry]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/telemetry"
-rev = "3.0.1"
-
-[tool.uv.sources.opengeh-testcommon]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/testcommon"
-rev = "3.0.1"
+[tool.uv.sources]
+opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
+opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.0" }

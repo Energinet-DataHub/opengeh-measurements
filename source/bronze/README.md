@@ -1,4 +1,4 @@
-# Bronze
+# Bronze Layer
 
 This python package handles streaming to the bronze layer.
 
