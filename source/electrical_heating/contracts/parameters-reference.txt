@@ -4,3 +4,5 @@
 
 # Required parameters
 --orchestration-instance-id={orchestration-instance-id}
+--period-start={period-start}
+--period-end={period-end}

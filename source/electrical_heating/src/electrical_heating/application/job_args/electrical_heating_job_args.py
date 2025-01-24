@@ -1,6 +1,7 @@
 import argparse
 import sys
 from argparse import Namespace
+from datetime import datetime
 
 import configargparse
 from telemetry_logging import Logger, logging_configuration
@@ -29,6 +30,9 @@ def parse_job_arguments(
             catalog_name=get_catalog_name(),
             orchestration_instance_id=job_args.orchestration_instance_id,
             time_zone=get_time_zone(),
+            # Trim the period start timestamp for new line return
+            period_start=job_args.period_start,
+            period_end=job_args.period_end,
         )
 
         return electrical_heating_args
@@ -42,6 +46,8 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
+    p.add_argument("--period-start", type=valid_date, required=True)
+    p.add_argument("--period-end", type=valid_date, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
@@ -49,3 +55,12 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
         raise Exception(f"Unknown args: {unknown_args_text}")
 
     return args
+
+
+def valid_date(s: str) -> datetime:
+    """See https://stackoverflow.com/questions/25470844/specify-date-format-for-python-argparse-input-arguments"""
+    try:
+        return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        msg = f"not a valid date: {s!r}"
+        raise configargparse.ArgumentTypeError(msg)
