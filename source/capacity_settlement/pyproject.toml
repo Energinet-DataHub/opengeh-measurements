@@ -1,11 +1,8 @@
 [project]
-name = "capacity_settlement"
+name = "opengeh_capacity_settlement"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" },
-]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -38,6 +35,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/capacity_settlement"]
 
 [tool.pytest.ini_options]
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=capacity_settlement -ra -vv"
