@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 from pyspark.sql import SparkSession
 
-from silver.application.stream import execute
+from silver.application.stream import execute_calculated_silver_stream
 
 
 @mock.patch("silver.application.stream.measurements_silver_repository")
@@ -21,7 +21,7 @@ def test__execute__should_be_success(
     mock_initialize_spark.return_value = mock_spark
 
     # Act
-    execute()
+    execute_calculated_silver_stream()
 
     # Assert
     mock_config.configure_logging.assert_called_once()
@@ -41,7 +41,7 @@ def test__execute__should_throw_exception(
 
     # Act
     with pytest.raises(SystemExit) as pytest_wrapped_e:
-        execute()
+        execute_calculated_silver_stream()
 
     # Assert
     assert pytest_wrapped_e.type is SystemExit
