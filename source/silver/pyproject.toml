@@ -34,7 +34,8 @@ allow-direct-references = true
 packages = ["src/silver"]
 
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=silver -ra -vv"
+# -s ensures that print("<text>") is written to output. 
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=silver -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0
