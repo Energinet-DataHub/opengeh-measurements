@@ -4,9 +4,13 @@ from typing import Callable, Generator
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType
 
 import gold.migrations.migrations_runner as migrations
+from gold.domain.schemas.gold_measurements import gold_measurements_schema
+from gold.domain.schemas.silver_measurements import silver_measurements_schema
 from gold.infrastructure.config.database_names import DatabaseNames
+from gold.infrastructure.config.table_names import TableNames
 
 
 def pytest_runtest_setup() -> None:
@@ -35,6 +39,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     ).getOrCreate()
 
     _create_schemas(session)
+    _create_tables(session)
 
     yield session
 
@@ -89,3 +94,45 @@ def tests_path(source_path: str) -> str:
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold_database}")
+
+
+def _create_tables(spark: SparkSession) -> None:
+    create_table_from_schema(
+        spark=spark,
+        database=DatabaseNames.gold_database,
+        table_name=TableNames.gold_measurements_table,
+        schema=gold_measurements_schema,
+        enable_change_data_feed=True,
+    )
+    create_table_from_schema(
+        spark=spark,
+        database=DatabaseNames.silver_database,
+        table_name=TableNames.silver_measurements_table,
+        schema=silver_measurements_schema,
+    )
+
+
+def create_table_from_schema(
+    spark: SparkSession,
+    database: str,
+    table_name: str,
+    schema: StructType,
+    enable_change_data_feed: bool = False,
+) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database}")
+
+    schema_df = spark.createDataFrame([], schema=schema)
+    ddl = schema_df._jdf.schema().toDDL()
+
+    sql_command = f"CREATE TABLE IF NOT EXISTS {database}.{table_name} ({ddl}) USING DELTA"
+
+    tbl_properties = []
+
+    if enable_change_data_feed:
+        tbl_properties.append("delta.enableChangeDataFeed = true")
+
+    if len(tbl_properties) > 0:
+        tbl_properties_string = ", ".join(tbl_properties)
+        sql_command += f" TBLPROPERTIES ({tbl_properties_string})"
+
+    spark.sql(sql_command)

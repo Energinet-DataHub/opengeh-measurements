@@ -2,7 +2,7 @@
 
 from gold.application.ports.gold_port import GoldPort
 from gold.application.ports.silver_port import SilverPort
-from gold.domain.streams.silver_to_gold.transformations import explode_silver_points
+from gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
 
 
 class StreamProcessorMeasurements:
@@ -15,8 +15,10 @@ class StreamProcessorMeasurements:
 
     def stream_measurements_silver_to_gold(self) -> None:
         df_silver_stream = self.silver_port.read_stream(self.silver_target_table, {"ignoreDeletes": "true"})
-        self.gold_port.start_write_stream(df_silver_stream, self.query_name, self.gold_target_table, self.pipeline_measurements_silver_to_gold)
+        self.gold_port.start_write_stream(
+            df_silver_stream, self.query_name, self.gold_target_table, self.pipeline_measurements_silver_to_gold
+        )
 
     def pipeline_measurements_silver_to_gold(self, df_silver: DataFrame, batch_id: int) -> None:
-        exploded_records = explode_silver_points(df_silver)
-        self.gold_port.append(exploded_records, self.gold_target_table)
+        df_gold = transform_silver_to_gold(df_silver)
+        self.gold_port.append(df_gold, self.gold_target_table)

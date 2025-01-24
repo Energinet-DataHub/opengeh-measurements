@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+﻿from datetime import datetime
 from decimal import Decimal
 
 from gold.domain.schemas.gold_measurements import gold_measurements_schema
@@ -11,10 +11,10 @@ class GoldMeasurementsDataFrameBuilder:
 
     def add_row(
         self,
-        metering_point_id="",
+        metering_point_id="502938475674839281",
         observation_time=None,
         quantity=Decimal("0.000"),
-        quality="",
+        quality="Good",
         metering_point_type="",
         transaction_id="",
         transaction_creation_datetime=None,
@@ -25,14 +25,14 @@ class GoldMeasurementsDataFrameBuilder:
         self.data.append(
             (
                 metering_point_id,
-                observation_time or datetime.now(timezone.utc),
+                observation_time or datetime.now(),
                 quantity,
                 quality,
                 metering_point_type,
                 transaction_id,
-                transaction_creation_datetime or datetime.now(timezone.utc),
-                created or datetime.now(timezone.utc),
-                modified or datetime.now(timezone.utc),
+                transaction_creation_datetime or datetime.now(),
+                created or datetime.now(),
+                modified or datetime.now(),
             )
         )
         return self
