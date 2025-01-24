@@ -21,7 +21,7 @@ class Repository:
             self._full_table_path = f"{self._database_name}.{self._measurements_table_name}"
 
     def write_measurements(self, df: DataFrame, write_mode: str = "append") -> None:
-        df.write.mode(write_mode).saveAsTable(self._full_table_path)
+        df.write.format("delta").mode(write_mode).saveAsTable(self._full_table_path)
 
     def read_measurements(self) -> DataFrame:
         return self._spark.read.table(self._full_table_path)

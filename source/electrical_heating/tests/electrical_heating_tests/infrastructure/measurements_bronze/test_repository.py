@@ -12,7 +12,7 @@ def test__write_measurements__can_be_read(
     excepted_count = measurements.count()
 
     # Act
-    repository.write_measurements(measurements)
+    repository.write_measurements(measurements, write_mode="overwrite")
 
     # Assert
     assert repository.read_measurements().count() == excepted_count
