@@ -1,6 +1,6 @@
 ﻿from pyspark.sql import DataFrame, SparkSession
 
-from electrical_heating.infrastructure.measurements_bronze.repository import Repository
+from opengeh_electrical_heating.infrastructure.measurements_bronze.repository import Repository
 
 
 def test__write_measurements__can_be_read(
