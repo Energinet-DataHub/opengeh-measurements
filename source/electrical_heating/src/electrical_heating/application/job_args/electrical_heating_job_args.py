@@ -1,5 +1,6 @@
 import argparse
 import sys
+import uuid
 from argparse import Namespace
 from datetime import datetime
 
@@ -28,13 +29,13 @@ def parse_job_arguments(
     with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
         electrical_heating_args = ElectricalHeatingArgs(
             catalog_name=get_catalog_name(),
-            orchestration_instance_id=job_args.orchestration_instance_id,
+            orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
             calculation_period_start=job_args.period_start,
             calculation_period_end=job_args.period_end,
         )
 
-        return electrical_heating_args
+    return electrical_heating_args
 
 
 def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:

@@ -68,5 +68,5 @@ def test_when_parameters__parses_parameters_from_contract(
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
     assert actual_args.time_zone == DEFAULT_TIME_ZONE
     assert actual_args.catalog_name == DEFAULT_CATALOG_NAME
-    assert actual_args.period_start == DEFAULT_PERIOD_START
-    assert actual_args.period_end == DEFAULT_PERIOD_END
+    assert actual_args.calculation_period_start == DEFAULT_PERIOD_START
+    assert actual_args.calculation_period_end == DEFAULT_PERIOD_END
