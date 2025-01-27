@@ -30,9 +30,8 @@ def parse_job_arguments(
             catalog_name=get_catalog_name(),
             orchestration_instance_id=job_args.orchestration_instance_id,
             time_zone=get_time_zone(),
-            # Trim the period start timestamp for new line return
-            period_start=job_args.period_start,
-            period_end=job_args.period_end,
+            calculation_period_start=job_args.period_start,
+            calculation_period_end=job_args.period_end,
         )
 
         return electrical_heating_args

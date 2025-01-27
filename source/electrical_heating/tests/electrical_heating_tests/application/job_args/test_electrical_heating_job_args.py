@@ -12,6 +12,8 @@ from electrical_heating.application.job_args.environment_variables import (
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
+DEFAULT_TIME_ZONE = "Europe/Copenhagen"
+DEFAULT_CATALOG_NAME = "some_catalog"
 DEFAULT_PERIOD_START = datetime(2024, 2, 1, 23)
 DEFAULT_PERIOD_END = datetime(2024, 3, 1, 23)
 
@@ -64,5 +66,7 @@ def test_when_parameters__parses_parameters_from_contract(
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
+    assert actual_args.time_zone == DEFAULT_TIME_ZONE
+    assert actual_args.catalog_name == DEFAULT_CATALOG_NAME
     assert actual_args.period_start == DEFAULT_PERIOD_START
     assert actual_args.period_end == DEFAULT_PERIOD_END
