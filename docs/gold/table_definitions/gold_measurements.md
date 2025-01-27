@@ -1,6 +1,6 @@
 # Measurements - Gold Table Definition
 
-This table contains measurements which is presented as one measurement value per metering point per row. The table depends on `opengeh_silver.measurements`.
+This table contains measurements which is presented as one measurement value per metering point per row. The table depends on `silver.measurements`.
 
 | Column name | Data type | Nullable | Description | Constraints |
 | - | - | - | - | - |
