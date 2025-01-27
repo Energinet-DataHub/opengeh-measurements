@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
@@ -51,9 +51,7 @@ def execute_with_deps(
         extras={"Subsystem": "measurements"},
     )
 
-    with config.get_tracer().start_as_current_span(
-        __name__, kind=SpanKind.SERVER
-    ) as span:
+    with config.get_tracer().start_as_current_span(__name__, kind=SpanKind.SERVER) as span:
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
@@ -85,7 +83,6 @@ def execute_with_deps(
 
 @use_span()
 def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-
     execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
@@ -96,13 +93,9 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
     # Read data frames
     time_series_points = measurements_gold_repository.read_time_series_points()
 
-    consumption_metering_point_periods = (
-        electricity_market_repository.read_consumption_metering_point_periods()
-    )
+    consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
 
-    child_metering_point_periods = (
-        electricity_market_repository.read_child_metering_points()
-    )
+    child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
     calculation_output = execute_calculation(
         spark,
@@ -124,7 +117,6 @@ def execute_calculation(
     args: ElectricalHeatingArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
-
     calculation_output = CalculationOutput()
 
     calculation_output.measurements = execute_core_logic(
@@ -150,7 +142,6 @@ def create_calculation(
     execution_start_datetime: datetime,
     execution_stop_datetime: datetime,
 ) -> DataFrame:
-
     # TODO Temp. calculation id - refac when calculation id is available
     calculation_id = str(uuid.uuid4())
 

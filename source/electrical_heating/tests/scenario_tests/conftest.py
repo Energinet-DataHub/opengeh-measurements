@@ -1,8 +1,8 @@
-﻿import uuid
-from datetime import datetime, timezone
+﻿from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
+import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
@@ -61,11 +61,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingArgs(
-        time_zone="Europe/Copenhagen",
-        catalog_name="some_catalog_name",
-        orchestration_instance_id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
-    )
+    args = _create_calculation_args(f"{scenario_path}/when/")
 
     # Execute the calculation
     calculation_output = execute_calculation(
@@ -100,4 +96,17 @@ def assert_dataframes_configuration(
         show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
+    )
+
+
+def _create_calculation_args(path: str) -> ElectricalHeatingArgs:
+    with open(path + "job_parameters.yml", "r") as file:
+        job_args = yaml.safe_load(file)[0]
+
+    return ElectricalHeatingArgs(
+        orchestration_instance_id=job_args["orchestration_instance_id"],
+        time_zone=job_args["time_zone"],
+        catalog_name=job_args["catalog_name"],
+        period_start=job_args["period_start"],
+        period_end=job_args["period_end"],
     )

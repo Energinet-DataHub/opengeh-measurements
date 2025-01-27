@@ -1,5 +1,4 @@
-﻿from datetime import datetime
-from pathlib import Path
+﻿from pathlib import Path
 
 import pytest
 import yaml
@@ -58,7 +57,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     args = create_calculation_args(f"{scenario_path}/when/")
 
-    # Execute the calculation logic
+    # Execute the logic
     actual_measurements = execute_core_logic(
         time_series_points,
         metering_point_periods,

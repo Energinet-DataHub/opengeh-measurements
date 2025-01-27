@@ -7,8 +7,8 @@ from uuid import UUID
 class ElectricalHeatingArgs:
     """Args for the electrical heating job."""
 
-    catalog_name: str
     orchestration_instance_id: UUID
+    catalog_name: str
     time_zone: str
     period_start: Timestamp
     period_end: Timestamp
