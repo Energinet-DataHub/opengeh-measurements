@@ -5,7 +5,7 @@ inputs:
   path:
     description: Path to the directory containing the proto files
     required: true
-    default: ./source/bronze/src/bronze/infrastructure/contracts
+    default: ./source/bronze/src/opengeh_bronze/infrastructure/contracts
 runs:
   using: composite
   steps:
