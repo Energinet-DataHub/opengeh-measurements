@@ -5,7 +5,6 @@ inputs:
   path:
     description: Path to the directory containing the proto files
     required: true
-    default: ./source/bronze/src/opengeh_bronze/infrastructure/contracts
   github_token:
     description: The GitHub token to use for authentication
     required: true
