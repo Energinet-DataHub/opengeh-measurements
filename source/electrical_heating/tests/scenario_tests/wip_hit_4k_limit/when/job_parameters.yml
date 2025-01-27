@@ -1,5 +1,0 @@
-- orchestration_instance_id: 00000000-0000-0000-0000-000000000001
-  time_zone: Europe/Copenhagen
-  catalog_name: some_catalog_name
-  calculation_period_start: 2024-01-31T23:00:00Z
-  calculation_period_end: 2024-02-29T23:00:00Z
