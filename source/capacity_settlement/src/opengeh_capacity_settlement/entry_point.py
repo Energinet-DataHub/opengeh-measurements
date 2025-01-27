@@ -2,7 +2,7 @@
 
 import os
 
-from capacity_settlement.application.execute_with_deps import execute_with_deps
+from opengeh_capacity_settlement.application.execute_with_deps import execute_with_deps
 
 
 def execute() -> None:
