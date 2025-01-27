@@ -15,7 +15,7 @@ consumption_metering_point_periods_v1 = t.StructType(
         t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
         #
         # 2 | 3 | 4 | 5 | 6 | 99 | NULL
-        t.StructField("net_settlement_group", t.IntegerType(), not nullable),
+        t.StructField("net_settlement_group", t.IntegerType(), nullable),
         #
         # Settlement month is 1st of January for all consumption with electrical heating except for
         # net settlement group 6, where the date is the scheduled meter reading date.
