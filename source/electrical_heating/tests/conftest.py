@@ -4,7 +4,7 @@ from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
@@ -18,7 +18,6 @@ from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
-    write_dataframe_to_table,
 )
 from tests.utils.measurements_utils import create_measurements_dataframe
 
@@ -44,6 +43,9 @@ def spark() -> Generator[SparkSession, None, None]:
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",
         )
+        # Enable Hive support for persistence across test sessions
+        .config("spark.sql.catalogImplementation", "hive")
+        .enableHiveSupport()
     )
     session = configure_spark_with_delta_pip(session).getOrCreate()
     yield session
@@ -81,7 +83,7 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def create_measurements_delta_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(
@@ -95,10 +97,4 @@ def create_measurements_delta_table(spark: SparkSession, test_files_folder_path:
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
-    measurements = create_measurements_dataframe(spark, measurements)
-
-    write_dataframe_to_table(
-        df=measurements,
-        database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
-        table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
-    )
+    return create_measurements_dataframe(spark, measurements)
