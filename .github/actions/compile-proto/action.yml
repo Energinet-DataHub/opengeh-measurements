@@ -6,11 +6,17 @@ inputs:
     description: Path to the directory containing the proto files
     required: true
     default: ./source/bronze/src/opengeh_bronze/infrastructure/contracts
+  github_token:
+    description: "The GitHub token to use for authentication"
+    required: true
+    default: ${{ github.token }}
 runs:
   using: composite
   steps:
     - name: Install Protoc
       uses: arduino/setup-protoc@v3
+      with:
+        repo-token: ${{ inputs.github_token }}
 
     - name: Compile descriptor files
       shell: bash
