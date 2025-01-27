@@ -1,4 +1,4 @@
-class SilverMeasurementsColumnNames:
+﻿class BronzeCalculatedMeasurementsColumnNames:
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"
@@ -11,6 +11,7 @@ class SilverMeasurementsColumnNames:
     start_datetime = "start_datetime"
     end_datetime = "end_datetime"
     points = "points"
+    rescued_data = "_rescued_data"
     created = "created"
 
     class Points:
