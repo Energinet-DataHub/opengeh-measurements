@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -19,9 +20,8 @@ def job_environment_variables() -> dict:
 
 
 def test_execute_with_deps(
-    spark: SparkSession,
-    job_environment_variables: dict,
-):
+    spark: SparkSession, job_environment_variables: dict, write_test_data_to_gold_table: Any
+) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
 

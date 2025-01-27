@@ -1,7 +1,7 @@
 ﻿from pyspark.sql import DataFrame, SparkSession
 
 from electrical_heating.infrastructure.measurements_gold.database_definitions import (
-    Database,
+    MeasurementsGoldDatabase,
 )
 
 
@@ -16,12 +16,12 @@ class Repository:
 
     def read_time_series_points(self) -> DataFrame:
         return self._read_view_or_table(
-            Database.TIME_SERIES_POINTS_NAME,
+            MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
         )
 
     def _read_view_or_table(
         self,
         table_name: str,
     ) -> DataFrame:
-        name = f"{self._catalog_name}.{Database.DATABASE_NAME}.{table_name}"
+        name = f"{self._catalog_name}.{MeasurementsGoldDatabase.DATABASE_NAME}.{table_name}"
         return self._spark.read.format("delta").table(name)
