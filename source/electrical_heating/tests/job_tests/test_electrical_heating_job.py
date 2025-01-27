@@ -1,11 +1,13 @@
+import uuid
 from unittest.mock import patch
 
 import pytest
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
 import electrical_heating.application.execute_with_deps as execute_with_deps
 from electrical_heating.application.job_args.environment_variables import EnvironmentVariable
-
-DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
+from electrical_heating.infrastructure.measurements_bronze.database_definitions import MeasurementsBronzeDatabase
 
 
 @pytest.fixture(scope="session")
@@ -17,10 +19,13 @@ def job_environment_variables() -> dict:
 
 
 def test_execute_with_deps(
+    spark: SparkSession,
     job_environment_variables: dict,
 ):
     # Arrange
-    sys_argv = ["dummy_script_name", "orchestration_instance_id", DEFAULT_ORCHESTRATION_INSTANCE_ID]
+    orchestration_instance_id = str(uuid.uuid4())
+
+    sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
     # Act
     with patch("sys.argv", sys_argv):
@@ -28,3 +33,7 @@ def test_execute_with_deps(
             execute_with_deps.execute_with_deps()
 
     # Assert
+    actual = spark.read.table(
+        f"{MeasurementsBronzeDatabase.DATABASE_NAME}.{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}"
+    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    assert actual.count() > 0
