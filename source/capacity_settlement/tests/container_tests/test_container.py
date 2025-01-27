@@ -1,5 +1,6 @@
 ﻿import os
 import time
+import uuid
 
 import pytest
 from databricks.sdk import WorkspaceClient
@@ -67,7 +68,7 @@ def test__databricks_job_starts_and_stops_successfully() -> None:
         job_id = databricksApiClient.get_job_id("CapacitySettlement")
 
         # Act
-        run_id = databricksApiClient.start_job(job_id, {"--calculation-month": "1", "--calculation-year": "2024"})
+        run_id = databricksApiClient.start_job(job_id, {"--orchestration-instance-id": str(uuid.uuid4()), "--calculation-month": "1", "--calculation-year": "2024"})
 
         # Assert
         result = databricksApiClient.wait_for_job_completion(run_id)
