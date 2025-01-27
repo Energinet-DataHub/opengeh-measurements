@@ -1,5 +1,4 @@
-﻿from datetime import datetime
-from pathlib import Path
+﻿from pathlib import Path
 
 import pytest
 import yaml
@@ -11,17 +10,17 @@ from testcommon.dataframes import (
 )
 from testcommon.etl import TestCase, TestCases
 
-from capacity_settlement.application.job_args.capacity_settlement_args import (
-    CapacitySettlementArgs,
-)
-from capacity_settlement.domain.calculation import (
-    execute_core_logic,
-)
 from contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
 )
 from contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
+)
+from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
+    CapacitySettlementArgs,
+)
+from opengeh_capacity_settlement.domain.calculation import (
+    execute_core_logic,
 )
 from tests.testsession_configuration import (
     TestSessionConfiguration,

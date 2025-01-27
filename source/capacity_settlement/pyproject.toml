@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-capacity_settlement = "capacity_settlement.entry_point:execute"
+capacity_settlement = "opengeh_capacity_settlement.entry_point:execute"
 
 [dependency-groups]
 dev = [
@@ -34,9 +34,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/capacity_settlement"]
 
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output.
