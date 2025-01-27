@@ -1,5 +1,5 @@
+import bronze.application.streams.submitted_transactions as submitted_transactions
 import bronze.migrations.migrations_runner as migrations_runner
-import bronze.application.submitted_transactions as submitted_transactions
 
 
 def migrate() -> None:

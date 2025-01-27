@@ -2,6 +2,25 @@ from pydantic_settings import BaseSettings
 
 
 class SubmittedTransactionsStreamSettings(BaseSettings):
+    """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
+
+    Used to define and validate settings for connecting to the submitted transactions Event Hub.
+
+    Attributes:
+    event_hub_namespace (str): The namespace of the Event Hub.
+    event_hub_instance (str): The specific instance of the Event Hub.
+    tenant_id (str): The tenant ID for the Azure Active Directory.
+    spn_app_id (str): The service principal application ID.
+    spn_app_secret (str): The service principal application secret.
+
+    Config:
+    case_sensitive (bool): Indicates whether the settings are case-sensitive. Defaults to False.
+
+    Methods:
+    create_kafka_options() -> dict:
+        Generates a dictionary of Kafka options required to connect to the Event Hub using OAuthBearer authentication.
+    """
+
     event_hub_namespace: str
     event_hub_instance: str
     tenant_id: str
