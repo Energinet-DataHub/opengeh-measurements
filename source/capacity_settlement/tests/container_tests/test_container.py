@@ -25,11 +25,11 @@ class DatabricksApiClient:
                     return job.job_id
         raise Exception(f"Job '{job_name}' not found.")
 
-    def start_job(self, job_id: int, job_parameters: dict[str, str]) -> int:
+    def start_job(self, job_id: int, python_params: list[str]) -> int:
         """
         Starts a Databricks job using the Databricks SDK and returns the run ID.
         """
-        response = self.client.jobs.run_now(job_id=job_id, notebook_params=job_parameters)
+        response = self.client.jobs.run_now(job_id=job_id, python_params=python_params)
         return response.run_id
 
     def wait_for_job_completion(self, run_id: int, timeout: int = 600, poll_interval: int = 10) -> RunResultState:
@@ -68,7 +68,10 @@ def test__databricks_job_starts_and_stops_successfully() -> None:
         job_id = databricksApiClient.get_job_id("CapacitySettlement")
 
         # Act
-        run_id = databricksApiClient.start_job(job_id, {"--orchestration-instance-id": str(uuid.uuid4()), "--calculation-month": "1", "--calculation-year": "2024"})
+        run_id = databricksApiClient.start_job(
+            job_id,
+            [f"--orchestration-instance-id={str(uuid.uuid4())}", "--calculation-month=1", "--calculation-year=2024"],
+        )
 
         # Assert
         result = databricksApiClient.wait_for_job_completion(run_id)
