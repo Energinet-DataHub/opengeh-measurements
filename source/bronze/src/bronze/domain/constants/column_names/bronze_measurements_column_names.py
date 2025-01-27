@@ -15,9 +15,6 @@
     created = "created"
 
     class Points:
-        """
-        Constants for the column names in the points column of the bronze measurements table.
-        """
         position = "position"
         quantity = "quantity"
         quality = "quality"
