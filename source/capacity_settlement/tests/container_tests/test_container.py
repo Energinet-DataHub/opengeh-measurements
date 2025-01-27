@@ -29,7 +29,7 @@ class DatabricksApiClient:
         """
         Starts a Databricks job using the Databricks SDK and returns the run ID.
         """
-        response = self.client.jobs.run_now(job_id=job_id, job_parameters=job_parameters)
+        response = self.client.jobs.run_now(job_id=job_id, notebook_params=job_parameters)
         return response.run_id
 
     def wait_for_job_completion(self, run_id: int, timeout: int = 600, poll_interval: int = 10) -> RunResultState:
