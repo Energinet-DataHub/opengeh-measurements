@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-capacity_settlement = "opengeh_capacity_settlement.entry_point:execute"
+execute = "opengeh_capacity_settlement.entry_point:execute"
 
 [dependency-groups]
 dev = [
