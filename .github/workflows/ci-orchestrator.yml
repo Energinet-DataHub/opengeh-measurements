@@ -18,7 +18,7 @@ permissions:
 
 env:
   PACKAGES_DIR: source
-  CORE_REGEX: bronze|silver|gold
+  CORE_REGEX: opengeh_bronze|opengeh_silver|opengeh_gold
   CORE_PREFIX: core
   NONCORE_PREFIX: bundle
 
