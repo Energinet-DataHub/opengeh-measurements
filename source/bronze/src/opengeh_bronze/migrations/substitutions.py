@@ -1,5 +1,5 @@
-﻿from bronze.domain.constants.database_names import DatabaseNames
-from bronze.domain.constants.table_names import TableNames
+﻿from opengeh_bronze.domain.constants.database_names import DatabaseNames
+from opengeh_bronze.domain.constants.table_names import TableNames
 
 
 def substitutions() -> dict[str, str]:
