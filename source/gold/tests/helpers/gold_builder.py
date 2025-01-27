@@ -21,7 +21,6 @@ class GoldMeasurementsDataFrameBuilder:
         created=None,
         modified=None,
     ):
-        """Add a row of data to the builder."""
         self.data.append(
             (
                 metering_point_id,
@@ -38,5 +37,4 @@ class GoldMeasurementsDataFrameBuilder:
         return self
 
     def build(self):
-        """Build the DataFrame from the collected data."""
         return self.spark.createDataFrame(self.data, schema=gold_measurements_schema)
