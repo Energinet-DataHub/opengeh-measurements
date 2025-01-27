@@ -9,12 +9,12 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-import electrical_heating.infrastructure.electricity_market as em
-import electrical_heating.infrastructure.measurements_gold as mg
-from electrical_heating.application.job_args.electrical_heating_args import (
+import opengeh_electrical_heating.infrastructure.electricity_market as em
+import opengeh_electrical_heating.infrastructure.measurements_gold as mg
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from src.electrical_heating.domain.constants import (
+from opengeh_electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,

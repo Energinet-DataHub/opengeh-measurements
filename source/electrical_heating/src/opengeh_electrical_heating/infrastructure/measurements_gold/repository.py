@@ -1,6 +1,6 @@
 ﻿from pyspark.sql import DataFrame, SparkSession
 
-from electrical_heating.infrastructure.measurements_gold.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements_gold.database_definitions import (
     Database,
 )
 

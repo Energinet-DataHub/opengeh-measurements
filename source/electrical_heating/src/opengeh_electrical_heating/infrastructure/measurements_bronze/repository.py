@@ -1,6 +1,6 @@
 ﻿from pyspark.sql import DataFrame
 
-from electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
 

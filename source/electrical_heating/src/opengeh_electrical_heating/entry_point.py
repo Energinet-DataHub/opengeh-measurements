@@ -1,6 +1,6 @@
 ﻿import os
 
-from electrical_heating.application.execute_with_deps import (
+from opengeh_electrical_heating.application.execute_with_deps import (
     execute_with_deps,
 )
 

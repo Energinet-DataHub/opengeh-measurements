@@ -12,26 +12,26 @@ from pyspark.sql import SparkSession, DataFrame
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-import electrical_heating.infrastructure.electrical_heating_internal as ehi
-import electrical_heating.infrastructure.electricity_market as em
-import electrical_heating.infrastructure.measurements_gold as mg
-from electrical_heating.application.job_args.electrical_heating_args import (
+import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
+import opengeh_electrical_heating.infrastructure.electricity_market as em
+import opengeh_electrical_heating.infrastructure.measurements_gold as mg
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.application.job_args.electrical_heating_job_args import (
+from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from electrical_heating.domain.calculation import (
+from opengeh_electrical_heating.domain.calculation import (
     execute_core_logic,
 )
-from electrical_heating.domain.calculation_results import (
+from opengeh_electrical_heating.domain.calculation_results import (
     CalculationOutput,
 )
-from electrical_heating.infrastructure.electrical_heating_internal.schemas import (
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schemas import (
     calculations as schemas,
 )
-from electrical_heating.infrastructure.spark_initializor import (
+from opengeh_electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
 

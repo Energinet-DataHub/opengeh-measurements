@@ -5,10 +5,10 @@ from argparse import Namespace
 import configargparse
 from telemetry_logging import Logger, logging_configuration
 
-from electrical_heating.application.job_args.electrical_heating_args import (
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.application.job_args.environment_variables import (
+from opengeh_electrical_heating.application.job_args.environment_variables import (
     get_catalog_name,
     get_time_zone,
 )
