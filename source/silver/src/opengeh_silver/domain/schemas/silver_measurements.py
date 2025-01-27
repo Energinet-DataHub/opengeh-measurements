@@ -8,7 +8,7 @@
     TimestampType,
 )
 
-from silver.domain.constants.columns.silver_measurements_column_names import (
+from opengeh_silver.domain.constants.columns.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
 
