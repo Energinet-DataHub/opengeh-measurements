@@ -176,3 +176,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Spark Metadata
+metastore_db/
+
+# Databricks logs
+_delta_log/
