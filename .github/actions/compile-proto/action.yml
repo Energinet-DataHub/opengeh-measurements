@@ -7,7 +7,7 @@ inputs:
     required: true
     default: ./source/bronze/src/opengeh_bronze/infrastructure/contracts
   github_token:
-    description: "The GitHub token to use for authentication"
+    description: The GitHub token to use for authentication
     required: true
     default: ${{ github.token }}
 runs:
