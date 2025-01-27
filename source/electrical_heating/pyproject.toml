@@ -1,9 +1,8 @@
 [project]
-name = "electrical_heating"
+name = "opengeh_electrical_heating"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [{ name = "Jens Peder Meldgaard", email = "jpm@halfspace.io" }]
 requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
@@ -18,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-electrical_heating = "electrical_heating.entry_point:execute"
+execute = "electrical_heating.entry_point:execute"
 
 [dependency-groups]
 dev = [
@@ -37,8 +36,12 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/electrical_heating"]
+
 [tool.pytest.ini_options]
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv"
+# -s ensures that print("<text>") is written to output. 
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=electrical_heating -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0
@@ -53,15 +56,7 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "D",
-    "D401",
-    "E",
-    "F",
-    "I",
-    "T201",
-    "UP",
-]
+select = ["D", "D401", "E", "F", "I", "T201", "UP"]
 ignore = [
     "D100",
     "D101",
@@ -76,9 +71,7 @@ ignore = [
     "UP007",
     "UP035",
 ]
-exclude = [
-    "notebooks/*",
-]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]
@@ -87,6 +80,6 @@ exclude = [
 convention = "google"
 
 [tool.uv.sources]
-opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.0.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.0.1" }
-opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.0" }
+opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.1.1" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.1.1" }
+opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.1" }
