@@ -6,7 +6,7 @@
     TimestampType,
 )
 
-from gold.domain.constants.column_names.gold_measurements_column_names import (
+from opengeh_gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
 

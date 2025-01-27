@@ -6,9 +6,9 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import gold.infrastructure.migration_scripts.substitutions as substitutions
-from gold.domain.constants.database_names import DatabaseNames
-from gold.domain.constants.table_names import TableNames
+import opengeh_gold.infrastructure.migration_scripts.substitutions as substitutions
+from opengeh_gold.domain.constants.database_names import DatabaseNames
+from opengeh_gold.domain.constants.table_names import TableNames
 
 
 def migrate() -> None:
@@ -23,7 +23,7 @@ def _configure_spark_sql_migrations() -> None:
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.gold_database,
         migration_table_name=TableNames.executed_migrations_table,
-        migration_scripts_folder_path="gold.infrastructure.migration_scripts",
+        migration_scripts_folder_path="opengeh_gold.infrastructure.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
     )
