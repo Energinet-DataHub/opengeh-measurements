@@ -6,7 +6,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 import bronze.migrations.migrations_runner as migrations_runner
-from bronze.domain.constants.database_names import DatabaseNames
+from bronze.infrastructure.config.database_names import DatabaseNames
 
 
 def pytest_runtest_setup() -> None:

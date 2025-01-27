@@ -6,5 +6,5 @@ def migrate() -> None:
     migrations_runner.migrate()
 
 
-def receipt_stream() -> None:
+def confirm_submitted_transactions() -> None:
     publish_receipt_stream.stream()
