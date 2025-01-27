@@ -1,5 +1,5 @@
-﻿import bronze.application.migrations as migrations
+﻿import bronze.migrations.migrations_runner as migrations_runner
 
 
 def migrate() -> None:
-    migrations.migrate()
+    migrations_runner.migrate()
