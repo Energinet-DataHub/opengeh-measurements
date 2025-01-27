@@ -2,7 +2,6 @@
 from pathlib import Path
 
 import pytest
-import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
@@ -10,9 +9,6 @@ from testcommon.etl import TestCase, TestCases
 
 from electrical_heating.application.execute_with_deps import (
     execute_calculation,
-)
-from electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
 )
 from electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
     child_metering_points_v1,
@@ -23,6 +19,7 @@ from electrical_heating.infrastructure.electricity_market.schemas.consumption_me
 from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
+from tests.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
 from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
@@ -61,7 +58,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = _create_calculation_args(f"{scenario_path}/when/")
+    args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
 
     # Execute the calculation
     calculation_output = execute_calculation(
@@ -96,17 +93,4 @@ def assert_dataframes_configuration(
         show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
-    )
-
-
-def _create_calculation_args(path: str) -> ElectricalHeatingArgs:
-    with open(path + "job_parameters.yml", "r") as file:
-        job_args = yaml.safe_load(file)[0]
-
-    return ElectricalHeatingArgs(
-        orchestration_instance_id=job_args["orchestration_instance_id"],
-        time_zone=job_args["time_zone"],
-        catalog_name=job_args["catalog_name"],
-        period_start=job_args["period_start"],
-        period_end=job_args["period_end"],
     )
