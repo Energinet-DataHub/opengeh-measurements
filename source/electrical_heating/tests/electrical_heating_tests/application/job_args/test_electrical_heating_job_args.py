@@ -1,4 +1,5 @@
-﻿from datetime import datetime
+﻿import uuid
+from datetime import datetime
 from unittest.mock import patch
 
 import pytest
@@ -11,8 +12,8 @@ from electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
 
-DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
-DEFAULT_TIME_ZONE = "Europe/Copenhagen"
+DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
+DEFAULT_TIME_ZONE = "some_time_zone"
 DEFAULT_CATALOG_NAME = "some_catalog"
 DEFAULT_PERIOD_START = datetime(2024, 2, 1, 23)
 DEFAULT_PERIOD_END = datetime(2024, 3, 1, 23)
@@ -21,7 +22,7 @@ DEFAULT_PERIOD_END = datetime(2024, 3, 1, 23)
 def _get_contract_parameters(filename: str) -> list[str]:
     with open(filename) as file:
         text = file.read()
-        text = text.replace("{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID)
+        text = text.replace("{orchestration-instance-id}", str(DEFAULT_ORCHESTRATION_INSTANCE_ID))
         text = text.replace("{period-start}", DEFAULT_PERIOD_START.strftime("%Y-%m-%dT%H:%M:%SZ"))
         text = text.replace("{period-end}", DEFAULT_PERIOD_END.strftime("%Y-%m-%dT%H:%M:%SZ"))
         lines = text.splitlines()
