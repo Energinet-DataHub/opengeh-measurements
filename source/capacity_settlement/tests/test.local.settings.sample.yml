@@ -2,8 +2,5 @@
 # Create a copy of this file and remove the .sample extension and update the values.
 # Read more about testing in python in Confluence.
 
-AZURE_KEYVAULT_URL: <The url of the key vault>
-AZURE_TENANT_ID: <The tenant id of the service principal>
-
-DATABRICKS_HOST: <TODO>
-DATABRICKS_TOKEN: <TODO>
+WORKSPACE_URL: <workspace-url>
+DATABRICKS_TOKEN: <databricks-token>
