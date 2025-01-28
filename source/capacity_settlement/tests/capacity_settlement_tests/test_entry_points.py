@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 
 from opengeh_capacity_settlement import entry_point as module
 

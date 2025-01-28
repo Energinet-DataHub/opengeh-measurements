@@ -1,4 +1,4 @@
-﻿import opengeh_bronze.migrations.migrations_runner as migrations_runner
+import opengeh_bronze.migrations.migrations_runner as migrations_runner
 
 
 def migrate() -> None:

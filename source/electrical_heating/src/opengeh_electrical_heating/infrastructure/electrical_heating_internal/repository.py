@@ -1,4 +1,4 @@
-﻿from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import SparkSession, DataFrame
 
 from opengeh_electrical_heating.infrastructure.electricity_market.database_definitions import (
     Database,

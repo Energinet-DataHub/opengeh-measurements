@@ -1,4 +1,4 @@
-﻿class BronzeMeasurementsColumnNames:
+class BronzeMeasurementsColumnNames:
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"
@@ -18,6 +18,7 @@
         """
         Constants for the column names in the points column of the bronze measurements table.
         """
+
         position = "position"
         quantity = "quantity"
         quality = "quality"
