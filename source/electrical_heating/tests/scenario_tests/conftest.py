@@ -11,7 +11,6 @@ from opengeh_electrical_heating.application.execute_with_deps import (
     execute_calculation,
 )
 from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
-from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
     child_metering_points_v1,
 )
 from opengeh_electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
