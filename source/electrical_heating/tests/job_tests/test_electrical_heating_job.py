@@ -26,7 +26,6 @@ def test_execute_with_deps(
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
-
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
     # Act
