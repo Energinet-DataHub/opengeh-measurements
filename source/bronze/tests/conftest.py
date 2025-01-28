@@ -5,8 +5,8 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import bronze.migrations.migrations_runner as migrations_runner
-from bronze.infrastructure.config.database_names import DatabaseNames
+import opengeh_bronze.migrations.migrations_runner as migrations_runner
+from opengeh_bronze.domain.constants.database_names import DatabaseNames
 
 
 def pytest_runtest_setup() -> None:

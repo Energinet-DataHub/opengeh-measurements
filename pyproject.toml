@@ -9,5 +9,6 @@ requires-python = ">=3.10"
 dev = [
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
+    "pydantic>=2.10.15",
 ]
 
