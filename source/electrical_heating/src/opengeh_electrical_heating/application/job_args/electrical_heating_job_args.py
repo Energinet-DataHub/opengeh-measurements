@@ -31,8 +31,6 @@ def parse_job_arguments(
             catalog_name=get_catalog_name(),
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
-            calculation_period_start=job_args.period_start,
-            calculation_period_end=job_args.period_end,
         )
 
     return electrical_heating_args
@@ -46,8 +44,6 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
-    p.add_argument("--period-start", type=valid_date, required=True)
-    p.add_argument("--period-end", type=valid_date, required=True)
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
