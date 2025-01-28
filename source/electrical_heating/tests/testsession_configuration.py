@@ -12,9 +12,7 @@ class TestSessionConfiguration:
     __test__ = False
 
     def __init__(self, configuration: dict):
-        self.scenario_tests = ScenarioTestsConfiguration(
-            configuration.get("scenario_tests", {})
-        )
+        self.scenario_tests = ScenarioTestsConfiguration(configuration.get("scenario_tests", {}))
 
     @staticmethod
     def load(path: Path) -> "TestSessionConfiguration":
@@ -32,15 +30,9 @@ class ScenarioTestsConfiguration:
     """Settings for scenario tests."""
 
     def __init__(self, configuration: dict):
-        self.show_actual_and_expected = configuration.get(
-            "show_actual_and_expected", False
-        )
+        self.show_actual_and_expected = configuration.get("show_actual_and_expected", False)
         self.show_columns_when_actual_and_expected_are_equal = configuration.get(
             "show_columns_when_actual_and_expected_are_equal", False
         )
-        self.show_actual_and_expected_count = configuration.get(
-            "show_actual_and_expected_count", False
-        )
-        self.ignore_extra_columns_in_actual = configuration.get(
-            "ignore_extra_columns_in_actual", True
-        )
+        self.show_actual_and_expected_count = configuration.get("show_actual_and_expected_count", False)
+        self.ignore_extra_columns_in_actual = configuration.get("ignore_extra_columns_in_actual", True)

@@ -41,9 +41,7 @@ def spark() -> Generator[SparkSession, None, None]:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    configure_logging(
-        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
-    )
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")

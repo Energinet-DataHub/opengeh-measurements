@@ -1,4 +1,4 @@
-﻿from measurements.contracts.decimal_value import DecimalValue
+from measurements.contracts.decimal_value import DecimalValue
 
 
 def test__from_decimal() -> None:

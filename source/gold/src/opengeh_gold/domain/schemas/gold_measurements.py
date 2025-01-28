@@ -1,4 +1,4 @@
-﻿from pyspark.sql.types import (
+from pyspark.sql.types import (
     DecimalType,
     StringType,
     StructField,

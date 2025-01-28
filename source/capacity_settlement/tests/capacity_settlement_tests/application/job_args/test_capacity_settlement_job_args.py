@@ -1,4 +1,4 @@
-﻿from unittest.mock import patch
+from unittest.mock import patch
 
 import pytest
 
@@ -18,22 +18,16 @@ DEFAULT_CALCULATION_YEAR = 2021
 def _get_contract_parameters(filename: str) -> list[str]:
     with open(filename) as file:
         text = file.read()
-        text = text.replace(
-            "{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID
-        )
+        text = text.replace("{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID)
         text = text.replace("{calculation-month}", str(DEFAULT_CALCULATION_MONTH))
         text = text.replace("{calculation-year}", str(DEFAULT_CALCULATION_YEAR))
         lines = text.splitlines()
-        return list(
-            filter(lambda line: not line.startswith("#") and len(line) > 0, lines)
-        )
+        return list(filter(lambda line: not line.startswith("#") and len(line) > 0, lines))
 
 
 @pytest.fixture(scope="session")
 def contract_parameters(contracts_path: str) -> list[str]:
-    job_parameters = _get_contract_parameters(
-        f"{contracts_path}/parameters-reference.txt"
-    )
+    job_parameters = _get_contract_parameters(f"{contracts_path}/parameters-reference.txt")
 
     return job_parameters
 
