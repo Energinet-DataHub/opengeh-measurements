@@ -70,7 +70,7 @@ def test__databricks_job_starts_and_stops_successfully() -> None:
         # Act
         run_id = databricksApiClient.start_job(
             job_id,
-            [f"--orchestration-instance-id={str(uuid.uuid4())}", "--calculation-month=1", "--calculation-year=2024"],
+            [f"--orchestration-instance-id={str(uuid.uuid4())}"],
         )
 
         # Assert
