@@ -10,10 +10,7 @@ from testcommon.etl import TestCase, TestCases
 from opengeh_electrical_heating.application.execute_with_deps import (
     execute_calculation,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
+from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
 from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
     child_metering_points_v1,
 )
