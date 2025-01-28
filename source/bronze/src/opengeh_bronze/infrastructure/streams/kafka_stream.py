@@ -19,4 +19,4 @@ class KafkaStream:
         )
 
     def write_stream(self, dataframe: DataFrame):
-        dataframe.writeStream.format("kafka").option(**self.kafka_options).start().awaitTermination()
+        dataframe.writeStream.format("kafka").option(**self.kafka_options).start()
