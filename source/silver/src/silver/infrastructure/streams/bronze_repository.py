@@ -1,12 +1,12 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from silver.infrastructure.bronze.database_names import DatabaseNames
-from silver.infrastructure.bronze.options import BRONZE_CALCULATED_OPTIONS
-from silver.infrastructure.bronze.table_names import TableNames
+from silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
+from silver.infrastructure.config.database_names import DatabaseNames
+from silver.infrastructure.config.table_names import TableNames
 from silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
-class Repository:
+class BronzeRepository:
     def __init__(
         self,
         spark: SparkSession,
@@ -16,5 +16,6 @@ class Repository:
 
     def read_calculated_measurements(self) -> DataFrame:
         options = BRONZE_CALCULATED_OPTIONS
+
         source_table_name = f"{self._catalog_name + '.' if self._catalog_name else ''}{DatabaseNames.bronze_database}.{TableNames.bronze_calculated_measurements_table}"
         return self._spark.readStream.format("delta").options(**options).table(source_table_name)

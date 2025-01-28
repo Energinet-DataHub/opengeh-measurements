@@ -1,11 +1,9 @@
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from silver.domain.schemas.silver_measurements import (
-    silver_measurements_schema,
-)
-from silver.infrastructure.silver.database_names import DatabaseNames
-from silver.infrastructure.silver.table_names import TableNames
+from silver.infrastructure.config.database_names import DatabaseNames
+from silver.infrastructure.config.table_names import TableNames
+from tests.schemas.silver_measurements_schema import silver_measurements_schema
 
 
 def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrate):
