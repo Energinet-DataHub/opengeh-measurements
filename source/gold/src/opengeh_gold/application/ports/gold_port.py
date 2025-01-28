@@ -18,7 +18,7 @@ class GoldPort(ABC):
         Args:
             df_source_stream (DataFrame): The source streaming DataFrame to be written.
             query_name (str): The name of the streaming query.
-            table_name (str): The name of the Gold Delta table to write to, used to create a checkpoint path.
+            table_name (str): The name of the Gold table to write to, used to create a checkpoint path.
             batch_operation (Callable[[DataFrame, int], None]): A callable that processes each micro-batch.
         """
 

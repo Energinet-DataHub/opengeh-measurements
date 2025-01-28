@@ -10,7 +10,7 @@ class SilverPort(ABC):
         """Create a streaming DataFrame from a Delta table in the Silver layer.
 
         Args:
-            table_name (str): The name of the Delta table to read from.
+            table_name (str): The name of the silver table to read from.
             read_options (Optional[dict], optional): Optional configurations for reading the stream.
 
         Returns:
