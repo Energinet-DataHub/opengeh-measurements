@@ -8,19 +8,19 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from electrical_heating.application.execute_with_deps import (
+from opengeh_electrical_heating.application.execute_with_deps import (
     execute_calculation,
 )
-from electrical_heating.application.job_args.electrical_heating_args import (
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
+from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
     child_metering_points_v1,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
+from opengeh_electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
     consumption_metering_point_periods_v1,
 )
-from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
 from tests.testsession_configuration import (
