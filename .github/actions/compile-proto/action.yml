@@ -1,16 +1,26 @@
 name: Compile Measurements Proto Contracts
 description: Compile protobuf contracts for measurements subsystem
 
+inputs:
+  path:
+    description: Path to the directory containing the proto files
+    required: true
+  github_token:
+    description: The GitHub token to use for authentication
+    required: true
+    default: ${{ github.token }}
 runs:
   using: composite
   steps:
     - name: Install Protoc
       uses: arduino/setup-protoc@v3
+      with:
+        repo-token: ${{ inputs.github_token }}
 
     - name: Compile descriptor files
       shell: bash
       run: |
-        pushd './source/bronze/src/bronze/infrastructure/contracts'
+        pushd '${{ inputs.path }}'
         mkdir ./assets
         protoc --include_imports --descriptor_set_out=assets/persist_submitted_transaction.binpb PersistSubmittedTransaction.proto
         protoc --include_imports --descriptor_set_out=assets/submitted_transaction_persisted.binpb SubmittedTransactionPersisted.proto

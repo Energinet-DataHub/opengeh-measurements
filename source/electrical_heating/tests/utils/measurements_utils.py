@@ -3,7 +3,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import ArrayType
 from testcommon.dataframes import assert_schema
 
-from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
     measurements_bronze_v1,
     point,
 )
