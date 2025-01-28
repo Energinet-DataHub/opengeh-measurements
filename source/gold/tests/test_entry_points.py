@@ -8,7 +8,7 @@ from src.opengeh_gold.entry_points import migrate_gold, stream_silver_to_gold_me
 @patch("src.opengeh_gold.entry_points.DeltaSilverAdapter")
 @patch("src.opengeh_gold.entry_points.DeltaGoldAdapter")
 @patch("src.opengeh_gold.entry_points.StreamProcessorMeasurements")
-def test_stream_silver_to_gold_measurements_calls_processor(
+def test__stream_silver_to_gold_measurements__calls_processor(
     mock_stream_processor, mock_gold_adapter, mock_silver_adapter, mock_initialize_spark
 ):
     # Arrange
@@ -38,7 +38,7 @@ def test_stream_silver_to_gold_measurements_calls_processor(
 
 
 @patch("src.opengeh_gold.entry_points.migrations_runner.migrate")
-def test_migrate_gold_calls_migrate(mock_migrate):
+def test__migrate_gold__calls_migrate(mock_migrate):
     # Act
     migrate_gold()
 
