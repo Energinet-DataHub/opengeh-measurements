@@ -1,4 +1,4 @@
-﻿from pyspark.sql.types import (
+from pyspark.sql.types import (
     ArrayType,
     DecimalType,
     IntegerType,
@@ -25,7 +25,6 @@ bronze_measurements_schema = StructType(
         StructField(BronzeMeasurementsColumnNames.resolution, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.start_datetime, TimestampType(), True),
         StructField(BronzeMeasurementsColumnNames.end_datetime, TimestampType(), True),
-
         StructField(
             BronzeMeasurementsColumnNames.points,
             ArrayType(
@@ -40,7 +39,6 @@ bronze_measurements_schema = StructType(
             ),
             True,
         ),
-
         StructField(BronzeMeasurementsColumnNames.rescued_data, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.created, TimestampType(), True),
     ]

@@ -1,4 +1,4 @@
-﻿class GoldMeasurementsColumnNames:
+class GoldMeasurementsColumnNames:
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"

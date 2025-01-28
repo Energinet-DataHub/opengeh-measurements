@@ -1,4 +1,4 @@
-﻿import os
+import os
 from typing import Callable, Generator
 
 import pytest

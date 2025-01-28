@@ -1,4 +1,4 @@
-﻿import tomli
+import tomli
 
 from tests import PROJECT_ROOT
 

@@ -1,4 +1,4 @@
-﻿# ProtoBuf doesn't support decimal.
+# ProtoBuf doesn't support decimal.
 # This implementation is inspired by https://docs.microsoft.com/en-us/aspnet/core/grpc/protobuf?view=aspnetcore-5.0#decimals.
 #
 # units: Whole units part of the amount
