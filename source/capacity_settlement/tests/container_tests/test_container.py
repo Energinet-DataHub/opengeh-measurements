@@ -43,13 +43,20 @@ class DatabricksApiClient:
             if run_status.state is None:
                 raise Exception("Job run status state is None")
 
-            lifecycle_state = run_status.state.life_cycle_state
-            result_state = run_status.state.result_state
+            if run_status.state.life_cycle_state is None:
+                raise Exception("Job run lifecycle state is None")
+            lifecycle_state = run_status.state.life_cycle_state.value
+            print(f"Job lifecycle state: {lifecycle_state}")
+            
+            result_state = None
+            if run_status.state.result_state is not None:
+                result_state = run_status.state.result_state.value  
+            print(f"Job result state: {result_state}")
 
             if lifecycle_state == "TERMINATED":
                 if result_state is None:
                     raise Exception("Job terminated but result state is None")
-                return result_state
+                return RunResultState(result_state)
             elif lifecycle_state == "INTERNAL_ERROR":
                 raise Exception(f"Job failed with an internal error: {run_status.state.state_message}")
 
@@ -75,6 +82,6 @@ def test__databricks_job_starts_and_stops_successfully() -> None:
 
         # Assert
         result = databricksApiClient.wait_for_job_completion(run_id)
-        assert result == "SUCCESS", f"Job did not complete successfully: {result}"
+        assert result.value == "SUCCESS", f"Job did not complete successfully: {result.value}"
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
