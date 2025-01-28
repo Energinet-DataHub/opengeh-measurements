@@ -25,20 +25,26 @@ env:
 
 jobs:
   #
-  # Build Package Matrix
+  # Build Release Matrix
   #
-  ci_matrix:
-    name: Build Package Matrix
+  cd_matrix:
+    name: Build Release Matrix
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.package_matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Discover Pyproject
-        uses: ./.github/actions/discover-pyproject
+      - name: Find associated pull request
+        uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
+        id: find_pull_request
+      - name: Set Matrix
         id: package_matrix
-        with:
-          path: ${{ env.PACKAGES_DIR }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MATRIX=$(gh release list --json isPrerelease,name -q '[.[] | select(.name | endswith("_${{ steps.find_pull_request.outputs.pull_request_number }}"))]')
+          echo "Found matrix: $MATRIX"
+          echo "matrix=$MATRIX" >>$GITHUB_OUTPUT
   #
   # Deploy
   #
@@ -47,37 +53,20 @@ jobs:
     runs-on: ubuntu-24.04
     needs: ci_matrix
     strategy:
-      matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
+      matrix:
+        inputs: ${{ fromJson(needs.cd_matrix.outputs.matrix) }}
     permissions:
       contents: write
       checks: write
       pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Print Inputs
-        run: |
-          echo "Path: ${{ matrix.inputs.path }}"
-          echo "Name: ${{ matrix.inputs.name }}"
-
-      - name: Check if ${{ matrix.inputs.name }} has changed
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            is_changed:
-              - ${{ matrix.inputs.path }}/**
-
       - name: Promote prerelease
         uses: ./.github/actions/promote-prerelease
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
-          release_name_prefix: ${{ matrix.inputs.name }}
+          release_name: ${{ matrix.inputs.name }}
 
       - name: Dispatch Release
         uses: ./.github/actions/dispatch-deployment-event
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           repository: ${{ vars.environment_repository_path }}
@@ -86,7 +75,7 @@ jobs:
 
       - name: Notify Team of failed deployment
         uses: Energinet-DataHub/.github/.github/actions/send-email@v14
-        if: ${{ steps.changes.outputs.is_changed == 'true' && failure() }}
+        if: ${{ failure() }}
         with:
           sendgrid-api-key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
           team-name: Measurements
