@@ -1,5 +1,5 @@
 metering_point_id;quantity;observation_time;metering_point_type;#comment
-170000000000000201;1000;2025-04-01T03:00:00Z;consumption;The average of the 10 largest values for the selection period shall give the result for capacity settlement.
+170000000000000201;1000;2025-05-01T03:00:00Z;consumption;The average of the 10 largest values for the selection period shall give the result for capacity settlement.
 170000000000000201;10;2025-05-02T03:00:00Z;consumption;Selection period is from row 13 to row 23 relocation 15th of march expected rows that include in capacity settlement are rows 13 to 22.
 170000000000000201;10;2025-05-03T03:00:00Z;consumption;
 170000000000000201;10;2025-05-04T03:00:00Z;consumption;
