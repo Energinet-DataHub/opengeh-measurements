@@ -10,7 +10,7 @@ from tests.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 
 
 @mock.patch("os.getenv")
-@mock.patch("gold.infrastructure.shared_helpers.get_storage_base_path")
+@mock.patch("opengeh_gold.infrastructure.shared_helpers.get_storage_base_path")
 def test__start_write_stream__should_write_to_gold_table(
     mock_get_checkpoint_path, mock_getenv, spark: SparkSession, migrations_executed
 ):
