@@ -10,10 +10,10 @@ from testcommon.dataframes import (
 )
 from testcommon.etl import TestCase, TestCases
 
-from capacity_settlement.application.job_args.capacity_settlement_args import (
+from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from capacity_settlement.domain.calculation import (
+from opengeh_capacity_settlement.domain.calculation import (
     execute_core_logic,
 )
 from contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (

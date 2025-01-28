@@ -2,11 +2,11 @@
 
 import pytest
 
-from capacity_settlement.application.job_args.capacity_settlement_job_args import (
+from opengeh_capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from capacity_settlement.application.job_args.environment_variables import (
+from opengeh_capacity_settlement.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
 
