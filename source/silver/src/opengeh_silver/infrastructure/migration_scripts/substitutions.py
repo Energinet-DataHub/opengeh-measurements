@@ -1,4 +1,4 @@
-﻿from opengeh_silver.domain.constants.database_names import DatabaseNames
+from opengeh_silver.domain.constants.database_names import DatabaseNames
 from opengeh_silver.domain.constants.table_names import TableNames
 
 
