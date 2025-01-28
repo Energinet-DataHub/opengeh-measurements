@@ -10,7 +10,7 @@ from opengeh_gold.infrastructure.shared_helpers import (
     get_env_variable_or_throw,
     get_full_table_name,
 )
-from source.gold.src.opengeh_gold.infrastructure.config.storage_container_names import StorageContainerNames
+from opengeh_gold.infrastructure.config.storage_container_names import StorageContainerNames
 
 
 class DeltaGoldAdapter(GoldPort):
