@@ -33,6 +33,7 @@ def test__start_write_stream__should_write_to_gold_table(
         lambda df, epoch_id: df.write.format("delta")
         .mode("append")
         .saveAsTable(f"{DatabaseNames.gold_database}.{target_table}"),
+        True,
     )
 
     # Assert

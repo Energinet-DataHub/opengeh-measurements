@@ -12,6 +12,7 @@ class GoldPort(ABC):
         query_name: str,
         table_name: str,
         batch_operation: Callable[["DataFrame", int], None],
+        terminate_on_empty: bool = False,
     ) -> None:
         """Start a streaming write operation to a Gold Delta table with the specified configurations.
 
@@ -20,6 +21,8 @@ class GoldPort(ABC):
             query_name (str): The name of the streaming query.
             table_name (str): The name of the Gold table to write to, used to create a checkpoint path.
             batch_operation (Callable[[DataFrame, int], None]): A callable that processes each micro-batch.
+            terminate_on_empty (bool, optional): Whether the stream should stop when no more data is currently available.
+                Defaults to False.
         """
 
     @abstractmethod
