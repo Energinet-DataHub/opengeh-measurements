@@ -10,6 +10,7 @@ from opengeh_gold.infrastructure.shared_helpers import (
     get_env_variable_or_throw,
     get_full_table_name,
 )
+from source.gold.src.opengeh_gold.infrastructure.config.storage_container_names import StorageContainerNames
 
 
 class DeltaGoldAdapter(GoldPort):
@@ -21,7 +22,7 @@ class DeltaGoldAdapter(GoldPort):
         batch_operation: Callable[["DataFrame", int], None],
     ) -> None:
         datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
-        checkpoint_location = get_checkpoint_path(datalake_storage_account, DatabaseNames.gold_database, table_name)
+        checkpoint_location = get_checkpoint_path(datalake_storage_account, StorageContainerNames.gold_container, table_name)
         (
             df_source_stream.writeStream.format("delta")
             .queryName(query_name)
