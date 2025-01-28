@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from bronze.infrastructure.config.database_names import DatabaseNames
-from bronze.infrastructure.config.table_names import TableNames
+from opengeh_bronze.domain.constants.database_names import DatabaseNames
+from opengeh_bronze.domain.constants.table_names import TableNames
 
 
 class BronzeRepository:

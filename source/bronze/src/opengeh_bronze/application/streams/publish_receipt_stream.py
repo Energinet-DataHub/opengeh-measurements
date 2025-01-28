@@ -1,9 +1,8 @@
 from pyspark.sql import DataFrame
 
-import bronze.application.config.spark_sesion as spark_session
-import bronze.infrastructure.streams.writer as writer
-from bronze.infrastructure.config.table_names import TableNames
-from bronze.infrastructure.streams.bronze_repository import BronzeRepository
+import opengeh_bronze.application.config.spark_session as spark_session
+import opengeh_bronze.infrastructure.streams.writer as writer
+from opengeh_bronze.infrastructure.streams.bronze_repository import BronzeRepository
 
 
 def stream() -> None:
