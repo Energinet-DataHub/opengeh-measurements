@@ -6,7 +6,7 @@ from opengeh_bronze.domain.constants.table_names import TableNames
 from opengeh_bronze.domain.schemas.bronze_measurements import (
     bronze_measurements_schema,
 )
-from bronze.domain.schemas.submitted_transactions import (
+from opengeh_bronze.domain.schemas.submitted_transactions import (
     submitted_transactions_schema,
 )
 

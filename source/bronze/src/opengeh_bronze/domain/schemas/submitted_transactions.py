@@ -8,7 +8,7 @@
     TimestampType,
 )
 
-from bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
+from opengeh_bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
 )
 

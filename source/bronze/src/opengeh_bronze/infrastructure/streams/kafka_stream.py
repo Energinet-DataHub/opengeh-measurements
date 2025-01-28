@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 
-from bronze.domain.constants.database_names import DatabaseNames
-from bronze.domain.constants.table_names import TableNames
+from opengeh_bronze.domain.constants.database_names import DatabaseNames
+from opengeh_bronze.domain.constants.table_names import TableNames
 
 
 def submit_transactions(spark: SparkSession, kafka_options: dict) -> None:
