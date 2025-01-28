@@ -11,4 +11,3 @@ See the [gold measurements](src/gold/domain/schemas/gold_measurements.py) schema
 The transformation from the Silver layer to the Gold layer consists of the following steps:
 
 - **Exploding silver `points` column**: Each point in the `points` array is expanded into its own row, flattening the data.
-
