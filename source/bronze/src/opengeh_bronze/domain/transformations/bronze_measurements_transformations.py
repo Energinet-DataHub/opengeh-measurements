@@ -1,7 +1,9 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf
 
-descriptor_file = "src/opengeh_bronze/infrastructure/contracts/PersistSubmittedTransaction.proto"
+descriptor_file = (
+    "/source/bronze/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
+)
 message_name = "Measurement"
 
 

@@ -4,6 +4,9 @@ from pyspark.sql.protobuf.functions import to_protobuf
 
 message_name = "Measurement"
 descriptor_file = "SubmittedTransactionPersisted"
+descriptor_file = (
+    "/source/bronze/src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
+)
 
 
 def transform(unpacked_bronze_measurements: DataFrame) -> DataFrame:
