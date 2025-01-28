@@ -32,7 +32,7 @@ class DatabricksApiClient:
         response = self.client.jobs.run_now(job_id=job_id, python_params=python_params)
         return response.run_id
 
-    def wait_for_job_completion(self, run_id: int, timeout: int = 600, poll_interval: int = 10) -> RunResultState:
+    def wait_for_job_completion(self, run_id: int, timeout: int = 1000, poll_interval: int = 10) -> RunResultState:
         """
         Waits for a Databricks job to complete.
         """
