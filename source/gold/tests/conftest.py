@@ -7,7 +7,6 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
 import gold.migrations.migrations_runner as migrations
-from gold.domain.schemas.gold_measurements import gold_measurements_schema
 from gold.domain.schemas.silver_measurements import silver_measurements_schema
 from gold.infrastructure.config.database_names import DatabaseNames
 from gold.infrastructure.config.table_names import TableNames
@@ -39,7 +38,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     ).getOrCreate()
 
     _create_schemas(session)
-    _create_tables(session)
 
     yield session
 
@@ -94,16 +92,11 @@ def tests_path(source_path: str) -> str:
 
 def _create_schemas(spark: SparkSession) -> None:
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
 
 
-def _create_tables(spark: SparkSession) -> None:
-    create_table_from_schema(
-        spark=spark,
-        database=DatabaseNames.gold_database,
-        table_name=TableNames.gold_measurements_table,
-        schema=gold_measurements_schema,
-        enable_change_data_feed=True,
-    )
+@pytest.fixture(scope="session")
+def create_silver_tables(spark: SparkSession) -> None:
     create_table_from_schema(
         spark=spark,
         database=DatabaseNames.silver_database,
