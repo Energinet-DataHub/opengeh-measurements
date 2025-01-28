@@ -1,4 +1,4 @@
-﻿"""Entry point for the capacity-settlement application."""
+"""Entry point for the capacity-settlement application."""
 
 import os
 
@@ -6,9 +6,7 @@ from opengeh_capacity_settlement.application.execute_with_deps import execute_wi
 
 
 def execute() -> None:
-    applicationinsights_connection_string = os.getenv(
-        "APPLICATIONINSIGHTS_CONNECTION_STRING"
-    )
+    applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
     execute_with_deps(
         applicationinsights_connection_string=applicationinsights_connection_string,

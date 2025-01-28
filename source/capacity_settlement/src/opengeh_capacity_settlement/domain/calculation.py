@@ -48,13 +48,9 @@ def execute_core_logic(
         time_series_points, metering_point_periods
     )
 
-    times_series_points = _explode_to_daily(
-        times_series_points, calculation_month, calculation_year, time_zone
-    )
+    times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
-    return times_series_points.select(
-        ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity
-    )
+    return times_series_points.select(ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity)
 
 
 def _add_selection_period_columns(
@@ -70,9 +66,7 @@ def _add_selection_period_columns(
     TODO: JMG: Should also support shorter metering point periods
     """
 
-    calculation_start_date = datetime(
-        calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
-    )
+    calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)
 
     selection_period_start = calculation_end_date - relativedelta(years=1)
@@ -101,17 +95,13 @@ def _average_ten_largest_quantities_in_selection_periods(
         ColumNames.selection_period_end,
     ]
 
-    window_spec = Window.partitionBy(grouping).orderBy(
-        F.col(ColumNames.quantity).desc()
+    window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
+
+    time_series_points = time_series_points.withColumn("row_number", F.row_number().over(window_spec)).filter(
+        F.col("row_number") <= 10
     )
 
-    time_series_points = time_series_points.withColumn(
-        "row_number", F.row_number().over(window_spec)
-    ).filter(F.col("row_number") <= 10)
-
-    measurements = time_series_points.groupBy(grouping).agg(
-        F.avg(ColumNames.quantity).alias(ColumNames.quantity)
-    )
+    measurements = time_series_points.groupBy(grouping).agg(F.avg(ColumNames.quantity).alias(ColumNames.quantity))
     return measurements
 
 
@@ -121,13 +111,8 @@ def _explode_to_daily(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-
-    calculation_start_date = datetime(
-        calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone)
-    )
-    calculation_end_date = (
-        calculation_start_date + relativedelta(months=1) - relativedelta(days=1)
-    )
+    calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
+    calculation_end_date = calculation_start_date + relativedelta(months=1) - relativedelta(days=1)
 
     df = df.withColumn(
         "date_local",
