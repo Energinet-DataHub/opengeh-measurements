@@ -19,4 +19,8 @@ class KafkaStream:
         )
 
     def write_stream(self, dataframe: DataFrame):
-        dataframe.writeStream.format("kafka").option(**self.kafka_options).start()
+        checkpointLocation = "REPLACE"
+
+        dataframe.writeStream.format("kafka").option(**self.kafka_options).option(
+            "checkpointLocation", checkpointLocation
+        ).trigger(availableNow=True).start()
