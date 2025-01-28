@@ -14,10 +14,10 @@ from opengeh_electrical_heating.infrastructure.measurements_bronze.database_defi
 from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
     measurements_bronze_v1,
 )
-from electrical_heating.infrastructure.measurements_gold.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
