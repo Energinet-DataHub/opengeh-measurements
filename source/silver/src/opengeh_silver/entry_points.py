@@ -1,4 +1,4 @@
-﻿import opengeh_silver.application.services.migrations as migrations
+import opengeh_silver.application.services.migrations as migrations
 
 
 def migrate() -> None:
