@@ -2,7 +2,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from gold.domain.schemas.silver_measurements import silver_measurements_schema
+from opengeh_gold.domain.schemas.silver_measurements import silver_measurements_schema
 
 
 class SilverMeasurementsDataFrameBuilder:

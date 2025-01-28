@@ -1,4 +1,4 @@
-﻿import os
+import os
 from typing import Callable, Generator
 
 import pytest
@@ -6,10 +6,10 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
-import gold.migrations.migrations_runner as migrations
-from gold.domain.schemas.silver_measurements import silver_measurements_schema
-from gold.infrastructure.config.database_names import DatabaseNames
-from gold.infrastructure.config.table_names import TableNames
+import opengeh_gold.migrations.migrations_runner as migrations
+from opengeh_gold.domain.schemas.silver_measurements import silver_measurements_schema
+from opengeh_gold.infrastructure.config.database_names import DatabaseNames
+from opengeh_gold.infrastructure.config.table_names import TableNames
 
 
 def pytest_runtest_setup() -> None:

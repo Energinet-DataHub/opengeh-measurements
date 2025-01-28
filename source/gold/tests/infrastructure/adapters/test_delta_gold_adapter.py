@@ -3,9 +3,9 @@ from unittest import mock
 
 from pyspark.sql import SparkSession
 
-from gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
-from gold.infrastructure.config.database_names import DatabaseNames
-from gold.infrastructure.config.table_names import TableNames
+from opengeh_gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
+from opengeh_gold.infrastructure.config.database_names import DatabaseNames
+from opengeh_gold.infrastructure.config.table_names import TableNames
 from tests.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 
 

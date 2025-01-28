@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-migrate = "silver.entry_points:migrate"
+migrate = "opengeh_silver.entry_points:migrate"
 
 [dependency-groups]
 dev = [
@@ -30,12 +30,9 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/silver"]
-
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output. 
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=silver -ra -vv -s"
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_silver -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0

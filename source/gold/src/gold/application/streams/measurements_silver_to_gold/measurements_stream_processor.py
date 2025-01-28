@@ -1,8 +1,8 @@
 ﻿from pyspark.sql.dataframe import DataFrame
 
-from gold.application.ports.gold_port import GoldPort
-from gold.application.ports.silver_port import SilverPort
-from gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
+from opengeh_gold.application.ports.gold_port import GoldPort
+from opengeh_gold.application.ports.silver_port import SilverPort
+from opengeh_gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
 
 
 class StreamProcessorMeasurements:

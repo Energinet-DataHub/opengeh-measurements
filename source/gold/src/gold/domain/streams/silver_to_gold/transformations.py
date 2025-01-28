@@ -1,10 +1,10 @@
 ﻿import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
-from gold.domain.constants.column_names.gold_measurements_column_names import (
+from opengeh_gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
-from gold.domain.constants.column_names.silver_measurements_column_names import (
+from opengeh_gold.domain.constants.column_names.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
 

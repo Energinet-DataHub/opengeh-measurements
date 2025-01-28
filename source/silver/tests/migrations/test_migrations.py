@@ -1,9 +1,9 @@
-﻿import testcommon.dataframes.assert_schemas as assert_schemas
+import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from silver.domain.constants.database_names import DatabaseNames
-from silver.domain.constants.table_names import TableNames
-from silver.domain.schemas.silver_measurements import (
+from opengeh_silver.domain.constants.database_names import DatabaseNames
+from opengeh_silver.domain.constants.table_names import TableNames
+from opengeh_silver.domain.schemas.silver_measurements import (
     silver_measurements_schema,
 )
 

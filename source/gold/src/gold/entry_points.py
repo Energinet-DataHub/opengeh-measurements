@@ -1,11 +1,11 @@
-﻿import gold.migrations.migrations_runner as migrations_runner
-from gold.application.config.spark import initialize_spark
-from gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
+﻿import opengeh_gold.migrations.migrations_runner as migrations_runner
+from opengeh_gold.application.config.spark import initialize_spark
+from opengeh_gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
     StreamProcessorMeasurements,
 )
-from gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
-from gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
-from gold.infrastructure.config.table_names import TableNames
+from opengeh_gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
+from opengeh_gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
+from opengeh_gold.infrastructure.config.table_names import TableNames
 
 
 def migrate_gold() -> None:

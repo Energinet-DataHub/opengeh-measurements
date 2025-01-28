@@ -10,8 +10,8 @@ dependencies = [
 ]
 
 [project.scripts]
-migrate = "gold.entry_points:migrate_gold"
-stream = "gold.entry_points:stream_silver_to_gold_measurements"
+migrate = "opengeh_gold.entry_points:migrate_gold"
+stream = "opengeh_gold.entry_points:stream_silver_to_gold_measurements"
 
 [dependency-groups]
 dev = [
@@ -32,12 +32,9 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/gold"]
-
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output. 
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=gold -ra -vv -s"
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_gold -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0

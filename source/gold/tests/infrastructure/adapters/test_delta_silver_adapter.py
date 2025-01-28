@@ -2,9 +2,9 @@ import random
 
 from pyspark.sql import DataFrame, SparkSession
 
-from gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
-from gold.infrastructure.config.database_names import DatabaseNames
-from gold.infrastructure.config.table_names import TableNames
+from opengeh_gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
+from opengeh_gold.infrastructure.config.database_names import DatabaseNames
+from opengeh_gold.infrastructure.config.table_names import TableNames
 from tests.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 
 

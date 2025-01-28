@@ -1,8 +1,8 @@
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from gold.domain.schemas.gold_measurements import gold_measurements_schema
-from gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
+from opengeh_gold.domain.schemas.gold_measurements import gold_measurements_schema
+from opengeh_gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
 from tests.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 
 
