@@ -1,4 +1,4 @@
-﻿from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession
 
 from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
