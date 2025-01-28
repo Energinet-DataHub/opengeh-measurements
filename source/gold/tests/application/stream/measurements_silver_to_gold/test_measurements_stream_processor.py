@@ -31,3 +31,22 @@ def test__stream_processor_measurements__calls_expected(spark: SparkSession):
         gold_target_table,
         stream_processor.pipeline_measurements_silver_to_gold,
     )
+
+
+def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(spark: SparkSession):
+    # Arrange
+    silver_port_mock = Mock(spec=SilverPort)
+    gold_port_mock = Mock(spec=GoldPort)
+    silver_target_table = TableNames.silver_measurements_table
+    gold_target_table = TableNames.gold_measurements_table
+    stream_processor = StreamProcessorMeasurements(
+        silver_port_mock, silver_target_table, gold_port_mock, gold_target_table
+    )
+    df_silver_mock = Mock()
+    batch_id = 0
+
+    # Act
+    stream_processor.pipeline_measurements_silver_to_gold(df_silver_mock, batch_id)
+
+    # Assert
+    gold_port_mock.append.assert_called_once()

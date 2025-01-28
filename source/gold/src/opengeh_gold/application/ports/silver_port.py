@@ -16,4 +16,3 @@ class SilverPort(ABC):
         Returns:
             DataFrame: A Spark DataFrame representing the streaming data from the specified Delta table.
         """
-        pass
