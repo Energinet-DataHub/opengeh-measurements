@@ -6,9 +6,11 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-import electrical_heating.application.execute_with_deps as execute_with_deps
-from electrical_heating.application.job_args.environment_variables import EnvironmentVariable
-from electrical_heating.infrastructure.measurements_bronze.database_definitions import MeasurementsBronzeDatabase
+import opengeh_electrical_heating.application.execute_with_deps as execute_with_deps
+from opengeh_electrical_heating.application.job_args.environment_variables import EnvironmentVariable
+from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+    MeasurementsBronzeDatabase,
+)
 
 
 @pytest.fixture(scope="session")
