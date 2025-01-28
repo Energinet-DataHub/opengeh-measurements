@@ -22,6 +22,7 @@ on:
 
 env:
   PACKAGES_DIR: source
+  MAX_RELEASE_SEARCH_DEPTH: 1000
 
 jobs:
   #
@@ -42,7 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          MATRIX=$(gh release list --json isPrerelease,name -q '[.[] | select(.name | endswith("_${{ steps.find_pull_request.outputs.pull_request_number }}"))]')
+          MATRIX=$(gh release list -L ${{ env.MAX_RELEASE_SEARCH_DEPTH }} --json isPrerelease,name -q '[.[] | select(.name | endswith("_${{ steps.find_pull_request.outputs.pull_request_number }}"))]')
           echo "Found matrix: $MATRIX"
           echo "matrix=$MATRIX" >>$GITHUB_OUTPUT
   #
