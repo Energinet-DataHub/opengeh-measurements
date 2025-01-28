@@ -1,4 +1,4 @@
-﻿class ColumnNames:
+class ColumnNames:
     has_electrical_heating = "has_electrical_heating"
     metering_point_id = "metering_point_id"
     metering_point_sub_type = "metering_point_sub_type"

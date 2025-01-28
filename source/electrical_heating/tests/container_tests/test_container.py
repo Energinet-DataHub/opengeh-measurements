@@ -1,4 +1,4 @@
-﻿import os
+import os
 import time
 import uuid
 
@@ -78,4 +78,4 @@ def test__databricks_job_starts_and_stops_successfully() -> None:
         assert result == "SUCCESS", f"Job did not complete successfully: {result}"
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
-  
+

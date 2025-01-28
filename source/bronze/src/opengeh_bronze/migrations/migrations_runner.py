@@ -1,4 +1,4 @@
-﻿import os
+import os
 
 from spark_sql_migrations import (
     SparkSqlMigrationsConfiguration,

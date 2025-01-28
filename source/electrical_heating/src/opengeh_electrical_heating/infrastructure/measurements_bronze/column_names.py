@@ -1,4 +1,4 @@
-﻿class ColumnNames:
+class ColumnNames:
     end_datetime = "end_datetime"
     metering_point_id = "metering_point_id"
     metering_point_type = "metering_point_type"

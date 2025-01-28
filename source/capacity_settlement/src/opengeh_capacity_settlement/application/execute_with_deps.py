@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 from argparse import Namespace
 from collections.abc import Callable
 
@@ -30,9 +30,7 @@ def execute_with_deps(
         extras={"Subsystem": "measurements"},
     )
 
-    with config.get_tracer().start_as_current_span(
-        __name__, kind=SpanKind.SERVER
-    ) as span:
+    with config.get_tracer().start_as_current_span(__name__, kind=SpanKind.SERVER) as span:
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
