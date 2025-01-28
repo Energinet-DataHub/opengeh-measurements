@@ -1,7 +1,12 @@
 from pyspark.sql import DataFrame, SparkSession
 
+import opengeh_bronze.infrastructure.shared_helpers as shared_helpers
 from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames
+from opengeh_bronze.infrastructure.config.storage_container_names import StorageContainerNames
+from opengeh_bronze.infrastructure.settings.storage_account_settings import (
+    StorageAccountSettings,
+)
 from opengeh_bronze.infrastructure.settings.submitted_transactions_stream_settings import (
     SubmittedTransactionsStreamSettings,
 )
@@ -19,7 +24,9 @@ class KafkaStream:
         )
 
     def write_stream(self, dataframe: DataFrame):
-        checkpointLocation = "REPLACE"
+        checkpointLocation = shared_helpers.get_checkpoint_path(
+            StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "processed_transactions"
+        )
 
         dataframe.writeStream.format("kafka").option(**self.kafka_options).option(
             "checkpointLocation", checkpointLocation
