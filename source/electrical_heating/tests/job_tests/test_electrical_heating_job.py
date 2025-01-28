@@ -14,10 +14,11 @@ from opengeh_electrical_heating.infrastructure.measurements_bronze.database_defi
 
 
 @pytest.fixture(scope="session")
-def job_environment_variables() -> dict:
+def job_environment_variables(test_files_folder_path) -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "spark_catalog",
         EnvironmentVariable.TIME_ZONE.name: "Europe/Copenhagen",
+        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: test_files_folder_path,
     }
 
 

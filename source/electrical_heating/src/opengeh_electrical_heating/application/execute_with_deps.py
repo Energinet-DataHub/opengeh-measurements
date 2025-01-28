@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
@@ -86,7 +86,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
     execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.catalog_name)
+    electricity_market_repository = em.Repository(spark, args.electricity_market_data_path.catalog_name)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
     electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
 
