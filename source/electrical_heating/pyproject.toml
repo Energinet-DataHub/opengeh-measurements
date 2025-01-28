@@ -12,7 +12,7 @@ dependencies = [
     "opengeh-telemetry @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/telemetry",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
-    "opengeh-pyspark @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/testcommon",
+    "opengeh-pyspark @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/pyspark_functions",
     "tomli>=2.2.1",
     "databricks-sdk==0.41.0",
 ]
@@ -24,7 +24,7 @@ execute = "opengeh_electrical_heating.entry_point:execute"
 dev = [
     "commitizen>=4.1.0",
     "mypy>=1.14.1",
-    "opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/pyspark_functions",
+    "opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/testcommon",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
