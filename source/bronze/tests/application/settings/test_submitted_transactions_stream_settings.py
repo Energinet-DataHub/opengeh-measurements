@@ -1,6 +1,8 @@
 import os
 
-from bronze.application.settings.submitted_transactions_stream_settings import SubmittedTransactionsStreamSettings
+from opengeh_bronze.application.settings.submitted_transactions_stream_settings import (
+    SubmittedTransactionsStreamSettings,
+)
 
 
 def test__submitted_transactions_stream_settings__should_create_submitted_transactions_from_env():
