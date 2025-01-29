@@ -93,7 +93,7 @@ jobs:
           pytest_addopts: --ignore=tests/container_tests
 
       - name: Upload artifacts for ${{ matrix.inputs.name }}
-        uses: ./.github/actions/upload-release-artifacts
+        uses: ./.github/actions/upload-python-release-artifacts
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
