@@ -16,7 +16,7 @@ on:
         description: |
           Regex pattern to match core packages. This can be used to collocate
           certain build artifacts into a single release. Defaults to an empty string.
-        required: true
+        required: false
         default: ""
     secrets:
       dh3serviceaccount_privatekey:
