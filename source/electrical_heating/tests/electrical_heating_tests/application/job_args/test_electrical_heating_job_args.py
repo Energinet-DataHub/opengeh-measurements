@@ -12,7 +12,7 @@ from opengeh_electrical_heating.application.job_args.environment_variables impor
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
-DEFAULT_TIME_ZONE = "some_time_zone"
+DEFAULT_TIME_ZONE = "Europe/Copenhagen"
 DEFAULT_CATALOG_NAME = "some_catalog"
 
 

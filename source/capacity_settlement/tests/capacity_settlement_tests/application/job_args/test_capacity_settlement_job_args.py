@@ -63,3 +63,5 @@ def test_when_parameters__parses_parameters_from_contract(
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
+    assert actual_args.calculation_month == DEFAULT_CALCULATION_MONTH
+    assert actual_args.calculation_year == DEFAULT_CALCULATION_YEAR
