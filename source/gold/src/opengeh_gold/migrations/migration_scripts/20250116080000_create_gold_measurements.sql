@@ -1,4 +1,4 @@
-CREATE TABLE {gold_database}.{gold_measurements_table}
+CREATE TABLE {gold_database}.{gold_measurements}
 (
     metering_point_id STRING,
     observation_time TIMESTAMP,
