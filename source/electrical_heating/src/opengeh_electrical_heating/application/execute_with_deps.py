@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
