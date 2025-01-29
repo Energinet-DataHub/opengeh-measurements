@@ -18,6 +18,16 @@ permissions:
 
 jobs:
   #
+  # License and Markdown Check
+  #
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
+    with:
+      skip_license_check: true
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
+  #
   # Compile Protobuf Contracts
   #
   ci_bronze_contracts:
@@ -53,7 +63,7 @@ jobs:
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_bronze_contracts, ci_reusable]
+    needs: [ci_base, ci_bronze_contracts, ci_reusable]
     if: |
       always()
     steps:

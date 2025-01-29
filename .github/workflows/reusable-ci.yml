@@ -6,7 +6,7 @@ on:
       packages_directory:
         type: string
         description: |
-          Directory to search for python packages in. This recursively searches 
+          Directory to search for python packages in. This recursively searches
           for directories containing a pyproject.toml file and run tests on them.
           Defaults to workspace root.
         required: true
@@ -29,16 +29,6 @@ permissions:
   pull-requests: write
 
 jobs:
-  #
-  # License and Markdown Check
-  #
-  ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
-    with:
-      skip_license_check: true
-    secrets:
-      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
-
   #
   # Build Package Matrix
   #
