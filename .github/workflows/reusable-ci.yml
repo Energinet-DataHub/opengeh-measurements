@@ -17,8 +17,8 @@ on:
       core_regex:
         type: string
         description: |
-          List of package names, separated by '|', that should be released 
-          together as `core_<PR/latest>`. 
+          List of package names, separated by '|', that should be released
+          together as `core_<PR/latest>`.
           Non-core packages are released as `<package_name>_<PR/latest>`.
         required: false
         default: ""
