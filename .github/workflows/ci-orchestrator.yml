@@ -55,7 +55,6 @@ jobs:
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
-    name: Allow merge
     runs-on: ubuntu-24.04
     needs: [ci_bronze_contracts, ci_reusable]
     if: |
