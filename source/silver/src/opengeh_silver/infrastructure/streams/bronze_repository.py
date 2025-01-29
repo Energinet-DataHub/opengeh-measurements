@@ -17,5 +17,5 @@ class BronzeRepository:
     def read_calculated_measurements(self) -> DataFrame:
         options = BRONZE_CALCULATED_OPTIONS
 
-        source_table_name = f"{self._catalog_name + '.' if self._catalog_name else ''}{DatabaseNames.bronze_database}.{TableNames.bronze_calculated_measurements_table}"
+        source_table_name = f"{self._catalog_name + '.' if self._catalog_name else ''}{DatabaseNames.bronze}.{TableNames.bronze_calculated_measurements}"
         return self._spark.readStream.format("delta").options(**options).table(source_table_name)

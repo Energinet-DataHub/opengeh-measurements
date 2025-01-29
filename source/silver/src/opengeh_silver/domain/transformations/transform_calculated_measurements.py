@@ -1,14 +1,13 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from opengeh_silver.domain.config.column_names import BronzeCalculatedMeasurementsColNames, SilverMeasurementsColNames
+from opengeh_silver.domain.constants.col_names_bronze_calculated_measurements import (
+    BronzeCalculatedMeasurementsColNames,
+)
+from opengeh_silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
 
 
 def transform_calculated_measurements(df: DataFrame) -> DataFrame:
-    return map_bronze_to_silver(df)
-
-
-def map_bronze_to_silver(df: DataFrame) -> DataFrame:
     select_list = [
         F.col(BronzeCalculatedMeasurementsColNames.orchestration_type).alias(
             SilverMeasurementsColNames.orchestration_type

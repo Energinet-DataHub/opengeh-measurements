@@ -40,7 +40,7 @@ def _execute(spark: SparkSession) -> None:
     bronze_stream = BronzeRepository(spark).read_calculated_measurements()
     data_lake_storage_account = get_datalake_storage_account()
     checkpoint_path = get_checkpoint_path(
-        data_lake_storage_account, ContainerNames.silver_container, TableNames.silver_measurements_table
+        data_lake_storage_account, ContainerNames.silver, TableNames.silver_measurements
     )
     writer.write_stream(
         bronze_stream, "bronze_calculated_measurements_to_silver_measurements", checkpoint_path, _batch_operations
@@ -49,5 +49,5 @@ def _execute(spark: SparkSession) -> None:
 
 def _batch_operations(df: DataFrame, batchId: int) -> None:
     df = transform_calculated_measurements(df)
-    target_table_name = f"{DatabaseNames.silver_database}.{TableNames.silver_measurements_table}"
+    target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
     df.write.format("delta").mode("append").saveAsTable(target_table_name)

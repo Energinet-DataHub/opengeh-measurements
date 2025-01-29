@@ -20,8 +20,8 @@ def _configure_spark_sql_migrations() -> None:
     catalog_name = get_catalog_name()
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=DatabaseNames.silver_database,
-        migration_table_name=TableNames.executed_migrations_table,
+        migration_schema_name=DatabaseNames.silver,
+        migration_table_name=TableNames.executed_migrations,
         migration_scripts_folder_path="opengeh_silver.migrations.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,

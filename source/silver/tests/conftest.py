@@ -60,7 +60,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
 
 
 @pytest.fixture(scope="session")

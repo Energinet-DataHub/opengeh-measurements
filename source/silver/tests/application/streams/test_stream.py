@@ -58,8 +58,7 @@ def test__calculated_stream__should_throw_exception(
 def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeRepository, mock_get_checkpoint_path):
     # Arrange
     mock_spark = mock.Mock(spec=SparkSession)
-    mock_bronze_repository = mock.Mock()
-    mock_BronzeRepository.return_value = mock_bronze_repository
+    mock_bronze_repository = mock_BronzeRepository.return_value
     mock_bronze_repository.read_calculated_measurements.return_value = "mock_bronze_stream"
 
     # Act
@@ -80,7 +79,7 @@ def test__batch_operations(mock_transform_calculated_measurements):
     mock_df = mock.Mock(spec=DataFrame)
     mock_transformed_df = mock.Mock(spec=DataFrame)
     mock_transform_calculated_measurements.return_value = mock_transformed_df
-    expected_target_table_name = f"{DatabaseNames.silver_database}.{TableNames.silver_measurements_table}"
+    expected_target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
 
     # Act
     _batch_operations(mock_df, 1)

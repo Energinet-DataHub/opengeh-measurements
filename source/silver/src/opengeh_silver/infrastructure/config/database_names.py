@@ -1,3 +1,3 @@
 class DatabaseNames:
-    bronze_database = "measurements_bronze"
-    silver_database = "measurements_silver"
+    bronze = "measurements_bronze"
+    silver = "measurements_silver"
