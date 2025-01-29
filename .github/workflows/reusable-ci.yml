@@ -52,7 +52,6 @@ jobs:
   ci_matrix:
     name: Build Package Matrix
     runs-on: ubuntu-24.04
-    needs: ci_base
     outputs:
       matrix: ${{ steps.package_matrix.outputs.matrix }}
     steps:
