@@ -24,7 +24,7 @@ class Repository:
         return _read_csv(spark=self._spark, path=file_path, schema=consumption_metering_point_periods_v1)
 
     def read_child_metering_points(self) -> DataFrame:
-        file_path = f"{self._electricity_market_data_path}/child_metering_point_v1.csv"
+        file_path = f"{self._electricity_market_data_path}/child_metering_points_v1.csv"
         return _read_csv(spark=self._spark, path=file_path, schema=child_metering_points_v1)
 
 
