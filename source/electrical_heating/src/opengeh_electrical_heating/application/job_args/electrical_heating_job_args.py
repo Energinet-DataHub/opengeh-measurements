@@ -1,6 +1,8 @@
 import argparse
 import sys
+import uuid
 from argparse import Namespace
+from datetime import datetime
 
 import configargparse
 from telemetry_logging import Logger, logging_configuration
@@ -27,11 +29,11 @@ def parse_job_arguments(
     with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
         electrical_heating_args = ElectricalHeatingArgs(
             catalog_name=get_catalog_name(),
-            orchestration_instance_id=job_args.orchestration_instance_id,
+            orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
         )
 
-        return electrical_heating_args
+    return electrical_heating_args
 
 
 def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
@@ -49,3 +51,12 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
         raise Exception(f"Unknown args: {unknown_args_text}")
 
     return args
+
+
+def valid_date(s: str) -> datetime:
+    """See https://stackoverflow.com/questions/25470844/specify-date-format-for-python-argparse-input-arguments"""
+    try:
+        return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        msg = f"not a valid date: {s!r}"
+        raise configargparse.ArgumentTypeError(msg)
