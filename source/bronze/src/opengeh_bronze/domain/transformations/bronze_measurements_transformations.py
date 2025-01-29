@@ -1,6 +1,8 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf
 
+# This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
+# TODO: Figure out a better solution!
 descriptor_file = (
     "/source/bronze/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
 )
