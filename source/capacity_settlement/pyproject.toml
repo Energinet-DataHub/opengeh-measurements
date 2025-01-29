@@ -36,7 +36,7 @@ allow-direct-references = true
 
 
 [tool.pytest.ini_options]
-# -s ensures that print("<text>") is written to output. 
+# -s ensures that print("<text>") is written to output.
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_capacity_settlement -ra -vv -s"
 
 [tool.coverage.report]
@@ -78,7 +78,7 @@ convention = "google"
 [tool.uv.sources.opengeh-telemetry]
 git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
 subdirectory = "source/telemetry"
-rev = "3.0.1"
+branch = "cbang/simplify_entry_point"
 
 [tool.uv.sources.opengeh-testcommon]
 git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
