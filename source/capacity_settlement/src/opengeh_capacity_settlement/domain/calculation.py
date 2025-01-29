@@ -58,11 +58,6 @@ def execute_core_logic(
         ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity
     )
 
-    # TODO Refac when the calculation save is implemented
-
-    # Create empty dataframe
-    f = DataFrame
-
     calculation_output.calculations = spark.createDataFrame([], schema="")
 
     return calculation_output
