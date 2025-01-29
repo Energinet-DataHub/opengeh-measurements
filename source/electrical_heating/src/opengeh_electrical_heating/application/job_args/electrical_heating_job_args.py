@@ -1,10 +1,12 @@
-import argparse
+import datetime
 import sys
 import uuid
 from argparse import Namespace
 from datetime import datetime
+from typing import Optional, Tuple, Type
 
 import configargparse
+from pydantic_settings import BaseSettings, CliSettingsSource, PydanticBaseSettingsSource
 from telemetry_logging import Logger, logging_configuration
 
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
@@ -14,6 +16,29 @@ from opengeh_electrical_heating.application.job_args.environment_variables impor
     get_catalog_name,
     get_time_zone,
 )
+
+
+class ElectricalHeatingJobArgs(BaseSettings):
+    """ElectricalHeatingArgs to retrieve and validate parameters and environment variables automatically.
+
+    Parameters can come from both runtime (CLI) or from environment variables.
+    The priority is CLI parameters first and then environment variables.
+    """
+
+    catalog_name: str
+    time_zone: str
+    execution_start_datetime: Optional[datetime.datetime]
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        return CliSettingsSource(settings_cls, cli_parse_args=True, cli_ignore_unknown_args=True), env_settings
 
 
 def parse_command_line_arguments() -> Namespace:
@@ -36,7 +61,7 @@ def parse_job_arguments(
     return electrical_heating_args
 
 
-def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
+def _parse_args_or_throw(command_line_args: list[str]) -> Namespace:
     p = configargparse.ArgParser(
         description="Execute electrical heating calculation",
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter,
