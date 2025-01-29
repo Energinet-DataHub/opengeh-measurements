@@ -18,12 +18,6 @@ on:
           certain build artifacts into a single release. Defaults to an empty string.
         required: true
         default: ""
-  merge_group:
-    types: [checks_requested]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   CORE_PREFIX: core
