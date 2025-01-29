@@ -16,12 +16,6 @@ permissions:
   checks: write
   pull-requests: write
 
-env:
-  PACKAGES_DIR: source
-  CORE_REGEX: opengeh_bronze|opengeh_silver|opengeh_gold
-  CORE_PREFIX: core
-  NONCORE_PREFIX: bundle
-
 jobs:
   #
   # Compile Protobuf Contracts
@@ -45,13 +39,14 @@ jobs:
         with:
           path: source/bronze/src/opengeh_bronze/infrastructure/contracts
 
+  #
+  # Reusable CI
+  #
   ci_reusable:
     uses: ./.github/workflows/reusable-ci.yml
     with:
-      packages_directory: ${{ env.PACKAGES_DIR }}
-      core_regex: ${{ env.CORE_REGEX }}
-      core_prefix: ${{ env.CORE_PREFIX }}
-      noncore_prefix: ${{ env.NONCORE_PREFIX }}
+      packages_directory: source
+      core_regex: opengeh_bronze|opengeh_silver|opengeh_gold
 
   #
   # Branch policy status check
