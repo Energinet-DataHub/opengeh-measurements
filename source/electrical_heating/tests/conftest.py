@@ -107,7 +107,7 @@ def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
 
 
 @pytest.fixture(scope="session")
-def write_test_data_to_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
     create_database(spark, MeasurementsGoldDatabase.DATABASE_NAME)
 
     create_table(

@@ -6,7 +6,7 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-import opengeh_electrical_heating.application.execute_with_deps as execute_with_deps
+from opengeh_electrical_heating.application.execute_with_deps import execute_with_deps
 from opengeh_electrical_heating.application.job_args.environment_variables import EnvironmentVariable
 from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
@@ -22,9 +22,7 @@ def job_environment_variables(test_files_folder_path) -> dict:
     }
 
 
-def test_execute_with_deps(
-    spark: SparkSession, job_environment_variables: dict, write_test_data_to_gold_table: Any
-) -> None:
+def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
@@ -32,7 +30,7 @@ def test_execute_with_deps(
     # Act
     with patch("sys.argv", sys_argv):
         with patch.dict("os.environ", job_environment_variables):
-            execute_with_deps.execute_with_deps()
+            execute_with_deps()
 
     # Assert
     actual = spark.read.table(
