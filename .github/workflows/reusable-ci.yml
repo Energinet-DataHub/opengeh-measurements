@@ -7,7 +7,10 @@ on:
         type: string
         description: |
           Directory to search for python packages in. This recursively searches
-          for directories containing a pyproject.toml file and run tests on them.
+          for directories containing a pyproject.toml file. All directories
+          discovered are considered packages. Any package with changes will
+          be tested, and given successful tests, a prerelease will be created
+          with under the tag "<package_name>_<pull_request_number>".
           Defaults to workspace root.
         required: true
         default: ${{ github.workspace }}
