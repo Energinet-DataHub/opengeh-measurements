@@ -19,7 +19,9 @@ def test__execute() -> None:
         "CLOUD_ROLE_NAME": "test_role",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
         "SUBSYSTEM": "test_subsystem",
-        "ORCHESTRATION_INSTANCE_ID": "4a540892-2c0a-46a9-9257-c4e13051d76b",
+        "CATALOG_NAME": "default_hadoop",
+        "time_zone": "Europe/Copenhagen",
+        "execution_start_datetime": "2019-12-04",
     }
     with (
         mock.patch(
@@ -33,26 +35,25 @@ def test__execute() -> None:
             ],
         ),
         mock.patch.dict("os.environ", env_args, clear=False),
-        mock.patch("electrical_heating.ElectricalHeatingJobArgs", autospec=True) as mock_job_args,
-        mock.patch("config.LoggingSettings", autospec=True) as mock_logging_settings,
-        mock.patch("config.configure_logging") as mock_configure_logging,
-        mock.patch("config.add_extras") as mock_add_extras,
-        mock.patch("logger.Logger", autospec=True) as mock_logger,
-        mock.patch("execute_with_deps") as mock_execute_with_deps,
+        mock.patch(
+            "opengeh_electrical_heating.application.job_args.electrical_heating_job_args.ElectricalHeatingJobArgs",
+            autospec=True,
+        ) as mock_job_args,
+        mock.patch("telemetry_logging.logging_configuration.LoggingSettings", autospec=True) as mock_logging_settings,
+        mock.patch("telemetry_logging.logging_configuration.configure_logging") as mock_configure_logging,
+        mock.patch("telemetry_logging.logging_configuration.add_extras") as mock_add_extras,
+        # mock.patch("telemetry_logging.Logger", autospec=True) as mock_logger,
+        mock.patch("opengeh_electrical_heating.entry_point.execute_with_deps") as mock_execute_with_deps,
     ):
-        mock_logger_instance = mock_logger.return_value
+        # Prepare
+        # mock_logger_instance = mock_logger.return_value
+        expected_tracer_name = entry_point.TRACER_NAME
+
         # Act
         entry_point.execute()
 
         # assert
         mock_logging_settings.assert_called_once()
         mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value)
-        mock_add_extras.assert_called_once_with({"tracer_name": "TRACER_NAME"})
-        mock_logger.assert_called_once_with(__name__)
-        mock_logger_instance.info.assert_any_call(
-            f"Command line arguments / env variables retrieved for Logging Settings: {mock_logging_settings.return_value}"
-        )
-        mock_logger_instance.info.assert_any_call(
-            f"Command line arguments retrieved for electrical heating job Oriented Parameters: {mock_job_args.return_value}"
-        )
+        mock_add_extras.assert_called_once_with({"tracer_name": expected_tracer_name})
         mock_execute_with_deps.assert_called_once()

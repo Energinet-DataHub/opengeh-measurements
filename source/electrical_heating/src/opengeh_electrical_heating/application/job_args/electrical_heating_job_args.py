@@ -27,7 +27,7 @@ class ElectricalHeatingJobArgs(BaseSettings):
 
     catalog_name: str
     time_zone: str
-    execution_start_datetime: Optional[datetime.datetime]
+    execution_start_datetime: Optional[datetime]
 
     @classmethod
     def settings_customise_sources(
