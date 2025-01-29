@@ -27,7 +27,3 @@ scenario_tests:
   # Options: True | False
   # `True` is the default.
   ignore_extra_columns_in_actual: True
-
-container_tests:
-  workspace_url: <workspace-url>
-  databricks_token: <databricks-token>

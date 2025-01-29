@@ -3,13 +3,9 @@ from pathlib import Path
 
 import pytest
 import yaml
-from pydantic_settings import BaseSettings
 from testcommon.container_test import DatabricksApiClient
 
-
-class ContainerTestsConfiguration(BaseSettings):
-    databricks_token: str
-    databricks_host: str
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def _load_settings_from_file(file_path: Path) -> dict:
@@ -23,14 +19,7 @@ def _load_settings_from_file(file_path: Path) -> dict:
 @pytest.fixture(scope="session")
 def databricks_api_client() -> DatabricksApiClient:
     settings = _load_settings_from_file(PROJECT_ROOT / "tests" / "test.local.settings.yml")
-    databricks_token = settings.get("DATABRICKS_TOKEN")
-    databricks_host = settings.get("WORKSPACE_URL")
+    databricks_token = settings.get("DATABRICKS_TOKEN") or os.getenv("DATABRICKS_TOKEN")
+    databricks_host = settings.get("WORKSPACE_URL") or os.getenv("WORKSPACE_URL")
     databricksApiClient = DatabricksApiClient(databricks_token, databricks_host)
     return databricksApiClient
-
-
-@pytest.fixture(scope="session")
-def databricks_api_client() -> DatabricksApiClient:
-    databricks_token = os.getenv("DATABRICKS_TOKEN")
-    databricks_host = os.getenv("WORKSPACE_URL")
-    return DatabricksApiClient(databricks_token, databricks_host)
