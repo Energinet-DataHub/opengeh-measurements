@@ -8,8 +8,9 @@ on:
         description: |
           Directory to search for python packages in. This recursively searches 
           for directories containing a pyproject.toml file and run tests on them.
-          Defaults to ${{ github.workspace }}.
+          Defaults to workspace root.
         required: true
+        default: ${{ github.workspace }}
       core_regex:
         type: string
         description: |
