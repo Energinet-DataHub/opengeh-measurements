@@ -18,9 +18,7 @@ TRACER_NAME = "electrical-heating-job"
 )  # Wraps the execute_with_deps function that starts the opentelemetry tracer and starts an initial span named using the name of the decorated function, or specifically provided name
 def execute_with_deps() -> None:
     electrical_heating_args = ElectricalHeatingJobArgs()  # Retrieve calculation oriented settings / job arguments
-    # Add logging here
     logging_settings = config.LoggingSettings()  # Retrieve logging oriented settings
-    # Add logging here
     config.configure_logging(  # Automatically adds the orchestration-instance-id as part of the extras
         logging_settings=logging_settings
     )
@@ -32,15 +30,9 @@ def execute_with_deps() -> None:
         f"Command line arguments retrieved for electrical heating job Oriented Parameters: {electrical_heating_args}"
     )
 
-    # span.set_attributes(config.get_extras())
-    # args = parse_job_arguments(command_line_args)
     spark = initialize_spark()
     _execute_with_deps(spark, job_arguments=electrical_heating_args, logging_arguments=logging_settings)
 
 
 def execute() -> None:
-    # applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
     execute_with_deps()
-    # execute_with_deps(
-    #     applicationinsights_connection_string=applicationinsights_connection_string,
-    # )
