@@ -5,30 +5,37 @@ on:
     inputs:
       packages_directory:
         type: string
-        description: "Directory containing packages to test"
+        description: |
+          Directory to search for python packages in. This recursively searches 
+          for directories containing a pyproject.toml file and run tests on them.
+          Defaults to ${{ github.workspace }}.
         required: true
-        default: "${{ github.workspace }}"
+        default: ${{ github.workspace }}
       core_regex:
         type: string
-        description: "Regex to match core packages"
+        description: |
+          Regex pattern to match core packages. This can be used to collocate
+          certain build artifacts into a single release. Defaults to an empty string.
         required: true
         default: ""
       core_prefix:
         type: string
-        description: "Prefix for core packages"
+        description: |
+          Prefix for core packages. This can be used to collocate certain build
+          artifacts into a single release. Defaults to "core". 
+          For example, bronze|silver|gold would create a single release called
+          `core` with all the artifacts from the bronze, silver and gold packages.
         required: true
-        default: "core"
-      noncore_prefix:
-        type: string
-        description: "Prefix for non-core packages"
-        required: true
-        default: "bundle"
+        default: core
   merge_group:
     types: [checks_requested]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  NONCORE_PREFIX: bundle
 
 permissions:
   contents: write
@@ -99,7 +106,7 @@ jobs:
           path: ${{ matrix.inputs.path }}
           core_regex: ${{ inputs.core_regex }}
           core_prefix: ${{ inputs.core_prefix }}
-          noncore_prefix: ${{ inputs.noncore_prefix }}
+          noncore_prefix: ${{ env.NONCORE_PREFIX }}
 
   #
   # Prepare Release Matrix
@@ -122,7 +129,7 @@ jobs:
       - name: Download Bundle Artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.noncore_prefix }}-*
+          pattern: ${{ env.NONCORE_PREFIX }}-*
           path: ${{ github.workspace }}/dist/
           merge-multiple: true
 
@@ -175,7 +182,7 @@ jobs:
       - name: Download Bundle Artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.noncore_prefix }}-*
+          pattern: ${{ env.NONCORE_PREFIX }}-*
           path: ${{ github.workspace }}/dist/
           merge-multiple: true
 
