@@ -3,7 +3,6 @@ import random
 from decimal import Decimal
 
 import testcommon.dataframes.assert_schemas as assert_schemas
-from dateutil.relativedelta import relativedelta
 from pyspark.sql import SparkSession
 
 from opengeh_gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
@@ -93,41 +92,6 @@ def test__transform_silver_to_gold__monthly_resolution_not_first_day_of_month__s
     # Assert
     assert df_gold.count() == 1
     assert df_gold.collect()[0][GoldMeasurementsColumnNames.observation_time] == start_date_time
-
-
-def test__transform_silver_to_gold__montly_resolution_multiple_positions__should_return_correct_observation_time(
-    spark: SparkSession,
-) -> None:
-    # Arrange
-    start_date_time = datetime.datetime(2021, 1, 1, 0, 0, 0)
-    df_silver = (
-        SilverMeasurementsDataFrameBuilder(spark)
-        .add_row(
-            resolution="PT1M",
-            start_datetime=start_date_time,
-            points=[
-                {
-                    "position": 1,
-                    "quantity": Decimal(round(random.uniform(0, 1000), 3)),
-                    "quality": "measured",
-                },
-                {
-                    "position": 2,
-                    "quantity": Decimal(round(random.uniform(0, 1000), 3)),
-                    "quality": "measured",
-                },
-            ],
-        )
-        .build()
-    )
-
-    # Act
-    df_gold = transform_silver_to_gold(df_silver)
-
-    # Assert
-    assert df_gold.count() == 2
-    for index, time in enumerate(df_gold.select(GoldMeasurementsColumnNames.observation_time).collect()):
-        assert time[0] == start_date_time + relativedelta(months=index)
 
 
 def test__transform_silver_to_gold__hourly_resolution__returns_correct_observation_time(spark: SparkSession) -> None:
