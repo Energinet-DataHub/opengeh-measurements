@@ -10,9 +10,10 @@ dependencies = [
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
     "opengeh-telemetry",
+    "opengeh-pyspark",
+    "pydantic-settings>=2.7.1",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
-    "opengeh-pyspark",
     "tomli>=2.2.1",
 ]
 
@@ -27,7 +28,6 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
-    "pydantic-settings>=2.7.1",
 ]
 
 [build-system]
