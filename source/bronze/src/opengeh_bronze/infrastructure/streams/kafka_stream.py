@@ -19,7 +19,12 @@ class KafkaStream:
         self.kafka_options = SubmittedTransactionsStreamSettings().create_kafka_options()
 
     def submit_transactions(self, spark: SparkSession) -> None:
-        spark.readStream.format("kafka").options(**self.kafka_options).load().writeTo(
+        checkpointLocation = shared_helpers.get_checkpoint_path(
+            StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "submitted_transactions"
+        )
+        spark.readStream.format("kafka").options(**self.kafka_options).load().writeStream.outputMode("append").trigger(
+            availableNow=True
+        ).option("checkpointLocation", checkpointLocation).toTable(
             f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
         )
 
