@@ -23,9 +23,7 @@ class DeltaGoldAdapter(GoldPort):
         terminate_on_empty: bool = False,
     ) -> None:
         datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
-        checkpoint_location = get_checkpoint_path(
-            datalake_storage_account, StorageContainerNames.gold_container, table_name
-        )
+        checkpoint_location = get_checkpoint_path(datalake_storage_account, StorageContainerNames.gold, table_name)
         df_write_stream = (
             df_source_stream.writeStream.format("delta")
             .queryName(query_name)
@@ -39,6 +37,4 @@ class DeltaGoldAdapter(GoldPort):
             df_write_stream.start().awaitTermination()
 
     def append(self, df: DataFrame, table_name: str) -> None:
-        df.write.format("delta").mode("append").saveAsTable(
-            get_full_table_name(DatabaseNames.gold_database, table_name)
-        )
+        df.write.format("delta").mode("append").saveAsTable(get_full_table_name(DatabaseNames.gold, table_name))

@@ -17,8 +17,8 @@ def stream_silver_to_gold_measurements() -> None:
     silver_adapter = DeltaSilverAdapter(spark)
     gold_adapter = DeltaGoldAdapter()
 
-    silver_source_table = TableNames.silver_measurements_table
-    gold_target_table = TableNames.gold_measurements_table
+    silver_source_table = TableNames.silver_measurements
+    gold_target_table = TableNames.gold_measurements
     measurements_stream_processor = StreamProcessorMeasurements(
         silver_adapter, silver_source_table, gold_adapter, gold_target_table
     )

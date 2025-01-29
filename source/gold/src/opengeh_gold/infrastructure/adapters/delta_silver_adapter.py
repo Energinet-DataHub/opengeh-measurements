@@ -15,5 +15,5 @@ class DeltaSilverAdapter(SilverPort):
         return (
             self.spark.readStream.format("delta")
             .options(**read_options or {})
-            .table(get_full_table_name(DatabaseNames.silver_database, table_name))
+            .table(get_full_table_name(DatabaseNames.silver, table_name))
         )

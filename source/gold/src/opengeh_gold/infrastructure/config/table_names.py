@@ -1,4 +1,4 @@
 class TableNames:
-    gold_measurements_table = "measurements"
-    silver_measurements_table = "measurements"
-    executed_migrations_table = "executed_migrations"
+    gold_measurements = "measurements"
+    silver_measurements = "measurements"
+    executed_migrations = "executed_migrations"

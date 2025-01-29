@@ -91,16 +91,16 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold_database}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
 
 
 @pytest.fixture(scope="session")
 def create_silver_tables(spark: SparkSession) -> None:
     create_table_from_schema(
         spark=spark,
-        database=DatabaseNames.silver_database,
-        table_name=TableNames.silver_measurements_table,
+        database=DatabaseNames.silver,
+        table_name=TableNames.silver_measurements,
         schema=silver_measurements_schema,
     )
 
