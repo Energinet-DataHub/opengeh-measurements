@@ -30,6 +30,9 @@ runs:
       with:
         enable-cache: true
         cache-suffix: ${{ inputs.name }}
+        cache-dependency-glob: |
+          ${{ inputs.path }}/pyproject.toml
+          ${{ inputs.path }}/uv.lock
 
     - name: Create artifact variables
       shell: bash
@@ -45,10 +48,6 @@ runs:
         echo "RELEASE_DIR=$RELEASE_DIR" >> $GITHUB_ENV
         echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
         echo "DIST_DIR=$DIST_DIR" >> $GITHUB_ENV
-
-    - name: Sync ${{ inputs.path }}
-      shell: bash
-      run: uv sync --directory ${{ inputs.path }}
 
     - name: Build ${{ inputs.path }}
       shell: bash

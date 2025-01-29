@@ -22,7 +22,11 @@ runs:
       uses: astral-sh/setup-uv@v4
       with:
         enable-cache: true
+        ignore-nothing-to-cache: true
         cache-suffix: ${{ inputs.name }}
+        cache-dependency-glob: |
+          ${{ inputs.path }}/pyproject.toml
+          ${{ inputs.path }}/uv.lock
     - name: Lint
       shell: bash
       run: uv run --directory ${{ inputs.path }} ruff check
