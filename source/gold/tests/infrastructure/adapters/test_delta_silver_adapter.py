@@ -25,8 +25,8 @@ def test__read_stream__should_contain_rows_in_silver(spark: SparkSession, create
     silver_adapter = DeltaSilverAdapter(spark)
     table_name = TableNames.silver_measurements
     test_table = f"{table_name}_test"
-    test_id = random.randint(0, 999999999999999999)
-    df_silver = SilverMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=test_id).build()
+    metering_point_id = random.randint(0, 999999999999999999)
+    df_silver = SilverMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id).build()
     df_silver.write.format("delta").mode("append").saveAsTable(f"{DatabaseNames.silver}.{table_name}")
 
     # Act
@@ -37,6 +37,8 @@ def test__read_stream__should_contain_rows_in_silver(spark: SparkSession, create
 
     # Assert
     assert (
-        spark.read.table(f"{DatabaseNames.silver}.{test_table}").filter(f"metering_point_id == '{test_id}'").count()
+        spark.read.table(f"{DatabaseNames.silver}.{test_table}")
+        .filter(f"metering_point_id == '{metering_point_id}'")
+        .count()
         == 1
     )
