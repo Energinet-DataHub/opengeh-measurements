@@ -17,7 +17,6 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
 from opengeh_electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
-    ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
 
 
@@ -55,7 +54,7 @@ def execute_core_logic(
     )
     consumption = time_series_points.where(F.col("metering_point_type") == CONSUMPTION_METERING_POINT_TYPE)
     electrical_heating = time_series_points.where(
-        F.col("metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE
+        F.col("metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
 
     parent_metering_points = convert_from_utc(consumption_metering_point_periods, time_zone)
@@ -314,7 +313,7 @@ def _join_child_to_parent_metering_point(
             F.col("child.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "inner",
         )
-        .where(F.col("child.metering_point_type") == ELECTRICAL_HEATING_METERING_POINT_TYPE)
+        .where(F.col("child.metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value)
         .select(
             F.col("child.metering_point_id").alias("child_metering_point_id"),
             F.col("child.parent_metering_point_id").alias("parent_metering_point_id"),
