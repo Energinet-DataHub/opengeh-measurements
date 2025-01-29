@@ -25,10 +25,10 @@ runs:
         cache-suffix: ${{ inputs.name }}
     - name: Lint
       shell: bash
-      run: uv run ruff check
+      run: uv run --directory ${{ inputs.path }} ruff check
     - name: Format
       shell: bash
-      run: uv run ruff format --check
+      run: uv run --directory ${{ inputs.path }} ruff format --check
     - name: Test
       shell: bash
       run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
