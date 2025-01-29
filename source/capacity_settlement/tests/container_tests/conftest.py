@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from container_tests.databricks_api_client import DatabricksApiClient
+from testcommon.container_test import DatabricksApiClient
 
 
 @pytest.fixture(scope="session")

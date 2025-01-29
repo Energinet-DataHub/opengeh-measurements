@@ -5,9 +5,9 @@ import pytest
 import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
+from testcommon.container_test import DatabricksApiClient
 
 from tests import PROJECT_ROOT, Path
-from tests.container_tests.databricks_api_client import DatabricksApiClient
 from tests.testsession_configuration import TestSessionConfiguration
 
 

@@ -738,7 +738,7 @@ requires-dist = [
 dev = [
     { name = "commitizen", specifier = ">=4.1.0" },
     { name = "mypy", specifier = ">=1.14.1" },
-    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1" },
+    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.9.1" },
@@ -758,9 +758,10 @@ dependencies = [
 
 [[package]]
 name = "opengeh-testcommon"
-version = "0.0.4"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1#9dfc33c2a5c53c91249e632550eea93415ea6013" }
+version = "0.1.1"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0#5237e47bd87b44fa05688cb171d127a694c1b18d" }
 dependencies = [
+    { name = "databricks-sdk" },
     { name = "delta-spark" },
     { name = "pyspark" },
     { name = "pyyaml" },

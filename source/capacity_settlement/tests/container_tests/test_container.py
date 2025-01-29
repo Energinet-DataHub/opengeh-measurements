@@ -1,7 +1,7 @@
 import uuid
 
 import pytest
-from container_tests.databricks_api_client import DatabricksApiClient
+from testcommon.container_test import DatabricksApiClient
 
 
 def test__databricks_job_starts_and_stops_successfully(databricks_api_client: DatabricksApiClient) -> None:
