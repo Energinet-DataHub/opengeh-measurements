@@ -10,7 +10,6 @@ from pyspark_functions.functions import (
 from telemetry_logging import use_span
 
 import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements_gold as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
@@ -19,18 +18,24 @@ from opengeh_electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+    time_series_points_v1,
+)
 
 
 @use_span()
 def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+    # measurements_gold_repository = mg.Repository(spark, args.catalog_name)
 
     # Read data frames
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_points = electricity_market_repository.read_child_metering_points()
-    time_series_points = measurements_gold_repository.read_time_series_points()
+
+    # TODO time_series_points in Gold is not ready yet.
+    # time_series_points = measurements_gold_repository.read_time_series_points()
+    time_series_points = spark.createDataFrame(data=[], schema=time_series_points_v1)
 
     # Execute the calculation logic
     execute_core_logic(
