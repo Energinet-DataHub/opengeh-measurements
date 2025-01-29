@@ -5,13 +5,14 @@ from pyspark.sql import DataFrame, SparkSession
 
 from opengeh_silver.application.streams.calculated_stream import (
     _batch_operations,
+    _execute,
     execute,
 )
 from opengeh_silver.infrastructure.config.database_names import DatabaseNames
 from opengeh_silver.infrastructure.config.table_names import TableNames
 
 
-@mock.patch("opengeh_silver.application.streams.calculated_stream._calculated_stream")
+@mock.patch("opengeh_silver.application.streams.calculated_stream._execute")
 @mock.patch("opengeh_silver.application.streams.calculated_stream.config")
 @mock.patch("opengeh_silver.application.streams.calculated_stream.initialize_spark")
 def test__calculated_stream__should_be_success(

@@ -1,5 +1,5 @@
 import opengeh_silver.application.streams.calculated_stream as calculated_stream
-import opengeh_silver.migrations.migrations as migrations
+import opengeh_silver.migrations.migrations_runner as migrations_runner
 from opengeh_silver.infrastructure.helpers.environment_variable_helper import get_applicationinsights_connection_string
 
 
@@ -8,4 +8,4 @@ def stream_calculated_measurements() -> None:
 
 
 def migrate() -> None:
-    migrations.migrate()
+    migrations_runner.migrate()
