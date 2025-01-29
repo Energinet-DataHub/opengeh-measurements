@@ -18,7 +18,11 @@ gold_measurements_schema = StructType(
         StructField(GoldMeasurementsColumnNames.quality, StringType(), True),
         StructField(GoldMeasurementsColumnNames.metering_point_type, StringType(), True),
         StructField(GoldMeasurementsColumnNames.transaction_id, StringType(), True),
-        StructField(GoldMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), True),
+        StructField(
+            GoldMeasurementsColumnNames.transaction_creation_datetime,
+            TimestampType(),
+            True,
+        ),
         StructField(GoldMeasurementsColumnNames.created, TimestampType(), True),
         StructField(GoldMeasurementsColumnNames.modified, TimestampType(), True),
     ]
