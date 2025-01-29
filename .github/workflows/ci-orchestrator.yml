@@ -55,7 +55,7 @@ jobs:
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_base, ci_bronze_contracts, ci_reusable]
+    needs: [ci_bronze_contracts, ci_reusable]
     if: |
       always()
     steps:
