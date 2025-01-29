@@ -13,7 +13,9 @@ from opengeh_electrical_heating.infrastructure.spark_initializor import (
 TRACER_NAME = "electrical-heating-job"
 
 
-@start_trace  # Wraps the execute_with_deps function that starts the opentelemetry tracer and starts an initial span named using the name of the decorated function
+@start_trace(
+    initial_span_name="execute_with_deps"
+)  # Wraps the execute_with_deps function that starts the opentelemetry tracer and starts an initial span named using the name of the decorated function, or specifically provided name
 def execute_with_deps() -> None:
     electrical_heating_args = ElectricalHeatingJobArgs()  # Retrieve calculation oriented settings / job arguments
     # Add logging here
