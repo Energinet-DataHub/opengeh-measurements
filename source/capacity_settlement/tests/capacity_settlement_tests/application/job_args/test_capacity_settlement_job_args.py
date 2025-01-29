@@ -19,7 +19,7 @@ DEFAULT_CALCULATION_YEAR = 2021
 def _get_contract_parameters(filename: str) -> list[str]:
     with open(filename) as file:
         text = file.read()
-        text = text.replace("{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID)
+        text = text.replace("{orchestration-instance-id}", str(DEFAULT_ORCHESTRATION_INSTANCE_ID))
         text = text.replace("{calculation-month}", str(DEFAULT_CALCULATION_MONTH))
         text = text.replace("{calculation-year}", str(DEFAULT_CALCULATION_YEAR))
         lines = text.splitlines()
