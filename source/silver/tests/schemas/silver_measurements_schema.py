@@ -8,7 +8,7 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-from silver.domain.config.column_names import SilverMeasurementsColNames
+from opengeh_silver.domain.config.column_names import SilverMeasurementsColNames
 
 silver_measurements_schema = StructType(
     [

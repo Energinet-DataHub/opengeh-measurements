@@ -3,14 +3,17 @@ from unittest import mock
 import pytest
 from pyspark.sql import DataFrame, SparkSession
 
-from silver.application.streams.calculated_stream import _batch_operations, _calculated_stream, calculated_stream
-from silver.infrastructure.config.database_names import DatabaseNames
-from silver.infrastructure.config.table_names import TableNames
+from opengeh_silver.application.streams.calculated_stream import (
+    _batch_operations,
+    execute,
+)
+from opengeh_silver.infrastructure.config.database_names import DatabaseNames
+from opengeh_silver.infrastructure.config.table_names import TableNames
 
 
-@mock.patch("silver.application.streams.calculated_stream._calculated_stream")
-@mock.patch("silver.application.streams.calculated_stream.config")
-@mock.patch("silver.application.streams.calculated_stream.initialize_spark")
+@mock.patch("opengeh_silver.application.streams.calculated_stream._calculated_stream")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.config")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.initialize_spark")
 def test__calculated_stream__should_be_success(
     mock_initialize_spark,
     mock_config,
@@ -21,7 +24,7 @@ def test__calculated_stream__should_be_success(
     mock_initialize_spark.return_value = mock_spark
 
     # Act
-    calculated_stream()
+    execute()
 
     # Assert
     mock_config.configure_logging.assert_called_once()
@@ -29,8 +32,8 @@ def test__calculated_stream__should_be_success(
     mock__calculated_stream.assert_called_once()
 
 
-@mock.patch("silver.application.streams.calculated_stream.span_record_exception")
-@mock.patch("silver.application.streams.calculated_stream.initialize_spark")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.span_record_exception")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.initialize_spark")
 def test__calculated_stream__should_throw_exception(
     mock_initialize_spark,
     mock_span_record_exception,
@@ -40,7 +43,7 @@ def test__calculated_stream__should_throw_exception(
 
     # Act
     with pytest.raises(SystemExit) as pytest_wrapped_e:
-        calculated_stream()
+        execute()
 
     # Assert
     assert pytest_wrapped_e.type is SystemExit
@@ -48,9 +51,9 @@ def test__calculated_stream__should_throw_exception(
     mock_span_record_exception.assert_called_once()
 
 
-@mock.patch("silver.application.streams.calculated_stream.get_checkpoint_path", return_value="checkpoint")
-@mock.patch("silver.application.streams.calculated_stream.BronzeRepository")
-@mock.patch("silver.application.streams.calculated_stream.writer")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.get_checkpoint_path", return_value="checkpoint")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.BronzeRepository")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.writer")
 def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeRepository, mock_get_checkpoint_path):
     # Arrange
     mock_spark = mock.Mock(spec=SparkSession)
@@ -59,7 +62,7 @@ def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeReposi
     mock_bronze_repository.read_calculated_measurements.return_value = "mock_bronze_stream"
 
     # Act
-    _calculated_stream(mock_spark)
+    _execute(mock_spark)
 
     # Assert
     mock_get_checkpoint_path.assert_called_once()
@@ -70,7 +73,7 @@ def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeReposi
     )
 
 
-@mock.patch("silver.application.streams.calculated_stream.transform_calculated_measurements")
+@mock.patch("opengeh_silver.application.streams.calculated_stream.transform_calculated_measurements")
 def test__batch_operations(mock_transform_calculated_measurements):
     # Arrange
     mock_df = mock.Mock(spec=DataFrame)

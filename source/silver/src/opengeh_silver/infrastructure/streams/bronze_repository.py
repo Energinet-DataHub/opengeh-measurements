@@ -1,9 +1,9 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
-from silver.infrastructure.config.database_names import DatabaseNames
-from silver.infrastructure.config.table_names import TableNames
-from silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
+from opengeh_silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
+from opengeh_silver.infrastructure.config.database_names import DatabaseNames
+from opengeh_silver.infrastructure.config.table_names import TableNames
+from opengeh_silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
 class BronzeRepository:

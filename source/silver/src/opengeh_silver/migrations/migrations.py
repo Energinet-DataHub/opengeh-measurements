@@ -4,10 +4,10 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import silver.migrations.substitutions as substitutions
-from silver.infrastructure.config.database_names import DatabaseNames
-from silver.infrastructure.config.table_names import TableNames
-from silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
+import opengeh_silver.migrations.substitutions as substitutions
+from opengeh_silver.infrastructure.config.database_names import DatabaseNames
+from opengeh_silver.infrastructure.config.table_names import TableNames
+from opengeh_silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
 def migrate() -> None:

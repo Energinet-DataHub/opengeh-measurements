@@ -1,4 +1,4 @@
-from silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
+from opengeh_silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 from tests.builders.bronze_calculated_measurements_builder import BronzeMeasurementsDataFrameBuilder
 from tests.schemas.silver_measurements_schema import silver_measurements_schema
 

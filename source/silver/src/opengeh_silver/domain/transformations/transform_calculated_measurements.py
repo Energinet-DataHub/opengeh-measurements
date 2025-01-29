@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from silver.domain.config.column_names import BronzeCalculatedMeasurementsColNames, SilverMeasurementsColNames
+from opengeh_silver.domain.config.column_names import BronzeCalculatedMeasurementsColNames, SilverMeasurementsColNames
 
 
 def transform_calculated_measurements(df: DataFrame) -> DataFrame:

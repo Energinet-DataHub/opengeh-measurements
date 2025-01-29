@@ -9,9 +9,9 @@ dependencies = [
     "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.3#subdirectory=source/telemetry",
 ]
 
-[projecx.scripts]
-execute_silver_stream = "silver.entry_points:execute_silver_stream"
-migrate = "silver.entry_points:migrate"
+[project.scripts]
+execute_silver_stream = "opengeh_silver.entry_points:stream_calculated_measurements"
+migrate = "opengeh_silver.entry_points:migrate"
 
 [dependency-groups]
 dev = [
@@ -50,15 +50,7 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = [
-    "D",
-    "D401",
-    "E",
-    "F",
-    "I",
-    "T201",
-    "UP",
-]
+select = ["D", "D401", "E", "F", "I", "T201", "UP"]
 ignore = [
     "D100",
     "D101",
@@ -73,9 +65,7 @@ ignore = [
     "UP007",
     "UP035",
 ]
-exclude = [
-    "notebooks/*",
-]
+exclude = ["notebooks/*"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D", "UP"]
