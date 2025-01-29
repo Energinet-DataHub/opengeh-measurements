@@ -1,4 +1,4 @@
-name: Upload Release Artifacts
+name: Upload Python Release Artifacts
 description: Upload release artifacts
 inputs:
   name:
