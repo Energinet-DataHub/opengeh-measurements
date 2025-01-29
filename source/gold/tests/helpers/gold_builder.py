@@ -1,4 +1,5 @@
-﻿from datetime import datetime
+﻿import random
+from datetime import datetime
 from decimal import Decimal
 
 from opengeh_gold.domain.schemas.gold_measurements import gold_measurements_schema
@@ -14,7 +15,7 @@ class GoldMeasurementsDataFrameBuilder:
         metering_point_id="502938475674839281",
         observation_time=None,
         quantity=Decimal("0.000"),
-        quality="Good",
+        quality=None,
         metering_point_type="",
         transaction_id="",
         transaction_creation_datetime=None,
@@ -25,9 +26,9 @@ class GoldMeasurementsDataFrameBuilder:
             (
                 metering_point_id,
                 observation_time or datetime.now(),
-                quantity,
-                quality,
-                metering_point_type,
+                quantity or Decimal(round(random.uniform(0, 1000), 3)),
+                quality or random.choice(["measured", "estimated", "calculated", "missing"]),
+                metering_point_type or random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
                 transaction_id,
                 transaction_creation_datetime or datetime.now(),
                 created or datetime.now(),
