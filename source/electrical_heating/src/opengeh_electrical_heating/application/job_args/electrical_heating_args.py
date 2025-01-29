@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from uuid import UUID
-
+from pydantic_settings import BaseSettings
 
 @dataclass
 class ElectricalHeatingArgs:
