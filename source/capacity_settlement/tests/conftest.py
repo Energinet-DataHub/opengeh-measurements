@@ -110,7 +110,7 @@ def _load_settings_from_file(file_path: Path) -> dict:
 @pytest.fixture(scope="session")
 def databricks_api_client() -> DatabricksApiClient:
     settings = _load_settings_from_file(PROJECT_ROOT / "tests" / "test.local.settings.yml")
-    databricks_token = settings.get("DATABRICKS_TOKEN") or os.getenv("DATABRICKS_TOKEN") or ""
-    databricks_host = settings.get("WORKSPACE_URL") or os.getenv("WORKSPACE_URL") or ""
+    databricks_token = settings.get("DATABRICKS_TOKEN")
+    databricks_host = settings.get("WORKSPACE_URL")
     databricksApiClient = DatabricksApiClient(databricks_token, databricks_host)
     return databricksApiClient
