@@ -1,9 +1,6 @@
 name: Reusable CI
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_call:
     inputs:
       packages_directory:
