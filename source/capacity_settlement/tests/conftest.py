@@ -1,13 +1,13 @@
 from typing import Generator
 
 import pytest
-import TestSessionConfiguration
 import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.container_test import DatabricksApiClient
 
 from tests import PROJECT_ROOT, Path
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
