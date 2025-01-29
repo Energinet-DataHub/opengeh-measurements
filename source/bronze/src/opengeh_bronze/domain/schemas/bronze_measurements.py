@@ -18,11 +18,7 @@ bronze_measurements_schema = StructType(
         StructField(BronzeMeasurementsColumnNames.orchestration_instance_id, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.metering_point_id, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.transaction_id, StringType(), True),
-        StructField(
-            BronzeMeasurementsColumnNames.transaction_creation_datetime,
-            TimestampType(),
-            True,
-        ),
+        StructField(BronzeMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), True),
         StructField(BronzeMeasurementsColumnNames.metering_point_type, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.product, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.unit, StringType(), True),
@@ -34,21 +30,9 @@ bronze_measurements_schema = StructType(
             ArrayType(
                 StructType(
                     [
-                        StructField(
-                            BronzeMeasurementsColumnNames.Points.position,
-                            IntegerType(),
-                            True,
-                        ),
-                        StructField(
-                            BronzeMeasurementsColumnNames.Points.quantity,
-                            DecimalType(18, 3),
-                            True,
-                        ),
-                        StructField(
-                            BronzeMeasurementsColumnNames.Points.quality,
-                            StringType(),
-                            True,
-                        ),
+                        StructField(BronzeMeasurementsColumnNames.Points.position, IntegerType(), True),
+                        StructField(BronzeMeasurementsColumnNames.Points.quantity, DecimalType(18, 3), True),
+                        StructField(BronzeMeasurementsColumnNames.Points.quality, StringType(), True),
                     ]
                 ),
                 True,
