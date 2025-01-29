@@ -1,5 +1,9 @@
 name: Reusable CI
 
+# The concept of `core` must be removed prior to moving these workflows and
+# actions to a public repository. The `core` concept is specific to the
+# Measurements project and is used to group packages that are released together.
+
 on:
   workflow_call:
     inputs:
