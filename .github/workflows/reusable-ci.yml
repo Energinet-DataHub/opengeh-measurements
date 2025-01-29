@@ -10,7 +10,6 @@ on:
           for directories containing a pyproject.toml file and run tests on them.
           Defaults to ${{ github.workspace }}.
         required: true
-        default: ${{ github.workspace }}
       core_regex:
         type: string
         description: |
