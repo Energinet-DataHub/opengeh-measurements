@@ -35,16 +35,13 @@ runs:
       shell: bash
       run: |
         RELEASE_DIR="${{ github.workspace }}/${{ inputs.path }}/artifacts"
-        case "${{ inputs.name }}" in
-            ${{ env.CORE_REGEX }})
-                ARTIFACT_NAME=${{ inputs.core_prefix }}-${{ inputs.name }}
-                DIST_DIR="$RELEASE_DIR"
-                ;;
-            *)
-                ARTIFACT_NAME=${{ inputs.noncore_prefix }}-${{ inputs.name }}
-                DIST_DIR="$RELEASE_DIR/${{ inputs.name }}"
-                ;;
-        esac
+        if [[ -n "${{ inputs.core_regex }}" && "${{ inputs.name }}" =~ ${{ inputs.core_regex }} ]]; then
+            ARTIFACT_NAME="${{ inputs.core_prefix }}-${{ inputs.name }}"
+            DIST_DIR="$RELEASE_DIR"
+        else
+            ARTIFACT_NAME="${{ inputs.noncore_prefix }}-${{ inputs.name }}"
+            DIST_DIR="$RELEASE_DIR/${name}"
+        fi
         echo "RELEASE_DIR=$RELEASE_DIR" >> $GITHUB_ENV
         echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
         echo "DIST_DIR=$DIST_DIR" >> $GITHUB_ENV
