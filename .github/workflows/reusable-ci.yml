@@ -18,6 +18,10 @@ on:
           certain build artifacts into a single release. Defaults to an empty string.
         required: true
         default: ""
+    secrets:
+      dh3serviceaccount_privatekey:
+        required: true
+        description: Used in ci_base job to authenticate with the DataHub3 service account
 
 env:
   CORE_PREFIX: core
@@ -29,6 +33,16 @@ permissions:
   pull-requests: write
 
 jobs:
+  #
+  # License and Markdown Check
+  #
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
+    with:
+      skip_license_check: true
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
   #
   # Build Package Matrix
   #
