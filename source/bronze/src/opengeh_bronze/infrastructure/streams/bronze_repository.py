@@ -12,3 +12,8 @@ class BronzeRepository:
         return self.spark.readStream.format("delta").table(
             f"{DatabaseNames.bronze_database}.{TableNames.bronze_measurements_table}"
         )
+
+    def read_submitted_transactions(self) -> DataFrame:
+        return self.spark.readStream.format("delta").table(
+            f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
+        )

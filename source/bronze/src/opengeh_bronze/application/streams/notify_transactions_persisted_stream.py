@@ -10,7 +10,7 @@ from opengeh_bronze.infrastructure.streams.kafka_stream import KafkaStream
 
 def notify() -> None:
     spark = spark_session.initialize_spark()
-    bronze_stream = BronzeRepository(spark).read_measurements()
+    bronze_stream = BronzeRepository(spark).read_submitted_transactions()
     options = {"ignoreDeletes": "true"}
     writer.write_stream(bronze_stream, "query_name", options, notify_transactions_persisted)
 
