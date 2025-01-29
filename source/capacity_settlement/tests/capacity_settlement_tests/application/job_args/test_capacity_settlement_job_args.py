@@ -1,3 +1,4 @@
+import uuid
 from unittest.mock import patch
 
 import pytest
@@ -10,7 +11,7 @@ from opengeh_capacity_settlement.application.job_args.environment_variables impo
     EnvironmentVariable,
 )
 
-DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
+DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
 DEFAULT_CALCULATION_YEAR = 2021
 
