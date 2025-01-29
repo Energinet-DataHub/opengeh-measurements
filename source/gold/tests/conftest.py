@@ -4,9 +4,12 @@ from typing import Callable, Generator
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType
 
-import opengeh_gold.application.services.migrations as migrations
-from opengeh_gold.domain.constants.database_names import DatabaseNames
+import opengeh_gold.migrations.migrations_runner as migrations
+from opengeh_gold.domain.schemas.silver_measurements import silver_measurements_schema
+from opengeh_gold.infrastructure.config.database_names import DatabaseNames
+from opengeh_gold.infrastructure.config.table_names import TableNames
 
 
 def pytest_runtest_setup() -> None:
@@ -88,4 +91,41 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
+
+
+@pytest.fixture(scope="session")
+def create_silver_tables(spark: SparkSession) -> None:
+    create_table_from_schema(
+        spark=spark,
+        database=DatabaseNames.silver,
+        table_name=TableNames.silver_measurements,
+        schema=silver_measurements_schema,
+    )
+
+
+def create_table_from_schema(
+    spark: SparkSession,
+    database: str,
+    table_name: str,
+    schema: StructType,
+    enable_change_data_feed: bool = False,
+) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database}")
+
+    schema_df = spark.createDataFrame([], schema=schema)
+    ddl = schema_df._jdf.schema().toDDL()
+
+    sql_command = f"CREATE TABLE IF NOT EXISTS {database}.{table_name} ({ddl}) USING DELTA"
+
+    tbl_properties = []
+
+    if enable_change_data_feed:
+        tbl_properties.append("delta.enableChangeDataFeed = true")
+
+    if len(tbl_properties) > 0:
+        tbl_properties_string = ", ".join(tbl_properties)
+        sql_command += f" TBLPROPERTIES ({tbl_properties_string})"
+
+    spark.sql(sql_command)
