@@ -55,7 +55,7 @@ jobs:
   ci_reusable:
     uses: ./.github/workflows/reusable-ci.yml
     with:
-      packages_directory: ${{ github.workspace }}/source
+      packages_directory: source
       core_regex: opengeh_bronze|opengeh_silver|opengeh_gold
 
   #
