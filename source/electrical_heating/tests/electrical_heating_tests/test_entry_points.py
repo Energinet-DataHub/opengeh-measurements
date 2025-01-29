@@ -36,13 +36,12 @@ def test__execute() -> None:
         ),
         mock.patch.dict("os.environ", env_args, clear=False),
         mock.patch("opengeh_electrical_heating.entry_point.ElectricalHeatingJobArgs") as mock_ElectricalHeatingJobArgs,
-        mock.patch("telemetry_logging.logging_configuration.LoggingSettings", autospec=True) as mock_logging_settings,
+        mock.patch("telemetry_logging.logging_configuration.LoggingSettings") as mock_logging_settings,
         mock.patch("telemetry_logging.logging_configuration.configure_logging") as mock_configure_logging,
         mock.patch("telemetry_logging.logging_configuration.add_extras") as mock_add_extras,
         mock.patch("opengeh_electrical_heating.entry_point.execute_with_deps") as mock_execute_with_deps,
     ):
         # Prepare
-        # mock_logger_instance = mock_logger.return_value
         expected_tracer_name = entry_point.TRACER_NAME
 
         # Act
@@ -53,4 +52,4 @@ def test__execute() -> None:
         mock_logging_settings.assert_called_once()
         mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value)
         mock_add_extras.assert_called_once_with({"tracer_name": expected_tracer_name})
-        mock_execute_with_deps.assert_called_once()
+        mock_execute_with_deps.assert_called_once()  # Patching/mocking this function forces the function not to run
