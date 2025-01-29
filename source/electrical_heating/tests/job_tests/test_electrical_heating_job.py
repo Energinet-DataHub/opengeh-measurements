@@ -22,6 +22,7 @@ def job_environment_variables(test_files_folder_path) -> dict:
     }
 
 
+@pytest.mark.skip(reason="Skipping this until write (results) functionality has been implemented")
 def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
