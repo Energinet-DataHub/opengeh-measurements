@@ -18,15 +18,6 @@ on:
           certain build artifacts into a single release. Defaults to an empty string.
         required: true
         default: ""
-      core_prefix:
-        type: string
-        description: |
-          Prefix for core packages. This can be used to collocate certain build
-          artifacts into a single release. Defaults to "core". 
-          For example, bronze|silver|gold would create a single release called
-          `core` with all the artifacts from the bronze, silver and gold packages.
-        required: true
-        default: core
   merge_group:
     types: [checks_requested]
 
@@ -35,6 +26,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  CORE_PREFIX: core
   NONCORE_PREFIX: bundle
 
 permissions:
@@ -105,7 +97,7 @@ jobs:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
           core_regex: ${{ inputs.core_regex }}
-          core_prefix: ${{ inputs.core_prefix }}
+          core_prefix: ${{ env.CORE_PREFIX }}
           noncore_prefix: ${{ env.NONCORE_PREFIX }}
 
   #
@@ -122,8 +114,8 @@ jobs:
       - name: Download Core Artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.core_prefix }}-*
-          path: ${{ github.workspace }}/dist/${{ inputs.core_prefix }}/
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
           merge-multiple: true
 
       - name: Download Bundle Artifacts
@@ -175,8 +167,8 @@ jobs:
       - name: Download Core Artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: ${{ inputs.core_prefix }}-*
-          path: ${{ github.workspace }}/dist/${{ inputs.core_prefix }}/
+          pattern: ${{ env.CORE_PREFIX }}-*
+          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
           merge-multiple: true
 
       - name: Download Bundle Artifacts
