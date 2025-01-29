@@ -23,9 +23,12 @@ runs:
       with:
         enable-cache: true
         cache-suffix: ${{ inputs.name }}
-    - name: Sync
+    - name: Lint
       shell: bash
-      run: uv sync --directory ${{ inputs.path }} --all-extras --dev
+      run: uv run ruff check
+    - name: Format
+      shell: bash
+      run: uv run ruff format --check
     - name: Test
       shell: bash
       run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
