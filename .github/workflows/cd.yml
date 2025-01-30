@@ -30,8 +30,8 @@ jobs:
       sender_email: ${{ vars.email_internal_sender }}
       environment_repository_path: ${{ vars.environment_repository_path }}
       dh3serviceaccount_appid: ${{ vars.dh3serviceaccount_appid }}
-      github_token: ${{ github.token }}
       max_release_search_depth: 1000
     secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
       send_grid_api_key: ${{ secrets.send_grid_api_key }}

@@ -38,10 +38,6 @@ on:
       dh3serviceaccount_appid:
         type: string
         required: true
-      github_token:
-        type: string
-        required: true
-        default: ${{ github.token }}
       max_release_search_depth:
         type: number
         description: |
@@ -50,6 +46,8 @@ on:
         required: false
         default: 1000
     secrets:
+      github_token:
+        required: true
       dh3serviceaccount_privatekey:
         required: true
       send_grid_api_key:
@@ -72,7 +70,7 @@ jobs:
       - name: Set Matrix
         id: release_matrix
         env:
-          GH_TOKEN: ${{ inputs.github_token }}
+          GH_TOKEN: ${{ secrets.github_token }}
         run: |
           MATRIX=$(gh release list -L ${{ inputs.max_release_search_depth }} --json isPrerelease,name -q '[.[] | select(.name | endswith("_${{ steps.find_pull_request.outputs.pull_request_number }}"))]')
           echo "Found matrix: $MATRIX"
