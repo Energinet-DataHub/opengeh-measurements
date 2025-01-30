@@ -1,5 +1,3 @@
-from coverage.all_test_cases import Cases
-
 """
 ## PURPOSE
 The purpose is to test scenarios where limit is not 4000 with NSG2
