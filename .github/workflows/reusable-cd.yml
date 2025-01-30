@@ -17,7 +17,7 @@ name: CD
 on:
   workflow_call:
     inputs:
-      subsytem_name:
+      subsystem_name:
         type: string
         description: |
           The name of the subsystem in which the deployment is made.
