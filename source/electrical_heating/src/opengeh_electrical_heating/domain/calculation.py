@@ -14,12 +14,12 @@ import opengeh_electrical_heating.infrastructure.measurements_gold as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
+from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
 from opengeh_electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
     ELECTRICAL_HEATING_METERING_POINT_TYPE,
 )
-from opengeh_electrical_heating.domain.measurements_daily import MeasurementsDaily
 
 
 @use_span()
@@ -50,7 +50,7 @@ def execute_core_logic(
     consumption_metering_point_periods: DataFrame,
     child_metering_points: DataFrame,
     time_zone: str,
-) -> MeasurementsDaily:
+) -> CalculatedMeasurementsDaily:
     child_metering_points = child_metering_points.where(
         F.col(em.ColumnNames.metering_point_type) == em.MeteringPointType.ELECTRICAL_HEATING.value
     )
@@ -87,7 +87,7 @@ def execute_core_logic(
 
     electrical_heating = convert_to_utc(electrical_heating, time_zone)
 
-    return MeasurementsDaily(electrical_heating)
+    return CalculatedMeasurementsDaily(electrical_heating)
 
 
 def _filter_unchanged_electrical_heating(
