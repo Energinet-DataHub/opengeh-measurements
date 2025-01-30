@@ -12,7 +12,7 @@ from telemetry_logging import use_span
 import opengeh_electrical_heating.infrastructure.electricity_market as em
 import opengeh_electrical_heating.infrastructure.measurements_gold as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
+    ElectricalHeatingJobArgs,
 )
 from opengeh_electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
@@ -22,7 +22,7 @@ from opengeh_electrical_heating.domain.constants import (
 
 
 @use_span()
-def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
+def execute(spark: SparkSession, args: ElectricalHeatingJobArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = em.Repository(spark, args.catalog_name)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)

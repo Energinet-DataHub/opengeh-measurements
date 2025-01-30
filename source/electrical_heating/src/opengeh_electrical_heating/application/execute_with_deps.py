@@ -5,16 +5,11 @@ from datetime import datetime, timezone
 
 from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
-from telemetry_logging.logging_configuration import LoggingSettings
 
 import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
 import opengeh_electrical_heating.infrastructure.electricity_market as em
 import opengeh_electrical_heating.infrastructure.measurements_gold as mg
-
-# from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-#     ElectricalHeatingArgs,
-# )
-from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingJobArgs,
 )
 from opengeh_electrical_heating.domain.calculation import (
@@ -73,16 +68,14 @@ from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schem
 
 
 @use_span()
-def _execute_with_deps(
-    spark: SparkSession, job_arguments: ElectricalHeatingJobArgs, logging_arguments: LoggingSettings
-) -> None:
-    if job_arguments.execution_start_datetime is not None:
+def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingJobArgs) -> None:
+    if args.execution_start_datetime is not None:
         execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, job_arguments.catalog_name)
-    measurements_gold_repository = mg.Repository(spark, job_arguments.catalog_name)
-    electrical_heating_internal_repository = ehi.Repository(spark, job_arguments.catalog_name)
+    electricity_market_repository = em.Repository(spark, args.catalog_name)
+    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+    electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
 
     # Read data frames
     time_series_points = measurements_gold_repository.read_time_series_points()
@@ -96,8 +89,7 @@ def _execute_with_deps(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        job_arguments,
-        logging_arguments,
+        args,
         execution_start_datetime,
     )
 
@@ -109,8 +101,7 @@ def execute_calculation(
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,
     child_metering_point_periods: DataFrame,
-    job_arguments: ElectricalHeatingJobArgs,
-    logging_arguments: LoggingSettings,
+    args: ElectricalHeatingJobArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
     calculation_output = CalculationOutput()
@@ -119,12 +110,12 @@ def execute_calculation(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        job_arguments.time_zone,
+        args.time_zone,
     )
 
     calculation_output.calculations = create_calculation(
         spark,
-        logging_arguments.orchestration_instance_id,
+        args.orchestration_instance_id,
         execution_start_datetime,
         datetime.now(timezone.utc),
     )
