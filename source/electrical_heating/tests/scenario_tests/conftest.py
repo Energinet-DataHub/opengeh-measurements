@@ -60,7 +60,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
 
-    # Execute the calculation
+    # Execute the logic
     calculation_output = execute_calculation(
         spark,
         time_series_points,
