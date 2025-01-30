@@ -1,5 +1,3 @@
-from coverage.all_test_cases import Cases
-
 """
 ## PURPOSE
 The purpose is to test gaps in periods with EH for the same metering point.
