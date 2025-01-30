@@ -32,6 +32,6 @@ jobs:
       dh3serviceaccount_appid: ${{ vars.dh3serviceaccount_appid }}
       max_release_search_depth: 1000
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
       send_grid_api_key: ${{ secrets.send_grid_api_key }}
