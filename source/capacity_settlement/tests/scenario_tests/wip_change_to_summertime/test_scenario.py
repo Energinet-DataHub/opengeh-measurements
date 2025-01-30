@@ -1,7 +1,7 @@
 import pytest
 from testcommon.dataframes import (
-    AssertDataframesConfiguration,
     assert_dataframes_and_schemas,
+    AssertDataframesConfiguration,
 )
 from testcommon.etl import TestCases, get_then_names
 
