@@ -31,4 +31,4 @@ def prepare_measurement(df):
 
 
 def pack_proto(df):
-    return df.withColumn("body", to_protobuf(df.value, message_name, descFilePath=descriptor_file))
+    return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_file))
