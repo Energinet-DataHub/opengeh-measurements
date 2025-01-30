@@ -2,7 +2,7 @@ import pyspark.sql.types as T
 from pyspark.sql import DataFrame
 
 
-class CalculatedMeasurementsDaily:
+class CalculatedMeasurementsDaily(DataFrameWrapper):
     def __init__(self, df: DataFrame):
         columns = [field.name for field in calculated_measurements_daily_schema.fields]
         df = df.select(columns)
