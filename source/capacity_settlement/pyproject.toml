@@ -9,7 +9,7 @@ dependencies = [
     "azure-monitor-opentelemetry==1.6.4",
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
-    "opengeh-telemetry @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/telemetry",
+    "opengeh-telemetry @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@cbang/simplify_entry_point2#subdirectory=source/telemetry",
     "pydantic-settings>=2.7.1",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
@@ -76,13 +76,3 @@ exclude = ["notebooks/*"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[tool.uv.sources.opengeh-telemetry]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/telemetry"
-branch = "cbang/simplify_entry_point"
-
-[tool.uv.sources.opengeh-testcommon]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/testcommon"
-rev = "3.0.1"
