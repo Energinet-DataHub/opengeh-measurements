@@ -1,4 +1,4 @@
-﻿from pydantic_settings import SettingsConfigDict
+from pydantic_settings import SettingsConfigDict
 
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import ElectricalHeatingJobArgs
 

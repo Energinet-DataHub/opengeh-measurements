@@ -1,4 +1,3 @@
-
 """
 ## PURPOSE
 The purpose is to test gaps in periods with EH for the same metering point.
