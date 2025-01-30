@@ -83,7 +83,7 @@ jobs:
   cd_promote_prerelease:
     name: Promote prerelease
     runs-on: ubuntu-24.04
-    needs: ci_matrix
+    needs: cd_release_matrix
     strategy:
       matrix:
         inputs: ${{ fromJson(needs.cd_release_matrix.outputs.matrix) }}
