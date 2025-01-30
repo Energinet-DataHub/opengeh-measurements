@@ -90,7 +90,7 @@ def assert_dataframes_configuration(
     test_session_configuration: TestSessionConfiguration,
 ) -> AssertDataframesConfiguration:
     return AssertDataframesConfiguration(
-        show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
-        show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
-        show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
+        show_actual_and_expected_count=test_session_configuration.show_actual_and_expected_count,
+        show_actual_and_expected=test_session_configuration.show_actual_and_expected,
+        show_columns_when_actual_and_expected_are_equal=test_session_configuration.show_columns_when_actual_and_expected_are_equal,
     )

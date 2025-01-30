@@ -1,11 +1,11 @@
 ### This file contains the fixtures that are used in the tests. ###
-from pathlib import Path
 from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging.logging_configuration import configure_logging
+from testcommon.container_test import DatabricksApiClient
 from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
@@ -72,14 +72,22 @@ def contracts_path() -> str:
 
 
 @pytest.fixture(scope="session")
-def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
-    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
-    return TestSessionConfiguration.load(settings_file_path)
+def test_files_folder_path(tests_path: str) -> str:
+    return f"{tests_path}/utils/test_files"
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/utils/test_files"
+def testsession_configuration() -> TestSessionConfiguration:
+    return TestSessionConfiguration()
+
+
+@pytest.fixture(scope="session")
+def databricks_api_client(testsession_configuration: TestSessionConfiguration) -> DatabricksApiClient:
+    databricksApiClient = DatabricksApiClient(
+        testsession_configuration.container_test.databricks_token,
+        testsession_configuration.container_test.databricks_workspace_url,
+    )
+    return databricksApiClient
 
 
 @pytest.fixture(scope="session")
