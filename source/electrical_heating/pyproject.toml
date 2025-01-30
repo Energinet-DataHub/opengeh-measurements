@@ -15,6 +15,7 @@ dependencies = [
     "opengeh-pyspark @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/pyspark_functions",
     "tomli>=2.2.1",
     "databricks-sdk==0.41.0",
+    "pydantic-settings>=2.7.1",
 ]
 
 [project.scripts]
@@ -28,7 +29,6 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
-    "pydantic-settings>=2.7.1",
 ]
 
 [build-system]
