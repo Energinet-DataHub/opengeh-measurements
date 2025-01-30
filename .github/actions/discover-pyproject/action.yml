@@ -40,7 +40,5 @@ runs:
               "path": str(toml.parent)
             }
             matrix.append(project_data)
-        include_statement = json.dumps({"inputs": matrix})
-        print(include_statement)
         with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
-            print(f"matrix={include_statement}", file=fh)
+            print(f"matrix={json.dumps(matrix)}", file=fh)

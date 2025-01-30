@@ -1,4 +1,4 @@
-name: Upload Release Artifacts
+name: Upload Python Release Artifacts
 description: Upload release artifacts
 inputs:
   name:
@@ -29,29 +29,26 @@ runs:
       uses: astral-sh/setup-uv@v4
       with:
         enable-cache: true
+        ignore-nothing-to-cache: true
         cache-suffix: ${{ inputs.name }}
+        cache-dependency-glob: |
+          ${{ inputs.path }}/pyproject.toml
+          ${{ inputs.path }}/uv.lock
 
     - name: Create artifact variables
       shell: bash
       run: |
         RELEASE_DIR="${{ github.workspace }}/${{ inputs.path }}/artifacts"
-        case "${{ inputs.name }}" in
-            ${{ env.CORE_REGEX }})
-                ARTIFACT_NAME=${{ inputs.core_prefix }}-${{ inputs.name }}
-                DIST_DIR="$RELEASE_DIR"
-                ;;
-            *)
-                ARTIFACT_NAME=${{ inputs.noncore_prefix }}-${{ inputs.name }}
-                DIST_DIR="$RELEASE_DIR/${{ inputs.name }}"
-                ;;
-        esac
+        if [[ -n "${{ inputs.core_regex }}" && "${{ inputs.name }}" =~ ${{ inputs.core_regex }} ]]; then
+            ARTIFACT_NAME="${{ inputs.core_prefix }}-${{ inputs.name }}"
+            DIST_DIR="$RELEASE_DIR"
+        else
+            ARTIFACT_NAME="${{ inputs.noncore_prefix }}-${{ inputs.name }}"
+            DIST_DIR="$RELEASE_DIR/${name}"
+        fi
         echo "RELEASE_DIR=$RELEASE_DIR" >> $GITHUB_ENV
         echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
         echo "DIST_DIR=$DIST_DIR" >> $GITHUB_ENV
-
-    - name: Sync ${{ inputs.path }}
-      shell: bash
-      run: uv sync --directory ${{ inputs.path }}
 
     - name: Build ${{ inputs.path }}
       shell: bash
