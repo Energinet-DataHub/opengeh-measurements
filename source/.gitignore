@@ -1,5 +1,7 @@
 ﻿# Exclude actual local test settings files
+*.local.settings.env
 *.local.settings.yml
+
 
 # Exclude directory created by wheel creation
 *.egg-info
