@@ -1,3 +1,4 @@
+import uuid
 from unittest.mock import patch
 
 import pytest
@@ -10,7 +11,7 @@ from opengeh_capacity_settlement.application.job_args.environment_variables impo
     EnvironmentVariable,
 )
 
-DEFAULT_ORCHESTRATION_INSTANCE_ID = "12345678-9fc8-409a-a169-fbd49479d711"
+DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
 DEFAULT_CALCULATION_YEAR = 2021
 
@@ -18,7 +19,7 @@ DEFAULT_CALCULATION_YEAR = 2021
 def _get_contract_parameters(filename: str) -> list[str]:
     with open(filename) as file:
         text = file.read()
-        text = text.replace("{orchestration-instance-id}", DEFAULT_ORCHESTRATION_INSTANCE_ID)
+        text = text.replace("{orchestration-instance-id}", str(DEFAULT_ORCHESTRATION_INSTANCE_ID))
         text = text.replace("{calculation-month}", str(DEFAULT_CALCULATION_MONTH))
         text = text.replace("{calculation-year}", str(DEFAULT_CALCULATION_YEAR))
         lines = text.splitlines()
@@ -63,3 +64,5 @@ def test_when_parameters__parses_parameters_from_contract(
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
+    assert actual_args.calculation_month == DEFAULT_CALCULATION_MONTH
+    assert actual_args.calculation_year == DEFAULT_CALCULATION_YEAR
