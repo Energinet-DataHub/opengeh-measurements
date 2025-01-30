@@ -17,15 +17,15 @@ name: CD
 on:
   workflow_call:
     inputs:
-      team_name:
+      subsytem_name:
         type: string
         description: |
-          The name of the team to notify in case of a failed deployment.
+          The name of the subsystem in which the deployment is made.
         required: true
-      team_email:
+      notification_email:
         type: string
         description: |
-          The email of the team to notify in case of a failed deployment.
+          The email to use to notify in case of a failed deployment.
         required: true
       sender_email:
         type: string
@@ -101,7 +101,7 @@ jobs:
         id: create_dispatch_event_name
         run: |
           package_name=$(echo "${{ matrix.inputs.name }}" | grep -o '^.*_' | sed 's/_$//')
-          event_name="${{ inputs.team_name }}-${package_name}-deployment-request-domain"
+          event_name="${{ inputs.subsytem_name }}-${package_name}-deployment-request-domain"
           lowercase_event_name=$(echo $event_name | tr '[:upper:]' '[:lower:]')
           echo "Dispatching event: $event_name"
           echo "event_name=$event_name" >>$GITHUB_OUTPUT
@@ -119,7 +119,7 @@ jobs:
         if: ${{ failure() }}
         with:
           sendgrid-api-key: ${{ secrets.send_grid_api_key }}
-          team-name: ${{ inputs.team_name }}
-          to: ${{ inputs.team_email }}
+          team-name: ${{ inputs.subsytem_name }}
+          to: ${{ inputs.notification_email }}
           from: ${{ inputs.sender_email }}
           subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
