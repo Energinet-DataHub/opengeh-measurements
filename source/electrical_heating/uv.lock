@@ -719,7 +719,6 @@ dependencies = [
     { name = "opengeh-pyspark" },
     { name = "opengeh-telemetry" },
     { name = "pydantic-settings" },
-    { name = "pydantic-settings" },
     { name = "pyspark" },
     { name = "python-dateutil" },
     { name = "tomli" },
