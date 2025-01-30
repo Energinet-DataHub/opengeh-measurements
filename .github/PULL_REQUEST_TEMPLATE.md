@@ -4,9 +4,6 @@
 
 <!-- INSERT DESCRIPTION HERE -->
 
-## Pull-request quality
+## References
 
-<!-- Please do not remove these, but leave them checked/unchecked as information for the reviewers -->
-- [ ] The title adheres to [this guide](https://github.com/Mech0z/GitHubGuidelines)
-- [ ] Tests are written and executed locally
-- [ ] Subsystem tests have been tested (by manually deploying to `dev_002`)
+<!-- ADD RELEVANT LINKS. FOR EXAMPLE A LINK TO THE ASSOCIATED STORY -->

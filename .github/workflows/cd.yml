@@ -20,76 +20,18 @@ on:
     branches:
       - main
 
-env:
-  PACKAGES_DIR: source
-
 jobs:
-  #
-  # Build Package Matrix
-  #
-  ci_matrix:
-    name: Build Package Matrix
-    runs-on: ubuntu-24.04
-    outputs:
-      matrix: ${{ steps.package_matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Discover Pyproject
-        uses: ./.github/actions/discover-pyproject
-        id: package_matrix
-        with:
-          path: ${{ env.PACKAGES_DIR }}
-  #
-  # Deploy
-  #
-  cd_promote_prerelease:
-    name: Promote prerelease
-    runs-on: ubuntu-24.04
-    needs: ci_matrix
-    strategy:
-      matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    permissions:
-      contents: write
-      checks: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Print Inputs
-        run: |
-          echo "Path: ${{ matrix.inputs.path }}"
-          echo "Name: ${{ matrix.inputs.name }}"
-
-      - name: Check if ${{ matrix.inputs.name }} has changed
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            is_changed:
-              - ${{ matrix.inputs.path }}/**
-
-      - name: Promote prerelease
-        uses: ./.github/actions/promote-prerelease
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          release_name_prefix: ${{ matrix.inputs.name }}
-
-      - name: Dispatch Release
-        uses: ./.github/actions/dispatch-deployment-event
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          name: ${{ matrix.inputs.name }}
-          repository: ${{ vars.environment_repository_path }}
-          app_id: ${{ vars.dh3serviceaccount_appid }}
-          private_key: ${{ secrets.dh3serviceaccount_privatekey }}
-
-      - name: Notify Team of failed deployment
-        uses: Energinet-DataHub/.github/.github/actions/send-email@v14
-        if: ${{ steps.changes.outputs.is_changed == 'true' && failure() }}
-        with:
-          sendgrid-api-key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
-          team-name: Measurements
-          to: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
-          from: ${{ vars.email_internal_sender }}
-          subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
+  cd_reusable:
+    name: Continuous Deployment
+    uses: ./.github/workflows/reusable-cd.yml
+    with:
+      team_name: Measurements
+      team_email: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
+      sender_email: ${{ vars.email_internal_sender }}
+      environment_repository_path: ${{ vars.environment_repository_path }}
+      dh3serviceaccount_appid: ${{ vars.dh3serviceaccount_appid }}
+      github_token: ${{ github.token }}
+      max_release_search_depth: 1000
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+      send_grid_api_key: ${{ secrets.send_grid_api_key }}
