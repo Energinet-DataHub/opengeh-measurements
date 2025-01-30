@@ -44,7 +44,7 @@ runs:
             DIST_DIR="$RELEASE_DIR"
         else
             ARTIFACT_NAME="${{ inputs.noncore_prefix }}-${{ inputs.name }}"
-            DIST_DIR="$RELEASE_DIR/${name}"
+            DIST_DIR="$RELEASE_DIR/${{ inputs.name }}"
         fi
         echo "RELEASE_DIR=$RELEASE_DIR" >> $GITHUB_ENV
         echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
