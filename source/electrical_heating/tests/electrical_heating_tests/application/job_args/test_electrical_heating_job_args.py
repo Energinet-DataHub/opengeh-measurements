@@ -3,9 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
+    ElectricalHeatingJobArgs,
 )
 from opengeh_electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
@@ -42,6 +41,7 @@ def job_environment_variables() -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
         EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
+        EnvironmentVariable.ORCHESTRATION_INSTANCE_ID.name: str(DEFAULT_ORCHESTRATION_INSTANCE_ID),
     }
 
 
@@ -56,9 +56,7 @@ def test_when_parameters__parses_parameters_from_contract(
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
         with patch.dict("os.environ", job_environment_variables):
-            command_line_args = parse_command_line_arguments()
-            # Act
-            actual_args = parse_job_arguments(command_line_args)
+            actual_args = ElectricalHeatingJobArgs()
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
