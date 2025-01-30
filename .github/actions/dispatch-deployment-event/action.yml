@@ -1,11 +1,11 @@
 name: Dispatch Deployment Event
 description: Dispatch a deployment event
 inputs:
+  event_name:
+    description: The name of the deployment event
+    required: true
   repository:
     description: The repository name
-    required: true
-  name:
-    description: The name of the package
     required: true
   app_id:
     description: The app id
@@ -32,6 +32,6 @@ runs:
       with:
         token: ${{ steps.generate_token.outputs.token }}
         repository: ${{ inputs.repository }}
-        event-type: ${{ inputs.name }}-deployment-request-domain
+        event-type: ${{ inputs.event_name }}
         # yamllint disable-line rule:quoted-strings
         client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "${{ inputs.name }}": "true"}'
