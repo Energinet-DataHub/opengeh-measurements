@@ -52,10 +52,6 @@ def test_when_parameters__parses_parameters_from_contract(
     This test ensures that the job accepts
     the arguments that are provided by the client.
     """
-    print("job_environment_variables")
-    print(job_environment_variables)
-    print("sys_argv_from_contract")
-    print(sys_argv_from_contract)
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
         with patch.dict("os.environ", job_environment_variables):
