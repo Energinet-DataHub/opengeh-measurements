@@ -69,6 +69,7 @@ ignore = [
     "UP006",
     "UP007",
     "UP035",
+    "F401",
 ]
 exclude = ["notebooks/*"]
 
