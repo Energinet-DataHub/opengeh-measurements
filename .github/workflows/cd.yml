@@ -25,7 +25,7 @@ jobs:
     name: Continuous Deployment
     uses: ./.github/workflows/reusable-cd.yml
     with:
-      subsytem_name: Measurements
+      subsystem_name: Measurements
       notification_email: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
       sender_email: ${{ vars.email_internal_sender }}
       environment_repository_path: ${{ vars.environment_repository_path }}
