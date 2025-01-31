@@ -34,4 +34,4 @@ jobs:
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
-      send_grid_api_key: ${{ secrets.send_grid_api_key }}
+      send_grid_api_key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
