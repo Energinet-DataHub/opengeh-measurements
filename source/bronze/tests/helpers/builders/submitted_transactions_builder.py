@@ -10,7 +10,7 @@ class SubmittedTransactionsBuilder:
 
     def add_row(
         self, key=None, value=None, topic=None, partition=None, offset=None, timestamp=None, timestampType=None
-    ) -> "SubmittedTransactions":
+    ) -> "SubmittedTransactionsBuilder":
         self.data.append((key, value, topic, partition, offset, timestamp, timestampType))
 
         return self
