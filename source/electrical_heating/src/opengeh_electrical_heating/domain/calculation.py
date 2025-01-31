@@ -214,6 +214,7 @@ def _calculate_daily_quantity(time_series: DataFrame) -> DataFrame:
 
 def _find_source_metering_point_for_consumption(metering_point_periods: DataFrame) -> DataFrame:
     """Determine which metering point to use for consumption data.
+
     - For net settlement group 2: use the net consumption metering point
     - For other: use the consumption metering point (this will be updated when more net settlement groups are added)
 
