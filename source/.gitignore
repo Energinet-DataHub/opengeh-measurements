@@ -1,4 +1,5 @@
 ﻿# Exclude actual local test settings files
+.env
 *.local.settings.env
 *.local.settings.yml
 

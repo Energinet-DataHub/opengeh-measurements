@@ -1,4 +1,5 @@
 ### This file contains the fixtures that are used in the tests. ###
+from pathlib import Path
 from typing import Generator
 
 import pytest
@@ -15,6 +16,7 @@ from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measu
     measurements_bronze_v1,
 )
 from tests import PROJECT_ROOT
+from tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
@@ -77,15 +79,21 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def testsession_configuration() -> TestSessionConfiguration:
-    return TestSessionConfiguration()
+def environment_configuration() -> EnvironmentConfiguration:
+    return EnvironmentConfiguration()
 
 
 @pytest.fixture(scope="session")
-def databricks_api_client(testsession_configuration: TestSessionConfiguration) -> DatabricksApiClient:
+def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
+    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)
+
+
+@pytest.fixture(scope="session")
+def databricks_api_client(environment_configuration: EnvironmentConfiguration) -> DatabricksApiClient:
     databricksApiClient = DatabricksApiClient(
-        testsession_configuration.container_test.databricks_token,
-        testsession_configuration.container_test.databricks_workspace_url,
+        environment_configuration.databricks_token,
+        environment_configuration.databricks_workspace_url,
     )
     return databricksApiClient
 

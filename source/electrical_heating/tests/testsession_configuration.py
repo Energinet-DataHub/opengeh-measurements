@@ -1,30 +1,38 @@
-from pydantic import BaseModel
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from dataclasses import dataclass
+from pathlib import Path
 
-from tests import PROJECT_ROOT
-
-
-class ScenarioTest(BaseModel):
-    show_actual_and_expected: bool = False
-    show_columns_when_actual_and_expected_are_equal: bool = False
-    show_actual_and_expected_count: bool = False
-    ignore_extra_columns_in_actual: bool = True
+import yaml
 
 
-class ContainerTest(BaseModel):
-    databricks_token: str = ""
-    databricks_workspace_url: str = ""
+class TestSessionConfiguration:
+    """Customizable settings for a test session."""
+
+    # Pytest test classes will fire a warning if it has a constructor (__init__).
+    # To avoid a class being treated as a test class set the attribute __test__  to False.
+    __test__ = False
+
+    def __init__(self, configuration: dict):
+        self.scenario_tests = ScenarioTestsConfiguration(configuration.get("scenario_tests", {}))
+
+    @staticmethod
+    def load(path: Path) -> "TestSessionConfiguration":
+        """Load settings from a YAML file."""
+        if not path.exists():
+            return TestSessionConfiguration({})
+
+        with path.open() as stream:
+            settings = yaml.safe_load(stream)
+            return TestSessionConfiguration(settings)
 
 
-class TestSessionConfiguration(BaseSettings):
-    """The main configuration class for the test session."""
+@dataclass
+class ScenarioTestsConfiguration:
+    """Settings for scenario tests."""
 
-    model_config = SettingsConfigDict(
-        env_file=f"{PROJECT_ROOT}/tests/testsession.local.settings.env",
-        env_file_encoding="utf-8",
-        # This is the delimiter used to separate nested keys in environment variables (see the env file).
-        env_nested_delimiter="__",
-    )
-
-    scenario_test: ScenarioTest = ScenarioTest()
-    container_test: ContainerTest = ContainerTest()
+    def __init__(self, configuration: dict):
+        self.show_actual_and_expected = configuration.get("show_actual_and_expected", False)
+        self.show_columns_when_actual_and_expected_are_equal = configuration.get(
+            "show_columns_when_actual_and_expected_are_equal", False
+        )
+        self.show_actual_and_expected_count = configuration.get("show_actual_and_expected_count", False)
+        self.ignore_extra_columns_in_actual = configuration.get("ignore_extra_columns_in_actual", True)
