@@ -1,4 +1,3 @@
-﻿import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -8,21 +7,19 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from electrical_heating.application.execute_with_deps import (
+from opengeh_electrical_heating.application.execute_with_deps import (
     execute_calculation,
 )
-from electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
-from electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
+from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
     child_metering_points_v1,
 )
-from electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
+from opengeh_electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
     consumption_metering_point_periods_v1,
 )
-from electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
     time_series_points_v1,
 )
+from tests.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
 from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
@@ -61,13 +58,9 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingArgs(
-        time_zone="Europe/Copenhagen",
-        catalog_name="some_catalog_name",
-        orchestration_instance_id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
-    )
+    args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
 
-    # Execute the calculation
+    # Execute the logic
     calculation_output = execute_calculation(
         spark,
         time_series_points,

@@ -1,26 +1,12 @@
-# Copyright 2020 Energinet DataHub A/S
-#
-# Licensed under the Apache License, Version 2.0 (the "License2");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-import os
-import subprocess
-from pathlib import Path
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
+import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
+from testcommon.container_test import DatabricksApiClient
 
-from tests import PROJECT_ROOT
+from tests import PROJECT_ROOT, Path
 from tests.testsession_configuration import TestSessionConfiguration
 
 
@@ -41,9 +27,7 @@ def spark() -> Generator[SparkSession, None, None]:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    configure_logging(
-        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
-    )
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")
@@ -61,3 +45,20 @@ def contracts_path() -> str:
 def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
     settings_file_path = PROJECT_ROOT / "tests" / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
+
+
+def _load_settings_from_file(file_path: Path) -> dict:
+    if file_path.exists():
+        with file_path.open() as stream:
+            return yaml.safe_load(stream)
+    else:
+        return {}
+
+
+@pytest.fixture(scope="session")
+def databricks_api_client() -> DatabricksApiClient:
+    settings = _load_settings_from_file(PROJECT_ROOT / "tests" / "test.local.settings.yml")
+    databricks_token = settings.get("DATABRICKS_TOKEN")
+    databricks_host = settings.get("WORKSPACE_URL")
+    databricksApiClient = DatabricksApiClient(databricks_token, databricks_host)
+    return databricksApiClient

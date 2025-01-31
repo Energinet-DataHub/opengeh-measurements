@@ -16,23 +16,7 @@ permissions:
   checks: write
   pull-requests: write
 
-env:
-  PACKAGES_DIR: source
-  CORE_REGEX: bronze|silver|gold
-  CORE_PREFIX: core
-  NONCORE_PREFIX: bundle
-
 jobs:
-  #
-  # License and Markdown Check
-  #
-  ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
-    with:
-      skip_license_check: true
-    secrets:
-      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
-
   #
   # Compile Protobuf Contracts
   #
@@ -48,165 +32,31 @@ jobs:
         with:
           filters: |
             is_changed:
-              - source/bronze/src/bronze/infrastructure/contracts/**
+              - source/bronze/src/opengeh_bronze/infrastructure/contracts/**
       - name: Compile protobuf descriptor files
         uses: ./.github/actions/compile-proto
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          path: source/bronze/src/opengeh_bronze/infrastructure/contracts
 
   #
-  # Build Package Matrix
+  # Reusable CI
   #
-  ci_matrix:
-    name: Build Package Matrix
-    runs-on: ubuntu-24.04
-    outputs:
-      matrix: ${{ steps.package_matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Discover Pyproject
-        uses: ./.github/actions/discover-pyproject
-        id: package_matrix
-        with:
-          path: ${{ env.PACKAGES_DIR }}
-
-  #
-  # Test Packages
-  #
-  ci_test:
-    name: Test Packages
-    runs-on: ubuntu-24.04
-    needs: ci_matrix
-    strategy:
-      matrix: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Check if ${{ matrix.inputs.name }} has changed
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            is_changed:
-              - ${{ matrix.inputs.path }}/**
-
-      - name: Test ${{ matrix.inputs.name }}
-        uses: ./.github/actions/uvtest
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          pytest_addopts: --ignore=tests/container_tests
-
-      - name: Upload artifacts for ${{ matrix.inputs.name }}
-        uses: ./.github/actions/upload-release-artifacts
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          core_regex: ${{ env.CORE_REGEX }}
-          core_prefix: ${{ env.CORE_PREFIX }}
-          noncore_prefix: ${{ env.NONCORE_PREFIX }}
-
-  #
-  # Prepare Release Matrix
-  #
-  ci_prepare_prerelease:
-    name: Prepare prerelease
-    runs-on: ubuntu-24.04
-    needs: ci_test
-    outputs:
-      matrix: ${{ steps.create_matrix.outputs.matrix }}
-      any_artifact: ${{ steps.list_artifacts.outputs.any_artifact }}
-    steps:
-      - name: Download Core Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.CORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
-          merge-multiple: true
-
-      - name: Download Bundle Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.NONCORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/
-          merge-multiple: true
-
-      - name: List Artifacts Contents
-        id: list_artifacts
-        run: |
-          if [ -d "${{ github.workspace }}/dist" ]; then
-              ls -alR "${{ github.workspace }}/dist"
-              echo "any_artifact=true" >> $GITHUB_OUTPUT
-          else
-              echo "No artifacts found"
-              echo "any_artifact=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create release matrix
-        shell: python
-        if: ${{ steps.list_artifacts.outputs.any_artifact == 'true' }}
-        id: create_matrix
-        run: |
-          from pathlib import Path
-          import json
-          import os
-          artifacts = []
-          for p in Path("${{ github.workspace }}/dist").iterdir():
-              if p.is_dir():
-                  artifacts.append({"name": p.name, "path": str(p)})
-          print(json.dumps({"inputs": artifacts}, indent=2))
-          include_statement = json.dumps({"inputs": artifacts})
-          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
-              print(f"matrix={include_statement}", file=fh)
-
-  ci_create_prerelease:
-    name: Create prerelease
-    runs-on: ubuntu-24.04
-    needs: ci_prepare_prerelease
-    if: ${{ needs.ci_prepare_prerelease.outputs.any_artifact == 'true' }}
-    strategy:
-      matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Core Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.CORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
-          merge-multiple: true
-
-      - name: Download Bundle Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.NONCORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/
-          merge-multiple: true
-
-      - name: Create prerelease for ${{ matrix.inputs.name }}
-        uses: ./.github/actions/create-prerelease
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          issue-number: ${{ github.event.number }}
+  ci_reusable:
+    name: Continuous Integration
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      packages_directory: source
+      core_regex: opengeh_bronze|opengeh_silver|opengeh_gold
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs:
-      [
-        ci_base,
-        ci_bronze_contracts,
-        ci_matrix,
-        ci_test,
-        ci_prepare_prerelease,
-        ci_create_prerelease,
-      ]
+    needs: [ci_bronze_contracts, ci_reusable]
     if: |
       always()
     steps:

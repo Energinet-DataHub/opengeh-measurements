@@ -1,4 +1,4 @@
-﻿import tomli
+import tomli
 
 from tests import PROJECT_ROOT
 
@@ -8,4 +8,4 @@ def test__entry_point_exists() -> None:
         pyproject = tomli.load(file)
         project = pyproject.get("project", {})
     scripts = project.get("scripts", {})
-    assert "execute" in scripts, f"`execute` not found in scripts"
+    assert "execute" in scripts, "`execute` not found in scripts"

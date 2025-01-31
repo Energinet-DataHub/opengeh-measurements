@@ -6,10 +6,12 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "opengeh-spark-sql-migrations @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/spark_sql_migrations",
+    "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.3#subdirectory=source/telemetry",
 ]
 
 [project.scripts]
-migrate = "gold.entry_points:migrate"
+migrate = "opengeh_gold.entry_points:migrate_gold"
+stream = "opengeh_gold.entry_points:stream_silver_to_gold_measurements"
 
 [dependency-groups]
 dev = [
@@ -30,12 +32,9 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/gold"]
-
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output. 
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=gold -ra -vv -s"
+addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_gold -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0

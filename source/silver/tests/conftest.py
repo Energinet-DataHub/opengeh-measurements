@@ -1,19 +1,21 @@
-﻿import os
+import os
 from typing import Callable, Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import silver.application.services.migrations as migrations
-from silver.domain.constants.database_names import DatabaseNames
+from opengeh_silver.infrastructure.config.database_names import DatabaseNames
+from opengeh_silver.migrations import migrations_runner
 
 
 def pytest_runtest_setup() -> None:
     """
     This function is called before each test function is executed.
     """
+    os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"] = "app_conn_str"
     os.environ["CATALOG_NAME"] = "spark_catalog"
+    os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
 
 
 @pytest.fixture(scope="session")
@@ -57,13 +59,17 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     session.stop()
 
 
+def _create_schemas(spark: SparkSession) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
+
+
 @pytest.fixture(scope="session")
 def migrate(spark: SparkSession) -> None:
     """
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
     """
-    migrations.migrate()
+    migrations_runner.migrate()
 
 
 @pytest.fixture(scope="session")
@@ -103,5 +109,9 @@ def tests_path(source_path: str) -> str:
     return f"{source_path}/silver/tests"
 
 
-def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver_database}")
+@pytest.fixture(autouse=True)
+def configure_dummy_logging() -> None:
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+    from telemetry_logging.logging_configuration import configure_logging
+
+    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")

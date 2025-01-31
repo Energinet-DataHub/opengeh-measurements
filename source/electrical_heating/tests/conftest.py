@@ -8,11 +8,17 @@ from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
-from electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
     measurements_bronze_v1,
+)
+from opengeh_electrical_heating.infrastructure.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabase,
+)
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+    time_series_points_v1,
 )
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
@@ -98,3 +104,24 @@ def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     measurements = read_from_csv(spark, file_name)
 
     return create_measurements_dataframe(spark, measurements)
+
+
+@pytest.fixture(scope="session")
+def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+    create_database(spark, MeasurementsGoldDatabase.DATABASE_NAME)
+
+    create_table(
+        spark,
+        database_name=MeasurementsGoldDatabase.DATABASE_NAME,
+        table_name=MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
+        schema=time_series_points_v1,
+        table_location=f"{MeasurementsGoldDatabase.DATABASE_NAME}/{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+    )
+
+    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabase.DATABASE_NAME}-{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}.csv"
+    time_series_points = read_from_csv(spark, file_name)
+    time_series_points.write.saveAsTable(
+        f"{MeasurementsGoldDatabase.DATABASE_NAME}.{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+        format="delta",
+        mode="overwrite",
+    )
