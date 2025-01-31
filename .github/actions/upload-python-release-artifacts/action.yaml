@@ -73,7 +73,7 @@ runs:
             if [ -d "PYPROJECT_PATH/__pycache__" ]; then
                 rm -rf PYPROJECT_PATH/__pycache__
             fi
-            mv $CONTAINER_TEST_PATH ${{ env.DIST_DIR }}
+            mv $PYPROJECT_PATH ${{ env.DIST_DIR }}
         fi
 
     - name: Upload Artifacts
