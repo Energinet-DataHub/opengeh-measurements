@@ -29,7 +29,8 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-containers",
+        "grapecity.gc-excelviewer"
       ],
       "settings": {
         "search.exclude": {
@@ -87,7 +88,10 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        }
+        },
+        "csv-preview.separator": ";",
+        "csv-preview.lineNumbers": "ordinal",
+        "csv-preview.resizeColumns": "all"
       }
     }
   }
