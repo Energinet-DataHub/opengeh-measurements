@@ -1,19 +1,19 @@
-import os
-
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
-from pyspark.sql.protobuf.functions import to_protobuf
+from pyspark.sql.protobuf.functions import from_protobuf, to_protobuf
 
+import opengeh_bronze.infrastructure.helpers.path_helper as path_helper
 from opengeh_bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
 )
 
-message_name = "Measurement"
+alias_name = "measurement"
 
 
-def transform(unpacked_bronze_measurements: DataFrame) -> DataFrame:
-    return unpacked_bronze_measurements.transform(prepare_measurement).transform(pack_proto)
+def transform(submitted_transactions: DataFrame) -> DataFrame:
+    unpacked_submitted_transactions = unpack_submitted_transactions(submitted_transactions)
+    return unpacked_submitted_transactions.transform(prepare_measurement).transform(pack_proto)
 
 
 def prepare_measurement(df):
@@ -27,10 +27,26 @@ def prepare_measurement(df):
     )
 
 
-def pack_proto(df):
-    # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
-    # TODO: Figure out a better solution!
-    descriptor_file = (
-        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
+def pack_proto(df) -> DataFrame:
+    descriptor_path = path_helper.get_protobuf_descriptor_path("submitted_transaction_persisted.binpb")
+    message_name = "SubmittedTransactionPersisted"
+    return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_path))
+
+
+def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
+    """Unpacks the protobuf message and maps the fields to the correct columns."""
+    return bronze_measurements.transform(unpack_proto).transform(map_message)
+
+
+def unpack_proto(df):
+    descriptor_path = path_helper.get_protobuf_descriptor_path("persist_submitted_transaction.binpb")
+    message_name = "PersistSubmittedTransaction"
+    return df.select(from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name))
+
+
+def map_message(df):
+    return df.select(
+        f"{alias_name}.{ValueColumnNames.version}",
+        f"{alias_name}.{ValueColumnNames.orchestration_instance_id}",
+        f"{alias_name}.{ValueColumnNames.orchestration_type}",
     )
-    return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_file))
