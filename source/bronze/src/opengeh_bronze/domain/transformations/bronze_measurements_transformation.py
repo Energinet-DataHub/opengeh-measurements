@@ -14,9 +14,7 @@ def transform(bronze_measurements: DataFrame) -> DataFrame:
 def unpack_proto(df):
     # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
     # TODO: Figure out a better solution!
-    descriptor_file = (
-        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-    )
+    descriptor_file = os.path.abspath("../../infrastructure/contracts/assets/persist_submitted_transaction.binpb")
 
     return df.select(
         from_protobuf(df.value, message_name, descFilePath=descriptor_file).alias("measurement"), "properties"
