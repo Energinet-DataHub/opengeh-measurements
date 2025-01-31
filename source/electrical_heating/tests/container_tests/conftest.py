@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 from testcommon.container_test import DatabricksApiClient
 
 from tests.environment_configuration import EnvironmentConfiguration
