@@ -73,7 +73,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingJobArgs) -> N
         execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.catalog_name)
+    electricity_market_repository = em.Repository(spark, args.electricity_market_data_path)
     measurements_gold_repository = mg.Repository(spark, args.catalog_name)
     electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
 
