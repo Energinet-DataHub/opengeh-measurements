@@ -13,7 +13,8 @@ def execute() -> None:
     electrical_heating_args = CapacitySettlementArgs()  # Retrieve calculation oriented settings / job arguments
     logging_settings = logging_configuration.LoggingSettings()  # Retrieve logging oriented settings
     logging_configuration.configure_logging(  # Automatically adds the orchestration-instance-id as part of the extras
-        logging_settings=logging_settings
+        logging_settings=logging_settings,
+        extras=None
     )
     # Add another extra (added to all logging messages as properties)
     logging_configuration.add_extras({"tracer_name": TRACER_NAME})
