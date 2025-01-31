@@ -88,7 +88,8 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        }
+        },
+        "csv-edit.readOption_hasHeader": "true"
       }
     }
   }
