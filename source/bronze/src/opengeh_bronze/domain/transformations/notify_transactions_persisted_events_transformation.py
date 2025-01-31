@@ -30,5 +30,7 @@ def prepare_measurement(df):
 def pack_proto(df):
     # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
     # TODO: Figure out a better solution!
-    descriptor_file = os.path.abspath("../../infrastructure/contracts/assets/submitted_transaction_persisted.binpb")
+    descriptor_file = (
+        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
+    )
     return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_file))
