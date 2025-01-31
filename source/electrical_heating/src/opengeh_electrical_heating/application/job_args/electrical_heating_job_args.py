@@ -12,6 +12,7 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
 )
 from opengeh_electrical_heating.application.job_args.environment_variables import (
     get_catalog_name,
+    get_electricity_market_data_path,
     get_time_zone,
 )
 
@@ -31,6 +32,7 @@ def parse_job_arguments(
             catalog_name=get_catalog_name(),
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
+            electricity_market_data_path=get_electricity_market_data_path(),
         )
 
     return electrical_heating_args
