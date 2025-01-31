@@ -1,4 +1,4 @@
-﻿from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
+from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
 
 
 class CapacitySettlementTestArgs(CapacitySettlementArgs):

@@ -1,4 +1,5 @@
 import sys
+from typing import Optional
 
 import telemetry_logging.logging_configuration as config
 from opentelemetry.trace import SpanKind
@@ -17,7 +18,7 @@ from opengeh_silver.infrastructure.streams import writer
 from opengeh_silver.infrastructure.streams.bronze_repository import BronzeRepository
 
 
-def execute(applicationinsights_connection_string: str = None) -> None:
+def execute(applicationinsights_connection_string: Optional[str] = None) -> None:
     """Start overload with explicit dependencies for easier testing."""
     config.configure_logging(
         cloud_role_name="dbr-measurements-silver",
