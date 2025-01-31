@@ -1,11 +1,8 @@
+import os
+
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf
 
-# This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
-# TODO: Figure out a better solution!
-descriptor_file = (
-    "/source/bronze/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-)
 message_name = "Measurement"
 
 
@@ -15,6 +12,12 @@ def transform(bronze_measurements: DataFrame) -> DataFrame:
 
 
 def unpack_proto(df):
+    # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
+    # TODO: Figure out a better solution!
+    descriptor_file = (
+        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
+    )
+
     return df.select(
         from_protobuf(df.value, message_name, descFilePath=descriptor_file).alias("measurement"), "properties"
     ).select("measurement.*", "properties")

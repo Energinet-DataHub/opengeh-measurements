@@ -1,3 +1,5 @@
+import os
+
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import to_protobuf
@@ -7,11 +9,6 @@ from opengeh_bronze.domain.constants.column_names.bronze_submitted_transactions_
     ValueColumnNames,
 )
 
-# This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
-# TODO: Figure out a better solution!
-descriptor_file = (
-    "/source/bronze/src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
-)
 message_name = "Measurement"
 
 
@@ -31,4 +28,9 @@ def prepare_measurement(df):
 
 
 def pack_proto(df):
+    # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
+    # TODO: Figure out a better solution!
+    descriptor_file = (
+        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
+    )
     return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_file))
