@@ -9,6 +9,7 @@ from telemetry_logging import use_span
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
+from opengeh_capacity_settlement.domain.calculation_output import CalculationOutput
 
 
 class ColumNames:
@@ -32,12 +33,15 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
 def execute_core_logic(
+    spark: SparkSession,
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
-) -> DataFrame:
+) -> CalculationOutput:
+    calculation_output = CalculationOutput()
+
     metering_point_periods = _add_selection_period_columns(
         metering_point_periods,
         calculation_month=calculation_month,
@@ -51,11 +55,15 @@ def execute_core_logic(
 
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
-    return times_series_points.select(
+    calculation_output.measurements =  times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity),
     )
+
+    calculation_output.calculations = spark.createDataFrame([], schema="")
+
+    return calculation_output
 
 
 def _add_selection_period_columns(
@@ -64,10 +72,11 @@ def _add_selection_period_columns(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-    """Adds the selection period columns to the metering point periods DataFrame.
+    """Add the selection period columns to the metering point periods DataFrame.
+
     The selection period is the period used to calculate the average of the ten largest quantities.
     The selection period is the last year up to the end of the calculation month.
-    TODO: JMG: Should also support shorter metering point periods
+    TODO: JMG: Should also support shorter metering point periods.
     """
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)

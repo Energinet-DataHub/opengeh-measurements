@@ -10,6 +10,7 @@ dependencies = [
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
     "opengeh-telemetry @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/telemetry",
+    "pydantic-settings>=2.7.1",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
     "databricks-sdk==0.41.0",

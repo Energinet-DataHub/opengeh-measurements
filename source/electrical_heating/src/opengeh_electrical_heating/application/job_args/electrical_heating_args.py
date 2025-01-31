@@ -7,5 +7,5 @@ class ElectricalHeatingArgs(BaseSettings):
     """Args for the electrical heating job."""
 
     orchestration_instance_id: UUID
-    time_zone: str
+    time_zone: str = "Europe/Copenhagen"
     catalog_name: str
