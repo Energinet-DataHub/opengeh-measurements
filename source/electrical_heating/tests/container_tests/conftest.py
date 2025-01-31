@@ -12,6 +12,6 @@ def environment_configuration() -> EnvironmentConfiguration:
 def databricks_api_client(environment_configuration: EnvironmentConfiguration) -> DatabricksApiClient:
     databricksApiClient = DatabricksApiClient(
         environment_configuration.databricks_token,
-        environment_configuration.databricks_workspace_url,
+        environment_configuration.workspace_url,
     )
     return databricksApiClient

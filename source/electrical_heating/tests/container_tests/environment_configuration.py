@@ -12,7 +12,7 @@ class EnvironmentConfiguration(BaseSettings):
     i CD."""
 
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
-    databricks_workspace_url: str = Field(alias="DATABRICKS_WORKSPACE_URL")
+    workspace_url: str = Field(alias="WORKSPACE_URL")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/tests/.env",
