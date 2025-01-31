@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 
 import opengeh_bronze.application.config.spark_session as spark_session
-import opengeh_bronze.domain.transformations.bronze_measurements_transformations as bronze_measurements_transformations
+import opengeh_bronze.domain.transformations.bronze_measurements_transformation as bronze_measurements_transformation
 import opengeh_bronze.domain.transformations.notify_transactions_persisted_events_transformation as notify_transactions_persisted_events_transformation
 import opengeh_bronze.infrastructure.streams.writer as writer
 from opengeh_bronze.infrastructure.streams.bronze_repository import BronzeRepository
@@ -16,7 +16,7 @@ def notify() -> None:
 
 
 def notify_transactions_persisted(bronze_measurements: DataFrame, batch_id: int) -> None:
-    unpackaged_measurements = bronze_measurements_transformations.transform(bronze_measurements)
+    unpackaged_measurements = bronze_measurements_transformation.transform(bronze_measurements)
     notify_transactions_persisted_events = notify_transactions_persisted_events_transformation.transform(
         unpackaged_measurements
     )
