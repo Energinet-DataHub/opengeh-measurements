@@ -18,7 +18,7 @@ dependencies = [
 [project.scripts]
 execute = "opengeh_capacity_settlement.entry_point:execute"
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "commitizen>=4.1.0",
     "mypy>=1.14.1",
@@ -28,6 +28,9 @@ dev = [
     "ruff>=0.9.1",
     "databricks-sdk==0.41.0",
 ]
+
+[dependency-groups]
+dev = ["opengeh_capacity_settlement[dev]"]
 
 [build-system]
 requires = ["hatchling"]
