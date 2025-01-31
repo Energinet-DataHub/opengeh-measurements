@@ -82,6 +82,7 @@ def execute_core_logic(
         consumption_daily,
         metering_point_periods,
     )
+    consumption_with_metering_point_periods.show()
     consumption = _filter_parent_child_overlap_period_and_year(consumption_with_metering_point_periods)
     consumption = _aggregate_quantity_over_period(consumption)
     electrical_heating = _impose_period_quantity_limit(consumption)
@@ -89,7 +90,7 @@ def execute_core_logic(
 
     electrical_heating = convert_to_utc(electrical_heating, time_zone)
 
-    return electrical_heating
+    return electrical_heating.orderBy(F.col("metering_point_id"), F.col("date"))
 
 
 def _filter_unchanged_electrical_heating(
@@ -359,7 +360,7 @@ def _join_children_to_parent_metering_point(
         .join(
             child_metering_point_and_periods.alias("d15"),
             F.col("d15.metering_point_id") == F.col("parent.metering_point_id"),
-            "inner",
+            "left",
         )
         .select(
             F.col("parent.metering_point_id").alias("parent_metering_point_id"),
