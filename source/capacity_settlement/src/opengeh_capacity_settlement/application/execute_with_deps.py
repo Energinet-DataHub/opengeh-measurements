@@ -60,7 +60,7 @@ def execute_with_deps(
             sys.exit(4)
 
 
-@use_span
+@use_span()
 def _execute_with_deps(job_arguments: CapacitySettlementArgs):
     logger = Logger(__name__)
     logger.info(f"CHBA Command line arguments are the following: {job_arguments}")
