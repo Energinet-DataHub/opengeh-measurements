@@ -15,6 +15,7 @@ from opengeh_capacity_settlement.domain.calculation_output import CalculationOut
 class ColumNames:
     # Input/output column names from contracts
     date = "date"
+    child_metering_point_id = "child_metering_point_id"
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
@@ -55,7 +56,9 @@ def execute_core_logic(
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
     calculation_output.measurements = times_series_points.select(
-        ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity
+        F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
+        F.col(ColumNames.date),
+        F.col(ColumNames.quantity),
     )
 
     calculation_output.calculations = spark.createDataFrame([], schema="")
@@ -102,6 +105,7 @@ def _average_ten_largest_quantities_in_selection_periods(
         ColumNames.metering_point_id,
         ColumNames.selection_period_start,
         ColumNames.selection_period_end,
+        ColumNames.child_metering_point_id,
     ]
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
