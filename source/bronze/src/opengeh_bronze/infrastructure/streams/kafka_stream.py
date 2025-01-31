@@ -28,7 +28,10 @@ class KafkaStream:
             f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
         )
 
-    def write_stream(self, dataframe: DataFrame):
+    def write_stream(
+        self,
+        dataframe: DataFrame,
+    ):
         checkpointLocation = shared_helpers.get_checkpoint_path(
             StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "processed_transactions"
         )
