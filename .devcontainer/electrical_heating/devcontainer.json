@@ -30,7 +30,7 @@
         "tamasfe.even-better-toml",
         "ms-python.python",
         "ms-vscode-remote.remote-containers",
-        "grapecity.gc-excelviewer"
+        "janisdd.vscode-edit-csv"
       ],
       "settings": {
         "search.exclude": {
@@ -88,10 +88,7 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        },
-        "csv-preview.separator": ";",
-        "csv-preview.lineNumbers": "ordinal",
-        "csv-preview.resizeColumns": "all"
+        }
       }
     }
   }
