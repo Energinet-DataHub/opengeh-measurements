@@ -64,9 +64,11 @@ jobs:
       matrix: ${{ steps.release_matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Find associated pull request
         uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
         id: find_pull_request
+
       - name: Set Matrix
         id: release_matrix
         env:
@@ -91,6 +93,8 @@ jobs:
       checks: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+
       - name: Promote prerelease
         uses: ./.github/actions/promote-prerelease
         with:
