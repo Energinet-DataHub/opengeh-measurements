@@ -9,3 +9,4 @@ class ElectricalHeatingArgs(BaseSettings):
     orchestration_instance_id: UUID
     time_zone: str = "Europe/Copenhagen"
     catalog_name: str
+    electricity_market_data_path: str
