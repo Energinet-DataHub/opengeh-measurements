@@ -740,6 +740,7 @@ requires-dist = [
     { name = "databricks-sdk", specifier = "==0.41.0" },
     { name = "delta-spark", specifier = "==3.2.0" },
     { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.3.0" },
+    { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
 ]

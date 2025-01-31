@@ -6,7 +6,6 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging.logging_configuration import configure_logging
-from testcommon.container_test import DatabricksApiClient
 from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
@@ -87,15 +86,6 @@ def environment_configuration() -> EnvironmentConfiguration:
 def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
     settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
-
-
-@pytest.fixture(scope="session")
-def databricks_api_client(environment_configuration: EnvironmentConfiguration) -> DatabricksApiClient:
-    databricksApiClient = DatabricksApiClient(
-        environment_configuration.databricks_token,
-        environment_configuration.databricks_workspace_url,
-    )
-    return databricksApiClient
 
 
 @pytest.fixture(scope="session")
