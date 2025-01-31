@@ -1,7 +1,7 @@
-import os
-
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf
+
+import opengeh_bronze.infrastructure.helpers.path_helper as path_helper
 
 message_name = "PersistSubmittedTransaction"
 alias_name = "measurement"
@@ -13,13 +13,8 @@ def transform(bronze_measurements: DataFrame) -> DataFrame:
 
 
 def unpack_proto(df):
-    # This is currently a hidden import. The protobuf file is compiled to this location in the CI pipeline.
-    # TODO: Figure out a better solution!
-    descriptor_file = (
-        f"{os.getcwd()}/src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-    )
-
-    return df.select(from_protobuf(df.value, message_name, descFilePath=descriptor_file).alias(alias_name))
+    descriptor_path = path_helper.get_protobuf_descriptor_path("persist_submitted_transaction.binpb")
+    return df.select(from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name))
 
 
 def map_message(df):
