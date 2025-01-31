@@ -1,9 +1,5 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from opengeh_electrical_heating.infrastructure.electricity_market.database_definitions import (
-    Database,
-)
-
 
 class Repository:
     def __init__(
@@ -17,10 +13,3 @@ class Repository:
     def save(self, calculation: DataFrame) -> None:
         # TODO Will implemented in another PR.
         pass
-
-    def _read_view_or_table(
-        self,
-        table_name: str,
-    ) -> DataFrame:
-        name = f"{self._catalog_name}.{Database.DATABASE_NAME}.{table_name}"
-        return self._spark.read.format("delta").table(name)
