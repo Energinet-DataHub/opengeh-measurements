@@ -82,7 +82,7 @@ jobs:
     name: Promote prerelease
     runs-on: ubuntu-24.04
     needs: cd_release_matrix
-    if: ${{ needs.cd_release_matrix.outputs.matrix != '' }}
+    if: ${{ needs.cd_release_matrix.outputs.matrix != '[]' }}
     strategy:
       matrix:
         inputs: ${{ fromJson(needs.cd_release_matrix.outputs.matrix) }}
@@ -121,4 +121,4 @@ jobs:
           team-name: ${{ inputs.subsystem_name }}
           to: ${{ inputs.notification_email }}
           from: ${{ inputs.sender_email }}
-          subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
+          subject: "Deployment Failed: Measurements '${{ matrix.inputs.name }}'"
