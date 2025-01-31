@@ -7,6 +7,7 @@ from typing import Any
 class EnvironmentVariable(Enum):
     CATALOG_NAME = "CATALOG_NAME"
     TIME_ZONE = "TIME_ZONE"
+    ELECTRICITY_MARKET_DATA_PATH = "ELECTRICITY_MARKET_DATA_PATH"
 
 
 def get_catalog_name() -> str:
@@ -15,6 +16,10 @@ def get_catalog_name() -> str:
 
 def get_time_zone() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.TIME_ZONE)
+
+
+def get_electricity_market_data_path() -> str:
+    return get_env_variable_or_throw(EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH)
 
 
 def get_env_variable_or_throw(variable: EnvironmentVariable) -> Any:
