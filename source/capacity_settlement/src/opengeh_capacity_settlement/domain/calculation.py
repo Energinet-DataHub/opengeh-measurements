@@ -55,7 +55,7 @@ def execute_core_logic(
 
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
-    calculation_output.measurements =  times_series_points.select(
+    calculation_output.measurements = times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity),
