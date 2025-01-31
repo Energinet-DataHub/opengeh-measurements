@@ -38,7 +38,7 @@ build-backend = "hatchling.build"
 allow-direct-references = true
 
 [tool.pytest.ini_options]
-# -s ensures that print("<text>") is written to output. 
+# -s ensures that print("<text>") is written to output.
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_electrical_heating -ra -vv -s"
 
 [tool.coverage.report]
@@ -79,5 +79,5 @@ convention = "google"
 
 [tool.uv.sources]
 opengeh-telemetry = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/telemetry", rev = "3.1.1" }
-opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.1.1" }
-opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.1.1" }
+opengeh-testcommon = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/testcommon", rev = "3.3.0" }
+opengeh-pyspark = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages", subdirectory = "source/pyspark_functions", rev = "3.3.1" }
