@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from testcommon.container_test import DatabricksApiClient
 
@@ -10,7 +12,7 @@ def test__databricks_job_starts_and_stops_successfully(databricks_api_client: Da
         # Arrange
         job_id = databricks_api_client.get_job_id("ElectricalHeating")
         params = [
-            "--orchestration-instance-id={str(uuid.uuid4())}",
+            f"--orchestration-instance-id={str(uuid.uuid4())}",
         ]
 
         # Act
