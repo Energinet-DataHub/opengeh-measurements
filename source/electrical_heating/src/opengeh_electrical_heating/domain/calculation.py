@@ -352,6 +352,7 @@ def _join_children_to_parent_metering_point(
 ) -> DataFrame:
     return (
         parent_metering_point_and_periods.alias("parent")
+        # Inner join because there is no reason to calculate if there is no electrical heating metering point
         .join(
             child_metering_point_and_periods.where(
                 F.col("metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value
@@ -359,6 +360,8 @@ def _join_children_to_parent_metering_point(
             F.col("electrical_heating.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "inner",
         )
+        # Left join because there is - and need - not always be a net consumption metering point
+        # Net consumption is only relevant for net settlement group 2
         .join(
             child_metering_point_and_periods.where(
                 F.col("metering_point_type") == em.MeteringPointType.NET_CONSUMPTION.value
