@@ -69,10 +69,11 @@ def _add_selection_period_columns(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-    """Adds the selection period columns to the metering point periods DataFrame.
+    """Add the selection period columns to the metering point periods DataFrame.
+
     The selection period is the period used to calculate the average of the ten largest quantities.
     The selection period is the last year up to the end of the calculation month.
-    TODO: JMG: Should also support shorter metering point periods
+    TODO: JMG: Should also support shorter metering point periods.
     """
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)
