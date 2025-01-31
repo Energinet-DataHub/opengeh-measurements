@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-execute_silver_stream = "opengeh_silver.entry_points:stream_calculated_measurements"
+stream_calculated_measurements = "opengeh_silver.entry_points:stream_calculated_measurements"
 migrate = "opengeh_silver.entry_points:migrate"
 
 [dependency-groups]
