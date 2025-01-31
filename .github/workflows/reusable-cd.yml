@@ -106,13 +106,13 @@ jobs:
           package_name=$(echo "${{ matrix.inputs.name }}" | grep -o '^.*_' | sed 's/_$//')
           event_name="${{ inputs.subsystem_name }}-${package_name}-deployment-request-domain"
           lowercase_event_name=$(echo $event_name | tr '[:upper:]' '[:lower:]')
-          echo "Dispatching event: $event_name"
-          echo "event_name=$event_name" >>$GITHUB_OUTPUT
+          echo "Dispatching event: $lowercase_event_name"
+          echo "event_name=$lowercase_event_name" >>$GITHUB_OUTPUT
 
       - name: Dispatch Release
         uses: ./.github/actions/dispatch-deployment-event
         with:
-          name: ${{ steps.create_dispatch_event_name.outputs.event_name }}
+          event_name: ${{ steps.create_dispatch_event_name.outputs.event_name }}
           repository: ${{ inputs.environment_repository_path }}
           app_id: ${{ inputs.dh3serviceaccount_appid }}
           private_key: ${{ secrets.dh3serviceaccount_privatekey }}

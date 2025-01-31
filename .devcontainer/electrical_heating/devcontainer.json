@@ -30,7 +30,8 @@
         "tamasfe.even-better-toml",
         "ms-python.python",
         "ms-vscode-remote.remote-containers",
-        "janisdd.vscode-edit-csv"
+        "janisdd.vscode-edit-csv",
+        "mechatroner.rainbow-csv"
       ],
       "settings": {
         "search.exclude": {
