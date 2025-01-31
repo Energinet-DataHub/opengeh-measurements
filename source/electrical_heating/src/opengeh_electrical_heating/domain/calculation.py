@@ -82,7 +82,6 @@ def execute_core_logic(
         consumption_daily,
         metering_point_periods,
     )
-    consumption_with_metering_point_periods.show()
     consumption = _filter_parent_child_overlap_period_and_year(consumption_with_metering_point_periods)
     consumption = _aggregate_quantity_over_period(consumption)
     electrical_heating = _impose_period_quantity_limit(consumption)
@@ -353,13 +352,17 @@ def _join_children_to_parent_metering_point(
     return (
         parent_metering_point_and_periods.alias("parent")
         .join(
-            child_metering_point_and_periods.alias("d14"),
+            child_metering_point_and_periods.where(
+                F.col("metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value
+            ).alias("d14"),
             F.col("d14.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "inner",
         )
         .join(
-            child_metering_point_and_periods.alias("d15"),
-            F.col("d15.metering_point_id") == F.col("parent.metering_point_id"),
+            child_metering_point_and_periods.where(
+                F.col("metering_point_type") == em.MeteringPointType.NET_CONSUMPTION.value
+            ).alias("d15"),
+            F.col("d15.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "left",
         )
         .select(
