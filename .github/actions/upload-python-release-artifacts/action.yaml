@@ -65,6 +65,17 @@ runs:
             mv $CONTAINER_TEST_PATH ${{ env.DIST_DIR }}
         fi
 
+    - name: Copy pyproject.toml from ${{ inputs.path }}
+      shell: bash
+      run: |
+        PYPROJECT_PATH="${{ inputs.path }}/pyproject.toml"
+        if [ -d "PYPROJECT_PATH" ]; then
+            if [ -d "PYPROJECT_PATH/__pycache__" ]; then
+                rm -rf PYPROJECT_PATH/__pycache__
+            fi
+            mv $CONTAINER_TEST_PATH ${{ env.DIST_DIR }}
+        fi
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
