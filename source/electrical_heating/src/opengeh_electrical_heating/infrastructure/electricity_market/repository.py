@@ -55,7 +55,9 @@ def _read_csv(
     # but you are trying to read from `https://stelmarketshresdwe002.blob.core.windows.net/electrical-heating/consumption_metering_point_periods_v1.csv` using format("csv"). You must use
     # 'format("delta")' when reading and writing to a delta table.
     # When using: raw_df = spark.read.csv(path, header=True, sep=sep)
-    raw_df = spark.read.format("csv").option("header", "true").option("delimiter", ";").load(path)
+    # raw_df = spark.read.format("csv").option("header", "true").option("delimiter", ";").load(path)
+
+    raw_df = spark.read.format("delta").load(path)
 
     # Check each column to see if all values are "[IGNORED]"
     ignore_check = raw_df.agg(*[F.every(F.col(c) == F.lit(ignored_value)).alias(c) for c in raw_df.columns]).collect()
