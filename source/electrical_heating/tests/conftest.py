@@ -15,7 +15,6 @@ from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measu
     measurements_bronze_v1,
 )
 from tests import PROJECT_ROOT
-from tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
@@ -75,11 +74,6 @@ def contracts_path() -> str:
 @pytest.fixture(scope="session")
 def test_files_folder_path(tests_path: str) -> str:
     return f"{tests_path}/utils/test_files"
-
-
-@pytest.fixture(scope="session")
-def environment_configuration() -> EnvironmentConfiguration:
-    return EnvironmentConfiguration()
 
 
 @pytest.fixture(scope="session")

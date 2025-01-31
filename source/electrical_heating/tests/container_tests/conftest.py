@@ -1,7 +1,12 @@
 import pytest
 from testcommon.container_test import DatabricksApiClient
 
-from tests.environment_configuration import EnvironmentConfiguration
+from tests.container_tests.environment_configuration import EnvironmentConfiguration
+
+
+@pytest.fixture(scope="session")
+def environment_configuration() -> EnvironmentConfiguration:
+    return EnvironmentConfiguration()
 
 
 @pytest.fixture(scope="session")
