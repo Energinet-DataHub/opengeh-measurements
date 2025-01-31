@@ -55,6 +55,6 @@ def test__execute() -> None:
         # assert
         mock_CapacitySettlementArgs.assert_called_once()
         mock_logging_settings.assert_called_once()
-        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value)
+        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value, extras=None)
         mock_add_extras.assert_called_once_with({"tracer_name": expected_tracer_name})
         mock_orchestrate_business_logic.assert_called_once()  # Patching/mocking this function forces the function not to run
