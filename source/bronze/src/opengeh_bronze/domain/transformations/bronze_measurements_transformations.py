@@ -16,7 +16,7 @@ def transform(bronze_measurements: DataFrame) -> DataFrame:
 
 def unpack_proto(df):
     return df.select(
-        from_protobuf(df.body, message_name, descFilePath=descriptor_file).alias("measurement"), "properties"
+        from_protobuf(df.value, message_name, descFilePath=descriptor_file).alias("measurement"), "properties"
     ).select("measurement.*", "properties")
 
 
