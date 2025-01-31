@@ -1,5 +1,5 @@
 import pytest
-from container_tests.environment_configuration import EnvironmentConfiguration
+from environment_configuration import EnvironmentConfiguration
 from testcommon.container_test import DatabricksApiClient
 
 
