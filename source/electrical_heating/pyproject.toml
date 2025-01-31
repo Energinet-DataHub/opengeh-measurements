@@ -15,21 +15,24 @@ dependencies = [
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
     "tomli>=2.2.1",
-    "databricks-sdk==0.41.0",
 ]
 
 [project.scripts]
 execute = "opengeh_electrical_heating.entry_point:execute"
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "commitizen>=4.1.0",
     "mypy>=1.14.1",
-    "opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/testcommon",
+    "opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/testcommon",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
+    "databricks-sdk==0.41.0",
 ]
+
+[dependency-groups]
+dev = ["opengeh_electrical_heating[dev]"]
 
 [build-system]
 requires = ["hatchling"]
