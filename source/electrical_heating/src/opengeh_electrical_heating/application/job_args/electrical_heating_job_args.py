@@ -12,6 +12,7 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
 )
 from opengeh_electrical_heating.application.job_args.environment_variables import (
     get_catalog_name,
+    get_electricity_market_data_path,
     get_time_zone,
 )
 
@@ -31,6 +32,7 @@ def parse_job_arguments(
             catalog_name=get_catalog_name(),
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
+            electricity_market_data_path=get_electricity_market_data_path(),
         )
 
     return electrical_heating_args
@@ -54,7 +56,7 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
 
 def valid_date(s: str) -> datetime:
-    """See https://stackoverflow.com/questions/25470844/specify-date-format-for-python-argparse-input-arguments"""
+    """See https://stackoverflow.com/questions/25470844/specify-date-format-for-python-argparse-input-arguments."""
     try:
         return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
     except ValueError:
