@@ -47,6 +47,8 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         .config("datanucleus.autoCreateSchema", "true")
         .config("hive.metastore.schema.verification", "false")
         .config("hive.metastore.schema.verification.record.version", "false")
+        .config("spark.jars.packages", "org.apache.spark:spark-protobuf_2.12:3.5.4")
+        .config("spark.jars.packages", "org.apache.spark:spark-protobuf:3.5.4")
         .enableHiveSupport()
     ).getOrCreate()
 
