@@ -5,7 +5,7 @@ from coverage.all_test_cases import Cases
 The purpose is to test scenarios where limit is not 4000 with NSG2
 
 ## DESIGN CONSIDERATIONS
-CASE 1
+CASE 2
                                                |period change in april                 Today|
                    Nov 2023_________|2024______|______________________________|2025_________
 Parent start/end:       |----------------------|-----------------------------------------...
