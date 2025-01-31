@@ -3,7 +3,9 @@ from pyspark.sql import DataFrame, SparkSession
 from opengeh_electrical_heating.infrastructure.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements_gold.schemas import time_series_points_v1
+from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+    time_series_points_v1,
+)
 
 
 class Repository:
