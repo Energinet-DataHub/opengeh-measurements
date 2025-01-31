@@ -20,6 +20,7 @@ class ElectricalHeatingJobArgs(BaseSettings):
     execution_start_datetime: Optional[datetime] = None
     orchestration_instance_id: uuid.UUID
     model_config = SettingsConfigDict(env_file=DOTENV)
+    electricity_market_data_path: str
 
     @classmethod
     def settings_customise_sources(
