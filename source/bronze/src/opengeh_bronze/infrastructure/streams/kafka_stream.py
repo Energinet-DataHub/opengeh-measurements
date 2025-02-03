@@ -36,6 +36,6 @@ class KafkaStream:
             StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "processed_transactions"
         )
 
-        dataframe.writeStream.format("kafka").option(**self.kafka_options).option(
+        dataframe.writeStream.format("kafka").options(**self.kafka_options).option(
             "checkpointLocation", checkpointLocation
         ).trigger(availableNow=True).start()
