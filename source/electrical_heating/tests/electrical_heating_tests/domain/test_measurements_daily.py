@@ -11,7 +11,7 @@ from opengeh_electrical_heating.domain.calculated_measurements_daily import (
 
 
 def _create_dummy_dataframe(spark: SparkSession) -> DataFrame:
-    data = [("1234567890123", datetime.datetime(2024, 3, 2, 23, 0), Decimal("0.0"))]
+    data = [("1234567890123", datetime.datetime(2024, 3, 2, 23, 0), Decimal("0.123"))]
     return spark.createDataFrame(data, calculated_measurements_daily_schema)
 
 
