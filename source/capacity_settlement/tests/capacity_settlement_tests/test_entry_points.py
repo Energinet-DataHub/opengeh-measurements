@@ -1,7 +1,5 @@
 from unittest import mock
 
-import pytest
-
 from opengeh_capacity_settlement import entry_point
 
 # @pytest.mark.parametrize(
@@ -17,7 +15,7 @@ from opengeh_capacity_settlement import entry_point
 #     assert_entry_point_exists(entry_point_name, module)
 
 
-@pytest.mark.skip(reason="disable while debugging")
+# @pytest.mark.skip(reason="disable while debugging")
 def test__execute() -> None:
     env_args = {
         "CLOUD_ROLE_NAME": "test_role",
@@ -50,7 +48,7 @@ def test__execute() -> None:
         ) as mock_orchestrate_business_logic,
     ):
         # Prepare
-        expected_tracer_name = entry_point.TRACER_NAME
+        expected_subsystem_name = "measurements"
 
         # Act
         entry_point.execute()
@@ -58,6 +56,6 @@ def test__execute() -> None:
         # assert
         mock_CapacitySettlementArgs.assert_called_once()
         mock_logging_settings.assert_called_once()
-        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value, extras=None)
-        mock_add_extras.assert_called_once_with({"tracer_name": expected_tracer_name})
+        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value)
+        mock_add_extras.assert_called_once_with({"subsystem": expected_subsystem_name})
         mock_orchestrate_business_logic.assert_called_once()  # Patching/mocking this function forces the function not to run
