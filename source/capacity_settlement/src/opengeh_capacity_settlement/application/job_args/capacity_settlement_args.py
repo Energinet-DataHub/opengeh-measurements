@@ -11,10 +11,10 @@ DOTENV = os.path.join(os.path.dirname(__file__), ".env")
 class CapacitySettlementArgs(BaseSettings):
     """Base settings to contain run parameters for the job."""
 
-    orchestration_instance_id: uuid.UUID = Field(..., alias="orchestration-instance-id")
-    time_zone: str = "Europe/Copenhagen"
-    calculation_month: int = Field(..., alias="calculation-month")
-    calculation_year: int = Field(..., alias="calculation-year")
+    orchestration_instance_id: uuid.UUID = Field(alias="orchestration-instance-id")
+    time_zone: str = Field(alias="time-zone", default="Europe/Copenhagen")
+    calculation_month: int = Field(alias="calculation-month")
+    calculation_year: int = Field(alias="calculation-year")
     model_config = SettingsConfigDict(
         env_file=DOTENV,
         populate_by_name=True,  # Allow access using both alias and field name
@@ -30,6 +30,7 @@ class CapacitySettlementArgs(BaseSettings):
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
         return (
+            init_settings,
             CliSettingsSource(settings_cls, cli_parse_args=True, cli_ignore_unknown_args=True),
             env_settings,
             dotenv_settings,
