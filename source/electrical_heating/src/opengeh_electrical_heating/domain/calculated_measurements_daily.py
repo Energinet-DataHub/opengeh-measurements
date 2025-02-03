@@ -5,8 +5,11 @@ from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
 class CalculatedMeasurementsDaily(DataFrameWrapper):
     def __init__(self, df: DataFrame):
-        columns = [field.name for field in calculated_measurements_daily_schema.fields]
-        df = df.select(columns)
+        super().__init__(
+            df=df,
+            schema=calculated_measurements_daily_schema,
+            ignore_nullability=True,
+        )
 
 
 calculated_measurements_daily_schema = T.StructType(
