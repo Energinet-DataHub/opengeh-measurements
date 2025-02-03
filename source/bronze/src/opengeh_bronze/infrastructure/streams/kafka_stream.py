@@ -37,6 +37,6 @@ class KafkaStream:
         )
         event_hub_namespace = SubmittedTransactionsStreamSettings().event_hub_namespace
 
-        dataframe.writeStream.format("eventhubs").option("topic", event_hub_namespace).options(
-            **self.kafka_options
-        ).option("checkpointLocation", checkpoint_location).trigger(availableNow=True).start()
+        dataframe.writeStream.format("kafka").option("topic", event_hub_namespace).options(**self.kafka_options).option(
+            "checkpointLocation", checkpoint_location
+        ).trigger(availableNow=True).start()
