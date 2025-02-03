@@ -10,7 +10,7 @@ def test__write_measurements__can_be_read(
 ) -> None:
     # Arrange
     repository = Repository(spark)
-    excepted_count = measurements_bronze.df.count()
+    expected_count = measurements_bronze.df.count()
 
     # Act
     repository.write_measurements(measurements_bronze, write_mode="overwrite")
