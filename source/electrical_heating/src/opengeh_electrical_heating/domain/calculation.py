@@ -17,8 +17,8 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
 from opengeh_electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
 )
-from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
+from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
 
 
 @use_span()
