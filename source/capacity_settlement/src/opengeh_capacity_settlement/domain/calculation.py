@@ -2,18 +2,20 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
-from pyspark.sql import DataFrame, SparkSession, functions as F, Window
-
+from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import functions as F
 from telemetry_logging import use_span
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
+from opengeh_capacity_settlement.domain.calculation_output import CalculationOutput
 
 
 class ColumNames:
     # Input/output column names from contracts
     date = "date"
+    child_metering_point_id = "child_metering_point_id"
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
@@ -31,12 +33,15 @@ def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
 def execute_core_logic(
+    spark: SparkSession,
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
-) -> DataFrame:
+) -> CalculationOutput:
+    calculation_output = CalculationOutput()
+
     metering_point_periods = _add_selection_period_columns(
         metering_point_periods,
         calculation_month=calculation_month,
@@ -50,7 +55,15 @@ def execute_core_logic(
 
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
-    return times_series_points.select(ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity)
+    calculation_output.measurements = times_series_points.select(
+        F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
+        F.col(ColumNames.date),
+        F.col(ColumNames.quantity),
+    )
+
+    calculation_output.calculations = spark.createDataFrame([], schema="")
+
+    return calculation_output
 
 
 def _add_selection_period_columns(
@@ -59,13 +72,12 @@ def _add_selection_period_columns(
     calculation_year: int,
     time_zone: str,
 ) -> DataFrame:
-    """
-    Adds the selection period columns to the metering point periods DataFrame.
+    """Add the selection period columns to the metering point periods DataFrame.
+
     The selection period is the period used to calculate the average of the ten largest quantities.
     The selection period is the last year up to the end of the calculation month.
-    TODO: JMG: Should also support shorter metering point periods
+    TODO: JMG: Should also support shorter metering point periods.
     """
-
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)
 
@@ -93,6 +105,7 @@ def _average_ten_largest_quantities_in_selection_periods(
         ColumNames.metering_point_id,
         ColumNames.selection_period_start,
         ColumNames.selection_period_end,
+        ColumNames.child_metering_point_id,
     ]
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())

@@ -5,10 +5,8 @@ from pyspark.sql import DataFrame
 
 @dataclass
 class CalculationOutput:
-    """
-    Contains the output of a calculation.
-    """
+    """Contains the output of a calculation."""
 
-    measurements: DataFrame | None = None
+    measurements: DataFrame
 
-    calculations: DataFrame | None = None
+    calculations: DataFrame
