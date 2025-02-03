@@ -69,13 +69,11 @@ def execute_core_logic(
 
 
 def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
-    # Reduces observation time to hour value
-    time_series_points = time_series_points.withColumn(ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time))
-    # group by all columns except quantity and then sum the quantity
-    group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
-    time_series_points = time_series_points.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
+    df = time_series_points.withColumn(ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time))
+    group_by = [col for col in df.columns if col != ColumNames.quantity]
+    df = df.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
 
-    return time_series_points
+    return df
 
 
 def _add_selection_period_columns(
