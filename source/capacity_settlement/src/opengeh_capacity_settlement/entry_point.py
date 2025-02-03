@@ -10,7 +10,9 @@ from opengeh_capacity_settlement.application.job_args.capacity_settlement_args i
 
 def execute() -> None:
     electrical_heating_args = CapacitySettlementArgs()  # Retrieve calculation oriented settings / job arguments
-    logging_settings = logging_configuration.LoggingSettings(subsystem="measurements")
+    logging_settings = logging_configuration.LoggingSettings(
+        subsystem="measurements", cloud_role_name="dbr-capacity-settlement"
+    )
     logging_configuration.configure_logging(logging_settings=logging_settings)
     # Add another extra (added to all logging events as properties)
     logging_configuration.add_extras({"subsystem": "measurements"})
