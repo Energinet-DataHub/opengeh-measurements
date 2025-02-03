@@ -13,7 +13,7 @@ from opengeh_electrical_heating.infrastructure.spark_initializor import (
 def execute() -> None:
     electrical_heating_args = ElectricalHeatingArgs()  # Retrieve calculation oriented settings / job arguments
     logging_settings = logging_configuration.LoggingSettings(
-        subsystem="measurements"
+        cloud_role_name="dbr-electrical-heating"
     )  # Retrieve logging oriented settings
     logging_configuration.configure_logging(logging_settings=logging_settings)
     # Add another extra (added to all logging messages as properties)
