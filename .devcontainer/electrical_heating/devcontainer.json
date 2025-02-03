@@ -30,6 +30,7 @@
         "tamasfe.even-better-toml",
         "ms-python.python",
         "ms-vscode-remote.remote-containers",
+        "janisdd.vscode-edit-csv",
         "mechatroner.rainbow-csv"
       ],
       "settings": {
@@ -88,7 +89,8 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        }
+        },
+        "csv-edit.readOption_hasHeader": "true"
       }
     }
   }
