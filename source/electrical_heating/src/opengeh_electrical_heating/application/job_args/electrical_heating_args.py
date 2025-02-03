@@ -19,8 +19,8 @@ class ElectricalHeatingArgs(BaseSettings):
     time_zone: str = "Europe/Copenhagen"
     execution_start_datetime: Optional[datetime] = None
     orchestration_instance_id: uuid.UUID
-    model_config = SettingsConfigDict(env_file=DOTENV)
     electricity_market_data_path: str
+    model_config = SettingsConfigDict(env_file=DOTENV)
 
     @classmethod
     def settings_customise_sources(

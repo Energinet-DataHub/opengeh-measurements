@@ -35,21 +35,23 @@ def test__execute() -> None:
             ],
         ),
         mock.patch.dict("os.environ", env_args, clear=False),
-        mock.patch("opengeh_electrical_heating.entry_point.ElectricalHeatingJobArgs") as mock_ElectricalHeatingJobArgs,
+        mock.patch("opengeh_electrical_heating.entry_point.ElectricalHeatingArgs") as mock_ElectricalHeatingArgs,
         mock.patch("telemetry_logging.logging_configuration.LoggingSettings") as mock_logging_settings,
         mock.patch("telemetry_logging.logging_configuration.configure_logging") as mock_configure_logging,
         mock.patch("telemetry_logging.logging_configuration.add_extras") as mock_add_extras,
-        mock.patch("opengeh_electrical_heating.entry_point.execute_with_deps") as mock_execute_with_deps,
+        mock.patch(
+            "opengeh_electrical_heating.entry_point.orchestrate_business_logic"
+        ) as mock_orchestrate_business_logic,
     ):
         # Prepare
-        expected_tracer_name = entry_point.TRACER_NAME
+        expected_subsystem_name = "measurements"
 
         # Act
         entry_point.execute()
 
         # assert
-        mock_ElectricalHeatingJobArgs.assert_called_once()
+        mock_ElectricalHeatingArgs.assert_called_once()
         mock_logging_settings.assert_called_once()
-        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value, extras=None)
-        mock_add_extras.assert_called_once_with({"tracer_name": expected_tracer_name})
-        mock_execute_with_deps.assert_called_once()  # Patching/mocking this function forces the function not to run
+        mock_configure_logging.assert_called_once_with(logging_settings=mock_logging_settings.return_value)
+        mock_add_extras.assert_called_once_with({"subsystem": expected_subsystem_name})
+        mock_orchestrate_business_logic.assert_called_once()  # Patching/mocking this function forces the function not to run

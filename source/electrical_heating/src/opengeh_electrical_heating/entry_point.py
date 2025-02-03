@@ -13,11 +13,11 @@ from opengeh_electrical_heating.infrastructure.spark_initializor import (
 def execute() -> None:
     electrical_heating_args = ElectricalHeatingArgs()  # Retrieve calculation oriented settings / job arguments
     logging_settings = logging_configuration.LoggingSettings(
-        subsystem="electrical-heating-job"
+        subsystem="measurements"
     )  # Retrieve logging oriented settings
     logging_configuration.configure_logging(logging_settings=logging_settings)
     # Add another extra (added to all logging messages as properties)
-    logging_configuration.add_extras({"subsystem": "electrical-heating-job"})
+    logging_configuration.add_extras({"subsystem": "measurements"})
     # Execute the application
     orchestrate_business_logic(job_arguments=electrical_heating_args, logging_settings=logging_settings)
 

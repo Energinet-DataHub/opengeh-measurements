@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingJobArgs,
+    ElectricalHeatingArgs,
 )
 from opengeh_electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
@@ -58,7 +58,7 @@ def test_when_parameters__parses_parameters_from_contract(
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
         with patch.dict("os.environ", job_environment_variables):
-            actual_args = ElectricalHeatingJobArgs()
+            actual_args = ElectricalHeatingArgs()
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID
