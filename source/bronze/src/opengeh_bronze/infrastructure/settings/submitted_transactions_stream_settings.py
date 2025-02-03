@@ -1,3 +1,5 @@
+import json
+
 from pydantic_settings import BaseSettings
 from pyspark.sql import SparkSession
 
@@ -47,4 +49,15 @@ class SubmittedTransactionsStreamSettings(BaseSettings):
         connection_string = spark._jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(
             f"Endpoint=sb://{self.event_hub_instance}.servicebus.windows.net/;EntityPath={self.event_hub_namespace};"
         )
-        return {"eventhubs.connectionString": connection_string}
+
+        params = {}
+        params["authority"] = self.tenant_id
+        params["clientId"] = self.spn_app_id
+        params["clientSecret"] = self.spn_app_secret
+
+        return {
+            "eventhubs.connectionString": connection_string,
+            "eventhubs.useAadAuth": "true",
+            "eventhubs.aadAuthCallback": "AuthBySecretCallBackWithParamsPySpark",
+            "eventhubs.AadAuthCallbackParams": json.dumps(params),
+        }
