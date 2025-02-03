@@ -1,8 +1,6 @@
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 
 import opengeh_bronze.infrastructure.shared_helpers as shared_helpers
-from opengeh_bronze.domain.constants.database_names import DatabaseNames
-from opengeh_bronze.domain.constants.table_names import TableNames
 from opengeh_bronze.infrastructure.config.storage_container_names import StorageContainerNames
 from opengeh_bronze.infrastructure.settings.storage_account_settings import (
     StorageAccountSettings,
@@ -10,6 +8,7 @@ from opengeh_bronze.infrastructure.settings.storage_account_settings import (
 from opengeh_bronze.infrastructure.settings.submitted_transactions_stream_settings import (
     SubmittedTransactionsStreamSettings,
 )
+
 
 class EventHubStream:
     eventhub_options: dict
