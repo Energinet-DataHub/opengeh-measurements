@@ -49,11 +49,14 @@ def execute_core_logic(
         time_zone=time_zone,
     )
 
+    time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
+
     times_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points, metering_point_periods
     )
 
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
+    time_series_points.show()
 
     calculation_output.measurements = times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
@@ -64,6 +67,16 @@ def execute_core_logic(
     calculation_output.calculations = spark.createDataFrame([], schema="")
 
     return calculation_output
+
+
+def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
+    df = time_series_points.withColumn(
+        ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
+    )
+    group_by = [col for col in df.columns if col != ColumNames.quantity]
+    df = df.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
+
+    return df
 
 
 def _add_selection_period_columns(
