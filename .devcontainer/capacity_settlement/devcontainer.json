@@ -31,7 +31,9 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-containers",
+        "janisdd.vscode-edit-csv",
+        "mechatroner.rainbow-csv"
       ],
       "settings": {
         "search.exclude": {
@@ -92,7 +94,8 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        }
+        },
+        "csv-edit.readOption_hasHeader": "true"
       }
     }
   }
