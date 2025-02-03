@@ -38,7 +38,6 @@ allow-direct-references = true
 
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output.
-# -s ensures that print("<text>") is written to output.
 addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_capacity_settlement -ra -vv -s"
 
 [tool.coverage.report]

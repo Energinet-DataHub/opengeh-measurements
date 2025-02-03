@@ -2,20 +2,7 @@ from unittest import mock
 
 from opengeh_capacity_settlement import entry_point
 
-# @pytest.mark.parametrize(
-#     "entry_point_name",
-#     [
-#         "execute",
-#     ],
-# )
-# def test__entry_point_exists(
-#     installed_package: None,
-#     entry_point_name: str,
-# ) -> None:
-#     assert_entry_point_exists(entry_point_name, module)
 
-
-# @pytest.mark.skip(reason="disable while debugging")
 def test__execute() -> None:
     env_args = {
         "CLOUD_ROLE_NAME": "test_role",

@@ -20,7 +20,7 @@ def execute() -> None:
 
 @start_trace(
     initial_span_name="capacity-settlement-job"
-)  # Wraps the execute_with_deps function that starts the opentelemetry tracer and starts an initial span named using the name of the decorated function, or specifically provided name
+)  # Wraps orchestrate_business_logic with start_trace: starting a tracer, and provides an initial span with name initial_span_name
 def orchestrate_business_logic(
     job_arguments: CapacitySettlementArgs, logging_settings: logging_configuration.LoggingSettings
 ) -> None:
