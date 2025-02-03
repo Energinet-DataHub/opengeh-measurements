@@ -15,10 +15,10 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
     ElectricalHeatingArgs,
 )
 from opengeh_electrical_heating.domain.constants import (
-    CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
 )
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
+from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
 
 
 @use_span()
@@ -51,11 +51,11 @@ def execute_core_logic(
     time_zone: str,
 ) -> DataFrame:
     energy = time_series_points.where(
-        (F.col("metering_point_type") == CONSUMPTION_METERING_POINT_TYPE)
-        | (F.col("metering_point_type") == em.MeteringPointType.NET_CONSUMPTION.value)
+        (F.col("metering_point_type") == MeteringPointType.CONSUMPTION_METERING_POINT_TYPE.value)
+        | (F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value)
     )
     electrical_heating = time_series_points.where(
-        F.col("metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value
+        F.col("metering_point_type") == MeteringPointType.ELECTRICAL_HEATING.value
     )
 
     parent_metering_points = convert_from_utc(consumption_metering_point_periods, time_zone)
@@ -355,7 +355,7 @@ def _join_children_to_parent_metering_point(
         # Inner join because there is no reason to calculate if there is no electrical heating metering point
         .join(
             child_metering_point_and_periods.where(
-                F.col("metering_point_type") == em.MeteringPointType.ELECTRICAL_HEATING.value
+                F.col("metering_point_type") == MeteringPointType.ELECTRICAL_HEATING.value
             ).alias("electrical_heating"),
             F.col("electrical_heating.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "inner",
@@ -364,7 +364,7 @@ def _join_children_to_parent_metering_point(
         # Net consumption is only relevant for net settlement group 2
         .join(
             child_metering_point_and_periods.where(
-                F.col("metering_point_type") == em.MeteringPointType.NET_CONSUMPTION.value
+                F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value
             ).alias("net_consumption"),
             F.col("net_consumption.parent_metering_point_id") == F.col("parent.metering_point_id"),
             "left",
