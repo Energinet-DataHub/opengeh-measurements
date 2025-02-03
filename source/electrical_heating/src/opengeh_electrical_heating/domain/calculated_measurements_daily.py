@@ -1,5 +1,6 @@
 import pyspark.sql.types as T
 from pyspark.sql import DataFrame
+from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
 
 class CalculatedMeasurementsDaily(DataFrameWrapper):
