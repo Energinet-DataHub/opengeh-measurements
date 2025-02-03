@@ -16,6 +16,6 @@ calculated_measurements_daily_schema = T.StructType(
     [
         T.StructField("metering_point_id", T.StringType(), False),
         T.StructField("date", T.TimestampType(), False),
-        T.StructField("quantity", T.DecimalType(38, 3), False),
+        T.StructField("quantity", T.DecimalType(18, 3), False),
     ]
 )

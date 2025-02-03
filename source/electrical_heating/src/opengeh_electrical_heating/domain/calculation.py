@@ -130,7 +130,7 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         .otherwise(
             F.col("quantity"),
         )
-        .cast(T.DecimalType(38, 3))
+        .cast(T.DecimalType(18, 3))
         .alias("quantity"),
         F.col("cumulative_quantity"),
         F.col("metering_point_id"),
