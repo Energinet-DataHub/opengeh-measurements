@@ -27,5 +27,3 @@ class KafkaStream:
         ).option("checkpointLocation", checkpoint_location).toTable(
             f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
         )
-
-
