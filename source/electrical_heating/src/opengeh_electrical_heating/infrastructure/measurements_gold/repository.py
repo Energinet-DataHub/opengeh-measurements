@@ -18,11 +18,9 @@ class Repository:
         self._catalog_name = catalog_name
 
     def read_time_series_points(self) -> DataFrame:
-        # TODO Return empty DataFrame for now. The time series table in gold database is not yet available.
+        # TODO The table time series points is not yet available in the gold database or renamed.
         return self._spark.createDataFrame([], schema=time_series_points_v1)
-        # return self._read_view_or_table(
-        #    MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
-        # )
+        # return self._read_view_or_table(MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME)        )
 
     def _read_view_or_table(
         self,
