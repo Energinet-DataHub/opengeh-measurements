@@ -41,3 +41,8 @@ class SubmittedTransactionsStreamSettings(BaseSettings):
             "kafka.sasl.mechanism": "OAUTHBEARER",
             "kafka.sasl.login.callback.handler.class": "kafkashaded.org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler",
         }
+
+    def create_eventhub_options(self) -> dict:
+        return {
+            "eventhubs.connectionString": f"Endpoint=sb://{self.event_hub_instance}.servicebus.windows.net/;EntityPath={self.event_hub_namespace};"
+        }
