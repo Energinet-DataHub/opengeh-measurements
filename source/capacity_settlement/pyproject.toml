@@ -27,6 +27,7 @@ dev = [
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
+    "databricks-sdk==0.41.0",
 ]
 
 [build-system]
