@@ -8,4 +8,4 @@ def notify() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
     events = notify_transactions_persisted_events_transformation.transform(submitted_transactions)
-    KafkaStream(spark).write_stream(events)
+    KafkaStream().write_stream(events)
