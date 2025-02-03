@@ -9,6 +9,8 @@ DOTENV = os.path.join(os.path.dirname(__file__), ".env")
 
 
 class CapacitySettlementArgs(BaseSettings):
+    """Base settings to contain run parameters for the job."""
+
     orchestration_instance_id: uuid.UUID = Field(..., alias="orchestration-instance-id")
     time_zone: str = "Europe/Copenhagen"
     calculation_month: int = Field(..., alias="calculation-month")
