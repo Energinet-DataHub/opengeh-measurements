@@ -2,12 +2,10 @@ from typing import Generator
 from unittest import mock
 
 import pytest
-import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import LoggingSettings, configure_logging
-from testcommon.container_test import DatabricksApiClient
 
-from tests import PROJECT_ROOT, Path
+from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
 
