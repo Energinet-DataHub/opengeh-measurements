@@ -29,7 +29,8 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-containers",
+        "mechatroner.rainbow-csv"
       ],
       "settings": {
         "search.exclude": {
