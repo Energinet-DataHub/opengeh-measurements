@@ -12,6 +12,7 @@ import opengeh_electrical_heating.infrastructure.measurements_gold as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingJobArgs,
 )
+from opengeh_electrical_heating.domain import ColumnNames
 from opengeh_electrical_heating.domain.calculation import (
     execute_core_logic,
 )
@@ -104,23 +105,21 @@ def execute_calculation(
     args: ElectricalHeatingJobArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
-    calculation_output = CalculationOutput()
-
-    calculation_output.measurements = execute_core_logic(
+    measurements = execute_core_logic(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
 
-    calculation_output.calculations = create_calculation(
+    calculations = create_calculation(
         spark,
         args.orchestration_instance_id,
         execution_start_datetime,
         datetime.now(timezone.utc),
     )
 
-    return calculation_output
+    return CalculationOutput(measurements=measurements, calculations=calculations)
 
 
 def create_calculation(
@@ -134,10 +133,10 @@ def create_calculation(
 
     data = [
         {
-            ehi.ColumnNames.calculation_id: calculation_id,
-            ehi.ColumnNames.orchestration_instance_id: str(orchestration_instance_id),
-            ehi.ColumnNames.execution_start_datetime: execution_start_datetime,
-            ehi.ColumnNames.execution_stop_datetime: execution_stop_datetime,
+            ColumnNames.calculation_id: calculation_id,
+            ColumnNames.orchestration_instance_id: str(orchestration_instance_id),
+            ColumnNames.execution_start_datetime: execution_start_datetime,
+            ColumnNames.execution_stop_datetime: execution_stop_datetime,
         }
     ]
 
