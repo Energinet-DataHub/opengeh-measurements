@@ -4,10 +4,11 @@ from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
+from opengeh_electrical_heating.infrastructure.measurements_bronze.data_structure import MeasurementsBronze
 from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
@@ -89,7 +90,7 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
+def measurements_bronze(spark: SparkSession, test_files_folder_path: str) -> MeasurementsBronze:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(

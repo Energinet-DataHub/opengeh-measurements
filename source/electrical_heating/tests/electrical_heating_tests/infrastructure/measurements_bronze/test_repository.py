@@ -6,14 +6,14 @@ from opengeh_electrical_heating.infrastructure.measurements_bronze.repository im
 
 def test__write_measurements__can_be_read(
     spark: SparkSession,
-    measurements: MeasurementsBronze,
+    measurements_bronze: MeasurementsBronze,
 ) -> None:
     # Arrange
     repository = Repository(spark)
-    excepted_count = measurements.df.count()
+    excepted_count = measurements_bronze.df.count()
 
     # Act
-    repository.write_measurements(measurements, write_mode="overwrite")
+    repository.write_measurements(measurements_bronze, write_mode="overwrite")
 
     # Assert
     assert repository.read_measurements().df.count() == excepted_count
