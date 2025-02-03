@@ -17,8 +17,8 @@ from opengeh_electrical_heating.application.job_args.electrical_heating_args imp
 from opengeh_electrical_heating.domain.constants import (
     CONSUMPTION_METERING_POINT_TYPE,
     ELECTRICAL_HEATING_LIMIT_YEARLY,
-    NET_SETTLEMENT_GROUP_2,
 )
+from opengeh_electrical_heating.domain.types import NetSettlementGroup
 
 
 @use_span()
@@ -222,7 +222,7 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col("parent_net_settlement_group") == NET_SETTLEMENT_GROUP_2,
+            F.col("parent_net_settlement_group") == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
             F.col("net_consumption_metering_point_id"),
         )
         .otherwise(F.col("parent_metering_point_id"))
