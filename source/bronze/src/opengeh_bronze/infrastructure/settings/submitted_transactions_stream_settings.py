@@ -1,7 +1,4 @@
-import json
-
 from pydantic_settings import BaseSettings
-from pyspark.sql import SparkSession
 
 
 class SubmittedTransactionsStreamSettings(BaseSettings):
@@ -43,21 +40,4 @@ class SubmittedTransactionsStreamSettings(BaseSettings):
             "kafka.security.protocol": "SASL_SSL",
             "kafka.sasl.mechanism": "OAUTHBEARER",
             "kafka.sasl.login.callback.handler.class": "kafkashaded.org.apache.kafka.common.security.oauthbearer.secured.OAuthBearerLoginCallbackHandler",
-        }
-
-    def create_eventhub_options(self, spark: SparkSession) -> dict:
-        connection_string = spark._jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(
-            f"Endpoint=sb://{self.event_hub_instance}.servicebus.windows.net/;EntityPath={self.event_hub_namespace};"
-        )
-
-        params = {}
-        params["authority"] = self.tenant_id
-        params["clientId"] = self.spn_app_id
-        params["clientSecret"] = self.spn_app_secret
-
-        return {
-            "eventhubs.connectionString": connection_string,
-            "eventhubs.useAadAuth": "true",
-            "eventhubs.aadAuthCallback": "AuthBySecretCallBackWithParamsPySpark",
-            "eventhubs.AadAuthCallbackParams": json.dumps(params),
         }
