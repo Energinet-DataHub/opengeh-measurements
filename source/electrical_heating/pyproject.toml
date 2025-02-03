@@ -16,6 +16,7 @@ dependencies = [
     "python-dateutil==2.8.2",
     "opengeh-pyspark @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/pyspark_functions",
     "tomli>=2.2.1",
+    "opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/testcommon",
 ]
 
 [project.scripts]
