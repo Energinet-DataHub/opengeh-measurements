@@ -33,6 +33,14 @@ def _read_csv(
     spark: SparkSession,
     path: str,
     schema: T.StructType,
+) -> DataFrame:
+    return spark.createDataFrame([], schema=schema)
+
+
+def _read_csv(
+    spark: SparkSession,
+    path: str,
+    schema: T.StructType,
     sep: str = ";",
     ignored_value="[IGNORED]",
 ) -> DataFrame:
