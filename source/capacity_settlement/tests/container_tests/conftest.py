@@ -4,8 +4,7 @@ import pytest
 from testcommon.container_test import DatabricksApiClient
 
 
-# this fixture is only used in CD and needs to be commented out for local testing
-# local testing uses the fixture in tests/conftest.py
+# For the test to be started from your local machine, you need to set the environment variables in a .env file.
 @pytest.fixture(scope="session")
 def databricks_api_client() -> DatabricksApiClient:
     databricks_token = os.getenv("DATABRICKS_TOKEN")
