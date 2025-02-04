@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.data_structure import Calculations
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.wrapper import (
+    Calculations,
+)
 
 
 class Repository:

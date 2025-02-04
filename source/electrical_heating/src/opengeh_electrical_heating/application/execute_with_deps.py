@@ -29,7 +29,7 @@ from opengeh_electrical_heating.domain.calculation import (
 from opengeh_electrical_heating.domain.calculation_results import (
     CalculationOutput,
 )
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schemas import (
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations import (
     calculations as schemas,
 )
 from opengeh_electrical_heating.infrastructure.spark_initializor import (

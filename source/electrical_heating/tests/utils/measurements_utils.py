@@ -3,11 +3,11 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import ArrayType
 from testcommon.dataframes import assert_schema
 
-from opengeh_electrical_heating.infrastructure.measurements_bronze.data_structure import MeasurementsBronze
-from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
     measurements_bronze_v1,
     point,
 )
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
 
 
 def create_measurements_bronze_dataframe(spark: SparkSession, measurements: DataFrame) -> MeasurementsBronze:

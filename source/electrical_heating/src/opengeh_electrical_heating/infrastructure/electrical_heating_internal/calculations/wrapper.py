@@ -1,18 +1,16 @@
 from pyspark.sql import DataFrame
 from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
-from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
-    measurements_bronze_v1,
-)
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.calculations import calculations
 
 
-class MeasurementsBronze(DataFrameWrapper):
-    """Represents the bronze measurements data structure."""
+class Calculations(DataFrameWrapper):
+    """Represents the calculations data structure."""
 
     def __init__(self, df: DataFrame):
         super().__init__(
             df,
-            measurements_bronze_v1,
+            calculations,
             # We ignore_nullability because it has turned out to be too hard and even possibly
             # introducing more errors than solving in order to stay in exact sync with the
             # logically correct schema.
