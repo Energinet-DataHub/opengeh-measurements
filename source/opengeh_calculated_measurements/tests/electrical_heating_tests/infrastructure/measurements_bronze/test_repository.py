@@ -1,7 +1,9 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
-from opengeh_electrical_heating.infrastructure.measurements.repository import Repository
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+    MeasurementsBronze,
+    MeasurementsRepository,
+)
 
 
 def test__write_measurements__can_be_read(
@@ -9,7 +11,7 @@ def test__write_measurements__can_be_read(
     measurements_bronze: MeasurementsBronze,
 ) -> None:
     # Arrange
-    repository = Repository(spark)
+    repository = MeasurementsRepository(spark)
     expected_count = measurements_bronze.df.count()
 
     # Act

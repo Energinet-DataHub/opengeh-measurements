@@ -7,16 +7,14 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from opengeh_electrical_heating.application.execute_with_deps import (
-    execute_calculation,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.application import execute_calculation
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
@@ -79,7 +77,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.measurements,
+                actual=calculation_output.measurements.df,
             ),
         ]
     )

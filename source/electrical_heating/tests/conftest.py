@@ -8,17 +8,19 @@ from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
     measurements_bronze_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import (
+    MeasurementsBronze,
+)
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from opengeh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
@@ -63,7 +65,9 @@ def spark() -> Generator[SparkSession, None, None]:
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
 
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+    configure_logging(
+        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
+    )
 
 
 @pytest.fixture(scope="session")
@@ -90,7 +94,9 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements_bronze(spark: SparkSession, test_files_folder_path: str) -> MeasurementsBronze:
+def measurements_bronze(
+    spark: SparkSession, test_files_folder_path: str
+) -> MeasurementsBronze:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(

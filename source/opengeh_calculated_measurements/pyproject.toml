@@ -1,5 +1,5 @@
 [project]
-name = "opengeh_capacity_settlement"
+name = "opengeh_calculated_measurements"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,20 +8,16 @@ dependencies = [
     "azure-core==1.32.0",
     "azure-monitor-opentelemetry==1.6.4",
     "opengeh-pyspark @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.4.1#subdirectory=source/pyspark_functions",
+    "opengeh-telemetry @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.4.1#subdirectory=source/telemetry",
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
-<<<<<<< HEAD:source/opengeh_calculated_measurements/pyproject.toml
-=======
-    "opengeh-pyspark @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.1#subdirectory=source/pyspark_functions",
-    "opengeh-telemetry @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.1.1#subdirectory=source/telemetry",
->>>>>>> origin/chore/make-workspace-devcontainer:source/electrical_heating/pyproject.toml
     "pydantic-settings>=2.7.1",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
 ]
 
 [project.scripts]
-execute = "opengeh_capacity_settlement.entry_point:execute"
+execute = "opengeh_calculated_measurements.opengeh_capacity_settlement.entry_point:execute"
 
 [dependency-groups]
 dev = [

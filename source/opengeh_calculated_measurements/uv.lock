@@ -707,7 +707,7 @@ wheels = [
 ]
 
 [[package]]
-name = "opengeh-capacity-settlement"
+name = "opengeh-calculated-measurements"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -715,6 +715,7 @@ dependencies = [
     { name = "azure-monitor-opentelemetry" },
     { name = "configargparse" },
     { name = "delta-spark" },
+    { name = "opengeh-pyspark" },
     { name = "opengeh-telemetry" },
     { name = "pydantic-settings" },
     { name = "pyspark" },
@@ -740,12 +741,8 @@ requires-dist = [
     { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
     { name = "configargparse", specifier = "==1.7.0" },
     { name = "delta-spark", specifier = "==3.2.0" },
-<<<<<<< HEAD:source/opengeh_calculated_measurements/uv.lock
-    { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.0.1" },
-=======
-    { name = "opengeh-pyspark", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.3.1" },
-    { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.1.1" },
->>>>>>> origin/chore/make-workspace-devcontainer:source/electrical_heating/uv.lock
+    { name = "opengeh-pyspark", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.4.1" },
+    { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.4.1" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
@@ -757,32 +754,26 @@ dev = [
     { name = "databricks-sdk", specifier = "==0.41.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
-<<<<<<< HEAD:source/opengeh_calculated_measurements/uv.lock
     { name = "pyspark-functions", specifier = ">=0.0.3" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.9.1" },
     { name = "tomli", specifier = ">=2.2.1" },
-=======
-    { name = "pytest", specifier = ">=8.3.4" },
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "ruff", specifier = ">=0.9.1" },
 ]
 
 [[package]]
 name = "opengeh-pyspark"
 version = "0.0.2"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.3.1#af6801b077f58bda0ee0906176eccc47681f25ed" }
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.4.1#87d506aaa286c2f3759bd117c34ef0fe81c663d2" }
 dependencies = [
     { name = "opengeh-testcommon" },
     { name = "pyspark" },
->>>>>>> origin/chore/make-workspace-devcontainer:source/electrical_heating/uv.lock
 ]
 
 [[package]]
 name = "opengeh-telemetry"
 version = "2.2.1"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.0.1#9dfc33c2a5c53c91249e632550eea93415ea6013" }
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.4.1#87d506aaa286c2f3759bd117c34ef0fe81c663d2" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
