@@ -8,7 +8,7 @@ from pyspark.sql import functions as F
 
 from opengeh_electrical_heating.application.execute_with_deps import execute_with_deps
 from opengeh_electrical_heating.application.job_args.environment_variables import EnvironmentVariable
-from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
 
