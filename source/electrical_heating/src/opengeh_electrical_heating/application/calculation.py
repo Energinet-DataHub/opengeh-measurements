@@ -66,7 +66,7 @@ def execute_application(
             span.set_attributes(config.get_extras())
             args = parse_job_args(command_line_args)
             spark = initialize_spark()
-            _execute_with_deps(spark, args)
+            _execute_application(spark, args)
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:
@@ -80,7 +80,7 @@ def execute_application(
 
 
 @use_span()
-def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
+def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
@@ -95,7 +95,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
 
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
-    calculation_output = _execute_calculation(
+    calculation_output = execute_calculation(
         spark,
         time_series_points,
         consumption_metering_point_periods,
@@ -107,7 +107,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
     electrical_heating_internal_repository.save(Calculations(calculation_output.calculations))
 
 
-def _execute_calculation(
+def execute_calculation(
     spark: SparkSession,
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,
