@@ -11,10 +11,10 @@ from telemetry_logging import use_span
 
 import opengeh_electrical_heating.infrastructure.electricity_market as em
 import opengeh_electrical_heating.infrastructure.measurements as mg
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
+from opengeh_electrical_heating.domain import (
+    ColumnNames,
     ElectricalHeatingArgs,
 )
-from opengeh_electrical_heating.domain import ColumnNames
 from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
 from opengeh_electrical_heating.domain.constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
