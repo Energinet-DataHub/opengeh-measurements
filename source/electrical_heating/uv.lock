@@ -718,6 +718,7 @@ dependencies = [
     { name = "delta-spark" },
     { name = "opengeh-pyspark" },
     { name = "opengeh-telemetry" },
+    { name = "opengeh-testcommon" },
     { name = "pydantic-settings" },
     { name = "pyspark" },
     { name = "python-dateutil" },
@@ -727,6 +728,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "commitizen" },
+    { name = "databricks-sdk" },
     { name = "mypy" },
     { name = "opengeh-testcommon" },
     { name = "pytest" },
@@ -743,6 +745,7 @@ requires-dist = [
     { name = "delta-spark", specifier = "==3.2.0" },
     { name = "opengeh-pyspark", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.3.0" },
     { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.3.0" },
+    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
@@ -752,6 +755,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "commitizen", specifier = ">=4.1.0" },
+    { name = "databricks-sdk", specifier = "==0.41.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
     { name = "pytest", specifier = ">=8.3.4" },
