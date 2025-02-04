@@ -1,4 +1,8 @@
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
+
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.wrapper import (
+    Calculations,
+)
 
 
 class Repository:
@@ -10,6 +14,6 @@ class Repository:
         self._spark = spark
         self._catalog_name = catalog_name
 
-    def save(self, calculation: DataFrame) -> None:
+    def save(self, calculation: Calculations) -> None:
         # TODO Will implemented in another PR.
         pass
