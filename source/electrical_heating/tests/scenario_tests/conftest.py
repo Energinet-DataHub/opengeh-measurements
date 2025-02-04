@@ -7,7 +7,7 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from opengeh_electrical_heating.application.execute_with_deps import (
+from opengeh_electrical_heating.application.calculation import (
     execute_calculation,
 )
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (

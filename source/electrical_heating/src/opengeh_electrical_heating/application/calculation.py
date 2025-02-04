@@ -24,7 +24,7 @@ from opengeh_electrical_heating.domain import (
     ElectricalHeatingArgs,
 )
 from opengeh_electrical_heating.domain.calculation import (
-    execute_core_logic,
+    execute,
 )
 from opengeh_electrical_heating.domain.calculation_results import (
     CalculationOutput,
@@ -38,7 +38,7 @@ from opengeh_electrical_heating.infrastructure.spark_initializor import (
 )
 
 
-def execute_with_deps(
+def execute_application(
     *,
     cloud_role_name: str = "dbr-electrical-heating",
     applicationinsights_connection_string: str | None = None,
@@ -99,7 +99,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
 
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
-    calculation_output = execute_calculation(
+    calculation_output = _execute_calculation(
         spark,
         time_series_points,
         consumption_metering_point_periods,
@@ -111,7 +111,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
     electrical_heating_internal_repository.save(Calculations(calculation_output.calculations))
 
 
-def execute_calculation(
+def _execute_calculation(
     spark: SparkSession,
     time_series_points: DataFrame,
     consumption_metering_point_periods: DataFrame,
@@ -119,14 +119,14 @@ def execute_calculation(
     args: ElectricalHeatingArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
-    measurements = execute_core_logic(
+    measurements = execute(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
 
-    calculations = create_calculation(
+    calculations = _create_calculation(
         spark,
         args.orchestration_instance_id,
         execution_start_datetime,
@@ -136,7 +136,7 @@ def execute_calculation(
     return CalculationOutput(measurements=measurements, calculations=calculations)
 
 
-def create_calculation(
+def _create_calculation(
     spark: SparkSession,
     orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
