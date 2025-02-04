@@ -1,6 +1,7 @@
-from src.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
-from tests.silver.builders.bronze_calculated_measurements_builder import BronzeMeasurementsDataFrameBuilder
-from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
+from silver.builders.bronze_calculated_measurements_builder import BronzeMeasurementsDataFrameBuilder
+from silver.schemas.silver_measurements_schema import silver_measurements_schema
+
+from src.core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 
 
 def test__transform_calculated_measurements__should_return_transformed_df(spark):

@@ -8,7 +8,7 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-from src.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
+from src.core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
 
 silver_measurements_schema = StructType(
     [

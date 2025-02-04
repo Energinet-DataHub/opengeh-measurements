@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 from decimal import Decimal
 
-from tests.silver.schemas.bronze_calculated_measurements_schema import bronze_calculated_measurements_schema
+from silver.schemas.bronze_calculated_measurements_schema import bronze_calculated_measurements_schema
 
 
 class BronzeMeasurementsDataFrameBuilder:

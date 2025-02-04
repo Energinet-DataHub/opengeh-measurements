@@ -1,5 +1,5 @@
-from src.silver.infrastructure.config.database_names import DatabaseNames
-from src.silver.infrastructure.config.table_names import TableNames
+from src.core.silver.infrastructure.config.database_names import DatabaseNames
+from src.core.silver.infrastructure.config.table_names import TableNames
 
 
 def substitutions() -> dict[str, str]:

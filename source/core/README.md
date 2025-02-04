@@ -10,7 +10,7 @@ TBD...
 
 ### Silver
 
-See the [silver module](src/silver/README.md) for more information about the silver layer.
+See the [silver module](src/core/silver/README.md) for more information about the silver layer.
 
 ### Gold
 
