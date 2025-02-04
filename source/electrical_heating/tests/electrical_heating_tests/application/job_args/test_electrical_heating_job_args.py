@@ -3,12 +3,10 @@ from unittest.mock import patch
 
 import pytest
 
-from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
+from opengeh_electrical_heating.application.job_args import (
+    EnvironmentVariable,
     parse_command_line_arguments,
     parse_job_arguments,
-)
-from opengeh_electrical_heating.application.job_args.environment_variables import (
-    EnvironmentVariable,
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")

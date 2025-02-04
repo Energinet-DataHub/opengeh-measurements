@@ -7,7 +7,7 @@ from datetime import datetime
 import configargparse
 from telemetry_logging import Logger, logging_configuration
 
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
+from opengeh_electrical_heating.application import (
     ElectricalHeatingArgs,
 )
 from opengeh_electrical_heating.application.job_args.environment_variables import (
