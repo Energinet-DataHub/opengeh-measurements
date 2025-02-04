@@ -1,6 +1,6 @@
 import os
 
-from opengeh_bronze.application.settings.submitted_transactions_stream_settings import (
+from opengeh_bronze.application.settings import (
     SubmittedTransactionsStreamSettings,
 )
 
