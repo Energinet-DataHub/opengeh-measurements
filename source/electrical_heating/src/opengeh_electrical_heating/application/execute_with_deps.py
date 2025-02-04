@@ -22,12 +22,10 @@ from opengeh_electrical_heating.application.job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from opengeh_electrical_heating.domain import ColumnNames
-from opengeh_electrical_heating.domain.calculation import (
-    execute_core_logic,
-)
-from opengeh_electrical_heating.domain.calculation_results import (
+from opengeh_electrical_heating.domain import (
     CalculationOutput,
+    ColumnNames,
+    execute_core_logic,
 )
 from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import (
     calculations,
