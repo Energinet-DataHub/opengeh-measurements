@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from dateutil.relativedelta import relativedelta
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
+from pyspark.sql.types import DecimalType
 from telemetry_logging import use_span
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
@@ -49,6 +50,8 @@ def execute_core_logic(
         time_zone=time_zone,
     )
 
+    time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
+
     times_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points, metering_point_periods
     )
@@ -58,12 +61,24 @@ def execute_core_logic(
     calculation_output.measurements = times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
-        F.col(ColumNames.quantity),
+        F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
     calculation_output.calculations = spark.createDataFrame([], schema="")
 
     return calculation_output
+
+
+def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
+    # Reduces observation time to hour value
+    time_series_points = time_series_points.withColumn(
+        ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
+    )
+    # group by all columns except quantity and then sum the quantity
+    group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
+    time_series_points = time_series_points.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
+
+    return time_series_points
 
 
 def _add_selection_period_columns(
