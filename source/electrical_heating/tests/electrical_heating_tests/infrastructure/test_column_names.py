@@ -1,16 +1,16 @@
 from opengeh_electrical_heating.domain.calculation import _CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schemas.calculations import calculations
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import calculations
+from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+    child_metering_points_v1,
+)
 from opengeh_electrical_heating.infrastructure.electricity_market.repository import (
     consumption_metering_point_periods_v1,
 )
-from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
-    child_metering_points_v1,
-)
-from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
     measurements_bronze_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 
