@@ -1,4 +1,4 @@
-# Time Series - Silver Table Definition
+# Measurements - Bronze Migrated Table Definition
 
 This table contains exported time series data from DataHub 2 via migrations.
 The table depends on **migrations_silver.time_series**.
