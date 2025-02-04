@@ -9,8 +9,6 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements as mg
 from opengeh_electrical_heating.application import (
     ElectricalHeatingArgs,
 )
@@ -20,6 +18,7 @@ from opengeh_electrical_heating.domain.constants import (
 )
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+from opengeh_electrical_heating.infrastructure.repositories import ElectricityMarketRepository, MeasurementsRepository
 
 
 class _CalculatedNames:
@@ -50,13 +49,13 @@ class _CalculatedNames:
 @use_span()
 def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.catalog_name)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
+    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_points = electricity_market_repository.read_child_metering_points()
-    time_series_points = measurements_gold_repository.read_time_series_points()
+    time_series_points = measurements_repository.read_time_series_points()
 
     # Execute the calculation logic
     execute_core_logic(

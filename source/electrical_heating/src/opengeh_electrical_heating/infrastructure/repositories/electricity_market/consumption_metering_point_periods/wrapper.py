@@ -1,16 +1,16 @@
 from pyspark.sql import DataFrame
 from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import calculations
+from .schema import consumption_metering_point_periods_v1
 
 
-class Calculations(DataFrameWrapper):
-    """Represents the calculations data structure."""
+class ConsumptionMeteringPointPeriods(DataFrameWrapper):
+    """Represents the consumption metering point periods data structure."""
 
     def __init__(self, df: DataFrame):
         super().__init__(
             df,
-            calculations,
+            consumption_metering_point_periods_v1,
             # We ignore_nullability because it has turned out to be too hard and even possibly
             # introducing more errors than solving in order to stay in exact sync with the
             # logically correct schema.

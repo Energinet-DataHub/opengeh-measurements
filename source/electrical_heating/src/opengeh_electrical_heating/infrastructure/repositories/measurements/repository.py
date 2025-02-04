@@ -1,13 +1,9 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
-    MeasurementsBronzeDatabase,
-)
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabase,
-)
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
+from .measurements_bronze.database_definitions import MeasurementsBronzeDatabase
+from .measurements_bronze.wrapper import MeasurementsBronze
+from .measurements_gold.database_definitions import MeasurementsGoldDatabase
+from .measurements_gold.wrapper import TimeSeriesPoints
 
 
 class Repository:

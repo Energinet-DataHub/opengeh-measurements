@@ -2,18 +2,10 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
-    child_metering_points_v1,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
-    ChildMeteringPoints,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
-    consumption_metering_point_periods_v1,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
-    ConsumptionMeteringPointPeriods,
-)
+from .child_metering_points.schema import child_metering_points_v1
+from .child_metering_points.wrapper import ChildMeteringPoints
+from .consumption_metering_point_periods.schema import consumption_metering_point_periods_v1
+from .consumption_metering_point_periods.wrapper import ConsumptionMeteringPointPeriods
 
 
 class Repository:
