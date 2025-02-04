@@ -714,7 +714,6 @@ dependencies = [
     { name = "azure-core" },
     { name = "azure-monitor-opentelemetry" },
     { name = "configargparse" },
-    { name = "databricks-sdk" },
     { name = "delta-spark" },
     { name = "opengeh-telemetry" },
     { name = "pydantic-settings" },
@@ -725,11 +724,14 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "commitizen" },
+    { name = "databricks-sdk" },
     { name = "mypy" },
     { name = "opengeh-testcommon" },
+    { name = "pyspark-functions" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "tomli" },
 ]
 
 [package.metadata]
@@ -737,7 +739,6 @@ requires-dist = [
     { name = "azure-core", specifier = "==1.32.0" },
     { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
     { name = "configargparse", specifier = "==1.7.0" },
-    { name = "databricks-sdk", specifier = "==0.41.0" },
     { name = "delta-spark", specifier = "==3.2.0" },
     { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.0.1" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
@@ -748,11 +749,14 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "commitizen", specifier = ">=4.1.0" },
+    { name = "databricks-sdk", specifier = "==0.41.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
+    { name = "pyspark-functions", specifier = ">=0.0.3" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.9.1" },
+    { name = "tomli", specifier = ">=2.2.1" },
 ]
 
 [[package]]
@@ -1228,6 +1232,18 @@ dependencies = [
     { name = "py4j" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/73/e5/c9eb78cc982dafb7b5834bc5c368fe596216c8b9f7c4b4ffa104c4d2ab8f/pyspark-3.5.1.tar.gz", hash = "sha256:dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910", size = 316955685 }
+
+[[package]]
+name = "pyspark-functions"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyspark" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/af/63/8bd3ebdab2890c0fdb806746e37d4a0070254488cc5a00694263d2a7e085/pyspark_functions-0.0.3.tar.gz", hash = "sha256:14d0393046f9f518f890509d83c5f638017573174896d763137186e3ed125659", size = 3564 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/30/583195873403c3752bcf440c9d1e556967422a8145b620349e571a27d821/pyspark_functions-0.0.3-py3-none-any.whl", hash = "sha256:43e563a2d8e4a817236043a14be0fad5e763822731346b3645a1a12324ae26e0", size = 3928 },
+]
 
 [[package]]
 name = "pytest"
