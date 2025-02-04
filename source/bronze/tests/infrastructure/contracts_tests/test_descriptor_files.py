@@ -23,10 +23,8 @@ def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
     # Compare generated descriptor with the reference descriptor
     with open(temp_descriptor, "rb") as temp, open(descriptor_file, "rb") as ref:
         if temp.read() == ref.read():
-            print("Test Passed: Descriptor files match!")
             return True
         else:
-            print("Test Failed: Descriptor files do not match!")
             return False
 
 
