@@ -42,7 +42,6 @@ def job_environment_variables() -> dict:
     return {
         EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
         EnvironmentVariable.TIME_ZONE.name: "Europe/Copenhagen",
-        EnvironmentVariable.ORCHESTRATION_INSTANCE_ID.name: str(DEFAULT_ORCHESTRATION_INSTANCE_ID),
         EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: str(ELECTRICITY_MARKET_DATA_PATH),
     }
 
