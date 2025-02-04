@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "azure-core==1.32.0",
     "azure-monitor-opentelemetry==1.6.4",
-    "opengeh-pyspark @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.0.1#subdirectory=source/pyspark_functions",
+    "opengeh-pyspark @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@3.4.1#subdirectory=source/pyspark_functions",
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
     "pydantic-settings>=2.7.1",
