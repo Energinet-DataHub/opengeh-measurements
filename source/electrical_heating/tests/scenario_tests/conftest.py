@@ -7,9 +7,7 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from opengeh_electrical_heating.application.calculation import (
-    execute_calculation,
-)
+from opengeh_electrical_heating.domain import execute
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
@@ -61,7 +59,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
 
     # Execute the logic
-    calculation_output = execute_calculation(
+    calculation_output = execute(
         spark,
         time_series_points,
         consumption_metering_point_periods,
