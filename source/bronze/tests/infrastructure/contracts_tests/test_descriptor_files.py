@@ -28,21 +28,21 @@ def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
             return False
 
 
-# def test__persist_submitted_transaction_protobuf() -> None:
-#     descriptor_file = "src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-#     proto_path = "src/opengeh_bronze/infrastructure/contracts"
-#     proto_file = "PersistSubmittedTransaction.proto"
+def test__persist_submitted_transaction_protobuf() -> None:
+    descriptor_file = "src/opengeh_bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
+    proto_path = "src/opengeh_bronze/infrastructure/contracts"
+    proto_file = "PersistSubmittedTransaction.proto"
 
-#     assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
-#         "Protobuf compilation does not match the descriptor file!"
-#     )
+    assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
+        "Protobuf compilation does not match the descriptor file!"
+    )
 
 
-# def test__submitted_transaction_persisted_protobuf() -> None:
-#     descriptor_file = "src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
-#     proto_path = "src/opengeh_bronze/infrastructure/contracts"
-#     proto_file = "SubmittedTransactionPersisted.proto"
+def test__submitted_transaction_persisted_protobuf() -> None:
+    descriptor_file = "src/opengeh_bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
+    proto_path = "src/opengeh_bronze/infrastructure/contracts"
+    proto_file = "SubmittedTransactionPersisted.proto"
 
-#     assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
-#         "Protobuf compilation does not match the descriptor file!"
-#     )
+    assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
+        "Protobuf compilation does not match the descriptor file!"
+    )
