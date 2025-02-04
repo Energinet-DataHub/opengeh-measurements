@@ -29,9 +29,10 @@ from opengeh_electrical_heating.domain.calculation import (
 from opengeh_electrical_heating.domain.calculation_results import (
     CalculationOutput,
 )
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations import (
-    calculations as schemas,
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import (
+    calculations,
 )
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.wrapper import Calculations
 from opengeh_electrical_heating.infrastructure.spark_initializor import (
     initialize_spark,
 )
@@ -107,7 +108,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
         execution_start_datetime,
     )
 
-    electrical_heating_internal_repository.save(calculation_output.calculations)
+    electrical_heating_internal_repository.save(Calculations(calculation_output.calculations))
 
 
 def execute_calculation(
@@ -153,4 +154,4 @@ def create_calculation(
         }
     ]
 
-    return spark.createDataFrame(data, schemas.calculations)
+    return spark.createDataFrame(data, calculations)
