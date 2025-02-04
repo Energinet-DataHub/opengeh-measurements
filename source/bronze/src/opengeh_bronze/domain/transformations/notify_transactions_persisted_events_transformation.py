@@ -30,7 +30,7 @@ def prepare_measurement(df):
 def pack_proto(df) -> DataFrame:
     descriptor_path = path_helper.get_protobuf_descriptor_path("submitted_transaction_persisted.binpb")
     message_name = "SubmittedTransactionPersisted"
-    return df.withColumn("body", to_protobuf(df.value, message_name, descFilePath=descriptor_path)).drop("value")
+    return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_path))
 
 
 def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
