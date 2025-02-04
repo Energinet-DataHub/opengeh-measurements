@@ -37,6 +37,6 @@ class KafkaStream:
         )
         event_hub_instance = SubmittedTransactionsStreamSettings().event_hub_instance
 
-        dataframe.writeStream.format("kafka").options(**self.kafka_options).option("ignoreDeletes", "true").option(
-            "topic", event_hub_instance
-        ).option("checkpointLocation", checkpoint_location).trigger(availableNow=True).start()
+        dataframe.writeStream.format("kafka").options(**self.kafka_options).option("topic", event_hub_instance).option(
+            "checkpointLocation", checkpoint_location
+        ).trigger(availableNow=True).start()

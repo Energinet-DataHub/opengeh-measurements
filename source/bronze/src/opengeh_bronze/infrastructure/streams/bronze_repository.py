@@ -14,6 +14,8 @@ class BronzeRepository:
         )
 
     def read_submitted_transactions(self) -> DataFrame:
-        return self.spark.readStream.format("delta").table(
-            f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
+        return (
+            self.spark.readStream.format("delta")
+            .option("ignoreDeletes", "true")
+            .table(f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}")
         )
