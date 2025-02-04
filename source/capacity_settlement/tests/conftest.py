@@ -1,12 +1,10 @@
 from typing import Generator
 
 import pytest
-import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
-from testcommon.container_test import DatabricksApiClient
 
-from tests import PROJECT_ROOT, Path
+from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
 
@@ -45,20 +43,3 @@ def contracts_path() -> str:
 def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
     settings_file_path = PROJECT_ROOT / "tests" / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
-
-
-def _load_settings_from_file(file_path: Path) -> dict:
-    if file_path.exists():
-        with file_path.open() as stream:
-            return yaml.safe_load(stream)
-    else:
-        return {}
-
-
-@pytest.fixture(scope="session")
-def databricks_api_client() -> DatabricksApiClient:
-    settings = _load_settings_from_file(PROJECT_ROOT / "tests" / "test.local.settings.yml")
-    databricks_token = settings.get("DATABRICKS_TOKEN")
-    databricks_host = settings.get("WORKSPACE_URL")
-    databricksApiClient = DatabricksApiClient(databricks_token, databricks_host)
-    return databricksApiClient
