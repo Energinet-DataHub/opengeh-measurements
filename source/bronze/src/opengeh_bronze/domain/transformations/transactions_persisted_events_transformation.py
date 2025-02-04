@@ -8,7 +8,7 @@ from opengeh_bronze.domain.constants.column_names.bronze_submitted_transactions_
     ValueColumnNames,
 )
 
-alias_name = "measurement"
+alias_name = "measurement_values"
 
 
 def transform(submitted_transactions: DataFrame) -> DataFrame:
@@ -16,21 +16,25 @@ def transform(submitted_transactions: DataFrame) -> DataFrame:
     return unpacked_submitted_transactions.transform(prepare_measurement).transform(pack_proto)
 
 
-def prepare_measurement(df):
-    return df.withColumn(
-        BronzeSubmittedTransactionsColumnNames.value,
+def prepare_measurement(df) -> DataFrame:
+    return df.select(
+        BronzeSubmittedTransactionsColumnNames.key,
         F.struct(
             df[ValueColumnNames.version].alias(ValueColumnNames.version),
             df[ValueColumnNames.orchestration_instance_id].alias(ValueColumnNames.orchestration_instance_id),
             df[ValueColumnNames.orchestration_type].alias(ValueColumnNames.orchestration_type),
-        ),
+        ).alias(BronzeSubmittedTransactionsColumnNames.value),
+        BronzeSubmittedTransactionsColumnNames.partition,
     )
 
 
 def pack_proto(df) -> DataFrame:
     descriptor_path = path_helper.get_protobuf_descriptor_path("submitted_transaction_persisted.binpb")
     message_name = "SubmittedTransactionPersisted"
-    return df.withColumn("value", to_protobuf(df.value, message_name, descFilePath=descriptor_path))
+    return df.withColumn(
+        BronzeSubmittedTransactionsColumnNames.value,
+        to_protobuf(BronzeSubmittedTransactionsColumnNames.value, message_name, descFilePath=descriptor_path),
+    )
 
 
 def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
@@ -41,7 +45,11 @@ def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
 def unpack_proto(df):
     descriptor_path = path_helper.get_protobuf_descriptor_path("persist_submitted_transaction.binpb")
     message_name = "PersistSubmittedTransaction"
-    return df.select(from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name))
+    return df.select(
+        from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name),
+        BronzeSubmittedTransactionsColumnNames.key,
+        BronzeSubmittedTransactionsColumnNames.partition,
+    )
 
 
 def map_message(df):
@@ -49,4 +57,6 @@ def map_message(df):
         f"{alias_name}.{ValueColumnNames.version}",
         f"{alias_name}.{ValueColumnNames.orchestration_instance_id}",
         f"{alias_name}.{ValueColumnNames.orchestration_type}",
+        BronzeSubmittedTransactionsColumnNames.key,
+        BronzeSubmittedTransactionsColumnNames.partition,
     )

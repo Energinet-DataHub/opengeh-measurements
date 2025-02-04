@@ -1,4 +1,4 @@
-class NotifyTransactionsPersistedEventColumnNames:
+class TransactionsPersistedEventColumnNames:
     key = "key"
     value = "value"
     topic = "topic"

@@ -16,11 +16,12 @@ class KafkaStream:
     kafka_options: dict
 
     def __init__(self) -> None:
-        self.kafka_options = SubmittedTransactionsStreamSettings().create_kafka_options()
+        self.kafka_options = SubmittedTransactionsStreamSettings().create_kafka_options()  # type: ignore
+        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "submitted_transactions"
+            self.data_lake_settings, StorageContainerNames.bronze, "submitted_transactions"
         )
         spark.readStream.format("kafka").options(**self.kafka_options).load().writeStream.outputMode("append").trigger(
             availableNow=True
@@ -33,9 +34,9 @@ class KafkaStream:
         dataframe: DataFrame,
     ):
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT, StorageContainerNames.bronze, "processed_transactions"
+            self.data_lake_settings, StorageContainerNames.bronze, "processed_transactions"
         )
-        event_hub_instance = SubmittedTransactionsStreamSettings().event_hub_instance
+        event_hub_instance = SubmittedTransactionsStreamSettings().event_hub_instance  # type: ignore
 
         dataframe.writeStream.format("kafka").options(**self.kafka_options).option("topic", event_hub_instance).option(
             "checkpointLocation", checkpoint_location
