@@ -15,14 +15,14 @@ from telemetry_logging.span_recording import span_record_exception
 import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
 import opengeh_electrical_heating.infrastructure.electricity_market as em
 import opengeh_electrical_heating.infrastructure.measurements as mg
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
 from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from opengeh_electrical_heating.domain import ColumnNames
+from opengeh_electrical_heating.domain import (
+    ColumnNames,
+    ElectricalHeatingArgs,
+)
 from opengeh_electrical_heating.domain.calculation import (
     execute_core_logic,
 )
