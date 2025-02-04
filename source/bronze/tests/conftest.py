@@ -50,8 +50,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         .enableHiveSupport(),
         extra_packages=[
             "org.apache.spark:spark-protobuf_2.12:3.5.4",
-            "io.delta:delta-core_2.12:2.3.0",
-            "io.delta:delta-spark_2.12:3.1.0",
         ],
     ).getOrCreate()
 
