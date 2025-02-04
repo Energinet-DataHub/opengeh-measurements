@@ -14,7 +14,7 @@ from telemetry_logging.span_recording import span_record_exception
 
 import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
 import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements_gold as mg
+import opengeh_electrical_heating.infrastructure.measurements as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
