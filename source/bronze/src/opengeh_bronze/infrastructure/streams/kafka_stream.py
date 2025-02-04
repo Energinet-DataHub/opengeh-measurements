@@ -46,7 +46,7 @@ class KafkaStream:
         checkpoint_location = shared_helpers.get_checkpoint_path(
             self.data_lake_settings, StorageContainerNames.bronze, "processed_transactions"
         )
-        event_hub_instance = SubmittedTransactionsStreamSettings().event_hub_instance  # type: ignore
+        event_hub_instance = KafkaAuthenticationSettings().event_hub_instance  # type: ignore
 
         dataframe.writeStream.format("kafka").options(**self.kafka_options).option("topic", event_hub_instance).option(
             "checkpointLocation", checkpoint_location
