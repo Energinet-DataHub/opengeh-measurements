@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.calculations import calculations
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import calculations
 
 
 class Calculations(DataFrameWrapper):
