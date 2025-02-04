@@ -9,15 +9,15 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-from opengeh_electrical_heating.domain import (
+from . import (
     ColumnNames,
 )
-from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
-from opengeh_electrical_heating.domain.constants import (
+from .calculated_measurements_daily import CalculatedMeasurementsDaily
+from .constants import (
     ELECTRICAL_HEATING_LIMIT_YEARLY,
 )
-from opengeh_electrical_heating.domain.types import NetSettlementGroup
-from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+from .types import NetSettlementGroup
+from .types.metering_point_type import MeteringPointType
 
 
 class _CalculatedNames:

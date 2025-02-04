@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from pyspark.sql import DataFrame
 
-from opengeh_electrical_heating.domain.calculation import CalculatedMeasurementsDaily
+from .calculation import CalculatedMeasurementsDaily
 
 
 @dataclass
