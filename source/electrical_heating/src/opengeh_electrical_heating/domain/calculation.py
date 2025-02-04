@@ -10,7 +10,7 @@ from pyspark_functions.functions import (
 from telemetry_logging import use_span
 
 import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements_gold as mg
+import opengeh_electrical_heating.infrastructure.measurements as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
