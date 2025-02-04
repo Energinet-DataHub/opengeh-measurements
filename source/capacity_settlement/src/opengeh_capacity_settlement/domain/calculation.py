@@ -57,6 +57,7 @@ def execute_core_logic(
     )
 
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
+    times_series_points.show(1000)
 
     calculation_output.measurements = times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
@@ -101,8 +102,14 @@ def _add_selection_period_columns(
 
     metering_point_periods.show()
     metering_point_periods = metering_point_periods.filter(
-        (F.col("period_from_date") <= calculation_start_date) &
-        ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
+        (F.year(F.col("period_from_date")) < calculation_year) |
+        ((F.year(F.col("period_from_date")) == calculation_year) &
+         (F.month(F.col("period_from_date")) <= calculation_month))
+    ).filter(
+        (F.col("period_to_date").isNull()) |
+        (F.year(F.col("period_to_date")) > calculation_year) |
+        ((F.year(F.col("period_to_date")) == calculation_year) &
+         (F.month(F.col("period_to_date")) >= calculation_month))
     )
     
     metering_point_periods.show()
@@ -111,7 +118,9 @@ def _add_selection_period_columns(
         F.when(F.col("period_from_date") > F.lit(selection_period_start), F.col("period_from_date"))
         .otherwise(F.lit(selection_period_start))
     ).withColumn(
-        ColumNames.selection_period_end, F.lit(selection_period_end)
+        ColumNames.selection_period_end,
+        F.when(F.col("period_to_date") <= F.lit(selection_period_end), F.col("period_to_date"))
+        .otherwise(F.lit(selection_period_end))
     )
 
     metering_point_periods.show()

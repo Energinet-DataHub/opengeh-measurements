@@ -1,9 +1,9 @@
 ﻿import pytest
 from testcommon.dataframes import (
-    assert_dataframes_and_schemas,
     AssertDataframesConfiguration,
+    assert_dataframes_and_schemas,
 )
-from testcommon.etl import get_then_names, TestCases
+from testcommon.etl import TestCases, get_then_names
 
 
 @pytest.mark.parametrize("name", get_then_names())
@@ -13,6 +13,7 @@ def test_case(
     assert_dataframes_configuration: AssertDataframesConfiguration,
 ) -> None:
     test_case = test_cases[name]
+    test_case.actual.show(1000)
     assert_dataframes_and_schemas(
         actual=test_case.actual,
         expected=test_case.expected,
