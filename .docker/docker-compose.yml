@@ -11,8 +11,8 @@ services:
         command: sleep infinity
         volumes:
         - ..:/workspace:cached
-    silver:
-        image: silver:latest
+    core:
+        image: core:latest
         build:
             args:
                 SPARK_VERSION: 3.5.4
