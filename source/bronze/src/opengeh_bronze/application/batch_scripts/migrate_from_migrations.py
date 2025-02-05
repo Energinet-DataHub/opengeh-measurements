@@ -19,14 +19,6 @@ def migrate_from_migrations_to_measurements() -> None:
     spark = spark_session.initialize_spark()
     repository = Repository(spark)
 
-    target_database = DatabaseNames.bronze_database
-    target_table_name = TableNames.bronze_migrated_transactions_table
-    fully_qualified_target_table_name = f"{target_database}.{target_table_name}"
-
-    source_database = DatabaseNames.silver_migrations_database
-    source_table_name = MigrationsTableNames.silver_time_series_table
-    fully_qualified_source_table_name = f"{source_database}.{source_table_name}"
-
     latest_created_already_migrated = datetime(1900, 1, 1).date()
 
     try:
@@ -37,7 +29,7 @@ def migrate_from_migrations_to_measurements() -> None:
         )
     except IndexError:
         print(
-            f"{datetime.now()} - Failed to find any data in {fully_qualified_target_table_name}, doing full load of migrations to measurements from scratch."
+            f"{datetime.now()} - Failed to find any data in target table, doing full load of migrations to measurements from scratch."
         )
 
     # Determine which technique to apply for loading data.
