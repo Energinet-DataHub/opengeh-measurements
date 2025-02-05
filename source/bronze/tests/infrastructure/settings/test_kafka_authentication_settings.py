@@ -1,6 +1,6 @@
 import os
 
-from opengeh_bronze.application.settings.kafka_authentication_settings import (
+from opengeh_bronze.infrastructure.settings import (
     KafkaAuthenticationSettings,
 )
 
