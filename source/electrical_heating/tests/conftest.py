@@ -131,10 +131,11 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 def pytest_collection_modifyitems(config, items) -> None:
-    env_file_path = os.path.join(os.path.dirname(__file__), '.env')
+    env_file_path = os.path.join(os.path.dirname(__file__), ".env")
     if not os.path.exists(env_file_path):
-        skip_container_tests = pytest.mark.skip(reason="Skipping container tests because .env file is missing. See .sample.env for an example.")
+        skip_container_tests = pytest.mark.skip(
+            reason="Skipping container tests because .env file is missing. See .sample.env for an example."
+        )
         for item in items:
             if "container_tests" in item.nodeid:
                 item.add_marker(skip_container_tests)
-                
