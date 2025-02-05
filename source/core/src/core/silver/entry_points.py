@@ -7,5 +7,6 @@ def stream_calculated_measurements() -> None:
     calculated_stream.execute(get_applicationinsights_connection_string())
 
 
+# Todo, move to core package entry_points.py
 def migrate() -> None:
     migrations_runner.migrate()
