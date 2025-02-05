@@ -100,24 +100,30 @@ def _add_selection_period_columns(
     selection_period_end = calculation_end_date
 
     metering_point_periods = metering_point_periods.filter(
-        (F.year(F.col("period_from_date")) < calculation_year) |
-        ((F.year(F.col("period_from_date")) == calculation_year) &
-         (F.month(F.col("period_from_date")) <= calculation_month))
+        (F.year(F.col("period_from_date")) < calculation_year)
+        | (
+            (F.year(F.col("period_from_date")) == calculation_year)
+            & (F.month(F.col("period_from_date")) <= calculation_month)
+        )
     ).filter(
-        (F.col("period_to_date").isNull()) |
-        (F.year(F.col("period_to_date")) > calculation_year) |
-        ((F.year(F.col("period_to_date")) == calculation_year) &
-         (F.month(F.col("period_to_date")) >= calculation_month))
+        (F.col("period_to_date").isNull())
+        | (F.year(F.col("period_to_date")) > calculation_year)
+        | (
+            (F.year(F.col("period_to_date")) == calculation_year)
+            & (F.month(F.col("period_to_date")) >= calculation_month)
+        )
     )
-    
+
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start,
-        F.when(F.col("period_from_date") > F.lit(selection_period_start), F.col("period_from_date"))
-        .otherwise(F.lit(selection_period_start))
+        F.when(F.col("period_from_date") > F.lit(selection_period_start), F.col("period_from_date")).otherwise(
+            F.lit(selection_period_start)
+        ),
     ).withColumn(
         ColumNames.selection_period_end,
-        F.when(F.col("period_to_date") <= F.lit(selection_period_end), F.col("period_to_date"))
-        .otherwise(F.lit(selection_period_end))
+        F.when(F.col("period_to_date") <= F.lit(selection_period_end), F.col("period_to_date")).otherwise(
+            F.lit(selection_period_end)
+        ),
     )
 
     return metering_point_periods
