@@ -7,6 +7,7 @@
     StructType,
     TimestampType,
 )
+
 from src.core.gold.domain.constants.column_names.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
