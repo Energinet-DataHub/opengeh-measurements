@@ -9,28 +9,29 @@ from opengeh_bronze.application.settings import (
 )
 from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames, MigrationsTableNames
+from opengeh_bronze.infrastructure.repository import Repository
 import opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names as BronzeMigratedColumnNames
 import opengeh_bronze.application.config.spark_session as spark_session
 
 
 
 def calculate_latest_created_timestamp_that_has_been_migrated(
-    fully_qualified_target_table_name: str,
+    repository: Repository,
 ) -> datetime:
     return (
-        spark.read.table(fully_qualified_target_table_name)
+        repository.read_migrations_silver_time_series()
         .agg(max(col(BronzeMigratedColumnNames.created)))
         .collect()[0][0]
     )
 
 
 def create_chunks_of_partitions(
-    source_table_name: str, partition_col: str, num_chunks: int
+    repository: Repository, partition_col: str, num_chunks: int
 ) -> list[str]:
     partitions = sorted(
         [
             str(row[partition_col])
-            for row in spark.read.table(source_table_name)
+            for row in repository.read_migrations_silver_time_series()
             .select(partition_col)
             .distinct()
             .collect()

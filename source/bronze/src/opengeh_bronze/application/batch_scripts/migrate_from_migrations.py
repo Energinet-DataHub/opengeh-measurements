@@ -9,6 +9,7 @@ from opengeh_bronze.application.settings import (
 )
 from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames, MigrationsTableNames
+from opengeh_bronze.infrastructure.repository import Repository
 import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
 import opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names as BronzeMigratedColumnNames
 import opengeh_bronze.application.config.spark_session as spark_session
@@ -16,6 +17,7 @@ import opengeh_bronze.application.config.spark_session as spark_session
 
 def migrate_from_migrations_to_measurements() -> None:
     spark = spark_session.initialize_spark()
+    repository = Repository(spark)
 
     target_database = DatabaseNames.bronze_database
     target_table_name = TableNames.bronze_migrated_transactions_table
@@ -30,7 +32,7 @@ def migrate_from_migrations_to_measurements() -> None:
     try:
         latest_created_already_migrated = (
             migrate_from_migrations_transformations.calculate_latest_created_timestamp_that_has_been_migrated(
-                fully_qualified_target_table_name
+                repository
             )
         )
     except IndexError:
@@ -41,28 +43,26 @@ def migrate_from_migrations_to_measurements() -> None:
     # Determine which technique to apply for loading data.
     if latest_created_already_migrated == datetime(1900, 1, 1).date():
         full_load_of_migrations_to_measurements(
-            spark, fully_qualified_source_table_name, fully_qualified_target_table_name
+            spark, repository
         )
     else:
         daily_load_of_migrations_to_measurements(
             spark,
-            fully_qualified_source_table_name,
-            fully_qualified_target_table_name,
+            repository,
             latest_created_already_migrated,
         )
 
 
 # Rely on the created column to identify what to migrate.
 def daily_load_of_migrations_to_measurements(
-    fully_qualified_source_table_name: str,
-    fully_qualified_target_table_name: str,
+    repository: Repository,
     latest_created_already_migrated: datetime,
 ) -> None:
     today = datetime.now().date()
     print(
         f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze."
     )
-    migrations_data = spark.read.table(fully_qualified_source_table_name).filter(
+    migrations_data = repository.read_migrations_silver_time_series().filter(
         (col(BronzeMigratedColumnNames.created) < lit(today))
         & (
             col(BronzeMigratedColumnNames.created)
@@ -70,17 +70,17 @@ def daily_load_of_migrations_to_measurements(
         )
     )
 
-    append_to_measurements(migrations_data, fully_qualified_target_table_name)
+    repository.write_measurements_bronze_migrated(migrations_data)
 
 
 # Leverage the transaction_insert_date partitioning to split our work into chunks due to the large amount of data to migrate.
 def full_load_of_migrations_to_measurements(
-    fully_qualified_source_table_name: str, fully_qualified_target_table_name: str
+    repository: Repository
 ) -> None:
     NUM_CHUNKS = 10
     partitioning_column = "partitioning_col"
     chunks = migrate_from_migrations_transformations.create_chunks_of_partitions(
-        fully_qualified_source_table_name, partitioning_column, NUM_CHUNKS
+        repository, partitioning_column, NUM_CHUNKS
     )
     today = datetime.now().date()
 
@@ -89,7 +89,7 @@ def full_load_of_migrations_to_measurements(
             f"{datetime.now()} - Migrating partitions between: '{chunk[0]}' and '{chunk[-1]}', chunk {i}/{NUM_CHUNKS}"
         )
 
-        migrations_data = spark.read.table(fully_qualified_source_table_name).filter(
+        migrations_data = repository.read_migrations_silver_time_series().filter(
             (lit(chunk[0]) <= col(partitioning_column))
             & (
                 col(partitioning_column)
@@ -98,9 +98,4 @@ def full_load_of_migrations_to_measurements(
             )
         )
 
-        append_to_measurements(migrations_data, fully_qualified_target_table_name)
-
-def append_to_measurements(
-    data: DataFrame, fully_qualified_target_table_name: str
-) -> None:
-    (data.write.mode("append").saveAsTable(fully_qualified_target_table_name))
+        repository.write_measurements_bronze_migrated(migrations_data)
