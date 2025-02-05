@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/reusable-ci.yml
     with:
       packages_directory: source
-      core_regex: opengeh_bronze|core
+      core_regex: core
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
