@@ -7,9 +7,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
 import core.migrations.migrations_runner as migrations_runner
-from src.core.gold.domain.schemas.silver_measurements import silver_measurements_schema
-from src.core.gold.infrastructure.config import GoldDatabaseNames
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.gold.domain.schemas.silver_measurements import silver_measurements_schema
+from core.gold.infrastructure.config import GoldDatabaseNames
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 
 
 def pytest_runtest_setup() -> None:

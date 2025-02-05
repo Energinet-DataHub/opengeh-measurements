@@ -3,17 +3,17 @@ from unittest import mock
 import pytest
 from pyspark.sql import DataFrame, SparkSession
 
-from src.core.silver.application.streams.calculated_stream import (
+from core.silver.application.streams.calculated_stream import (
     _batch_operations,
     _execute,
     execute,
 )
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 
 
-@mock.patch("src.core.silver.application.streams.calculated_stream._execute")
-@mock.patch("src.core.silver.application.streams.calculated_stream.config")
-@mock.patch("src.core.silver.application.streams.calculated_stream.initialize_spark")
+@mock.patch("core.silver.application.streams.calculated_stream._execute")
+@mock.patch("core.silver.application.streams.calculated_stream.config")
+@mock.patch("core.silver.application.streams.calculated_stream.initialize_spark")
 def test__calculated_stream__should_be_success(
     mock_initialize_spark,
     mock_config,
@@ -32,8 +32,8 @@ def test__calculated_stream__should_be_success(
     mock__calculated_stream.assert_called_once()
 
 
-@mock.patch("src.core.silver.application.streams.calculated_stream.span_record_exception")
-@mock.patch("src.core.silver.application.streams.calculated_stream.initialize_spark")
+@mock.patch("core.silver.application.streams.calculated_stream.span_record_exception")
+@mock.patch("core.silver.application.streams.calculated_stream.initialize_spark")
 def test__calculated_stream__should_throw_exception(
     mock_initialize_spark,
     mock_span_record_exception,
@@ -51,9 +51,9 @@ def test__calculated_stream__should_throw_exception(
     mock_span_record_exception.assert_called_once()
 
 
-@mock.patch("src.core.silver.application.streams.calculated_stream.get_checkpoint_path", return_value="checkpoint")
-@mock.patch("src.core.silver.application.streams.calculated_stream.BronzeRepository")
-@mock.patch("src.core.silver.application.streams.calculated_stream.writer")
+@mock.patch("core.silver.application.streams.calculated_stream.get_checkpoint_path", return_value="checkpoint")
+@mock.patch("core.silver.application.streams.calculated_stream.BronzeRepository")
+@mock.patch("core.silver.application.streams.calculated_stream.writer")
 def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeRepository, mock_get_checkpoint_path):
     # Arrange
     mock_spark = mock.Mock(spec=SparkSession)
@@ -72,7 +72,7 @@ def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeReposi
     )
 
 
-@mock.patch("src.core.silver.application.streams.calculated_stream.transform_calculated_measurements")
+@mock.patch("core.silver.application.streams.calculated_stream.transform_calculated_measurements")
 def test__batch_operations(mock_transform_calculated_measurements):
     # Arrange
     mock_df = mock.Mock(spec=DataFrame)

@@ -2,9 +2,9 @@ from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
 
-from src.core.gold.application.ports.silver_port import SilverPort
-from src.core.gold.infrastructure.shared_helpers import get_full_table_name
-from src.core.silver.infrastructure.config import SilverDatabaseNames
+from core.gold.application.ports.silver_port import SilverPort
+from core.gold.infrastructure.shared_helpers import get_full_table_name
+from core.silver.infrastructure.config import SilverDatabaseNames
 
 
 class DeltaSilverAdapter(SilverPort):

@@ -1,8 +1,8 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
-from src.core.silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
-from src.core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
+from core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
 class BronzeRepository:

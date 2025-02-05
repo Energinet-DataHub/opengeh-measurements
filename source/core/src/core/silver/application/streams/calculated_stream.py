@@ -7,14 +7,14 @@ from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-from src.core.silver.application.config.spark import initialize_spark
-from src.core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
-from src.core.silver.infrastructure.config.container_names import ContainerNames
-from src.core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
-from src.core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
-from src.core.silver.infrastructure.streams import writer
-from src.core.silver.infrastructure.streams.bronze_repository import BronzeRepository
+from core.silver.application.config.spark import initialize_spark
+from core.silver.astructure.config.container_names import ContainerNames
+from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
+from core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
+from core.silver.infrastructure.streams import writer
+from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
 
 
 def execute(applicationinsights_connection_string: Optional[str] = None) -> None:

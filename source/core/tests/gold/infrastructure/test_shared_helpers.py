@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from src.core.gold.infrastructure.shared_helpers import (
+from core.gold.infrastructure.shared_helpers import (
     EnvironmentVariable,
     get_checkpoint_path,
     get_env_variable_or_throw,

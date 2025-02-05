@@ -6,9 +6,9 @@ import testcommon.dataframes.assert_schemas as assert_schemas
 from helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
-from src.core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
-from src.core.gold.domain.schemas.gold_measurements import gold_measurements_schema
-from src.core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
+from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
+from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
+from core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
 
 
 def test__transform_silver_to_gold__should_match_gold_schema(spark: SparkSession) -> None:

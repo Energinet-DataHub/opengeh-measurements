@@ -2,13 +2,13 @@ from unittest.mock import Mock
 
 from pyspark.sql import SparkSession
 
-from src.core.gold.application.ports.gold_port import GoldPort
-from src.core.gold.application.ports.silver_port import SilverPort
-from src.core.gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
+from core.gold.application.ports.gold_port import GoldPort
+from core.gold.application.ports.silver_port import SilverPort
+from core.gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
     StreamProcessorMeasurements,
 )
-from src.core.gold.infrastructure.config import GoldTableNames
-from src.core.silver.infrastructure.config import SilverTableNames
+from core.gold.infrastructure.config import GoldTableNames
+from core.silver.infrastructure.config import SilverTableNames
 
 
 def test__stream_processor_measurements__calls_expected(spark: SparkSession):

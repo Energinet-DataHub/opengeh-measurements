@@ -3,9 +3,9 @@ import random
 from helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import DataFrame, SparkSession
 
-from src.core.gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
-from src.core.gold.infrastructure.config.database_names import DatabaseNames
-from src.core.gold.infrastructure.config.table_names import TableNames
+from core.gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
+from core.gold.infrastructure.config.database_names import DatabaseNames
+from core.gold.infrastructure.config.table_names import TableNames
 
 
 def test__read_stream__should_return_dataframe(spark: SparkSession, create_silver_tables):

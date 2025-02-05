@@ -5,8 +5,8 @@ from spark_sql_migrations import (
 )
 
 import core.migrations.substitutions as substitutions
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
-from src.core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
 def migrate() -> None:

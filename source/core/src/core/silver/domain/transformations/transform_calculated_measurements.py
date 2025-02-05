@@ -1,10 +1,10 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from src.core.silver.domain.constants.col_names_bronze_calculated_measurements import (
+from core.silver.domain.constants.col_names_bronze_calculated_measurements import (
     BronzeCalculatedMeasurementsColNames,
 )
-from src.core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
+from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
 
 
 def transform_calculated_measurements(df: DataFrame) -> DataFrame:

@@ -8,7 +8,7 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-from src.core.silver.domain.constants.col_names_bronze_calculated_measurements import (
+from core.silver.domain.constants.col_names_bronze_calculated_measurements import (
     BronzeCalculatedMeasurementsColNames,
 )
 

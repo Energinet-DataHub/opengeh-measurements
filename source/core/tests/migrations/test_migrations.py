@@ -2,9 +2,9 @@ import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 from silver.schemas.silver_measurements_schema import silver_measurements_schema
 
-from src.core.gold.domain.schemas.gold_measurements import gold_measurements_schema
-from src.core.gold.infrastructure.config import GoldDatabaseNames, GoldTableNames
-from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
+from core.gold.infrastructure.config import GoldDatabaseNames, GoldTableNames
+from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 
 
 def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrations_executed) -> None:

@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 from decimal import Decimal
 
-from src.core.gold.domain.schemas.gold_measurements import gold_measurements_schema
+from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 
 
 class GoldMeasurementsDataFrameBuilder:
