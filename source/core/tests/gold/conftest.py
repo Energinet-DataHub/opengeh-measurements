@@ -6,7 +6,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
-import src.core.migrations.migrations_runner as migrations
+import core.migrations.migrations_runner as migrations_runner
 from src.core.gold.domain.schemas.silver_measurements import silver_measurements_schema
 from src.core.gold.infrastructure.config import GoldDatabaseNames
 from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
@@ -50,7 +50,7 @@ def migrations_executed(spark: SparkSession) -> None:
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
     """
-    migrations.migrate()
+    migrations_runner.migrate()
 
 
 @pytest.fixture(scope="session")
@@ -87,7 +87,7 @@ def tests_path(source_path: str) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return f"{source_path}/core/tests"
+    return f"{source_path}/tests"
 
 
 def _create_schemas(spark: SparkSession) -> None:
