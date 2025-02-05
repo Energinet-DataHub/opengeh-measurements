@@ -30,8 +30,8 @@ class CapacitySettlementArgs(BaseSettings):
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
         return (
-            init_settings,
             CliSettingsSource(settings_cls, cli_parse_args=True, cli_ignore_unknown_args=True),
             env_settings,
             dotenv_settings,
+            init_settings,
         )
