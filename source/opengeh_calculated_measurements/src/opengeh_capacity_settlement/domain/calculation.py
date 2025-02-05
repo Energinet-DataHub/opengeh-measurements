@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from dateutil.relativedelta import relativedelta
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
+from pyspark.sql.types import DecimalType
 from telemetry_logging import use_span
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
@@ -58,7 +59,7 @@ def execute_core_logic(
     calculation_output.measurements = times_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
-        F.col(ColumNames.quantity),
+        F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
     calculation_output.calculations = spark.createDataFrame([], schema="")
