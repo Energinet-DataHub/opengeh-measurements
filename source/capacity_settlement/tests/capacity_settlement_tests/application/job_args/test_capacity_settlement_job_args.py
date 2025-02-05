@@ -7,9 +7,6 @@ from opengeh_capacity_settlement.application.job_args.capacity_settlement_job_ar
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from opengeh_capacity_settlement.application.job_args.environment_variables import (
-    EnvironmentVariable,
-)
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
@@ -43,7 +40,7 @@ def sys_argv_from_contract(
 @pytest.fixture(scope="session")
 def job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
+        "CATALOG_NAME": "some_catalog",
     }
 
 
