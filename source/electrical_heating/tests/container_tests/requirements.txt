@@ -1,0 +1,9 @@
+# This is a pip 'requirements.txt' file.
+# See https://pip.pypa.io/en/stable/reference/requirements-file-format/
+
+# This file is used in dh3-environments subsystem to install the required packages for container tests.
+
+# Pytest is installed by default in the container, so it does not need to be listed here.
+
+# List every package that is required to run container tests.
+opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/testcommon
