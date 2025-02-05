@@ -7,13 +7,13 @@ class StorageAccountSettings(BaseSettings):
     Used to define and validate settings for connecting to the submitted transactions Event Hub.
 
     Attributes:
-    DATALAKE_STORAGE_ACCOUNT (str): The name of the Data Lake storage account.
+    datalake_storage_account (str): The name of the Data Lake storage account.
 
     Config:
     case_sensitive (bool): Indicates whether the settings are case-sensitive. Defaults to False.
     """
 
-    DATALAKE_STORAGE_ACCOUNT: str
+    datalake_storage_account: str
 
     class Config:
         case_sensitive = False

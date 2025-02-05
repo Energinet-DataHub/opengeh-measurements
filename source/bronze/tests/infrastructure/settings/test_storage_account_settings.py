@@ -14,4 +14,4 @@ def test__submitted_transactions_stream_settings__continuous_streaming_should_be
     actual = StorageAccountSettings()
 
     # Assert
-    assert actual.DATALAKE_STORAGE_ACCOUNT == expected_datalake_storage_account
+    assert actual.datalake_storage_account == expected_datalake_storage_account

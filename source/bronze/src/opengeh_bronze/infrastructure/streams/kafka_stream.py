@@ -16,7 +16,7 @@ class KafkaStream:
 
     def __init__(self) -> None:
         self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
-        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
+        self.data_lake_settings = StorageAccountSettings().datalake_storage_account  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = path_helper.get_checkpoint_path(
