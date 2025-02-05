@@ -71,14 +71,11 @@ def daily_load_of_migrations_to_measurements(
     print(
         f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze."
     )
-    migrations_data = (
-        spark.read.table(fully_qualified_source_table_name)
-        .filter(
-            (col(BronzeMigratedColumnNames.created) < lit(today))
-            & (
-                col(BronzeMigratedColumnNames.created)
-                > lit(latest_created_already_migrated)
-            )
+    migrations_data = spark.read.table(fully_qualified_source_table_name).filter(
+        (col(BronzeMigratedColumnNames.created) < lit(today))
+        & (
+            col(BronzeMigratedColumnNames.created)
+            > lit(latest_created_already_migrated)
         )
     )
 
