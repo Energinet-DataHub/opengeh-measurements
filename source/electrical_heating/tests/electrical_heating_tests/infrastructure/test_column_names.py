@@ -4,7 +4,7 @@ from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calcu
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from opengeh_electrical_heating.infrastructure.electricity_market.repository import (
+from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
