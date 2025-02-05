@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {silver_database}.{silver_measurements_table}
+CREATE TABLE IF NOT EXISTS {bronze_database}.{bronze_measurements_table}
 (
     orchestration_type STRING,
     orchestration_instance_id STRING,
@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS {silver_database}.{silver_measurements_table}
             quality STRING
         >
     >,
+    _rescued_data STRING,
     created TIMESTAMP
 )
 USING DELTA
-CLUSTER BY (transaction_id, transaction_creation_datetime, metering_point_id, start_datetime)
 TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,

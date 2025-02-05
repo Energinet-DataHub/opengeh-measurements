@@ -5,7 +5,8 @@ from spark_sql_migrations import (
 )
 
 import core.migrations.substitutions as substitutions
-from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.migrations.database_names import DatabaseNames
+from core.migrations.table_names import TableNames
 from core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 
 
@@ -19,8 +20,8 @@ def _configure_spark_sql_migrations() -> None:
     catalog_name = get_catalog_name()
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=SilverDatabaseNames.silver,
-        migration_table_name=SilverTableNames.executed_migrations,
+        migration_schema_name=DatabaseNames.measurements_internal_database,
+        migration_table_name=TableNames.executed_migrations,
         migration_scripts_folder_path="core.migrations.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
