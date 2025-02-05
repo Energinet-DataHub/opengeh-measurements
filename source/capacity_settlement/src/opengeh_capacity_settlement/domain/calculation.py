@@ -99,7 +99,6 @@ def _add_selection_period_columns(
     selection_period_start = calculation_end_date - relativedelta(years=1)
     selection_period_end = calculation_end_date
 
-    metering_point_periods.show()
     metering_point_periods = metering_point_periods.filter(
         (F.year(F.col("period_from_date")) < calculation_year) |
         ((F.year(F.col("period_from_date")) == calculation_year) &
@@ -111,7 +110,6 @@ def _add_selection_period_columns(
          (F.month(F.col("period_to_date")) >= calculation_month))
     )
     
-    metering_point_periods.show()
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start,
         F.when(F.col("period_from_date") > F.lit(selection_period_start), F.col("period_from_date"))
@@ -121,8 +119,6 @@ def _add_selection_period_columns(
         F.when(F.col("period_to_date") <= F.lit(selection_period_end), F.col("period_to_date"))
         .otherwise(F.lit(selection_period_end))
     )
-
-    metering_point_periods.show()
 
     return metering_point_periods
 
@@ -149,7 +145,6 @@ def _average_ten_largest_quantities_in_selection_periods(
     time_series_points = time_series_points.withColumn("row_number", F.row_number().over(window_spec)).filter(
         F.col("row_number") <= 10
     )
-    time_series_points.show()
 
     measurements = time_series_points.groupBy(grouping).agg(F.avg(ColumNames.quantity).alias(ColumNames.quantity))
     return measurements
