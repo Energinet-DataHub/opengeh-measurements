@@ -1,4 +1,5 @@
 ### This file contains the fixtures that are used in the tests. ###
+import os
 from pathlib import Path
 from typing import Generator
 
@@ -8,13 +9,13 @@ from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
+from opengeh_electrical_heating.infrastructure import MeasurementsBronze
 from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
     measurements_bronze_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
@@ -126,3 +127,15 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
         format="delta",
         mode="overwrite",
     )
+
+
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    env_file_path = os.path.join(os.path.dirname(__file__), ".env")
+    if not os.path.exists(env_file_path):
+        skip_container_tests = pytest.mark.skip(
+            reason="Skipping container tests because .env file is missing. See .sample.env for an example."
+        )
+        for item in items:
+            if "container_tests" in item.nodeid:
+                item.add_marker(skip_container_tests)
