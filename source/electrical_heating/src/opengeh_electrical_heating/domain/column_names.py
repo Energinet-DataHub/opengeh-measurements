@@ -1,9 +1,6 @@
 class ColumnNames:
-    calculation_id = "calculation_id"
     coupled_date = "coupled_date"
     end_datetime = "end_datetime"
-    execution_start_datetime = "execution_start_datetime"
-    execution_stop_datetime = "execution_stop_datetime"
     has_electrical_heating = "has_electrical_heating"
     metering_point_id = "metering_point_id"
     metering_point_sub_type = "metering_point_sub_type"
