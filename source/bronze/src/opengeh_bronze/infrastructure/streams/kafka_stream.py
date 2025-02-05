@@ -23,11 +23,7 @@ class KafkaStream:
             self.data_lake_settings, StorageContainerNames.bronze, "submitted_transactions"
         )
         write_stream = (
-            spark.readStream.format("kafka")
-            .options(**self.kafka_options)
-            .load()
-            .writeStream.outputMode("append")
-            .option("checkpointLocation", checkpoint_location)
+            spark.readStream.format("kafka").options(**self.kafka_options).load().writeStream.outputMode("append")
         )
 
         stream_settings = SubmittedTransactionsStreamSettings()  # type: ignore
@@ -37,7 +33,9 @@ class KafkaStream:
         else:
             write_stream = write_stream.trigger(availableNow=True)
 
-        write_stream.toTable(f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}")
+        write_stream.option("checkpointLocation", checkpoint_location).toTable(
+            f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
+        )
 
     def write_stream(
         self,
