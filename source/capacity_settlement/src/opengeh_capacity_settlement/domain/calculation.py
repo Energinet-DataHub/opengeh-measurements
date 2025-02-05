@@ -52,14 +52,13 @@ def execute_core_logic(
 
     time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
 
-    times_series_points = _average_ten_largest_quantities_in_selection_periods(
+    time_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points, metering_point_periods
     )
 
-    times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
-    times_series_points.show(1000)
+    time_series_points = _explode_to_daily(time_series_points, calculation_month, calculation_year, time_zone)
 
-    calculation_output.measurements = times_series_points.select(
+    calculation_output.measurements = time_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
@@ -177,5 +176,10 @@ def _explode_to_daily(
     )
 
     df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
+
+    df = df.filter(
+        (F.col(ColumNames.selection_period_start) <= F.col(ColumNames.date))
+        & (F.col(ColumNames.selection_period_end) > F.col(ColumNames.date))
+    )
 
     return df
