@@ -52,13 +52,13 @@ def execute_core_logic(
 
     time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
 
-    times_series_points = _average_ten_largest_quantities_in_selection_periods(
+    time_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points, metering_point_periods
     )
 
-    times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
+    time_series_points = _explode_to_daily(time_series_points, calculation_month, calculation_year, time_zone)
 
-    calculation_output.measurements = times_series_points.select(
+    calculation_output.measurements = time_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
@@ -91,17 +91,29 @@ def _add_selection_period_columns(
 
     The selection period is the period used to calculate the average of the ten largest quantities.
     The selection period is the last year up to the end of the calculation month.
-    TODO: JMG: Should also support shorter metering point periods.
     """
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)
 
-    selection_period_start = calculation_end_date - relativedelta(years=1)
-    selection_period_end = calculation_end_date
+    selection_period_start_min = calculation_end_date - relativedelta(years=1)
+    selection_period_end_max = calculation_end_date
+
+    metering_point_periods = metering_point_periods.filter(
+        (F.col("period_from_date") < calculation_end_date)
+        & ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
+    )
 
     metering_point_periods = metering_point_periods.withColumn(
-        ColumNames.selection_period_start, F.lit(selection_period_start)
-    ).withColumn(ColumNames.selection_period_end, F.lit(selection_period_end))
+        ColumNames.selection_period_start,
+        F.when(F.col("period_from_date") > F.lit(selection_period_start_min), F.col("period_from_date")).otherwise(
+            F.lit(selection_period_start_min)
+        ),
+    ).withColumn(
+        ColumNames.selection_period_end,
+        F.when(F.col("period_to_date") <= F.lit(selection_period_end_max), F.col("period_to_date")).otherwise(
+            F.lit(selection_period_end_max)
+        ),
+    )
 
     return metering_point_periods
 
@@ -154,5 +166,10 @@ def _explode_to_daily(
     )
 
     df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
+
+    df = df.filter(
+        (F.col(ColumNames.selection_period_start) <= F.col(ColumNames.date))
+        & (F.col(ColumNames.selection_period_end) > F.col(ColumNames.date))
+    )
 
     return df
