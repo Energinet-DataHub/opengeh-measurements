@@ -7,3 +7,4 @@
 
 # List every package that is required to run container tests.
 opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/testcommon
+pydantic-settings >=2.7.1

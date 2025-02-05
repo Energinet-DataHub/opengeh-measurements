@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # This is a pip 'requirements.txt' file.
 # See https://pip.pypa.io/en/stable/reference/requirements-file-format/
 
@@ -7,3 +8,12 @@
 
 # List every package that is required to run container tests.
 opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.0#subdirectory=source/testcommon
+=======
+﻿# This is a pip 'requirements.txt' file.
+# See https://pip.pypa.io/en/stable/reference/requirements-file-format/
+
+# Pytest is installed by default in the container, so it does not need to be listed here.
+
+opengeh-testcommon @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@3.3.1#subdirectory=source/testcommon
+pydantic-settings >=2.7.1
+>>>>>>> origin/main

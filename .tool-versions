@@ -1,0 +1,4 @@
+uv 0.5.18
+spark 3.5.1
+java openjdk-17
+protoc 29.1
