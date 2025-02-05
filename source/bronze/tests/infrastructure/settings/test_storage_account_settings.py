@@ -5,7 +5,7 @@ from opengeh_bronze.infrastructure.settings import (
 )
 
 
-def test__submitted_transactions_stream_settings__continuous_streaming_should_be_evaluated():
+def test__storage_account_settings__should_create_attributes_from_env():
     # Arragnge
     expected_datalake_storage_account = "some_storage_account"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = expected_datalake_storage_account

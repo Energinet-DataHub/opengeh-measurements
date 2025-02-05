@@ -6,7 +6,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 import opengeh_bronze.migrations.migrations_runner as migrations_runner
-from opengeh_bronze.domain.constants.database_names import DatabaseNames
+from opengeh_bronze.infrastructure.settings import BronzeDatabaseSettings
 
 
 def pytest_runtest_setup() -> None:
@@ -107,4 +107,6 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.bronze_database}")
+    bronze_database_settings = BronzeDatabaseSettings()  # type: ignore
+
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {bronze_database_settings.bronze_database_name}")

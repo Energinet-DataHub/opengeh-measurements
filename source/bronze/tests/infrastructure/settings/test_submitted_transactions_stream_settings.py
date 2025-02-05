@@ -5,7 +5,7 @@ from opengeh_bronze.infrastructure.settings import (
 )
 
 
-def test__submitted_transactions_stream_settings__continuous_streaming_should_be_evaluated():
+def test__submitted_transactions_stream_settings__should_create_attributes_from_env():
     # Arragnge
     os.environ["CONTINUOUS_STREAMING_ENABLED"] = "true"
 

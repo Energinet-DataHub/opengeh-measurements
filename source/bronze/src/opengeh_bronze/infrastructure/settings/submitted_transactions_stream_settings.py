@@ -8,6 +8,9 @@ class SubmittedTransactionsStreamSettings(BaseSettings):
 
     Attributes:
     continuous_streaming_enabled (bool): Indicates whether the continuous streaming is enabled. If false, the stream will stop when no more events are available.
+
+    Config:
+    case_sensitive (bool): Indicates whether the settings are case-sensitive. Defaults to False.
     """
 
     continuous_streaming_enabled: bool

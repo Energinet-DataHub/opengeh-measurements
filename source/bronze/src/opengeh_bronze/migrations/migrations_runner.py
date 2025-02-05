@@ -7,8 +7,8 @@ from spark_sql_migrations import (
 )
 
 import opengeh_bronze.migrations.substitutions as substitutions
-from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames
+from opengeh_bronze.infrastructure.settings import BronzeDatabaseSettings
 
 
 def migrate() -> None:
@@ -19,9 +19,10 @@ def migrate() -> None:
 def _configure_spark_sql_migrations() -> None:
     substitution_variables = substitutions.substitutions()
     catalog_name = os.environ["CATALOG_NAME"]
+    bronze_database = BronzeDatabaseSettings()  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=DatabaseNames.bronze_database,
+        migration_schema_name=bronze_database.bronze_database_name,
         migration_table_name=TableNames.executed_migrations_table,
         migration_scripts_folder_path="opengeh_bronze.migrations.migration_scripts",
         substitution_variables=substitution_variables,

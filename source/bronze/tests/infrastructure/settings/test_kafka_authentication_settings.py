@@ -5,7 +5,7 @@ from opengeh_bronze.infrastructure.settings import (
 )
 
 
-def test__submitted_transactions_stream_settings__should_create_submitted_transactions_from_env():
+def test__kafka_authentication_settings__should_create_attributes_from_env():
     # Arrange
     expected_event_hub_namespace = "some event_hub_namespace"
     expected_event_hub_instance = "some event_hub_instance"
