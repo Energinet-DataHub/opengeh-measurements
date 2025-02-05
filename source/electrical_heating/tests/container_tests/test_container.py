@@ -9,6 +9,7 @@ def test__databricks_job_starts_and_stops_successfully(databricks_api_client: Da
     # TODO This test has been diabled as it is not working as expected.
     # The error is related to reading a CSV file from the storage account.
     # Another PR is being created to fix this issue.
+    pass
 
 
 """     try:
