@@ -5,7 +5,9 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-from core.migrations import migrations_runner
+from core.bronze.domain.constants import BronzeDatabaseNames
+from core.gold.infrastructure.config import GoldDatabaseNames
+from core.migrations import MigrationDatabaseNames, migrations_runner
 from core.silver.infrastructure.config import SilverDatabaseNames
 
 
@@ -60,6 +62,9 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 def _create_schemas(spark: SparkSession) -> None:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {BronzeDatabaseNames.bronze_database}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {GoldDatabaseNames.gold}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {SilverDatabaseNames.silver}")
 
 
@@ -106,7 +111,7 @@ def tests_path(source_path: str) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return f"{source_path}/tests"
+    return f"{source_path}/tests/silver"
 
 
 @pytest.fixture(autouse=True)

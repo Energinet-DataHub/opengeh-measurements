@@ -105,7 +105,7 @@ def tests_path(source_path: str) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return f"{source_path}/bronze/tests"
+    return f"{source_path}/tests/bronze"
 
 
 def _create_schemas(spark: SparkSession) -> None:

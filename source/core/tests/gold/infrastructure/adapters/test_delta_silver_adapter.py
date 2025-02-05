@@ -19,11 +19,11 @@ def test__read_stream__should_return_dataframe(spark: SparkSession, create_silve
     assert isinstance(result, DataFrame)
 
 
-def test__read_stream__should_contain_rows_in_silver(spark: SparkSession, create_silver_tables):
+def test__read_stream__should_contain_rows_in_silver(spark: SparkSession):
     # Arrange
     silver_adapter = DeltaSilverAdapter(spark)
     table_name = SilverTableNames.silver_measurements
-    test_table = f"{table_name}_test"
+    test_table = f"{table_name}_test_read_stream"
     metering_point_id = random.randint(0, 999999999999999999)
     df_silver = SilverMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id).build()
     df_silver.write.format("delta").mode("append").saveAsTable(f"{SilverDatabaseNames.silver}.{table_name}")
