@@ -1,4 +1,5 @@
 from pydantic_settings import SettingsConfigDict
+
 from opengeh_electrical_heating.domain import ElectricalHeatingArgs
 
 

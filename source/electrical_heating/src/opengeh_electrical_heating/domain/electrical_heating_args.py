@@ -6,8 +6,6 @@ from typing import Optional, Tuple, Type
 from pydantic import Field
 from pydantic_settings import BaseSettings, CliSettingsSource, PydanticBaseSettingsSource, SettingsConfigDict
 
-from opengeh_electrical_heating.application.job_args import electrical_heating_args
-
 DOTENV = os.path.join(os.path.dirname(__file__), ".env")
 
 

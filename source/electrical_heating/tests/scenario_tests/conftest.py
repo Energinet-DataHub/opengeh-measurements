@@ -43,7 +43,7 @@ def enable_logging() -> None:
                 "program_name",
                 "--force_configuration",
                 "false",
-                "--orchestration_instance_id",
+                "--orchestration-instance-id",
                 str(uuid.uuid4()),
             ],
         ),

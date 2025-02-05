@@ -4,6 +4,8 @@ from telemetry_logging.decorators import start_trace
 from opengeh_electrical_heating.application import (
     execute_application,
 )
+from opengeh_electrical_heating.domain.electrical_heating_args import ElectricalHeatingArgs
+from opengeh_electrical_heating.infrastructure import initialize_spark
 
 
 def execute() -> None:
@@ -28,4 +30,4 @@ def orchestrate_business_logic(
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")
     logger.info(f"Command line arguments retrieved for electrical heating job Oriented Parameters: {job_arguments}")
     spark = initialize_spark()
-    _execute_with_deps(spark, args=job_arguments)
+    execute_application(spark, args=job_arguments)

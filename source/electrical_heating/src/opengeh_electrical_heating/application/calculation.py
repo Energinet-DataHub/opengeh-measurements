@@ -1,36 +1,36 @@
 """A module."""
 
+import sys
 import uuid
+from argparse import Namespace
+from collections.abc import Callable
 from datetime import datetime, timezone
 
+import telemetry_logging.logging_configuration as config
+from opentelemetry.trace import SpanKind
 from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 
-import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
-import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements_gold as mg
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
-    ElectricalHeatingArgs,
-)
-from opengeh_electrical_heating.domain import ColumnNames
-from opengeh_electrical_heating.domain.calculation import (
-    execute_core_logic,
-)
-from opengeh_electrical_heating.domain.calculation_results import (
+from opengeh_electrical_heating.domain import (
     CalculationOutput,
     ColumnNames,
     ElectricalHeatingArgs,
     execute,
 )
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schemas import (
-    calculations as schemas,
+from opengeh_electrical_heating.infrastructure import (
+    Calculations,
+    ElectricalHeatingInternalRepository,
+    ElectricityMarketRepository,
+    MeasurementsRepository,
+)
+from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import (
+    calculations,
 )
 
 
 @use_span()
-def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-    if args.execution_start_datetime is not None:
-        execution_start_datetime = datetime.now(timezone.utc)
+def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
+    execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
