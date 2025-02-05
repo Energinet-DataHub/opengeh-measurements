@@ -18,6 +18,9 @@ from opengeh_electrical_heating.domain.calculation import (
 )
 from opengeh_electrical_heating.domain.calculation_results import (
     CalculationOutput,
+    ColumnNames,
+    ElectricalHeatingArgs,
+    execute,
 )
 from opengeh_electrical_heating.infrastructure.electrical_heating_internal.schemas import (
     calculations as schemas,
@@ -30,12 +33,12 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
         execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.electricity_market_data_path)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
-    electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
+    electrical_heating_internal_repository = ElectricalHeatingInternalRepository(spark, args.catalog_name)
 
     # Read data frames
-    time_series_points = measurements_gold_repository.read_time_series_points()
+    time_series_points = measurements_repository.read_time_series_points()
 
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
 
@@ -50,7 +53,7 @@ def _execute_with_deps(spark: SparkSession, args: ElectricalHeatingArgs) -> None
         execution_start_datetime,
     )
 
-    electrical_heating_internal_repository.save(calculation_output.calculations)
+    electrical_heating_internal_repository.save(Calculations(calculation_output.calculations))
 
 
 def execute_calculation(
@@ -61,14 +64,14 @@ def execute_calculation(
     args: ElectricalHeatingArgs,
     execution_start_datetime: datetime,
 ) -> CalculationOutput:
-    measurements = execute_core_logic(
+    measurements = execute(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
     )
 
-    calculations = create_calculation(
+    calculations = _create_calculation(
         spark,
         args.orchestration_instance_id,
         execution_start_datetime,
@@ -78,7 +81,7 @@ def execute_calculation(
     return CalculationOutput(measurements=measurements, calculations=calculations)
 
 
-def create_calculation(
+def _create_calculation(
     spark: SparkSession,
     orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
@@ -96,4 +99,4 @@ def create_calculation(
         }
     ]
 
-    return spark.createDataFrame(data, schemas.calculations)
+    return spark.createDataFrame(data, calculations)

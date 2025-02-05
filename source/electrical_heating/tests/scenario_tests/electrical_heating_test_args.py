@@ -1,6 +1,5 @@
 from pydantic_settings import SettingsConfigDict
-
-from opengeh_electrical_heating.application.job_args.electrical_heating_args import ElectricalHeatingArgs
+from opengeh_electrical_heating.domain import ElectricalHeatingArgs
 
 
 class ElectricalHeatingTestArgs(ElectricalHeatingArgs):
