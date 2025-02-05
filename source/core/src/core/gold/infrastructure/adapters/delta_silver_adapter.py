@@ -1,10 +1,9 @@
 ﻿from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
-
-from opengeh_gold.application.ports.silver_port import SilverPort
-from opengeh_gold.infrastructure.config.database_names import DatabaseNames
-from opengeh_gold.infrastructure.shared_helpers import get_full_table_name
+from src.core.gold.application.ports.silver_port import SilverPort
+from src.core.gold.infrastructure.config.database_names import DatabaseNames
+from src.core.gold.infrastructure.shared_helpers import get_full_table_name
 
 
 class DeltaSilverAdapter(SilverPort):

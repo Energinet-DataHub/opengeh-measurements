@@ -1,16 +1,16 @@
 import random
 from unittest import mock
 
+from helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
-from opengeh_gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
-from opengeh_gold.infrastructure.config.database_names import DatabaseNames
-from opengeh_gold.infrastructure.config.table_names import TableNames
-from tests.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
+from src.core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
+from src.core.gold.infrastructure.config.database_names import DatabaseNames
+from src.core.gold.infrastructure.config.table_names import TableNames
 
 
 @mock.patch("os.getenv")
-@mock.patch("opengeh_gold.infrastructure.shared_helpers.get_storage_base_path")
+@mock.patch("src.core.gold.infrastructure.shared_helpers.get_storage_base_path")
 def test__start_write_stream__should_write_to_gold_table(
     mock_get_checkpoint_path, mock_getenv, spark: SparkSession, migrations_executed
 ):

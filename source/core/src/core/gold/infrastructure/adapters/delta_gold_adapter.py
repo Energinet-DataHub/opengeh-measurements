@@ -1,11 +1,10 @@
 ﻿from typing import Callable
 
 from pyspark.sql import DataFrame
-
-from opengeh_gold.application.ports.gold_port import GoldPort
-from opengeh_gold.infrastructure.config.database_names import DatabaseNames
-from opengeh_gold.infrastructure.config.storage_container_names import StorageContainerNames
-from opengeh_gold.infrastructure.shared_helpers import (
+from src.core.gold.application.ports.gold_port import GoldPort
+from src.core.gold.infrastructure.config.database_names import DatabaseNames
+from src.core.gold.infrastructure.config.storage_container_names import StorageContainerNames
+from src.core.gold.infrastructure.shared_helpers import (
     EnvironmentVariable,
     get_checkpoint_path,
     get_env_variable_or_throw,

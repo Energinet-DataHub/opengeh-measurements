@@ -3,14 +3,13 @@
 import pyspark.sql.functions as F
 from pyspark.sql import Column, DataFrame
 from pyspark.sql.types import TimestampType
-
-from opengeh_gold.domain.constants.column_names.gold_measurements_column_names import (
+from src.core.gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
-from opengeh_gold.domain.constants.column_names.silver_measurements_column_names import (
+from src.core.gold.domain.constants.column_names.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
-from opengeh_gold.domain.constants.enums.resolutions import ResolutionEnum
+from src.core.gold.domain.constants.enums.resolutions import ResolutionEnum
 
 
 def transform_silver_to_gold(df: DataFrame) -> DataFrame:

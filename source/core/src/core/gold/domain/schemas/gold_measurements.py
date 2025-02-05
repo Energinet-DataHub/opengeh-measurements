@@ -5,8 +5,7 @@ from pyspark.sql.types import (
     StructType,
     TimestampType,
 )
-
-from opengeh_gold.domain.constants.column_names.gold_measurements_column_names import (
+from src.core.gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
 

@@ -2,12 +2,12 @@ from unittest.mock import Mock
 
 from pyspark.sql import SparkSession
 
-from opengeh_gold.application.ports.gold_port import GoldPort
-from opengeh_gold.application.ports.silver_port import SilverPort
-from opengeh_gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
+from src.core.gold.application.ports.gold_port import GoldPort
+from src.core.gold.application.ports.silver_port import SilverPort
+from src.core.gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
     StreamProcessorMeasurements,
 )
-from opengeh_gold.infrastructure.config.table_names import TableNames
+from src.core.gold.infrastructure.config.table_names import TableNames
 
 
 def test__stream_processor_measurements__calls_expected(spark: SparkSession):

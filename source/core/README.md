@@ -14,4 +14,4 @@ See the [silver module](src/core/silver/README.md) for more information about th
 
 ### Gold
 
-TBD...
+See the [gold module](src/core/gold/README.md) for more information about the gold layer.
