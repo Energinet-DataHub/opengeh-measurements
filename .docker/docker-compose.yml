@@ -23,18 +23,6 @@ services:
         command: sleep infinity
         volumes:
         - ..:/workspace:cached
-    gold:
-        image: gold:latest
-        build:
-            args:
-                SPARK_VERSION: 3.5.4
-                UBUNTU_VERSION: '24.04'
-                UV_VERSION: 0.5.15
-            context: ..
-            dockerfile: .docker/Dockerfile
-        command: sleep infinity
-        volumes:
-        - ..:/workspace:cached
     electrical_heating:
         image: electrical_heating:latest
         build:
