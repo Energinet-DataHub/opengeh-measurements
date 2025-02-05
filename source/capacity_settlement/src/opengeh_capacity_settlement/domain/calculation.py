@@ -96,36 +96,26 @@ def _add_selection_period_columns(
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1)
 
-    selection_period_start = calculation_end_date - relativedelta(years=1)
-    selection_period_end = calculation_end_date
+    selection_period_start_min = calculation_end_date - relativedelta(years=1)
+    selection_period_end_max = calculation_end_date
 
     metering_point_periods = metering_point_periods.filter(
-        (F.year(F.col("period_from_date")) < calculation_year)
-        | (
-            (F.year(F.col("period_from_date")) == calculation_year)
-            & (F.month(F.col("period_from_date")) <= calculation_month)
-        )
-    ).filter(
-        (F.col("period_to_date").isNull())
-        | (F.year(F.col("period_to_date")) > calculation_year)
-        | (
-            (F.year(F.col("period_to_date")) == calculation_year)
-            & (F.month(F.col("period_to_date")) >= calculation_month)
-        )
+        (F.col("period_from_date") < calculation_end_date) &
+        ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
     )
 
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start,
-        F.when(F.col("period_from_date") > F.lit(selection_period_start), F.col("period_from_date")).otherwise(
-            F.lit(selection_period_start)
+        F.when(F.col("period_from_date") > F.lit(selection_period_start_min), F.col("period_from_date")).otherwise(
+            F.lit(selection_period_start_min)
         ),
     ).withColumn(
         ColumNames.selection_period_end,
-        F.when(F.col("period_to_date") <= F.lit(selection_period_end), F.col("period_to_date")).otherwise(
-            F.lit(selection_period_end)
+        F.when(F.col("period_to_date") <= F.lit(selection_period_end_max), F.col("period_to_date")).otherwise(
+            F.lit(selection_period_end_max)
         ),
     )
-
+    
     return metering_point_periods
 
 
