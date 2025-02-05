@@ -4,7 +4,8 @@ from core.gold.application.streams.measurements_silver_to_gold.measurements_stre
 )
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
 from core.gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
-from core.gold.infrastructure.config.table_names import TableNames
+from core.gold.infrastructure.config import GoldTableNames
+from core.silver.infrastructure.config import SilverTableNames
 
 
 def stream_silver_to_gold_measurements() -> None:
@@ -12,8 +13,8 @@ def stream_silver_to_gold_measurements() -> None:
     silver_adapter = DeltaSilverAdapter(spark)
     gold_adapter = DeltaGoldAdapter()
 
-    silver_source_table = TableNames.silver_measurements
-    gold_target_table = TableNames.gold_measurements
+    silver_source_table = SilverTableNames.silver_measurements
+    gold_target_table = GoldTableNames.gold_measurements
     measurements_stream_processor = StreamProcessorMeasurements(
         silver_adapter, silver_source_table, gold_adapter, gold_target_table
     )
