@@ -12,9 +12,6 @@ from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-import opengeh_electrical_heating.infrastructure.electrical_heating_internal as ehi
-import opengeh_electrical_heating.infrastructure.electricity_market as em
-import opengeh_electrical_heating.infrastructure.measurements as mg
 from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
@@ -25,12 +22,15 @@ from opengeh_electrical_heating.domain import (
     ElectricalHeatingArgs,
     execute,
 )
+from opengeh_electrical_heating.infrastructure import (
+    Calculations,
+    ElectricalHeatingInternalRepository,
+    ElectricityMarketRepository,
+    MeasurementsRepository,
+    initialize_spark,
+)
 from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import (
     calculations,
-)
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.wrapper import Calculations
-from opengeh_electrical_heating.infrastructure.spark_initializor import (
-    initialize_spark,
 )
 
 
@@ -84,12 +84,12 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     execution_start_datetime = datetime.now(timezone.utc)
 
     # Create repositories to obtain data frames
-    electricity_market_repository = em.Repository(spark, args.electricity_market_data_path)
-    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
-    electrical_heating_internal_repository = ehi.Repository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
+    electrical_heating_internal_repository = ElectricalHeatingInternalRepository(spark, args.catalog_name)
 
     # Read data frames
-    time_series_points = measurements_gold_repository.read_time_series_points()
+    time_series_points = measurements_repository.read_time_series_points()
 
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
 
