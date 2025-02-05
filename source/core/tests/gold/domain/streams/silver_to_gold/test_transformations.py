@@ -3,7 +3,7 @@ import random
 from decimal import Decimal
 
 import testcommon.dataframes.assert_schemas as assert_schemas
-from helpers.silver_builder import SilverMeasurementsDataFrameBuilder
+from gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames

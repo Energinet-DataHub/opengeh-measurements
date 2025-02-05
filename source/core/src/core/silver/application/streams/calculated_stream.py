@@ -8,9 +8,9 @@ from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
 from core.silver.application.config.spark import initialize_spark
-from core.silver.astructure.config.container_names import ContainerNames
 from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.config.container_names import ContainerNames
 from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
 from core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
 from core.silver.infrastructure.streams import writer

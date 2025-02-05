@@ -1,6 +1,6 @@
 import random
 
-from helpers.silver_builder import SilverMeasurementsDataFrameBuilder
+from gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
