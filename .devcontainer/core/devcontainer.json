@@ -26,7 +26,6 @@
     "vscode": {
       "extensions": [
         "GitHub.copilot",
-        "ms-python.mypy-type-checker",
         "charliermarsh.ruff",
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
@@ -52,6 +51,7 @@
         "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.analysis.typeCheckingMode": "basic",
         "python.testing.pytestArgs": [
           "tests"
         ],
