@@ -9,13 +9,12 @@ from opengeh_bronze.application.settings import (
 )
 from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames, MigrationsTableNames
+import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
 import opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names as BronzeMigratedColumnNames
 import opengeh_bronze.application.config.spark_session as spark_session
 
 
-def migrations_to_measurements() -> None:
-    spark = spark_session.initialize_spark()
-
+def migrate_from_migrations_to_measurements(spark: SparkSession) -> None:
     target_database = DatabaseNames.bronze_database
     target_table_name = TableNames.bronze_migrated_transactions_table
     fully_qualified_target_table_name = f"{target_database}.{target_table_name}"
@@ -28,7 +27,7 @@ def migrations_to_measurements() -> None:
 
     try:
         latest_created_already_migrated = (
-            calculate_latest_created_timestamp_that_has_been_migrated(
+            migrate_from_migrations_transformations.calculate_latest_created_timestamp_that_has_been_migrated(
                 fully_qualified_target_table_name
             )
         )
@@ -49,16 +48,6 @@ def migrations_to_measurements() -> None:
             fully_qualified_target_table_name,
             latest_created_already_migrated,
         )
-
-
-def calculate_latest_created_timestamp_that_has_been_migrated(
-    fully_qualified_target_table_name: str,
-) -> datetime:
-    return (
-        spark.read.table(fully_qualified_target_table_name)
-        .agg(max(col(BronzeMigratedColumnNames.created)))
-        .collect()[0][0]
-    )
 
 
 # Rely on the created column to identify what to migrate.
@@ -88,7 +77,7 @@ def full_load_of_migrations_to_measurements(
 ) -> None:
     NUM_CHUNKS = 10
     partitioning_column = "partitioning_col"
-    chunks = create_chunks_of_partitions(
+    chunks = migrate_from_migrations_transformations.create_chunks_of_partitions(
         fully_qualified_source_table_name, partitioning_column, NUM_CHUNKS
     )
     today = datetime.now().date()
@@ -108,22 +97,6 @@ def full_load_of_migrations_to_measurements(
         )
 
         append_to_measurements(migrations_data, fully_qualified_target_table_name)
-
-
-def create_chunks_of_partitions(
-    source_table_name: str, partition_col: str, num_chunks: int
-) -> list[str]:
-    partitions = sorted(
-        [
-            str(row[partition_col])
-            for row in spark.read.table(source_table_name)
-            .select(partition_col)
-            .distinct()
-            .collect()
-        ]
-    )
-    return [chunk.tolist() for chunk in np.array_split(partitions, num_chunks)]
-
 
 def append_to_measurements(
     data: DataFrame, fully_qualified_target_table_name: str
