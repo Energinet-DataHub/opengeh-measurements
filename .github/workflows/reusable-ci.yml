@@ -81,18 +81,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup asdf
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Cache asdf
-        uses: actions/cache@v4
-        with:
-          path: /home/runner/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-
-      - name: Install dependencies in .tool-versions
-        uses: asdf-vm/actions/install@v3
-
       - name: Check if ${{ matrix.inputs.name }} has changed
         uses: dorny/paths-filter@v3
         id: changes
@@ -100,6 +88,21 @@ jobs:
           filters: |
             is_changed:
               - ${{ matrix.inputs.path }}/**
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v3
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+
+      - name: Cache asdf
+        uses: actions/cache@v4
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          path: /home/runner/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+
+      - name: Install dependencies in .tool-versions
+        uses: asdf-vm/actions/install@v3
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
 
       - name: Test ${{ matrix.inputs.name }}
         uses: ./.github/actions/uvtest
