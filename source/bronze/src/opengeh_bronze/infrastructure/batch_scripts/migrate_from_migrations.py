@@ -71,7 +71,7 @@ def daily_load_of_migrations_to_measurements(
     print(
         f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze."
     )
-    (
+    migrations_data = (
         spark.read.table(fully_qualified_source_table_name)
         .filter(
             (col(BronzeMigratedColumnNames.created) < lit(today))
@@ -80,9 +80,9 @@ def daily_load_of_migrations_to_measurements(
                 > lit(latest_created_already_migrated)
             )
         )
-        .write.mode("append")
-        .saveAsTable(fully_qualified_target_table_name)
     )
+
+    append_to_measurements(migrations_data, fully_qualified_target_table_name)
 
 
 # Leverage the transaction_insert_date partitioning to split our work into chunks due to the large amount of data to migrate.
