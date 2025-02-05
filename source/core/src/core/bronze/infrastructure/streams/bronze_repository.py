@@ -1,7 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from core.bronze.domain.constants import BronzeDatabaseNames
-from core.bronze.domain.constants import BronzeTableNames
+from core.bronze.domain.constants import BronzeDatabaseNames, BronzeTableNames
 
 
 class BronzeRepository:
