@@ -1,4 +1,4 @@
-﻿from pyspark.sql.dataframe import DataFrame
+from pyspark.sql.dataframe import DataFrame
 
 from src.core.gold.application.ports.gold_port import GoldPort
 from src.core.gold.application.ports.silver_port import SilverPort
