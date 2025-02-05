@@ -1,6 +1,5 @@
 from opengeh_electrical_heating.domain.calculation import _CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_electrical_heating.infrastructure.electrical_heating_internal.calculations.schema import calculations
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
@@ -16,7 +15,6 @@ from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.sc
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_STRUCT_TYPES = [
-    calculations,
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
     measurements_bronze_v1,
