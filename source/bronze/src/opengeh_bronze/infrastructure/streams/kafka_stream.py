@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-import opengeh_bronze.infrastructure.shared_helpers as shared_helpers
+import opengeh_bronze.infrastructure.helpers.path_helper as path_helper
 from opengeh_bronze.domain.constants.database_names import DatabaseNames
 from opengeh_bronze.domain.constants.table_names import TableNames
 from opengeh_bronze.infrastructure.config.storage_container_names import StorageContainerNames
@@ -19,7 +19,7 @@ class KafkaStream:
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
-        checkpoint_location = shared_helpers.get_checkpoint_path(
+        checkpoint_location = path_helper.get_checkpoint_path(
             self.data_lake_settings, StorageContainerNames.bronze, "submitted_transactions"
         )
         write_stream = (
@@ -43,7 +43,7 @@ class KafkaStream:
         self,
         dataframe: DataFrame,
     ):
-        checkpoint_location = shared_helpers.get_checkpoint_path(
+        checkpoint_location = path_helper.get_checkpoint_path(
             self.data_lake_settings, StorageContainerNames.bronze, "processed_transactions"
         )
         event_hub_instance = KafkaAuthenticationSettings().event_hub_instance  # type: ignore

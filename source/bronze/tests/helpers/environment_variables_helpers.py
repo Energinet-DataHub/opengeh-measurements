@@ -14,4 +14,4 @@ def set_storage_account_settings():
 
 
 def set_submitted_transactions_stream_settings() -> None:
-    os.environ["continuous_streaming_enabled"] = "true"
+    os.environ["CONTINUOUS_STREAMING_ENABLED"] = "true"
