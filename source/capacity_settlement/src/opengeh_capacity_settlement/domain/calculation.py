@@ -99,8 +99,8 @@ def _add_selection_period_columns(
     selection_period_end_max = calculation_end_date
 
     metering_point_periods = metering_point_periods.filter(
-        (F.col("period_from_date") < calculation_end_date) &
-        ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
+        (F.col("period_from_date") < calculation_end_date)
+        & ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
     )
 
     metering_point_periods = metering_point_periods.withColumn(
@@ -114,7 +114,7 @@ def _add_selection_period_columns(
             F.lit(selection_period_end_max)
         ),
     )
-    
+
     return metering_point_periods
 
 
