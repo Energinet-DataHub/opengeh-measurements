@@ -13,3 +13,8 @@ class BronzeMigratedColumnNames:
     valid_to_date = "valid_to_date"
     values = "values"
     created = "created"
+
+class BronzeMigratedValuesFieldNames:
+    position = "position"
+    quality = "quality"
+    quantity = "quantity"

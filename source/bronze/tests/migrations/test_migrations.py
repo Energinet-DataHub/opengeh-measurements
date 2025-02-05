@@ -9,6 +9,9 @@ from opengeh_bronze.domain.schemas.bronze_measurements import (
 from opengeh_bronze.domain.schemas.submitted_transactions import (
     submitted_transactions_schema,
 )
+from opengeh_bronze.domain.schemas.migrated import (
+    migrated_schema,
+)
 
 
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
@@ -23,3 +26,10 @@ def test__ingest_submitted_transactions__should_create_submitted_transactions_ta
         f"{DatabaseNames.bronze_database}.{TableNames.bronze_submitted_transactions_table}"
     )
     assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=submitted_transactions_schema)
+
+
+def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
+    # Assert
+    bronze_migrated = spark.table(f"{DatabaseNames.bronze_database}.{TableNames.bronze_migrated_transactions_table}")
+    assert_schemas.assert_schema(actual=bronze_migrated.schema, expected=migrated_schema)
+
