@@ -7,15 +7,16 @@ from src.core.gold.application.ports.silver_port import SilverPort
 from src.core.gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
     StreamProcessorMeasurements,
 )
-from src.core.gold.infrastructure.config.table_names import TableNames
+from src.core.gold.infrastructure.config import GoldTableNames
+from src.core.silver.infrastructure.config import SilverTableNames
 
 
 def test__stream_processor_measurements__calls_expected(spark: SparkSession):
     # Arrange
     silver_port_mock = Mock(spec=SilverPort)
     gold_port_mock = Mock(spec=GoldPort)
-    silver_target_table = TableNames.silver_measurements
-    gold_target_table = TableNames.gold_measurements
+    silver_target_table = SilverTableNames.silver_measurements
+    gold_target_table = GoldTableNames.gold_measurements
     stream_processor = StreamProcessorMeasurements(
         silver_port_mock, silver_target_table, gold_port_mock, gold_target_table
     )
@@ -37,8 +38,8 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Arrange
     silver_port_mock = Mock(spec=SilverPort)
     gold_port_mock = Mock(spec=GoldPort)
-    silver_target_table = TableNames.silver_measurements
-    gold_target_table = TableNames.gold_measurements
+    silver_target_table = SilverTableNames.silver_measurements
+    gold_target_table = GoldTableNames.gold_measurements
     stream_processor = StreamProcessorMeasurements(
         silver_port_mock, silver_target_table, gold_port_mock, gold_target_table
     )

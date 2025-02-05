@@ -9,9 +9,8 @@ from telemetry_logging.span_recording import span_record_exception
 
 from src.core.silver.application.config.spark import initialize_spark
 from src.core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
+from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 from src.core.silver.infrastructure.config.container_names import ContainerNames
-from src.core.silver.infrastructure.config.database_names import DatabaseNames
-from src.core.silver.infrastructure.config.table_names import TableNames
 from src.core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
 from src.core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
 from src.core.silver.infrastructure.streams import writer
@@ -41,7 +40,7 @@ def _execute(spark: SparkSession) -> None:
     bronze_stream = BronzeRepository(spark).read_calculated_measurements()
     data_lake_storage_account = get_datalake_storage_account()
     checkpoint_path = get_checkpoint_path(
-        data_lake_storage_account, ContainerNames.silver, TableNames.silver_measurements
+        data_lake_storage_account, ContainerNames.silver, SilverTableNames.silver_measurements
     )
     writer.write_stream(
         bronze_stream, "bronze_calculated_measurements_to_silver_measurements", checkpoint_path, _batch_operations
@@ -50,5 +49,5 @@ def _execute(spark: SparkSession) -> None:
 
 def _batch_operations(df: DataFrame, batchId: int) -> None:
     df = transform_calculated_measurements(df)
-    target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
+    target_table_name = f"{SilverDatabaseNames.silver}.{SilverTableNames.silver_measurements}"
     df.write.format("delta").mode("append").saveAsTable(target_table_name)

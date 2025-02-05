@@ -6,7 +6,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 from src.core.migrations import migrations_runner
-from src.core.silver.infrastructure.config.database_names import DatabaseNames
+from src.core.silver.infrastructure.config import SilverDatabaseNames
 
 
 def pytest_runtest_setup() -> None:
@@ -60,7 +60,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {SilverDatabaseNames.silver}")
 
 
 @pytest.fixture(scope="session")

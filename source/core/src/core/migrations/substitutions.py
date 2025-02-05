@@ -1,9 +1,11 @@
-from src.core.silver.infrastructure.config.database_names import DatabaseNames
-from src.core.silver.infrastructure.config.table_names import TableNames
+from src.core.gold.infrastructure.config import GoldDatabaseNames, GoldTableNames
+from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 
 
 def substitutions() -> dict[str, str]:
     return {
-        "{silver_database}": DatabaseNames.silver,
-        "{silver_measurements_table}": TableNames.silver_measurements,
+        "{silver_database}": SilverDatabaseNames.silver,
+        "{silver_measurements_table}": SilverTableNames.silver_measurements,
+        "{gold_database}": GoldDatabaseNames.gold,
+        "{gold_measurements}": GoldTableNames.gold_measurements,
     }

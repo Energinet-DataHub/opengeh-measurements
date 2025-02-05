@@ -8,8 +8,7 @@ from src.core.silver.application.streams.calculated_stream import (
     _execute,
     execute,
 )
-from src.core.silver.infrastructure.config.database_names import DatabaseNames
-from src.core.silver.infrastructure.config.table_names import TableNames
+from src.core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
 
 
 @mock.patch("src.core.silver.application.streams.calculated_stream._execute")
@@ -79,7 +78,7 @@ def test__batch_operations(mock_transform_calculated_measurements):
     mock_df = mock.Mock(spec=DataFrame)
     mock_transformed_df = mock.Mock(spec=DataFrame)
     mock_transform_calculated_measurements.return_value = mock_transformed_df
-    expected_target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
+    expected_target_table_name = f"{SilverDatabaseNames.silver}.{SilverTableNames.silver_measurements}"
 
     # Act
     _batch_operations(mock_df, 1)
