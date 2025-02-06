@@ -1,5 +1,3 @@
-"""A module."""
-
 import sys
 from argparse import Namespace
 from collections.abc import Callable
@@ -10,12 +8,12 @@ from pyspark.sql import SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
+from opengeh_electrical_heating.application.electrical_heating_args import ElectricalHeatingArgs
+from opengeh_electrical_heating.application.job_args.command_line_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
 from opengeh_electrical_heating.domain import (
-    ElectricalHeatingArgs,
     execute,
 )
 from opengeh_electrical_heating.infrastructure import (
