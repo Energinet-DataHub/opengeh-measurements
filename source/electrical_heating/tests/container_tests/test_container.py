@@ -59,7 +59,6 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
 
     # Check if table exists:cite[3]
     if w.tables.exists(full_name=full_table_name):
-        print("Table exists - updating quantities")
         # Update existing data:cite[8]:cite[10]
         update_stmt = f"UPDATE {full_table_name} SET quantity = quantity + 0.001"
         w.statement_execution.execute(
@@ -69,7 +68,6 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
             statement=update_stmt,
         )
     else:
-        print("Creating new table with mock data")
         # Create table:cite[3]:cite[9]
         w.tables.create(name=full_table_name, columns=columns, table_type=TableType.MANAGED)
 
@@ -92,5 +90,3 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
         while execution.status.state not in [StatementState.SUCCEEDED, StatementState.FAILED]:
             time.sleep(1)
             execution = w.statement_execution.get(execution.statement_id)
-
-        print(f"Data inserted successfully. {execution.result.row_count} rows added")
