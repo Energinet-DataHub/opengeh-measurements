@@ -8,8 +8,8 @@ from opengeh_silver.application.streams.calculated_stream import (
     _execute,
     execute,
 )
-from opengeh_silver.infrastructure.config.database_names import DatabaseNames
 from opengeh_silver.infrastructure.config.table_names import TableNames
+from opengeh_silver.infrastructure.settings.database_settings import DatabaseSettings
 
 
 @mock.patch("opengeh_silver.application.streams.calculated_stream._execute")
@@ -76,10 +76,11 @@ def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeReposi
 @mock.patch("opengeh_silver.application.streams.calculated_stream.transform_calculated_measurements")
 def test__batch_operations(mock_transform_calculated_measurements):
     # Arrange
+    database_settings = DatabaseSettings()  # type: ignore
     mock_df = mock.Mock(spec=DataFrame)
     mock_transformed_df = mock.Mock(spec=DataFrame)
     mock_transform_calculated_measurements.return_value = mock_transformed_df
-    expected_target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
+    expected_target_table_name = f"{database_settings.silver_database_name}.{TableNames.silver_measurements}"
 
     # Act
     _batch_operations(mock_df, 1)

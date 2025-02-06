@@ -10,10 +10,10 @@ from telemetry_logging.span_recording import span_record_exception
 from opengeh_silver.application.config.spark import initialize_spark
 from opengeh_silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 from opengeh_silver.infrastructure.config.container_names import ContainerNames
-from opengeh_silver.infrastructure.config.database_names import DatabaseNames
 from opengeh_silver.infrastructure.config.table_names import TableNames
 from opengeh_silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
 from opengeh_silver.infrastructure.helpers.path_helper import get_checkpoint_path
+from opengeh_silver.infrastructure.settings.database_settings import DatabaseSettings
 from opengeh_silver.infrastructure.streams import writer
 from opengeh_silver.infrastructure.streams.bronze_repository import BronzeRepository
 
@@ -49,6 +49,8 @@ def _execute(spark: SparkSession) -> None:
 
 
 def _batch_operations(df: DataFrame, batchId: int) -> None:
+    database_settings = DatabaseSettings()  # type: ignore
+
     df = transform_calculated_measurements(df)
-    target_table_name = f"{DatabaseNames.silver}.{TableNames.silver_measurements}"
+    target_table_name = f"{database_settings.silver_database_name}.{TableNames.silver_measurements}"
     df.write.format("delta").mode("append").saveAsTable(target_table_name)

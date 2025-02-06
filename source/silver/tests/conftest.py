@@ -5,7 +5,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-from opengeh_silver.infrastructure.config.database_names import DatabaseNames
+from opengeh_silver.infrastructure.settings.database_settings import DatabaseSettings
 from opengeh_silver.migrations import migrations_runner
 
 
@@ -60,7 +60,8 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
+    database_settings = DatabaseSettings()  # type: ignore
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database_settings.silver_database_name}")
 
 
 @pytest.fixture(scope="session")
