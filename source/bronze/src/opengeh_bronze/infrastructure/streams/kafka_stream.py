@@ -17,7 +17,7 @@ class KafkaStream:
     def __init__(self) -> None:
         self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
         self.data_lake_settings = StorageAccountSettings().datalake_storage_account  # type: ignore
-        self.catalog_settings = CatalogSettings()  # type: ignore
+        self.bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = path_helper.get_checkpoint_path(
@@ -37,7 +37,7 @@ class KafkaStream:
             write_stream = write_stream.trigger(availableNow=True)
 
         write_stream.toTable(
-            f"{self.catalog_settings.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}"
+            f"{self.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}"
         )
 
     def write_stream(
