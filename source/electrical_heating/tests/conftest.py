@@ -1,25 +1,33 @@
 ### This file contains the fixtures that are used in the tests. ###
+import os
 from pathlib import Path
 from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from opengeh_electrical_heating.infrastructure.measurements_bronze.database_definitions import (
+from opengeh_electrical_heating.infrastructure import MeasurementsBronze
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements_bronze.schemas.measurements_bronze_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
     measurements_bronze_v1,
+)
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabase,
+)
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+    time_series_points_v1,
 )
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
 )
-from tests.utils.measurements_utils import create_measurements_dataframe
+from tests.utils.measurements_utils import create_measurements_bronze_dataframe
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -83,7 +91,7 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
+def measurements_bronze(spark: SparkSession, test_files_folder_path: str) -> MeasurementsBronze:
     create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
 
     create_table(
@@ -97,4 +105,37 @@ def measurements(spark: SparkSession, test_files_folder_path: str) -> DataFrame:
     file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
-    return create_measurements_dataframe(spark, measurements)
+    return create_measurements_bronze_dataframe(spark, measurements)
+
+
+@pytest.fixture(scope="session")
+def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+    create_database(spark, MeasurementsGoldDatabase.DATABASE_NAME)
+
+    create_table(
+        spark,
+        database_name=MeasurementsGoldDatabase.DATABASE_NAME,
+        table_name=MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
+        schema=time_series_points_v1,
+        table_location=f"{MeasurementsGoldDatabase.DATABASE_NAME}/{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+    )
+
+    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabase.DATABASE_NAME}-{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}.csv"
+    time_series_points = read_from_csv(spark, file_name)
+    time_series_points.write.saveAsTable(
+        f"{MeasurementsGoldDatabase.DATABASE_NAME}.{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+        format="delta",
+        mode="overwrite",
+    )
+
+
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    env_file_path = os.path.join(os.path.dirname(__file__), ".env")
+    if not os.path.exists(env_file_path):
+        skip_container_tests = pytest.mark.skip(
+            reason="Skipping container tests because .env file is missing. See .sample.env for an example."
+        )
+        for item in items:
+            if "container_tests" in item.nodeid:
+                item.add_marker(skip_container_tests)

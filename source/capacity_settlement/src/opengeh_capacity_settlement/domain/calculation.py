@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from dateutil.relativedelta import relativedelta
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
+from pyspark.sql.types import DecimalType
 from telemetry_logging import use_span
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
@@ -15,6 +16,7 @@ from opengeh_capacity_settlement.domain.calculation_output import CalculationOut
 class ColumNames:
     # Input/output column names from contracts
     date = "date"
+    child_metering_point_id = "child_metering_point_id"
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
@@ -48,6 +50,8 @@ def execute_core_logic(
         time_zone=time_zone,
     )
 
+    time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
+
     times_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points, metering_point_periods
     )
@@ -55,12 +59,26 @@ def execute_core_logic(
     times_series_points = _explode_to_daily(times_series_points, calculation_month, calculation_year, time_zone)
 
     calculation_output.measurements = times_series_points.select(
-        ColumNames.metering_point_id, ColumNames.date, ColumNames.quantity
+        F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
+        F.col(ColumNames.date),
+        F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
     calculation_output.calculations = spark.createDataFrame([], schema="")
 
     return calculation_output
+
+
+def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
+    # Reduces observation time to hour value
+    time_series_points = time_series_points.withColumn(
+        ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
+    )
+    # group by all columns except quantity and then sum the quantity
+    group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
+    time_series_points = time_series_points.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
+
+    return time_series_points
 
 
 def _add_selection_period_columns(
@@ -102,6 +120,7 @@ def _average_ten_largest_quantities_in_selection_periods(
         ColumNames.metering_point_id,
         ColumNames.selection_period_start,
         ColumNames.selection_period_end,
+        ColumNames.child_metering_point_id,
     ]
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())

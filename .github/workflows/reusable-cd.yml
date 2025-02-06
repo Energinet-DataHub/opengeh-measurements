@@ -64,9 +64,11 @@ jobs:
       matrix: ${{ steps.release_matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Find associated pull request
         uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
         id: find_pull_request
+
       - name: Set Matrix
         id: release_matrix
         env:
@@ -82,7 +84,7 @@ jobs:
     name: Promote prerelease
     runs-on: ubuntu-24.04
     needs: cd_release_matrix
-    if: ${{ needs.cd_release_matrix.outputs.matrix != '' }}
+    if: ${{ needs.cd_release_matrix.outputs.matrix != '[]' }}
     strategy:
       matrix:
         inputs: ${{ fromJson(needs.cd_release_matrix.outputs.matrix) }}
@@ -91,6 +93,8 @@ jobs:
       checks: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+
       - name: Promote prerelease
         uses: ./.github/actions/promote-prerelease
         with:
@@ -102,13 +106,13 @@ jobs:
           package_name=$(echo "${{ matrix.inputs.name }}" | grep -o '^.*_' | sed 's/_$//')
           event_name="${{ inputs.subsystem_name }}-${package_name}-deployment-request-domain"
           lowercase_event_name=$(echo $event_name | tr '[:upper:]' '[:lower:]')
-          echo "Dispatching event: $event_name"
-          echo "event_name=$event_name" >>$GITHUB_OUTPUT
+          echo "Dispatching event: $lowercase_event_name"
+          echo "event_name=$lowercase_event_name" >>$GITHUB_OUTPUT
 
       - name: Dispatch Release
         uses: ./.github/actions/dispatch-deployment-event
         with:
-          name: ${{ steps.create_dispatch_event_name.outputs.event_name }}
+          event_name: ${{ steps.create_dispatch_event_name.outputs.event_name }}
           repository: ${{ inputs.environment_repository_path }}
           app_id: ${{ inputs.dh3serviceaccount_appid }}
           private_key: ${{ secrets.dh3serviceaccount_privatekey }}
@@ -121,4 +125,4 @@ jobs:
           team-name: ${{ inputs.subsystem_name }}
           to: ${{ inputs.notification_email }}
           from: ${{ inputs.sender_email }}
-          subject: "Deployment Failed: Measurements `${{ matrix.inputs.name }}`"
+          subject: "Deployment Failed: Measurements '${{ matrix.inputs.name }}'"

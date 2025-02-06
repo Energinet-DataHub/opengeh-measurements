@@ -1,12 +1,11 @@
+import os
 from typing import Generator
 
 import pytest
-import yaml
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
-from testcommon.container_test import DatabricksApiClient
 
-from tests import PROJECT_ROOT, Path
+from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
 
@@ -47,18 +46,13 @@ def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
     return TestSessionConfiguration.load(settings_file_path)
 
 
-def _load_settings_from_file(file_path: Path) -> dict:
-    if file_path.exists():
-        with file_path.open() as stream:
-            return yaml.safe_load(stream)
-    else:
-        return {}
-
-
-@pytest.fixture(scope="session")
-def databricks_api_client() -> DatabricksApiClient:
-    settings = _load_settings_from_file(PROJECT_ROOT / "tests" / "test.local.settings.yml")
-    databricks_token = settings.get("DATABRICKS_TOKEN")
-    databricks_host = settings.get("WORKSPACE_URL")
-    databricksApiClient = DatabricksApiClient(databricks_token, databricks_host)
-    return databricksApiClient
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    env_file_path = os.path.join(os.path.dirname(__file__), ".env")
+    if not os.path.exists(env_file_path):
+        skip_container_tests = pytest.mark.skip(
+            reason="Skipping container tests because .env file is missing. See .sample.env for an example."
+        )
+        for item in items:
+            if "container_tests" in item.nodeid:
+                item.add_marker(skip_container_tests)

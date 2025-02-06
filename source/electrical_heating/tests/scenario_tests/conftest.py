@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -7,16 +6,14 @@ from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from opengeh_electrical_heating.application.execute_with_deps import (
-    execute_calculation,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.schemas.child_metering_points_v1 import (
+from opengeh_electrical_heating.domain import execute
+from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from opengeh_electrical_heating.infrastructure.electricity_market.schemas.consumption_metering_point_periods_v1 import (
+from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements_gold.schemas.time_series_points_v1 import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
@@ -61,25 +58,19 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
 
     # Execute the logic
-    calculation_output = execute_calculation(
-        spark,
+    actual = execute(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
-        args,
-        datetime.now(timezone.utc),
+        args.time_zone,
     )
 
     # Return test cases
     return TestCases(
         [
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/electrical_heating_internal/calculations.csv",
-                actual=calculation_output.calculations,
-            ),
-            TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.measurements,
+                actual=actual.df,
             ),
         ]
     )
