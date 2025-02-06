@@ -19,7 +19,7 @@ def migrate() -> None:
 def _configure_spark_sql_migrations() -> None:
     substitution_variables = substitutions.substitutions()
     catalog_name = os.environ["CATALOG_NAME"]
-    bronze_database = CatalogSettings()  # type: ignore
+    bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=bronze_database.bronze_database_name,
