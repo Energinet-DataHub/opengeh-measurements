@@ -33,9 +33,7 @@ class KafkaStream:
 
         stream_settings = SubmittedTransactionsStreamSettings()  # type: ignore
 
-        if stream_settings.continuous_streaming_enabled is True:
-            write_stream = write_stream.trigger(continuous="1 second")
-        else:
+        if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
 
         write_stream.toTable(
