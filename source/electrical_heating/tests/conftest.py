@@ -9,12 +9,9 @@ from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from opengeh_electrical_heating.infrastructure import MeasurementsBronze
+from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
-    MeasurementsCalculatedDatabase,
-)
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
-    measurements_bronze_v1,
+    CalculatedMeasurementsDatabase,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
@@ -27,7 +24,7 @@ from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
 )
-from tests.utils.measurements_utils import create_measurements_bronze_dataframe
+from tests.utils.measurements_utils import create_calculated_measurements_dataframe
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -91,21 +88,21 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements_bronze(spark: SparkSession, test_files_folder_path: str) -> MeasurementsBronze:
-    create_database(spark, MeasurementsCalculatedDatabase.DATABASE_NAME)
+def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
+    create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
 
     create_table(
         spark,
-        database_name=MeasurementsCalculatedDatabase.DATABASE_NAME,
-        table_name=MeasurementsCalculatedDatabase.MEASUREMENTS_NAME,
-        schema=measurements_bronze_v1,
-        table_location=f"{MeasurementsCalculatedDatabase.DATABASE_NAME}/{MeasurementsCalculatedDatabase.MEASUREMENTS_NAME}",
+        database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
+        table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
+        schema=calculated_measurements_v1,
+        table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{MeasurementsCalculatedDatabase.DATABASE_NAME}-{MeasurementsCalculatedDatabase.MEASUREMENTS_NAME}.csv"
+    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
-    return create_measurements_bronze_dataframe(spark, measurements)
+    return create_calculated_measurements_dataframe(spark, measurements)
 
 
 @pytest.fixture(scope="session")

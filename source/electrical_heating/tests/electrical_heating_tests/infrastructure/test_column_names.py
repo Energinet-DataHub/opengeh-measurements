@@ -7,7 +7,7 @@ from opengeh_electrical_heating.infrastructure.electricity_market.consumption_me
     consumption_metering_point_periods_v1,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
-    measurements_bronze_v1,
+    calculated_measurements_v1,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
@@ -17,7 +17,7 @@ from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.sc
 ALL_STRUCT_TYPES = [
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
-    measurements_bronze_v1,
+    calculated_measurements_v1,
     time_series_points_v1,
 ]
 
