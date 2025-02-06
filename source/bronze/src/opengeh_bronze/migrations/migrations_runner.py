@@ -22,7 +22,7 @@ def _configure_spark_sql_migrations() -> None:
     bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=bronze_database.bronze_database_name,
+        migration_schema_name=bronze_database_name,
         migration_table_name=TableNames.executed_migrations_table,
         migration_scripts_folder_path="opengeh_bronze.migrations.migration_scripts",
         substitution_variables=substitution_variables,
