@@ -7,7 +7,10 @@ from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
+    TimeSeriesPoints,
+    time_series_points_v1,
+)
 
 
 class Repository:
@@ -39,7 +42,7 @@ class Repository:
         #    MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
         # )
 
-        df = self._spark.createDataFrame([])
+        df = self._spark.createDataFrame([], schema=time_series_points_v1)
         return TimeSeriesPoints(df)
 
     def _read_view_or_table(
