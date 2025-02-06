@@ -59,6 +59,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         spark,
         time_series_points,
         metering_point_periods,
+        args.orchestration_instance_id,
         args.calculation_month,
         args.calculation_year,
         args.time_zone,

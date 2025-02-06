@@ -10,3 +10,5 @@ class CalculationOutput:
     measurements: DataFrame | None = None
 
     calculations: DataFrame | None = None
+
+    ten_largest_quantities: DataFrame | None = None
