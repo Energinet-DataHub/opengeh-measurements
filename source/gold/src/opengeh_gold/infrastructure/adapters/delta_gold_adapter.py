@@ -3,8 +3,8 @@ from typing import Callable
 from pyspark.sql import DataFrame
 
 from opengeh_gold.application.ports.gold_port import GoldPort
-from opengeh_gold.infrastructure.config.database_names import DatabaseNames
 from opengeh_gold.infrastructure.config.storage_container_names import StorageContainerNames
+from opengeh_gold.infrastructure.settings.catalog_settings import CatalogSettings
 from opengeh_gold.infrastructure.shared_helpers import (
     EnvironmentVariable,
     get_checkpoint_path,
@@ -37,4 +37,7 @@ class DeltaGoldAdapter(GoldPort):
             df_write_stream.start().awaitTermination()
 
     def append(self, df: DataFrame, table_name: str) -> None:
-        df.write.format("delta").mode("append").saveAsTable(get_full_table_name(DatabaseNames.gold, table_name))
+        catalog_settings = CatalogSettings()  # type: ignore
+        df.write.format("delta").mode("append").saveAsTable(
+            get_full_table_name(catalog_settings.gold_database_name, table_name)
+        )

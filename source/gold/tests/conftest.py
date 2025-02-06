@@ -8,8 +8,8 @@ from pyspark.sql.types import StructType
 
 import opengeh_gold.migrations.migrations_runner as migrations
 from opengeh_gold.domain.schemas.silver_measurements import silver_measurements_schema
-from opengeh_gold.infrastructure.config.database_names import DatabaseNames
 from opengeh_gold.infrastructure.config.table_names import TableNames
+from opengeh_gold.infrastructure.settings.catalog_settings import CatalogSettings
 
 
 def pytest_runtest_setup() -> None:
@@ -91,15 +91,19 @@ def tests_path(source_path: str) -> str:
 
 
 def _create_schemas(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.gold}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {DatabaseNames.silver}")
+    catalog_settings = CatalogSettings()  # type: ignore
+
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
 
 
 @pytest.fixture(scope="session")
 def create_silver_tables(spark: SparkSession) -> None:
+    catalog_settings = CatalogSettings()  # type: ignore
+
     create_table_from_schema(
         spark=spark,
-        database=DatabaseNames.silver,
+        database=catalog_settings.silver_database_name,
         table_name=TableNames.silver_measurements,
         schema=silver_measurements_schema,
     )

@@ -4,7 +4,7 @@ import opengeh_bronze.infrastructure.helpers.path_helper as path_helper
 from opengeh_bronze.domain.constants.table_names import TableNames
 from opengeh_bronze.infrastructure.config.storage_container_names import StorageContainerNames
 from opengeh_bronze.infrastructure.settings import (
-    BronzeDatabaseSettings,
+    CatalogSettings,
     KafkaAuthenticationSettings,
     StorageAccountSettings,
     SubmittedTransactionsStreamSettings,
@@ -17,7 +17,7 @@ class KafkaStream:
     def __init__(self) -> None:
         self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
         self.data_lake_settings = StorageAccountSettings().datalake_storage_account  # type: ignore
-        self.bronze_database_settings = BronzeDatabaseSettings()  # type: ignore
+        self.catalog_settings = CatalogSettings()  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = path_helper.get_checkpoint_path(
@@ -37,7 +37,7 @@ class KafkaStream:
             write_stream = write_stream.trigger(availableNow=True)
 
         write_stream.toTable(
-            f"{self.bronze_database_settings.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}"
+            f"{self.catalog_settings.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}"
         )
 
     def write_stream(

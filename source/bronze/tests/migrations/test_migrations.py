@@ -8,9 +8,9 @@ from opengeh_bronze.domain.schemas.bronze_measurements import (
 from opengeh_bronze.domain.schemas.submitted_transactions import (
     submitted_transactions_schema,
 )
-from opengeh_bronze.infrastructure.settings import BronzeDatabaseSettings
+from opengeh_bronze.infrastructure.settings import CatalogSettings
 
-database_name = BronzeDatabaseSettings().bronze_database_name  # type: ignore
+database_name = CatalogSettings().bronze_database_name  # type: ignore
 
 
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
