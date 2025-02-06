@@ -46,7 +46,7 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
     w = databricks_client
 
     # Table configuration
-    catalog_name = "main"  # Default workspace catalog:cite[9]
+    catalog_name = "ctl_shres_d_we_003"  # Default workspace catalog:cite[9]
     full_table_name = f"{catalog_name}.{data_base_name}.{table_name}"
 
     # Define table schema:cite[3]
