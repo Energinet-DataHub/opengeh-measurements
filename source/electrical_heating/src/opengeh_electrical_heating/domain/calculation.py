@@ -14,9 +14,14 @@ from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.domain.constants import ELECTRICAL_HEATING_LIMIT_YEARLY
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import ChildMeteringPoints
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import ConsumptionMeteringPointPeriods
+from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
+    ChildMeteringPoints,
+)
+from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
+    ConsumptionMeteringPointPeriods,
+)
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
+
 
 class _CalculatedNames:
     """Names of calculated columns."""
