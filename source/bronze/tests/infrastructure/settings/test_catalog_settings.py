@@ -1,6 +1,6 @@
 import os
 
-from opengeh_gold.infrastructure.settings.catalog_settings import CatalogSettings
+from opengeh_bronze.infrastructure.settings.catalog_settings import CatalogSettings
 
 
 def test__catalog_settings__should_create_attributes_from_env():
