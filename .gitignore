@@ -184,3 +184,5 @@ spark-warehouse/
 
 # Databricks logs
 _delta_log/
+
+measurements.code-workspace
