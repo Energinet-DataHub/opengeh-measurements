@@ -39,7 +39,7 @@ class Repository:
         #    MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
         # )
 
-        df = self._spark.createDataFrame([], MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME)
+        df = self._spark.createDataFrame([])
         return TimeSeriesPoints(df)
 
     def _read_view_or_table(
