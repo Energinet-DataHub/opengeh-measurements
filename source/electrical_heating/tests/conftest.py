@@ -13,6 +13,9 @@ from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.wrapper import (
+    calculated_measurements_v1,
+)
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
