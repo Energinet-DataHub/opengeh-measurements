@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from opengeh_electrical_heating.application.job_args.electrical_heating_job_args import (
+from opengeh_electrical_heating.application.job_args.command_line_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
