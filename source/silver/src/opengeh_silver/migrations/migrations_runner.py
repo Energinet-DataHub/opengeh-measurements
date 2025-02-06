@@ -5,7 +5,6 @@ from spark_sql_migrations import (
 )
 
 import opengeh_silver.migrations.substitutions as substitutions
-from opengeh_silver.application.streams.calculated_stream import CatalogSettings
 from opengeh_silver.infrastructure.config.table_names import TableNames
 from opengeh_silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
 from opengeh_silver.infrastructure.settings.catalog_settings import CatalogSettings
