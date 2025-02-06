@@ -3,8 +3,10 @@ from datetime import datetime
 from pyspark.sql.functions import col, lit
 
 import opengeh_bronze.application.config.spark_session as spark_session
-import opengeh_bronze.domain.constants.column_names.migrations_silver_time_series_column_names as MigrationsSilverTimeSeriesColumnNames
 import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
+from opengeh_bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
+    MigrationsSilverTimeSeriesColumnNames,
+)
 from opengeh_bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
@@ -63,7 +65,7 @@ def full_load_of_migrations_to_measurements(
 ) -> None:
     print(f"{datetime.now()} - Starting full load of migrations to measurements from scratch.")
 
-    chunks = MigrationsSilverTimeSeriesRepository.create_chunks_of_migrations_partitions(
+    chunks = migrations_silver_time_series_repository.create_chunks_of_migrations_partitions(
         MigrationsSilverTimeSeriesColumnNames.partitioning_col, num_chunks
     )
     today = datetime.now().date()
