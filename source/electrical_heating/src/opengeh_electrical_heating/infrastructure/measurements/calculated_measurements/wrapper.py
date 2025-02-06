@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_v1,
 )
 
