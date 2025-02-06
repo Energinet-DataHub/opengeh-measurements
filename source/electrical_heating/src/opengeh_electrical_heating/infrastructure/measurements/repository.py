@@ -1,9 +1,9 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
-    MeasurementsBronzeDatabase,
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
+    MeasurementsCalculatedDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.wrapper import MeasurementsBronze
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
@@ -17,8 +17,8 @@ class Repository:
         catalog_name: str | None = None,
     ) -> None:
         self._spark = spark
-        self._bronze_database_name = MeasurementsBronzeDatabase.DATABASE_NAME
-        self._bronze_measurements_table_name = MeasurementsBronzeDatabase.MEASUREMENTS_NAME
+        self._bronze_database_name = MeasurementsCalculatedDatabase.DATABASE_NAME
+        self._bronze_measurements_table_name = MeasurementsCalculatedDatabase.MEASUREMENTS_NAME
         self._catalog_name = catalog_name
         if self._catalog_name:
             self._bronze_full_table_path = (

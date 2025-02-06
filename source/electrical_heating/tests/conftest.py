@@ -10,10 +10,10 @@ from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure import MeasurementsBronze
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
-    MeasurementsBronzeDatabase,
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
+    MeasurementsCalculatedDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
     measurements_bronze_v1,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
@@ -92,17 +92,17 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def measurements_bronze(spark: SparkSession, test_files_folder_path: str) -> MeasurementsBronze:
-    create_database(spark, MeasurementsBronzeDatabase.DATABASE_NAME)
+    create_database(spark, MeasurementsCalculatedDatabase.DATABASE_NAME)
 
     create_table(
         spark,
-        database_name=MeasurementsBronzeDatabase.DATABASE_NAME,
-        table_name=MeasurementsBronzeDatabase.MEASUREMENTS_NAME,
+        database_name=MeasurementsCalculatedDatabase.DATABASE_NAME,
+        table_name=MeasurementsCalculatedDatabase.MEASUREMENTS_NAME,
         schema=measurements_bronze_v1,
-        table_location=f"{MeasurementsBronzeDatabase.DATABASE_NAME}/{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}",
+        table_location=f"{MeasurementsCalculatedDatabase.DATABASE_NAME}/{MeasurementsCalculatedDatabase.MEASUREMENTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{MeasurementsBronzeDatabase.DATABASE_NAME}-{MeasurementsBronzeDatabase.MEASUREMENTS_NAME}.csv"
+    file_name = f"{test_files_folder_path}/{MeasurementsCalculatedDatabase.DATABASE_NAME}-{MeasurementsCalculatedDatabase.MEASUREMENTS_NAME}.csv"
     measurements = read_from_csv(spark, file_name)
 
     return create_measurements_bronze_dataframe(spark, measurements)
