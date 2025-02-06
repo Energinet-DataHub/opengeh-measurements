@@ -5,14 +5,10 @@ from opengeh_silver.infrastructure.settings.catalog_settings import CatalogSetti
 
 def test__catalog_settings__should_create_attributes_from_env():
     # Arrange
-    expected_catalog_name = "some_catalog_name"
-    expected_bronze_database_name = "some_bronze_database_name"
-    expected_silver_database_name = "some_silver_database_name"
-    expected_gold_database_name = "some_gold_database_name"
-    os.environ["catalog_name"] = expected_catalog_name
-    os.environ["bronze_database_name"] = expected_bronze_database_name
-    os.environ["silver_database_name"] = expected_silver_database_name
-    os.environ["gold_database_name"] = expected_gold_database_name
+    expected_catalog_name = os.getenv("CATALOG_NAME")
+    expected_bronze_database_name = os.getenv("BRONZE_DATABASE_NAME")
+    expected_silver_database_name = os.getenv("SILVER_DATABASE_NAME")
+    expected_gold_database_name = os.getenv("GOLD_DATABASE_NAME")
 
     # Act
     actual = CatalogSettings()  # type: ignore
