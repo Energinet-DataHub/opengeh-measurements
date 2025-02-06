@@ -8,8 +8,8 @@ from pyspark.sql import functions as F
 
 from opengeh_electrical_heating.application import execute_application
 from opengeh_electrical_heating.application.job_args.environment_variables import EnvironmentVariable
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
-    MeasurementsCalculatedDatabase,
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+    CalculatedMeasurementsDatabase,
 )
 
 
@@ -35,6 +35,6 @@ def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict,
 
     # Assert
     actual = spark.read.table(
-        f"{MeasurementsCalculatedDatabase.DATABASE_NAME}.{MeasurementsCalculatedDatabase.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsDatabase.DATABASE_NAME}.{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
