@@ -1,4 +1,4 @@
-class BronzeMigratedColumnNames:
+class MigrationsSilverTimeSeriesColumnNames:
     metering_point_id = "metering_point_id"
     type_of_mp = "type_of_mp"
     historical_flag = "historical_flag"
@@ -12,11 +12,11 @@ class BronzeMigratedColumnNames:
     valid_from_date = "valid_from_date"
     valid_to_date = "valid_to_date"
     values = "values"
-    created_in_migrations = "created_in_migrations"
-    created_in_measurements = "created_in_measurements"
+    created = "created"
+    partitioning_col = "partitioning_col"
 
 
-class BronzeMigratedValuesFieldNames:
+class MigrationsSilverTimeSeriesValuesFieldNames:
     position = "position"
     quality = "quality"
     quantity = "quantity"
