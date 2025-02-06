@@ -1,3 +1,3 @@
-from .calculation import execute_application, execute_calculation
+from .calculation import execute_application
 
-__all__ = ["execute_application", "execute_calculation"]
+__all__ = ["execute_application"]
