@@ -1,6 +1,10 @@
 from pyspark.sql import DataFrame
 from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
+from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
+    calculated_measurements_v1,
+)
+
 
 class CalculatedMeasurements(DataFrameWrapper):
     """Represents the calculated measurements data structure."""
