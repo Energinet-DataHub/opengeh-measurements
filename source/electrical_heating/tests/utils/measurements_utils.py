@@ -4,7 +4,7 @@ from pyspark.sql.types import ArrayType
 from testcommon.dataframes import assert_schema
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.schema import (
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_v1,
     point,
 )

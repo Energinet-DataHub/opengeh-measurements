@@ -10,10 +10,10 @@ from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.database_definitions import (
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_calculated.wrapper import (
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
     calculated_measurements_v1,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
