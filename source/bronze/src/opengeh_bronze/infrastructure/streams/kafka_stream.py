@@ -36,9 +36,7 @@ class KafkaStream:
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
 
-        write_stream.toTable(
-            f"{self.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}"
-        )
+        write_stream.toTable(f"{self.bronze_database_name}.{TableNames.bronze_submitted_transactions_table}")
 
     def write_stream(
         self,

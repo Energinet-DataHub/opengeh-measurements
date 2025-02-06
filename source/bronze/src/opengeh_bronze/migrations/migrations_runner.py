@@ -1,5 +1,3 @@
-import os
-
 from spark_sql_migrations import (
     SparkSqlMigrationsConfiguration,
     create_and_configure_container,
@@ -18,15 +16,14 @@ def migrate() -> None:
 
 def _configure_spark_sql_migrations() -> None:
     substitution_variables = substitutions.substitutions()
-    catalog_name = os.environ["CATALOG_NAME"]
-    bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+    catalog_settings = CatalogSettings()  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=bronze_database_name,
+        migration_schema_name=catalog_settings.bronze_database_name,
         migration_table_name=TableNames.executed_migrations_table,
         migration_scripts_folder_path="opengeh_bronze.migrations.migration_scripts",
         substitution_variables=substitution_variables,
-        catalog_name=catalog_name,
+        catalog_name=catalog_settings.catalog_name,
     )
 
     create_and_configure_container(spark_config)
