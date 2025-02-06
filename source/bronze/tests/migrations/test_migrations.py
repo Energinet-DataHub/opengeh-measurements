@@ -10,7 +10,7 @@ from opengeh_bronze.domain.schemas.submitted_transactions import (
 )
 from opengeh_bronze.infrastructure.settings import CatalogSettings
 
-database_name = CatalogSettings().bronze_database_name  # type: ignore
+bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
 
 
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
