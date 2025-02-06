@@ -20,6 +20,7 @@ def test__databricks_job_starts_and_stops_successfully(databricks_api_client: Da
             f"--orchestration-instance-id={str(uuid.uuid4())}",
         ]
         # Seed
+        databricks_api_client.client.
 
         # Act
         run_id = databricks_api_client.start_job(job_id, params)
