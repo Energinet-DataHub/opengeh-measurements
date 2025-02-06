@@ -1,4 +1,4 @@
-from pyspark.sql import DataFrame, Window
+from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from pyspark_functions.functions import (
@@ -9,9 +9,18 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
-from opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_electrical_heating.domain.constants import ELECTRICAL_HEATING_LIMIT_YEARLY
+from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import ChildMeteringPoints
+from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import ConsumptionMeteringPointPeriods
+from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
+import opengeh_electrical_heating.infrastructure.electricity_market as em
+import opengeh_electrical_heating.infrastructure.measurements as mg
+from opengeh_electrical_heating.application.job_args.electrical_heating_args import (
+    ElectricalHeatingArgs,
+)
+from opengeh_electrical_heating.domain import ColumnNames
+from opengeh_electrical_heating.domain.constants import (
+    ELECTRICAL_HEATING_LIMIT_YEARLY,
+)
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
 
@@ -41,25 +50,45 @@ class _CalculatedNames:
     period_year = "period_year"
 
 
+@use_span()
+def execute(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
+    # Create repositories to obtain data frames
+    electricity_market_repository = em.Repository(spark, args.catalog_name)
+    measurements_gold_repository = mg.Repository(spark, args.catalog_name)
+
+    # Read data frames
+    consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
+    child_metering_points = electricity_market_repository.read_child_metering_points()
+    time_series_points = measurements_gold_repository.read_time_series_points()
+
+    # Execute the calculation logic
+    execute_core_logic(
+        time_series_points,
+        consumption_metering_point_periods,
+        child_metering_points,
+        args.time_zone,
+    )
+
+
 # This is a temporary implementation. The final implementation will be provided in later PRs.
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
-def execute(
-    time_series_points: DataFrame,
-    consumption_metering_point_periods: DataFrame,
-    child_metering_points: DataFrame,
+def execute_core_logic(
+    time_series_points: TimeSeriesPoints,
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
     time_zone: str,
-) -> CalculatedMeasurementsDaily:
-    energy = time_series_points.where(
+) -> DataFrame:
+    energy = time_series_points.df.where(
         (F.col(ColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_METERING_POINT_TYPE.value)
         | (F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value)
     )
-    electrical_heating = time_series_points.where(
+    electrical_heating = time_series_points.df.where(
         F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
     )
 
-    parent_metering_points = convert_from_utc(consumption_metering_point_periods, time_zone)
-    child_metering_points = convert_from_utc(child_metering_points, time_zone)
+    parent_metering_points = convert_from_utc(consumption_metering_point_periods.df, time_zone)
+    child_metering_points = convert_from_utc(child_metering_points.df, time_zone)
     energy = convert_from_utc(energy, time_zone)
     electrical_heating = convert_from_utc(electrical_heating, time_zone)
 
@@ -89,9 +118,7 @@ def execute(
 
     electrical_heating = convert_to_utc(electrical_heating, time_zone)
 
-    return CalculatedMeasurementsDaily(
-        electrical_heating.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
-    )
+    return electrical_heating.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
 
 
 def _filter_unchanged_electrical_heating(
@@ -139,7 +166,7 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         .otherwise(
             F.col(ColumnNames.quantity),
         )
-        .cast(T.DecimalType(18, 3))
+        .cast(T.DecimalType(38, 3))
         .alias(ColumnNames.quantity),
         F.col(_CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),

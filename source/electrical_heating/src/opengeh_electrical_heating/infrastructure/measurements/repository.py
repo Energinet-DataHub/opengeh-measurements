@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 
 from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
     MeasurementsBronzeDatabase,
@@ -42,7 +42,6 @@ class Repository:
     def _read_view_or_table(
         self,
         table_name: str,
-    ) -> TimeSeriesPoints:
+    ) -> DataFrame:
         name = f"{self._catalog_name}.{MeasurementsGoldDatabase.DATABASE_NAME}.{table_name}"
-        df = self._spark.read.format("delta").table(name)
-        return TimeSeriesPoints(df)
+        return self._spark.read.format("delta").table(name)
