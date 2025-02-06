@@ -1,4 +1,4 @@
-from opengeh_electrical_heating.domain import ElectricalHeatingArgs
+from opengeh_electrical_heating.application import ElectricalHeatingArgs
 
 
 class ElectricalHeatingTestArgs(ElectricalHeatingArgs):
