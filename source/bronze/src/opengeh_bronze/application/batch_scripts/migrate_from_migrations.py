@@ -1,36 +1,29 @@
-from pyspark.sql.functions import col, lit, max
 from datetime import datetime
+
+from pyspark.sql.functions import col, lit
+
+import opengeh_bronze.application.config.spark_session as spark_session
+import opengeh_bronze.domain.constants.column_names.migrations_silver_time_series_column_names as MigrationsSilverTimeSeriesColumnNames
+import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
 from opengeh_bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 from opengeh_bronze.infrastructure.migration_data.silver_time_series_repository import (
     MigrationsSilverTimeSeriesRepository,
 )
-import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
-import opengeh_bronze.domain.constants.column_names.migrations_silver_time_series_column_names as MigrationsSilverTimeSeriesColumnNames
-import opengeh_bronze.application.config.spark_session as spark_session
 
 
 def migrate_from_migrations_to_measurements() -> None:
     spark = spark_session.initialize_spark()
     migrated_transactions_repository = MigratedTransactionsRepository(spark)
-    migrations_silver_time_series_repository = MigrationsSilverTimeSeriesRepository(
-        spark
+    migrations_silver_time_series_repository = MigrationsSilverTimeSeriesRepository(spark)
+
+    latest_created_already_migrated = (
+        migrated_transactions_repository.calculate_latest_created_timestamp_that_has_been_migrated()
     )
 
-    latest_created_already_migrated = datetime(1900, 1, 1).date()
-
-    try:
-        latest_created_already_migrated = (
-            migrated_transactions_repository.calculate_latest_created_timestamp_that_has_been_migrated()
-        )
-    except IndexError:
-        print(
-            f"{datetime.now()} - Failed to find any data in target table, doing full load of migrations to measurements from scratch."
-        )
-
     # Determine which technique to apply for loading data.
-    if latest_created_already_migrated == datetime(1900, 1, 1).date():
+    if latest_created_already_migrated is None:
         full_load_of_migrations_to_measurements(
             migrations_silver_time_series_repository, migrated_transactions_repository
         )
@@ -49,26 +42,17 @@ def daily_load_of_migrations_to_measurements(
     latest_created_already_migrated: datetime,
 ) -> None:
     today = datetime.now().date()
-    print(
-        f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze."
-    )
+    print(f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze.")
     migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
         (col(MigrationsSilverTimeSeriesColumnNames.created) < lit(today))
-        & (
-            col(MigrationsSilverTimeSeriesColumnNames.created)
-            > lit(latest_created_already_migrated)
-        )
+        & (col(MigrationsSilverTimeSeriesColumnNames.created) > lit(latest_created_already_migrated))
     )
 
-    migrations_data_transformed = (
-        migrate_from_migrations_transformations.map_migrations_to_measurements(
-            migrations_data
-        )
+    migrations_data_transformed = migrate_from_migrations_transformations.map_migrations_to_measurements(
+        migrations_data
     )
 
-    migrated_transactions_repository.write_measurements_bronze_migrated(
-        migrations_data_transformed
-    )
+    migrated_transactions_repository.write_measurements_bronze_migrated(migrations_data_transformed)
 
 
 # Leverage the transaction_insert_date partitioning to split our work into chunks due to the large amount of data to migrate.
@@ -77,10 +61,10 @@ def full_load_of_migrations_to_measurements(
     migrated_transactions_repository: MigratedTransactionsRepository,
     num_chunks=10,
 ) -> None:
-    chunks = (
-        MigrationsSilverTimeSeriesRepository.create_chunks_of_migrations_partitions(
-            MigrationsSilverTimeSeriesColumnNames.partitioning_col, num_chunks
-        )
+    print(f"{datetime.now()} - Starting full load of migrations to measurements from scratch.")
+
+    chunks = MigrationsSilverTimeSeriesRepository.create_chunks_of_migrations_partitions(
+        MigrationsSilverTimeSeriesColumnNames.partitioning_col, num_chunks
     )
     today = datetime.now().date()
 
@@ -90,23 +74,13 @@ def full_load_of_migrations_to_measurements(
         )
 
         migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
-            (
-                lit(chunk[0])
-                <= col(MigrationsSilverTimeSeriesColumnNames.partitioning_col)
-            )
-            & (
-                col(MigrationsSilverTimeSeriesColumnNames.partitioning_col)
-                <= lit(chunk[-1])
-            )
+            (lit(chunk[0]) <= col(MigrationsSilverTimeSeriesColumnNames.partitioning_col))
+            & (col(MigrationsSilverTimeSeriesColumnNames.partitioning_col) <= lit(chunk[-1]))
             & (col(MigrationsSilverTimeSeriesColumnNames.created) < lit(today))
         )
 
-        migrations_data_transformed = (
-            migrate_from_migrations_transformations.map_migrations_to_measurements(
-                migrations_data
-            )
+        migrations_data_transformed = migrate_from_migrations_transformations.map_migrations_to_measurements(
+            migrations_data
         )
 
-        migrated_transactions_repository.write_measurements_bronze_migrated(
-            migrations_data_transformed
-        )
+        migrated_transactions_repository.write_measurements_bronze_migrated(migrations_data_transformed)

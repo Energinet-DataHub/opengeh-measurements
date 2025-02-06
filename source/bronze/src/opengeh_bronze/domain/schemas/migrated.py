@@ -1,12 +1,9 @@
-from pyspark.sql.types import (
-    IntegerType,
-    StringType,
-    StructField,
-    StructType,
-    TimestampType,
-)
+from pyspark.sql.types import ArrayType, DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names import BronzeMigratedColumnNames, BronzeMigratedValuesFieldNames
+from opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names import (
+    BronzeMigratedColumnNames,
+    BronzeMigratedValuesFieldNames,
+)
 
 migrated_schema = StructType(
     [
@@ -19,14 +16,22 @@ migrated_schema = StructType(
         StructField(BronzeMigratedColumnNames.unit, StringType(), False),
         StructField(BronzeMigratedColumnNames.status, IntegerType(), False),
         StructField(BronzeMigratedColumnNames.read_reason, StringType(), False),
-        StructField(BronzeMigratedColumnNames.values, StringType(), False),
         StructField(BronzeMigratedColumnNames.valid_from_date, TimestampType(), False),
         StructField(BronzeMigratedColumnNames.valid_to_date, TimestampType(), False),
-        StructField(BronzeMigratedColumnNames.values, ArrayType(StructType(
-            StructField(BronzeMigratedValuesFieldNames.position, IntegerType(), True),
-            StructField(BronzeMigratedValuesFieldNames.quality, StringType(), True),
-            StructField(BronzeMigratedValuesFieldNames.quantity, DecimalType(18, 6), True)
-            )), True),
-        StructField(BronzeMigratedColumnNames.created, TimestampType(), False),
+        StructField(
+            BronzeMigratedColumnNames.values,
+            ArrayType(
+                StructType(
+                    [
+                        StructField(BronzeMigratedValuesFieldNames.position, IntegerType(), True),
+                        StructField(BronzeMigratedValuesFieldNames.quality, StringType(), True),
+                        StructField(BronzeMigratedValuesFieldNames.quantity, DecimalType(18, 6), True),
+                    ]
+                )
+            ),
+            False,
+        ),
+        StructField(BronzeMigratedColumnNames.created_in_migrations, TimestampType(), False),
+        StructField(BronzeMigratedColumnNames.created_in_measurements, TimestampType(), False),
     ]
 )
