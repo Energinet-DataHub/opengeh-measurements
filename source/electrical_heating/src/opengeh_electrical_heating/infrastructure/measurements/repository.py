@@ -1,4 +1,3 @@
-from pyspark.shell import spark
 from pyspark.sql import SparkSession
 
 from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
@@ -36,11 +35,11 @@ class Repository:
 
     def read_time_series_points(self) -> TimeSeriesPoints:
         # TODO: the table does not yet exist in the database
-        # df = self._read_view_or_table(
-        #    MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
-        # )
+        df = self._read_view_or_table(
+            MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
+        )
 
-        df = spark.createDataFrame([], MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME)
+        # df = spark.createDataFrame([], MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME)
         return TimeSeriesPoints(df)
 
     def _read_view_or_table(
