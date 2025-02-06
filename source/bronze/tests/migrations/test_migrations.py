@@ -10,16 +10,20 @@ from opengeh_bronze.domain.schemas.submitted_transactions import (
 )
 from opengeh_bronze.infrastructure.settings import CatalogSettings
 
-bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
-
 
 def test__migrations__should_create_bronze_measurements_table(spark: SparkSession, migrate):
+    # Arrange
+    bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+
     # Assert
     bronze_measurements = spark.table(f"{bronze_database_name}.{TableNames.bronze_measurements_table}")
     assert_schemas.assert_schema(actual=bronze_measurements.schema, expected=bronze_measurements_schema)
 
 
 def test__ingest_submitted_transactions__should_create_submitted_transactions_table(spark: SparkSession, migrate: None):
+    # Arrange
+    bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+
     # Assert
     submitted_transactions = spark.table(f"{bronze_database_name}.{TableNames.bronze_submitted_transactions_table}")
     assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=submitted_transactions_schema)
