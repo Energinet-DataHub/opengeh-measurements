@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from core.bronze.domain.constants import BronzeTableNames
+from core.bronze.infrastructure.config import BronzeTableNames
 from core.bronze.infrastructure.config.storage_container_names import StorageContainerNames
 from core.bronze.infrastructure.settings import (
     KafkaAuthenticationSettings,
