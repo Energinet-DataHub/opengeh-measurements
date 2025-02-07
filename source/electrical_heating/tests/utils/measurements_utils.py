@@ -5,8 +5,10 @@ from testcommon.dataframes import assert_schema
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
-    calculated_measurements_v1,
     point,
+)
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
+    calculated_measurements,
 )
 
 
@@ -28,8 +30,8 @@ def create_calculated_measurements_dataframe(spark: SparkSession, measurements: 
         )
     )
 
-    measurements = spark.createDataFrame(measurements.rdd, schema=calculated_measurements_v1, verifySchema=True)
+    measurements = spark.createDataFrame(measurements.rdd, schema=calculated_measurements, verifySchema=True)
 
-    assert_schema(measurements.schema, calculated_measurements_v1)
+    assert_schema(measurements.schema, calculated_measurements)
 
     return CalculatedMeasurements(measurements)
