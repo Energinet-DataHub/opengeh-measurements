@@ -28,8 +28,6 @@ runs:
         packages = Path("${{ inputs.path }}").rglob("pyproject.toml")
         matrix = []
         for toml in packages:
-            if str(toml.parent) == ".":
-                continue
             with open(toml, "rb") as fh:
                 data = tomllib.load(fh)
             name = data.get("project", {}).get("name")
@@ -40,5 +38,6 @@ runs:
               "path": str(toml.parent)
             }
             matrix.append(project_data)
+        print(json.dumps(matrix))
         with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
             print(f"matrix={json.dumps(matrix)}", file=fh)

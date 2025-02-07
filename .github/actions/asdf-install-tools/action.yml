@@ -1,0 +1,32 @@
+name: Install tools
+description: Use asdf to install tools specified in .tool-versions
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Check for existence of .tool-versions file
+      id: check_tool_versions
+      shell: bash
+      run: |
+        if [ ! -f .tool-versions ]; then
+          echo "exists=false" >>$GITHUB_OUTPUT
+        else
+          echo "exists=true" >>$GITHUB_OUTPUT
+        fi
+
+    - name: Setup asdf
+      uses: asdf-vm/actions/setup@v3
+      if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}
+
+    - name: Cache asdf
+      uses: actions/cache@v4
+      if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}
+      with:
+        path: /home/runner/.asdf
+        key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+
+    - name: Install dependencies in .tool-versions
+      uses: asdf-vm/actions/install@v3
+      if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}

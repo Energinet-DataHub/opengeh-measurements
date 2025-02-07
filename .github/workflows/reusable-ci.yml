@@ -16,41 +16,68 @@ on:
           be tested, and given successful tests, a prerelease will be created
           with under the tag "<package_name>_<pull_request_number>".
           Defaults to workspace root.
-        required: true
+        required: false
         default: ${{ github.workspace }}
-      core_regex:
+      tests_directory:
         type: string
         description: |
-          List of package names, separated by '|', that should be released
-          together as `core_<PR/latest>`.
-          Non-core packages are released as `<package_name>_<PR/latest>`.
+          Directory to search for tests in. This recursively searches for
+          directories containing a test directory. All directories discovered
+          are considered test directories. Defaults to "tests".
+        required: false
+        default: tests
+      create_prerelease:
+        type: boolean
+        description: |
+          Create a prerelease for each package with changes. Default is false.
+          This will create a prerelease for each package with changes under the tag "{package_name}_{issue_number}"
+          or "{package_name}_{version}_{issue_number}" depending on the value of create_versioned_release.
+        required: false
+        default: true
+      create_versioned_release:
+        type: boolean
+        description: |
+          If true, the release name will be "{package_name}_{version}_{issue_number}".
+          Otherwise, the release name will be "{package_name}_{issue_number}".
+        required: false
+        default: false
+      environment:
+        type: string
+        description: |
+          The name of the environment to use for OIDC authentication. This
+          environment must be defined in the repository's environment secrets.
+          Use "AzureAuth" for Azure authentication.
         required: false
         default: ""
-    secrets:
-      dh3serviceaccount_privatekey:
-        required: true
-        description: Used in ci_base job to authenticate with the DataHub3 service account
-
-env:
-  CORE_PREFIX: core
-  NONCORE_PREFIX: bundle
+      azure_spn_id:
+        type: string
+        description: The Azure SPN ID for the integration test environment. Requires environment to be "AzureAuth".
+        required: false
+        default: ""
+      azure_tenant_id:
+        type: string
+        description: The Azure tenant ID for the integration test environment. Requires environment to be "AzureAuth".
+        required: false
+        default: ""
+      azure_subscription_id:
+        type: string
+        description: The Azure subscription ID for the integration test environment. Requires environment to be "AzureAuth".
+        required: false
+        default: ""
+      azure_keyvault_url:
+        type: string
+        description: The Azure KeyVault URL for the integration test environment. Requires environment to be "AzureAuth".
+        required: false
+        default: ""
 
 permissions:
+  id-token: write
   contents: write
+  issues: read
   checks: write
   pull-requests: write
 
 jobs:
-  #
-  # License and Markdown Check
-  #
-  ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
-    with:
-      skip_license_check: true
-    secrets:
-      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
-
   #
   # Build Package Matrix
   #
@@ -62,7 +89,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Discover Pyproject
-        uses: ./.github/actions/discover-pyproject
+        uses: ./.github/actions/python-discover-pyproject
         id: package_matrix
         with:
           path: ${{ inputs.packages_directory }}
@@ -73,13 +100,21 @@ jobs:
   ci_test:
     name: Test Packages
     runs-on: ubuntu-24.04
-    needs: ci_matrix
+    needs: [ci_matrix]
+    # Environment is used when using OIDC to login and access the integration test environment
+    environment: ${{ inputs.environment }}
+    env:
+      # Necessary to manage Azure resources from automated tests
+      AZURE_KEYVAULT_URL: ${{ inputs.azure_keyvault_url }}
     strategy:
       matrix:
         inputs: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install tools
+        uses: ./.github/actions/asdf-install-tools
 
       - name: Check if ${{ matrix.inputs.name }} has changed
         uses: dorny/paths-filter@v3
@@ -88,38 +123,48 @@ jobs:
           filters: |
             is_changed:
               - ${{ matrix.inputs.path }}/**
+            is_src_changed:
+              - ${{ matrix.inputs.path }}/src/**
 
-      - name: Setup asdf
-        uses: asdf-vm/actions/setup@v3
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+      - name: Check Version
+        if: ${{ steps.changes.outputs.is_src_changed == 'true' && inputs.create_versioned_release }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_RELEASE=$(gh release list --json isLatest,name -q '.[] | select(.isLatest) | .name' -L 1000)
+          NEW_VERSION=$(cat ${{ matrix.inputs.path }}/pyproject.toml| grep -o "version.*" | cut -d'=' -f2 | tr -d '"' | tr -d ' ')
+          OLD_VERSION=$(echo $LATEST_RELEASE | grep -o "[0-9]*\.[0-9]*\.[0-9]*" | cut -d'_' -f2)
+          if [ "$OLD_VERSION" == "$NEW_VERSION" ]; then
+            echo "Version $NEW_VERSION is the same as $OLD_VERSION. Please update the version in pyproject.toml."
+            exit 1
+          elif [ "$(printf '%s\n' "$OLD_VERSION" "$NEW_VERSION" | sort -V | head -n1)" != "$OLD_VERSION" ]; then
+            echo "Version $NEW_VERSION is older than $OLD_VERSION. Please update the version in pyproject.toml."
+            exit 1
+          else
+              echo "Version $NEW_VERSION is newer than $OLD_VERSION. Proceeding with the release..."
+          fi
 
-      - name: Cache asdf
-        uses: actions/cache@v4
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+      - name: Login to access Azure resources
+        uses: azure/login@v2
+        if: ${{ steps.changes.outputs.is_changed == 'true' && inputs.azure_spn_id != '' && inputs.azure_tenant_id != '' && inputs.azure_subscription_id != '' }}
         with:
-          path: /home/runner/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-
-      - name: Install dependencies in .tool-versions
-        uses: asdf-vm/actions/install@v3
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+          client-id: ${{ inputs.azure_spn_id }}
+          tenant-id: ${{ inputs.azure_tenant_id }}
+          subscription-id: ${{ inputs.azure_subscription_id }}
 
       - name: Test ${{ matrix.inputs.name }}
-        uses: ./.github/actions/uvtest
+        uses: ./.github/actions/python-test
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          pytest_addopts: --ignore=tests/container_tests
-
-      - name: Build ${{ matrix.inputs.name }}
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        run: uv build --wheel --directory ${{ matrix.inputs.path }}
+          tests_path: ${{ inputs.tests_directory }}
 
       - name: Create prerelease for ${{ matrix.inputs.name }}
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        uses: ./.github/actions/create-prerelease
+        uses: ./.github/actions/python-create-prerelease
+        if: ${{ inputs.create_prerelease && steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
           issue-number: ${{ github.event.number }}
+          create_versioned_release: ${{ inputs.create_versioned_release }}

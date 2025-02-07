@@ -11,29 +11,29 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  checks: write
-  pull-requests: write
-
 jobs:
   #
-  # Reusable CI
+  # License and Markdown Check
   #
-  ci_reusable:
-    name: Continuous Integration
-    uses: ./.github/workflows/reusable-ci.yml
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
     with:
-      packages_directory: source
+      skip_license_check: true
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
-  # Branch policy status check
+  # Reusable CI
   #
+  ci_reusable:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      packages_directory: source
+
+  # Branch policy status check
   allow_merge_ci_orchestrator:
-    runs-on: ubuntu-24.04
-    needs: [ci_reusable]
+    runs-on: ubuntu-latest
+    needs: [ci_base, ci_reusable]
     if: |
       always()
     steps:

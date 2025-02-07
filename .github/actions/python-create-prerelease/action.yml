@@ -1,5 +1,5 @@
 name: Create Prerelease
-description: Test a package with UV
+description: Create a prerelease for a package
 inputs:
   name:
     description: The name of the package
@@ -10,6 +10,12 @@ inputs:
   issue-number:
     description: The issue or PR number
     required: true
+  create_versioned_release:
+    description: |
+      If true, the release name will be "{package_name}_{version}_{issue_number}".
+      Otherwise, the release name will be "{package_name}_{issue_number}".
+    required: false
+    default: "true"
   github_token:
     description: The GitHub token
     required: false
@@ -24,9 +30,19 @@ runs:
     - name: Setup Environment
       shell: bash
       run: |
-        echo "RELEASE_VERSION=${{ inputs.name }}_${{ inputs.issue-number }}" >> $GITHUB_ENV
+        VERSION=$(cat ${{ matrix.inputs.path }}/pyproject.toml| grep -o "version.*" | cut -d'=' -f2 | tr -d '"' | tr -d ' ')
+        if [[ "${{ inputs.create_versioned_release }}" == "true" ]]; then
+          echo "RELEASE_VERSION=${{ inputs.name }}_${VERSION}_${{ inputs.issue-number }}" >> $GITHUB_ENV
+        else
+          echo "RELEASE_VERSION=${{ inputs.name }}_${{ inputs.issue-number }}" >> $GITHUB_ENV
+        fi
         echo "RELEASE_ZIP_FILENAME=${{ inputs.name }}_${{ inputs.issue-number }}.zip" >> $GITHUB_ENV
         echo "RELEASE_FOLDER_PATH=${{ inputs.github_workspace }}/${{ inputs.name }}-release/artifacts" >> $GITHUB_ENV
+
+    - name: Build ${{ inputs.name }}
+      shell: bash
+      run: uv build --wheel --directory ${{ inputs.path }}
+
     - name: Copy files for ${{ inputs.name }} prerelease
       shell: bash
       run: |
@@ -37,12 +53,14 @@ runs:
         if [ -d ${{ inputs.path }}/tests/container_tests ]; then
           cp -r ${{ inputs.path }}/tests/container_tests ${{ env.RELEASE_FOLDER_PATH}}/container_tests
         fi
+
     - name: Zip files for ${{ inputs.name }} prerelease
       uses: thedoctor0/zip-release@0.7.6
       with:
         type: zip
         filename: ${{ env.RELEASE_ZIP_FILENAME }}
         directory: ${{ env.RELEASE_FOLDER_PATH }}
+
     - name: Create prerelease for ${{ inputs.name }}
       uses: Energinet-Datahub/.github/.github/actions/github-create-release@v14
       with:

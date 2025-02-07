@@ -11,10 +11,10 @@ inputs:
     description: The path to the tests
     required: false
     default: tests
-  pytest_addopts:
-    description: Additional arguments to pass to pytest
+  github_token:
+    description: The GitHub token
     required: false
-    default: ""
+    default: ${{ github.token }}
 runs:
   using: composite
   steps:
@@ -27,12 +27,23 @@ runs:
         cache-dependency-glob: |
           ${{ inputs.path }}/pyproject.toml
           ${{ inputs.path }}/uv.lock
+
     - name: Lint
       shell: bash
       run: uv run --directory ${{ inputs.path }} ruff check
+
     - name: Format
       shell: bash
       run: uv run --directory ${{ inputs.path }} ruff format --check
+
     - name: Test
       shell: bash
-      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
+      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }}
+
+    - name: Coverage comment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        github-token: ${{ inputs.github_token }}
+        unique-id-for-comment: ${{ inputs.name }}-${{ inputs.path }}
+        title: Coverage report for '${{ inputs.name }}'
+        pytest-xml-coverage-path: ${{ inputs.path }}/coverage.xml
