@@ -1,4 +1,4 @@
-﻿import os
+import os
 import time
 
 from databricks.sdk.service.catalog import TableType
