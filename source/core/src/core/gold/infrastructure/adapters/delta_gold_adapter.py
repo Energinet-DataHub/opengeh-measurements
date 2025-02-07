@@ -5,12 +5,8 @@ from pyspark.sql import DataFrame
 from core.gold.application.ports.gold_port import GoldPort
 from core.gold.infrastructure.config.storage_container_names import StorageContainerNames
 from core.settings.catalog_settings import CatalogSettings
-from core.utility.shared_helpers import (
-    EnvironmentVariable,
-    get_checkpoint_path,
-    get_env_variable_or_throw,
-    get_full_table_name,
-)
+from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
+from core.utility.shared_helpers import get_checkpoint_path, get_full_table_name
 
 
 class DeltaGoldAdapter(GoldPort):

@@ -12,9 +12,9 @@ from core.silver.application.config.spark import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.config.storage_container_names import StorageContainerNames
-from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
 from core.silver.infrastructure.streams import writer
 from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
+from core.utility.environment_variable_helper import get_datalake_storage_account
 from core.utility.shared_helpers import get_checkpoint_path
 
 
