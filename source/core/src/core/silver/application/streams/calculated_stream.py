@@ -7,9 +7,10 @@ from pyspark.sql import DataFrame, SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
+from core.settings.catalog_settings import CatalogSettings
 from core.silver.application.config.spark import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
-from core.silver.infrastructure.config import SilverDatabaseNames, SilverTableNames
+from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.config.container_names import ContainerNames
 from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
 from core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
@@ -48,6 +49,7 @@ def _execute(spark: SparkSession) -> None:
 
 
 def _batch_operations(df: DataFrame, batchId: int) -> None:
+    catalog_settings = CatalogSettings()  # type: ignore
     df = transform_calculated_measurements(df)
-    target_table_name = f"{SilverDatabaseNames.silver}.{SilverTableNames.silver_measurements}"
+    target_table_name = f"{catalog_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
     df.write.format("delta").mode("append").saveAsTable(target_table_name)
