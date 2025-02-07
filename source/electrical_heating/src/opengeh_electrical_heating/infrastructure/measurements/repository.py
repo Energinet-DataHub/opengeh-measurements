@@ -1,9 +1,11 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.database_definitions import (
-    MeasurementsBronzeDatabase,
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+    CalculatedMeasurementsDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
+    CalculatedMeasurements,
+)
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
@@ -20,21 +22,25 @@ class Repository:
         catalog_name: str | None = None,
     ) -> None:
         self._spark = spark
-        self._bronze_database_name = MeasurementsBronzeDatabase.DATABASE_NAME
-        self._bronze_measurements_table_name = MeasurementsBronzeDatabase.MEASUREMENTS_NAME
+        self._calculated_measurements_database_name = CalculatedMeasurementsDatabase.DATABASE_NAME
+        self._calculated_measurements_table_name = CalculatedMeasurementsDatabase.MEASUREMENTS_NAME
         self._catalog_name = catalog_name
         if self._catalog_name:
-            self._bronze_full_table_path = (
-                f"{self._catalog_name}.{self._bronze_database_name}.{self._bronze_measurements_table_name}"
-            )
+            self._calculated_measurements_full_table_path = f"{self._catalog_name}.{self._calculated_measurements_database_name}.{self._calculated_measurements_table_name}"
         else:
-            self._bronze_full_table_path = f"{self._bronze_database_name}.{self._bronze_measurements_table_name}"
+            self._calculated_measurements_full_table_path = (
+                f"{self._calculated_measurements_database_name}.{self._calculated_measurements_table_name}"
+            )
 
-    def write_measurements_bronze(self, measurements_bronze: MeasurementsBronze, write_mode: str = "append") -> None:
-        measurements_bronze.df.write.format("delta").mode(write_mode).saveAsTable(self._bronze_full_table_path)
+    def write_calculated_measurements(
+        self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
+    ) -> None:
+        calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
+            self._calculated_measurements_full_table_path
+        )
 
-    def read_measurements_bronze(self) -> MeasurementsBronze:
-        return MeasurementsBronze(self._spark.read.table(self._bronze_full_table_path))
+    def read_calculated_measurements(self) -> CalculatedMeasurements:
+        return CalculatedMeasurements(self._spark.read.table(self._calculated_measurements_full_table_path))
 
     def read_time_series_points(self) -> TimeSeriesPoints:
         # TODO: the table does not yet exist in the database
