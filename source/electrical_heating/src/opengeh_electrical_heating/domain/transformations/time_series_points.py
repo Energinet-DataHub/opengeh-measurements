@@ -17,3 +17,12 @@ def get_daily_consumption_energy_in_local_time(time_series_points: DataFrame, ti
 
     consumption_energy.printSchema()
     return consumption_energy
+
+
+def get_electrical_heating_in_local_time(time_series_points, time_zone):
+    old_electrical_heating = time_series_points.where(
+        F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
+    )
+    old_electrical_heating = convert_from_utc(old_electrical_heating, time_zone)
+    old_electrical_heating = calculate_daily_quantity(old_electrical_heating)
+    return old_electrical_heating
