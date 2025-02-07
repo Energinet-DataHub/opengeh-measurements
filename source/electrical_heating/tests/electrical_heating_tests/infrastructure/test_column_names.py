@@ -1,4 +1,4 @@
-from opengeh_electrical_heating.domain.calculation import CalculatedNames
+from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
