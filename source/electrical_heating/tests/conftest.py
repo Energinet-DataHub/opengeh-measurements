@@ -7,6 +7,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
+from testcommon.dataframes import read_csv
 from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
@@ -27,7 +28,6 @@ from tests.testsession_configuration import TestSessionConfiguration
 from tests.utils.delta_table_utils import (
     read_from_csv,
 )
-from tests.utils.measurements_utils import create_calculated_measurements_dataframe
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -103,9 +103,10 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
     )
 
     file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
-    measurements = read_from_csv(spark, file_name)
 
-    return create_calculated_measurements_dataframe(spark, measurements)
+    df = read_csv(spark, file_name, calculated_measurements_schema)
+
+    return CalculatedMeasurements(df)
 
 
 @pytest.fixture(scope="session")
