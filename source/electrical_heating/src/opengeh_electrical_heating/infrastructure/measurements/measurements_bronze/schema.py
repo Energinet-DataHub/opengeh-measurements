@@ -2,7 +2,7 @@ import pyspark.sql.types as t
 
 nullable = True
 
-# Calculated measurements from electrical heating or capacity settlement calculations.
+# Calculated measurements from electrical heating or capacity settlement calculations
 calculated_measurements = t.StructType(
     [
         #
