@@ -1,4 +1,4 @@
-import os
+﻿import os
 import time
 
 from databricks.sdk.service.catalog import TableType
@@ -79,7 +79,7 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
         ('MP_003', 9.453,  '2025-02-07T08:30:00Z', 'INDUSTRIAL')
         """
 
-        execution = w.statement_execution.execute(
+        execution = w.statement_execution.execute_statement(
             warehouse_id=os.environ["DATABRICKS_WAREHOUSE_ID"],
             catalog=catalog_name,
             schema=data_base_name,
