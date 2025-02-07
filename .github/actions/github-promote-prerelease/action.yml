@@ -4,6 +4,10 @@ inputs:
   release_name:
     description: The name of the prerelease to promote
     required: true
+  postfix_latest:
+    description: Add _latest to the release name
+    required: false
+    default: "true"
 runs:
   using: composite
   steps:
@@ -11,7 +15,11 @@ runs:
       shell: bash
       run: |
         PREFIX=$(echo "${{ inputs.release_name }}" | grep -o '^.*_' | sed 's/_$//')
-        LATEST_RELEASE="${PREFIX}_latest"
+        if [ "${{ inputs.postfix_latest }}" == "true" ]; then
+          LATEST_RELEASE="${PREFIX}_latest"
+        else
+          LATEST_RELEASE="${PREFIX}"
+        fi
         echo "LATEST_RELEASE=$LATEST_RELEASE" >>$GITHUB_ENV
     - name: Promote ${{ inputs.release_name }} and update ${{ env.LATEST_RELEASE }}
       shell: bash

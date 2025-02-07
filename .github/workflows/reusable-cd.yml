@@ -32,12 +32,12 @@ on:
         description: |
           The email of the sender of the email notification.
         required: true
-      environment_repository_path:
-        type: string
-        required: true
-      dh3serviceaccount_appid:
-        type: string
-        required: true
+      postfix_latest:
+        type: boolean
+        description: |
+          Whether to postfix the release name with "_latest".
+        required: false
+        default: false
       max_release_search_depth:
         type: number
         description: |
@@ -45,13 +45,44 @@ on:
           Defaults to 1000.
         required: false
         default: 1000
+      dispatch_deployment_event:
+        type: boolean
+        description: |
+          Whether to dispatch a deployment event. If true, the following inputs are required:
+          - environment_repository_path
+          - dh3serviceaccount_appid
+          - dh3serviceaccount_privatekey (secret)
+          This creates an event with the name "<subsystem_name>-<package_name>-deployment-request-domain".
+        required: false
+        default: false
+      environment_repository_path:
+        type: string
+        description: |
+          The path to the repository where the deployment event is dispatched.
+          Must be set if dispatch_deployment_event is true.
+        required: false
+        default: ""
+      dh3serviceaccount_appid:
+        type: string
+        description: |
+          The app id of the service account used to dispatch the deployment event.
+          Must be set if dispatch_deployment_event is true.
+        required: false
+        default: ""
     secrets:
       gh_token:
         required: true
-      dh3serviceaccount_privatekey:
-        required: true
+        description: |
+          The GitHub token used to access the GitHub API.
       send_grid_api_key:
         required: true
+        description: |
+          This is used to send an email notification in case of a failed deployment.
+      dh3serviceaccount_privatekey:
+        required: false
+        description: |
+          The private key of the service account used to dispatch the deployment event.
+          Must be set if dispatch_deployment_event is true.
 
 jobs:
   #
@@ -96,12 +127,23 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Promote prerelease
-        uses: ./.github/actions/promote-prerelease
+        uses: ./.github/actions/github-promote-prerelease
         with:
           release_name: ${{ matrix.inputs.name }}
+          postfix_latest: ${{ inputs.postfix_latest }}
+
+      - name: Check Dispatch Variables
+        id: check_dispatch_variables
+        run: |
+          SHOULD_DISPATCH=false
+          if [[ "${{ inputs.environment_repository_path }}" && "${{ inputs.dh3serviceaccount_appid }}" && "${{ secrets.dh3serviceaccount_privatekey }}" ]]; then
+            SHOULD_DISPATCH=true
+          fi
+          echo "SHOULD_DISPATCH=$SHOULD_DISPATCH" >>$GITHUB_OUTPUT
 
       - name: Create Dispatch Event name
         id: create_dispatch_event_name
+        if: ${{ inputs.dispatch_deployment_event && steps.check_dispatch_variables.outputs.SHOULD_DISPATCH == 'true' }}
         run: |
           package_name=$(echo "${{ matrix.inputs.name }}" | grep -o '^.*_' | sed 's/_$//')
           event_name="${{ inputs.subsystem_name }}-${package_name}-deployment-request-domain"
@@ -111,6 +153,7 @@ jobs:
 
       - name: Dispatch Release
         uses: ./.github/actions/dispatch-deployment-event
+        if: ${{ inputs.dispatch_deployment_event && steps.check_dispatch_variables.outputs.SHOULD_DISPATCH == 'true' }}
         with:
           event_name: ${{ steps.create_dispatch_event_name.outputs.event_name }}
           repository: ${{ inputs.environment_repository_path }}
