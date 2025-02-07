@@ -1,6 +1,5 @@
 class ColumnNames:
     coupled_date = "coupled_date"
-    end_datetime = "end_datetime"
     has_electrical_heating = "has_electrical_heating"
     metering_point_id = "metering_point_id"
     metering_point_sub_type = "metering_point_sub_type"
@@ -17,7 +16,6 @@ class ColumnNames:
     quantity = "quantity"
     resolution = "resolution"
     settlement_month = "settlement_month"
-    start_datetime = "start_datetime"
     transaction_creation_datetime = "transaction_creation_datetime"
     transaction_id = "transaction_id"
     uncoupled_date = "uncoupled_date"
