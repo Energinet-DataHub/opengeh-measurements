@@ -9,15 +9,13 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-from opengeh_calculated_measurements.opengeh_electrical_heating.domain.calculated_measurements_daily import (
-    CalculatedMeasurementsDaily,
-)
+from opengeh_calculated_measurements.opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
 from opengeh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_calculated_measurements.opengeh_electrical_heating.domain.constants import ELECTRICAL_HEATING_LIMIT_YEARLY
 from opengeh_calculated_measurements.opengeh_electrical_heating.domain.types import NetSettlementGroup
-from opengeh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import (
-    MeteringPointType,
-)
+from opengeh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+
+_ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
+"""Limit in kWh."""
 
 
 class _CalculatedNames:
@@ -256,7 +254,7 @@ def _calculate_period_limit(
         "*",
         (
             F.datediff(F.col(_CalculatedNames.parent_period_end), F.col(_CalculatedNames.parent_period_start))
-            * ELECTRICAL_HEATING_LIMIT_YEARLY
+            * _ELECTRICAL_HEATING_LIMIT_YEARLY
             / days_in_year(F.col(_CalculatedNames.parent_period_start))
         ).alias(_CalculatedNames.period_energy_limit),
     )
