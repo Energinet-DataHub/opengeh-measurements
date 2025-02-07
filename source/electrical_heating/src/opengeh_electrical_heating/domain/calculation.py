@@ -86,13 +86,13 @@ def execute(
     old_consumption_energy = _filter_parent_child_overlap_period_and_year(metering_point_periods_with_energy)
     old_consumption_energy = _aggregate_quantity_over_period(old_consumption_energy)
     old_electrical_heating = _impose_period_quantity_limit(old_consumption_energy)
-    old_electrical_heating = _filter_unchanged_electrical_heating(old_electrical_heating, previous_electrical_heating)
-    old_electrical_heating = convert_to_utc(old_electrical_heating, time_zone)
-    old_electrical_heating = old_electrical_heating.orderBy(
+    new_electrical_heating = _filter_unchanged_electrical_heating(old_electrical_heating, previous_electrical_heating)
+    new_electrical_heating = convert_to_utc(new_electrical_heating, time_zone)
+    new_electrical_heating = new_electrical_heating.orderBy(
         F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date)
     )
 
-    return CalculatedMeasurementsDaily(old_electrical_heating)
+    return CalculatedMeasurementsDaily(new_electrical_heating)
 
 
 def _filter_unchanged_electrical_heating(
