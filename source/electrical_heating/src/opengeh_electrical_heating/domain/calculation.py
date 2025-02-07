@@ -52,29 +52,28 @@ def execute(
     child_metering_points: DataFrame,
     time_zone: str,
 ) -> CalculatedMeasurementsDaily:
-    energy = time_series_points.where(
+    old_consumption_energy = time_series_points.where(
         (F.col(ColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_METERING_POINT_TYPE.value)
         | (F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value)
     )
-    electrical_heating = time_series_points.where(
+    old_consumption_energy = convert_from_utc(old_consumption_energy, time_zone)
+
+    old_electrical_heating = time_series_points.where(
         F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
     )
+    old_electrical_heating = convert_from_utc(old_electrical_heating, time_zone)
 
-    parent_metering_points = convert_from_utc(consumption_metering_point_periods, time_zone)
-    child_metering_points = convert_from_utc(child_metering_points, time_zone)
-    energy = convert_from_utc(energy, time_zone)
-    electrical_heating = convert_from_utc(electrical_heating, time_zone)
-
-    # prepare child metering points and parent metering points
-    metering_point_periods = _join_children_to_parent_metering_point(child_metering_points, parent_metering_points)
+    metering_point_periods = _join_children_to_parent_metering_point(
+        child_metering_points, consumption_metering_point_periods
+    )
+    metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_year(metering_point_periods)
     metering_point_periods = _calculate_period_limit(metering_point_periods)
 
-    # prepare consumption and electrical heating time series data
-    energy_daily = _calculate_daily_quantity(energy)
-    previous_electrical_heating = _calculate_daily_quantity(electrical_heating)
+    energy_daily = _calculate_daily_quantity(old_consumption_energy)
+    previous_electrical_heating = _calculate_daily_quantity(old_electrical_heating)
 
     # determine from which metering point to get the consumption data (consumption or net consumption)
     metering_point_periods = _find_source_metering_point_for_energy(metering_point_periods)
@@ -84,15 +83,15 @@ def execute(
         energy_daily,
         metering_point_periods,
     )
-    energy = _filter_parent_child_overlap_period_and_year(metering_point_periods_with_energy)
-    energy = _aggregate_quantity_over_period(energy)
-    electrical_heating = _impose_period_quantity_limit(energy)
-    electrical_heating = _filter_unchanged_electrical_heating(electrical_heating, previous_electrical_heating)
+    old_consumption_energy = _filter_parent_child_overlap_period_and_year(metering_point_periods_with_energy)
+    old_consumption_energy = _aggregate_quantity_over_period(old_consumption_energy)
+    old_electrical_heating = _impose_period_quantity_limit(old_consumption_energy)
+    old_electrical_heating = _filter_unchanged_electrical_heating(old_electrical_heating, previous_electrical_heating)
 
-    electrical_heating = convert_to_utc(electrical_heating, time_zone)
+    old_electrical_heating = convert_to_utc(old_electrical_heating, time_zone)
 
     return CalculatedMeasurementsDaily(
-        electrical_heating.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
+        old_electrical_heating.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
     )
 
 
