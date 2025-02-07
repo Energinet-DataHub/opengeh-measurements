@@ -13,9 +13,9 @@ from core.silver.domain.transformations.transform_calculated_measurements import
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.config.container_names import ContainerNames
 from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
-from core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
 from core.silver.infrastructure.streams import writer
 from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
+from core.utility.path_helper import get_checkpoint_path
 
 
 def execute(applicationinsights_connection_string: Optional[str] = None) -> None:

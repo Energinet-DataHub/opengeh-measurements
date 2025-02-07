@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-import core.bronze.infrastructure.helpers.path_helper as path_helper
+import core.utility.path_helper as path_helper
 from core.bronze.domain.constants import BronzeTableNames
 from core.bronze.infrastructure.config.storage_container_names import StorageContainerNames
 from core.bronze.infrastructure.settings import (

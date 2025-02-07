@@ -2,7 +2,7 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf, to_protobuf
 
-import core.bronze.infrastructure.helpers.path_helper as path_helper
+import core.utility.path_helper as path_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
