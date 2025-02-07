@@ -5,7 +5,7 @@ import bronze.helpers.environment_variables_helpers as environment_variables_hel
 from core.bronze.infrastructure.streams.kafka_stream import KafkaStream
 
 
-@mock.patch("core.bronze.infrastructure.streams.kafka_stream.path_helper.get_checkpoint_path")
+@mock.patch("core.bronze.infrastructure.streams.kafka_stream.get_checkpoint_path")
 def test__submit_transactions__should_set_environment_variables(mock_get_checkpoint_path):
     # Arrange
     mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
@@ -19,7 +19,7 @@ def test__submit_transactions__should_set_environment_variables(mock_get_checkpo
     kafka_stream.submit_transactions(spark_mock)
 
 
-@mock.patch("core.bronze.infrastructure.streams.kafka_stream.path_helper.get_checkpoint_path")
+@mock.patch("core.bronze.infrastructure.streams.kafka_stream.get_checkpoint_path")
 def test__write_stream__should_set_environment_variables(mock_get_checkpoint_path):
     # Arrange
     mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
