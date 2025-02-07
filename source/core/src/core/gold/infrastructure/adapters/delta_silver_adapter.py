@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.application.ports.silver_port import SilverPort
 from core.gold.infrastructure.shared_helpers import get_full_table_name
-from core.silver.infrastructure.config import SilverDatabaseNames
+from core.settings.catalog_settings import CatalogSettings
 
 
 class DeltaSilverAdapter(SilverPort):
@@ -12,8 +12,10 @@ class DeltaSilverAdapter(SilverPort):
         self.spark = spark
 
     def read_stream(self, table_name: str, read_options: Optional[dict] = None) -> DataFrame:
+        catalog_settings = CatalogSettings()  # type: ignore
+
         return (
             self.spark.readStream.format("delta")
             .options(**read_options or {})
-            .table(get_full_table_name(SilverDatabaseNames.silver, table_name))
+            .table(get_full_table_name(catalog_settings.silver_database_name, table_name))
         )
