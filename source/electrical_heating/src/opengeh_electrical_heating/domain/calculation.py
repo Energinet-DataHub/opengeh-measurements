@@ -9,38 +9,15 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
+import opengeh_electrical_heating.domain.transformations as t
 from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
+from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
-
-
-class _CalculatedNames:
-    """Names of calculated columns."""
-
-    cumulative_quantity = "cumulative_quantity"
-    date = "date"
-    electrical_heating_metering_point_id = "electrical_heating_metering_point_id"
-    electrical_heating_period_end = "electrical_heating_period_end"
-    electrical_heating_period_start = "electrical_heating_period_start"
-    energy_source_metering_point_id = "energy_source_metering_point_id"
-    """
-    The metering point id from which to get the energy data.
-    This is the net consumption metering point id if it exists, otherwise it's the consumption metering point id.
-    """
-    net_consumption_metering_point_id = "net_consumption_metering_point_id"
-    net_consumption_period_end = "net_consumption_period_end"
-    net_consumption_period_start = "net_consumption_period_start"
-    overlap_period_end = "overlap_period_end"
-    overlap_period_start = "overlap_period_start"
-    parent_net_settlement_group = "parent_net_settlement_group"
-    parent_period_end = "parent_period_end"
-    parent_period_start = "parent_period_start"
-    period_energy_limit = "period_energy_limit"
-    period_year = "period_year"
 
 
 # This is a temporary implementation. The final implementation will be provided in later PRs.
@@ -52,18 +29,13 @@ def execute(
     child_metering_points: DataFrame,
     time_zone: str,
 ) -> CalculatedMeasurementsDaily:
-    old_consumption_energy = time_series_points.where(
-        (F.col(ColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_METERING_POINT_TYPE.value)
-        | (F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value)
-    )
-    old_consumption_energy = convert_from_utc(old_consumption_energy, time_zone)
-    old_consumption_energy = _calculate_daily_quantity(old_consumption_energy)
+    old_consumption_energy = t.get_daily_consumption_energy_in_local_time(time_series_points, time_zone)
 
     old_electrical_heating = time_series_points.where(
         F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
     )
     old_electrical_heating = convert_from_utc(old_electrical_heating, time_zone)
-    old_electrical_heating = _calculate_daily_quantity(old_electrical_heating)
+    old_electrical_heating = t.calculate_daily_quantity(old_electrical_heating)
 
     metering_point_periods = _join_children_to_parent_metering_point(
         child_metering_points, consumption_metering_point_periods
@@ -104,14 +76,14 @@ def _filter_unchanged_electrical_heating(
                     F.col(f"current.{ColumnNames.metering_point_id}")
                     == F.col(f"previous.{ColumnNames.metering_point_id}")
                 )
-                & (F.col(f"current.{_CalculatedNames.date}") == F.col(f"previous.{_CalculatedNames.date}"))
+                & (F.col(f"current.{CalculatedNames.date}") == F.col(f"previous.{CalculatedNames.date}"))
                 & (F.col(f"current.{ColumnNames.quantity}") == F.col(f"previous.{ColumnNames.quantity}"))
             ),
             "left_anti",
         )
         .select(
             F.col(f"current.{ColumnNames.metering_point_id}"),
-            F.col(f"current.{_CalculatedNames.date}"),
+            F.col(f"current.{CalculatedNames.date}"),
             F.col(f"current.{ColumnNames.quantity}"),
         )
     )
@@ -120,17 +92,17 @@ def _filter_unchanged_electrical_heating(
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.when(
-            (F.col(_CalculatedNames.cumulative_quantity) >= F.col(_CalculatedNames.period_energy_limit))
+            (F.col(CalculatedNames.cumulative_quantity) >= F.col(CalculatedNames.period_energy_limit))
             & (
-                F.col(_CalculatedNames.cumulative_quantity) - F.col(ColumnNames.quantity)
-                < F.col(_CalculatedNames.period_energy_limit)
+                F.col(CalculatedNames.cumulative_quantity) - F.col(ColumnNames.quantity)
+                < F.col(CalculatedNames.period_energy_limit)
             ),
-            F.col(_CalculatedNames.period_energy_limit)
+            F.col(CalculatedNames.period_energy_limit)
             + F.col(ColumnNames.quantity)
-            - F.col(_CalculatedNames.cumulative_quantity),
+            - F.col(CalculatedNames.cumulative_quantity),
         )
         .when(
-            F.col(_CalculatedNames.cumulative_quantity) > F.col(_CalculatedNames.period_energy_limit),
+            F.col(CalculatedNames.cumulative_quantity) > F.col(CalculatedNames.period_energy_limit),
             0,
         )
         .otherwise(
@@ -138,10 +110,10 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         )
         .cast(T.DecimalType(18, 3))
         .alias(ColumnNames.quantity),
-        F.col(_CalculatedNames.cumulative_quantity),
+        F.col(CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),
-        F.col(_CalculatedNames.date),
-        F.col(_CalculatedNames.period_energy_limit),
+        F.col(CalculatedNames.date),
+        F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
 
 
@@ -149,18 +121,18 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
             F.col(ColumnNames.metering_point_id),
-            F.col(_CalculatedNames.parent_period_start),
-            F.col(_CalculatedNames.parent_period_end),
+            F.col(CalculatedNames.parent_period_start),
+            F.col(CalculatedNames.parent_period_end),
         )
-        .orderBy(F.col(_CalculatedNames.date))
+        .orderBy(F.col(CalculatedNames.date))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
     return time_series_points.select(
-        F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(_CalculatedNames.cumulative_quantity),
+        F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),
-        F.col(_CalculatedNames.date),
+        F.col(CalculatedNames.date),
         F.col(ColumnNames.quantity),
-        F.col(_CalculatedNames.period_energy_limit),
+        F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
 
 
@@ -168,9 +140,9 @@ def _filter_parent_child_overlap_period_and_year(
     time_series_points: DataFrame,
 ) -> DataFrame:
     return time_series_points.where(
-        (F.col(_CalculatedNames.date) >= F.col(_CalculatedNames.overlap_period_start))
-        & (F.col(_CalculatedNames.date) < F.col(_CalculatedNames.overlap_period_end))
-        & (F.year(F.col(_CalculatedNames.date)) == F.year(F.col(_CalculatedNames.period_year)))
+        (F.col(CalculatedNames.date) >= F.col(CalculatedNames.overlap_period_start))
+        & (F.col(CalculatedNames.date) < F.col(CalculatedNames.overlap_period_end))
+        & (F.year(F.col(CalculatedNames.date)) == F.year(F.col(CalculatedNames.period_year)))
     )
 
 
@@ -183,43 +155,21 @@ def _join_source_metering_point_periods_with_energy(
         .join(
             parent_and_child_metering_point_and_periods.alias("metering_point"),
             F.col(f"energy.{ColumnNames.metering_point_id}")
-            == F.col(f"metering_point.{_CalculatedNames.energy_source_metering_point_id}"),
+            == F.col(f"metering_point.{CalculatedNames.energy_source_metering_point_id}"),
             "inner",
         )
         .select(
-            F.col(f"metering_point.{_CalculatedNames.parent_period_start}").alias(_CalculatedNames.parent_period_start),
-            F.col(f"metering_point.{_CalculatedNames.parent_period_end}").alias(_CalculatedNames.parent_period_end),
-            F.col(f"metering_point.{_CalculatedNames.electrical_heating_metering_point_id}").alias(
+            F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
+            F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
+            F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 ColumnNames.metering_point_id
             ),
-            F.col(f"energy.{_CalculatedNames.date}").alias(_CalculatedNames.date),
+            F.col(f"energy.{CalculatedNames.date}").alias(CalculatedNames.date),
             F.col(f"energy.{ColumnNames.quantity}").alias(ColumnNames.quantity),
-            F.col(f"metering_point.{_CalculatedNames.period_energy_limit}").alias(_CalculatedNames.period_energy_limit),
-            F.col(f"metering_point.{_CalculatedNames.overlap_period_start}").alias(
-                _CalculatedNames.overlap_period_start
-            ),
-            F.col(f"metering_point.{_CalculatedNames.overlap_period_end}").alias(_CalculatedNames.overlap_period_end),
+            F.col(f"metering_point.{CalculatedNames.period_energy_limit}").alias(CalculatedNames.period_energy_limit),
+            F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
+            F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
         )
-    )
-
-
-def _calculate_daily_quantity(time_series: DataFrame) -> DataFrame:
-    daily_window = Window.partitionBy(
-        F.col(ColumnNames.metering_point_id),
-        F.col(_CalculatedNames.date),
-    )
-
-    return (
-        time_series.select(
-            "*",
-            F.date_trunc("day", F.col(ColumnNames.observation_time)).alias(_CalculatedNames.date),
-        )
-        .select(
-            F.sum(F.col(ColumnNames.quantity)).over(daily_window).alias(ColumnNames.quantity),
-            F.col(_CalculatedNames.date),
-            F.col(ColumnNames.metering_point_id),
-        )
-        .drop_duplicates()
     )
 
 
@@ -234,11 +184,11 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col(_CalculatedNames.parent_net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
-            F.col(_CalculatedNames.net_consumption_metering_point_id),
+            F.col(CalculatedNames.parent_net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
+            F.col(CalculatedNames.net_consumption_metering_point_id),
         )
         .otherwise(F.col(ColumnNames.parent_metering_point_id))
-        .alias(_CalculatedNames.energy_source_metering_point_id),
+        .alias(CalculatedNames.energy_source_metering_point_id),
     )
 
 
@@ -248,10 +198,10 @@ def _calculate_period_limit(
     return parent_and_child_metering_point_and_periods.select(
         "*",
         (
-            F.datediff(F.col(_CalculatedNames.parent_period_end), F.col(_CalculatedNames.parent_period_start))
+            F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
             * _ELECTRICAL_HEATING_LIMIT_YEARLY
-            / days_in_year(F.col(_CalculatedNames.parent_period_start))
-        ).alias(_CalculatedNames.period_energy_limit),
+            / days_in_year(F.col(CalculatedNames.parent_period_start))
+        ).alias(CalculatedNames.period_energy_limit),
     )
 
 
@@ -263,38 +213,38 @@ def _split_period_by_year(
         # create a row for each year in the period
         F.explode(
             F.sequence(
-                begining_of_year(F.col(_CalculatedNames.parent_period_start)),
+                begining_of_year(F.col(CalculatedNames.parent_period_start)),
                 F.coalesce(
-                    begining_of_year(F.col(_CalculatedNames.parent_period_end)),
+                    begining_of_year(F.col(CalculatedNames.parent_period_end)),
                     begining_of_year(F.current_date(), years_to_add=1),
                 ),
                 F.expr("INTERVAL 1 YEAR"),
             )
-        ).alias(_CalculatedNames.period_year),
+        ).alias(CalculatedNames.period_year),
     ).select(
         F.col(ColumnNames.parent_metering_point_id),
-        F.col(_CalculatedNames.parent_net_settlement_group),
+        F.col(CalculatedNames.parent_net_settlement_group),
         F.when(
-            F.year(F.col(_CalculatedNames.parent_period_start)) == F.year(F.col(_CalculatedNames.period_year)),
-            F.col(_CalculatedNames.parent_period_start),
+            F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col(CalculatedNames.period_year)),
+            F.col(CalculatedNames.parent_period_start),
         )
-        .otherwise(begining_of_year(date=F.col(_CalculatedNames.period_year)))
-        .alias(_CalculatedNames.parent_period_start),
+        .otherwise(begining_of_year(date=F.col(CalculatedNames.period_year)))
+        .alias(CalculatedNames.parent_period_start),
         F.when(
-            F.year(F.col(_CalculatedNames.parent_period_end)) == F.year(F.col(_CalculatedNames.period_year)),
-            F.col(_CalculatedNames.parent_period_end),
+            F.year(F.col(CalculatedNames.parent_period_end)) == F.year(F.col(CalculatedNames.period_year)),
+            F.col(CalculatedNames.parent_period_end),
         )
-        .otherwise(begining_of_year(date=F.col(_CalculatedNames.period_year), years_to_add=1))
-        .alias(_CalculatedNames.parent_period_end),
-        F.col(_CalculatedNames.overlap_period_start),
-        F.col(_CalculatedNames.overlap_period_end),
-        F.col(_CalculatedNames.period_year),
-        F.col(_CalculatedNames.electrical_heating_metering_point_id),
-        F.col(_CalculatedNames.electrical_heating_period_start),
-        F.col(_CalculatedNames.electrical_heating_period_end),
-        F.col(_CalculatedNames.net_consumption_metering_point_id),
-        F.col(_CalculatedNames.net_consumption_period_start),
-        F.col(_CalculatedNames.net_consumption_period_end),
+        .otherwise(begining_of_year(date=F.col(CalculatedNames.period_year), years_to_add=1))
+        .alias(CalculatedNames.parent_period_end),
+        F.col(CalculatedNames.overlap_period_start),
+        F.col(CalculatedNames.overlap_period_end),
+        F.col(CalculatedNames.period_year),
+        F.col(CalculatedNames.electrical_heating_metering_point_id),
+        F.col(CalculatedNames.electrical_heating_period_start),
+        F.col(CalculatedNames.electrical_heating_period_end),
+        F.col(CalculatedNames.net_consumption_metering_point_id),
+        F.col(CalculatedNames.net_consumption_period_start),
+        F.col(CalculatedNames.net_consumption_period_end),
     )
 
 
@@ -307,25 +257,25 @@ def _find_parent_child_overlap_period(
         # and the children metering point periods.
         # We, however, assume that there is only one overlapping period between the periods
         F.greatest(
-            F.col(_CalculatedNames.parent_period_start),
-            F.col(_CalculatedNames.electrical_heating_period_start),
-            F.col(_CalculatedNames.net_consumption_period_start),
-        ).alias(_CalculatedNames.overlap_period_start),
+            F.col(CalculatedNames.parent_period_start),
+            F.col(CalculatedNames.electrical_heating_period_start),
+            F.col(CalculatedNames.net_consumption_period_start),
+        ).alias(CalculatedNames.overlap_period_start),
         F.least(
             F.coalesce(
-                F.col(_CalculatedNames.parent_period_end),
+                F.col(CalculatedNames.parent_period_end),
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
             F.coalesce(
-                F.col(_CalculatedNames.electrical_heating_period_end),
+                F.col(CalculatedNames.electrical_heating_period_end),
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
             F.coalesce(
-                F.col(_CalculatedNames.net_consumption_period_end),
+                F.col(CalculatedNames.net_consumption_period_end),
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
-        ).alias(_CalculatedNames.overlap_period_end),
-    ).where(F.col(_CalculatedNames.overlap_period_start) < F.col(_CalculatedNames.overlap_period_end))
+        ).alias(CalculatedNames.overlap_period_end),
+    ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
 
 
 def _close_open_ended_periods(
@@ -335,26 +285,26 @@ def _close_open_ended_periods(
     return parent_and_child_metering_point_and_periods.select(
         # Consumption metering point
         F.col(ColumnNames.parent_metering_point_id),
-        F.col(_CalculatedNames.parent_net_settlement_group),
-        F.col(_CalculatedNames.parent_period_start),
+        F.col(CalculatedNames.parent_net_settlement_group),
+        F.col(CalculatedNames.parent_period_start),
         F.coalesce(
-            F.col(_CalculatedNames.parent_period_end),
+            F.col(CalculatedNames.parent_period_end),
             begining_of_year(F.current_date(), years_to_add=1),
-        ).alias(_CalculatedNames.parent_period_end),
+        ).alias(CalculatedNames.parent_period_end),
         # Electrical heating metering point
-        F.col(_CalculatedNames.electrical_heating_period_start),
+        F.col(CalculatedNames.electrical_heating_period_start),
         F.coalesce(
-            F.col(_CalculatedNames.electrical_heating_period_end),
+            F.col(CalculatedNames.electrical_heating_period_end),
             begining_of_year(F.current_date(), years_to_add=1),
-        ).alias(_CalculatedNames.electrical_heating_period_end),
-        F.col(_CalculatedNames.electrical_heating_metering_point_id),
+        ).alias(CalculatedNames.electrical_heating_period_end),
+        F.col(CalculatedNames.electrical_heating_metering_point_id),
         # Net consumption metering point
-        F.col(_CalculatedNames.net_consumption_period_start),
+        F.col(CalculatedNames.net_consumption_period_start),
         F.coalesce(
-            F.col(_CalculatedNames.net_consumption_period_end),
+            F.col(CalculatedNames.net_consumption_period_end),
             begining_of_year(F.current_date(), years_to_add=1),
-        ).alias(_CalculatedNames.net_consumption_period_end),
-        F.col(_CalculatedNames.net_consumption_metering_point_id),
+        ).alias(CalculatedNames.net_consumption_period_end),
+        F.col(CalculatedNames.net_consumption_metering_point_id),
     )
 
 
@@ -385,22 +335,22 @@ def _join_children_to_parent_metering_point(
         )
         .select(
             F.col(f"parent.{ColumnNames.metering_point_id}").alias(ColumnNames.parent_metering_point_id),
-            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(_CalculatedNames.parent_net_settlement_group),
-            F.col(f"parent.{ColumnNames.period_from_date}").alias(_CalculatedNames.parent_period_start),
-            F.col(f"parent.{ColumnNames.period_to_date}").alias(_CalculatedNames.parent_period_end),
+            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(CalculatedNames.parent_net_settlement_group),
+            F.col(f"parent.{ColumnNames.period_from_date}").alias(CalculatedNames.parent_period_start),
+            F.col(f"parent.{ColumnNames.period_to_date}").alias(CalculatedNames.parent_period_end),
             F.col(f"electrical_heating.{ColumnNames.metering_point_id}").alias(
-                _CalculatedNames.electrical_heating_metering_point_id
+                CalculatedNames.electrical_heating_metering_point_id
             ),
             F.col(f"electrical_heating.{ColumnNames.coupled_date}").alias(
-                _CalculatedNames.electrical_heating_period_start
+                CalculatedNames.electrical_heating_period_start
             ),
             F.col(f"electrical_heating.{ColumnNames.uncoupled_date}").alias(
-                _CalculatedNames.electrical_heating_period_end
+                CalculatedNames.electrical_heating_period_end
             ),
             F.col(f"net_consumption.{ColumnNames.metering_point_id}").alias(
-                _CalculatedNames.net_consumption_metering_point_id
+                CalculatedNames.net_consumption_metering_point_id
             ),
-            F.col(f"net_consumption.{ColumnNames.coupled_date}").alias(_CalculatedNames.net_consumption_period_start),
-            F.col(f"net_consumption.{ColumnNames.uncoupled_date}").alias(_CalculatedNames.net_consumption_period_end),
+            F.col(f"net_consumption.{ColumnNames.coupled_date}").alias(CalculatedNames.net_consumption_period_start),
+            F.col(f"net_consumption.{ColumnNames.uncoupled_date}").alias(CalculatedNames.net_consumption_period_end),
         )
     )

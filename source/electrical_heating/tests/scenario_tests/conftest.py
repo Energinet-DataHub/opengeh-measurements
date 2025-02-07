@@ -8,7 +8,7 @@ from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
 from opengeh_electrical_heating.domain import ColumnNames, execute
-from opengeh_electrical_heating.domain.calculation import _CalculatedNames
+from opengeh_electrical_heating.domain.calculation import CalculatedNames
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
@@ -68,7 +68,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
+    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date))
 
     # Return test cases
     return TestCases(

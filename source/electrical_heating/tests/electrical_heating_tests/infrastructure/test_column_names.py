@@ -1,4 +1,4 @@
-from opengeh_electrical_heating.domain.calculation import _CalculatedNames
+from opengeh_electrical_heating.domain.calculation import CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
@@ -67,8 +67,8 @@ def test_no_overlap_between_columnnames_and_calculatednames() -> None:
     ]
     calculated_names = [
         attr
-        for attr in dir(_CalculatedNames)
-        if not callable(getattr(_CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(CalculatedNames)
+        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
     ]
 
     # Check for overlap
@@ -94,8 +94,8 @@ def test_calculatednames_attributes_are_sorted() -> None:
     # Get all attribute names from _CalculatedNames class
     calculated_names = [
         attr
-        for attr in dir(_CalculatedNames)
-        if not callable(getattr(_CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(CalculatedNames)
+        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the calculated names are sorted
