@@ -57,6 +57,7 @@ def execute(
         | (F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value)
     )
     old_consumption_energy = convert_from_utc(old_consumption_energy, time_zone)
+    old_consumption_energy = _calculate_daily_quantity(old_consumption_energy)
 
     old_electrical_heating = time_series_points.where(
         F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
@@ -72,7 +73,6 @@ def execute(
     metering_point_periods = _split_period_by_year(metering_point_periods)
     metering_point_periods = _calculate_period_limit(metering_point_periods)
 
-    energy_daily = _calculate_daily_quantity(old_consumption_energy)
     previous_electrical_heating = _calculate_daily_quantity(old_electrical_heating)
 
     # determine from which metering point to get the consumption data (consumption or net consumption)
@@ -80,19 +80,19 @@ def execute(
 
     # here consumption time series and metering point periods data is joined
     metering_point_periods_with_energy = _join_source_metering_point_periods_with_energy(
-        energy_daily,
+        old_consumption_energy,
         metering_point_periods,
     )
     old_consumption_energy = _filter_parent_child_overlap_period_and_year(metering_point_periods_with_energy)
     old_consumption_energy = _aggregate_quantity_over_period(old_consumption_energy)
     old_electrical_heating = _impose_period_quantity_limit(old_consumption_energy)
     old_electrical_heating = _filter_unchanged_electrical_heating(old_electrical_heating, previous_electrical_heating)
-
     old_electrical_heating = convert_to_utc(old_electrical_heating, time_zone)
-
-    return CalculatedMeasurementsDaily(
-        old_electrical_heating.orderBy(F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date))
+    old_electrical_heating = old_electrical_heating.orderBy(
+        F.col(ColumnNames.metering_point_id), F.col(_CalculatedNames.date)
     )
+
+    return CalculatedMeasurementsDaily(old_electrical_heating)
 
 
 def _filter_unchanged_electrical_heating(
