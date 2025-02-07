@@ -13,13 +13,11 @@ from opengeh_electrical_heating.domain.calculated_measurements_daily import Calc
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.domain.types import NetSettlementGroup
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
+from opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
     ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""

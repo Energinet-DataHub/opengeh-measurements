@@ -7,22 +7,20 @@ from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
 from opengeh_electrical_heating.domain import execute
+from opengeh_electrical_heating.infrastructure import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
+)
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
-)
-from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
-    ChildMeteringPoints,
 )
 from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
-    ConsumptionMeteringPointPeriods,
-)
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
 from tests.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
 from tests.testsession_configuration import (
     TestSessionConfiguration,
