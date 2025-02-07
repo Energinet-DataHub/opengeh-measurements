@@ -43,6 +43,7 @@
         "mechatroner.rainbow-csv"
       ],
       "settings": {
+        "csv-edit.readOption_hasHeader": "true",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.venvPath": "/home/vscode/.venv",
