@@ -2,12 +2,12 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf, to_protobuf
 
-import core.utility.path_helper as path_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
 )
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
+from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
 
 alias_name = "measurement_values"
 
@@ -30,7 +30,7 @@ def prepare_measurement(df) -> DataFrame:
 
 
 def pack_proto(df) -> DataFrame:
-    descriptor_path = path_helper.get_protobuf_descriptor_path(DescriptorFileNames.submitted_transaction_persisted)
+    descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.submitted_transaction_persisted)
     message_name = "SubmittedTransactionPersisted"
     return df.withColumn(
         BronzeSubmittedTransactionsColumnNames.value,
@@ -44,7 +44,7 @@ def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
 
 
 def unpack_proto(df):
-    descriptor_path = path_helper.get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
+    descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
     message_name = "PersistSubmittedTransaction"
     return df.select(
         from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name),
