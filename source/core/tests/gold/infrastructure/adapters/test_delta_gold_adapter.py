@@ -5,7 +5,8 @@ from gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
-from core.gold.infrastructure.config import GoldDatabaseNames, GoldTableNames
+from core.gold.infrastructure.config import GoldTableNames
+from core.settings.catalog_settings import CatalogSettings
 
 
 @mock.patch("os.getenv")
@@ -15,14 +16,15 @@ def test__start_write_stream__should_write_to_gold_table(
 ):
     # Arrange
     gold_adapter = DeltaGoldAdapter()
+    gold_database_name = CatalogSettings().gold_database_name  # type: ignore
     source_table = GoldTableNames.gold_measurements
     target_table = f"{source_table}_test_write_stream"
     metering_point_id = random.randint(0, 999999999999999999)
     df_gold = (
         GoldMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id, quality="Bad").build()
     )
-    df_gold.write.format("delta").mode("append").saveAsTable(f"{GoldDatabaseNames.gold}.{source_table}")
-    df_stream_gold = spark.readStream.format("delta").table(f"{GoldDatabaseNames.gold}.{source_table}")
+    df_gold.write.format("delta").mode("append").saveAsTable(f"{gold_database_name}.{source_table}")
+    df_stream_gold = spark.readStream.format("delta").table(f"{gold_database_name}.{source_table}")
     mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
     mock_getenv.return_value = "dbfss://fake_storage_account.blob.core.windows.net"
 
@@ -33,13 +35,13 @@ def test__start_write_stream__should_write_to_gold_table(
         target_table,
         lambda df, epoch_id: df.write.format("delta")
         .mode("append")
-        .saveAsTable(f"{GoldDatabaseNames.gold}.{target_table}"),
+        .saveAsTable(f"{gold_database_name}.{target_table}"),
         True,
     )
 
     # Assert
     assert (
-        spark.read.table(f"{GoldDatabaseNames.gold}.{target_table}")
+        spark.read.table(f"{gold_database_name}.{target_table}")
         .filter(f"metering_point_id == '{metering_point_id}'")
         .count()
         == 1
@@ -49,6 +51,7 @@ def test__start_write_stream__should_write_to_gold_table(
 def test__append__should_append_to_gold_table(spark: SparkSession):
     # Arrange
     gold_adapter = DeltaGoldAdapter()
+    gold_database_name = CatalogSettings().gold_database_name  # type: ignore
     metering_point_id = random.randint(0, 999999999999999999)
     df_gold = GoldMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id).build()
 
@@ -57,7 +60,7 @@ def test__append__should_append_to_gold_table(spark: SparkSession):
 
     # Assert
     assert (
-        spark.read.table(f"{GoldDatabaseNames.gold}.{GoldTableNames.gold_measurements}")
+        spark.read.table(f"{gold_database_name}.{GoldTableNames.gold_measurements}")
         .filter(f"metering_point_id == '{metering_point_id}'")
         .count()
         == 1
