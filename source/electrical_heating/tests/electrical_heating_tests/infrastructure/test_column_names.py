@@ -1,4 +1,4 @@
-from opengeh_electrical_heating.domain.calculation import _CalculatedNames
+from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
@@ -6,8 +6,8 @@ from opengeh_electrical_heating.infrastructure.electricity_market.child_metering
 from opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
-    measurements_bronze_v1,
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
+    calculated_measurements_schema,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
@@ -17,7 +17,7 @@ from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.sc
 ALL_STRUCT_TYPES = [
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
-    measurements_bronze_v1,
+    calculated_measurements_schema,
     time_series_points_v1,
 ]
 
@@ -67,8 +67,8 @@ def test_no_overlap_between_columnnames_and_calculatednames() -> None:
     ]
     calculated_names = [
         attr
-        for attr in dir(_CalculatedNames)
-        if not callable(getattr(_CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(CalculatedNames)
+        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
     ]
 
     # Check for overlap
@@ -94,8 +94,8 @@ def test_calculatednames_attributes_are_sorted() -> None:
     # Get all attribute names from _CalculatedNames class
     calculated_names = [
         attr
-        for attr in dir(_CalculatedNames)
-        if not callable(getattr(_CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(CalculatedNames)
+        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the calculated names are sorted
