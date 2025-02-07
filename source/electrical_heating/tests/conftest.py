@@ -14,7 +14,7 @@ from opengeh_electrical_heating.infrastructure.measurements.calculated_measureme
     CalculatedMeasurementsDatabase,
 )
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
-    calculated_measurements,
+    calculated_measurements_schema,
 )
 from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
@@ -98,7 +98,7 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
         spark,
         database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
         table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
-        schema=calculated_measurements,
+        schema=calculated_measurements_schema,
         table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
     )
 

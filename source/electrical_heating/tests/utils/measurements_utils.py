@@ -8,7 +8,7 @@ from opengeh_electrical_heating.infrastructure.measurements.calculated_measureme
     point,
 )
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
-    calculated_measurements,
+    calculated_measurements_schema,
 )
 
 
@@ -30,8 +30,8 @@ def create_calculated_measurements_dataframe(spark: SparkSession, measurements: 
         )
     )
 
-    measurements = spark.createDataFrame(measurements.rdd, schema=calculated_measurements, verifySchema=True)
+    measurements = spark.createDataFrame(measurements.rdd, schema=calculated_measurements_schema, verifySchema=True)
 
-    assert_schema(measurements.schema, calculated_measurements)
+    assert_schema(measurements.schema, calculated_measurements_schema)
 
     return CalculatedMeasurements(measurements)
