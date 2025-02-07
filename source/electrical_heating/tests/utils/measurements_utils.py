@@ -5,10 +5,8 @@ from testcommon.dataframes import assert_schema
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
-    point,
-)
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
     calculated_measurements_schema,
+    point,
 )
 
 
