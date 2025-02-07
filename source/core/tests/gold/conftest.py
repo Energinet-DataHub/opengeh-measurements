@@ -104,9 +104,11 @@ def _create_schemas(spark: SparkSession) -> None:
 
 @pytest.fixture(scope="session")
 def create_silver_tables(spark: SparkSession) -> None:
+    catalog_settings = CatalogSettings()  # type: ignore
+
     create_table_from_schema(
         spark=spark,
-        database=SilverDatabaseNames.silver,
+        database=catalog_settings.silver_database_name,
         table_name=SilverTableNames.silver_measurements,
         schema=silver_measurements_schema,
     )
