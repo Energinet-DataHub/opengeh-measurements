@@ -8,7 +8,7 @@ from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
 from opengeh_electrical_heating.domain import ColumnNames, execute
-from opengeh_electrical_heating.domain.calculation import CalculatedNames
+from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
