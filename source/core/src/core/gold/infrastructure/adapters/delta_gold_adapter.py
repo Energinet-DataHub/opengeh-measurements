@@ -5,7 +5,7 @@ from pyspark.sql import DataFrame
 from core.gold.application.ports.gold_port import GoldPort
 from core.gold.infrastructure.config.database_names import DatabaseNames
 from core.gold.infrastructure.config.storage_container_names import StorageContainerNames
-from core.gold.infrastructure.shared_helpers import (
+from core.utility.shared_helpers import (
     EnvironmentVariable,
     get_checkpoint_path,
     get_env_variable_or_throw,
