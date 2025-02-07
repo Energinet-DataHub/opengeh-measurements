@@ -7,7 +7,7 @@ from spark_sql_migrations import (
 import core.migrations.substitutions as substitutions
 from core.migrations.database_names import DatabaseNames
 from core.migrations.table_names import TableNames
-from core.silver.infrastructure.helpers.environment_variable_helper import get_catalog_name
+from core.settings.catalog_settings import CatalogSettings
 
 
 def migrate() -> None:
@@ -17,7 +17,7 @@ def migrate() -> None:
 
 def _configure_spark_sql_migrations() -> None:
     substitution_variables = substitutions.substitutions()
-    catalog_name = get_catalog_name()
+    catalog_name = CatalogSettings().catalog_name  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.measurements_internal_database,
