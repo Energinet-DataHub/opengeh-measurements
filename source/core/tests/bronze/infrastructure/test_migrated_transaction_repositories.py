@@ -1,13 +1,15 @@
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from opengeh_bronze.domain.schemas.migrated import migrated_schema
-from opengeh_bronze.infrastructure.migrated_transactions_repository import (
+from core.bronze.domain.schemas.migrated import migrated_schema
+from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 
 
-def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe(spark: SparkSession, migrate):
+def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe(
+    spark: SparkSession, migrations_executed: None
+):
     # Arrange
     repo = MigratedTransactionsRepository(spark)
 
@@ -19,7 +21,7 @@ def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_none_when_empty(
-    spark: SparkSession, migrate: None
+    spark: SparkSession, migrations_executed: None
 ):
     # Arrange
     repo = MigratedTransactionsRepository(spark)

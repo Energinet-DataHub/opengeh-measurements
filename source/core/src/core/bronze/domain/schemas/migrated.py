@@ -1,6 +1,6 @@
 from pyspark.sql.types import ArrayType, DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names import (
+from core.bronze.domain.constants.column_names.bronze_migrated_column_names import (
     BronzeMigratedColumnNames,
     BronzeMigratedValuesFieldNames,
 )

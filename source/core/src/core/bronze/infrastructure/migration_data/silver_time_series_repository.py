@@ -1,8 +1,8 @@
 import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 
-from opengeh_bronze.domain.constants.database_names import DatabaseNames
-from opengeh_bronze.domain.constants.table_names import MigrationsTableNames
+from core.bronze.domain.constants.database_names import DatabaseNames
+from core.bronze.domain.constants.table_names import MigrationsTableNames
 
 
 class MigrationsSilverTimeSeriesRepository:

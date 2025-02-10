@@ -3,9 +3,9 @@ from datetime import datetime
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
-from opengeh_bronze.domain.constants.column_names.bronze_migrated_column_names import BronzeMigratedColumnNames
-from opengeh_bronze.domain.constants.database_names import DatabaseNames
-from opengeh_bronze.domain.constants.table_names import TableNames
+from core.bronze.domain.constants.column_names.bronze_migrated_column_names import BronzeMigratedColumnNames
+from core.bronze.infrastructure.config.table_names import TableNames
+from core.migrations.database_names import DatabaseNames
 
 
 class MigratedTransactionsRepository:

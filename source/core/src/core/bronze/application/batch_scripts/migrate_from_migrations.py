@@ -2,15 +2,15 @@ from datetime import datetime
 
 from pyspark.sql.functions import col, lit
 
-import opengeh_bronze.application.config.spark_session as spark_session
-import opengeh_bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
-from opengeh_bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
+import core.bronze.application.config.spark_session as spark_session
+import core.bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
+from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
     MigrationsSilverTimeSeriesColumnNames,
 )
-from opengeh_bronze.infrastructure.migrated_transactions_repository import (
+from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
-from opengeh_bronze.infrastructure.migration_data.silver_time_series_repository import (
+from core.bronze.infrastructure.migration_data.silver_time_series_repository import (
     MigrationsSilverTimeSeriesRepository,
 )
 
