@@ -24,6 +24,7 @@
 # in Unix via a file share from Windows, the scripts will work.
 *.in text eol=lf
 *.sh text eol=lf
+*.tool-versions text eol=lf
 
 # Likewise, force cmd and batch scripts to always use crlf
 *.cmd text eol=crlf
