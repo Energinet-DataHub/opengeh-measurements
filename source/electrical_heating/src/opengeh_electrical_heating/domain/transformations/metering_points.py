@@ -8,13 +8,19 @@ from pyspark_functions.functions import (
 from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+from opengeh_electrical_heating.infrastructure import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+)
 
 
 def get_joined_metering_point_periods_in_local_time(
-    consumption_metering_point_periods, child_metering_points, time_zone
-):
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
+    time_zone: str,
+) -> DataFrame:
     metering_point_periods = _join_children_to_parent_metering_point(
-        child_metering_points, consumption_metering_point_periods
+        child_metering_points.df, consumption_metering_point_periods.df
     )
     metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
