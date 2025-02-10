@@ -6,7 +6,7 @@ This python package handles streaming from the bronze layer to the gold layer.
 
 ### Bronze
 
-TBD...
+TBD..
 
 ### Silver
 
