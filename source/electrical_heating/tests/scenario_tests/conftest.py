@@ -78,7 +78,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
+    args = (
+        ElectricalHeatingTestArgs(  # Override the path to the environment file for the test (/when/job_parameters.env)
+            _env_file=f"{scenario_path}/when/job_parameters.env"
+        )
+    )
 
     # Execute the logic
     calculation_output = execute_calculation(
