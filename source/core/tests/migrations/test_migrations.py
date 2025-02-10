@@ -42,8 +42,13 @@ def test__migrations__should_create_bronze_measurements_table(spark: SparkSessio
 
 
 def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, migrations_executed: None):
+    # Arrange
+    catalog_settings = CatalogSettings()  # type: ignore
+
     # Assert
-    bronze_migrated = spark.table(f"{DatabaseNames.bronze_database}.{TableNames.bronze_migrated_transactions_table}")
+    bronze_migrated = spark.table(
+        f"{catalog_settings.bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}"
+    )
     assert_schemas.assert_schema(actual=bronze_migrated.schema, expected=migrated_schema)
 
 
