@@ -5,7 +5,8 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-from core.migrations import MigrationDatabaseNames, migrations_runner
+from core.migrations import migrations_runner
+from core.migrations.migration_scripts import MigrationDatabaseNames
 from core.settings.catalog_settings import CatalogSettings
 
 

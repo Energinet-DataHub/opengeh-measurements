@@ -12,11 +12,11 @@ class GoldMeasurementsBuilder:
 
     def add_row(
         self,
-        metering_point_id="502938475674839281",
-        observation_time=None,
-        quantity=Decimal("0.000"),
+        metering_point_id: str | None = "502938475674839281",
+        observation_time: datetime | None = None,
+        quantity: Decimal | None = Decimal("0.000"),
         quality=None,
-        metering_point_type="",
+        metering_point_type: str | None = "",
         transaction_id="",
         transaction_creation_datetime=None,
         created=None,
