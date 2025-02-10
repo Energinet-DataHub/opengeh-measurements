@@ -1,8 +1,6 @@
 from datetime import datetime
 
-year_month_day_date_time_formatting = "%Y-%m-%dT%H:%M:%S.%f"
 day_month_year_date_time_formatting = "%d-%m-%YT%H:%M:%S%z"
-date_formatting = "%d-%m-%Y"
 
 
 def get_datetime(
