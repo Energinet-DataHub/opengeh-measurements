@@ -9,6 +9,10 @@ from core.utility.shared_helpers import get_checkpoint_path
 
 
 class DeltaGoldAdapter(GoldPort):
+    def __init__(self) -> None:
+        self.gold_container_name = CatalogSettings().bronze_container_name  # type: ignore
+        self.gold_database_name = CatalogSettings().bronze_database_name  # type: ignore
+
     def start_write_stream(
         self,
         df_source_stream: DataFrame,
@@ -17,11 +21,8 @@ class DeltaGoldAdapter(GoldPort):
         batch_operation: Callable[["DataFrame", int], None],
         terminate_on_empty: bool = False,
     ) -> None:
-        catalog_settings = CatalogSettings()  # type: ignore
         datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
-        checkpoint_location = get_checkpoint_path(
-            datalake_storage_account, catalog_settings.gold_container_name, table_name
-        )
+        checkpoint_location = get_checkpoint_path(datalake_storage_account, self.gold_container_name, table_name)
         df_write_stream = (
             df_source_stream.writeStream.format("delta")
             .queryName(query_name)
@@ -35,5 +36,4 @@ class DeltaGoldAdapter(GoldPort):
             df_write_stream.start().awaitTermination()
 
     def append(self, df: DataFrame, table_name: str) -> None:
-        catalog_settings = CatalogSettings()  # type: ignore
-        df.write.format("delta").mode("append").saveAsTable(f"{catalog_settings.gold_database_name}.{table_name}")
+        df.write.format("delta").mode("append").saveAsTable(f"{self.gold_database_name}.{table_name}")
