@@ -1,4 +1,3 @@
-from pyspark.sql import DataFrame
 from pyspark_functions.functions import (
     convert_to_utc,
 )
@@ -6,13 +5,18 @@ from telemetry_logging import use_span
 
 import opengeh_electrical_heating.domain.transformations as T
 from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
+from opengeh_electrical_heating.infrastructure import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
+)
 
 
 @use_span()
 def execute(
-    time_series_points: DataFrame,
-    consumption_metering_point_periods: DataFrame,
-    child_metering_points: DataFrame,
+    time_series_points: TimeSeriesPoints,
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
     time_zone: str,
 ) -> CalculatedMeasurementsDaily:
     """Calculate the electrical heating for the given time series points and metering point periods.
