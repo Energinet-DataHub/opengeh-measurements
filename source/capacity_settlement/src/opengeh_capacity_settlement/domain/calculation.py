@@ -28,6 +28,7 @@ class ColumNames:
 
 @use_span()
 def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
+    execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     # TODO JMG: read data from repository and call the `execute_core_logic` method
     pass
 
@@ -42,11 +43,12 @@ def execute_core_logic(
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
+    execution_time: str,
 ) -> CalculationOutput:
     calculation_output = CalculationOutput()
 
     calculation_output.calculations = spark.createDataFrame(
-        [(str(orchestration_instance_id), calculation_year, calculation_month, datetime.now(timezone.utc).isoformat())],
+        [(str(orchestration_instance_id), calculation_year, calculation_month, execution_time)],
         schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
     )
 
