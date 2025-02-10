@@ -1,4 +1,3 @@
-import os
 import time
 
 from databricks.sdk.service.catalog import TableType
@@ -62,7 +61,7 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
         # Update existing data
         update_stmt = f"UPDATE {full_table_name} SET quantity = quantity + 0.001"
         w.statement_execution.execute_statement(
-            warehouse_id=os.environ["warehouse_id"],
+            warehouse_id="ctl_shres_d_we_003",
             catalog=catalog_name,
             schema=data_base_name,
             statement=update_stmt,
@@ -80,7 +79,7 @@ def _seed(databricks_client, data_base_name: str, table_name: str) -> None:
         """
 
         execution = w.statement_execution.execute_statement(
-            warehouse_id=os.environ["warehouse_id"],
+            warehouse_id="ctl_shres_d_we_003",
             catalog=catalog_name,
             schema=data_base_name,
             statement=insert_stmt,
