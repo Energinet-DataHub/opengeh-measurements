@@ -1,4 +1,4 @@
-from core.bronze.domain.constants import BronzeTableNames
+from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
