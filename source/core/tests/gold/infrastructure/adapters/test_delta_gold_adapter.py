@@ -1,12 +1,12 @@
 import random
 from unittest import mock
 
-from gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.catalog_settings import CatalogSettings
+from tests.gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 
 
 @mock.patch("os.getenv")
