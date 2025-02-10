@@ -1,5 +1,0 @@
-metering_point_id;quantity;observation_time;metering_point_type;#comment
-170000000000000201;123.456;2024-02-01T22:00:00Z;consumption;Ignore because it is prior to any (electrical heating) period of the consumption metering point
-170000000000000201;0.123;2024-02-01T23:00:00Z;consumption;Will be aggregated with the next measurement - even though there is not data for the whole day
-170000000000000201;999.000;2024-02-01T23:15:00Z;consumption;
-170000000000000201;888.888;2024-04-02T06:00:00Z;consumption;Ignored because the child metering point is decoupled at this time

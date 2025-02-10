@@ -1,2 +1,0 @@
-﻿orchestration_type;orchestration_instance_id;metering_point_id;transaction_id;transaction_creation_datetime;metering_point_type;product;unit;resolution;start_datetime;end_datetime;points
-electrical_heating;123e4567-e89b-12d3-a456-426614174000;123456789012345678;123456789;2023-01-01 04:00:00;electrical_heating;8716867000030;kWh;PT1H;2023-01-01 01:00:00;2023-01-01 02:00:00;"[{\"position\":\"1\",\"quantity\":\"100\",\"quality\":\"calculated\"},{\"position\":\"2\",\"quantity\":\"200\",\"quality\":\"calculated\"}]"

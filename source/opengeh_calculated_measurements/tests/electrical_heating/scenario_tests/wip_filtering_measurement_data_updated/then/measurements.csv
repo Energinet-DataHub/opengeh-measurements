@@ -1,5 +1,0 @@
-metering_point_id;date;quantity;#comment
-140000000000170201;2024-01-02T23:00:00Z;10;New value for Jan 3rd written to child mp.
-140000000000170201;2024-01-03T23:00:00Z;1;Value for jan. 4th to child mp
-140000000000170201;2024-01-04T23:00:00Z;0;New value for Jan 5th written to child mp.
-140000000000170201;2024-01-05T23:00:00Z;5;New value for Jan 6th written to child mp.
