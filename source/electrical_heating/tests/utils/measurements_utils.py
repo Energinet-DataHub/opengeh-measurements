@@ -3,14 +3,14 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import ArrayType
 from testcommon.dataframes import assert_schema
 
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.schema import (
-    measurements_bronze_v1,
+from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
+from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
+    calculated_measurements_schema,
     point,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_bronze.wrapper import MeasurementsBronze
 
 
-def create_measurements_bronze_dataframe(spark: SparkSession, measurements: DataFrame) -> MeasurementsBronze:
+def create_calculated_measurements_dataframe(spark: SparkSession, measurements: DataFrame) -> CalculatedMeasurements:
     measurements = measurements.withColumn(
         "points",
         F.from_json(F.col("points"), ArrayType(point)),
@@ -28,8 +28,8 @@ def create_measurements_bronze_dataframe(spark: SparkSession, measurements: Data
         )
     )
 
-    measurements = spark.createDataFrame(measurements.rdd, schema=measurements_bronze_v1, verifySchema=True)
+    measurements = spark.createDataFrame(measurements.rdd, schema=calculated_measurements_schema, verifySchema=True)
 
-    assert_schema(measurements.schema, measurements_bronze_v1)
+    assert_schema(measurements.schema, calculated_measurements_schema)
 
-    return MeasurementsBronze(measurements)
+    return CalculatedMeasurements(measurements)
