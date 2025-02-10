@@ -1,4 +1,4 @@
-﻿# Contract
+﻿# Contracts
 
 This directory contains contracts.
 
