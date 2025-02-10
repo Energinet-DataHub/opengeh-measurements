@@ -77,4 +77,4 @@ def _read_csv(
                 transforms.append(F.col(field.name).cast(field.dataType).alias(field.name))
 
     df = raw_df.select(*transforms)
-    return spark.createDataFrame(df.rdd, schema=schema, verifySchema=True)
+    return df
