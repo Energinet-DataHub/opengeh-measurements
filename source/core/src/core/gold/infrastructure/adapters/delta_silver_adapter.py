@@ -3,8 +3,8 @@ from typing import Optional
 from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.application.ports.silver_port import SilverPort
-from core.gold.infrastructure.shared_helpers import get_full_table_name
 from core.settings.catalog_settings import CatalogSettings
+from core.utility.shared_helpers import get_full_table_name
 
 
 class DeltaSilverAdapter(SilverPort):

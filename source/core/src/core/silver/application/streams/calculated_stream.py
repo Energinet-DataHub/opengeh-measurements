@@ -11,11 +11,11 @@ from core.settings.catalog_settings import CatalogSettings
 from core.silver.application.config.spark import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
 from core.silver.infrastructure.config import SilverTableNames
-from core.silver.infrastructure.config.container_names import ContainerNames
-from core.silver.infrastructure.helpers.environment_variable_helper import get_datalake_storage_account
-from core.silver.infrastructure.helpers.path_helper import get_checkpoint_path
+from core.silver.infrastructure.config.storage_container_names import StorageContainerNames
 from core.silver.infrastructure.streams import writer
 from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
+from core.utility.environment_variable_helper import get_datalake_storage_account
+from core.utility.shared_helpers import get_checkpoint_path
 
 
 def execute(applicationinsights_connection_string: Optional[str] = None) -> None:
@@ -41,7 +41,7 @@ def _execute(spark: SparkSession) -> None:
     bronze_stream = BronzeRepository(spark).read_calculated_measurements()
     data_lake_storage_account = get_datalake_storage_account()
     checkpoint_path = get_checkpoint_path(
-        data_lake_storage_account, ContainerNames.silver, SilverTableNames.silver_measurements
+        data_lake_storage_account, StorageContainerNames.silver, SilverTableNames.silver_measurements
     )
     writer.write_stream(
         bronze_stream, "bronze_calculated_measurements_to_silver_measurements", checkpoint_path, _batch_operations

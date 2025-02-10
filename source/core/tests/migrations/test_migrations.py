@@ -1,9 +1,9 @@
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from core.bronze.domain.constants import BronzeTableNames
 from core.bronze.domain.schemas.bronze_measurements import bronze_measurements_schema
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
+from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.catalog_settings import CatalogSettings
