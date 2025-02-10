@@ -1,6 +1,8 @@
 class CalculatedNames:
     """Names of calculated columns."""
 
+    consumption_from_grid_quantity = "consumption_from_grid_quantity"
+    consumption_quantity = "consumption_quantity"
     cumulative_quantity = "cumulative_quantity"
     """The quantity cumulated from the first day of the period up until the current day."""
     date = "date"
@@ -22,3 +24,4 @@ class CalculatedNames:
     parent_period_start = "parent_period_start"
     period_energy_limit = "period_energy_limit"
     period_year = "period_year"
+    supply_to_grid_quantity = "supply_to_grid_quantity"
