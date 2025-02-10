@@ -9,6 +9,11 @@ from testcommon.etl import TestCase, TestCases
 
 from opengeh_electrical_heating.domain import ColumnNames, execute
 from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from opengeh_electrical_heating.infrastructure import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
+)
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
@@ -61,9 +66,9 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     # Execute the logic
     actual = execute(
-        time_series_points,
-        consumption_metering_point_periods,
-        child_metering_point_periods,
+        TimeSeriesPoints(time_series_points),
+        ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
+        ChildMeteringPoints(child_metering_point_periods),
         args.time_zone,
     )
 
