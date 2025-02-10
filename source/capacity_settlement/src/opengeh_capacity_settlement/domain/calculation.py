@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
@@ -28,7 +28,7 @@ class ColumNames:
 
 @use_span()
 def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
-    execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     # TODO JMG: read data from repository and call the `execute_core_logic` method
     pass
 
