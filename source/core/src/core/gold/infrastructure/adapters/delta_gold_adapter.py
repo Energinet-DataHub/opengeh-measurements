@@ -5,7 +5,7 @@ from pyspark.sql import DataFrame
 from core.gold.application.ports.gold_port import GoldPort
 from core.settings.catalog_settings import CatalogSettings
 from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
-from core.utility.shared_helpers import get_checkpoint_path, get_full_table_name
+from core.utility.shared_helpers import get_checkpoint_path
 
 
 class DeltaGoldAdapter(GoldPort):
@@ -36,6 +36,4 @@ class DeltaGoldAdapter(GoldPort):
 
     def append(self, df: DataFrame, table_name: str) -> None:
         catalog_settings = CatalogSettings()  # type: ignore
-        df.write.format("delta").mode("append").saveAsTable(
-            get_full_table_name(catalog_settings.gold_database_name, table_name)
-        )
+        df.write.format("delta").mode("append").saveAsTable(f"{catalog_settings.gold_database_name}.{table_name}")
