@@ -13,10 +13,6 @@ def get_applicationinsights_connection_string() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.APPLICATIONINSIGHTS_CONNECTION_STRING)
 
 
-def get_catalog_name() -> str:
-    return get_env_variable_or_throw(EnvironmentVariable.CATALOG_NAME)
-
-
 def get_datalake_storage_account() -> str:
     return get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
 

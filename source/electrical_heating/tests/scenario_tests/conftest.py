@@ -2,11 +2,18 @@ from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 from telemetry_logging import logging_configuration
 from testcommon.dataframes import AssertDataframesConfiguration, read_csv
 from testcommon.etl import TestCase, TestCases
 
-from opengeh_electrical_heating.domain import execute
+from opengeh_electrical_heating.domain import ColumnNames, execute
+from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from opengeh_electrical_heating.infrastructure import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
+)
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
@@ -59,18 +66,21 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     # Execute the logic
     actual = execute(
-        time_series_points,
-        consumption_metering_point_periods,
-        child_metering_point_periods,
+        TimeSeriesPoints(time_series_points),
+        ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
+        ChildMeteringPoints(child_metering_point_periods),
         args.time_zone,
     )
+
+    # Sort to make the tests deterministic
+    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date))
 
     # Return test cases
     return TestCases(
         [
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual.df,
+                actual=actual,
             ),
         ]
     )
