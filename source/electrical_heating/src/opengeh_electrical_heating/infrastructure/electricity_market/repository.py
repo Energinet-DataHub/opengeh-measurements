@@ -58,7 +58,7 @@ def _read_csv(
     Returns:
         DataFrame: The Spark DataFrame.
     """
-    raw_df = spark.read.csv(path, header=True, sep=sep)
+    raw_df = spark.read.format("delta").load(path)
 
     # Check each column to see if all values are "[IGNORED]"
     ignore_check = raw_df.agg(*[F.every(F.col(c) == F.lit(ignored_value)).alias(c) for c in raw_df.columns]).collect()
