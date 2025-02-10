@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from core.bronze.domain.constants import BronzeTableNames
+from core.bronze.infrastructure.config import BronzeTableNames
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
 
