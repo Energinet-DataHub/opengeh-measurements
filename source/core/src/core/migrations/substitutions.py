@@ -1,5 +1,5 @@
-from core.bronze.domain.constants import BronzeTableNames
-from core.gold.infrastructure.config import GoldTableNames
+from core.bronze.infrastructure.config import BronzeTableNames
+from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
 
@@ -14,4 +14,5 @@ def substitutions() -> dict[str, str]:
         "{silver_measurements_table}": SilverTableNames.silver_measurements,
         "{gold_database}": catalog_settings.gold_database_name,
         "{gold_measurements}": GoldTableNames.gold_measurements,
+        "{gold_electrical_heating_view_v1}": GoldViewNames.electrical_heating_view_v1,
     }
