@@ -22,7 +22,7 @@ on:
         type: string
         description: |
           Additional arguments to pass to pytest. This is useful for passing
-          arguments to pytest that are not supported by the uvtest action. 
+          arguments to pytest that are not supported by the uvtest action.
           Any paths should be considered relative to the package directory.
         required: false
         default: ""
