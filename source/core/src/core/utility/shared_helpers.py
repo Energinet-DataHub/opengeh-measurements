@@ -14,7 +14,3 @@ def get_checkpoint_path(
     table_name: str,
 ) -> str:
     return get_storage_base_path(datalake_storage_account_name, container_name) + f"checkpoints/{table_name}"
-
-
-def get_full_table_name(database: str, table: str) -> str:
-    return f"{database}.{table}"
