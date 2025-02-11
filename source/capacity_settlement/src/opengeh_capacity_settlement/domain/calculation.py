@@ -45,9 +45,8 @@ def execute_core_logic(
     time_zone: str,
     execution_time: str,
 ) -> CalculationOutput:
-    calculations = spark.createDataFrame(
-        [(str(orchestration_instance_id), calculation_year, calculation_month, execution_time)],
-        schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
+    calculations = _create_calculations(
+        spark, orchestration_instance_id, calculation_month, calculation_year, execution_time
     )
 
     metering_point_periods = _add_selection_period_columns(
@@ -93,6 +92,19 @@ def execute_core_logic(
     )
 
     return calculation_output
+
+
+def _create_calculations(
+    spark: SparkSession,
+    orchestration_instance_id: UUID,
+    calculation_month: int,
+    calculation_year: int,
+    execution_time: str,
+) -> DataFrame:
+    return spark.createDataFrame(
+        [(str(orchestration_instance_id), calculation_year, calculation_month, execution_time)],
+        schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
+    )
 
 
 def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
