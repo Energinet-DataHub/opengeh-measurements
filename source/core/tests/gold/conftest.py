@@ -1,7 +1,6 @@
 import os
 from typing import Callable, Generator
 
-import MigrationDatabaseNames
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
@@ -9,6 +8,7 @@ from pyspark.sql.types import StructType
 
 import core.migrations.migrations_runner as migrations_runner
 from core.gold.domain.schemas.silver_measurements import silver_measurements_schema
+from core.migrations import MigrationDatabaseNames
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
 
