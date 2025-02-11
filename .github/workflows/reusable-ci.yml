@@ -18,12 +18,12 @@ on:
           Defaults to workspace root.
         required: true
         default: ${{ github.workspace }}
-      core_regex:
+      pytest_addopts:
         type: string
         description: |
-          List of package names, separated by '|', that should be released
-          together as `core_<PR/latest>`.
-          Non-core packages are released as `<package_name>_<PR/latest>`.
+          Additional arguments to pass to pytest. This is useful for passing
+          arguments to pytest that are not supported by the uvtest action. 
+          Any paths should be considered relative to the package directory.
         required: false
         default: ""
     secrets:
@@ -110,7 +110,7 @@ jobs:
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          pytest_addopts: --ignore=tests/container_tests
+          pytest_addopts: ${{ inputs.pytest_addopts }}
 
       - name: Build ${{ matrix.inputs.name }}
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
