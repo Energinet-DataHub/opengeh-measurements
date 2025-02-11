@@ -1,12 +1,12 @@
 {
-  "name": "electrical_heating",
+  "name": "core",
   "dockerComposeFile": [
     "../../.docker/docker-compose.yml"
   ],
-  "service": "electrical_heating",
+  "service": "core",
   "remoteUser": "vscode",
   "shutdownAction": "none",
-  "workspaceFolder": "/workspace/source/electrical_heating",
+  "workspaceFolder": "/workspace/source/core",
   "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
@@ -16,7 +16,7 @@
   },
   "mounts": [
     // Persist the command history across container restarts - useful for bash history
-    "source=electrical_heating-bashhistory,target=/commandhistory,type=volume",
+    "source=core-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local system cache directory - speeds up the build process
@@ -30,9 +30,7 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers",
-        "janisdd.vscode-edit-csv",
-        "mechatroner.rainbow-csv"
+        "ms-vscode-remote.remote-containers"
       ],
       "settings": {
         "search.exclude": {
@@ -58,7 +56,7 @@
           "tests"
         ],
         "python.analysis.include": [
-          "/workspace/source/electrical_heating/**/*"
+          "/workspace/source/core/**/*"
         ],
         "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
@@ -94,8 +92,7 @@
             "path": "pwsh",
             "icon": "terminal-powershell"
           }
-        },
-        "csv-edit.readOption_hasHeader": "true"
+        }
       }
     }
   }
