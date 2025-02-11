@@ -1,5 +1,7 @@
+from datetime import datetime
 from decimal import Decimal
 
+import pytest
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
@@ -74,7 +76,7 @@ def test__electrical_heating_view_v1__when_metering_point_id_is_null__should_not
 ) -> None:
     # Arrange
     catalog_settings = CatalogSettings()  # type: ignore
-    metering_point_type = identifier_helper.create_random_metering_point_id()
+    metering_point_type = identifier_helper.generate_random_string()
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
@@ -91,15 +93,27 @@ def test__electrical_heating_view_v1__when_metering_point_id_is_null__should_not
 
     # Act
     actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
-        f"metering_point_type = {metering_point_type}"
+        f"metering_point_type = '{metering_point_type}'"
     )
 
     # Assert
     assert actual.count() == 0
 
 
-def test__electrical_heating_view_v1__when_quantity_is_null__should_not_be_returned_by_view(
-    spark: SparkSession, migrations_executed: None
+@pytest.mark.parametrize(
+    "metering_point_type, quantity, observation_time",
+    [
+        (None, Decimal(100), datetime.now()),
+        ("some_type", None, datetime.now()),
+        ("some_type", Decimal(100), None),
+    ],
+)
+def test__electrical_heating_view_v1__when_given_column_is_null__should_not_be_returned_by_view(
+    metering_point_type: str,
+    quantity: Decimal,
+    observation_time: datetime,
+    spark: SparkSession,
+    migrations_executed: None,
 ) -> None:
     # Arrange
     catalog_settings = CatalogSettings()  # type: ignore
@@ -109,65 +123,9 @@ def test__electrical_heating_view_v1__when_quantity_is_null__should_not_be_retur
         GoldMeasurementsBuilder(spark)
         .add_row(
             metering_point_id=metering_point_id,
-            quantity=None,
-        )
-        .build()
-    )
-
-    table_helper.append_to_table(
-        gold_measurements, catalog_settings.gold_database_name, GoldTableNames.gold_measurements
-    )
-
-    # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
-        f"metering_point_id = {metering_point_id}"
-    )
-
-    # Assert
-    assert actual.count() == 0
-
-
-def test__electrical_heating_view_v1__when_observation_time_is_null__should_not_be_returned_by_view(
-    spark: SparkSession, migrations_executed: None
-) -> None:
-    # Arrange
-    catalog_settings = CatalogSettings()  # type: ignore
-    metering_point_id = identifier_helper.create_random_metering_point_id()
-
-    gold_measurements = (
-        GoldMeasurementsBuilder(spark)
-        .add_row(
-            metering_point_id=metering_point_id,
-            observation_time=None,
-        )
-        .build()
-    )
-
-    table_helper.append_to_table(
-        gold_measurements, catalog_settings.gold_database_name, GoldTableNames.gold_measurements
-    )
-
-    # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
-        f"metering_point_id = {metering_point_id}"
-    )
-
-    # Assert
-    assert actual.count() == 0
-
-
-def test__electrical_heating_view_v1__when_metering_point_type_is_null__should_not_be_returned_by_view(
-    spark: SparkSession, migrations_executed: None
-) -> None:
-    # Arrange
-    catalog_settings = CatalogSettings()  # type: ignore
-    metering_point_id = identifier_helper.create_random_metering_point_id()
-
-    gold_measurements = (
-        GoldMeasurementsBuilder(spark)
-        .add_row(
-            metering_point_id=metering_point_id,
-            metering_point_type=None,
+            metering_point_type=metering_point_type,
+            quantity=quantity,
+            observation_time=observation_time,
         )
         .build()
     )
