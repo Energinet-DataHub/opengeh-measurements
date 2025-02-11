@@ -1,5 +1,5 @@
+from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
-from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
 from opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,

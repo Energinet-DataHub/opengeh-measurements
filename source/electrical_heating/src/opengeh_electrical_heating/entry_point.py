@@ -1,10 +1,10 @@
-from telemetry_logging import Logger, logging_configuration
-from telemetry_logging.decorators import start_trace
+from geh_common.telemetry import Logger, logging_configuration
+from geh_common.telemetry.decorators import start_trace
 
 from opengeh_electrical_heating.application import (
     execute_application,
 )
-from opengeh_electrical_heating.domain.electrical_heating_args import ElectricalHeatingArgs
+from opengeh_electrical_heating.application.electrical_heating_args import ElectricalHeatingArgs
 from opengeh_electrical_heating.infrastructure import initialize_spark
 
 

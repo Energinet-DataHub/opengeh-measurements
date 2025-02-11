@@ -2,13 +2,14 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest import mock
-import pytest
 
+import pytest
+from geh_common.telemetry import logging_configuration
+from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
+from geh_common.testing.dataframes.read_csv import read_csv
+from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from telemetry_logging import logging_configuration
-from testcommon.dataframes import AssertDataframesConfiguration, read_csv
-from testcommon.etl import TestCase, TestCases
 
 from opengeh_electrical_heating.domain import ColumnNames, execute
 from opengeh_electrical_heating.domain.calculated_names import CalculatedNames

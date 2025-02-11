@@ -1,4 +1,4 @@
-from testcommon.container_test import DatabricksApiClient
+from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
 
 def test__databricks_job_starts_and_stops_successfully(databricks_api_client: DatabricksApiClient) -> None:

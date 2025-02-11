@@ -1,7 +1,7 @@
 import pyspark.sql.functions as F
+from geh_common.testing.dataframes.assert_schemas import assert_schema
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import ArrayType
-from testcommon.dataframes import assert_schema
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (

@@ -1,12 +1,10 @@
 import sys
-from argparse import Namespace
-from collections.abc import Callable
+from datetime import UTC, datetime, timezone
 
-import telemetry_logging.logging_configuration as config
-from opentelemetry.trace import SpanKind
+from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
-from telemetry_logging import use_span
 
+from opengeh_electrical_heating.application.electrical_heating_args import ElectricalHeatingArgs
 from opengeh_electrical_heating.domain import (
     execute,
 )
@@ -18,7 +16,7 @@ from opengeh_electrical_heating.infrastructure import (
 
 @use_span()
 def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-    execution_start_datetime = datetime.now(timezone.utc)
+    execution_start_datetime = datetime.now(UTC)
 
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)

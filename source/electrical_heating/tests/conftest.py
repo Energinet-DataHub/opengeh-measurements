@@ -6,9 +6,9 @@ from unittest import mock
 
 import pytest
 from delta import configure_spark_with_delta_pip
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
+from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import DataFrame, SparkSession
-from telemetry_logging.logging_configuration import LoggingSettings, configure_logging
-from testcommon.delta_lake import create_database, create_table
 
 from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
 from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (

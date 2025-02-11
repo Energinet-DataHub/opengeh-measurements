@@ -1,7 +1,7 @@
-from pyspark_functions.functions import (
+from geh_common.pyspark.transformations import (
     convert_to_utc,
 )
-from telemetry_logging import use_span
+from geh_common.telemetry.decorators import use_span
 
 import opengeh_electrical_heating.domain.transformations as T
 from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily

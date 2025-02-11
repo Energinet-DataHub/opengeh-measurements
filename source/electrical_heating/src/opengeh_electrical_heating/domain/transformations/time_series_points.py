@@ -1,6 +1,6 @@
+from geh_common.pyspark.transformations import convert_from_utc
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark_functions.functions import convert_from_utc
 
 from opengeh_electrical_heating.domain.column_names import ColumnNames
 from opengeh_electrical_heating.domain.transformations.common import calculate_daily_quantity
