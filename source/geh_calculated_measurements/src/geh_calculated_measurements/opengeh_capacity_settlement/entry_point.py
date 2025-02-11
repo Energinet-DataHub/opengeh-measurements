@@ -2,7 +2,7 @@
 
 import os
 
-from opengeh_capacity_settlement.application.execute_with_deps import execute_with_deps
+from geh_calculated_measurements.opengeh_capacity_settlement.application.execute_with_deps import execute_with_deps
 
 
 def execute() -> None:

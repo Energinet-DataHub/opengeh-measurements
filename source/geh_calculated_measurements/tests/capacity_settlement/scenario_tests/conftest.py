@@ -9,17 +9,17 @@ from testcommon.dataframes import (
 )
 from testcommon.etl import TestCase, TestCases
 
-from contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
+from geh_calculated_measurements.opengeh_capacity_settlement.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
 )
-from contracts.measurements_gold.time_series_points_v1 import (
+from geh_calculated_measurements.opengeh_capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
-from opengeh_capacity_settlement.domain.calculation import (
+from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation import (
     execute_core_logic,
 )
-from tests.scenario_tests.capacity_settlement_test_args import CapacitySettlementTestArgs
-from tests.testsession_configuration import (
+from tests.capacity_settlement.scenario_tests.capacity_settlement_test_args import CapacitySettlementTestArgs
+from tests.capacity_settlement.testsession_configuration import (
     TestSessionConfiguration,
 )
 

@@ -7,10 +7,10 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 from telemetry_logging import use_span
 
-from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
+from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from opengeh_capacity_settlement.domain.calculation_output import CalculationOutput
+from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation_output import CalculationOutput
 
 
 class ColumNames:

@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
+from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -18,7 +18,7 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
-    session = SparkSession.builder.appName("testcommon").getOrCreate()
+    session = SparkSession.builder.appName("testcommon").getOrCreate()  # type: ignore
     yield session
     session.stop()
 
@@ -37,12 +37,12 @@ def contracts_path() -> str:
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{PROJECT_ROOT}/contracts"
+    return f"{PROJECT_ROOT}/src/geh_calculated_measurements/opengeh_capacity_settlement/contracts"
 
 
 @pytest.fixture(scope="session")
 def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
-    settings_file_path = PROJECT_ROOT / "tests" / "testsession.local.settings.yml"
+    settings_file_path = PROJECT_ROOT / "tests" / "capacity_settlement" / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
 
 
