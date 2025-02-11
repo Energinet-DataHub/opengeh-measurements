@@ -56,7 +56,7 @@ def _join_children_to_parent_metering_point(
         )
         .select(
             F.col(f"parent.{ColumnNames.metering_point_id}").alias(ColumnNames.parent_metering_point_id),
-            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(CalculatedNames.parent_net_settlement_group),
+            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
             F.col(f"parent.{ColumnNames.period_from_date}").alias(CalculatedNames.parent_period_start),
             F.col(f"parent.{ColumnNames.period_to_date}").alias(CalculatedNames.parent_period_end),
             F.col(f"electrical_heating.{ColumnNames.metering_point_id}").alias(
@@ -84,7 +84,7 @@ def _close_open_ended_periods(
     return parent_and_child_metering_point_and_periods.select(
         # Consumption metering point
         F.col(ColumnNames.parent_metering_point_id),
-        F.col(CalculatedNames.parent_net_settlement_group),
+        F.col(ColumnNames.net_settlement_group),
         F.col(CalculatedNames.parent_period_start),
         F.coalesce(
             F.col(CalculatedNames.parent_period_end),
@@ -155,7 +155,7 @@ def _split_period_by_year(
         ).alias(CalculatedNames.period_year),
     ).select(
         F.col(ColumnNames.parent_metering_point_id),
-        F.col(CalculatedNames.parent_net_settlement_group),
+        F.col(ColumnNames.net_settlement_group),
         F.when(
             F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col(CalculatedNames.period_year)),
             F.col(CalculatedNames.parent_period_start),

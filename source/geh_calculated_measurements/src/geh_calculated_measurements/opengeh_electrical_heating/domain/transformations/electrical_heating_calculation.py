@@ -42,7 +42,7 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col(CalculatedNames.parent_net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
+            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
             F.col(CalculatedNames.net_consumption_metering_point_id),
         )
         .otherwise(F.col(ColumnNames.parent_metering_point_id))
@@ -93,8 +93,9 @@ def _join_source_metering_point_periods_with_energy(
         .select(
             F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
             F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
+            F.col(f"metering_point.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
-                ColumnNames.metering_point_id
+                CalculatedNames.electrical_heating_metering_point_id
             ),
             F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
             F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
@@ -123,6 +124,18 @@ def _filter_outside_period_time_series(
 def _calculate_period_limit(
     periods_with_energy: DataFrame,
 ) -> DataFrame:
+    """parent_period_start
+    parent_period_end
+    metering_point_id
+    overlap_period_start
+    overlap_period_end
+    date
+    consumption_quantity
+    supply_to_grid_quantity
+    consumption_from_grid_quantity
+    quantity
+    """
+    periods_with_energy.printSchema()
     return periods_with_energy.select(
         "*",
         (
@@ -136,7 +149,7 @@ def _calculate_period_limit(
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
-            F.col(ColumnNames.metering_point_id),
+            F.col(CalculatedNames.electrical_heating_metering_point_id),
             F.col(CalculatedNames.parent_period_start),
             F.col(CalculatedNames.parent_period_end),
         )
@@ -145,7 +158,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     )
     return time_series_points.select(
         F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
-        F.col(ColumnNames.metering_point_id),
+        F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.date),
         F.col(ColumnNames.quantity),
         F.col(CalculatedNames.period_energy_limit),
@@ -174,7 +187,7 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         .cast(DecimalType(18, 3))
         .alias(ColumnNames.quantity),
         F.col(CalculatedNames.cumulative_quantity),
-        F.col(ColumnNames.metering_point_id),
+        F.col(CalculatedNames.electrical_heating_metering_point_id).alias(ColumnNames.metering_point_id),
         F.col(CalculatedNames.date),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()

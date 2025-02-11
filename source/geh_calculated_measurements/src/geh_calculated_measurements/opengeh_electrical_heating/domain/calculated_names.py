@@ -19,7 +19,6 @@ class CalculatedNames:
     net_consumption_period_start = "net_consumption_period_start"
     overlap_period_end = "overlap_period_end"
     overlap_period_start = "overlap_period_start"
-    parent_net_settlement_group = "parent_net_settlement_group"
     parent_period_end = "parent_period_end"
     parent_period_start = "parent_period_start"
     period_energy_limit = "period_energy_limit"
