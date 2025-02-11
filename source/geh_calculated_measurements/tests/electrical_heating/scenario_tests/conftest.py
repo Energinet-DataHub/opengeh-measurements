@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 from geh_common.telemetry import logging_configuration
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
 from geh_calculated_measurements.opengeh_electrical_heating.domain import (
     ColumnNames,
@@ -80,9 +80,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(
-        F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date)
-    )
+    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date))
 
     # Return test cases
     return TestCases(

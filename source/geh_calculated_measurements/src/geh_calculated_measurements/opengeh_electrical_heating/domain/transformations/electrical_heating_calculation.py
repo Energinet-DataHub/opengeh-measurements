@@ -17,27 +17,19 @@ _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
 
 
-def calculate_electrical_heating_in_local_time(
-    old_consumption_energy, metering_point_periods
-):
+def calculate_electrical_heating_in_local_time(old_consumption_energy, metering_point_periods):
     metering_point_periods = _calculate_period_limit(metering_point_periods)
-    metering_point_periods = _find_source_metering_point_for_energy(
-        metering_point_periods
-    )
+    metering_point_periods = _find_source_metering_point_for_energy(metering_point_periods)
 
-    metering_point_periods_with_energy = (
-        _join_source_metering_point_periods_with_energy(
-            old_consumption_energy,
-            metering_point_periods,
-        )
+    metering_point_periods_with_energy = _join_source_metering_point_periods_with_energy(
+        old_consumption_energy,
+        metering_point_periods,
     )
     metering_point_periods_with_energy = _filter_parent_child_overlap_period_and_year(
         metering_point_periods_with_energy
     )
 
-    new_electrical_heating = _aggregate_quantity_over_period(
-        metering_point_periods_with_energy
-    )
+    new_electrical_heating = _aggregate_quantity_over_period(metering_point_periods_with_energy)
     new_electrical_heating = _impose_period_quantity_limit(new_electrical_heating)
     return new_electrical_heating
 
@@ -71,8 +63,7 @@ def _find_source_metering_point_for_energy(
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col(CalculatedNames.parent_net_settlement_group)
-            == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
+            F.col(CalculatedNames.parent_net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
             F.col(CalculatedNames.net_consumption_metering_point_id),
         )
         .otherwise(F.col(ColumnNames.parent_metering_point_id))
@@ -89,32 +80,20 @@ def _join_source_metering_point_periods_with_energy(
         .join(
             parent_and_child_metering_point_and_periods.alias("metering_point"),
             F.col(f"energy.{ColumnNames.metering_point_id}")
-            == F.col(
-                f"metering_point.{CalculatedNames.energy_source_metering_point_id}"
-            ),
+            == F.col(f"metering_point.{CalculatedNames.energy_source_metering_point_id}"),
             "inner",
         )
         .select(
-            F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(
-                CalculatedNames.parent_period_start
+            F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
+            F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
+            F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
+                ColumnNames.metering_point_id
             ),
-            F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(
-                CalculatedNames.parent_period_end
-            ),
-            F.col(
-                f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}"
-            ).alias(ColumnNames.metering_point_id),
             F.col(f"energy.{CalculatedNames.date}").alias(CalculatedNames.date),
             F.col(f"energy.{ColumnNames.quantity}").alias(ColumnNames.quantity),
-            F.col(f"metering_point.{CalculatedNames.period_energy_limit}").alias(
-                CalculatedNames.period_energy_limit
-            ),
-            F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(
-                CalculatedNames.overlap_period_start
-            ),
-            F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(
-                CalculatedNames.overlap_period_end
-            ),
+            F.col(f"metering_point.{CalculatedNames.period_energy_limit}").alias(CalculatedNames.period_energy_limit),
+            F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
+            F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
         )
     )
 
@@ -125,10 +104,7 @@ def _filter_parent_child_overlap_period_and_year(
     return time_series_points.where(
         (F.col(CalculatedNames.date) >= F.col(CalculatedNames.overlap_period_start))
         & (F.col(CalculatedNames.date) < F.col(CalculatedNames.overlap_period_end))
-        & (
-            F.year(F.col(CalculatedNames.date))
-            == F.year(F.col(CalculatedNames.period_year))
-        )
+        & (F.year(F.col(CalculatedNames.date)) == F.year(F.col(CalculatedNames.period_year)))
     )
 
 
@@ -143,9 +119,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
     return time_series_points.select(
-        F.sum(F.col(ColumnNames.quantity))
-        .over(period_window)
-        .alias(CalculatedNames.cumulative_quantity),
+        F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),
         F.col(CalculatedNames.date),
         F.col(ColumnNames.quantity),
@@ -156,10 +130,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.when(
-            (
-                F.col(CalculatedNames.cumulative_quantity)
-                >= F.col(CalculatedNames.period_energy_limit)
-            )
+            (F.col(CalculatedNames.cumulative_quantity) >= F.col(CalculatedNames.period_energy_limit))
             & (
                 F.col(CalculatedNames.cumulative_quantity) - F.col(ColumnNames.quantity)
                 < F.col(CalculatedNames.period_energy_limit)
@@ -169,8 +140,7 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
             - F.col(CalculatedNames.cumulative_quantity),
         )
         .when(
-            F.col(CalculatedNames.cumulative_quantity)
-            > F.col(CalculatedNames.period_energy_limit),
+            F.col(CalculatedNames.cumulative_quantity) > F.col(CalculatedNames.period_energy_limit),
             0,
         )
         .otherwise(

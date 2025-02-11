@@ -2,12 +2,12 @@ from pathlib import Path
 
 import pytest
 from geh_common.telemetry import logging_configuration
-from pyspark.sql import SparkSession
 from geh_common.testing.dataframes import (
     AssertDataframesConfiguration,
     read_csv,
 )
 from geh_common.testing.scenario_testing import TestCase, TestCases
+from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.opengeh_capacity_settlement.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,

@@ -25,28 +25,18 @@ def execute(
 
     Returns the calculated electrical heating in UTC where the new value has changed.
     """
-    consumption_energy = T.get_daily_consumption_energy_in_local_time(
-        time_series_points, time_zone
-    )
+    consumption_energy = T.get_daily_consumption_energy_in_local_time(time_series_points, time_zone)
 
-    old_electrical_heating = T.get_electrical_heating_in_local_time(
-        time_series_points, time_zone
-    )
+    old_electrical_heating = T.get_electrical_heating_in_local_time(time_series_points, time_zone)
 
     metering_point_periods = T.get_joined_metering_point_periods_in_local_time(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
 
-    new_electrical_heating = T.calculate_electrical_heating_in_local_time(
-        consumption_energy, metering_point_periods
-    )
+    new_electrical_heating = T.calculate_electrical_heating_in_local_time(consumption_energy, metering_point_periods)
 
-    changed_electrical_heating = T.filter_unchanged_electrical_heating(
-        new_electrical_heating, old_electrical_heating
-    )
+    changed_electrical_heating = T.filter_unchanged_electrical_heating(new_electrical_heating, old_electrical_heating)
 
-    changed_electrical_heating_in_utc = convert_to_utc(
-        changed_electrical_heating, time_zone
-    )
+    changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
     return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)

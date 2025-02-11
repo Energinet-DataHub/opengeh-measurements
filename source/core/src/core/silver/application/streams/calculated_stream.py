@@ -2,10 +2,10 @@ import sys
 from typing import Optional
 
 import geh_common.telemetry.logging_configuration as config
-from opentelemetry.trace import SpanKind
-from pyspark.sql import DataFrame, SparkSession
 from geh_common.telemetry import use_span
 from geh_common.telemetry.span_recording import span_record_exception
+from opentelemetry.trace import SpanKind
+from pyspark.sql import DataFrame, SparkSession
 
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.application.config.spark import initialize_spark
@@ -28,9 +28,7 @@ def execute(applicationinsights_connection_string: Optional[str] = None) -> None
         extras={"Subsystem": "measurements"},
     )
 
-    with config.get_tracer().start_as_current_span(
-        __name__, kind=SpanKind.SERVER
-    ) as span:
+    with config.get_tracer().start_as_current_span(__name__, kind=SpanKind.SERVER) as span:
         try:
             spark = initialize_spark()
             _execute(spark)
