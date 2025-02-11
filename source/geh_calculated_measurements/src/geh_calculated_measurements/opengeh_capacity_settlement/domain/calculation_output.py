@@ -7,6 +7,8 @@ from pyspark.sql import DataFrame
 class CalculationOutput:
     """Contains the output of a calculation."""
 
-    measurements: DataFrame | None = None
+    measurements: DataFrame
 
-    calculations: DataFrame | None = None
+    calculations: DataFrame
+
+    ten_largest_quantities: DataFrame
