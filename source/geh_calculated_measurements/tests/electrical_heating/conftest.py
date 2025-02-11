@@ -4,9 +4,9 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
+from geh_common.telemetry.logging_configuration import configure_logging
 from pyspark.sql import SparkSession
-from telemetry_logging.logging_configuration import configure_logging
-from testcommon.delta_lake import create_database, create_table
+from geh_common.testing.delta_lake import create_database, create_table
 
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     CalculatedMeasurements,
@@ -46,7 +46,9 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
 
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+    configure_logging(
+        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
+    )
 
 
 @pytest.fixture(scope="session")
@@ -59,7 +61,11 @@ def tests_path() -> str:
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
     return (
-        PROJECT_ROOT / "src" / "geh_calculated_measurements" / "opengeh_electrical_heating" / "contracts"
+        PROJECT_ROOT
+        / "src"
+        / "geh_calculated_measurements"
+        / "opengeh_electrical_heating"
+        / "contracts"
     ).as_posix()
 
 
@@ -75,7 +81,9 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
+def calculated_measurements(
+    spark: SparkSession, test_files_folder_path: str
+) -> CalculatedMeasurements:
     create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
 
     create_table(

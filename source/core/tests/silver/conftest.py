@@ -67,7 +67,9 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 def _create_schemas(spark: SparkSession) -> None:
     catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
+    spark.sql(
+        f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}"
+    )
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.bronze_database_name}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")
@@ -122,6 +124,8 @@ def tests_path(source_path: str) -> str:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    from telemetry_logging.logging_configuration import configure_logging
+    from geh_common.telemetry.logging_configuration import configure_logging
 
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+    configure_logging(
+        cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name"
+    )

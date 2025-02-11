@@ -1,14 +1,19 @@
 from pathlib import Path
 
 import pytest
+from geh_common.telemetry import logging_configuration
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from telemetry_logging import logging_configuration
-from testcommon.dataframes import AssertDataframesConfiguration, read_csv
-from testcommon.etl import TestCase, TestCases
+from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
+from geh_common.testing.scenario_testing import TestCase, TestCases
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain import ColumnNames, execute
-from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain import (
+    ColumnNames,
+    execute,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import (
+    CalculatedNames,
+)
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -23,7 +28,9 @@ from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.elect
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
-from tests.electrical_heating.scenario_tests.electrical_heating_test_args import ElectricalHeatingTestArgs
+from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
+    ElectricalHeatingTestArgs,
+)
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
@@ -73,7 +80,9 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date))
+    actual = actual.df.orderBy(
+        F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date)
+    )
 
     # Return test cases
     return TestCases(

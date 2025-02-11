@@ -1,7 +1,9 @@
-from testcommon.container_test import DatabricksApiClient
+from geh_common.testing.container_test import DatabricksApiClient
 
 
-def test__databricks_job_starts_and_stops_successfully(databricks_api_client: DatabricksApiClient) -> None:
+def test__databricks_job_starts_and_stops_successfully(
+    databricks_api_client: DatabricksApiClient,
+) -> None:
     """
     Tests that a Databricks electrical heating job runs successfully to completion.
     """

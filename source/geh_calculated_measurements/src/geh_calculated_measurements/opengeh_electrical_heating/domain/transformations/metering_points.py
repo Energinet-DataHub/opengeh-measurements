@@ -1,13 +1,19 @@
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as F
-from pyspark_functions.functions import (
+from geh_common.pyspark.transformations import (
     begining_of_year,
     convert_from_utc,
 )
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
-from geh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import (
+    CalculatedNames,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import (
+    ColumnNames,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import (
+    MeteringPointType,
+)
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -38,7 +44,8 @@ def _join_children_to_parent_metering_point(
         # Inner join because there is no reason to calculate if there is no electrical heating metering point
         .join(
             child_metering_point_and_periods.where(
-                F.col(ColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
+                F.col(ColumnNames.metering_point_type)
+                == MeteringPointType.ELECTRICAL_HEATING.value
             ).alias("electrical_heating"),
             F.col(f"electrical_heating.{ColumnNames.parent_metering_point_id}")
             == F.col(f"parent.{ColumnNames.metering_point_id}"),
@@ -48,17 +55,26 @@ def _join_children_to_parent_metering_point(
         # Net consumption is only relevant for net settlement group 2
         .join(
             child_metering_point_and_periods.where(
-                F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value
+                F.col(ColumnNames.metering_point_type)
+                == MeteringPointType.NET_CONSUMPTION.value
             ).alias("net_consumption"),
             F.col(f"net_consumption.{ColumnNames.parent_metering_point_id}")
             == F.col(f"parent.{ColumnNames.metering_point_id}"),
             "left",
         )
         .select(
-            F.col(f"parent.{ColumnNames.metering_point_id}").alias(ColumnNames.parent_metering_point_id),
-            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(CalculatedNames.parent_net_settlement_group),
-            F.col(f"parent.{ColumnNames.period_from_date}").alias(CalculatedNames.parent_period_start),
-            F.col(f"parent.{ColumnNames.period_to_date}").alias(CalculatedNames.parent_period_end),
+            F.col(f"parent.{ColumnNames.metering_point_id}").alias(
+                ColumnNames.parent_metering_point_id
+            ),
+            F.col(f"parent.{ColumnNames.net_settlement_group}").alias(
+                CalculatedNames.parent_net_settlement_group
+            ),
+            F.col(f"parent.{ColumnNames.period_from_date}").alias(
+                CalculatedNames.parent_period_start
+            ),
+            F.col(f"parent.{ColumnNames.period_to_date}").alias(
+                CalculatedNames.parent_period_end
+            ),
             F.col(f"electrical_heating.{ColumnNames.metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
@@ -71,8 +87,12 @@ def _join_children_to_parent_metering_point(
             F.col(f"net_consumption.{ColumnNames.metering_point_id}").alias(
                 CalculatedNames.net_consumption_metering_point_id
             ),
-            F.col(f"net_consumption.{ColumnNames.coupled_date}").alias(CalculatedNames.net_consumption_period_start),
-            F.col(f"net_consumption.{ColumnNames.uncoupled_date}").alias(CalculatedNames.net_consumption_period_end),
+            F.col(f"net_consumption.{ColumnNames.coupled_date}").alias(
+                CalculatedNames.net_consumption_period_start
+            ),
+            F.col(f"net_consumption.{ColumnNames.uncoupled_date}").alias(
+                CalculatedNames.net_consumption_period_end
+            ),
         )
     )
 
@@ -134,7 +154,10 @@ def _find_parent_child_overlap_period(
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
         ).alias(CalculatedNames.overlap_period_end),
-    ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
+    ).where(
+        F.col(CalculatedNames.overlap_period_start)
+        < F.col(CalculatedNames.overlap_period_end)
+    )
 
 
 def _split_period_by_year(
@@ -157,16 +180,20 @@ def _split_period_by_year(
         F.col(ColumnNames.parent_metering_point_id),
         F.col(CalculatedNames.parent_net_settlement_group),
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col(CalculatedNames.period_year)),
+            F.year(F.col(CalculatedNames.parent_period_start))
+            == F.year(F.col(CalculatedNames.period_year)),
             F.col(CalculatedNames.parent_period_start),
         )
         .otherwise(begining_of_year(date=F.col(CalculatedNames.period_year)))
         .alias(CalculatedNames.parent_period_start),
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_end)) == F.year(F.col(CalculatedNames.period_year)),
+            F.year(F.col(CalculatedNames.parent_period_end))
+            == F.year(F.col(CalculatedNames.period_year)),
             F.col(CalculatedNames.parent_period_end),
         )
-        .otherwise(begining_of_year(date=F.col(CalculatedNames.period_year), years_to_add=1))
+        .otherwise(
+            begining_of_year(date=F.col(CalculatedNames.period_year), years_to_add=1)
+        )
         .alias(CalculatedNames.parent_period_end),
         F.col(CalculatedNames.overlap_period_start),
         F.col(CalculatedNames.overlap_period_end),
