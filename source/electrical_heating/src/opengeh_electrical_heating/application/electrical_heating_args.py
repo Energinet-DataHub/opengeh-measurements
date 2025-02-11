@@ -3,16 +3,12 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional, Tuple, Type
 
-from geh_common.
+from geh_common.parsing.pydantic_settings_parsing import PydanticParsingSettings
 from pydantic import Field
 
 
 class ElectricalHeatingArgs(PydanticParsingSettings):
-    """ElectricalHeatingArgs to retrieve and validate parameters and environment variables automatically.
-
-    Parameters can come from both runtime (CLI) or from environment variables.
-    The priority is CLI parameters first and then environment variables.
-    """
+    """ElectricalHeatingArgs to retrieve and validate parameters and environment variables."""
 
     catalog_name: str
     time_zone: str = "Europe/Copenhagen"
