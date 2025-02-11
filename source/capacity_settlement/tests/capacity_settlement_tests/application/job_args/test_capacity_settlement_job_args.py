@@ -40,7 +40,7 @@ def sys_argv_from_contract(
 @pytest.fixture(scope="session")
 def job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
+        "CATALOG_NAME": "some_catalog",
     }
 
 

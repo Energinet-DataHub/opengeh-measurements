@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Any
 
 
-# TODO: Move to shared library
 class EnvironmentVariable(Enum):
     CATALOG_NAME = "CATALOG_NAME"
     TIME_ZONE = "TIME_ZONE"
