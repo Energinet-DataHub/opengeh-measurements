@@ -7,6 +7,7 @@ import geh_calculated_measurements.opengeh_electrical_heating.domain.transformat
 from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_measurements_daily import (
     CalculatedMeasurementsDaily,
 )
+from geh_calculated_measurements.opengeh_electrical_heating.domain.types import MeteringPointType
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,

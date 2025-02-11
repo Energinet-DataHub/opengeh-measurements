@@ -7,9 +7,6 @@ from geh_calculated_measurements.opengeh_electrical_heating.domain.transformatio
     calculate_daily_quantity,
 )
 from geh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
-    TimeSeriesPoints,
-)
 
 
 def get_daily_energy_in_local_time(
