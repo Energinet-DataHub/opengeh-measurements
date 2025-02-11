@@ -1,15 +1,17 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
     CalculatedMeasurements,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import TimeSeriesPoints
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
+    TimeSeriesPoints,
+)
 
 
 class Repository:

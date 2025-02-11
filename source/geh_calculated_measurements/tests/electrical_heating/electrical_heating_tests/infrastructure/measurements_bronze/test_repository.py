@@ -1,6 +1,9 @@
 from pyspark.sql import SparkSession
 
-from opengeh_electrical_heating.infrastructure import CalculatedMeasurements, MeasurementsRepository
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+    CalculatedMeasurements,
+    MeasurementsRepository,
+)
 
 
 def test__write_measurements__can_be_read(

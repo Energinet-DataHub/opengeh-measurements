@@ -5,10 +5,10 @@ from pyspark_functions.functions import (
     convert_from_utc,
 )
 
-from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
-from opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
-from opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import MeteringPointType
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )

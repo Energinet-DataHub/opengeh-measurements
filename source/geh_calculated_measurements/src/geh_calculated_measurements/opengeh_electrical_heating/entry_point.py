@@ -1,6 +1,6 @@
 import os
 
-from opengeh_electrical_heating.application import (
+from geh_calculated_measurements.opengeh_electrical_heating.application import (
     execute_application,
 )
 

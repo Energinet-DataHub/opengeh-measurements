@@ -9,25 +9,25 @@ from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from opengeh_electrical_heating.infrastructure import CalculatedMeasurements
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import CalculatedMeasurements
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_schema,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
-from tests.utils.delta_table_utils import (
+from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
+from tests.electrical_heating.utils.delta_table_utils import (
     read_from_csv,
 )
-from tests.utils.measurements_utils import create_calculated_measurements_dataframe
+from tests.electrical_heating.utils.measurements_utils import create_calculated_measurements_dataframe
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -45,7 +45,7 @@ def spark() -> Generator[SparkSession, None, None]:
     Create a Spark session with Delta Lake enabled.
     """
     session = (
-        SparkSession.builder.appName("testcommon")
+        SparkSession.builder.appName("testcommon")  # # type: ignore
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config(
             "spark.sql.catalog.spark_catalog",
@@ -70,13 +70,15 @@ def configure_dummy_logging() -> None:
 @pytest.fixture(scope="session")
 def tests_path() -> str:
     """Returns the tests folder path."""
-    return (PROJECT_ROOT / "tests").as_posix()
+    return (PROJECT_ROOT / "tests" / "electrical_heating").as_posix()
 
 
 @pytest.fixture(scope="session")
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
-    return (PROJECT_ROOT / "contracts").as_posix()
+    return (
+        PROJECT_ROOT / "src" / "geh_calculated_measurements" / "opengeh_electrical_heating" / "contracts"
+    ).as_posix()
 
 
 @pytest.fixture(scope="session")

@@ -3,9 +3,9 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 from pyspark_functions.functions import days_in_year
 
-from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
-from opengeh_electrical_heating.domain.column_names import ColumnNames
-from opengeh_electrical_heating.domain.types import NetSettlementGroup
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.types import NetSettlementGroup
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""

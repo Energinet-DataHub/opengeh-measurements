@@ -7,10 +7,10 @@ from datetime import datetime
 import configargparse
 from telemetry_logging import Logger, logging_configuration
 
-from opengeh_electrical_heating.application.electrical_heating_args import (
+from geh_calculated_measurements.opengeh_electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from opengeh_electrical_heating.application.job_args.environment_variables import (
+from geh_calculated_measurements.opengeh_electrical_heating.application.job_args.environment_variables import (
     get_catalog_name,
     get_electricity_market_data_path,
     get_time_zone,

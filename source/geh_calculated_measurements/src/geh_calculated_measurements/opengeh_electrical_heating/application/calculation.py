@@ -8,15 +8,17 @@ from pyspark.sql import SparkSession
 from telemetry_logging import use_span
 from telemetry_logging.span_recording import span_record_exception
 
-from opengeh_electrical_heating.application.electrical_heating_args import ElectricalHeatingArgs
-from opengeh_electrical_heating.application.job_args.command_line_args import (
+from geh_calculated_measurements.opengeh_electrical_heating.application.electrical_heating_args import (
+    ElectricalHeatingArgs,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.application.job_args.command_line_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from opengeh_electrical_heating.domain import (
+from geh_calculated_measurements.opengeh_electrical_heating.domain import (
     execute,
 )
-from opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ElectricityMarketRepository,
     MeasurementsRepository,
     initialize_spark,

@@ -18,7 +18,8 @@ dependencies = [
 ]
 
 [project.scripts]
-geh-calculated-measurements = "geh_calculated_measurements:main"
+execute_electrical_heating = "geh_calculated_measurements.opengeh_electrical_heating.entry_point:execute"
+execute_capacity_settlement = "geh_calculated_measurements.opengeh_capacity_settlement.entry_point:execute"
 
 [build-system]
 requires = ["hatchling"]

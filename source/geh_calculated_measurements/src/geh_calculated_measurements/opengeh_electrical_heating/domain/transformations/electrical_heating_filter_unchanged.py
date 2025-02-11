@@ -1,8 +1,8 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from opengeh_electrical_heating.domain.calculated_names import CalculatedNames
-from opengeh_electrical_heating.domain.column_names import ColumnNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
 
 
 def filter_unchanged_electrical_heating(

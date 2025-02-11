@@ -1,3 +1,3 @@
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent
+CAPACITY_SETTLEMENT_DIR = Path(__file__).parent.parent

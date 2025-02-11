@@ -3,9 +3,11 @@ from pyspark_functions.functions import (
 )
 from telemetry_logging import use_span
 
-import opengeh_electrical_heating.domain.transformations as T
-from opengeh_electrical_heating.domain.calculated_measurements_daily import CalculatedMeasurementsDaily
-from opengeh_electrical_heating.infrastructure import (
+import geh_calculated_measurements.opengeh_electrical_heating.domain.transformations as T
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_measurements_daily import (
+    CalculatedMeasurementsDaily,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,

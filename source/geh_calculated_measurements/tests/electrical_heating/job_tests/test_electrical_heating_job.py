@@ -6,9 +6,11 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from opengeh_electrical_heating.application import execute_application
-from opengeh_electrical_heating.application.job_args.environment_variables import EnvironmentVariable
-from opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.application import execute_application
+from geh_calculated_measurements.opengeh_electrical_heating.application.job_args.environment_variables import (
+    EnvironmentVariable,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
 

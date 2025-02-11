@@ -4,7 +4,7 @@ from decimal import Decimal
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import lit
 
-from opengeh_electrical_heating.domain.calculated_measurements_daily import (
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_measurements_daily import (
     CalculatedMeasurementsDaily,
     calculated_measurements_daily_schema,
 )
