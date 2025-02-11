@@ -1,26 +1,10 @@
 import os
-from typing import Generator
 
 import pytest
-from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
-
-
-@pytest.fixture(scope="module", autouse=True)
-def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
-    yield
-    # Clear the cache after each test module to avoid memory issues
-    spark.catalog.clearCache()
-
-
-@pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
-    session = SparkSession.builder.appName("testcommon").getOrCreate()  # type: ignore
-    yield session
-    session.stop()
 
 
 @pytest.fixture(autouse=True)

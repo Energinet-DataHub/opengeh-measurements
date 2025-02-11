@@ -4,12 +4,13 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from telemetry_logging.logging_configuration import configure_logging
 from testcommon.delta_lake import create_database, create_table
 
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import CalculatedMeasurements
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+    CalculatedMeasurements,
+)
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
@@ -27,7 +28,9 @@ from tests.electrical_heating.testsession_configuration import TestSessionConfig
 from tests.electrical_heating.utils.delta_table_utils import (
     read_from_csv,
 )
-from tests.electrical_heating.utils.measurements_utils import create_calculated_measurements_dataframe
+from tests.electrical_heating.utils.measurements_utils import (
+    create_calculated_measurements_dataframe,
+)
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -37,27 +40,6 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     yield
     spark.catalog.clearCache()
-
-
-@pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
-    """
-    Create a Spark session with Delta Lake enabled.
-    """
-    session = (
-        SparkSession.builder.appName("testcommon")  # # type: ignore
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-        # Enable Hive support for persistence across test sessions
-        .config("spark.sql.catalogImplementation", "hive")
-        .enableHiveSupport()
-    )
-    session = configure_spark_with_delta_pip(session).getOrCreate()
-    yield session
-    session.stop()
 
 
 @pytest.fixture(autouse=True)
