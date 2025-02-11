@@ -1,7 +1,5 @@
-import os
 import uuid
-from datetime import datetime, timezone
-from typing import Optional, Tuple, Type
+from datetime import datetime
 
 from geh_common.parsing.pydantic_settings_parsing import PydanticParsingSettings
 from pydantic import Field
