@@ -16,8 +16,6 @@ from opengeh_electrical_heating.infrastructure import (
 
 @use_span()
 def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
-    execution_start_datetime = datetime.now(UTC)
-
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
     measurements_repository = MeasurementsRepository(spark, args.catalog_name)
