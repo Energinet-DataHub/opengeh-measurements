@@ -13,36 +13,22 @@ _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 
 
 def calculate_electrical_heating_in_local_time(
-    time_series_points: DataFrame, metering_point_periods: DataFrame, time_zone: str
+    time_series_points: DataFrame, periods: DataFrame, time_zone: str
 ) -> DataFrame:
-    metering_point_periods = _calculate_period_limit(metering_point_periods)
-    metering_point_periods = _find_source_metering_point_for_energy(metering_point_periods)
+    periods = _find_source_metering_point_for_energy(periods)
 
-    metering_point_periods_with_energy = _join_source_metering_point_periods_with_energy(
-        metering_point_periods,
+    periods_with_energy = _join_source_metering_point_periods_with_energy(
+        periods,
         time_series_points,
         time_zone,
     )
-    metering_point_periods_with_energy = _filter_parent_child_overlap_period_and_year(
-        metering_point_periods_with_energy
-    )
+    periods_with_energy = _filter_outside_period_time_series(periods_with_energy)
 
-    new_electrical_heating = _aggregate_quantity_over_period(metering_point_periods_with_energy)
+    periods_with_energy_and_limit = _calculate_period_limit(periods_with_energy)
+
+    new_electrical_heating = _aggregate_quantity_over_period(periods_with_energy_and_limit)
     new_electrical_heating = _impose_period_quantity_limit(new_electrical_heating)
     return new_electrical_heating
-
-
-def _calculate_period_limit(
-    parent_and_child_metering_point_and_periods: DataFrame,
-) -> DataFrame:
-    return parent_and_child_metering_point_and_periods.select(
-        "*",
-        (
-            F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
-            * _ELECTRICAL_HEATING_LIMIT_YEARLY
-            / days_in_year(F.col(CalculatedNames.parent_period_start))
-        ).alias(CalculatedNames.period_energy_limit),
-    )
 
 
 def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) -> DataFrame:
@@ -110,7 +96,6 @@ def _join_source_metering_point_periods_with_energy(
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 ColumnNames.metering_point_id
             ),
-            F.col(f"metering_point.{CalculatedNames.period_energy_limit}").alias(CalculatedNames.period_energy_limit),
             F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
             F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
             F.col(f"consumption.{CalculatedNames.date}").alias(CalculatedNames.date),
@@ -125,13 +110,26 @@ def _join_source_metering_point_periods_with_energy(
     )
 
 
-def _filter_parent_child_overlap_period_and_year(
+def _filter_outside_period_time_series(
     time_series_points: DataFrame,
 ) -> DataFrame:
     return time_series_points.where(
         (F.col(CalculatedNames.date) >= F.col(CalculatedNames.overlap_period_start))
         & (F.col(CalculatedNames.date) < F.col(CalculatedNames.overlap_period_end))
         & (F.year(F.col(CalculatedNames.date)) == F.year(F.col(CalculatedNames.period_year)))
+    )
+
+
+def _calculate_period_limit(
+    periods_with_energy: DataFrame,
+) -> DataFrame:
+    return periods_with_energy.select(
+        "*",
+        (
+            F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
+            * _ELECTRICAL_HEATING_LIMIT_YEARLY
+            / days_in_year(F.col(CalculatedNames.parent_period_start))
+        ).alias(CalculatedNames.period_energy_limit),
     )
 
 
