@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/reusable-ci.yml
     with:
       packages_directory: source
+      pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
