@@ -45,9 +45,7 @@ def execute_core_logic(
     time_zone: str,
     execution_time: str,
 ) -> CalculationOutput:
-    calculation_output = CalculationOutput()
-
-    calculation_output.calculations = spark.createDataFrame(
+    calculations = spark.createDataFrame(
         [(str(orchestration_instance_id), calculation_year, calculation_month, execution_time)],
         schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
     )
@@ -77,7 +75,6 @@ def execute_core_logic(
         ColumNames.quantity,
         ColumNames.observation_time,
     )
-    calculation_output.ten_largest_quantities = ten_largest_quantities
 
     time_series_points = _average_ten_largest_quantities_in_selection_periods(
         time_series_points_ten_largest_quantities, grouping
@@ -85,10 +82,14 @@ def execute_core_logic(
 
     time_series_points = _explode_to_daily(time_series_points, calculation_month, calculation_year, time_zone)
 
-    calculation_output.measurements = time_series_points.select(
+    measurements = time_series_points.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
+    )
+
+    calculation_output = CalculationOutput(
+        measurements=measurements, calculations=calculations, ten_largest_quantities=ten_largest_quantities
     )
 
     return calculation_output
