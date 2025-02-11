@@ -40,7 +40,7 @@ allow-direct-references = true
 
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output.
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_electrical_heating -ra -vv -s"
+addopts = " --ignore=tests/subsystem_tests --cov-report=term --cov-report=xml:coverage.xml --cov=opengeh_electrical_heating -ra -vv -s"
 
 [tool.coverage.report]
 fail_under = 0

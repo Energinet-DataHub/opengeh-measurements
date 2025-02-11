@@ -110,7 +110,6 @@ jobs:
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          pytest_addopts: --ignore=tests/container_tests
 
       - name: Build ${{ matrix.inputs.name }}
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
