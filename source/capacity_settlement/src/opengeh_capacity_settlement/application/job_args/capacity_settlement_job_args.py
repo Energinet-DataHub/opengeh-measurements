@@ -4,7 +4,7 @@ import uuid
 from argparse import Namespace
 
 import configargparse
-from telemetry_logging import Logger, logging_configuration
+from geh_common.telemetry import Logger, logging_configuration
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,

@@ -3,8 +3,8 @@ from typing import Generator
 from unittest import mock
 
 import pytest
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from pyspark.sql import SparkSession
-from telemetry_logging.logging_configuration import LoggingSettings, configure_logging
 
 from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration

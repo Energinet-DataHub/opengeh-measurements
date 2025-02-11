@@ -2,8 +2,8 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from pyspark.sql import SparkSession
-from telemetry_logging.logging_configuration import LoggingSettings, configure_logging
 from testcommon.dataframes import (
     AssertDataframesConfiguration,
     read_csv,

@@ -4,9 +4,6 @@ from unittest.mock import patch
 import pytest
 
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
-from opengeh_capacity_settlement.application.job_args.environment_variables import (
-    EnvironmentVariable,
-)
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1

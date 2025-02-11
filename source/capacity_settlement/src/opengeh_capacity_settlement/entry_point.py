@@ -1,8 +1,8 @@
 """Entry point for the capacity-settlement application."""
 
-from telemetry_logging import logging_configuration
-from telemetry_logging.decorators import start_trace
-from telemetry_logging.logger import Logger
+from geh_common.telemetry import logging_configuration
+from geh_common.telemetry.decorators import start_trace
+from geh_common.telemetry.logger import Logger
 
 from opengeh_capacity_settlement.application.execute_with_deps import _execute_with_deps
 from opengeh_capacity_settlement.application.job_args.capacity_settlement_args import CapacitySettlementArgs
