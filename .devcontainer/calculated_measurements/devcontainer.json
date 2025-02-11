@@ -1,12 +1,12 @@
 {
-  "name": "electrical_heating",
+  "name": "calculated_measurements",
   "dockerComposeFile": [
     "../../.docker/docker-compose.yml"
   ],
-  "service": "electrical_heating",
+  "service": "calculated_measurements",
   "remoteUser": "vscode",
   "shutdownAction": "none",
-  "workspaceFolder": "/workspace/source/electrical_heating",
+  "workspaceFolder": "/workspace/source/calculated_measurements",
   "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
@@ -16,7 +16,7 @@
   },
   "mounts": [
     // Persist the command history across container restarts - useful for bash history
-    "source=electrical_heating-bashhistory,target=/commandhistory,type=volume",
+    "source=calculated_measurements-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local system cache directory - speeds up the build process
@@ -58,7 +58,7 @@
           "tests"
         ],
         "python.analysis.include": [
-          "/workspace/source/electrical_heating/**/*"
+          "/workspace/source/calculated_measurements/**/*"
         ],
         "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
