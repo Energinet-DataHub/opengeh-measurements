@@ -6,7 +6,7 @@
   "service": "calculated_measurements",
   "remoteUser": "vscode",
   "shutdownAction": "none",
-  "workspaceFolder": "/workspace/source/calculated_measurements",
+  "workspaceFolder": "/workspace/source/geh_calculated_measurements",
   "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
@@ -58,7 +58,7 @@
           "tests"
         ],
         "python.analysis.include": [
-          "/workspace/source/calculated_measurements/**/*"
+          "/workspace/source/ /**/*"
         ],
         "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
