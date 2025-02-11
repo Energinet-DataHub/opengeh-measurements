@@ -56,7 +56,7 @@ def execute_core_logic(
         time_zone=time_zone,
     )
 
-    time_series_points = _transform_quarterly_time_series_to_hourly(time_series_points)
+    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points)
 
     grouping = [
         ColumNames.metering_point_id,
@@ -66,7 +66,7 @@ def execute_core_logic(
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
-        time_series_points, metering_point_periods, grouping
+        time_series_points_hourly, metering_point_periods, grouping
     )
 
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
@@ -75,13 +75,15 @@ def execute_core_logic(
         ColumNames.observation_time,
     )
 
-    time_series_points = _average_ten_largest_quantities_in_selection_periods(
+    time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
         time_series_points_ten_largest_quantities, grouping
     )
 
-    time_series_points = _explode_to_daily(time_series_points, calculation_month, calculation_year, time_zone)
+    time_series_points_exploded_to_daily = _explode_to_daily(
+        time_series_points_average_ten_largest_quantities, calculation_month, calculation_year, time_zone
+    )
 
-    measurements = time_series_points.select(
+    measurements = time_series_points_exploded_to_daily.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
