@@ -1,4 +1,3 @@
-import uuid
 from decimal import Decimal
 
 import testcommon.dataframes.assert_schemas as assert_schemas
@@ -7,7 +6,7 @@ from pyspark.sql import SparkSession
 import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
-from core.contracts.electrical_heating.v1.electrical_heating_view_v1 import electrical_heating_view_v1
+from core.contracts.electrical_heating.v1.electrical_heating_v1 import electrical_heating_v1
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.catalog_settings import CatalogSettings
 from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
@@ -20,10 +19,8 @@ def test__electrical_heating_view_v1__should_have_expected_schema(
     catalog_settings = CatalogSettings()  # type: ignore
 
     # Assert
-    submitted_transactions = spark.table(
-        f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}"
-    )
-    assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=electrical_heating_view_v1)
+    submitted_transactions = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}")
+    assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=electrical_heating_v1)
 
 
 def test__electrical_heating_view_v1__should_return_active_measurement_only(
@@ -63,7 +60,7 @@ def test__electrical_heating_view_v1__should_return_active_measurement_only(
     )
 
     # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}").where(
+    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
         f"metering_point_id = {metering_point_id}"
     )
 
@@ -77,7 +74,7 @@ def test__electrical_heating_view_v1__when_metering_point_id_is_null__should_not
 ) -> None:
     # Arrange
     catalog_settings = CatalogSettings()  # type: ignore
-    metering_point_type = str(uuid.uuid4())
+    metering_point_type = identifier_helper.create_random_metering_point_id()
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
@@ -93,7 +90,7 @@ def test__electrical_heating_view_v1__when_metering_point_id_is_null__should_not
     )
 
     # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}").where(
+    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
         f"metering_point_type = {metering_point_type}"
     )
 
@@ -122,7 +119,7 @@ def test__electrical_heating_view_v1__when_quantity_is_null__should_not_be_retur
     )
 
     # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}").where(
+    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
         f"metering_point_id = {metering_point_id}"
     )
 
@@ -151,7 +148,7 @@ def test__electrical_heating_view_v1__when_observation_time_is_null__should_not_
     )
 
     # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}").where(
+    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
         f"metering_point_id = {metering_point_id}"
     )
 
@@ -180,7 +177,7 @@ def test__electrical_heating_view_v1__when_metering_point_type_is_null__should_n
     )
 
     # Act
-    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_view_v1}").where(
+    actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
         f"metering_point_id = {metering_point_id}"
     )
 
