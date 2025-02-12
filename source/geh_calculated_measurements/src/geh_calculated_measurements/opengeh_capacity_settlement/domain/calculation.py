@@ -247,5 +247,8 @@ def _explode_to_daily(
 def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
     return time_series_points_exploded_to_daily.filter(
         (F.col(ColumNames.date) >= F.col(ColumNames.child_period_from_date))
-        & ((F.col(ColumNames.date) < F.col(ColumNames.child_period_to_date)) | F.col(ColumNames.child_period_to_date).isNull())
+        & (
+            (F.col(ColumNames.date) < F.col(ColumNames.child_period_to_date))
+            | F.col(ColumNames.child_period_to_date).isNull()
+        )
     )
