@@ -3,17 +3,16 @@ from typing import Callable
 from pyspark.sql import DataFrame
 
 from core.gold.application.ports.gold_port import GoldPort
-from core.gold.infrastructure.config.database_names import DatabaseNames
-from core.gold.infrastructure.config.storage_container_names import StorageContainerNames
-from core.gold.infrastructure.shared_helpers import (
-    EnvironmentVariable,
-    get_checkpoint_path,
-    get_env_variable_or_throw,
-    get_full_table_name,
-)
+from core.settings.catalog_settings import CatalogSettings
+from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
+from core.utility.shared_helpers import get_checkpoint_path
 
 
 class DeltaGoldAdapter(GoldPort):
+    def __init__(self) -> None:
+        self.gold_container_name = CatalogSettings().gold_container_name  # type: ignore
+        self.gold_database_name = CatalogSettings().gold_database_name  # type: ignore
+
     def start_write_stream(
         self,
         df_source_stream: DataFrame,
@@ -23,7 +22,7 @@ class DeltaGoldAdapter(GoldPort):
         terminate_on_empty: bool = False,
     ) -> None:
         datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
-        checkpoint_location = get_checkpoint_path(datalake_storage_account, StorageContainerNames.gold, table_name)
+        checkpoint_location = get_checkpoint_path(datalake_storage_account, self.gold_container_name, table_name)
         df_write_stream = (
             df_source_stream.writeStream.format("delta")
             .queryName(query_name)
@@ -37,4 +36,4 @@ class DeltaGoldAdapter(GoldPort):
             df_write_stream.start().awaitTermination()
 
     def append(self, df: DataFrame, table_name: str) -> None:
-        df.write.format("delta").mode("append").saveAsTable(get_full_table_name(DatabaseNames.gold, table_name))
+        df.write.format("delta").mode("append").saveAsTable(f"{self.gold_database_name}.{table_name}")
