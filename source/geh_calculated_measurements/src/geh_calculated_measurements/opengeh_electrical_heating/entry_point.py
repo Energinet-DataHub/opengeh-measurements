@@ -1,9 +1,10 @@
 import os
 
+import opengeh_electrical_heating.migrations.migrations_runner as migrations_runner
+
 from geh_calculated_measurements.opengeh_electrical_heating.application import (
     execute_application,
 )
-import opengeh_electrical_heating.migrations.migrations_runner as migrations_runner
 
 
 def execute() -> None:

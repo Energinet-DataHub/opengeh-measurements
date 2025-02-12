@@ -1,5 +1,7 @@
-from opengeh_electrical_heating.infrastructure import CalculatedMeasurementsDatabase
-from opengeh_electrical_heating.infrastructure import MeasurementsGoldDatabase
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+    CalculatedMeasurementsDatabase,
+    MeasurementsGoldDatabase,
+)
 
 
 def substitutions() -> dict[str, str]:

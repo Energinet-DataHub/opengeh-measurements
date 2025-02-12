@@ -4,10 +4,10 @@ from spark_sql_migrations import (
     migration_pipeline,
 )
 
-import opengeh_electrical_heating.migrations.substitutions as substitutions
-from opengeh_electrical_heating.migrations.database_names import DatabaseNames
-from opengeh_electrical_heating.migrations.table_names import TableNames
-from opengeh_electrical_heating.settings.catalog_settings import CatalogSettings
+import geh_calculated_measurements.opengeh_electrical_heating.migrations.substitutions as substitutions
+from geh_calculated_measurements.opengeh_electrical_heating.migrations.database_names import DatabaseNames
+from geh_calculated_measurements.opengeh_electrical_heating.migrations.table_names import TableNames
+from geh_calculated_measurements.opengeh_electrical_heating.settings.catalog_settings import CatalogSettings
 
 
 def migrate() -> None:
