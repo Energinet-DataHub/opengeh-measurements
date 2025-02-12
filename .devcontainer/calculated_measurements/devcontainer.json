@@ -1,5 +1,5 @@
 {
-  "name": "capacity_settlement",
+  "name": "calculated_measurements",
   "build": {
     "context": "../..",
     "dockerfile": "../Dockerfile",
@@ -8,7 +8,7 @@
       "ASDF_VERSION": "0.15.0"
     }
   },
-  "workspaceMount": "source=${localWorkspaceFolder}/source/capacity_settlement,target=/workspace,type=bind,consistency=cached",
+  "workspaceMount": "source=${localWorkspaceFolder}/source/calculated_measurements,target=/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
   "shutdownAction": "none",
@@ -24,7 +24,7 @@
   },
   "mounts": [
     // Persist the bash/zsh history between sessions
-    "source=capacity_settlement-bashhistory,target=/commandhistory,type=volume",
+    "source=calculated_measurements-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local cache directory - speeds up the build process
