@@ -2,9 +2,9 @@ import sys
 from argparse import Namespace
 from collections.abc import Callable
 
-import telemetry_logging.logging_configuration as config
+import geh_common.telemetry.logging_configuration as config
+from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
-from telemetry_logging.span_recording import span_record_exception
 
 from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
