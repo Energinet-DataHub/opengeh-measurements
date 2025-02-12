@@ -1,10 +1,12 @@
 import uuid
 
 import pytest
-from testcommon.container_test import DatabricksApiClient
+from geh_common.testing.container_test import DatabricksApiClient
 
 
-def test__databricks_job_starts_and_stops_successfully(databricks_api_client: DatabricksApiClient) -> None:
+def test__databricks_job_starts_and_stops_successfully(
+    databricks_api_client: DatabricksApiClient,
+) -> None:
     """
     Tests that a Databricks capacity settlement job runs successfully to completion.
     """
@@ -15,7 +17,11 @@ def test__databricks_job_starts_and_stops_successfully(databricks_api_client: Da
         # Act
         run_id = databricks_api_client.start_job(
             job_id,
-            [f"--orchestration-instance-id={str(uuid.uuid4())}", "--calculation-month=1", "--calculation-year=2024"],
+            [
+                f"--orchestration-instance-id={str(uuid.uuid4())}",
+                "--calculation-month=1",
+                "--calculation-year=2024",
+            ],
         )
 
         # Assert

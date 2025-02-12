@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from telemetry_logging.logging_configuration import configure_logging
+from geh_common.telemetry.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration

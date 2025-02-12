@@ -1,11 +1,17 @@
+from geh_common.pyspark.transformations import days_in_year
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
-from pyspark_functions.functions import days_in_year
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import ColumnNames
-from geh_calculated_measurements.opengeh_electrical_heating.domain.types import NetSettlementGroup
+from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import (
+    CalculatedNames,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import (
+    ColumnNames,
+)
+from geh_calculated_measurements.opengeh_electrical_heating.domain.types import (
+    NetSettlementGroup,
+)
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -34,14 +40,19 @@ def _calculate_period_limit(
     return parent_and_child_metering_point_and_periods.select(
         "*",
         (
-            F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
+            F.datediff(
+                F.col(CalculatedNames.parent_period_end),
+                F.col(CalculatedNames.parent_period_start),
+            )
             * _ELECTRICAL_HEATING_LIMIT_YEARLY
             / days_in_year(F.col(CalculatedNames.parent_period_start))
         ).alias(CalculatedNames.period_energy_limit),
     )
 
 
-def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) -> DataFrame:
+def _find_source_metering_point_for_energy(
+    metering_point_periods: DataFrame,
+) -> DataFrame:
     """Determine which metering point to use for energy data.
 
     - For net settlement group 2: use the net consumption metering point

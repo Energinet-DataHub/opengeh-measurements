@@ -1,5 +1,5 @@
+from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
-from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,

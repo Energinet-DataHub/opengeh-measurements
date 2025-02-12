@@ -342,15 +342,15 @@ wheels = [
 
 [[package]]
 name = "databricks-sdk"
-version = "0.41.0"
+version = "0.43.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-auth" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/95/68/85ba5e8c53d4ef457b555484d02bc2feece118469d727ceb53dd949c8430/databricks-sdk-0.41.0.tar.gz", hash = "sha256:dc6f7f3a81c5183ad9bc64526ca0ccea77249cabdba19189448c20534b3eb861", size = 658314 }
+sdist = { url = "https://files.pythonhosted.org/packages/86/51/6cea92cb0696a9bc0a6e68a489410f95c64052572a8245c2a91531f945e9/databricks-sdk-0.43.0.tar.gz", hash = "sha256:bd568220e741a82a54bdf464aed148b49b195aab3b7925588af5e6504c04928b", size = 669504 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/fd/d45a0d4c65da9c0d50937a689cc8554014b4b86e087db9b1a283eb567d45/databricks_sdk-0.41.0-py3-none-any.whl", hash = "sha256:ea813687889839473dc360b65ae24080c6b91dde5e74a1f57595f18b8e6507ea", size = 637455 },
+    { url = "https://files.pythonhosted.org/packages/89/de/67159629e94f0731ae21b6fe866bf0e6ae7ca76c94208d4ded3c9d0eccd2/databricks_sdk-0.43.0-py3-none-any.whl", hash = "sha256:d477aabb44ef56e6b8ade5659dcaed854228e33794ea54efea54fb45f8f19b04", size = 647354 },
 ]
 
 [[package]]
@@ -364,6 +364,41 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/38/06/a64cc4e17fe959cf60dc126bf3283fc9f22fc91f000b7f3f5e465338022d/delta-spark-3.2.0.tar.gz", hash = "sha256:641967828e47c64805f8c746513da80bea24b5f19b069cdcf64561cd3692e11d", size = 22147 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/8e/bb778f5049aa371bf80a7a781b237eb10ef104f8736fe00d25fcfee80c2b/delta_spark-3.2.0-py3-none-any.whl", hash = "sha256:c4ff3fa7218e58a702cb71eb64384b0005c4d6f0bbdd0fe0b38a53564d946e09", size = 21186 },
+]
+
+[[package]]
+name = "dependency-injector"
+version = "4.45.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/32/beb8a8aed8a07273bbc2afc6e823d2d70e5f898ed9a8cc413c45aec5642a/dependency_injector-4.45.0.tar.gz", hash = "sha256:7effdb9e45f5c2813e2fd9dc2ef2c446dd59716f66f9c772ab27b9ed16efc894", size = 1117514 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/54/f1/8151f38a1b62651ebf089974c8c393d81c2901f2fce44eeb0b9828edcca4/dependency_injector-4.45.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9a76ab1e114402f284c71039391826d9e43083169d88568ede109ff4fc85de1e", size = 1859197 },
+    { url = "https://files.pythonhosted.org/packages/97/da/4013b6ea6b358cb60f1aca64b80368a4d2ddcb5e1c14d197eabb75049d46/dependency_injector-4.45.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f4aefc511be8ba97d823a71fb52a3b0ccaa7f9387cb51444862ebcb919822cae", size = 7069850 },
+    { url = "https://files.pythonhosted.org/packages/7f/10/9f299641f1c03a2b202c988261416531ffc1f816710f0bd9aa4971f680ea/dependency_injector-4.45.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6a013c93a870a3a1ce9829dd272bd02b194ea286df48dfb9d059cf34526738b8", size = 7106114 },
+    { url = "https://files.pythonhosted.org/packages/6d/58/3aefb686a5dc25ab2f376904ac37e7a04c5b9054bfd57ce8f57121129355/dependency_injector-4.45.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e1641f25faf543df14b2395a3cea51bd0610bc7b2c1cb6ed1c13ec4bec0063e2", size = 6636391 },
+    { url = "https://files.pythonhosted.org/packages/b6/08/66bcefa816e09deb771233e5f095721c2e061ed9406383f6ebad31379dfc/dependency_injector-4.45.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:97dc40a527e488df23e9fb5b33a85f9176b730449ad2e498d6cc556dcad540ae", size = 6718172 },
+    { url = "https://files.pythonhosted.org/packages/ca/62/ed699aa2d4db0d44a8f91fb730d705c6da696b63711c82d3c2be91567c00/dependency_injector-4.45.0-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:9396c71f25744fd0ded9b171fee05ea3ca13a87c12512ddd8b7e4330f70647eb", size = 6538136 },
+    { url = "https://files.pythonhosted.org/packages/ea/ec/ed00a79e89984edde7d16313c9379c9c4eea8d9d5e0d5a2071e940f33236/dependency_injector-4.45.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:d98a490f8a2decf40ca2aa69d0559d01dd96131422fa2086626fd5949837335a", size = 6897940 },
+    { url = "https://files.pythonhosted.org/packages/f5/72/9ced97efda3ed48e803b942482b4c195caaebd09504604ff3b1d662b3c73/dependency_injector-4.45.0-cp311-cp311-win32.whl", hash = "sha256:4cec41b8dd678555ea025ad320e6354cad92b18b6433f8cd0b423b02989668c3", size = 1665406 },
+    { url = "https://files.pythonhosted.org/packages/e1/af/1690e57fae9eaf8ec285f0de409d13566759059cc5d0f6fdc42857431f95/dependency_injector-4.45.0-cp311-cp311-win_amd64.whl", hash = "sha256:5eb99c2ea049ac1065a0b4cf06166f70fac697049ddd342b88cb6a264f106faf", size = 1800647 },
+    { url = "https://files.pythonhosted.org/packages/52/9f/57324d953301136b5f709e807532183c82ee15a9982d7da8972c0223d8ae/dependency_injector-4.45.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:2144948b5218f480ca94c11e848762aa305539ec67406ccecfbcb556d06a61dd", size = 1865841 },
+    { url = "https://files.pythonhosted.org/packages/fa/7d/02ec92c0cef097047867712d702f7edefcb566f681dac87fdd1e121f3ee2/dependency_injector-4.45.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:82a0c665ee9bbb9434497a9b97bbb2018a9c427c0d014bff77dda2e0586c9020", size = 6818546 },
+    { url = "https://files.pythonhosted.org/packages/84/0e/abea9847d5a6bc3ecb4b0057842661e895c02524503bb41963f0b6b3d033/dependency_injector-4.45.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:403f44e2073986138dd95f4a8ac864453524b18385c44b838cba8a2f7f742f2e", size = 6946584 },
+    { url = "https://files.pythonhosted.org/packages/00/9a/87155cc98e2afda2deb9f81309698f756f4ab6e9f8522ce386e65dc02fb8/dependency_injector-4.45.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c2a38cf7826ff253d30958c35bc1e121af292f0f12fb5ffd1ad3ea5377b63e3b", size = 6400998 },
+    { url = "https://files.pythonhosted.org/packages/31/fd/60262f2d61d0b049107f5e3bca8f6f3321858bac3190f143e61c0dcbca29/dependency_injector-4.45.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:2b18413b2f965793f8e401996a6cc01e0aa0336568805fc822285cdc72cfb7d9", size = 6493477 },
+    { url = "https://files.pythonhosted.org/packages/8f/dc/ac111c2e17f764c9584a99be2310c9593195fe694e6db905d8c71f22ce09/dependency_injector-4.45.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:ed3e60296b3b9d29c3eb57cb44a82d7627da1a7eac68ac97fbf9bbd9e2a5cb99", size = 6317674 },
+    { url = "https://files.pythonhosted.org/packages/1b/26/6546f8acc6d3da46b3adab2fa790ffa6739c236604533f4c05e66e3a7fcd/dependency_injector-4.45.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:fd1afbbf03ed97007f6d4cb11944776e79207d9d7634ba5c4f897f4802b382ae", size = 6724126 },
+    { url = "https://files.pythonhosted.org/packages/31/c2/5580c731fd550327d9f66ff62824cb04b4a0530b5ca6997f5dd2905b383f/dependency_injector-4.45.0-cp312-cp312-win32.whl", hash = "sha256:2bfca5875aedb5a0995a4b2e5a928aef5791a58f4280d0c3003cb0720385f546", size = 1660532 },
+    { url = "https://files.pythonhosted.org/packages/52/4d/185a604a96d766f7bb8ea1017ad66a136c78593d15a294163ac258778e4a/dependency_injector-4.45.0-cp312-cp312-win_amd64.whl", hash = "sha256:5510a68445741fce2af071fd7fda177c4249f2b576d2b2b2b5af23083e4208e8", size = 1776903 },
+    { url = "https://files.pythonhosted.org/packages/fa/41/e8dc964575ef0f6e7abb90942be9e6f265d770616518216368165d3079d7/dependency_injector-4.45.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:16c17b17d1974a288b16f0d9b4eda7fae892dc2823ff1d95a93207723b681b9a", size = 1856812 },
+    { url = "https://files.pythonhosted.org/packages/30/e3/ccfe9ad88d7ee197a12954290697a8c503a0f8f049cd1e4e81f294861053/dependency_injector-4.45.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3a1cfd84779e718974b8d40eefc2d664ba69c142ca676ed97f487de05e733e9e", size = 6819924 },
+    { url = "https://files.pythonhosted.org/packages/85/e7/c3e392f005ba3072d4c6e7a5ff60391648df0f0664ad25b3570f3283c270/dependency_injector-4.45.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4b03382b9423f008bf307d4dee7e56ea1e070fc0e23481e4e327b01b9b463a9d", size = 6957754 },
+    { url = "https://files.pythonhosted.org/packages/d4/87/c6907e001a0504678c5e5ed62bc6c5c86d1668302fccd5c159d2542bef58/dependency_injector-4.45.0-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:dcba70e44a3d6436196f1ffebad0b02f0a72a7c8014d85617f21bd8535434bf4", size = 6406441 },
+    { url = "https://files.pythonhosted.org/packages/90/a7/2b003dc0e9e8624e3948289f7764aa87b59cbff392ca06c7f41d28be43b6/dependency_injector-4.45.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:73d52ba9efdbb6a1c0ba49d9c68be9cedb0abfa0e6fbdfb942371c642cb30541", size = 6558807 },
+    { url = "https://files.pythonhosted.org/packages/d1/a6/5b8f21957af82488ce2e70e321c45c3ba3707004c211c0e6b261e1c77afc/dependency_injector-4.45.0-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:9ebcefa9218941337466cf0985bdcd5d38cf84ab1d3a4d7a3cc91845e38c0d1e", size = 6354444 },
+    { url = "https://files.pythonhosted.org/packages/dd/2f/bae5beaf6ac9c5464e6016d0f94d10898c192b4528e2978a2ada44af0c21/dependency_injector-4.45.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:9d785dacb136479b0536e8b05f83a7375f09404d63eabd1be9b694eca6defea4", size = 6762151 },
+    { url = "https://files.pythonhosted.org/packages/13/6f/068b17dc76765e5344c72b85d46711a596eca1d4ee441bac7b7275dadc94/dependency_injector-4.45.0-cp313-cp313-win32.whl", hash = "sha256:3df40ff15bd31058b24cd79781b1dc2f31e0c157ee2067566dfd7a92191969e9", size = 1660060 },
+    { url = "https://files.pythonhosted.org/packages/53/d3/890c4be056256e56e97264e72b376ecad273cfa8c8dc70ce5eb623f06472/dependency_injector-4.45.0-cp313-cp313-win_amd64.whl", hash = "sha256:f018f634edf57d4b4214e007eaa2432d2410f304b170f5684bd3fdbffd244b1f", size = 1775930 },
 ]
 
 [[package]]
@@ -396,8 +431,7 @@ dependencies = [
     { name = "azure-monitor-opentelemetry" },
     { name = "configargparse" },
     { name = "delta-spark" },
-    { name = "opengeh-pyspark" },
-    { name = "opengeh-telemetry" },
+    { name = "geh-common" },
     { name = "pydantic-settings" },
     { name = "pyspark" },
     { name = "python-dateutil" },
@@ -408,7 +442,6 @@ dependencies = [
 dev = [
     { name = "databricks-sdk" },
     { name = "mypy" },
-    { name = "opengeh-testcommon" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -420,8 +453,7 @@ requires-dist = [
     { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
     { name = "configargparse", specifier = "==1.7.0" },
     { name = "delta-spark", specifier = "==3.2.0" },
-    { name = "opengeh-pyspark", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.3.1" },
-    { name = "opengeh-telemetry", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.3.1" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_4.1.0" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
@@ -430,12 +462,28 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "databricks-sdk", specifier = "==0.41.0" },
+    { name = "databricks-sdk", specifier = ">=0.41.0" },
     { name = "mypy", specifier = ">=1.14.1" },
-    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.9.1" },
+]
+
+[[package]]
+name = "geh-common"
+version = "4.1.0"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_4.1.0#d831812ff35043ab6dce4ec09a37a43203dd079d" }
+dependencies = [
+    { name = "azure-core" },
+    { name = "azure-identity" },
+    { name = "azure-keyvault-secrets" },
+    { name = "azure-monitor-opentelemetry" },
+    { name = "azure-monitor-query" },
+    { name = "databricks-sdk" },
+    { name = "delta-spark" },
+    { name = "dependency-injector" },
+    { name = "pyspark" },
+    { name = "pyyaml" },
 ]
 
 [[package]]
@@ -581,38 +629,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6d/fa/fbf4001037904031639e6bfbfc02badfc7e12f137a8afa254df6c4c8a670/oauthlib-3.2.2.tar.gz", hash = "sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918", size = 177352 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl", hash = "sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca", size = 151688 },
-]
-
-[[package]]
-name = "opengeh-pyspark"
-version = "0.0.2"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fpyspark_functions&rev=3.3.1#af6801b077f58bda0ee0906176eccc47681f25ed" }
-dependencies = [
-    { name = "opengeh-testcommon" },
-    { name = "pyspark" },
-]
-
-[[package]]
-name = "opengeh-telemetry"
-version = "2.2.1"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftelemetry&rev=3.3.1#af6801b077f58bda0ee0906176eccc47681f25ed" }
-dependencies = [
-    { name = "azure-core" },
-    { name = "azure-identity" },
-    { name = "azure-keyvault-secrets" },
-    { name = "azure-monitor-opentelemetry" },
-    { name = "azure-monitor-query" },
-]
-
-[[package]]
-name = "opengeh-testcommon"
-version = "0.1.1"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.3.0#5237e47bd87b44fa05688cb171d127a694c1b18d" }
-dependencies = [
-    { name = "databricks-sdk" },
-    { name = "delta-spark" },
-    { name = "pyspark" },
-    { name = "pyyaml" },
 ]
 
 [[package]]
