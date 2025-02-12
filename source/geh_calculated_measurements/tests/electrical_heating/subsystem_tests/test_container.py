@@ -1,7 +1,7 @@
 import uuid
 
 import pytest
-from testcommon.container_test import DatabricksApiClient
+from geh_common.testing.container_test import DatabricksApiClient
 
 
 def test__databricks_job_starts_and_stops_successfully(
@@ -20,6 +20,8 @@ def test__databricks_job_starts_and_stops_successfully(
         run_id = databricks_api_client.start_job(job_id, params)
         # Assert
         result = databricks_api_client.wait_for_job_completion(run_id)
-        assert result.value == "SUCCESS", f"Job did not complete successfully: {result.value}"
+        assert result.value == "SUCCESS", (
+            f"Job did not complete successfully: {result.value}"
+        )
     except Exception as e:
         pytest.fail(f"Databricks job test failed: {e}")
