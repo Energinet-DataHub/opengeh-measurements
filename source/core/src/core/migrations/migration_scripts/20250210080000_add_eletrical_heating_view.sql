@@ -1,4 +1,4 @@
-CREATE VIEW {gold_database}.{gold_electrical_heating_view_v1} AS
+CREATE VIEW {gold_database}.electrical_heating_view_v1 AS
 WITH RankedRows AS (
     SELECT
         *,

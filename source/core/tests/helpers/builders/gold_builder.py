@@ -12,25 +12,25 @@ class GoldMeasurementsBuilder:
 
     def add_row(
         self,
-        metering_point_id="502938475674839281",
-        observation_time=None,
-        quantity=Decimal("0.000"),
+        metering_point_id: str | None = "502938475674839281",
+        observation_time: datetime | None = datetime.now(),
+        quantity: Decimal | None = Decimal(round(random.uniform(0, 1000), 3)),
         quality=None,
-        metering_point_type="",
+        metering_point_type: str | None = random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
         transaction_id="",
-        transaction_creation_datetime=None,
+        transaction_creation_datetime=datetime.now(),
         created=None,
         modified=None,
     ):
         self.data.append(
             (
                 metering_point_id,
-                observation_time or datetime.now(),
-                quantity or Decimal(round(random.uniform(0, 1000), 3)),
+                observation_time,
+                quantity,
                 quality or random.choice(["measured", "estimated", "calculated", "missing"]),
-                metering_point_type or random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
+                metering_point_type,
                 transaction_id,
-                transaction_creation_datetime or datetime.now(),
+                transaction_creation_datetime,
                 created or datetime.now(),
                 modified or datetime.now(),
             )

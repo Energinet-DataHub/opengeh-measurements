@@ -29,6 +29,7 @@ jobs:
     uses: ./.github/workflows/reusable-ci.yml
     with:
       packages_directory: source
+      pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'
 
   # Branch policy status check
   allow_merge_ci_orchestrator:

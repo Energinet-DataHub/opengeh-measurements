@@ -46,12 +46,19 @@ runs:
     - name: Copy files for ${{ inputs.name }} prerelease
       shell: bash
       run: |
-        mkdir -p ${{ env.RELEASE_FOLDER_PATH}}
+        mkdir -p ${{ env.RELEASE_FOLDER_PATH }}
         if [ -d ${{ inputs.path }}/dist ]; then
-          cp -r ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH}}/dist
+          cp -r ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH }}/dist
         fi
-        if [ -d ${{ inputs.path }}/tests/container_tests ]; then
-          cp -r ${{ inputs.path }}/tests/container_tests ${{ env.RELEASE_FOLDER_PATH}}/container_tests
+        if [ -d ${{ inputs.path }} ]; then
+          rsync -av \
+            --include="/" \
+            --include="src**" \
+            --include="tests**" \
+            --include="pyproject.toml" \
+            --exclude="*" \
+            ${{ inputs.path }}/ \
+            ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
         fi
 
     - name: Zip files for ${{ inputs.name }} prerelease

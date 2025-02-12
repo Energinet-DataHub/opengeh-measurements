@@ -67,6 +67,12 @@ on:
       azure_keyvault_url:
         type: string
         description: The Azure KeyVault URL for the integration test environment. Requires environment to be "AzureAuth".
+      pytest_addopts:
+        type: string
+        description: |
+          Additional arguments to pass to pytest. This is useful for passing
+          arguments to pytest that are not supported by the uvtest action.
+          Any paths should be considered relative to the package directory.
         required: false
         default: ""
 
@@ -159,6 +165,11 @@ jobs:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
           tests_path: ${{ inputs.tests_directory }}
+          pytest_addopts: ${{ inputs.pytest_addopts }}
+
+      - name: Build ${{ matrix.inputs.name }}
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        run: uv build --wheel --directory ${{ matrix.inputs.path }}
 
       - name: Create prerelease for ${{ matrix.inputs.name }}
         uses: ./.github/actions/python-create-prerelease
