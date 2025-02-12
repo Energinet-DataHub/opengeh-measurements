@@ -41,7 +41,7 @@ runs:
             --include="tests**/" \                  # Include all tests folders
             --include="**/subsystem_tests/***" \    # Include all files in subsystem_tests folders
             --include="pyproject.toml" \            # Include pyproject.toml
-            --include="README.md" \                 # Include README.md    
+            --include="README.md" \                 # Include README.md
             --exclude="*" \                         # Exclude everything else
             ${{ inputs.path }}/ \
             ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
