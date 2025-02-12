@@ -66,6 +66,7 @@ runs:
               --include="**/subsystem_tests/***" \
               --include="pyproject.toml" \
               --include="README.md" \
+              --include=".python-version" \
               --exclude="*" \
               ${{ inputs.path }}/ \
               ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
