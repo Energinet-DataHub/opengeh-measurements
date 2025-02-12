@@ -19,6 +19,7 @@ dependencies = [
 
 [project.scripts]
 execute = "opengeh_electrical_heating.entry_point:execute"
+migrate = "opengeh_electrical_heating.entry_points:migrate"
 
 [dependency-groups]
 dev = [
