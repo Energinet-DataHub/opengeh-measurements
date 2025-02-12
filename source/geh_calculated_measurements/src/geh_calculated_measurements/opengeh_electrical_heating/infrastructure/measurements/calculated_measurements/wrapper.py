@@ -1,5 +1,5 @@
+from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
-from pyspark_functions.data_frame_wrapper import DataFrameWrapper
 
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_schema,

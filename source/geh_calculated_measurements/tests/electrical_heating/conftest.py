@@ -4,9 +4,9 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
+from geh_common.telemetry.logging_configuration import configure_logging
+from geh_common.testing.delta_lake import create_database, create_table
 from pyspark.sql import SparkSession
-from telemetry_logging.logging_configuration import configure_logging
-from testcommon.delta_lake import create_database, create_table
 
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     CalculatedMeasurements,
