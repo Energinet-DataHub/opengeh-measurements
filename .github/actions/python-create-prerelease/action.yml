@@ -18,8 +18,10 @@ inputs:
     default: "true"
   create_subsystem_release:
     description: |
-      If true, the release name will be "{package_name}_{version}_{issue_number}".
-      Otherwise, the release name will be "{package_name}_{issue_number}".
+      If true, the release will include a directory called `subsystem_tests`, which
+      contains the `src`, `tests`, and `subsystem_tests` directories, the `pyproject.toml`,
+      and the `README.md` files.
+      This is useful is you need to test parts of the system in CD.
     required: false
     default: "false"
   github_token:

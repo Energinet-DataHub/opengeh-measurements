@@ -30,6 +30,7 @@ jobs:
     with:
       packages_directory: source
       pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'
+      create_subsystem_release: true
 
   # Branch policy status check
   allow_merge_ci_orchestrator:
