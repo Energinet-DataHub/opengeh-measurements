@@ -23,6 +23,8 @@ class ColumNames:
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
+    child_period_from_date = "child_period_from_date"
+    child_period_to_date = "child_period_to_date"
     # Ephemeral columns
     selection_period_start = "selection_period_start"
     selection_period_end = "selection_period_end"
@@ -69,6 +71,8 @@ def execute_core_logic(
         ColumNames.selection_period_start,
         ColumNames.selection_period_end,
         ColumNames.child_metering_point_id,
+        ColumNames.child_period_from_date,
+        ColumNames.child_period_to_date,
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
@@ -92,7 +96,9 @@ def execute_core_logic(
         time_zone,
     )
 
-    measurements = time_series_points_exploded_to_daily.select(
+    time_series_points_within_child_period = _filter_date_within_child_period(time_series_points_exploded_to_daily)
+
+    measurements = time_series_points_within_child_period.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
@@ -236,3 +242,13 @@ def _explode_to_daily(
     )
 
     return df
+
+
+def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
+    return time_series_points_exploded_to_daily.filter(
+        (F.col(ColumNames.date) >= F.col(ColumNames.child_period_from_date))
+        & (
+            (F.col(ColumNames.date) < F.col(ColumNames.child_period_to_date))
+            | F.col(ColumNames.child_period_to_date).isNull()
+        )
+    )
