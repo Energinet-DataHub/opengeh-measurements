@@ -1,11 +1,11 @@
 import random
 
-from gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.infrastructure.adapters.delta_silver_adapter import DeltaSilverAdapter
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
+from tests.gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 
 
 def test__read_stream__should_return_dataframe(spark: SparkSession, create_silver_tables):

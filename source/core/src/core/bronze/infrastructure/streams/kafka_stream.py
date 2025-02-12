@@ -1,7 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.config import BronzeTableNames
-from core.bronze.infrastructure.config.storage_container_names import StorageContainerNames
 from core.bronze.infrastructure.settings import (
     KafkaAuthenticationSettings,
     StorageAccountSettings,
@@ -18,10 +17,11 @@ class KafkaStream:
         self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
         self.bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+        self.bronze_container_name = CatalogSettings().bronze_container_name  # type: ignore
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = get_checkpoint_path(
-            self.data_lake_settings, StorageContainerNames.bronze, "submitted_transactions"
+            self.data_lake_settings, self.bronze_container_name, "submitted_transactions"
         )
         write_stream = (
             spark.readStream.format("kafka")
@@ -43,7 +43,7 @@ class KafkaStream:
         dataframe: DataFrame,
     ):
         checkpoint_location = get_checkpoint_path(
-            self.data_lake_settings, StorageContainerNames.bronze, "processed_transactions"
+            self.data_lake_settings, self.bronze_container_name, "processed_transactions"
         )
         event_hub_instance = KafkaAuthenticationSettings().event_hub_instance  # type: ignore
 
