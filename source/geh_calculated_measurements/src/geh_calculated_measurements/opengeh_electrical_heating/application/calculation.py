@@ -83,7 +83,6 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
 
     # Execute the domain logic
     execute(
-        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
