@@ -40,7 +40,9 @@ def execute_application(
         extras={"Subsystem": "measurements"},
     )
 
-    with config.get_tracer().start_as_current_span(__name__, kind=SpanKind.SERVER) as span:
+    with config.get_tracer().start_as_current_span(
+        __name__, kind=SpanKind.SERVER
+    ) as span:
         # Try/except added to enable adding custom fields to the exception as
         # the span attributes do not appear to be included in the exception.
         try:
@@ -73,17 +75,22 @@ def execute_application(
 @use_span()
 def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    electricity_market_repository = ElectricityMarketRepository(
+        spark, args.electricity_market_data_path
+    )
     measurements_repository = MeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
     time_series_points = measurements_repository.read_time_series_points()
-    consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
-    child_metering_point_periods = electricity_market_repository.read_child_metering_points()
+    consumption_metering_point_periods = (
+        electricity_market_repository.read_consumption_metering_point_periods()
+    )
+    child_metering_point_periods = (
+        electricity_market_repository.read_child_metering_points()
+    )
 
     # Execute the domain logic
     execute(
-        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
