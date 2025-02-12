@@ -36,13 +36,13 @@ runs:
         fi
         if [ -d ${{ inputs.path }} ]; then
         rsync -avm \
-            --exclude="**/__pycache__/" \           # Exclude all __pycache__ folders
-            --include="src**" \                     # Include all src folders
-            --include="tests**/" \                  # Include all tests folders
-            --include="**/subsystem_tests/***" \    # Include all files in subsystem_tests folders
-            --include="pyproject.toml" \            # Include pyproject.toml
-            --include="README.md" \                 # Include README.md
-            --exclude="*" \                         # Exclude everything else
+            --exclude="**/__pycache__/" \
+            --include="src**" \
+            --include="tests**/" \
+            --include="**/subsystem_tests/***" \
+            --include="pyproject.toml" \
+            --include="README.md" \
+            --exclude="*" \
             ${{ inputs.path }}/ \
             ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
         fi
