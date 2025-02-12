@@ -11,6 +11,7 @@ from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measu
 )
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
     TimeSeriesPoints,
+    time_series_points_v1,
 )
 
 
@@ -42,9 +43,12 @@ class Repository:
         return CalculatedMeasurements(self._spark.read.table(self._calculated_measurements_full_table_path))
 
     def read_time_series_points(self) -> TimeSeriesPoints:
-        df = self._read_view_or_table(
-            MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
-        )
+        # TODO: the table does not yet exist in the database
+        # df = self._read_view_or_table(
+        #    MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
+        # )
+
+        df = self._spark.createDataFrame([], schema=time_series_points_v1)
         return TimeSeriesPoints(df)
 
     def _read_view_or_table(
