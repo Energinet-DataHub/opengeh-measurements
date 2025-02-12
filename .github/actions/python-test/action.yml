@@ -11,6 +11,10 @@ inputs:
     description: The path to the tests
     required: false
     default: tests
+  pytest_addopts:
+    description: Additional arguments to pass to pytest
+    required: false
+    default: ""
   github_token:
     description: The GitHub token
     required: false
@@ -38,7 +42,7 @@ runs:
 
     - name: Test
       shell: bash
-      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }}
+      run: uv run --directory ${{ inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
 
     - name: Coverage comment
       uses: MishaKav/pytest-coverage-comment@main
