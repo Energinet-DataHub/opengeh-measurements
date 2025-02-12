@@ -16,6 +16,12 @@ inputs:
       Otherwise, the release name will be "{package_name}_{issue_number}".
     required: false
     default: "true"
+  create_subsystem_release:
+    description: |
+      If true, the release name will be "{package_name}_{version}_{issue_number}".
+      Otherwise, the release name will be "{package_name}_{issue_number}".
+    required: false
+    default: "false"
   github_token:
     description: The GitHub token
     required: false
@@ -50,17 +56,17 @@ runs:
         if [ -d ${{ inputs.path }}/dist ]; then
           cp -r ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH }}/dist
         fi
-        if [ -d ${{ inputs.path }} ]; then
-        rsync -avm \
-            --exclude="**/__pycache__/" \
-            --include="src**" \
-            --include="tests**/" \
-            --include="**/subsystem_tests/***" \
-            --include="pyproject.toml" \
-            --include="README.md" \
-            --exclude="*" \
-            ${{ inputs.path }}/ \
-            ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
+        if [[ ${{ inputs.create_subsystem_release }} == 'true' ]]; then
+          rsync -avm \
+              --exclude="**/__pycache__/" \
+              --include="src**" \
+              --include="tests**/" \
+              --include="**/subsystem_tests/***" \
+              --include="pyproject.toml" \
+              --include="README.md" \
+              --exclude="*" \
+              ${{ inputs.path }}/ \
+              ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
         fi
 
     - name: Zip files for ${{ inputs.name }} prerelease
