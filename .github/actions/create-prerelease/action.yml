@@ -35,11 +35,13 @@ runs:
           cp -r ${{ inputs.path }}/dist ${{ env.RELEASE_FOLDER_PATH }}/dist
         fi
         if [ -d ${{ inputs.path }} ]; then
-          rsync -av \
-            --include="/" \
+        rsync -avm \
+            --exclude="**/__pycache__/" \
             --include="src**" \
-            --include="tests**" \
+            --include="tests**/" \
+            --include="**/subsystem_tests/***" \
             --include="pyproject.toml" \
+            --include="README.md" \
             --exclude="*" \
             ${{ inputs.path }}/ \
             ${{ env.RELEASE_FOLDER_PATH }}/subsystem_tests/
