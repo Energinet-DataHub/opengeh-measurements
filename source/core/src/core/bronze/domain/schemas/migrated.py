@@ -4,6 +4,10 @@ from core.bronze.domain.constants.column_names.bronze_migrated_column_names impo
     BronzeMigratedColumnNames,
     BronzeMigratedValuesFieldNames,
 )
+from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
+    MigrationsSilverTimeSeriesColumnNames,
+    MigrationsSilverTimeSeriesValuesFieldNames,
+)
 
 migrated_schema = StructType(
     [
@@ -33,5 +37,36 @@ migrated_schema = StructType(
         ),
         StructField(BronzeMigratedColumnNames.created_in_migrations, TimestampType(), False),
         StructField(BronzeMigratedColumnNames.created_in_measurements, TimestampType(), False),
+    ]
+)
+
+migrations_silver_time_series_schema = StructType(
+    [
+        StructField(MigrationsSilverTimeSeriesColumnNames.metering_point_id, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.type_of_mp, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.historical_flag, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.resolution, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.transaction_id, StringType(), True),
+        StructField(MigrationsSilverTimeSeriesColumnNames.transaction_insert_date, TimestampType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.unit, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.status, IntegerType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.read_reason, StringType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.valid_from_date, TimestampType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.valid_to_date, TimestampType(), False),
+        StructField(
+            MigrationsSilverTimeSeriesColumnNames.values,
+            ArrayType(
+                StructType(
+                    [
+                        StructField(MigrationsSilverTimeSeriesValuesFieldNames.position, IntegerType(), True),
+                        StructField(MigrationsSilverTimeSeriesValuesFieldNames.quality, StringType(), True),
+                        StructField(MigrationsSilverTimeSeriesValuesFieldNames.quantity, DecimalType(18, 6), True),
+                    ]
+                )
+            ),
+            False,
+        ),
+        StructField(MigrationsSilverTimeSeriesColumnNames.partitioning_col, TimestampType(), False),
+        StructField(MigrationsSilverTimeSeriesColumnNames.created, TimestampType(), False),
     ]
 )

@@ -9,7 +9,7 @@ from core.bronze.infrastructure.migrated_transactions_repository import (
 
 def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe(
     spark: SparkSession, migrations_executed: None
-):
+) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
 
@@ -22,10 +22,9 @@ def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_none_when_empty(
     spark: SparkSession, migrations_executed: None
-):
+) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
-    test_succeeded = True
 
     # Act
     migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()

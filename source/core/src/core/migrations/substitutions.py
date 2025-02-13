@@ -18,5 +18,5 @@ def substitutions() -> dict[str, str]:
         "{gold_measurements}": GoldTableNames.gold_measurements,
         "{gold_electrical_heating_view_v1}": GoldViewNames.electrical_heating_view_v1,
         "{bronze_migrated_transactions_table}": BronzeTableNames.bronze_migrated_transactions_table,
-        "{SKIP_IN_SUBSYSTEM_TEST}": "--" if "unittest" in sys.modules.keys() else "",
+        "{SKIP_IN_TEST}": "--" if "unittest" in sys.modules.keys() else "",
     }

@@ -1,4 +1,3 @@
-import numpy as np
 from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.config.table_names import MigrationsTableNames
@@ -17,11 +16,20 @@ class MigrationsSilverTimeSeriesRepository:
         source_table_name = MigrationsTableNames.silver_time_series_table
         return self._spark.read.table(f"{source_database}.{source_table_name}")
 
-    def create_chunks_of_migrations_partitions(self, partition_col: str, num_chunks: int) -> list[str]:
-        partitions = sorted(
-            [
-                str(row[partition_col])
-                for row in self.read_migrations_silver_time_series().select(partition_col).distinct().collect()
-            ]
-        )
-        return [chunk.tolist() for chunk in np.array_split(partitions, num_chunks)]
+    @staticmethod
+    def create_chunks_of_partitions_for_data_with_a_single_partition_col(
+        data, partition_col: str, num_chunks: int
+    ) -> list[list[str]]:
+        partitions = sorted([str(row[partition_col]) for row in data.select(partition_col).distinct().collect()])
+
+        chunk_size = len(partitions) // num_chunks
+        remainder = len(partitions) % num_chunks
+        chunks = []
+        start = 0
+
+        for i in range(num_chunks):
+            end = start + chunk_size + (1 if i < remainder else 0)
+            chunks.append(partitions[start:end])
+            start = end
+
+        return [chunk for chunk in chunks if len(chunk) > 0]
