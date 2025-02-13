@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {bronze_database}.{bronze_measurements_table}
+CREATE TABLE IF NOT EXISTS {bronze_database}.measurements
 (
     orchestration_type STRING,
     orchestration_instance_id STRING,
