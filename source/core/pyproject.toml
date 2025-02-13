@@ -7,8 +7,6 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings>=2.7.1",
     "geh_common @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@geh_common_4.1.0",
-    "pytest-bdd>=8.1.0",
-    "pytest-bdd-report>=1.0.1",
 ]
 
 [project.scripts]

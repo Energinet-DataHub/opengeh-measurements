@@ -287,8 +287,6 @@ source = { editable = "." }
 dependencies = [
     { name = "geh-common" },
     { name = "pydantic-settings" },
-    { name = "pytest-bdd" },
-    { name = "pytest-bdd-report" },
 ]
 
 [package.dev-dependencies]
@@ -308,8 +306,6 @@ dev = [
 requires-dist = [
     { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_4.1.0" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
-    { name = "pytest-bdd", specifier = ">=8.1.0" },
-    { name = "pytest-bdd-report", specifier = ">=1.0.1" },
 ]
 
 [package.metadata.requires-dev]
