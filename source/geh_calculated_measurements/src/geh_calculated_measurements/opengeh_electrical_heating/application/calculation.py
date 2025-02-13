@@ -26,7 +26,6 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
 
     # Execute the domain logic
     execute(
-        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
