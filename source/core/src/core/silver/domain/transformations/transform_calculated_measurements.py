@@ -25,7 +25,6 @@ def transform_calculated_measurements(df: DataFrame) -> DataFrame:
         F.col(BronzeCalculatedMeasurementsColNames.metering_point_type).alias(
             SilverMeasurementsColNames.metering_point_type
         ),
-        F.col(BronzeCalculatedMeasurementsColNames.product).alias(SilverMeasurementsColNames.product),
         F.col(BronzeCalculatedMeasurementsColNames.unit).alias(SilverMeasurementsColNames.unit),
         F.col(BronzeCalculatedMeasurementsColNames.resolution).alias(SilverMeasurementsColNames.resolution),
         F.col(BronzeCalculatedMeasurementsColNames.start_datetime).alias(SilverMeasurementsColNames.start_datetime),

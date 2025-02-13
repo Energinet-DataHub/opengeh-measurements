@@ -1,4 +1,4 @@
-from spark_sql_migrations import (
+from geh_common.migrations import (
     SparkSqlMigrationsConfiguration,
     create_and_configure_container,
     migration_pipeline,

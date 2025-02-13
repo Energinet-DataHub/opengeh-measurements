@@ -1,7 +1,6 @@
 from unittest import mock
 
-import bronze.helpers.environment_variables_helpers as environment_variables_helpers
-
+import tests.bronze.helpers.environment_variables_helpers as environment_variables_helpers
 from core.bronze.infrastructure.streams.kafka_stream import KafkaStream
 
 

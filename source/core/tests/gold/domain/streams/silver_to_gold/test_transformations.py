@@ -3,12 +3,12 @@ import random
 from decimal import Decimal
 
 import testcommon.dataframes.assert_schemas as assert_schemas
-from gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
+from tests.gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 
 
 def test__transform_silver_to_gold__should_match_gold_schema(spark: SparkSession) -> None:

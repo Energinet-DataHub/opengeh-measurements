@@ -15,6 +15,9 @@ def pytest_runtest_setup() -> None:
     """
     os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"] = "app_conn_str"
     os.environ["CATALOG_NAME"] = "spark_catalog"
+    os.environ["BRONZE_CONTAINER_NAME"] = "bronze"
+    os.environ["SILVER_CONTAINER_NAME"] = "silver"
+    os.environ["GOLD_CONTAINER_NAME"] = "gold"
     os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
@@ -119,6 +122,6 @@ def tests_path(source_path: str) -> str:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    from telemetry_logging.logging_configuration import configure_logging
+    from geh_common.telemetry.logging_configuration import configure_logging
 
     configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")

@@ -17,10 +17,9 @@ message PersistSubmittedTransaction {
   Timestamp start_datetime = 7;
   Timestamp end_datetime = 8;
   MeteringPointType metering_point_type = 9;
-  string product = 10;
-  Unit unit = 11;
-  Resolution resolution = 12;
-  repeated Point points = 13;
+  Unit unit = 10;
+  Resolution resolution = 11;
+  repeated Point points = 12;
 }
 
 message Point {
