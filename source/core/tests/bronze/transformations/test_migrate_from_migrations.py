@@ -50,14 +50,16 @@ def test__migrate_from_migrations_to_measurements__given_some_already_loaded_dat
     spark: SparkSession,
 ) -> None:
     # Arrange
-    NUM_TRANSFERED = 500
+    NEW_DATA = 500
     OLD_DATA = 1000
     migrations_time_series_data = MigrationsSilverTimeSeriesBuilder(spark)
-    for i in range(NUM_TRANSFERED):
+    for i in range(NEW_DATA):
         migrations_time_series_data.add_row(
             metering_point_id=i, created=datetime.datetime.now() - datetime.timedelta(days=1)
         )
 
+    # This unit test simulates having OLD_DATA old rows that were loaded two days ago.
+    # Under a daily load scenario, only the newer NEW_DATA data should be written.
     for i in range(OLD_DATA):
         migrations_time_series_data.add_row(
             metering_point_id=i, created=datetime.datetime.now() - datetime.timedelta(days=2)
@@ -89,5 +91,5 @@ def test__migrate_from_migrations_to_measurements__given_some_already_loaded_dat
     # Assert
     result = migrated_repository.read_measurements_bronze_migrated()
 
-    assert result.count() == count_before + NUM_TRANSFERED
+    assert result.count() == count_before + NEW_DATA
     assert_schemas.assert_schema(result.schema, migrated_schema)
