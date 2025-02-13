@@ -5,6 +5,9 @@
 # nanos: Nano units of the amount (10^-9). Must be same sign as units
 #
 # Example: 12345.6789 -> { units = 12345, nanos = 678900000 }
+from decimal import Decimal
+
+
 class DecimalValue:
     NanoFactor = 1_000_000_000
 
@@ -20,3 +23,6 @@ class DecimalValue:
 
     def to_decimal(self):
         return self.units + self.nanos / DecimalValue.NanoFactor
+
+    def protobuf_to_decimal(self) -> Decimal:
+        return Decimal(self.units) + Decimal(self.nanos) / 1_000_000_000

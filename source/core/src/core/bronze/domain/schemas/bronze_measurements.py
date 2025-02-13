@@ -20,7 +20,6 @@ bronze_measurements_schema = StructType(
         StructField(BronzeMeasurementsColumnNames.transaction_id, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), True),
         StructField(BronzeMeasurementsColumnNames.metering_point_type, StringType(), True),
-        StructField(BronzeMeasurementsColumnNames.product, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.unit, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.resolution, StringType(), True),
         StructField(BronzeMeasurementsColumnNames.start_datetime, TimestampType(), True),

@@ -5,7 +5,6 @@ class BronzeMeasurementsColumnNames:
     transaction_id = "transaction_id"
     transaction_creation_datetime = "transaction_creation_datetime"
     metering_point_type = "metering_point_type"
-    product = "product"
     unit = "unit"
     resolution = "resolution"
     start_datetime = "start_datetime"

@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 
 import core.bronze.domain.transformations.transactions_persisted_events_transformation as sut
 from core.bronze.domain.events.transactions_persisted_event import transactions_persisted_event
-from tests.bronze.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder
+from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder
 
 
 def test__transform__given_protobuf_message__when_called__then_return_dataframe_with_expected_schema(

@@ -1,0 +1,120 @@
+from datetime import datetime
+
+import pyspark.sql.functions as F
+from pyspark.sql import SparkSession
+from pyspark.sql.protobuf.functions import to_protobuf
+
+import tests.helpers.datetime_helper as datetime_helper
+from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
+    BronzeSubmittedTransactionsColumnNames,
+    ValueColumnNames,
+)
+from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
+from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
+from core.bronze.infrastructure.contracts.decimal_value import DecimalValue
+from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
+from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
+
+
+class Point:
+    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = "Q_UNSPECIFIED") -> None:
+        self.position = position
+        self.quantity = quantity
+        self.quality = quality
+
+
+class Value:
+    def __init__(
+        self,
+        version: int = 1,
+        orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
+        orchestration_type: str = "OT_UNSPECIFIED",
+        metering_point_id: str = "503928175928475638",
+        transaction_id: str = "5a76d246-ceae-459f-9e9f",
+        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
+        metering_point_type: str = "MPT_UNSPECIFIED",
+        unit: str = "U_UNSPECIFIED",
+        resolution: str = "R_UNSPECIFIED",
+        start_datetime: datetime = datetime_helper.random_datetime(),
+        end_datetime: datetime = datetime_helper.random_datetime(),
+        points: list = [Point()],
+    ) -> None:
+        self.version = version
+        self.orchestration_instance_id = orchestration_instance_id
+        self.orchestration_type = orchestration_type
+        self.metering_point_id = metering_point_id
+        self.transaction_id = transaction_id
+        self.transaction_creation_datetime = transaction_creation_datetime
+        self.metering_point_type = metering_point_type
+        self.unit = unit
+        self.resolution = resolution
+        self.start_datetime = start_datetime
+        self.end_datetime = end_datetime
+        self.points = points
+
+
+class ValueBuilder:
+    def __init__(self, spark: SparkSession):
+        self.spark = spark
+        self.data = []
+
+    def build(self):
+        if len(self.data) == 0:
+            self.data.append(Value())
+
+        df_value = self.spark.createDataFrame(self.data, schema=bronze_submitted_transactions_value_schema)
+
+        df_value = df_value.select(
+            F.struct(
+                ValueColumnNames.version,
+                ValueColumnNames.orchestration_instance_id,
+                ValueColumnNames.orchestration_type,
+                ValueColumnNames.metering_point_id,
+                ValueColumnNames.transaction_id,
+                ValueColumnNames.transaction_creation_datetime,
+                ValueColumnNames.metering_point_type,
+                ValueColumnNames.unit,
+                ValueColumnNames.resolution,
+                ValueColumnNames.start_datetime,
+                ValueColumnNames.end_datetime,
+                ValueColumnNames.points,
+            ).alias(BronzeSubmittedTransactionsColumnNames.value)
+        )
+        descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
+
+        df_value = df_value.withColumn(
+            BronzeSubmittedTransactionsColumnNames.value,
+            to_protobuf(
+                BronzeSubmittedTransactionsColumnNames.value,
+                "PersistSubmittedTransaction",
+                descFilePath=descriptor_path,
+            ),
+        )
+
+        return df_value.collect()[0][BronzeSubmittedTransactionsColumnNames.value]
+
+
+class SubmittedTransactionsBuilder:
+    def __init__(self, spark: SparkSession):
+        self.spark = spark
+        self.data = []
+
+    def add_row(
+        self,
+        key=None,
+        value=None,
+        topic=None,
+        partition=None,
+        offset=None,
+        timestamp=None,
+        timestampType=None,
+    ) -> "SubmittedTransactionsBuilder":
+        if value is None:
+            value = ValueBuilder(self.spark).build()
+
+        self.data.append((key, value, topic, partition, offset, timestamp, timestampType))
+
+        return self
+
+    def build(self):
+        return self.spark.createDataFrame(self.data, schema=submitted_transactions_schema)
