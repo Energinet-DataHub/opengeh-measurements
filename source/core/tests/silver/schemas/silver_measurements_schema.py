@@ -18,7 +18,6 @@ silver_measurements_schema = StructType(
         StructField(SilverMeasurementsColNames.transaction_id, StringType(), True),
         StructField(SilverMeasurementsColNames.transaction_creation_datetime, TimestampType(), True),
         StructField(SilverMeasurementsColNames.metering_point_type, StringType(), True),
-        StructField(SilverMeasurementsColNames.product, StringType(), True),
         StructField(SilverMeasurementsColNames.unit, StringType(), True),
         StructField(SilverMeasurementsColNames.resolution, StringType(), True),
         StructField(SilverMeasurementsColNames.start_datetime, TimestampType(), True),
