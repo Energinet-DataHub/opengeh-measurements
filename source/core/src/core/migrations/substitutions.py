@@ -14,4 +14,5 @@ def substitutions() -> dict[str, str]:
         "{gold_database}": catalog_settings.gold_database_name,
         "{gold_measurements}": GoldTableNames.gold_measurements,
         "{gold_electrical_heating_v1}": GoldViewNames.electrical_heating_v1,
+        "{gold_capacity_settlement_v1}": GoldViewNames.capacity_settlement_v1,
     }
