@@ -166,6 +166,7 @@ def test__capacity_settlement_v1__should_return_active_measurement_only(
     metering_point_id = identifier_helper.create_random_metering_point_id()
     observation_time = datetime_helper.get_datetime()
     expected_quantity = Decimal(300)
+    metering_point_type = "capacity_settlement"
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
@@ -174,18 +175,21 @@ def test__capacity_settlement_v1__should_return_active_measurement_only(
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=1),
             observation_time=observation_time,
             quantity=Decimal(100),
+            metering_point_type=metering_point_type,
         )
         .add_row(
             metering_point_id=metering_point_id,
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=2),
             observation_time=observation_time,
             quantity=Decimal(200),
+            metering_point_type=metering_point_type,
         )
         .add_row(
             metering_point_id=metering_point_id,
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
             observation_time=observation_time,
             quantity=expected_quantity,
+            metering_point_type=metering_point_type,
         )
         .build()
     )
@@ -210,20 +214,22 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
 ) -> None:
     # Arrange
     catalog_settings = CatalogSettings()  # type: ignore
-    metering_point_id = identifier_helper.create_random_metering_point_id()
+    metering_point_id_1 = identifier_helper.create_random_metering_point_id()
+    metering_point_id_2 = identifier_helper.create_random_metering_point_id()
+    metering_point_id_3 = identifier_helper.create_random_metering_point_id()
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
         .add_row(
-            metering_point_id=metering_point_id,
+            metering_point_id=metering_point_id_1,
             metering_point_type="UNKNOWN",
         )
         .add_row(
-            metering_point_id=metering_point_id,
+            metering_point_id=metering_point_id_2,
             metering_point_type="capacity_settlement",
         )
         .add_row(
-            metering_point_id=metering_point_id,
+            metering_point_id=metering_point_id_3,
             metering_point_type="consumption",
         )
         .build()
@@ -235,7 +241,7 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
 
     # Act
     actual = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.capacity_settlement_v1}").where(
-        f"metering_point_id = {metering_point_id}"
+        f"metering_point_id in ({metering_point_id_1}, {metering_point_id_2}, {metering_point_id_3})"
     )
 
     # Assert
