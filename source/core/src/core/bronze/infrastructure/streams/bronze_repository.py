@@ -15,3 +15,6 @@ class BronzeRepository:
             .option("ignoreDeletes", "true")
             .table(f"{self.bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_table}")
         )
+
+    def read_calculated_measurements(self) -> DataFrame:
+        raise NotImplementedError("Not implemented yet")
