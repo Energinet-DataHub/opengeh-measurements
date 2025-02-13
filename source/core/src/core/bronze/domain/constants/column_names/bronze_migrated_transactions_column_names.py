@@ -1,4 +1,4 @@
-class BronzeMigratedColumnNames:
+class BronzeMigratedTransactionsColumnNames:
     metering_point_id = "metering_point_id"
     type_of_mp = "type_of_mp"
     historical_flag = "historical_flag"
@@ -16,7 +16,7 @@ class BronzeMigratedColumnNames:
     created_in_measurements = "created_in_measurements"
 
 
-class BronzeMigratedValuesFieldNames:
+class BronzeMigratedTransactionsValuesFieldNames:
     position = "position"
     quality = "quality"
     quantity = "quantity"

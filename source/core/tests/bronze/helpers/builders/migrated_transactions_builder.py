@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pyspark.sql import SparkSession
 
-from core.bronze.domain.schemas.migrated import migrated_schema
+from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 
 
 class MigratedTransactionsBuilder:
@@ -49,4 +49,4 @@ class MigratedTransactionsBuilder:
         return self
 
     def build(self):
-        return self.spark.createDataFrame(self.data, schema=migrated_schema)
+        return self.spark.createDataFrame(self.data, schema=migrated_transactions_schema)

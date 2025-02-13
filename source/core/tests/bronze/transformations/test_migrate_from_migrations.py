@@ -5,12 +5,12 @@ import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import core.bronze.application.batch_scripts.migrate_from_migrations as migrate_from_migrations
-from core.bronze.domain.schemas.migrated import migrated_schema
+from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.infrastructure.migrated_transactions_repository import MigratedTransactionsRepository
 from tests.bronze.helpers.builders.migrations_silver_time_series_builder import MigrationsSilverTimeSeriesBuilder
 
 
-def test__migrate_from_migrations_to_measurements__given_no_already_loaded_data__then_perform_full_load(
+def test__migrate_time_series_from_migrations_to_measurements__given_no_already_loaded_data__then_perform_full_load(
     spark: SparkSession,
 ) -> None:
     # Arrange
@@ -31,22 +31,22 @@ def test__migrate_from_migrations_to_measurements__given_no_already_loaded_data_
     )
 
     migrated_repository = MigratedTransactionsRepository(spark)
-    count_before = migrated_repository.read_measurements_bronze_migrated().count()
+    count_before = migrated_repository.read_measurements_bronze_migrated_transactions().count()
 
     # Act
-    migrate_from_migrations.migrate_from_migrations_to_measurements(
+    migrate_from_migrations.migrate_time_series_from_migrations_to_measurements(
         migrated_transactions_repository=mock_measurements_repository,
         migrations_silver_time_series_repository=mock_migrations_repository,
     )
 
     # Assert
-    result = migrated_repository.read_measurements_bronze_migrated()
+    result = migrated_repository.read_measurements_bronze_migrated_transactions()
 
     assert result.count() == count_before + NUM_TRANSFERED
-    assert_schemas.assert_schema(result.schema, migrated_schema)
+    assert_schemas.assert_schema(result.schema, migrated_transactions_schema)
 
 
-def test__migrate_from_migrations_to_measurements__given_some_already_loaded_data__then_perform_daily_load(
+def test__migrate_time_series_from_migrations_to_measurements__given_some_already_loaded_data__then_perform_daily_load(
     spark: SparkSession,
 ) -> None:
     # Arrange
@@ -80,16 +80,16 @@ def test__migrate_from_migrations_to_measurements__given_some_already_loaded_dat
     )
 
     migrated_repository = MigratedTransactionsRepository(spark)
-    count_before = migrated_repository.read_measurements_bronze_migrated().count()
+    count_before = migrated_repository.read_measurements_bronze_migrated_transactions().count()
 
     # Act
-    migrate_from_migrations.migrate_from_migrations_to_measurements(
+    migrate_from_migrations.migrate_time_series_from_migrations_to_measurements(
         migrated_transactions_repository=mock_measurements_repository,
         migrations_silver_time_series_repository=mock_migrations_repository,
     )
 
     # Assert
-    result = migrated_repository.read_measurements_bronze_migrated()
+    result = migrated_repository.read_measurements_bronze_migrated_transactions()
 
     assert result.count() == count_before + NEW_DATA
-    assert_schemas.assert_schema(result.schema, migrated_schema)
+    assert_schemas.assert_schema(result.schema, migrated_transactions_schema)

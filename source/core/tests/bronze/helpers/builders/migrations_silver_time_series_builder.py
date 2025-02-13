@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from pyspark.sql import SparkSession
 
-from core.bronze.domain.schemas.migrated import migrations_silver_time_series_schema
+from core.bronze.domain.schemas.migrated_transactions import migrations_silver_time_series_schema
 
 
 class MigrationsSilverTimeSeriesBuilder:

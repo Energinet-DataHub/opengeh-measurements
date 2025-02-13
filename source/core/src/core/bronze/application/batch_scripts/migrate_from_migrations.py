@@ -16,7 +16,7 @@ from core.bronze.infrastructure.migration_data.silver_time_series_repository imp
 )
 
 
-def migrate_from_migrations_to_measurements(
+def migrate_time_series_from_migrations_to_measurements(
     migrated_transactions_repository: Optional[MigratedTransactionsRepository] = None,
     migrations_silver_time_series_repository: Optional[MigrationsSilverTimeSeriesRepository] = None,
 ) -> None:

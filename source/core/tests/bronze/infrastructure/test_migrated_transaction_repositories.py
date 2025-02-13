@@ -1,23 +1,23 @@
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-from core.bronze.domain.schemas.migrated import migrated_schema
+from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 
 
-def test__read_measurements_bronze_migrated__should_return_the_correct_dataframe(
+def test__read_measurements_bronze_migrated_transactions__should_return_the_correct_dataframe(
     spark: SparkSession, migrations_executed: None
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
 
     # Act
-    migrated_transactions = repo.read_measurements_bronze_migrated()
+    migrated_transactions = repo.read_measurements_bronze_migrated_transactions()
 
     # Assert
-    assert_schemas.assert_schema(actual=migrated_transactions.schema, expected=migrated_schema)
+    assert_schemas.assert_schema(actual=migrated_transactions.schema, expected=migrated_transactions_schema)
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_none_when_empty(

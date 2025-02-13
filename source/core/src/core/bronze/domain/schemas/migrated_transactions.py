@@ -1,42 +1,42 @@
 from pyspark.sql.types import ArrayType, DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from core.bronze.domain.constants.column_names.bronze_migrated_column_names import (
-    BronzeMigratedColumnNames,
-    BronzeMigratedValuesFieldNames,
+from core.bronze.domain.constants.column_names.bronze_migrated_transactions_column_names import (
+    BronzeMigratedTransactionsColumnNames,
+    BronzeMigratedTransactionsValuesFieldNames,
 )
 from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
     MigrationsSilverTimeSeriesColumnNames,
     MigrationsSilverTimeSeriesValuesFieldNames,
 )
 
-migrated_schema = StructType(
+migrated_transactions_schema = StructType(
     [
-        StructField(BronzeMigratedColumnNames.metering_point_id, StringType(), False),
-        StructField(BronzeMigratedColumnNames.type_of_mp, StringType(), False),
-        StructField(BronzeMigratedColumnNames.historical_flag, StringType(), False),
-        StructField(BronzeMigratedColumnNames.resolution, StringType(), False),
-        StructField(BronzeMigratedColumnNames.transaction_id, StringType(), True),
-        StructField(BronzeMigratedColumnNames.transaction_insert_date, TimestampType(), False),
-        StructField(BronzeMigratedColumnNames.unit, StringType(), False),
-        StructField(BronzeMigratedColumnNames.status, IntegerType(), False),
-        StructField(BronzeMigratedColumnNames.read_reason, StringType(), False),
-        StructField(BronzeMigratedColumnNames.valid_from_date, TimestampType(), False),
-        StructField(BronzeMigratedColumnNames.valid_to_date, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.metering_point_id, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.type_of_mp, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.historical_flag, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.resolution, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.transaction_id, StringType(), True),
+        StructField(BronzeMigratedTransactionsColumnNames.transaction_insert_date, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.unit, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.status, IntegerType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.read_reason, StringType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.valid_from_date, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.valid_to_date, TimestampType(), False),
         StructField(
-            BronzeMigratedColumnNames.values,
+            BronzeMigratedTransactionsColumnNames.values,
             ArrayType(
                 StructType(
                     [
-                        StructField(BronzeMigratedValuesFieldNames.position, IntegerType(), True),
-                        StructField(BronzeMigratedValuesFieldNames.quality, StringType(), True),
-                        StructField(BronzeMigratedValuesFieldNames.quantity, DecimalType(18, 6), True),
+                        StructField(BronzeMigratedTransactionsValuesFieldNames.position, IntegerType(), True),
+                        StructField(BronzeMigratedTransactionsValuesFieldNames.quality, StringType(), True),
+                        StructField(BronzeMigratedTransactionsValuesFieldNames.quantity, DecimalType(18, 6), True),
                     ]
                 )
             ),
             False,
         ),
-        StructField(BronzeMigratedColumnNames.created_in_migrations, TimestampType(), False),
-        StructField(BronzeMigratedColumnNames.created_in_measurements, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.created_in_migrations, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.created_in_measurements, TimestampType(), False),
     ]
 )
 
