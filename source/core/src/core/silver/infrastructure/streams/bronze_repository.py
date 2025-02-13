@@ -1,6 +1,5 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from core.bronze.infrastructure.config import BronzeTableNames
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config.bronze_calculated_options import BRONZE_CALCULATED_OPTIONS
 
@@ -16,5 +15,6 @@ class BronzeRepository:
         options = BRONZE_CALCULATED_OPTIONS
         catalog_settings = CatalogSettings()  # type: ignore
 
-        source_table_name = f"{catalog_settings.catalog_name + '.' if catalog_settings.catalog_name else ''}{catalog_settings.bronze_database_name}.{BronzeTableNames.bronze_measurements_table}"
+        raise NotImplementedError("BronzeRepository.read_calculated_measurements")
+        source_table_name = f"{catalog_settings.bronze_database_name}"
         return self._spark.readStream.format("delta").options(**options).table(source_table_name)
