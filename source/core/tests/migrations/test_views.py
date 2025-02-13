@@ -22,8 +22,10 @@ def test__electrical_heating_view_v1__should_have_expected_schema(
     catalog_settings = CatalogSettings()  # type: ignore
 
     # Assert
-    submitted_transactions = spark.table(f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}")
-    assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=electrical_heating_v1)
+    actual_electrical_heating = spark.table(
+        f"{catalog_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}"
+    )
+    assert_schemas.assert_schema(actual=actual_electrical_heating.schema, expected=electrical_heating_v1)
 
 
 def test__electrical_heating_view_v1__should_return_active_measurement_only(
@@ -152,10 +154,10 @@ def test__capacity_settlement_v1__should_have_expected_schema(spark: SparkSessio
     catalog_settings = CatalogSettings()  # type: ignore
 
     # Assert
-    submitted_transactions = spark.table(
+    actual_capacity_settlement_v1 = spark.table(
         f"{catalog_settings.gold_database_name}.{GoldViewNames.capacity_settlement_v1}"
     )
-    assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=capacity_settlement_v1)
+    assert_schemas.assert_schema(actual=actual_capacity_settlement_v1.schema, expected=capacity_settlement_v1)
 
 
 def test__capacity_settlement_v1__should_return_active_measurement_only(
