@@ -20,7 +20,7 @@ def _configure_spark_sql_migrations() -> None:
     catalog_name = CatalogSettings().catalog_name  # type: ignore
 
     spark_config = SparkSqlMigrationsConfiguration(
-        migration_schema_name=DatabaseNames.measurements_internal_database,
+        migration_schema_name=DatabaseNames.measurements_calculated_internal_database,
         migration_table_name=TableNames.executed_migrations,
         migration_scripts_folder_path="opengeh_electrical_heating.migrations.migration_scripts",
         substitution_variables=substitution_variables,
