@@ -100,6 +100,4 @@ def full_load_of_migrations_to_measurements(
             migrations_data_chunk
         )
 
-        print(f"Writing: {migrations_data_chunk.count()} rows?")
-
         migrated_transactions_repository.write_measurements_bronze_migrated(migrations_data_transformed)
