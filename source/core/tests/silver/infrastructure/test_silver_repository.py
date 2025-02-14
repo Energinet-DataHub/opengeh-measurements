@@ -35,15 +35,10 @@ def test__write_measurements__called__with_correct_arguments(mock_checkpoint_pat
     )
 
 
-@mock.patch("core.silver.infrastructure.streams.silver_repository.get_checkpoint_path")
-def test__write_measurements__when_contionous_streaming_is_disabled__should_not_call_trigger(
-    mock_checkpoint_path,
-) -> None:
+def test__write_measurements__when_contionous_streaming_is_disabled__should_not_call_trigger() -> None:
     # Arrange
     os.environ["CONTINUOUS_STREAMING_ENABLED"] = "true"
     mocked_measurements = mock.Mock()
-    expected_checkpoint_path = "/test"
-    mock_checkpoint_path.return_value = expected_checkpoint_path
 
     # Act
     SilverRepository().write_measurements(mocked_measurements)
