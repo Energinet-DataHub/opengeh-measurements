@@ -1,6 +1,7 @@
 import pytest
-from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
+
+from tests.environment_configuration import EnvironmentConfiguration
 
 
 @pytest.fixture(scope="session")
