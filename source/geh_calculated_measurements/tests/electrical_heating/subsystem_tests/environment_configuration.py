@@ -11,10 +11,10 @@ class EnvironmentConfiguration(BaseSettings):
     If placed outside the container test folder, it is not visible to the test framework when running
     i CD."""
 
-    databricks_token: str = Field(alias="databricks_token")
-    workspace_url: str = Field(alias="workspace_url")
-    warehouse_id: str = Field(alias="core_warehouse_id")
-    catalog_name: str = Field(alias="electrical_heating_catalog")
+    databricks_token: str = Field(alias="DATABRICKS_TOKEN")
+    workspace_url: str = Field(alias="WORKSPACE_URL")
+    warehouse_id: str = Field(alias="CORE_WAREHOUSE_ID")
+    catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/tests/.env",
