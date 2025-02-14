@@ -1,8 +1,8 @@
 import pytest
+from capacity_settlement.testsession_configuration import TestSessionConfiguration
 from geh_common.telemetry.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
-from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(autouse=True)

@@ -1,8 +1,7 @@
 import unittest
 
 import pytest
-
-from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+from electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
 class TestElectricalHeating(unittest.TestCase):

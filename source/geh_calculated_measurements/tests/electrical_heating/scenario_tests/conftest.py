@@ -1,6 +1,12 @@
 from pathlib import Path
 
 import pytest
+from electrical_heating.scenario_tests.electrical_heating_test_args import (
+    ElectricalHeatingTestArgs,
+)
+from electrical_heating.testsession_configuration import (
+    TestSessionConfiguration,
+)
 from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
@@ -27,12 +33,6 @@ from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.elect
 )
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
-)
-from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
-    ElectricalHeatingTestArgs,
-)
-from tests.electrical_heating.testsession_configuration import (
-    TestSessionConfiguration,
 )
 
 

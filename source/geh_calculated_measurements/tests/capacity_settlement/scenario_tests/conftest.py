@@ -1,6 +1,12 @@
 from pathlib import Path
 
 import pytest
+from capacity_settlement.scenario_tests.capacity_settlement_test_args import (
+    CapacitySettlementTestArgs,
+)
+from capacity_settlement.testsession_configuration import (
+    TestSessionConfiguration,
+)
 from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes import (
     AssertDataframesConfiguration,
@@ -17,12 +23,6 @@ from geh_calculated_measurements.opengeh_capacity_settlement.contracts.measureme
 )
 from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation import (
     execute_core_logic,
-)
-from tests.capacity_settlement.scenario_tests.capacity_settlement_test_args import (
-    CapacitySettlementTestArgs,
-)
-from tests.capacity_settlement.testsession_configuration import (
-    TestSessionConfiguration,
 )
 
 

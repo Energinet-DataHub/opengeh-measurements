@@ -3,6 +3,13 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
+from electrical_heating.testsession_configuration import TestSessionConfiguration
+from electrical_heating.utils.delta_table_utils import (
+    read_from_csv,
+)
+from electrical_heating.utils.measurements_utils import (
+    create_calculated_measurements_dataframe,
+)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake import create_database, create_table
 from pyspark.sql import SparkSession
@@ -23,13 +30,6 @@ from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measu
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
-from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
-from tests.electrical_heating.utils.delta_table_utils import (
-    read_from_csv,
-)
-from tests.electrical_heating.utils.measurements_utils import (
-    create_calculated_measurements_dataframe,
-)
 
 
 @pytest.fixture(scope="module", autouse=True)
