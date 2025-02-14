@@ -34,7 +34,7 @@ from tests.electrical_heating.utils.measurements_utils import (
 )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def env_args_fixture() -> dict[str, str]:
     env_args = {
         "CLOUD_ROLE_NAME": "test_role",
@@ -44,13 +44,13 @@ def env_args_fixture() -> dict[str, str]:
     return env_args
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def script_args_fixture() -> list[str]:
     sys_argv = [
         "program_name",
         "--force_configuration",
         "false",
-        "--orchestration_instance_id",
+        "--orchestration-instance-id",
         "4a540892-2c0a-46a9-9257-c4e13051d76a",
     ]
     return sys_argv
@@ -72,6 +72,7 @@ def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
         mock.patch("sys.argv", script_args_fixture),
         mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
+        print()
         logging_settings = LoggingSettings()
         logging_settings.applicationinsights_connection_string = None  # for testing purposes
         configure_logging(logging_settings=logging_settings, extras=None)

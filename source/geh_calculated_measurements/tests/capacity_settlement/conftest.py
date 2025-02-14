@@ -8,7 +8,7 @@ from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def env_args_fixture() -> dict[str, str]:
     env_args = {
         "CLOUD_ROLE_NAME": "test_role",
@@ -18,14 +18,18 @@ def env_args_fixture() -> dict[str, str]:
     return env_args
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def script_args_fixture() -> list[str]:
     sys_argv = [
         "program_name",
         "--force_configuration",
         "false",
-        "--orchestration_instance_id",
+        "--orchestration-instance-id",
         "4a540892-2c0a-46a9-9257-c4e13051d76a",
+        "--calculation-month",
+        "1",
+        "--calculation-year",
+        "2021",
     ]
     return sys_argv
 
@@ -35,7 +39,7 @@ def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
     # Command line arguments
     with (
-        mock.patch(script_args_fixture),
+        mock.patch("sys.argv", script_args_fixture),
         mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
         logging_settings = LoggingSettings()
