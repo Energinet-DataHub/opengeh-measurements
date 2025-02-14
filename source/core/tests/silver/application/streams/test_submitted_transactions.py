@@ -9,7 +9,7 @@ import core.silver.application.streams.submitted_transactions as sut
     "core.silver.application.streams.submitted_transactions.submitted_transactions_transformation.created_by_packed_submitted_transactions"
 )
 @mock.patch(
-    "core.silver.application.streams.submitted_transactions.measurements_transformation.create_by_submitted_transactions"
+    "core.silver.application.streams.submitted_transactions.measurements_transformation.create_by_unpacked_submitted_transactions"
 )
 @mock.patch("core.silver.application.streams.submitted_transactions.SilverRepository")
 def test__submitted_transactions__should_call_expected(
