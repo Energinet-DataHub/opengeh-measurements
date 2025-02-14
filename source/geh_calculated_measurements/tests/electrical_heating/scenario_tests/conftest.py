@@ -1,4 +1,3 @@
-import uuid
 from pathlib import Path
 from unittest import mock
 
@@ -39,28 +38,11 @@ from tests.electrical_heating.testsession_configuration import (
 
 
 @pytest.fixture(scope="session", autouse=True)
-def enable_logging() -> None:
+def enable_logging(env_args_fixture, script_args_fixture) -> None:
     """Prevent logging from failing due to missing logging configuration."""
-    env_args = {
-        "CLOUD_ROLE_NAME": "some cloud role name",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
-        "SUBSYSTEM": "some tracer name",
-        "CATALOG_NAME": "default_hadoop",
-        "time_zone": "Europe/Copenhagen",
-        "execution_start_datetime": "2019-12-04",
-    }
     with (
-        mock.patch(
-            "sys.argv",
-            [
-                "program_name",
-                "--force_configuration",
-                "false",
-                "--orchestration-instance-id",
-                str(uuid.uuid4()),
-            ],
-        ),
-        mock.patch.dict("os.environ", env_args, clear=False),
+        mock.patch("sys.argv", script_args_fixture),
+        mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
         logging_settings = LoggingSettings()
         logging_settings.applicationinsights_connection_string = None

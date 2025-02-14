@@ -28,27 +28,12 @@ from tests.capacity_settlement.testsession_configuration import (
 
 
 @pytest.fixture(scope="session", autouse=True)
-def enable_logging() -> None:
+def enable_logging(env_args_fixture, script_args_fixture) -> None:
     """Prevent logging from failing due to missing logging configuration."""
-    env_args = {
-        "CLOUD_ROLE_NAME": "test_role",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
-        "SUBSYSTEM": "test_subsystem",
-        "ORCHESTRATION_INSTANCE_ID": "4a540892-2c0a-46a9-9257-c4e13051d76b",
-    }
     # Command line arguments
     with (
-        mock.patch(
-            "sys.argv",
-            [
-                "program_name",
-                "--force_configuration",
-                "false",
-                "--orchestration_instance_id",
-                "4a540892-2c0a-46a9-9257-c4e13051d76a",
-            ],
-        ),
-        mock.patch.dict("os.environ", env_args, clear=False),
+        mock.patch("sys.argv", script_args_fixture),
+        mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
         logging_settings = LoggingSettings()
         logging_settings.applicationinsights_connection_string = None  # for testing purposes

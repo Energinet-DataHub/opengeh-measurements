@@ -8,28 +8,35 @@ from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
 
 
-@pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+@pytest.fixture()
+def env_args_fixture() -> dict[str, str]:
     env_args = {
         "CLOUD_ROLE_NAME": "test_role",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
         "SUBSYSTEM": "test_subsystem",
-        "ORCHESTRATION_INSTANCE_ID": "4a540892-2c0a-46a9-9257-c4e13051d76b",
     }
+    return env_args
+
+
+@pytest.fixture()
+def script_args_fixture() -> list[str]:
+    sys_argv = [
+        "program_name",
+        "--force_configuration",
+        "false",
+        "--orchestration_instance_id",
+        "4a540892-2c0a-46a9-9257-c4e13051d76a",
+    ]
+    return sys_argv
+
+
+@pytest.fixture(autouse=True)
+def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
     # Command line arguments
     with (
-        mock.patch(
-            "sys.argv",
-            [
-                "program_name",
-                "--force_configuration",
-                "false",
-                "--orchestration_instance_id",
-                "4a540892-2c0a-46a9-9257-c4e13051d76a",
-            ],
-        ),
-        mock.patch.dict("os.environ", env_args, clear=False),
+        mock.patch(script_args_fixture),
+        mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
         logging_settings = LoggingSettings()
         logging_settings.applicationinsights_connection_string = None  # for testing purposes
