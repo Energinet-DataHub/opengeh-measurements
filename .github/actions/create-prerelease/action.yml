@@ -39,9 +39,6 @@ runs:
             --exclude="**/__pycache__/" \
             --include="src**" \
             --include="tests**/" \
-            --include="/tests/conftest.py" \
-            --include="/tests/environment_configuration.py" \
-            --include="**/subsystem_tests/***" \
             --include="pyproject.toml" \
             --include="README.md" \
             --exclude="*" \
