@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-from electrical_heating.testsession_configuration import TestSessionConfiguration
 from electrical_heating.utils.delta_table_utils import (
     read_from_csv,
 )
@@ -30,6 +29,7 @@ from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measu
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
+from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
