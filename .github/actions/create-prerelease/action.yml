@@ -38,7 +38,7 @@ runs:
         rsync -avm \
             --exclude="**/__pycache__/" \
             --include="src**" \
-            --include="tests**/" \
+            --include="tests***/" \
             --include="**/subsystem_tests/***" \
             --include="pyproject.toml" \
             --include="README.md" \
