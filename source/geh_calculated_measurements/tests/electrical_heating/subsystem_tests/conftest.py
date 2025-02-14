@@ -1,7 +1,7 @@
 import pytest
+from electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
-from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 from tests.environment_configuration import EnvironmentConfiguration
 
 
