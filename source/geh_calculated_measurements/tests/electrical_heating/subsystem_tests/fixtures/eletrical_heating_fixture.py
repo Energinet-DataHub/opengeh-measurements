@@ -1,4 +1,4 @@
-﻿import uuid
+import uuid
 
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
