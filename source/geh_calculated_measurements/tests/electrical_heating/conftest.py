@@ -71,7 +71,6 @@ def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
         mock.patch("sys.argv", script_args_fixture),
         mock.patch.dict("os.environ", env_args_fixture, clear=False),
     ):
-        print()
         logging_settings = LoggingSettings()
         logging_settings.applicationinsights_connection_string = None  # for testing purposes
         configure_logging(logging_settings=logging_settings, extras=None)
