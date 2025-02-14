@@ -1,4 +1,6 @@
+import pyspark.sql.functions as F
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import DecimalType
 
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
@@ -12,7 +14,7 @@ def create_by_unpacked_submitted_transactions(
 ) -> DataFrame:
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
-    unpacked_submitted_transactions.select(
+    measurements = unpacked_submitted_transactions.select(
         unpacked_submitted_transactions[ValueColumnNames.orchestration_type].alias(
             SilverMeasurementsColNames.orchestration_type
         ),
@@ -37,8 +39,17 @@ def create_by_unpacked_submitted_transactions(
             SilverMeasurementsColNames.start_datetime
         ),
         unpacked_submitted_transactions[ValueColumnNames.end_datetime].alias(SilverMeasurementsColNames.end_datetime),
-        unpacked_submitted_transactions[ValueColumnNames.points].alias(SilverMeasurementsColNames.points),
+        F.transform(
+            ValueColumnNames.points,
+            lambda x: F.struct(
+                x.position.alias(SilverMeasurementsColNames.Points.position),
+                (x.quantity.units + (x.quantity.nanos / 1000000.0))
+                .cast(DecimalType(18, 3))
+                .alias(SilverMeasurementsColNames.Points.quantity),
+                x.quality.alias(SilverMeasurementsColNames.Points.quality),
+            ),
+        ).alias(SilverMeasurementsColNames.points),
         current_utc_time.alias(SilverMeasurementsColNames.created),
     )
 
-    return unpacked_submitted_transactions
+    return measurements
