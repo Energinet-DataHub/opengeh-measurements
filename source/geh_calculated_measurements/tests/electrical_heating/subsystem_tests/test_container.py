@@ -10,6 +10,7 @@ def test__databricks_job_starts_and_stops_successfully(
     """
     Tests that a Databricks electrical heating job runs successfully to completion.
     """
+
     try:
         # Arrange
         job_id = databricks_api_client.get_job_id("ElectricalHeating")
