@@ -8,7 +8,7 @@ from core.silver.infrastructure.streams.silver_repository import SilverRepositor
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
-    unpacked_submitted_transactions = submitted_transactions_transformation.created_by_packed_submitted_transactions(
+    unpacked_submitted_transactions = submitted_transactions_transformation.create_by_packed_submitted_transactions(
         submitted_transactions
     )
     measurements = measurements_transformation.create_by_unpacked_submitted_transactions(

@@ -11,7 +11,7 @@ from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descript
 alias_name = "measurement_values"
 
 
-def created_by_packed_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
+def create_by_packed_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
     """Unpacks the protobuf message and maps the fields to the correct columns."""
     return submitted_transactions.transform(_unpack_proto).transform(_map_submitted_transactions)
 

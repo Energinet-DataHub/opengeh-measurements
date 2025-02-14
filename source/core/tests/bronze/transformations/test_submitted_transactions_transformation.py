@@ -11,7 +11,7 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row().build()
 
     # Act
-    actual = sut.created_by_packed_submitted_transactions(submitted_transactions)
+    actual = sut.create_by_packed_submitted_transactions(submitted_transactions)
 
     # Assert
     assert_schemas.assert_schema(actual.schema, bronze_submitted_transactions_value_schema, ignore_nullability=True)

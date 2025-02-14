@@ -8,7 +8,7 @@ from core.bronze.infrastructure.streams.kafka_stream import KafkaStream
 def notify() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
-    unpacked_submitted_transactions = submitted_transactions_transformation.created_by_packed_submitted_transactions(
+    unpacked_submitted_transactions = submitted_transactions_transformation.create_by_packed_submitted_transactions(
         submitted_transactions
     )
     events = transactions_persisted_events_transformation.create_by_unpacked_submitted_transactions(
