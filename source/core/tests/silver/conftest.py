@@ -22,6 +22,7 @@ def pytest_runtest_setup() -> None:
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
+    os.environ["CONTINUOUS_STREAMING_ENABLED"] = "false"
 
 
 @pytest.fixture(scope="session")
