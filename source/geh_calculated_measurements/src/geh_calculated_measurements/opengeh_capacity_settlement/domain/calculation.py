@@ -223,25 +223,21 @@ def _explode_to_daily(
     calculation_start_date = datetime(calculation_year, calculation_month, 1, tzinfo=ZoneInfo(time_zone))
     calculation_end_date = calculation_start_date + relativedelta(months=1) - relativedelta(days=1)
 
-    df = df.withColumn(
-        "date_local",
-        F.explode(
-            F.sequence(
-                F.lit(calculation_start_date.date()),
-                F.lit(calculation_end_date.date()),
-                F.expr("interval 1 day"),
-            )
-        ),
+    return (
+        df.select(
+            "*",
+            F.explode(
+                F.sequence(
+                    F.lit(calculation_start_date.date()), F.lit(calculation_end_date.date()), F.expr("interval 1 day")
+                )
+            ).alias("date_local"),
+        )
+        .select("*", F.to_utc_timestamp("date_local", time_zone).alias(ColumNames.date))
+        .filter(
+            (F.col(ColumNames.selection_period_start) <= F.col(ColumNames.date))
+            & (F.col(ColumNames.selection_period_end) > F.col(ColumNames.date))
+        )
     )
-
-    df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
-
-    df = df.filter(
-        (F.col(ColumNames.selection_period_start) <= F.col(ColumNames.date))
-        & (F.col(ColumNames.selection_period_end) > F.col(ColumNames.date))
-    )
-
-    return df
 
 
 def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
