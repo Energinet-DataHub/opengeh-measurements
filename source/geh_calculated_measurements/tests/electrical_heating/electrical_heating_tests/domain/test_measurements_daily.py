@@ -29,7 +29,7 @@ class TestCtor:
             # Arrange
             df = _create_dummy_dataframe(spark)
             irrelevant_column = "irrelevant_column"
-            df = df.withColumn(irrelevant_column, lit("test"))
+            df = df.select("*", lit("test").alias(irrelevant_column))
 
             # Act
             actual = CalculatedMeasurementsDaily(df)
