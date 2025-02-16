@@ -11,6 +11,7 @@ from pyspark.sql.types import DecimalType
 from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
+from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
@@ -82,7 +83,7 @@ def execute_core_logic(
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
         ColumNames.metering_point_id,
         ColumNames.quantity,
-        ColumNames.observation_time,
+        ColumNames.observation_time_hourly,
     )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
@@ -137,8 +138,8 @@ def _transform_quarterly_time_series_to_hourly(
     time_series_points: DataFrame,
 ) -> DataFrame:
     # Reduces observation time to hour value
-    time_series_points = time_series_points.withColumn(
-        ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
+    time_series_points = time_series_points.select(
+        "*", CalculatedNames.observation_time_hourly, F.date_trunc("hour", ColumNames.observation_time)
     )
     # group by all columns except quantity and then sum the quantity
     group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
@@ -210,8 +211,7 @@ def _ten_largest_quantities_in_selection_periods(
 def _average_ten_largest_quantities_in_selection_periods(
     time_series_points: DataFrame, grouping: list[str]
 ) -> DataFrame:
-    measurements = time_series_points.groupBy(grouping).agg(F.avg(ColumNames.quantity).alias(ColumNames.quantity))
-    return measurements
+    return time_series_points.groupBy(grouping).agg(F.avg(ColumNames.quantity).alias(ColumNames.quantity))
 
 
 def _explode_to_daily(
