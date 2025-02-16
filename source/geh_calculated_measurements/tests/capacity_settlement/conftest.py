@@ -19,7 +19,7 @@ def contracts_path() -> str:
     `os.chdir()`. The correctness also relies on the prerequisite that this function is
     actually located in a file located directly in the tests folder.
     """
-    return f"{PROJECT_ROOT}/src/geh_calculated_measurements/opengeh_capacity_settlement/contracts"
+    return f"{PROJECT_ROOT}/src/geh_calculated_measurements/capacity_settlement/contracts"
 
 
 @pytest.fixture(scope="session")
