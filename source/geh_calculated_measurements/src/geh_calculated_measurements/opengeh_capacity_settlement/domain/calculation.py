@@ -201,7 +201,7 @@ def _ten_largest_quantities_in_selection_periods(
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
 
-    time_series_points = time_series_points.withColumn("row_number", F.row_number().over(window_spec)).filter(
+    time_series_points = time_series_points.select("*", F.row_number().over(window_spec).alias("row_number")).filter(
         F.col("row_number") <= 10
     )
 
