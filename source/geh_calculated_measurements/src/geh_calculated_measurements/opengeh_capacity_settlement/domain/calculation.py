@@ -83,7 +83,7 @@ def execute_core_logic(
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
         ColumNames.metering_point_id,
         ColumNames.quantity,
-        ColumNames.observation_time_hourly,
+        CalculatedNames.observation_time_hourly,
     )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
@@ -139,7 +139,7 @@ def _transform_quarterly_time_series_to_hourly(
 ) -> DataFrame:
     # Reduces observation time to hour value
     time_series_points = time_series_points.select(
-        "*", CalculatedNames.observation_time_hourly, F.date_trunc("hour", ColumNames.observation_time)
+        "*", F.date_trunc("hour", ColumNames.observation_time).alias(CalculatedNames.observation_time_hourly)
     )
     # group by all columns except quantity and then sum the quantity
     group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
@@ -170,21 +170,21 @@ def _add_selection_period_columns(
         & ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
     )
 
-    metering_point_periods = metering_point_periods.withColumn(
-        ColumNames.selection_period_start,
+    return metering_point_periods.select(
+        "*",
         F.when(
             F.col("period_from_date") > F.lit(selection_period_start_min),
             F.col("period_from_date"),
-        ).otherwise(F.lit(selection_period_start_min)),
-    ).withColumn(
-        ColumNames.selection_period_end,
+        )
+        .otherwise(F.lit(selection_period_start_min))
+        .alias(ColumNames.selection_period_start),
         F.when(
             F.col("period_to_date") <= F.lit(selection_period_end_max),
             F.col("period_to_date"),
-        ).otherwise(F.lit(selection_period_end_max)),
+        )
+        .otherwise(F.lit(selection_period_end_max))
+        .alias(ColumNames.selection_period_end),
     )
-
-    return metering_point_periods
 
 
 def _ten_largest_quantities_in_selection_periods(
