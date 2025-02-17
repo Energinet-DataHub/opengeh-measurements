@@ -140,7 +140,8 @@ def _transform_quarterly_time_series_to_hourly(
     # Reduces observation time to hour value
     time_series_points = time_series_points.select(
         "*", F.date_trunc("hour", ColumNames.observation_time).alias(CalculatedNames.observation_time_hourly)
-    )
+    ).drop(ColumNames.observation_time)
+
     # group by all columns except quantity and then sum the quantity
     group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
     time_series_points = time_series_points.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
@@ -195,8 +196,8 @@ def _ten_largest_quantities_in_selection_periods(
     time_series_points = time_series_points.join(
         metering_point_periods, on=ColumNames.metering_point_id, how="inner"
     ).where(
-        (F.col(ColumNames.observation_time) >= F.col(ColumNames.selection_period_start))
-        & (F.col(ColumNames.observation_time) < F.col(ColumNames.selection_period_end))
+        (F.col(CalculatedNames.observation_time_hourly) >= F.col(ColumNames.selection_period_start))
+        & (F.col(CalculatedNames.observation_time_hourly) < F.col(ColumNames.selection_period_end))
     )
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
