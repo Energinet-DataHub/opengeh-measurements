@@ -3,6 +3,7 @@ import pyspark.sql.types as t
 nullable = True
 
 # Calculated measurements from electrical heating or capacity settlement calculations
+# Each row represents a calculated quantity for a specific metering point at a specific date.
 calculated_measurements_schema = t.StructType(
     [
         #
@@ -27,12 +28,9 @@ calculated_measurements_schema = t.StructType(
         # "electrical_heating" or "capacity_settlement"
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
-        # Always: "PT1H"
-        t.StructField("resolution", t.StringType(), not nullable),
-        #
         # UTC time
         t.StructField(
-            "observation_time",
+            "date",
             t.TimestampType(),
             not nullable,
         ),
