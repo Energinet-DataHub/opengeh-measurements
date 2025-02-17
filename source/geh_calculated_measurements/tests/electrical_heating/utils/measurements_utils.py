@@ -15,7 +15,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 
 def create_calculated_measurements_dataframe(spark: SparkSession, measurements: DataFrame) -> CalculatedMeasurements:
     measurements = measurements.select(
-        "*"
+        "*",
         F.from_json(F.col("points"), ArrayType(point)).alias("points"),
         F.to_timestamp(F.col("start_datetime"), "yyyy-MM-dd HH:mm:ss").alias("start_datetime"),
         F.to_timestamp(F.col("end_datetime"), "yyyy-MM-dd HH:mm:ss").alias("end_datetime"),
