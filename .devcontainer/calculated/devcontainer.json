@@ -1,5 +1,5 @@
 {
-  "name": "calculated_measurements",
+  "name": "calculated",
   "dockerComposeFile": [
     "../../.docker/docker-compose.yml"
   ],
