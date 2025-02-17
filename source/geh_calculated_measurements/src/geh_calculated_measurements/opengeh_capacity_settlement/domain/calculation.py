@@ -105,7 +105,9 @@ def execute_core_logic(
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
-    measurements = measurements.withColumnRenamed(CalculatedNames.observation_time_hourly, ColumNames.observation_time)
+    ten_largest_quantities = ten_largest_quantities.withColumnRenamed(
+        CalculatedNames.observation_time_hourly, ColumNames.observation_time
+    )
 
     calculation_output = CalculationOutput(
         measurements=measurements,
@@ -204,8 +206,10 @@ def _ten_largest_quantities_in_selection_periods(
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
 
-    time_series_points = time_series_points.select("*", F.row_number().over(window_spec).alias("row_number")).filter(
-        F.col("row_number") <= 10
+    time_series_points = (
+        time_series_points.select("*", F.row_number().over(window_spec).alias("row_number"))
+        .filter(F.col("row_number") <= 10)
+        .drop("row_number")
     )
 
     return time_series_points
