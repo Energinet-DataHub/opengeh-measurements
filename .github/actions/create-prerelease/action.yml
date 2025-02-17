@@ -42,6 +42,7 @@ runs:
             --include="**/subsystem_tests/***" \
             --include="pyproject.toml" \
             --include="README.md" \
+            --include="tests/__init__.py" \
             --include="tests/environment_configuration.py" \
             --exclude="*" \
             ${{ inputs.path }}/ \
