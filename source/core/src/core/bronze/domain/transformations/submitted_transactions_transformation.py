@@ -19,8 +19,11 @@ def create_by_packed_submitted_transactions(submitted_transactions: DataFrame) -
 def _unpack_proto(df) -> DataFrame:
     descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
     message_name = "PersistSubmittedTransaction"
+
+    options = {"mode": "PERMISSIVE"}
+
     return df.select(
-        from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name),
+        from_protobuf(df.value, message_name, descFilePath=descriptor_path, options=options).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
     )
