@@ -18,12 +18,12 @@ on:
           Defaults to workspace root.
         required: true
         default: ${{ github.workspace }}
-      core_regex:
+      pytest_addopts:
         type: string
         description: |
-          List of package names, separated by '|', that should be released
-          together as `core_<PR/latest>`.
-          Non-core packages are released as `<package_name>_<PR/latest>`.
+          Additional arguments to pass to pytest. This is useful for passing
+          arguments to pytest that are not supported by the uvtest action.
+          Any paths should be considered relative to the package directory.
         required: false
         default: ""
     secrets:
@@ -89,103 +89,35 @@ jobs:
             is_changed:
               - ${{ matrix.inputs.path }}/**
 
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v3
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+
+      - name: Cache asdf
+        uses: actions/cache@v4
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+        with:
+          path: /home/runner/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+
+      - name: Install dependencies in .tool-versions
+        uses: asdf-vm/actions/install@v3
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
+
       - name: Test ${{ matrix.inputs.name }}
         uses: ./.github/actions/uvtest
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           name: ${{ matrix.inputs.name }}
           path: ${{ matrix.inputs.path }}
-          pytest_addopts: --ignore=tests/container_tests
+          pytest_addopts: ${{ inputs.pytest_addopts }}
 
-      - name: Upload artifacts for ${{ matrix.inputs.name }}
-        uses: ./.github/actions/upload-python-release-artifacts
+      - name: Build ${{ matrix.inputs.name }}
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          core_regex: ${{ inputs.core_regex }}
-          core_prefix: ${{ env.CORE_PREFIX }}
-          noncore_prefix: ${{ env.NONCORE_PREFIX }}
-
-  #
-  # Prepare Release Matrix
-  #
-  ci_prepare_prerelease:
-    name: Prepare prerelease
-    runs-on: ubuntu-24.04
-    needs: ci_test
-    outputs:
-      matrix: ${{ steps.create_matrix.outputs.matrix }}
-      any_artifact: ${{ steps.list_artifacts.outputs.any_artifact }}
-    steps:
-      - name: Download Core Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.CORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
-          merge-multiple: true
-
-      - name: Download Bundle Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.NONCORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/
-          merge-multiple: true
-
-      - name: List Artifacts Contents
-        id: list_artifacts
-        run: |
-          if [ -d "${{ github.workspace }}/dist" ]; then
-              ls -alR "${{ github.workspace }}/dist"
-              echo "any_artifact=true" >> $GITHUB_OUTPUT
-          else
-              echo "No artifacts found"
-              echo "any_artifact=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create release matrix
-        shell: python
-        if: ${{ steps.list_artifacts.outputs.any_artifact == 'true' }}
-        id: create_matrix
-        run: |
-          from pathlib import Path
-          import json
-          import os
-          artifacts = []
-          for p in Path("${{ github.workspace }}/dist").iterdir():
-              if p.is_dir():
-                  artifacts.append({"name": p.name, "path": str(p)})
-          print(json.dumps({"inputs": artifacts}, indent=2))
-          include_statement = json.dumps({"inputs": artifacts})
-          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
-              print(f"matrix={include_statement}", file=fh)
-
-  ci_create_prerelease:
-    name: Create prerelease
-    runs-on: ubuntu-24.04
-    needs: ci_prepare_prerelease
-    if: ${{ needs.ci_prepare_prerelease.outputs.any_artifact == 'true' }}
-    strategy:
-      matrix: ${{ fromJson(needs.ci_prepare_prerelease.outputs.matrix) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Core Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.CORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/${{ env.CORE_PREFIX }}/
-          merge-multiple: true
-
-      - name: Download Bundle Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.NONCORE_PREFIX }}-*
-          path: ${{ github.workspace }}/dist/
-          merge-multiple: true
+        run: uv build --wheel --directory ${{ matrix.inputs.path }}
 
       - name: Create prerelease for ${{ matrix.inputs.name }}
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
         uses: ./.github/actions/create-prerelease
         with:
           name: ${{ matrix.inputs.name }}

@@ -1,8 +1,0 @@
-metering_point_id;quantity;observation_time;metering_point_type;#comment
-170000000000000201;1;2025-01-02T23:00:00Z;consumption;nsg2 - no end date - without D15 (should not generate result)
-060000000000170201;100;2025-01-02T23:00:00Z;supply_to_grid;nsg2 - no end date - without D15 (should not generate result)
-070000000000170201;1;2025-01-02T23:00:00Z;consumption_from_grid;nsg2 - no end date - without D15 (should not generate result)
-170000000000000202;100;2025-01-02T23:00:00Z;consumption;nsg2 - no end date - with D15 - it should not use this quantity, but quantity from D15 instead
-150000000000170202;1;2025-01-02T23:00:00Z;net_consumption;nsg2 - no end date - with D15
-060000000000170202;99;2025-01-02T23:00:00Z;supply_to_grid;nsg2 - no end date - with D15
-070000000000170202;100;2025-01-02T23:00:00Z;consumption_from_grid;nsg2 - no end date - with D15 - it should not use this quantity, but quantity from D15 instead
