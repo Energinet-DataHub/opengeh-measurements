@@ -1,3 +1,4 @@
+from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
@@ -7,9 +8,6 @@ from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names 
 )
 from geh_calculated_measurements.opengeh_electrical_heating.domain.transformations.common import (
     calculate_daily_quantity,
-)
-from geh_calculated_measurements.opengeh_electrical_heating.domain.types.metering_point_type import (
-    MeteringPointType,
 )
 from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
     TimeSeriesPoints,

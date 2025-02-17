@@ -8,34 +8,11 @@ from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
-from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
-    CapacitySettlementArgs,
-)
 from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
-
-
-class ColumNames:
-    # Input/output column names from contracts
-    date = "date"
-    child_metering_point_id = "child_metering_point_id"
-    metering_point_id = "metering_point_id"
-    observation_time = "observation_time"
-    quantity = "quantity"
-    child_period_from_date = "child_period_from_date"
-    child_period_to_date = "child_period_to_date"
-    # Ephemeral columns
-    selection_period_start = "selection_period_start"
-    selection_period_end = "selection_period_end"
-
-
-@use_span()
-def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
-    # execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    # TODO JMG: read data from repository and call the `execute_core_logic` method
-    pass
+from geh_calculated_measurements.opengeh_capacity_settlement.domain.column_names import ColumNames
 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
@@ -171,21 +148,24 @@ def _add_selection_period_columns(
     selection_period_end_max = calculation_end_date
 
     metering_point_periods = metering_point_periods.filter(
-        (F.col("period_from_date") < calculation_end_date)
-        & ((F.col("period_to_date") > calculation_start_date) | F.col("period_to_date").isNull())
+        (F.col(CalculatedNames.period_from_date) < calculation_end_date)
+        & (
+            (F.col(CalculatedNames.period_to_date) > calculation_start_date)
+            | F.col(CalculatedNames.period_to_date).isNull()
+        )
     )
 
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col("period_from_date") > F.lit(selection_period_start_min),
-            F.col("period_from_date"),
+            F.col(CalculatedNames.period_from_date) > F.lit(selection_period_start_min),
+            F.col(CalculatedNames.period_from_date),
         )
         .otherwise(F.lit(selection_period_start_min))
         .alias(ColumNames.selection_period_start),
         F.when(
-            F.col("period_to_date") <= F.lit(selection_period_end_max),
-            F.col("period_to_date"),
+            F.col(CalculatedNames.period_to_date) <= F.lit(selection_period_end_max),
+            F.col(CalculatedNames.period_to_date),
         )
         .otherwise(F.lit(selection_period_end_max))
         .alias(ColumNames.selection_period_end),
