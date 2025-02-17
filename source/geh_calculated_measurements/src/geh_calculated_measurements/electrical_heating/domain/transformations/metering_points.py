@@ -1,3 +1,4 @@
+from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import (
     begining_of_year,
     convert_from_utc,
@@ -10,9 +11,6 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_names impo
 )
 from geh_calculated_measurements.electrical_heating.domain.column_names import (
     ColumnNames,
-)
-from geh_calculated_measurements.electrical_heating.domain.types.metering_point_type import (
-    MeteringPointType,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
