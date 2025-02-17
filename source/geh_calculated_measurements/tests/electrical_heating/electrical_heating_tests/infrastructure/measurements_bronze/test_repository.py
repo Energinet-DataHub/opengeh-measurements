@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     CalculatedMeasurements,
     MeasurementsRepository,
 )
