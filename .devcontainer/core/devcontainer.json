@@ -8,10 +8,9 @@
       "ASDF_VERSION": "0.15.0"
     }
   },
-  "workspaceMount": "source=${localWorkspaceFolder}/source/core,target=/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace/source/core",
   "remoteUser": "vscode",
-  "shutdownAction": "none",
   "postCreateCommand": "~/scripts/post-create.sh",
   "postStartCommand": "uv sync",
   "containerEnv": {

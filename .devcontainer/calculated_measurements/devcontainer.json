@@ -8,10 +8,9 @@
       "ASDF_VERSION": "0.15.0"
     }
   },
-  "workspaceMount": "source=${localWorkspaceFolder}/source/calculated_measurements,target=/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace/source/calculated_measurements",
   "remoteUser": "vscode",
-  "shutdownAction": "none",
   "postCreateCommand": "~/scripts/post-create.sh",
   "postStartCommand": "uv sync",
   "containerEnv": {

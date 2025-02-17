@@ -7,6 +7,7 @@ from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import DataFrame, SparkSession
 
+from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.application.config.spark import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import (
@@ -14,7 +15,6 @@ from core.silver.domain.transformations.transform_calculated_measurements import
 )
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.streams import writer
-from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
 from core.utility.environment_variable_helper import get_datalake_storage_account
 from core.utility.shared_helpers import get_checkpoint_path
 
