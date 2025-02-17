@@ -1,4 +1,4 @@
-from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
+from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 
