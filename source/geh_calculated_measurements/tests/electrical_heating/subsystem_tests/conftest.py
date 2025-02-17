@@ -2,7 +2,7 @@ import pytest
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test import DatabricksApiClient
 
-from src.geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
 
