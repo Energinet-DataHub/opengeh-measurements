@@ -15,3 +15,9 @@ def databricks_api_client(environment_configuration: EnvironmentConfiguration) -
         environment_configuration.workspace_url,
     )
     return databricksApiClient
+
+
+@pytest.fixture(scope="session")
+def data_seeding(databricks_api_client: DatabricksApiClient) -> None:
+    databricks_api_client.client.command_execution()
+    print("hello")
