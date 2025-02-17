@@ -4,7 +4,7 @@ import pytest
 from azure.monitor.query import LogsQueryStatus
 from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain import ColumnNames
+from geh_calculated_measurements.electrical_heating.domain import ColumnNames
 
 
 class TestElectricalHeating(unittest.TestCase):

@@ -7,7 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain import ColumnNames
+from geh_calculated_measurements.electrical_heating.domain import ColumnNames
 
 
 class JobState:
