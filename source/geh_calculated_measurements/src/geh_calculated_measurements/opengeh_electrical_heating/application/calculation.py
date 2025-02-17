@@ -2,11 +2,11 @@ import sys
 from argparse import Namespace
 from collections.abc import Callable
 
-import telemetry_logging.logging_configuration as config
+import geh_common.telemetry.logging_configuration as config
+from geh_common.telemetry import use_span
+from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import SparkSession
-from telemetry_logging import use_span
-from telemetry_logging.span_recording import span_record_exception
 
 from geh_calculated_measurements.opengeh_electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
@@ -83,7 +83,6 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
 
     # Execute the domain logic
     execute(
-        spark,
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,

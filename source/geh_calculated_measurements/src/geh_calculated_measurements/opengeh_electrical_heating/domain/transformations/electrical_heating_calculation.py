@@ -1,7 +1,7 @@
+from geh_common.pyspark.transformations import days_in_year
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
-from pyspark_functions.functions import days_in_year
 
 from geh_calculated_measurements.opengeh_electrical_heating.domain import transformations as T
 from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import CalculatedNames

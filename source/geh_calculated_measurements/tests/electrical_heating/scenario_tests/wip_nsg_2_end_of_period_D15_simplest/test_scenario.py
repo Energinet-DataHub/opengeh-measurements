@@ -1,9 +1,10 @@
 ﻿import pytest
-from testcommon.dataframes import (
+from geh_common.testing.dataframes import (
+    assert_dataframes_and_schemas,
     AssertDataframesConfiguration,
     assert_dataframes_and_schemas,
 )
-from testcommon.etl import TestCases, get_then_names
+from geh_common.testing.scenario_testing import get_then_names, TestCases
 
 
 @pytest.mark.parametrize("name", get_then_names())

@@ -3,15 +3,17 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
+from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
-from telemetry_logging import use_span
 
 from geh_calculated_measurements.opengeh_capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation_output import CalculationOutput
+from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation_output import (
+    CalculationOutput,
+)
 
 
 class ColumNames:
@@ -21,6 +23,8 @@ class ColumNames:
     metering_point_id = "metering_point_id"
     observation_time = "observation_time"
     quantity = "quantity"
+    child_period_from_date = "child_period_from_date"
+    child_period_to_date = "child_period_to_date"
     # Ephemeral columns
     selection_period_start = "selection_period_start"
     selection_period_end = "selection_period_end"
@@ -46,7 +50,11 @@ def execute_core_logic(
     execution_time: str,
 ) -> CalculationOutput:
     calculations = _create_calculations(
-        spark, orchestration_instance_id, calculation_month, calculation_year, execution_time
+        spark,
+        orchestration_instance_id,
+        calculation_month,
+        calculation_year,
+        execution_time,
     )
 
     metering_point_periods = _add_selection_period_columns(
@@ -63,6 +71,8 @@ def execute_core_logic(
         ColumNames.selection_period_start,
         ColumNames.selection_period_end,
         ColumNames.child_metering_point_id,
+        ColumNames.child_period_from_date,
+        ColumNames.child_period_to_date,
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
@@ -80,17 +90,24 @@ def execute_core_logic(
     )
 
     time_series_points_exploded_to_daily = _explode_to_daily(
-        time_series_points_average_ten_largest_quantities, calculation_month, calculation_year, time_zone
+        time_series_points_average_ten_largest_quantities,
+        calculation_month,
+        calculation_year,
+        time_zone,
     )
 
-    measurements = time_series_points_exploded_to_daily.select(
+    time_series_points_within_child_period = _filter_date_within_child_period(time_series_points_exploded_to_daily)
+
+    measurements = time_series_points_within_child_period.select(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
     calculation_output = CalculationOutput(
-        measurements=measurements, calculations=calculations, ten_largest_quantities=ten_largest_quantities
+        measurements=measurements,
+        calculations=calculations,
+        ten_largest_quantities=ten_largest_quantities,
     )
 
     return calculation_output
@@ -104,12 +121,21 @@ def _create_calculations(
     execution_time: str,
 ) -> DataFrame:
     return spark.createDataFrame(
-        [(str(orchestration_instance_id), calculation_year, calculation_month, execution_time)],
+        [
+            (
+                str(orchestration_instance_id),
+                calculation_year,
+                calculation_month,
+                execution_time,
+            )
+        ],
         schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
     )
 
 
-def _transform_quarterly_time_series_to_hourly(time_series_points: DataFrame) -> DataFrame:
+def _transform_quarterly_time_series_to_hourly(
+    time_series_points: DataFrame,
+) -> DataFrame:
     # Reduces observation time to hour value
     time_series_points = time_series_points.withColumn(
         ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
@@ -145,21 +171,25 @@ def _add_selection_period_columns(
 
     metering_point_periods = metering_point_periods.withColumn(
         ColumNames.selection_period_start,
-        F.when(F.col("period_from_date") > F.lit(selection_period_start_min), F.col("period_from_date")).otherwise(
-            F.lit(selection_period_start_min)
-        ),
+        F.when(
+            F.col("period_from_date") > F.lit(selection_period_start_min),
+            F.col("period_from_date"),
+        ).otherwise(F.lit(selection_period_start_min)),
     ).withColumn(
         ColumNames.selection_period_end,
-        F.when(F.col("period_to_date") <= F.lit(selection_period_end_max), F.col("period_to_date")).otherwise(
-            F.lit(selection_period_end_max)
-        ),
+        F.when(
+            F.col("period_to_date") <= F.lit(selection_period_end_max),
+            F.col("period_to_date"),
+        ).otherwise(F.lit(selection_period_end_max)),
     )
 
     return metering_point_periods
 
 
 def _ten_largest_quantities_in_selection_periods(
-    time_series_points: DataFrame, metering_point_periods: DataFrame, grouping: list[str]
+    time_series_points: DataFrame,
+    metering_point_periods: DataFrame,
+    grouping: list[str],
 ) -> DataFrame:
     time_series_points = time_series_points.join(
         metering_point_periods, on=ColumNames.metering_point_id, how="inner"
@@ -212,3 +242,13 @@ def _explode_to_daily(
     )
 
     return df
+
+
+def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
+    return time_series_points_exploded_to_daily.filter(
+        (F.col(ColumNames.date) >= F.col(ColumNames.child_period_from_date))
+        & (
+            (F.col(ColumNames.date) < F.col(ColumNames.child_period_to_date))
+            | F.col(ColumNames.child_period_to_date).isNull()
+        )
+    )

@@ -122,6 +122,6 @@ def tests_path(source_path: str) -> str:
 @pytest.fixture(autouse=True)
 def configure_dummy_logging() -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    from telemetry_logging.logging_configuration import configure_logging
+    from geh_common.telemetry.logging_configuration import configure_logging
 
     configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")

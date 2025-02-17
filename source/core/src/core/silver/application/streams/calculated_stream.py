@@ -1,18 +1,20 @@
 import sys
 from typing import Optional
 
-import telemetry_logging.logging_configuration as config
+import geh_common.telemetry.logging_configuration as config
+from geh_common.telemetry import use_span
+from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import DataFrame, SparkSession
-from telemetry_logging import use_span
-from telemetry_logging.span_recording import span_record_exception
 
+from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.application.config.spark import initialize_spark
-from core.silver.domain.transformations.transform_calculated_measurements import transform_calculated_measurements
+from core.silver.domain.transformations.transform_calculated_measurements import (
+    transform_calculated_measurements,
+)
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.streams import writer
-from core.silver.infrastructure.streams.bronze_repository import BronzeRepository
 from core.utility.environment_variable_helper import get_datalake_storage_account
 from core.utility.shared_helpers import get_checkpoint_path
 
@@ -41,10 +43,15 @@ def _execute(spark: SparkSession) -> None:
     bronze_stream = BronzeRepository(spark).read_calculated_measurements()
     data_lake_storage_account = get_datalake_storage_account()
     checkpoint_path = get_checkpoint_path(
-        data_lake_storage_account, catalog_settings.silver_container_name, SilverTableNames.silver_measurements
+        data_lake_storage_account,
+        catalog_settings.silver_container_name,
+        SilverTableNames.silver_measurements,
     )
     writer.write_stream(
-        bronze_stream, "bronze_calculated_measurements_to_silver_measurements", checkpoint_path, _batch_operations
+        bronze_stream,
+        "bronze_calculated_measurements_to_silver_measurements",
+        checkpoint_path,
+        _batch_operations,
     )
 
 
