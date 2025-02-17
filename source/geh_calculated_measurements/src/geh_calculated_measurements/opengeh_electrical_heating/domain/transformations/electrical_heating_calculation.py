@@ -1,3 +1,4 @@
+from geh_common.domain.types import NetSettlementGroup
 from geh_common.pyspark.transformations import days_in_year
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
@@ -8,9 +9,6 @@ from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_na
 )
 from geh_calculated_measurements.opengeh_electrical_heating.domain.column_names import (
     ColumnNames,
-)
-from geh_calculated_measurements.opengeh_electrical_heating.domain.types import (
-    NetSettlementGroup,
 )
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
