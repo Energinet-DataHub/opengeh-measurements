@@ -3,7 +3,6 @@ from typing import Optional
 from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.application.ports.silver_port import SilverPort
-from core.gold.infrastructure.shared_helpers import get_full_table_name
 from core.settings.catalog_settings import CatalogSettings
 
 
@@ -17,5 +16,5 @@ class DeltaSilverAdapter(SilverPort):
         return (
             self.spark.readStream.format("delta")
             .options(**read_options or {})
-            .table(get_full_table_name(catalog_settings.silver_database_name, table_name))
+            .table(f"{catalog_settings.silver_database_name}.{table_name}")
         )

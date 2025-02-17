@@ -1,16 +1,16 @@
 import random
 from unittest import mock
 
-from gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 from pyspark.sql import SparkSession
 
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.catalog_settings import CatalogSettings
+from tests.gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 
 
 @mock.patch("os.getenv")
-@mock.patch("core.gold.infrastructure.shared_helpers.get_storage_base_path")
+@mock.patch("core.gold.infrastructure.adapters.delta_gold_adapter.get_checkpoint_path")
 def test__start_write_stream__should_write_to_gold_table(
     mock_get_checkpoint_path, mock_getenv, spark: SparkSession, migrations_executed
 ):
