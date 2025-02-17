@@ -1,8 +1,7 @@
 import pytest
 from environment_configuration import EnvironmentConfiguration
+from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
-
-from .fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
 @pytest.fixture(scope="session")
