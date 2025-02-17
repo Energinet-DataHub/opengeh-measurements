@@ -124,18 +124,6 @@ def _filter_outside_period_time_series(
 def _calculate_period_limit(
     periods_with_energy: DataFrame,
 ) -> DataFrame:
-    """parent_period_start
-    parent_period_end
-    metering_point_id
-    overlap_period_start
-    overlap_period_end
-    date
-    consumption_quantity
-    supply_to_grid_quantity
-    consumption_from_grid_quantity
-    quantity
-    """
-    periods_with_energy.printSchema()
     return periods_with_energy.select(
         "*",
         (
