@@ -105,6 +105,8 @@ def execute_core_logic(
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
+    measurements = measurements.withColumnRenamed(CalculatedNames.observation_time_hourly, ColumNames.observation_time)
+
     calculation_output = CalculationOutput(
         measurements=measurements,
         calculations=calculations,
