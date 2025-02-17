@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
+
 class EnvironmentConfiguration(BaseSettings):
     """
     Contains the environment configuration for the tests.
