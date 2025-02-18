@@ -12,11 +12,11 @@ class TestElectricalHeating(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture):
+    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture) -> None:
         TestElectricalHeating.fixture = electrical_heating_fixture
 
     @pytest.mark.order(1)
-    def test__given_job_input(self):
+    def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.job_id = self.fixture.get_job_id()
 
@@ -24,7 +24,7 @@ class TestElectricalHeating(unittest.TestCase):
         assert self.fixture.job_state.job_id is not None
 
     @pytest.mark.order(2)
-    def test__when_job_started(self):
+    def test__when_job_started(self) -> None:
         # Act
         self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.job_id)
 
@@ -32,7 +32,7 @@ class TestElectricalHeating(unittest.TestCase):
         assert self.fixture.job_state.run_id is not None
 
     @pytest.mark.order(3)
-    def test__then_job_is_completed(self):
+    def test__then_job_is_completed(self) -> None:
         # Act
         self.fixture.job_state.run_result_state = self.fixture.wait_for_job_to_completion(self.fixture.job_state.run_id)
 
@@ -42,8 +42,11 @@ class TestElectricalHeating(unittest.TestCase):
         )
 
     @pytest.mark.order(4)
-    def test__and_then_logged_to_application_insights(self):
+    def test__and_then_logged_to_application_insights(self) -> None:
         # Arrange
+        if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
+            raise Exception("A previous test did not complete successfully.")
+
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements' 

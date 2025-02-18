@@ -50,12 +50,18 @@ class ElectricalHeatingFixture:
     def wait_for_log_query_completion(
         self, query: str, timeout: int = 1000, poll_interval: int = 15
     ) -> LogsQueryResult | LogsQueryPartialResult:
-        secret = self.secret_client.get_secret("AZURE-LOGANALYTICS-WORKSPACE-ID").value
+        workspace_id = self.secret_client.get_secret("AZURE-LOGANALYTICS-WORKSPACE-ID").value
+        if workspace_id is None:
+            raise ValueError("Workspace ID cannot be None")
+
+        return self._wait_for_condition(workspace_id, query, timeout, poll_interval)
+
+    def _wait_for_condition(self, workspace_id: str, query, timeout, poll_interval) -> LogsQueryResult:
         start_time = time.time()
 
         while time.time() - start_time < timeout:
             try:
-                result = self.logs_query_client.query_workspace(secret, query, timespan=timedelta(seconds=10))  # type: ignore
+                result = self.logs_query_client.query_workspace(workspace_id, query, timespan=timedelta(seconds=10))  # type: ignore
                 if result.status == LogsQueryStatus.SUCCESS and len(result.tables[0].rows) > 0:
                     return result
             except Exception:
