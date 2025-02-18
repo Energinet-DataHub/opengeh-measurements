@@ -8,6 +8,7 @@ from core.bronze.infrastructure.settings import (
 )
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
+from core.utility.shared_helpers import get_checkpoint_path
 
 
 class SilverRepository:
@@ -22,10 +23,9 @@ class SilverRepository:
         measurements: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
-        # checkpoint_location = get_checkpoint_path(
-        #     self.data_lake_settings, self.silver_container_name, "submitted_transactions"
-        # )
-        checkpoint_location = "submitted_transactions"
+        checkpoint_location = get_checkpoint_path(
+            self.data_lake_settings, self.silver_container_name, "submitted_transactions"
+        )
 
         write_stream = (
             measurements.writeStream.outputMode("append")
