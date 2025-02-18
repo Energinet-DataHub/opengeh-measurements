@@ -22,8 +22,6 @@ class EnvironmentConfiguration(BaseSettings):
     azure_subscription_id: str = Field(alias="AZURE_SUBSCRIPTION_ID")
     azure_keyvault_url: str = Field(alias="AZURE_KEYVAULT_URL")
 
-    print(azure_keyvault_url)
-
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",
         env_file_encoding="utf-8",
