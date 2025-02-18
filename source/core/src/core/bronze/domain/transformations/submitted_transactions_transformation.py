@@ -22,11 +22,14 @@ def _unpack_proto(df) -> DataFrame:
 
     options = {"mode": "PERMISSIVE"}
 
-    return df.select(
+    unpacked =  df.select(
         from_protobuf(df.value, message_name, descFilePath=descriptor_path, options=options).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
     )
+    print(unpacked)
+
+    return unpacked
 
 
 def _map_submitted_transactions(df) -> DataFrame:
