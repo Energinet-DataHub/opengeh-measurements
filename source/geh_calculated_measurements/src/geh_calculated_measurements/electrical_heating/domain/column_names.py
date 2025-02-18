@@ -12,7 +12,6 @@ class ColumnNames:
     period_from_date = "period_from_date"
     period_to_date = "period_to_date"
     quantity = "quantity"
-    resolution = "resolution"
     settlement_month = "settlement_month"
     transaction_creation_datetime = "transaction_creation_datetime"
     transaction_id = "transaction_id"
