@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
@@ -25,14 +25,12 @@ def execute_core_logic(
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
-    execution_time: str,
 ) -> CalculationOutput:
     calculations = _create_calculations(
         spark,
         orchestration_instance_id,
         calculation_month,
         calculation_year,
-        execution_time,
     )
 
     metering_point_periods = _add_selection_period_columns(
@@ -96,8 +94,8 @@ def _create_calculations(
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
-    execution_time: str,
 ) -> DataFrame:
+    execution_time = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     return spark.createDataFrame(
         [
             (
