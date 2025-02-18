@@ -33,8 +33,7 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
             .when(
                 F.col(SilverMeasurementsColumnNames.resolution) == ResolutionEnum.PT1H.value,
                 _get_hourly_observation_time().cast(TimestampType()),
-            )
-            .otherwise(F.col(SilverMeasurementsColumnNames.start_datetime))
+            ).otherwise(F.col(SilverMeasurementsColumnNames.start_datetime))
         ).alias(GoldMeasurementsColumnNames.observation_time),
         F.col(f"col.{SilverMeasurementsColumnNames.Points.quantity}").alias(GoldMeasurementsColumnNames.quantity),
         F.col(f"col.{SilverMeasurementsColumnNames.Points.quality}").alias(GoldMeasurementsColumnNames.quality),

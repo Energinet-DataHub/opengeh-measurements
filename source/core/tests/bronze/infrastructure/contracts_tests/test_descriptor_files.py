@@ -33,9 +33,9 @@ def test__persist_submitted_transaction_protobuf() -> None:
     proto_path = "src/core/bronze/infrastructure/contracts"
     proto_file = "PersistSubmittedTransaction.proto"
 
-    assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
-        "Protobuf compilation does not match the descriptor file!"
-    )
+    assert compile_proto_to_descriptor(
+        proto_file, descriptor_file, proto_path
+    ), "Protobuf compilation does not match the descriptor file!"
 
 
 def test__submitted_transaction_persisted_protobuf() -> None:
@@ -43,6 +43,6 @@ def test__submitted_transaction_persisted_protobuf() -> None:
     proto_path = "src/core/bronze/infrastructure/contracts"
     proto_file = "SubmittedTransactionPersisted.proto"
 
-    assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
-        "Protobuf compilation does not match the descriptor file!"
-    )
+    assert compile_proto_to_descriptor(
+        proto_file, descriptor_file, proto_path
+    ), "Protobuf compilation does not match the descriptor file!"
