@@ -6,7 +6,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 )
 
 
-class CalculatedMeasurements(DataFrameWrapper):
+class CalculatedMeasurementsForStorage(DataFrameWrapper):
     """Represents the calculated measurements data structure."""
 
     def __init__(self, df: DataFrame):
