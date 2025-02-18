@@ -87,7 +87,7 @@ def _join_source_metering_point_periods_with_energy(
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 ColumnNames.metering_point_id
             ),
-            F.col(f"energy.{CalculatedNames.date}").alias(CalculatedNames.date),
+            F.col(f"energy.{ColumnNames.date}").alias(ColumnNames.date),
             F.col(f"energy.{ColumnNames.quantity}").alias(ColumnNames.quantity),
             F.col(f"metering_point.{CalculatedNames.period_energy_limit}").alias(CalculatedNames.period_energy_limit),
             F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
@@ -100,9 +100,9 @@ def _filter_parent_child_overlap_period_and_year(
     time_series_points: DataFrame,
 ) -> DataFrame:
     return time_series_points.where(
-        (F.col(CalculatedNames.date) >= F.col(CalculatedNames.overlap_period_start))
-        & (F.col(CalculatedNames.date) < F.col(CalculatedNames.overlap_period_end))
-        & (F.year(F.col(CalculatedNames.date)) == F.year(F.col(CalculatedNames.period_year)))
+        (F.col(ColumnNames.date) >= F.col(CalculatedNames.overlap_period_start))
+        & (F.col(ColumnNames.date) < F.col(CalculatedNames.overlap_period_end))
+        & (F.year(F.col(ColumnNames.date)) == F.year(F.col(CalculatedNames.period_year)))
     )
 
 
@@ -113,13 +113,13 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
             F.col(CalculatedNames.parent_period_start),
             F.col(CalculatedNames.parent_period_end),
         )
-        .orderBy(F.col(CalculatedNames.date))
+        .orderBy(F.col(ColumnNames.date))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
     return time_series_points.select(
         F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),
-        F.col(CalculatedNames.date),
+        F.col(ColumnNames.date),
         F.col(ColumnNames.quantity),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
@@ -148,6 +148,6 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         .alias(ColumnNames.quantity),
         F.col(CalculatedNames.cumulative_quantity),
         F.col(ColumnNames.metering_point_id),
-        F.col(CalculatedNames.date),
+        F.col(ColumnNames.date),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
