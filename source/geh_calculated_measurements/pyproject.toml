@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [project.scripts]
-execute_electrical_heating = "geh_calculated_measurements.opengeh_electrical_heating.entry_point:execute"
-execute_capacity_settlement = "geh_calculated_measurements.opengeh_capacity_settlement.entry_point:execute"
+execute_electrical_heating = "geh_calculated_measurements.electrical_heating.entry_point:execute"
+execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.entry_point:execute"
 execute_electrical_heating_net_consumption_for_group_6 = "geh_calculated_measurements.opengeh_electrical_heating.entry_point:execute_net_consumption_for_group_6"
 
 
@@ -36,6 +36,7 @@ dev = [
     "pytest>=8.3.4",
     "ruff>=0.9.1",
     "databricks-sdk>=0.41.0",
+    "pytest-order>=1.3.0",
 ]
 
 [tool.pytest.ini_options]
