@@ -27,7 +27,7 @@ def _unpack_proto(df) -> DataFrame:
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
     )
-    print(unpacked)
+    print(unpacked)  # noqa: T201
 
     return unpacked
 
