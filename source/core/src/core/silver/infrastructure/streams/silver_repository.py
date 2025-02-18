@@ -1,3 +1,5 @@
+from typing import Callable
+
 from pyspark.sql import DataFrame
 
 from core.bronze.infrastructure.settings import (
@@ -6,7 +8,6 @@ from core.bronze.infrastructure.settings import (
 )
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
-from core.utility.shared_helpers import get_checkpoint_path
 
 
 class SilverRepository:
@@ -16,16 +17,28 @@ class SilverRepository:
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
         self.silver_container_name = CatalogSettings().silver_container_name  # type: ignore
 
-    def write_measurements(self, measurements: DataFrame) -> None:
-        checkpoint_location = get_checkpoint_path(
-            self.data_lake_settings, self.silver_container_name, "submitted_transactions"
-        )
+    def write_stream(
+        self,
+        measurements: DataFrame,
+        batch_operation: Callable[["DataFrame", int], None],
+    ) -> bool | None:
+        # checkpoint_location = get_checkpoint_path(
+        #     self.data_lake_settings, self.silver_container_name, "submitted_transactions"
+        # )
+        checkpoint_location = "submitted_transactions"
 
-        write_stream = measurements.writeStream.outputMode("append").option("checkpointLocation", checkpoint_location)
+        write_stream = (
+            measurements.writeStream.outputMode("append")
+            .format("delta")
+            .option("checkpointLocation", checkpoint_location)
+        )
 
         stream_settings = SubmittedTransactionsStreamSettings()  # type: ignore
 
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
 
-        write_stream.toTable(self.table)
+        return write_stream.foreachBatch(batch_operation).start().awaitTermination()
+
+    def append(self, measurements: DataFrame) -> None:
+        measurements.write.format("delta").mode("append").saveAsTable(self.table)
