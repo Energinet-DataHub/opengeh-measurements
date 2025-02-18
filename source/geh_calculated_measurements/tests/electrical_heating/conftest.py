@@ -8,19 +8,19 @@ from geh_common.telemetry.logging_configuration import LoggingSettings, configur
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     CalculatedMeasurements,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_schema,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
@@ -85,9 +85,7 @@ def tests_path() -> str:
 @pytest.fixture(scope="session")
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
-    return (
-        PROJECT_ROOT / "src" / "geh_calculated_measurements" / "opengeh_electrical_heating" / "contracts"
-    ).as_posix()
+    return (PROJECT_ROOT / "src" / "geh_calculated_measurements" / "electrical_heating" / "contracts").as_posix()
 
 
 @pytest.fixture(scope="session")

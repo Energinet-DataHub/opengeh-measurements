@@ -8,25 +8,25 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.opengeh_electrical_heating.domain import (
+from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.domain.calculated_names import (
+from geh_calculated_measurements.electrical_heating.domain.calculated_names import (
     CalculatedNames,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
