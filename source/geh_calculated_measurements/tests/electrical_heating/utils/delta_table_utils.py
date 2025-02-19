@@ -2,15 +2,7 @@
 # This should be moved to a shared location when the time comes.
 
 
-from pyspark.sql import DataFrame, SparkSession
-
-
-def read_from_csv(
-    spark: SparkSession,
-    file_name: str,
-    sep: str = ";",
-) -> DataFrame:
-    return spark.read.csv(file_name, header=True, sep=sep)
+from pyspark.sql import DataFrame
 
 
 def write_dataframe_to_table(df: DataFrame, database_name: str, table_name: str, mode: str = "overwrite") -> None:
