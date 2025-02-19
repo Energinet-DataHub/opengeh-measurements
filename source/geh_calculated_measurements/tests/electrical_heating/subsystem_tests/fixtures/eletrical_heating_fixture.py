@@ -57,6 +57,7 @@ class ElectricalHeatingFixture:
 
         return self._wait_for_condition(workspace_id, query, timeout_seconds, poll_interval_seconds, timespan_minutes)
 
+    # TODO Move to test common paakage in the future
     def _wait_for_condition(
         self, workspace_id: str, query: str, timeout_seconds: int, poll_interval_seconds: int, timespan_minutes: int
     ) -> LogsQueryResult:
