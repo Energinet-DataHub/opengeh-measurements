@@ -1,7 +1,7 @@
 metering_point_id;quantity;observation_time;metering_point_type;#comment
 170000000000000201;1000;2024-02-01T03:00:00Z;consumption;The average of the 10 largest values for the selection period shall give the result for capacity settlement.
-170000000000000201;50;2024-10-27T03:00:00Z;consumption;Sellection's period is from row 2 to row 12, expected rows that include in capacity settlement are rows 2 to 11
-170000000000000201;50;2024-10-27T03:00:00Z;consumption;
+170000000000000201;500;2024-10-27T01:00:00Z;consumption;Sellection's period is from row 2 to row 12, expected rows that include in capacity settlement are rows 2 to 11
+170000000000000201;600;2024-10-27T01:00:00Z;consumption;
 170000000000000201;50;2025-02-04T03:00:00Z;consumption;
 170000000000000201;50;2025-05-12T03:00:00Z;consumption;
 170000000000000201;50;2025-05-20T03:00:00Z;consumption;
