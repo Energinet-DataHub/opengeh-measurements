@@ -6,13 +6,11 @@ from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
 
-@mock.patch("core.silver.infrastructure.streams.silver_repository.get_checkpoint_path")
-def test__write_stream__called__with_correct_arguments(mock_checkpoint_path) -> None:
+def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: mock.MagicMock | mock.AsyncMock) -> None:
     # Arrange
     mocked_measurements = mock.Mock()
     mocked_batch_operation = mock.Mock()
-    expected_checkpoint_path = "/test"
-    mock_checkpoint_path.return_value = expected_checkpoint_path
+    expected_checkpoint_path = mock_checkpoint_path.return_value
 
     expected_data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
     expected_silver_container_name = CatalogSettings().silver_container_name  # type: ignore
