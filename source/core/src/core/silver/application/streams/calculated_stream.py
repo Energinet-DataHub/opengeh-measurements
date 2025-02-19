@@ -5,10 +5,11 @@ import geh_common.telemetry.logging_configuration as config
 from geh_common.telemetry import use_span
 from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.settings.catalog_settings import CatalogSettings
+from core.silver.application.config.spark import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import (
     transform_calculated_measurements,
 )
@@ -29,16 +30,17 @@ def execute(applicationinsights_connection_string: Optional[str] = None) -> None
 
     with config.get_tracer().start_as_current_span(__name__, kind=SpanKind.SERVER) as span:
         try:
-            _execute()
+            spark = initialize_spark()
+            _execute(spark)
         except Exception as e:
             span_record_exception(e, span)
             sys.exit(4)
 
 
 @use_span()
-def _execute() -> None:
+def _execute(spark: SparkSession) -> None:
     catalog_settings = CatalogSettings()  # type: ignore
-    bronze_stream = BronzeRepository().read_calculated_measurements()
+    bronze_stream = BronzeRepository(spark).read_calculated_measurements()
     data_lake_storage_account = get_datalake_storage_account()
     checkpoint_path = get_checkpoint_path(
         data_lake_storage_account,
