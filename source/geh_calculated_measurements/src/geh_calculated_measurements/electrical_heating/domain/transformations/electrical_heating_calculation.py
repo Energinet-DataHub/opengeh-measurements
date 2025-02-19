@@ -174,7 +174,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
             F.col(CalculatedNames.parent_period_start),
             F.col(CalculatedNames.parent_period_end),
         )
-        .orderBy(F.col(CalculatedNames.date))
+        .orderBy(F.col(ColumnNames.date))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
     return time_series_points.select(

@@ -6,7 +6,6 @@ class CalculatedNames:
     consumption_quantity = "consumption_quantity"
     cumulative_quantity = "cumulative_quantity"
     """The quantity cumulated from the first day of the period up until the current day."""
-    date = "date"
     electrical_heating_metering_point_id = "electrical_heating_metering_point_id"
     electrical_heating_period_end = "electrical_heating_period_end"
     electrical_heating_period_start = "electrical_heating_period_start"
