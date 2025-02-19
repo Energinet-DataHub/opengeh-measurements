@@ -11,3 +11,11 @@ def execute() -> None:
     execute_application(
         applicationinsights_connection_string=applicationinsights_connection_string,
     )
+
+
+def execute_net_consumption_for_group_6() -> None:
+    applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
+
+    execute_application(
+        applicationinsights_connection_string=applicationinsights_connection_string,
+    )

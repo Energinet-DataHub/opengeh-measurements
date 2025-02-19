@@ -17,7 +17,7 @@ class JobState:
     run_result_state: RunResultState
 
 
-class ElectricalHeatingFixture:
+class ElectricalHeatingNetConsumptionForGroup6Fixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
         # Loads the environment variables from the .env file
         load_dotenv()
@@ -35,7 +35,7 @@ class ElectricalHeatingFixture:
         )
 
     def get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id("ElectricalHeating")
+        return self.databricks_api_client.get_job_id("ElectricalHeatingNetConsumptionForGroup6")
 
     def start_job(self, job_id: int) -> int:
         self.job_state.orchestrator_instance_id = str(uuid.uuid4())

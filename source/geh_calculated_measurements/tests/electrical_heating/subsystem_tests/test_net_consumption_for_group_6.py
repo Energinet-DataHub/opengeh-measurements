@@ -3,17 +3,21 @@ import unittest
 import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
-from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+from fixtures.eletrical_heating_net_consumption_for_group_6_fixture import (
+    ElectricalHeatingNetConsumptionForGroup6Fixture,
+)
 
 
-class TestElectricalHeating(unittest.TestCase):
+class TestNetConsumptionForGroup6(unittest.TestCase):
     """
     Subsystem test that verifies a Databricks electrical heating job runs successfully to completion.
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture) -> None:
-        TestElectricalHeating.fixture = electrical_heating_fixture
+    def setup_fixture(
+        self, electrical_heating_net_consumption_for_group_6_fixture: ElectricalHeatingNetConsumptionForGroup6Fixture
+    ) -> None:
+        TestNetConsumptionForGroup6.fixture = electrical_heating_net_consumption_for_group_6_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
@@ -38,7 +42,7 @@ class TestElectricalHeating(unittest.TestCase):
 
         # Assert
         assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The Job {self.fixture.job_state.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+            f"Job did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(4)
@@ -49,7 +53,7 @@ class TestElectricalHeating(unittest.TestCase):
 
         query = f"""
         AppTraces
-        | where Properties["Subsystem"] == 'measurements'
+        | where Properties["Subsystem"] == 'measurements' 
         | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
         """
 
@@ -57,5 +61,5 @@ class TestElectricalHeating(unittest.TestCase):
         actual = self.fixture.wait_for_log_query_completion(query)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
-        assert len(actual.tables[0].rows) > 0, "The query is empty."
+        assert actual.status == LogsQueryStatus.SUCCESS, f"Query did not complete successfully: {actual.status}"
+        assert len(actual.tables[0].rows) > 0, "Query is empty."  # type: ignore
