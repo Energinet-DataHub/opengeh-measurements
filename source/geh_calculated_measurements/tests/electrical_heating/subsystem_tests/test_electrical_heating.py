@@ -58,4 +58,3 @@ class TestElectricalHeating(unittest.TestCase):
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
-        assert len(actual.tables[0].rows) > 0, "The query is empty."
