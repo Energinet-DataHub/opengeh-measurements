@@ -14,8 +14,10 @@ class TestNetConsumptionForGroup6(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingNetConsumptionForGroup6Fixture) -> None:
-        TestNetConsumptionForGroup6.fixture = electrical_heating_fixture
+    def setup_fixture(
+        self, electrical_heating_net_consumption_for_group_6_fixture: ElectricalHeatingNetConsumptionForGroup6Fixture
+    ) -> None:
+        TestNetConsumptionForGroup6.fixture = electrical_heating_net_consumption_for_group_6_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
