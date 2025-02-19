@@ -1,7 +1,5 @@
 import subprocess
 
-# Todo: move
-
 
 def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
     """Compiles a .proto file into a descriptor file with correct proto_path."""
@@ -31,8 +29,8 @@ def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
 
 
 def test__persist_submitted_transaction_protobuf() -> None:
-    descriptor_file = "src/core/bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-    proto_path = "src/core/bronze/infrastructure/contracts"
+    descriptor_file = "src/core/contracts/process_manager/assets/persist_submitted_transaction.binpb"
+    proto_path = "src/core/contracts"
     proto_file = "PersistSubmittedTransaction.proto"
 
     assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
@@ -41,8 +39,8 @@ def test__persist_submitted_transaction_protobuf() -> None:
 
 
 def test__submitted_transaction_persisted_protobuf() -> None:
-    descriptor_file = "src/core/bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
-    proto_path = "src/core/bronze/infrastructure/contracts"
+    descriptor_file = "src/core/contracts/process_manager/assets/submitted_transaction_persisted.binpb"
+    proto_path = "src/core/contracts"
     proto_file = "SubmittedTransactionPersisted.proto"
 
     assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
