@@ -24,7 +24,7 @@ def _unpack_proto(df) -> DataFrame:
 
     unpacked = df.select(
         F.expr(
-            f"try_cast(from_protobuf(df.value, {(message_name,)} descFilePath={(descriptor_path)}, options={options})"
+            f"try_cast(from_protobuf(df.value, {(message_name,)} descFilePath='{descriptor_path}', options={options})"
         ).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
