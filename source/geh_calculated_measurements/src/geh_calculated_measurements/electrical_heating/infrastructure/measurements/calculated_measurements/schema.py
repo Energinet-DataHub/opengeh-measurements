@@ -4,7 +4,7 @@ nullable = True
 
 # Calculated measurements from electrical heating or capacity settlement calculations
 # Each row represents a calculated quantity for a specific metering point at a specific date.
-calculated_measurements_schema = t.StructType(
+calculated_measurements_storage_model_schema = t.StructType(
     [
         #
         # "electrical_heating" or "capacity_settlement"
