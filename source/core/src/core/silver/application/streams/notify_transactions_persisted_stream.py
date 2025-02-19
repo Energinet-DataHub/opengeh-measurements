@@ -1,5 +1,5 @@
 import core.bronze.application.config.spark_session as spark_session
-import core.bronze.domain.transformations.transactions_persisted_events_transformation as transactions_persisted_events_transformation
+import source.core.src.core.silver.domain.transformations.transactions_persisted_events_transformation as transactions_persisted_events_transformation
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.bronze.infrastructure.streams.kafka_stream import KafkaStream
 
