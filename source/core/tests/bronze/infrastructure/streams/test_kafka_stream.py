@@ -18,6 +18,7 @@ def test__submit_transactions__should_set_environment_variables(mock_get_checkpo
     kafka_stream.submit_transactions(spark_mock)
 
 
+# todo: moved to silver
 @mock.patch("core.bronze.infrastructure.streams.kafka_stream.get_checkpoint_path")
 def test__write_stream__should_set_environment_variables(mock_get_checkpoint_path):
     # Arrange

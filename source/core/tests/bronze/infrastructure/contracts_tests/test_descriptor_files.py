@@ -1,5 +1,7 @@
 import subprocess
 
+# Todo: move
+
 
 def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
     """Compiles a .proto file into a descriptor file with correct proto_path."""

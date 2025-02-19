@@ -1,22 +1,22 @@
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
-from pyspark.sql.protobuf.functions import from_protobuf, to_protobuf
+from pyspark.sql.protobuf.functions import to_protobuf
 
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
 )
-from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
-from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
+from core.silver.domain.constants.descriptor_file_names import DescriptorFileNames
+from core.utility.path_helper import get_protobuf_descriptor_path
 
 alias_name = "measurement_values"
 
 
 def transform(submitted_transactions: DataFrame) -> DataFrame:
-    unpacked_submitted_transactions = unpack_submitted_transactions(submitted_transactions)
-    return unpacked_submitted_transactions.transform(prepare_measurement).transform(pack_proto)
+    return submitted_transactions.transform(prepare_measurement).transform(pack_proto)
 
 
+# Todo transform from silver
 def prepare_measurement(df) -> DataFrame:
     return df.select(
         BronzeSubmittedTransactionsColumnNames.key,
@@ -35,29 +35,4 @@ def pack_proto(df) -> DataFrame:
     return df.withColumn(
         BronzeSubmittedTransactionsColumnNames.value,
         to_protobuf(BronzeSubmittedTransactionsColumnNames.value, message_name, descFilePath=descriptor_path),
-    )
-
-
-def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
-    """Unpacks the protobuf message and maps the fields to the correct columns."""
-    return bronze_measurements.transform(unpack_proto).transform(map_message)
-
-
-def unpack_proto(df):
-    descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
-    message_name = "PersistSubmittedTransaction"
-    return df.select(
-        from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name),
-        BronzeSubmittedTransactionsColumnNames.key,
-        BronzeSubmittedTransactionsColumnNames.partition,
-    )
-
-
-def map_message(df):
-    return df.select(
-        f"{alias_name}.{ValueColumnNames.version}",
-        f"{alias_name}.{ValueColumnNames.orchestration_instance_id}",
-        f"{alias_name}.{ValueColumnNames.orchestration_type}",
-        BronzeSubmittedTransactionsColumnNames.key,
-        BronzeSubmittedTransactionsColumnNames.partition,
     )
