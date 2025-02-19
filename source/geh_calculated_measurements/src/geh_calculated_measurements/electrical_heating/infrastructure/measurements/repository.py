@@ -35,9 +35,7 @@ class Repository:
     def write_calculated_measurements(
         self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
     ) -> None:
-        calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
-            self._calculated_measurements_full_table_path
-        )
+        calculated_measurements.df.write.mode(write_mode).saveAsTable(self._calculated_measurements_full_table_path)
 
     def read_calculated_measurements(self) -> CalculatedMeasurements:
         return CalculatedMeasurements(self._spark.read.table(self._calculated_measurements_full_table_path))
