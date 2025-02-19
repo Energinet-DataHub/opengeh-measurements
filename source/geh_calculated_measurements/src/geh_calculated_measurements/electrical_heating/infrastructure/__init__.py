@@ -1,10 +1,6 @@
 from .electricity_market.child_metering_points.wrapper import ChildMeteringPoints
 from .electricity_market.consumption_metering_point_periods.wrapper import ConsumptionMeteringPointPeriods
 from .electricity_market.repository import Repository as ElectricityMarketRepository
-from .measurements.calculated_measurements.calculated_measurements_storage_model_factory import (
-    create as create_calculated_measurements_storage_model,
-)
-from .measurements.calculated_measurements.wrapper import CalculatedMeasurementsStorageModel
 from .measurements.measurements_gold.wrapper import TimeSeriesPoints
 from .measurements.repository import Repository as MeasurementsRepository
 from .spark_initializor import initialize_spark
@@ -16,8 +12,6 @@ __all__ = [
     "ChildMeteringPoints",
     "ConsumptionMeteringPointPeriods",
     # Measurements core repository and types
-    "create_calculated_measurements_storage_model",
     "MeasurementsRepository",
-    "CalculatedMeasurementsStorageModel",
     "TimeSeriesPoints",
 ]
