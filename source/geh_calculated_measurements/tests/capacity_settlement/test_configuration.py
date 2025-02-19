@@ -3,6 +3,8 @@ from azure.keyvault.secrets import SecretClient
 
 
 class TestConfiguration:
+    __test__ = False
+
     def __init__(self, azure_keyvault_url: str):
         self._credential = DefaultAzureCredential()
         self._azure_keyvault_url = azure_keyvault_url
