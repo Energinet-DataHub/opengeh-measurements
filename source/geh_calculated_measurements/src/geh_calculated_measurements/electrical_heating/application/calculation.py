@@ -86,9 +86,14 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
     # Execute the domain logic
-    execute(
+    out_put = execute(
         time_series_points,
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
+    )
+
+    # Write result to table
+    out_put.df().write.mode("overwrite").saveAsTable(
+        f"{args.catalog_name}.{args.schema_name}.{'electrical_heating_output'}"
     )
