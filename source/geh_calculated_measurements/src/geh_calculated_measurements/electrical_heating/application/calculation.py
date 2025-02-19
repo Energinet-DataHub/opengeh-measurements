@@ -90,4 +90,5 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     )
 
     # Write the calculated measurements to the database
+    calculated_measurements_storage_model = create_calculated_measurements_storage_model()
     measurements_repository.write_calculated_measurements(measurements)
