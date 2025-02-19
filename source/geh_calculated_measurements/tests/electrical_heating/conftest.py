@@ -1,36 +1,30 @@
 ### This file contains the fixtures that are used in the tests. ###
-import os
 from pathlib import Path
 from typing import Generator
 
 import pytest
+from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.telemetry.logging_configuration import configure_logging
-from geh_common.testing.delta_lake import create_database, create_table
+from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     CalculatedMeasurements,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_schema,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests import PROJECT_ROOT
 from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
-from tests.electrical_heating.utils.delta_table_utils import (
-    read_from_csv,
-)
-from tests.electrical_heating.utils.measurements_utils import (
-    create_calculated_measurements_dataframe,
-)
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -58,9 +52,7 @@ def tests_path() -> str:
 @pytest.fixture(scope="session")
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
-    return (
-        PROJECT_ROOT / "src" / "geh_calculated_measurements" / "opengeh_electrical_heating" / "contracts"
-    ).as_posix()
+    return (PROJECT_ROOT / "src" / "geh_calculated_measurements" / "electrical_heating" / "contracts").as_posix()
 
 
 @pytest.fixture(scope="session")
@@ -87,9 +79,10 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
     )
 
     file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
-    measurements = read_from_csv(spark, file_name)
 
-    return create_calculated_measurements_dataframe(spark, measurements)
+    df = read_csv_path(spark, file_name, calculated_measurements_schema)
+
+    return CalculatedMeasurements(df)
 
 
 @pytest.fixture(scope="session")
@@ -105,21 +98,9 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
     )
 
     file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabase.DATABASE_NAME}-{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}.csv"
-    time_series_points = read_from_csv(spark, file_name)
+    time_series_points = read_csv_path(spark, file_name, time_series_points_v1)
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabase.DATABASE_NAME}.{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
         format="delta",
         mode="overwrite",
     )
-
-
-# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
-def pytest_collection_modifyitems(config, items) -> None:
-    env_file_path = os.path.join(os.path.dirname(__file__), ".env")
-    if not os.path.exists(env_file_path):
-        skip_container_tests = pytest.mark.skip(
-            reason="Skipping container tests because .env file is missing. See .sample.env for an example."
-        )
-        for item in items:
-            if "container_tests" in item.nodeid:
-                item.add_marker(skip_container_tests)

@@ -1,4 +1,4 @@
-from geh_calculated_measurements.opengeh_electrical_heating.application import ElectricalHeatingArgs
+from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 
 
 class ElectricalHeatingTestArgs(ElectricalHeatingArgs):
