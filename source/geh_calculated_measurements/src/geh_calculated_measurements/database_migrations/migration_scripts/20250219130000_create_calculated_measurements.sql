@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS {calculated_measurements_database}.{calculated_measurements_table}
-
 CREATE TABLE IF NOT EXISTS {calculated_measurements_database}.{calculated_measurements_table}
 (
     orchestration_type STRING NOT NULL,
