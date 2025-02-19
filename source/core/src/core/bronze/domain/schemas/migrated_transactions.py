@@ -40,6 +40,8 @@ migrated_transactions_schema = StructType(
     ]
 )
 
+# The corresponding table in migrations_silver database.
+# Belongs to another domain, but the schema is needed here.
 migrations_silver_time_series_schema = StructType(
     [
         StructField(MigrationsSilverTimeSeriesColumnNames.metering_point_id, StringType(), False),

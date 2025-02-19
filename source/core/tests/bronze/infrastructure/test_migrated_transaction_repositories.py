@@ -2,9 +2,11 @@ import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
+from core.bronze.infrastructure.config.table_names import TableNames
 from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
+from core.settings.catalog_settings import CatalogSettings
 
 
 def test__read_measurements_bronze_migrated_transactions__should_return_the_correct_dataframe(
@@ -25,6 +27,9 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
+
+    catalog_settings = CatalogSettings()  # type: ignore
+    spark.sql(f"TRUNCATE TABLE {catalog_settings.bronze_database_name}.{TableNames.bronze_migrated_transactions_table}")
 
     # Act
     migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()

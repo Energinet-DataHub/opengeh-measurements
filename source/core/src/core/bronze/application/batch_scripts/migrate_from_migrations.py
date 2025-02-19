@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pyspark.sql.functions import col, lit
 
@@ -16,26 +15,14 @@ from core.bronze.infrastructure.migration_data.silver_time_series_repository imp
 )
 
 
-def migrate_time_series_from_migrations_to_measurements(
-    migrated_transactions_repository: Optional[MigratedTransactionsRepository] = None,
-    migrations_silver_time_series_repository: Optional[MigrationsSilverTimeSeriesRepository] = None,
-) -> None:
+def migrate_time_series_from_migrations_to_measurements() -> None:
     spark = spark_session.initialize_spark()
-    migrated_transactions_repository = (
-        MigratedTransactionsRepository(spark)
-        if migrated_transactions_repository is None
-        else migrated_transactions_repository
-    )
-    migrations_silver_time_series_repository = (
-        MigrationsSilverTimeSeriesRepository(spark)
-        if migrations_silver_time_series_repository is None
-        else migrations_silver_time_series_repository
-    )
+    migrated_transactions_repository = MigratedTransactionsRepository(spark)
+    migrations_silver_time_series_repository = MigrationsSilverTimeSeriesRepository(spark)
 
     latest_created_already_migrated = (
         migrated_transactions_repository.calculate_latest_created_timestamp_that_has_been_migrated()
     )
-
     # Determine which technique to apply for loading data.
     if latest_created_already_migrated is None:
         full_load_of_migrations_to_measurements(
@@ -75,8 +62,8 @@ def full_load_of_migrations_to_measurements(
     migrated_transactions_repository: MigratedTransactionsRepository,
     num_chunks=10,
 ) -> None:
-    print(f"{datetime.now()} - Starting full load of migrations to measurements from scratch.")
     migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series()
+    print(f"{datetime.now()} - Starting full load of migrations to measurements from scratch.")
 
     chunks = MigrationsSilverTimeSeriesRepository.create_chunks_of_partitions_for_data_with_a_single_partition_col(
         migrations_data,

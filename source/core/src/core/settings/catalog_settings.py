@@ -24,5 +24,7 @@ class CatalogSettings(BaseSettings):
     silver_database_name: str
     gold_database_name: str
 
+    migrations_silver_database_name: str
+
     class Config:
         case_sensitive = False

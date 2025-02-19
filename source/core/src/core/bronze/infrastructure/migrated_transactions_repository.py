@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
@@ -30,7 +31,7 @@ class MigratedTransactionsRepository:
             .saveAsTable(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
         )
 
-    def calculate_latest_created_timestamp_that_has_been_migrated(self) -> datetime:
+    def calculate_latest_created_timestamp_that_has_been_migrated(self) -> Optional[datetime]:
         return (
             self.read_measurements_bronze_migrated_transactions()
             .agg(F.max(F.col(BronzeMigratedTransactionsColumnNames.created_in_migrations)))
