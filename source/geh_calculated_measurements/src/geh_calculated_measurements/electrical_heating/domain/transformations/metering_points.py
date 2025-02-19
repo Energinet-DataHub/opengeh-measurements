@@ -38,6 +38,7 @@ def _join_children_to_parent_metering_point(
     parent_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return (
+        # TODO: What if E17 has different - say D14 - child metering points at different times?
         parent_metering_point_and_periods.alias("parent")
         # Inner join because there is no reason to calculate if there is no electrical heating metering point
         .join(
@@ -55,6 +56,22 @@ def _join_children_to_parent_metering_point(
                 F.col(ColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value
             ).alias("net_consumption"),
             F.col(f"net_consumption.{ColumnNames.parent_metering_point_id}")
+            == F.col(f"parent.{ColumnNames.metering_point_id}"),
+            "left",
+        )
+        .join(
+            child_metering_point_and_periods.where(
+                F.col(ColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value
+            ).alias("consumption_from_grid"),
+            F.col(f"consumption_from_grid.{ColumnNames.parent_metering_point_id}")
+            == F.col(f"parent.{ColumnNames.metering_point_id}"),
+            "left",
+        )
+        .join(
+            child_metering_point_and_periods.where(
+                F.col(ColumnNames.metering_point_type) == MeteringPointType.SUPPLY_TO_GRID.value
+            ).alias("supply_to_grid"),
+            F.col(f"supply_to_grid.{ColumnNames.parent_metering_point_id}")
             == F.col(f"parent.{ColumnNames.metering_point_id}"),
             "left",
         )
@@ -77,6 +94,20 @@ def _join_children_to_parent_metering_point(
             ),
             F.col(f"net_consumption.{ColumnNames.coupled_date}").alias(CalculatedNames.net_consumption_period_start),
             F.col(f"net_consumption.{ColumnNames.uncoupled_date}").alias(CalculatedNames.net_consumption_period_end),
+            F.col(f"consumption_from_grid.{ColumnNames.metering_point_id}").alias(
+                CalculatedNames.consumption_from_grid_metering_point_id
+            ),
+            F.col(f"consumption_from_grid.{ColumnNames.coupled_date}").alias(
+                CalculatedNames.consumption_from_grid_period_start
+            ),
+            F.col(f"consumption_from_grid.{ColumnNames.uncoupled_date}").alias(
+                CalculatedNames.consumption_from_grid_period_end
+            ),
+            F.col(f"supply_to_grid.{ColumnNames.metering_point_id}").alias(
+                CalculatedNames.supply_to_grid_metering_point_id
+            ),
+            F.col(f"supply_to_grid.{ColumnNames.coupled_date}").alias(CalculatedNames.supply_to_grid_period_start),
+            F.col(f"supply_to_grid.{ColumnNames.uncoupled_date}").alias(CalculatedNames.supply_to_grid_period_end),
         )
     )
 
@@ -85,6 +116,7 @@ def _close_open_ended_periods(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     """Close open ended periods by setting the end date to the end of the current year."""
+    # TODO: Do we need this for other than E17?
     return parent_and_child_metering_point_and_periods.select(
         # Consumption metering point
         F.col(ColumnNames.parent_metering_point_id),
@@ -108,6 +140,12 @@ def _close_open_ended_periods(
             begining_of_year(F.current_date(), years_to_add=1),
         ).alias(CalculatedNames.net_consumption_period_end),
         F.col(CalculatedNames.net_consumption_metering_point_id),
+        CalculatedNames.consumption_from_grid_metering_point_id,
+        CalculatedNames.consumption_from_grid_period_start,
+        CalculatedNames.consumption_from_grid_period_end,
+        CalculatedNames.supply_to_grid_metering_point_id,
+        CalculatedNames.supply_to_grid_period_start,
+        CalculatedNames.supply_to_grid_period_end,
     )
 
 
@@ -119,6 +157,7 @@ def _find_parent_child_overlap_period(
         # Here we calculate the overlapping period between the consumption metering point period
         # and the children metering point periods.
         # We, however, assume that there is only one overlapping period between the periods
+        # TODO: Should we add D06 and D07 here?
         F.greatest(
             F.col(CalculatedNames.parent_period_start),
             F.col(CalculatedNames.electrical_heating_period_start),
@@ -144,6 +183,7 @@ def _find_parent_child_overlap_period(
 def _split_period_by_year(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
+    # TODO: Why do we need to select all the periods?
     return parent_and_child_metering_point_and_periods.select(
         "*",
         # create a row for each year in the period
@@ -181,4 +221,10 @@ def _split_period_by_year(
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.net_consumption_period_start),
         F.col(CalculatedNames.net_consumption_period_end),
+        F.col(CalculatedNames.consumption_from_grid_metering_point_id),
+        F.col(CalculatedNames.consumption_from_grid_period_start),
+        F.col(CalculatedNames.consumption_from_grid_period_end),
+        F.col(CalculatedNames.supply_to_grid_metering_point_id),
+        F.col(CalculatedNames.supply_to_grid_period_start),
+        F.col(CalculatedNames.supply_to_grid_period_end),
     )

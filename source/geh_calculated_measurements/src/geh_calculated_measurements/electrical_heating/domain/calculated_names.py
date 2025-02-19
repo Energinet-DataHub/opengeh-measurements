@@ -1,6 +1,7 @@
 class CalculatedNames:
     """Names of calculated columns."""
 
+    observation_time_hourly = "observation_time_hourly"
     consumption_from_grid_quantity = "consumption_from_grid_quantity"
     consumption_quantity = "consumption_quantity"
     cumulative_quantity = "cumulative_quantity"
@@ -24,3 +25,9 @@ class CalculatedNames:
     period_energy_limit = "period_energy_limit"
     period_year = "period_year"
     supply_to_grid_quantity = "supply_to_grid_quantity"
+    consumption_from_grid_metering_point_id = "consumption_from_grid_metering_point_id"
+    consumption_from_grid_period_start = "consumption_from_grid_period_start"
+    consumption_from_grid_period_end = "consumption_from_grid_period_end"
+    supply_to_grid_metering_point_id = "supply_to_grid_metering_point_id"
+    supply_to_grid_period_start = "supply_to_grid_period_start"
+    supply_to_grid_period_end = "supply_to_grid_period_end"
