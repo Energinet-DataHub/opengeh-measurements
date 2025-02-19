@@ -36,3 +36,23 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
     assert actual_points[0].position is not None
     assert actual_points[0].quantity is not None
     assert actual_points[0].quality is not None
+
+
+def test__create_by_submitted_transactions__when_message_does_not_match_protobuf__should_filter_away(
+    spark: SparkSession,
+) -> None:
+    # Arrange
+    value = "not a protobuf message"
+    binary = bytearray(value, "utf-8")
+    submitted_transactions = spark.createDataFrame(
+        [
+            ("key1", "partition1", binary),
+        ],
+        ["key", "partition", "value"],
+    )
+
+    # Act
+    actual = sut.create_by_packed_submitted_transactions(submitted_transactions)
+
+    # Assert
+    assert actual.count() == 0
