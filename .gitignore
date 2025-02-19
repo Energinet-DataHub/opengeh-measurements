@@ -1,5 +1,3 @@
-
-
 .DS_Store
 .ruff_cache
 _deprecated/
@@ -179,8 +177,8 @@ cython_debug/
 .pypirc
 
 # Spark Metadata
-metastore_db/
-spark-warehouse/
+__spark_warehouse__
+__metastore_db__
 
 # Databricks logs
 _delta_log/

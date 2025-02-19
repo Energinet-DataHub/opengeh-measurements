@@ -1,10 +1,21 @@
 ### This file contains the fixtures that are used in the tests. ###
 import os
+import shutil
+from pathlib import Path
 from typing import Generator
 
 import pytest
 from delta import configure_spark_with_delta_pip
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
+
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+    CalculatedMeasurementsDatabase,
+)
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabase,
+)
+from tests import PROJECT_ROOT
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -16,25 +27,48 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
+def _remove_test_storage(spark_warehouse_dir: Path, metastore_db_dir: Path):
+    try:
+        if spark_warehouse_dir.exists():
+            shutil.rmtree(spark_warehouse_dir)
+    except Exception:
+        print("Failed to remove the Spark warehouse directory.")  # noqa
+    try:
+        if metastore_db_dir.exists():
+            shutil.rmtree(metastore_db_dir)
+    except Exception:
+        print("Failed to remove the metastore database directory.")  # noqa
+
+
 @pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
+def spark(worker_id) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
-    session = (
-        SparkSession.builder.appName("geh_calculated_measurements")  # # type: ignore
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-        # Enable Hive support for persistence across test sessions
-        .config("spark.sql.catalogImplementation", "hive")
-        .enableHiveSupport()
-    )
-    session = configure_spark_with_delta_pip(session).getOrCreate()
-    yield session
-    session.stop()
+    app_name = "geh_calculated_measurements"
+    spark_warehouse_dir = PROJECT_ROOT / "__spark_warehouse__"
+    metastore_db_dir = PROJECT_ROOT / "__metastore_db__" / worker_id
+    _remove_test_storage(spark_warehouse_dir, metastore_db_dir)
+
+    spark_conf = {
+        "spark.ui.enabled": "False",
+        "spark.sql.warehouse.dir": spark_warehouse_dir.as_posix(),
+        "javax.jdo.option.ConnectionURL": f"jdbc:derby:;databaseName={metastore_db_dir.as_posix()};create=true",
+        "javax.jdo.option.ConnectionDriverName": "org.apache.derby.jdbc.EmbeddedDriver",
+        "hive.stats.jdbc.timeout": "30",
+        "hive.stats.retries.wait": "3000",
+    }
+
+    conf = SparkConf().setAll(list(spark_conf.items()))
+    spark_session = configure_spark_with_delta_pip(
+        SparkSession.Builder().appName(app_name).config(conf=conf).enableHiveSupport()
+    ).getOrCreate()
+    schemas = [CalculatedMeasurementsDatabase.DATABASE_NAME, MeasurementsGoldDatabase.DATABASE_NAME]
+    for schema in schemas:
+        spark_session.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+
+    yield spark_session
+    spark_session.stop()
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
