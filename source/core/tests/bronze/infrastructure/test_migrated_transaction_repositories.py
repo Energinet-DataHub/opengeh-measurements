@@ -31,7 +31,6 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
-    catalog_settings = CatalogSettings()  # type: ignore
 
     migrated_data = MigratedTransactionsBuilder(spark)
     migrated_data = migrated_data.build()
@@ -49,7 +48,6 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
-    catalog_settings = CatalogSettings()  # type: ignore
 
     timestamp_to_find = datetime.now()
 

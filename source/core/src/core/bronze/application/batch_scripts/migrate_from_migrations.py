@@ -43,7 +43,7 @@ def daily_load_of_migrations_to_measurements(
     latest_created_already_migrated: datetime,
 ) -> None:
     today = datetime.now().date()
-    print(f"{datetime.now()} - Loading data written since {latest_created_already_migrated} into bronze.")
+
     migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
         (col(MigrationsSilverTimeSeriesColumnNames.created) < lit(today))
         & (col(MigrationsSilverTimeSeriesColumnNames.created) > lit(latest_created_already_migrated))
@@ -63,7 +63,6 @@ def full_load_of_migrations_to_measurements(
     num_chunks=10,
 ) -> None:
     migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series()
-    print(f"{datetime.now()} - Starting full load of migrations to measurements from scratch.")
 
     chunks = MigrationsSilverTimeSeriesRepository.create_chunks_of_partitions_for_data_with_a_single_partition_col(
         migrations_data,
@@ -72,11 +71,7 @@ def full_load_of_migrations_to_measurements(
     )
     today = datetime.now().date()
 
-    for i, chunk in enumerate(chunks):
-        print(
-            f"{datetime.now()} - Migrating partitions between: '{chunk[0]}' and '{chunk[-1]}', chunk {i + 1}/{len(chunks)}"
-        )
-
+    for chunk in enumerate(chunks):
         migrations_data_chunk = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
             (lit(chunk[0]) <= col(MigrationsSilverTimeSeriesColumnNames.partitioning_col))
             & (col(MigrationsSilverTimeSeriesColumnNames.partitioning_col) <= lit(chunk[-1]))
