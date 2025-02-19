@@ -159,7 +159,7 @@ def _calculate_period_limit(
         # TODO: Why not the overlap period?
         CalculatedNames.parent_period_start,
         CalculatedNames.parent_period_end,
-        F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(CalculatedNames.date),
+        F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(ColumnNames.date),
         # ColumnNames.quantity,
         CalculatedNames.period_energy_limit,
     ).agg(F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity))
@@ -180,7 +180,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
-        F.col(CalculatedNames.date),
+        F.col(ColumnNames.date),
         F.col(ColumnNames.quantity),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
@@ -209,6 +209,6 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         .alias(ColumnNames.quantity),
         F.col(CalculatedNames.cumulative_quantity),
         F.col(CalculatedNames.electrical_heating_metering_point_id).alias(ColumnNames.metering_point_id),
-        F.col(CalculatedNames.date),
+        F.col(ColumnNames.date),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()

@@ -29,8 +29,8 @@ def calculate_daily_quantity(time_series_points: DataFrame) -> DataFrame:
     # TODO: Can this be rewritten as
     # return (
     #     time_series_points
-    #     .withColumn(CalculatedNames.date, F.date_trunc("day", F.col(ColumnNames.observation_time)))
-    #     .groupBy(ColumnNames.metering_point_id, CalculatedNames.date)
+    #     .withColumn(ColumnNames.date, F.date_trunc("day", F.col(ColumnNames.observation_time)))
+    #     .groupBy(ColumnNames.metering_point_id, ColumnNames.date)
     #     .agg(F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity))
     # )
 
