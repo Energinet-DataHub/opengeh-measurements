@@ -6,7 +6,7 @@ import pytest
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
+from geh_calculated_measurements.electrical_heating.application.environment_variables import (
     EnvironmentVariable,
 )
 

@@ -4,10 +4,8 @@ from geh_common.telemetry.decorators import start_trace
 from geh_common.telemetry.logger import Logger
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
-from geh_calculated_measurements.capacity_settlement.application.execute_with_deps import (
-    execute_with_deps,
-)
-from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_args import (
+from geh_calculated_measurements.capacity_settlement.application import calculation
+from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 
@@ -26,4 +24,4 @@ def orchestrate_business_logic(job_arguments: CapacitySettlementArgs, logging_se
     logger = Logger(__name__)
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")
     logger.info(f"Command line arguments retrieved for electrical heating job Oriented Parameters: {job_arguments}")
-    execute_with_deps(job_arguments=job_arguments)
+    calculation.execute(job_arguments=job_arguments)

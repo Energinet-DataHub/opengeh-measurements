@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_args import (
+from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 

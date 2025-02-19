@@ -59,7 +59,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         metering_point_periods_v1,
     )
 
-    args = CapacitySettlementTestArgs(f"{scenario_path}/when/job_parameters.env")
+    args = CapacitySettlementTestArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
     execution_time = "2026-01-04T23:00:00Z"
     # Execute the logic
     calculation_output = execute_core_logic(
