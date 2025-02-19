@@ -4,6 +4,7 @@ from geh_common.pyspark.transformations import (
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
+from geh_calculated_measurements.electrical_heating.domain import CalculatedMeasurements
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
