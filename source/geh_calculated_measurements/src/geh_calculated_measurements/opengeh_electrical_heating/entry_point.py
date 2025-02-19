@@ -7,6 +7,7 @@ from geh_calculated_measurements.opengeh_electrical_heating.application import (
 
 
 def execute() -> None:
+    # Entry point for the Electrical Heating
     applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
     execute_application(
@@ -15,4 +16,5 @@ def execute() -> None:
 
 
 def migrate() -> None:
+    # Entry point for the database migrations
     migrations_runner.migrate()
