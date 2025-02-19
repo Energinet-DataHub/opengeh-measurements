@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.config.table_names import MigrationsTableNames
-from core.migrations.database_names import DatabaseNames
+from core.settings.catalog_settings import CatalogSettings
 
 
 class MigrationsSilverTimeSeriesRepository:
@@ -10,11 +10,12 @@ class MigrationsSilverTimeSeriesRepository:
         spark: SparkSession,
     ) -> None:
         self._spark = spark
+        catalog_settings = CatalogSettings()  # type: ignore
+        self.source_database = catalog_settings.migrations_silver_database_name
+        self.source_table_name = MigrationsTableNames.silver_time_series_table
 
     def read_migrations_silver_time_series(self) -> DataFrame:
-        source_database = DatabaseNames.silver_migrations_database
-        source_table_name = MigrationsTableNames.silver_time_series_table
-        return self._spark.read.table(f"{source_database}.{source_table_name}")
+        return self._spark.read.table(f"{self.source_database}.{self.source_table_name}")
 
     @staticmethod
     def create_chunks_of_partitions_for_data_with_a_single_partition_col(
