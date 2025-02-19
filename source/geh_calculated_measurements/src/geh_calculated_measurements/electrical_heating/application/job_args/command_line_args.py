@@ -11,6 +11,7 @@ from geh_calculated_measurements.electrical_heating.application.electrical_heati
     ElectricalHeatingArgs,
 )
 from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
+    get_electricity_market_data_path,
     get_time_zone,
 )
 
@@ -29,6 +30,7 @@ def parse_job_arguments(
         electrical_heating_args = ElectricalHeatingArgs(
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
+            electricity_market_data_path=get_electricity_market_data_path(),
             # Databricks location
             catalog_name=job_args.catalog_name,
             schema_name=job_args.schema_name,
