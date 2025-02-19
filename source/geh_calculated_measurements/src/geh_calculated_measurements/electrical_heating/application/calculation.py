@@ -21,6 +21,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ElectricityMarketRepository,
     MeasurementsRepository,
+    create_calculated_measurements_storage_model,
     initialize_spark,
 )
 
@@ -90,5 +91,7 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     )
 
     # Write the calculated measurements to the database
-    calculated_measurements_storage_model = create_calculated_measurements_storage_model()
-    measurements_repository.write_calculated_measurements(measurements)
+    calculated_measurements_storage_model = create_calculated_measurements_storage_model(
+        measurements, args.orchestration_instance_id, "electrical_heating"
+    )
+    measurements_repository.write_calculated_measurements(calculated_measurements_storage_model)
