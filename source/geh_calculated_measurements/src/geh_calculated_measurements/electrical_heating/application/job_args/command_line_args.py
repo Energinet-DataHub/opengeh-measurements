@@ -51,15 +51,15 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
     p.add_argument("--orchestration-instance-id", type=str, required=True)
 
     # Databricks catalog parameters
-    p.add_argument("--catalog-name", type=str, required=True, help="Databricks catalog name")
-    p.add_argument("--schema-name", type=str, required=True, help="Databricks schema name")
+    p.add_argument("--catalog-name", type=str, required=False, help="Databricks catalog name")
+    p.add_argument("--schema-name", type=str, required=False, help="Databricks schema name")
 
     # Table parameters
-    p.add_argument("--time-series-points-table", type=str, required=True, help="Table name for time series points")
+    p.add_argument("--time-series-points-table", type=str, required=False, help="Table name for time series points")
     p.add_argument(
-        "--consumption-points-table", type=str, required=True, help="Table name for consumption metering points"
+        "--consumption-points-table", type=str, required=False, help="Table name for consumption metering points"
     )
-    p.add_argument("--child-points-table", type=str, required=True, help="Table name for child metering points")
+    p.add_argument("--child-points-table", type=str, required=False, help="Table name for child metering points")
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):
