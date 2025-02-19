@@ -4,7 +4,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
     CalculatedMeasurementsDatabase,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
-    CalculatedMeasurements,
+    CalculatedMeasurementsStorageModel,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
@@ -33,14 +33,14 @@ class Repository:
             )
 
     def write_calculated_measurements(
-        self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
+        self, calculated_measurements: CalculatedMeasurementsStorageModel, write_mode: str = "append"
     ) -> None:
         calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
             self._calculated_measurements_full_table_path
         )
 
-    def read_calculated_measurements(self) -> CalculatedMeasurements:
-        return CalculatedMeasurements(self._spark.read.table(self._calculated_measurements_full_table_path))
+    def read_calculated_measurements(self) -> CalculatedMeasurementsStorageModel:
+        return CalculatedMeasurementsStorageModel(self._spark.read.table(self._calculated_measurements_full_table_path))
 
     def read_time_series_points(self) -> TimeSeriesPoints:
         # TODO: the table does not yet exist in the database
