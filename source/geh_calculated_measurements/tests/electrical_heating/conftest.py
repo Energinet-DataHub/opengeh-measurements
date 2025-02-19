@@ -5,7 +5,10 @@ from typing import Generator
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.telemetry.logging_configuration import configure_logging
-from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
+from geh_common.testing.delta_lake.delta_lake_operations import (
+    create_database,
+    create_table,
+)
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.electrical_heating.infrastructure import (
@@ -68,15 +71,15 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
-    create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
+    # create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
 
-    create_table(
-        spark,
-        database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
-        table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
-    )
+    # create_table(
+    #     spark,
+    #     database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
+    #     table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
+    #     schema=calculated_measurements_schema,
+    #     table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
+    # )
 
     file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
 
