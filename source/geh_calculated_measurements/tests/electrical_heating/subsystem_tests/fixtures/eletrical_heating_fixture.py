@@ -6,6 +6,7 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryClient, LogsQueryPartialResult, LogsQueryResult, LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
+from dotenv import load_dotenv
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
@@ -19,6 +20,9 @@ class JobState:
 
 class ElectricalHeatingFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
+        # Loads the environment variables from the .env file
+        load_dotenv()
+
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
