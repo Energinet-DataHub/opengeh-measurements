@@ -1,6 +1,5 @@
 import time
 import uuid
-from datetime import timedelta
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
@@ -20,6 +19,7 @@ class JobState:
 
 class ElectricalHeatingFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
+        # Loads the environment variables from the .env file
         load_dotenv()
 
         self.databricks_api_client = DatabricksApiClient(
@@ -48,11 +48,11 @@ class ElectricalHeatingFixture:
         return self.databricks_api_client.wait_for_job_completion(run_id)
 
     def wait_for_log_query_completion(
-        self, query: str, timeout: int = 1000, poll_interval: int = 15
+        self, query: str, timeout: int = 100, poll_interval: int = 10
     ) -> LogsQueryResult | LogsQueryPartialResult:
-        workspace_id = self.secret_client.get_secret("AZURE-LOGANALYTICS-WORKSPACE-ID").value
+        workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
         if workspace_id is None:
-            raise ValueError("Workspace ID cannot be None")
+            raise ValueError("The Azure log analytics workspace ID cannot be empty.")
 
         return self._wait_for_condition(workspace_id, query, timeout, poll_interval)
 
@@ -61,7 +61,7 @@ class ElectricalHeatingFixture:
 
         while time.time() - start_time < timeout:
             try:
-                result = self.logs_query_client.query_workspace(workspace_id, query, timespan=timedelta(seconds=10))  # type: ignore
+                result = self.logs_query_client.query_workspace(workspace_id, query, timespan=None)
                 if result.status == LogsQueryStatus.SUCCESS and len(result.tables[0].rows) > 0:
                     return result
             except Exception:

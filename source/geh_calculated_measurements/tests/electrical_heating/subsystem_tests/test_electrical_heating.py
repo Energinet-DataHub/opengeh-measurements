@@ -38,7 +38,7 @@ class TestElectricalHeating(unittest.TestCase):
 
         # Assert
         assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"Job did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+            f"The Job {self.fixture.job_state.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(4)
@@ -49,7 +49,7 @@ class TestElectricalHeating(unittest.TestCase):
 
         query = f"""
         AppTraces
-        | where Properties["Subsystem"] == 'measurements' 
+        | where Properties["Subsystem"] == 'measurements'
         | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
         """
 
@@ -57,5 +57,5 @@ class TestElectricalHeating(unittest.TestCase):
         actual = self.fixture.wait_for_log_query_completion(query)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"Query did not complete successfully: {actual.status}"
-        assert len(actual.tables[0].rows) > 0, "Query is empty."  # type: ignore
+        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+        assert len(actual.tables[0].rows) > 0, "The query is empty."
