@@ -99,8 +99,8 @@ def _create_calculations(
     schema = StructType(
         [
             StructField("orchestration_instance_id", StringType(), False),
-            StructField("year", IntegerType(), False),
-            StructField("month", IntegerType(), False),
+            StructField("calculation_year", IntegerType(), False),
+            StructField("calculation_month", IntegerType(), False),
             StructField("execution_time", TimestampType(), False),
         ]
     )
