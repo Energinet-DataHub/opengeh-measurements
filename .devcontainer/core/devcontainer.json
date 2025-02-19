@@ -40,6 +40,22 @@
         "ms-vscode-remote.remote-containers"
       ],
       "settings": {
+        "search.exclude": {
+          "**/.git": true,
+          "**/.cache": true,
+          "**/.venv": true,
+          "**/build": true
+        },
+        "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
+        "files.eol": "\n", // Use LF line endings
+        "files.autoSave": "onFocusChange", // Automatically save files when focus changes
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
+        "editor.formatOnSave": true,
+        "ruff.lineLength": 120,
+        "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.venvPath": "/home/vscode/.venv",
