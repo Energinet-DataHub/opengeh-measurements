@@ -22,7 +22,7 @@ def _configure_spark_sql_migrations() -> None:
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.measurements_calculated_internal_database,
         migration_table_name=TableNames.executed_migrations,
-        migration_scripts_folder_path="geh_calculated_measurements.opengeh_electrical_heating.migrations.migration_scripts",
+        migration_scripts_folder_path="geh_calculated_measurements.database_migrations.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
     )
