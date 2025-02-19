@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import DecimalType
+from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
 from geh_calculated_measurements.capacity_settlement.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
@@ -25,14 +25,12 @@ def execute_core_logic(
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
-    execution_time: str,
 ) -> CalculationOutput:
     calculations = _create_calculations(
         spark,
         orchestration_instance_id,
         calculation_month,
         calculation_year,
-        execution_time,
     )
 
     metering_point_periods = _add_selection_period_columns(
@@ -96,8 +94,16 @@ def _create_calculations(
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
-    execution_time: str,
 ) -> DataFrame:
+    execution_time = datetime.now(UTC).replace(microsecond=0)
+    schema = StructType(
+        [
+            StructField("orchestration_instance_id", StringType(), False),
+            StructField("calculation_year", IntegerType(), False),
+            StructField("calculation_month", IntegerType(), False),
+            StructField("execution_time", TimestampType(), False),
+        ]
+    )
     return spark.createDataFrame(
         [
             (
@@ -107,7 +113,7 @@ def _create_calculations(
                 execution_time,
             )
         ],
-        schema="orchestration_instance_id STRING, year INT, month INT, execution_time STRING",
+        schema=schema,
     )
 
 
