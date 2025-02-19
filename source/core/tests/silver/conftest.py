@@ -1,10 +1,12 @@
 import os
 from typing import Callable, Generator
+from unittest.mock import patch
 
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+import core.utility.shared_helpers as shared_helpers
 from core.migrations import MigrationDatabaseNames, migrations_runner
 from core.settings.catalog_settings import CatalogSettings
 
@@ -133,3 +135,11 @@ def configure_dummy_logging() -> None:
     from geh_common.telemetry.logging_configuration import configure_logging
 
     configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+
+
+@pytest.fixture
+def mock_checkpoint_path():
+    with patch.object(
+        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/silver/__checkpoints__"
+    ) as mock_checkpoint_path:
+        yield mock_checkpoint_path

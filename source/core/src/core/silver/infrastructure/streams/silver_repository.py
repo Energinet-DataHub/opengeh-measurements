@@ -2,13 +2,13 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
+import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.settings import (
     StorageAccountSettings,
     SubmittedTransactionsStreamSettings,
 )
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
-from core.utility.shared_helpers import get_checkpoint_path
 
 
 class SilverRepository:
@@ -23,7 +23,7 @@ class SilverRepository:
         measurements: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
-        checkpoint_location = get_checkpoint_path(
+        checkpoint_location = shared_helpers.get_checkpoint_path(
             self.data_lake_settings, self.silver_container_name, "submitted_transactions"
         )
 
