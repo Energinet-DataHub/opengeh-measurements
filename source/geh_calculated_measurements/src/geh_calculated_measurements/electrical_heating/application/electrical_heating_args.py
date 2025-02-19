@@ -1,13 +1,13 @@
 from datetime import datetime
 from uuid import UUID
 
-from geh_common.parsing.pydantic_settings_parsing import PydanticParsingSettings
+from geh_common.application.pydantic_settings_parsing import ApplicationSettings
 
 
-class ElectricalHeatingArgs(PydanticParsingSettings):
+class ElectricalHeatingArgs(ApplicationSettings):
     """Args for the electrical heating job."""
 
-    orchestration_instance_id: UUID
+    orchestration_instance_id: UUID | None = None
     time_zone: str = "Europe/Copenhagen"
     execution_start_datetime: datetime = datetime.now()
     catalog_name: str

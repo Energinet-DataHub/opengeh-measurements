@@ -474,7 +474,7 @@ dev = [
 [[package]]
 name = "geh-common"
 version = "4.2.0"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=cbang%2Fsimplify_entry_point2#3b90cf73deafa95e488c7882f5b9e0594ef9463b" }
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=cbang%2Fsimplify_entry_point2#34cd43585d7f213e292d3fd5b18edb134f2f0791" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
