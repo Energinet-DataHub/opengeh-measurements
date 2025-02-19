@@ -12,9 +12,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
 )
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import (
-    CalculatedNames,
-)
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -84,7 +81,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(CalculatedNames.date))
+    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(ColumnNames.date))
 
     # Return test cases
     return TestCases(

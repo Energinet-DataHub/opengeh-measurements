@@ -4,6 +4,7 @@ from typing import Generator
 from unittest import mock
 
 import pytest
+from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
@@ -25,12 +26,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 )
 from tests import PROJECT_ROOT
 from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
-from tests.electrical_heating.utils.delta_table_utils import (
-    read_from_csv,
-)
-from tests.electrical_heating.utils.measurements_utils import (
-    create_calculated_measurements_dataframe,
-)
 
 
 @pytest.fixture(scope="session")
@@ -112,9 +107,10 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
     )
 
     file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
-    measurements = read_from_csv(spark, file_name)
 
-    return create_calculated_measurements_dataframe(spark, measurements)
+    df = read_csv_path(spark, file_name, calculated_measurements_schema)
+
+    return CalculatedMeasurements(df)
 
 
 @pytest.fixture(scope="session")
@@ -130,7 +126,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
     )
 
     file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabase.DATABASE_NAME}-{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}.csv"
-    time_series_points = read_from_csv(spark, file_name)
+    time_series_points = read_csv_path(spark, file_name, time_series_points_v1)
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabase.DATABASE_NAME}.{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
         format="delta",
