@@ -3,7 +3,9 @@ import unittest
 import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
-from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+from fixtures.eletrical_heating_net_consumption_for_group_6_fixture import (
+    ElectricalHeatingNetConsumptionForGroup6Fixture,
+)
 
 
 class TestNetConsumptionForGroup6(unittest.TestCase):
@@ -12,8 +14,8 @@ class TestNetConsumptionForGroup6(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture) -> None:
-        ElectricalHeatingFixture.fixture = electrical_heating_fixture
+    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingNetConsumptionForGroup6Fixture) -> None:
+        TestNetConsumptionForGroup6.fixture = electrical_heating_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
