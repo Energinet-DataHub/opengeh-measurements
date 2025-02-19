@@ -1,7 +1,8 @@
 import pyspark.sql.functions as F
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql.types import DecimalType
 
+import core.silver.infrastructure.config.spark as spark_session
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
@@ -9,9 +10,8 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
 
 
-def create_by_unpacked_submitted_transactions(
-    spark: SparkSession, unpacked_submitted_transactions: DataFrame
-) -> DataFrame:
+def create_by_unpacked_submitted_transactions(unpacked_submitted_transactions: DataFrame) -> DataFrame:
+    spark = spark_session.initialize_spark()
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = unpacked_submitted_transactions.select(
