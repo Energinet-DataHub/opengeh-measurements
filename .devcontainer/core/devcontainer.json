@@ -48,7 +48,6 @@
         ],
         "editor.formatOnSave": true,
         "ruff.lineLength": 120,
-        "ruff.lint.run": "onSave",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
