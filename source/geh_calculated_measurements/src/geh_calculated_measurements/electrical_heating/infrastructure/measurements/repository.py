@@ -33,7 +33,7 @@ class Repository:
             )
 
     def write_calculated_measurements(
-        self, calculated_measurements: CalculatedMeasurementsDaily, write_mode: str = "append"
+        self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
     ) -> None:
         calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
             self._calculated_measurements_full_table_path
