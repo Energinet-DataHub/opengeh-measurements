@@ -73,8 +73,12 @@ def execute_application(
 @use_span()
 def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
-    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(
+        spark, args.catalog_name, args.schema_name, args.consumption_points_table, args.child_points_table
+    )
+    measurements_repository = MeasurementsRepository(
+        spark, args.catalog_name, args.schema_name, args.time_series_points_table
+    )
 
     # Read data frames
     time_series_points = measurements_repository.read_time_series_points()

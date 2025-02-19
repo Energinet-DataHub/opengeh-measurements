@@ -15,7 +15,11 @@ class EnvironmentConfiguration(BaseSettings):
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(alias="WORKSPACE_URL")
 
-    model_config = SettingsConfigDict(
-        env_file=f"{PROJECT_ROOT}/tests/.env",
-        env_file_encoding="utf-8",
-    )
+    catalog_name: str = Field(alias="CATALOG")
+    schema_name: str = Field(alias="SCHEMA")
+
+    time_series_points_table: str = Field(alias="TIME_SERIES_POINTS")
+    consumption_points_table: str = Field(alias="CONSUMPTION_METERING_POINTS")
+    child_points_table: str = Field(alias="CHILD_METERING_POINTS")
+
+    model_config = SettingsConfigDict(env_file=f"{PROJECT_ROOT}/tests/.env", env_file_encoding="utf-8", extra="ignore")

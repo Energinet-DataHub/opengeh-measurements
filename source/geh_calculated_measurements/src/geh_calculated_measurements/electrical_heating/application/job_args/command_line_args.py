@@ -11,8 +11,6 @@ from geh_calculated_measurements.electrical_heating.application.electrical_heati
     ElectricalHeatingArgs,
 )
 from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
-    get_catalog_name,
-    get_electricity_market_data_path,
     get_time_zone,
 )
 
@@ -29,10 +27,15 @@ def parse_job_arguments(
 
     with logging_configuration.start_span("electrical_heating.parse_job_arguments"):
         electrical_heating_args = ElectricalHeatingArgs(
-            catalog_name=get_catalog_name(),
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             time_zone=get_time_zone(),
-            electricity_market_data_path=get_electricity_market_data_path(),
+            # Databricks location
+            catalog_name=job_args.catalog_name,
+            schema_name=job_args.schema_name,
+            # Databricks tables
+            time_series_points_table=job_args.time_series_points_table,
+            consumption_points_table=job_args.consumption_points_table,
+            child_points_table=job_args.child_points_table,
         )
 
     return electrical_heating_args
@@ -46,6 +49,17 @@ def _parse_args_or_throw(command_line_args: list[str]) -> argparse.Namespace:
 
     # Run parameters
     p.add_argument("--orchestration-instance-id", type=str, required=True)
+
+    # Databricks catalog parameters
+    p.add_argument("--catalog-name", type=str, required=True, help="Databricks catalog name")
+    p.add_argument("--schema-name", type=str, required=True, help="Databricks schema name")
+
+    # Table parameters
+    p.add_argument("--time-series-points-table", type=str, required=True, help="Table name for time series points")
+    p.add_argument(
+        "--consumption-points-table", type=str, required=True, help="Table name for consumption metering points"
+    )
+    p.add_argument("--child-points-table", type=str, required=True, help="Table name for child metering points")
 
     args, unknown_args = p.parse_known_args(args=command_line_args)
     if len(unknown_args):

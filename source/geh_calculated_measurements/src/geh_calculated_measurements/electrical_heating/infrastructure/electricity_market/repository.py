@@ -2,14 +2,8 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
-    child_metering_points_v1,
-)
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
     ChildMeteringPoints,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
-    consumption_metering_point_periods_v1,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
     ConsumptionMeteringPointPeriods,
@@ -20,20 +14,20 @@ class Repository:
     def __init__(
         self,
         spark: SparkSession,
-        electricity_market_data_path: str,
+        catalog_name: str,
+        schema_name: str,
+        consumption_points_table: str,
+        child_points_table: str,
     ) -> None:
         self._spark = spark
-        self._electricity_market_data_path = electricity_market_data_path
+        self._consumption_metering_point_periods = f"{catalog_name}.{schema_name}.{consumption_points_table}"
+        self._child_metering_points = f"{catalog_name}.{schema_name}.{child_points_table}"
 
     def read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
-        file_path = f"{self._electricity_market_data_path}/consumption_metering_point_periods_v1.csv"
-        df = _read_csv(spark=self._spark, path=file_path, schema=consumption_metering_point_periods_v1)
-        return ConsumptionMeteringPointPeriods(df)
+        return ConsumptionMeteringPointPeriods(self._spark.read.table(self._consumption_metering_point_periods))
 
     def read_child_metering_points(self) -> ChildMeteringPoints:
-        file_path = f"{self._electricity_market_data_path}/child_metering_points_v1.csv"
-        df = _read_csv(spark=self._spark, path=file_path, schema=child_metering_points_v1)
-        return ChildMeteringPoints(df)
+        return ChildMeteringPoints(self._spark.read.table(self._child_metering_points))
 
 
 # TODO JMG: Use read_csv from opengeh_python_packages
