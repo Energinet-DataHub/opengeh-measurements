@@ -1,6 +1,5 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.protobuf.functions import from_protobuf
 
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
@@ -24,10 +23,19 @@ def _unpack_proto(df) -> DataFrame:
     options = {"mode": "FAILFAST", "recursive.fields.max.depth": "3", "emit.default.values": "true"}
 
     unpacked = df.select(
-        from_protobuf(df.value, message_name, descFilePath=descriptor_path, options=options).alias(alias_name),
+        F.expr(
+            f"try_cast(from_protobuf(df.value, {(message_name,)} descFilePath={descriptor_path}, options={options})"
+        ).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
     )
+
+    unpacked = unpacked.filter(F.col(alias_name).isNotNull())
+
+    invalid_rows = unpacked.filter(F.col(alias_name).isNull())
+    if invalid_rows.count() > 0:
+        for row in invalid_rows.collect():
+            print(f"Invalid row: {row}")  # noqa: T201
 
     return unpacked
 
