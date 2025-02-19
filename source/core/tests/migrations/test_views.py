@@ -219,21 +219,12 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
     metering_point_id_1 = identifier_helper.create_random_metering_point_id()
     metering_point_id_2 = identifier_helper.create_random_metering_point_id()
     metering_point_id_3 = identifier_helper.create_random_metering_point_id()
-    observation_time = datetime_helper.get_datetime()
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
-        .add_row(
-            metering_point_id=metering_point_id_1, metering_point_type="UNKNOWN", observation_time=observation_time
-        )
-        .add_row(
-            metering_point_id=metering_point_id_2,
-            metering_point_type="capacity_settlement",
-            observation_time=observation_time,
-        )
-        .add_row(
-            metering_point_id=metering_point_id_3, metering_point_type="consumption", observation_time=observation_time
-        )
+        .add_row(metering_point_id=metering_point_id_1, metering_point_type="UNKNOWN")
+        .add_row(metering_point_id=metering_point_id_2, metering_point_type="capacity_settlement")
+        .add_row(metering_point_id=metering_point_id_3, metering_point_type="consumption")
         .build()
     )
 
