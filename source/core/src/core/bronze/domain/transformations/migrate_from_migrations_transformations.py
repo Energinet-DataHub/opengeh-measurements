@@ -28,7 +28,6 @@ def map_migrations_to_measurements(migrations_data: DataFrame) -> DataFrame:
         col(MigrationsSilverTimeSeriesColumnNames.unit).alias(BronzeMigratedTransactionsColumnNames.unit),
         col(MigrationsSilverTimeSeriesColumnNames.status).alias(BronzeMigratedTransactionsColumnNames.status),
         col(MigrationsSilverTimeSeriesColumnNames.read_reason).alias(BronzeMigratedTransactionsColumnNames.read_reason),
-        col(MigrationsSilverTimeSeriesColumnNames.values).alias(BronzeMigratedTransactionsColumnNames.values),
         col(MigrationsSilverTimeSeriesColumnNames.valid_from_date).alias(
             BronzeMigratedTransactionsColumnNames.valid_from_date
         ),

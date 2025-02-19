@@ -8,7 +8,6 @@ class MigrationsSilverTimeSeriesColumnNames:
     unit = "unit"
     status = "status"
     read_reason = "read_reason"
-    values = "values"
     valid_from_date = "valid_from_date"
     valid_to_date = "valid_to_date"
     values = "values"

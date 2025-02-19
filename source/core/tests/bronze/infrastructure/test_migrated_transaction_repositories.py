@@ -1,12 +1,16 @@
+from datetime import datetime, timedelta
+from unittest.mock import patch
+
 import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import rand
 
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
-from core.bronze.infrastructure.config.table_names import TableNames
 from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 from core.settings.catalog_settings import CatalogSettings
+from tests.bronze.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
 def test__read_measurements_bronze_migrated_transactions__should_return_the_correct_dataframe(
@@ -27,12 +31,40 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
-
     catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"TRUNCATE TABLE {catalog_settings.bronze_database_name}.{TableNames.bronze_migrated_transactions_table}")
 
-    # Act
-    migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+    migrated_data = MigratedTransactionsBuilder(spark)
+    migrated_data = migrated_data.build()
 
-    # Assert
-    assert migrated_transactions is None
+    with patch.object(repo, "read_measurements_bronze_migrated_transactions", return_value=migrated_data):
+        # Act
+        migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+
+        # Assert
+        assert migrated_transactions is None
+
+
+def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_correct_datetime(
+    spark: SparkSession, migrations_executed: None
+) -> None:
+    # Arrange
+    repo = MigratedTransactionsRepository(spark)
+    catalog_settings = CatalogSettings()  # type: ignore
+
+    timestamp_to_find = datetime.now()
+
+    NUM_TRANSFERED = 1000
+    migrated_data = MigratedTransactionsBuilder(spark)
+    for i in range(NUM_TRANSFERED):
+        migrated_data.add_row(created_in_migrations=datetime.now() - timedelta(days=30))
+    migrated_data.add_row(created_in_migrations=timestamp_to_find)  # Add the one we care about.
+    migrated_data = migrated_data.build()
+
+    with patch.object(
+        repo, "read_measurements_bronze_migrated_transactions", return_value=migrated_data.orderBy(rand())
+    ):
+        # Act
+        result_max_created = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+
+        # Assert
+        assert result_max_created == timestamp_to_find
