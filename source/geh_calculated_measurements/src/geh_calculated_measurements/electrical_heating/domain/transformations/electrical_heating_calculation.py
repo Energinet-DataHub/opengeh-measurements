@@ -1,4 +1,4 @@
-from geh_common.domain.types import NetSettlementGroup
+from geh_common.domain.types import MeteringPointType, NetSettlementGroup
 from geh_common.pyspark.transformations import days_in_year
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
@@ -10,12 +10,21 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_names impo
 from geh_calculated_measurements.electrical_heating.domain.column_names import (
     ColumnNames,
 )
+from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
+    get_daily_energy_in_local_time,
+)
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
 
 
-def calculate_electrical_heating_in_local_time(old_consumption_energy, metering_point_periods):
+def calculate_electrical_heating_in_local_time(
+    old_consumption_energy: DataFrame, metering_point_periods: DataFrame, time_zone: str
+) -> DataFrame:
+    old_consumption_energy = get_daily_energy_in_local_time(
+        old_consumption_energy, time_zone, [MeteringPointType.CONSUMPTION, MeteringPointType.NET_CONSUMPTION]
+    )
+
     metering_point_periods = _calculate_period_limit(metering_point_periods)
     metering_point_periods = _find_source_metering_point_for_energy(metering_point_periods)
 

@@ -14,6 +14,7 @@ class CalculatedNames:
     net_consumption_metering_point_id = "net_consumption_metering_point_id"
     net_consumption_period_end = "net_consumption_period_end"
     net_consumption_period_start = "net_consumption_period_start"
+    observation_time_hourly = "observation_time_hourly"
     overlap_period_end = "overlap_period_end"
     overlap_period_start = "overlap_period_start"
     parent_net_settlement_group = "parent_net_settlement_group"
