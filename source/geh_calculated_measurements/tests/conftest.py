@@ -15,7 +15,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
 )
-from tests import PROJECT_ROOT
 
 
 @pytest.fixture(scope="module", autouse=True)
