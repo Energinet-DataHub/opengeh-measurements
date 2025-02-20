@@ -1,8 +1,8 @@
 import os
 from unittest import mock
 
-from core.bronze.infrastructure.settings.storage_account_settings import StorageAccountSettings
 from core.settings.catalog_settings import CatalogSettings
+from core.settings.storage_account_settings import StorageAccountSettings
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
 

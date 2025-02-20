@@ -11,8 +11,8 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 )
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
-from core.bronze.infrastructure.contracts.decimal_value import DecimalValue
-from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
+from core.contracts.process_manager.decimal_value import DecimalValue
+from core.utility.path_helper import get_protobuf_descriptor_path
 from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 

@@ -7,7 +7,7 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     ValueColumnNames,
 )
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
-from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
+from core.utility.path_helper import get_protobuf_descriptor_path
 
 alias_name = "measurement_values"
 
