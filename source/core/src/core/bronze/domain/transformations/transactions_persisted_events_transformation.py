@@ -38,9 +38,9 @@ def pack_proto(df) -> DataFrame:
     )
 
 
-def unpack_submitted_transactions(bronze_measurements: DataFrame) -> DataFrame:
+def unpack_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
     """Unpacks the protobuf message and maps the fields to the correct columns."""
-    return bronze_measurements.transform(unpack_proto).transform(map_message)
+    return submitted_transactions.transform(unpack_proto).transform(map_message)
 
 
 def unpack_proto(df):
