@@ -1,5 +1,3 @@
-import sys
-
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.catalog_settings import CatalogSettings
@@ -9,7 +7,6 @@ from core.silver.infrastructure.config import SilverTableNames
 def substitutions() -> dict[str, str]:
     catalog_settings = CatalogSettings()  # type: ignore
     return {
-        "{SKIP_IN_TEST}": "--" if "unittest" in sys.modules.keys() else "",
         "{bronze_database}": catalog_settings.bronze_database_name,
         "{bronze_submitted_transactions_table}": BronzeTableNames.bronze_submitted_transactions_table,
         "{bronze_migrated_transactions_table}": BronzeTableNames.bronze_migrated_transactions_table,
