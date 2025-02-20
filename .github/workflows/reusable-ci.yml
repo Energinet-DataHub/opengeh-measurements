@@ -90,13 +90,14 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Run unit tests with filter
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
         uses: Energinet-DataHub/.github/.github/actions/python-unit-test@v14
         with:
           image_tag: latest
           tests_folder_path: ${{ matrix.inputs.path }}/tests
 
       - name: Publish test report
-        if: always()
+        if: ${{ steps.changes.outputs.is_changed == 'true' }}
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
           check_name: Python test results for ${{ inputs.test_report_path }}
