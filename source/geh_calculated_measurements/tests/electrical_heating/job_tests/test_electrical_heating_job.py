@@ -11,7 +11,7 @@ from geh_calculated_measurements.electrical_heating.application.job_args.environ
     EnvironmentVariable,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabase,
+    CalculatedMeasurementsDatabaseDefinition,
 )
 
 
@@ -37,6 +37,6 @@ def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict,
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsDatabase.DATABASE_NAME}.{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
