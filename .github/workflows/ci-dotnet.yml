@@ -21,7 +21,6 @@ jobs:
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
-      azure_functions_core_tools_version: 4.0.5413
       # Matrix parameters
       job_name: Unit Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.paths }}
@@ -38,7 +37,6 @@ jobs:
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
-      azure_functions_core_tools_version: 4.0.5413
       # Matrix parameters
       job_name: Integration Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.paths }}
