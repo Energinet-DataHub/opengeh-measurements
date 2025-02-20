@@ -15,6 +15,6 @@ outputs:
     description: The time we greeted you
 runs:
   using: docker
-  image: ${{ inputs.image-path }}
+  image: .docker/Dockerfile
   args:
     - ${{ inputs.who-to-greet }}
