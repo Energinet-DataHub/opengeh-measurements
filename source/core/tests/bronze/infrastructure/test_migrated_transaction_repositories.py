@@ -9,7 +9,6 @@ from core.bronze.domain.schemas.migrated_transactions import migrated_transactio
 from core.bronze.infrastructure.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
-from core.settings.catalog_settings import CatalogSettings
 from tests.bronze.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
