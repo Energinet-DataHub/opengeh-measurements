@@ -15,12 +15,6 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
 
 
-@use_span()
-def execute(spark: SparkSession, args: CapacitySettlementArgs) -> None:
-    # execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    # TODO JMG: read data from repository and call the `execute_core_logic` method
-    pass
-
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
 def execute(
