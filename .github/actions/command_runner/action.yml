@@ -6,15 +6,11 @@ inputs:
     description: Who to greet
     required: true
     default: World
-  image-path:
-    description: Path to the Dockerfile
-    required: true
-    default: ${{ github.workspace }}/.docker/Dockerfile
 outputs:
   time: # id of output
     description: The time we greeted you
 runs:
   using: docker
-  image: ${{ inputs.image-path }}
+  image: ../../../.docker/Dockerfile
   args:
     - ${{ inputs.who-to-greet }}
