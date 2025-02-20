@@ -12,4 +12,4 @@ outputs:
 runs:
   using: docker
   image: ../../../.docker/Dockerfile
-  entrypoint: bash -c ${{ inputs.command }}
+  entrypoint: bash -c "${{ inputs.command }}"
