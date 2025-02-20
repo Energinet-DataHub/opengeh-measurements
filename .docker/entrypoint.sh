@@ -34,8 +34,7 @@ set -e
 shopt -s extglob
 
 # Install UV
-apt-get update && apt-get install -y curl
-curl -LsSf https://astral.sh/uv/install.sh | sh
+pip install uv
 
 # Run tests
-uv run --directory $1 pytest --junitxml=pytest-results.xml $2
+python -m uv run --directory $1 pytest --junitxml=pytest-results.xml $2
