@@ -70,7 +70,7 @@ def _find_source_metering_point_for_energy(
     return metering_point_periods.select(
         "*",
         F.when(
-            F.col(CalculatedNames.parent_net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
+            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2,
             F.col(CalculatedNames.net_consumption_metering_point_id),
         )
         .otherwise(F.col(ColumnNames.parent_metering_point_id))
