@@ -79,7 +79,6 @@ def execute_application(
     @use_span()
     def _execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
         # Create repositories to obtain data frames
-        electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
         measurements_repository = MeasurementsRepository(spark, args.catalog_name)
 
         # Read data frames
