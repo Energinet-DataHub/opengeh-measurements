@@ -17,7 +17,7 @@ class JobState:
     run_result_state: RunResultState
 
 
-class ElectricalHeatingFixture:
+class CapacitySettlementFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
@@ -32,13 +32,16 @@ class ElectricalHeatingFixture:
         )
 
     def get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id("ElectricalHeating")
+        return self.databricks_api_client.get_job_id("CapacitySettlement")
 
-    def start_job(self, job_id: int) -> int:
+    def start_job(self, job_id: int, year: int, month: int) -> int:
         self.job_state.orchestrator_instance_id = str(uuid.uuid4())
         params = [
             f"--orchestration-instance-id={self.job_state.orchestrator_instance_id}",
+            f"--calculation-month={month}",
+            f"--calculation-year={year}",
         ]
+
         return self.databricks_api_client.start_job(job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
