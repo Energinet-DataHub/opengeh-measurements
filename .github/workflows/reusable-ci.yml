@@ -69,7 +69,7 @@ jobs:
 
   ci_test:
     name: Test Packages
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04 # Ships with spark: https://spark.apache.org/developer-tools.html
     needs: ci_matrix
     strategy:
       matrix:
@@ -86,22 +86,19 @@ jobs:
             is_changed:
               - ${{ matrix.inputs.path }}/**
 
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Ruff Check
-        uses: ./.github/actions/command_runner
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          command: uv run --directory ${{ matrix.inputs.path }} ruff check
+        run: uv run --directory ${{ matrix.inputs.path }} ruff check
       - name: Ruff Format
-        uses: ./.github/actions/command_runner
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          command: uv run --directory ${{ matrix.inputs.path }} ruff format
+        run: uv run --directory ${{ matrix.inputs.path }} ruff format
 
       - name: Test ${{ matrix.inputs.name }}
-        uses: ./.github/actions/command_runner
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          command: uv run --directory ${{ matrix.inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
+        run: uv run --directory ${{ matrix.inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
 
       - name: Build ${{ matrix.inputs.name }}
         uses: ./.github/actions/command_runner
