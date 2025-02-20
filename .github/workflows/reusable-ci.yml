@@ -69,7 +69,7 @@ jobs:
       - name: Test Docker Command
         uses: ./.github/actions/command_runner
         with:
-          command: "echo 'Hello World!'"
+          who-to-greet: "echo 'Hello World!'"
 
   #
   # Test Packages
