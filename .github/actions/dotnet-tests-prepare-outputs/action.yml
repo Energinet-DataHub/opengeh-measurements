@@ -33,7 +33,7 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\Measurements.UnitTests\Measurements.UnitTests.csproj'
+          '.\source\Measurements\Measurements.UnitTests\Measurements.UnitTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
@@ -45,7 +45,7 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\Measurements.IntegrationTests\Measurements.IntegrationTests.csproj'
+          '.\source\Measurements\Measurements.IntegrationTests\Measurements.IntegrationTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
@@ -57,7 +57,7 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\MeasurementsApi.UnitTests\MeasurementsApi.UnitTests.csproj'
+          '.\source\Measurements\MeasurementsApi.UnitTests\MeasurementsApi.UnitTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
@@ -69,7 +69,7 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\MeasurementsApi.IntegrationTests\MeasurementsApi.IntegrationTests.csproj'
+          '.\source\Measurements\MeasurementsApi.IntegrationTests\MeasurementsApi.IntegrationTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \

@@ -40,4 +40,4 @@ runs:
           --no-build \
           --no-restore \
           --configuration Release \
-          --output '${{ inputs.output_path }}\apps\measurementsapi'
+          --output '${{ inputs.output_path }}\measurementsapi'
