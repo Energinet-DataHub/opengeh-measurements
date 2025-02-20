@@ -51,9 +51,4 @@ ENV UV_PROJECT_ENVIRONMENT=$HOME/.venv
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-# Change the username from jovyan to nayvoj and update the user id to 1001, as that is the user id used in the GitHub Actions runner
-RUN usermod -l nayvoj vscode && \
-    usermod -u 1001 nayvoj && \
-    usermod -l vscode nayvoj
-
-RUN usermod -u 1001 vscode
+WORKDIR /action/workspace
