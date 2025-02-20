@@ -2,8 +2,8 @@
 name: Hello World
 description: Greet someone and record the time
 inputs:
-  who-to-greet: # id of input
-    description: Who to greet
+  command: # id of input
+    description: Command to run
     required: true
     default: World
 outputs:
@@ -12,5 +12,4 @@ outputs:
 runs:
   using: docker
   image: ../../../.docker/Dockerfile
-  args:
-    - ${{ inputs.who-to-greet }}
+  entrypoint: bash -c ${{ inputs.command }}
