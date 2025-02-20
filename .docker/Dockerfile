@@ -51,4 +51,3 @@ ENV UV_PROJECT_ENVIRONMENT=$HOME/.venv
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-WORKDIR /action/workspace

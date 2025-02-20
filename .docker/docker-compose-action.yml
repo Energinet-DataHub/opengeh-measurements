@@ -1,0 +1,19 @@
+services:
+    command:
+        image: calculated_measurements:latest
+        build:
+            args:
+                SPARK_VERSION: 3.5.4
+                UBUNTU_VERSION: '24.04'
+                UV_VERSION: 0.5.15
+            context: ..
+            dockerfile: .docker/Dockerfile
+        command: sleep infinity
+        working_dir: /workspace
+        volumes:
+        # Forwards the local Docker socket to the container.
+        - /var/run/docker.sock:/var/run/docker-host.sock
+        # Update this to wherever you want VS Code to mount the folder of your project
+        - ..:/workspace:cached
+        # Map to Azure CLI token cache location (on Linux)
+        - "${HOME}/.azure:/home/vscode/.azure"

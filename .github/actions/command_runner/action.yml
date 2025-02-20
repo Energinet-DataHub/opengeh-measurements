@@ -6,13 +6,12 @@ inputs:
     description: Command to run
     required: true
     default: World
-outputs:
-  time: # id of output
-    description: The time we greeted you
+
 runs:
-  using: docker
-  image: ../../../.docker/Dockerfile
-  entrypoint: /usr/bin/bash
-  args:
-    - -c
-    - ${{ inputs.command }}
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Run Command
+      run: docker compose -f .docker/docker-compose-action.yml run --rm command bash -c "${{ inputs.command }}"
+      shell: bash
