@@ -1,9 +1,7 @@
-from pathlib import Path
-
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+from tests import PROJECT_ROOT
 
 
 class EnvironmentConfiguration(BaseSettings):
@@ -17,6 +15,6 @@ class EnvironmentConfiguration(BaseSettings):
     shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
 
     model_config = SettingsConfigDict(
-        env_file=f"{PROJECT_ROOT}/.env",
+        env_file=f"{PROJECT_ROOT}/tests/.env",
         env_file_encoding="utf-8",
     )
