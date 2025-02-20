@@ -1,4 +1,4 @@
-import testcommon.dataframes.assert_schemas as assert_schemas
+import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import core.bronze.domain.transformations.submitted_transactions_transformation as sut

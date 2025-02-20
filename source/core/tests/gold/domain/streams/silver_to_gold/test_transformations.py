@@ -2,7 +2,7 @@ import datetime
 import random
 from decimal import Decimal
 
-import testcommon.dataframes.assert_schemas as assert_schemas
+import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames

@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings>=2.7.1",
-    "geh_common @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@geh_common_4.1.0",
+    "geh_common @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.0.1",
 ]
 
 [project.scripts]
@@ -21,7 +21,6 @@ stream_submitted_transactions_to_silver = "core.silver.entry_points:stream_submi
 dev = [
     "commitizen>=4.1.0",
     "mypy>=1.14.1",
-    "opengeh-testcommon",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
@@ -74,8 +73,3 @@ exclude = ["notebooks/*"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[tool.uv.sources.opengeh-testcommon]
-git = "https://github.com/Energinet-DataHub/opengeh-python-packages"
-subdirectory = "source/testcommon"
-rev = "3.0.1"
