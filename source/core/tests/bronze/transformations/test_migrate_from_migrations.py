@@ -1,7 +1,7 @@
 import datetime
 from unittest import mock
 
-import testcommon.dataframes.assert_schemas as assert_schemas
+import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import core.bronze.application.batch_scripts.migrate_from_migrations as migrate_from_migrations
