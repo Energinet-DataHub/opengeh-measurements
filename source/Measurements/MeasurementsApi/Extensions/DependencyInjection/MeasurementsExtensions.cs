@@ -1,4 +1,4 @@
-using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+﻿using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
 
 namespace MeasurementsApi.Extensions.DependencyInjection;
 

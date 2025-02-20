@@ -1,4 +1,4 @@
-namespace MeasurementsApi.Extensions.DependencyInjection;
+﻿namespace MeasurementsApi.Extensions.DependencyInjection;
 
 public static class AuthenticationExtensions
 {

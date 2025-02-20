@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Asp.Versioning;
 using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using MeasurementsApi.Extensions.DependencyInjection;
@@ -29,7 +29,7 @@ public class ApplicationFactory
 
         // => Authentication/authorization
         builder.Services
-            .AddJwtBearerAuthenticationForWebApp(builder.Configuration)
+            .AddAuthenticationForWebApp(builder.Configuration)
             .AddPermissionAuthorizationForWebApp();
 
         return builder.Build();
