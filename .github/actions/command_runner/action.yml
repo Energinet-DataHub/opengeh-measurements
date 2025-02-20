@@ -13,9 +13,6 @@ runs:
   using: docker
   image: ../../../.docker/Dockerfile
   entrypoint: /usr/bin/bash
-  env:
-    JAVA_HOME: /opt/java/openjdk
-    SPARK_HOME: /opt/spark
   args:
     - -c
     - ${{ inputs.command }}
