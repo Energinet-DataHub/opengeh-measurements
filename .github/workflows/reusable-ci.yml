@@ -106,10 +106,8 @@ jobs:
             ${{ matrix.inputs.path }}/pytest*.xml
 
       - name: Build ${{ matrix.inputs.name }}
-        uses: ./.github/actions/command_runner
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          command: uv build --wheel --directory ${{ matrix.inputs.path }}
+        run: uv build --wheel --directory ${{ matrix.inputs.path }}
 
       - name: Build ${{ matrix.inputs.name }}
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
