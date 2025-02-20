@@ -34,6 +34,7 @@ set -e
 shopt -s extglob
 
 # Install UV
+apt-get update && apt-get install -y curl
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Run tests
