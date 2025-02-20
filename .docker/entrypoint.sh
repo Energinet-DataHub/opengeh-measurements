@@ -34,7 +34,9 @@ set -e
 shopt -s extglob
 
 # Install UV
-pip install $1
+pushd dirname $1
+    conda install .
+popd
 
 # Run tests
 pushd $1
