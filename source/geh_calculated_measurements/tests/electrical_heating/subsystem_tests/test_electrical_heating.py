@@ -10,7 +10,6 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 load_dotenv(f"{PROJECT_ROOT}/tests/.env")
 
 
-@pytest.mark.skip(reason="This test is not ready to run in the CI/CD pipeline.")
 class TestElectricalHeating(unittest.TestCase):
     """
     Subsystem test that verfiies a Databricks electrical heating job runs successfully to completion.
