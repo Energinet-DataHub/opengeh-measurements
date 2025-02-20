@@ -165,6 +165,8 @@ def _find_parent_child_overlap_period(
             F.col(CalculatedNames.parent_period_start),
             F.col(CalculatedNames.electrical_heating_period_start),
             F.col(CalculatedNames.net_consumption_period_start),
+            F.col(CalculatedNames.consumption_from_grid_period_end),
+            F.col(CalculatedNames.supply_to_grid_period_end),
         ).alias("overlap_period_start"),
         F.least(
             F.coalesce(
@@ -177,6 +179,14 @@ def _find_parent_child_overlap_period(
             ),
             F.coalesce(
                 F.col(CalculatedNames.net_consumption_period_end),
+                begining_of_year(F.current_date(), years_to_add=1),
+            ),
+            F.coalesce(
+                F.col(CalculatedNames.consumption_from_grid_period_end),
+                begining_of_year(F.current_date(), years_to_add=1),
+            ),
+            F.coalesce(
+                F.col(CalculatedNames.supply_to_grid_period_end),
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
         ).alias("overlap_period_end"),
