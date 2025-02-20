@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import rand
 
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
-from core.bronze.infrastructure.migrated_transactions_repository import (
+from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 from tests.bronze.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
