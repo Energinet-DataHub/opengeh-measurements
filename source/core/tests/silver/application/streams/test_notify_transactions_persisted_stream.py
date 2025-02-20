@@ -10,10 +10,10 @@ import core.silver.application.streams.notify_transactions_persisted_stream as s
 @mock.patch("core.silver.domain.transformations.transactions_persisted_events_transformation.transform")
 @mock.patch("core.silver.infrastructure.streams.process_manager_stream.ProcessManagerStream.write_stream")
 def test__notify__should_call_expected(
-    mock_initialize_spark,
-    mocked_submitted_transactions_repository_read_submitted_transactions,
-    mock_submitted_transactions_transformation,
     mock_process_manager_stream_write_stream,
+    mock_submitted_transactions_transformation,
+    mocked_submitted_transactions_repository_read_submitted_transactions,
+    mock_initialize_spark,
 ) -> None:
     # Arrange
     mock_spark = mock.Mock()
@@ -38,4 +38,4 @@ def test__notify__should_call_expected(
     mocked_submitted_transactions_repository_read_submitted_transactions.assert_called_once()
 
     mock_submitted_transactions_transformation.assert_called_once_with(mock_submitted_transactions_repository)
-    # mock_process_manager_stream_write_stream.assert_called_once_with(        mocked_submitted_transactions_repository_read_submitted_transactions    )
+    mock_process_manager_stream_write_stream.assert_called_once_with(mock_submitted_transactions)
