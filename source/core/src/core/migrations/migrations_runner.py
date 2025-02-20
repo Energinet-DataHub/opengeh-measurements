@@ -1,6 +1,5 @@
 from geh_common.migrations import (
     SparkSqlMigrationsConfiguration,
-    create_and_configure_container,
     migration_pipeline,
 )
 
@@ -11,11 +10,6 @@ from core.settings.catalog_settings import CatalogSettings
 
 
 def migrate() -> None:
-    _configure_spark_sql_migrations()
-    migration_pipeline.migrate()
-
-
-def _configure_spark_sql_migrations() -> None:
     substitution_variables = substitutions.substitutions()
     catalog_name = CatalogSettings().catalog_name  # type: ignore
 
@@ -27,4 +21,4 @@ def _configure_spark_sql_migrations() -> None:
         catalog_name=catalog_name,
     )
 
-    create_and_configure_container(spark_config)
+    migration_pipeline.migrate(spark_config)
