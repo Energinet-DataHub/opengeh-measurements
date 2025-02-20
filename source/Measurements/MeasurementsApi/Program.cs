@@ -1,0 +1,30 @@
+using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
+using MeasurementsApi;
+
+var app = ApplicationFactory.CreateApplication(args);
+
+/*
+// Configure the HTTP request pipeline.
+*/
+
+app.UseRouting();
+app.UseSwaggerForWebApp();
+app.UseHttpsRedirection();
+
+// Authentication/authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Health Checks
+app.MapLiveHealthChecks();
+app.MapReadyHealthChecks();
+app.MapStatusHealthChecks();
+
+app.Run();
+
+// Enable testing
+namespace Energinet.DataHub.Measurements.MeasurementsApi
+{
+    // ReSharper disable once PartialTypeWithSinglePart
+    public partial class Program { }
+}
