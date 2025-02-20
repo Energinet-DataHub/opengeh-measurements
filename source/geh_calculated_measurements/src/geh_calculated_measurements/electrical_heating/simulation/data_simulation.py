@@ -26,6 +26,8 @@ consumption_from_grid_share = 0.02
 net_consumption_electrical_share = 0.02
 supply_to_grid_share = 0.02
 
+time_series_simulation_days = 20
+
 # Parent_id data frame generation --------------------------------------------------------------------------------------
 ## Generate parent_metering_point_id DataFrame
 parent_metering_point_id_df = (
@@ -220,7 +222,7 @@ consumption_metering_points_periods_df = consumption_metering_points_periods_per
 ## Define the time interval
 ### Generate start and end date
 today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-start_date = today - timedelta(days=20)
+start_date = today - timedelta(days=time_series_simulation_days)
 
 ### Define the time interval for simulation
 time_interval_daily_df = (
