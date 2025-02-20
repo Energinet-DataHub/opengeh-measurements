@@ -14,7 +14,7 @@ class GoldMeasurementsBuilder:
         self,
         metering_point_id: str | None = "502938475674839281",
         observation_time: datetime | None = datetime.now(),
-        quantity: Decimal | None = Decimal(round(random.uniform(0, 1000), 3)),
+        quantity: Decimal | None = Decimal(random.uniform(1, 1000)),
         quality=None,
         metering_point_type: str | None = random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
         transaction_id="",
