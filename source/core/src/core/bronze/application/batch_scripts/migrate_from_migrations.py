@@ -71,7 +71,7 @@ def full_load_of_migrations_to_measurements(
     )
     today = datetime.now().date()
 
-    for chunk in enumerate(chunks):
+    for chunk in chunks:
         migrations_data_chunk = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
             (lit(chunk[0]) <= col(MigrationsSilverTimeSeriesColumnNames.partitioning_col))
             & (col(MigrationsSilverTimeSeriesColumnNames.partitioning_col) <= lit(chunk[-1]))
