@@ -3,11 +3,11 @@ from unittest.mock import patch
 
 import pytest
 
-from geh_calculated_measurements.opengeh_electrical_heating.application.job_args.command_line_args import (
+from geh_calculated_measurements.electrical_heating.application.job_args.command_line_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.application.job_args.environment_variables import (
+from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
 
