@@ -23,6 +23,7 @@ RUN apt-get update \
   git \
   curl \
   build-essential \
+  default-jdk \
   # gnupg2 allows you to sign git commits with GPG
   gnupg2 \
   gcc \
@@ -33,11 +34,9 @@ RUN apt-get update \
 
 
 # Copy Spark
-ENV JAVA_HOME=/opt/java/openjdk
 ENV SPARK_HOME=/opt/spark
 COPY --from=spark /tmp/spark ${SPARK_HOME}
-COPY --from=spark /tmp/java ${JAVA_HOME}
-ENV PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$PATH
+ENV PATH=$SPARK_HOME/bin:$PATH
 
 # Copy uv
 COPY --from=uv /uv /bin
