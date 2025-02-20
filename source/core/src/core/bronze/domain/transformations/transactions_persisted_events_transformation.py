@@ -1,6 +1,6 @@
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
-from pyspark.sql.protobuf.functions import from_protobuf, to_protobuf
+from pyspark.sql.protobuf.functions import to_protobuf
 
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     BronzeSubmittedTransactionsColumnNames,
@@ -9,15 +9,12 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
 from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
 
-alias_name = "measurement_values"
+
+def create_by_unpacked_submitted_transactions(unpacked_submitted_transactions: DataFrame) -> DataFrame:
+    return unpacked_submitted_transactions.transform(_prepare_measurement).transform(_pack_proto)
 
 
-def transform(submitted_transactions: DataFrame) -> DataFrame:
-    unpacked_submitted_transactions = unpack_submitted_transactions(submitted_transactions)
-    return unpacked_submitted_transactions.transform(prepare_measurement).transform(pack_proto)
-
-
-def prepare_measurement(df) -> DataFrame:
+def _prepare_measurement(df) -> DataFrame:
     return df.select(
         BronzeSubmittedTransactionsColumnNames.key,
         F.struct(
@@ -29,35 +26,10 @@ def prepare_measurement(df) -> DataFrame:
     )
 
 
-def pack_proto(df) -> DataFrame:
+def _pack_proto(df) -> DataFrame:
     descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.submitted_transaction_persisted)
     message_name = "SubmittedTransactionPersisted"
     return df.withColumn(
         BronzeSubmittedTransactionsColumnNames.value,
         to_protobuf(BronzeSubmittedTransactionsColumnNames.value, message_name, descFilePath=descriptor_path),
-    )
-
-
-def unpack_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
-    """Unpacks the protobuf message and maps the fields to the correct columns."""
-    return submitted_transactions.transform(unpack_proto).transform(map_message)
-
-
-def unpack_proto(df):
-    descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
-    message_name = "PersistSubmittedTransaction"
-    return df.select(
-        from_protobuf(df.value, message_name, descFilePath=descriptor_path).alias(alias_name),
-        BronzeSubmittedTransactionsColumnNames.key,
-        BronzeSubmittedTransactionsColumnNames.partition,
-    )
-
-
-def map_message(df):
-    return df.select(
-        f"{alias_name}.{ValueColumnNames.version}",
-        f"{alias_name}.{ValueColumnNames.orchestration_instance_id}",
-        f"{alias_name}.{ValueColumnNames.orchestration_type}",
-        BronzeSubmittedTransactionsColumnNames.key,
-        BronzeSubmittedTransactionsColumnNames.partition,
     )
