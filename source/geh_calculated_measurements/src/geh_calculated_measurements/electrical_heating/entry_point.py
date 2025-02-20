@@ -6,7 +6,7 @@ from geh_calculated_measurements.electrical_heating.application import (
 
 
 def execute() -> None:
-    # Entry point for the Electrical Heating
+    """Entry point for the Electrical Heating."""
     applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
     execute_application(

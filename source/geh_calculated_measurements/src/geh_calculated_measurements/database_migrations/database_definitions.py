@@ -1,3 +1,4 @@
-class DatabaseNames:
+class DatabaseMigrationsDatabaseDefinition:
     # Should probably be an environment variable because it is created in Terraform.
     measurements_calculated_internal_database = "measurements_calculated_internal"
+    executed_migrations_table_name = "executed_migrations"

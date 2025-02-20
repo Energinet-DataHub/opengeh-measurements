@@ -2,5 +2,5 @@ import geh_calculated_measurements.database_migrations.migrations_runner as migr
 
 
 def migrate() -> None:
-    # Entry point for the database migrations
+    """Entry point for the database migrations."""
     migrations_runner.migrate()
