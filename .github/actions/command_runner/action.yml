@@ -23,7 +23,7 @@ runs:
       with:
         context: container-images/pyspark-slim
         platforms: linux/amd64,linux/arm64
-        push: ${{ steps.pr.outputs.push_image }}
+        push: false
         tags: |
           ghcr.io/energinet-datahub/pyspark-devcontainer:latest
           ghcr.io/energinet-datahub/pyspark-devcontainer:${{ github.sha }}
