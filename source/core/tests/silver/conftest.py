@@ -1,10 +1,12 @@
 import os
 from typing import Callable, Generator
+from unittest.mock import patch
 
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+import core.utility.shared_helpers as shared_helpers
 from core.migrations import MigrationDatabaseNames, migrations_runner
 from core.settings.catalog_settings import CatalogSettings
 
@@ -22,6 +24,7 @@ def pytest_runtest_setup() -> None:
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
+    os.environ["CONTINUOUS_STREAMING_ENABLED"] = "false"
 
 
 @pytest.fixture(scope="session")
@@ -55,7 +58,14 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         .config("datanucleus.autoCreateSchema", "true")
         .config("hive.metastore.schema.verification", "false")
         .config("hive.metastore.schema.verification.record.version", "false")
-        .enableHiveSupport()
+        .enableHiveSupport(),
+        extra_packages=[
+            "org.apache.spark:spark-protobuf_2.12:3.5.4",
+            "org.apache.hadoop:hadoop-azure:3.3.2",
+            "org.apache.hadoop:hadoop-common:3.3.2",
+            "io.delta:delta-spark_2.12:3.1.0",
+            "io.delta:delta-core_2.12:2.3.0",
+        ],
     ).getOrCreate()
 
     _create_schemas(session)
@@ -125,3 +135,11 @@ def configure_dummy_logging() -> None:
     from geh_common.telemetry.logging_configuration import configure_logging
 
     configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+
+
+@pytest.fixture
+def mock_checkpoint_path():
+    with patch.object(
+        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/silver/__checkpoints__"
+    ) as mock_checkpoint_path:
+        yield mock_checkpoint_path
