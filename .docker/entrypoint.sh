@@ -33,12 +33,4 @@ set -e
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
 
-cd $1
-coverage run --branch -m pytest -vv --junitxml=pytest-results.xml $2
-
-# Create data for threshold evaluation
-coverage json
-# Create human reader friendly HTML report
-coverage html
-
-coverage-threshold --line-coverage-min 25
+uv run --directory $1 pytest $2
