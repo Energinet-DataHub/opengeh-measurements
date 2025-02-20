@@ -37,8 +37,7 @@ RUN apt-get update \
 # Copy Spark
 ENV SPARK_HOME=/opt/spark
 COPY --from=spark /tmp/spark ${SPARK_HOME}
-COPY --from=spark /tmp/java ${JAVA_HOME}
-ENV PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$PATH
+ENV PATH=$SPARK_HOME/bin:$PATH
 
 # Copy uv
 COPY --from=uv /uv /bin
