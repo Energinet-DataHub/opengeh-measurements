@@ -67,9 +67,6 @@ jobs:
         with:
           path: ${{ inputs.packages_directory }}
 
-  
-  Test Packages
-  
   ci_test:
     name: Test Packages
     runs-on: ubuntu-24.04
@@ -105,7 +102,7 @@ jobs:
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
         with:
           command: uv run --directory ${{ matrix.inputs.path }} pytest ${{ inputs.tests_path }} ${{ inputs.pytest_addopts }}
-      
+
       - name: Build ${{ matrix.inputs.name }}
         uses: ./.github/actions/command_runner
         if: ${{ steps.changes.outputs.is_changed == 'true' }}
