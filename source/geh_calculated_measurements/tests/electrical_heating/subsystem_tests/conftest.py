@@ -10,4 +10,6 @@ def environment_configuration() -> EnvironmentConfiguration:
 
 @pytest.fixture(scope="session")
 def electrical_heating_fixture(environment_configuration: EnvironmentConfiguration) -> ElectricalHeatingFixture:
-    return ElectricalHeatingFixture(environment_configuration)
+    return ElectricalHeatingFixture(
+        environment_configuration,
+    )
