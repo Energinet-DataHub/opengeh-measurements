@@ -9,12 +9,12 @@ inputs:
   image-path:
     description: Path to the Dockerfile
     required: true
-    default: .docker/Dockerfile
+    default: ${{ github.workspace }}/.docker/Dockerfile
 outputs:
   time: # id of output
     description: The time we greeted you
 runs:
   using: docker
-  image: .docker/Dockerfile
+  image: ${{ inputs.image-path }}
   args:
     - ${{ inputs.who-to-greet }}
