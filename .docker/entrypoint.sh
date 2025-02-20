@@ -34,7 +34,7 @@ set -e
 shopt -s extglob
 
 # Install UV
-pushd dirname $1
+pushd $(dirname $1)
     conda install .
 popd
 
