@@ -293,7 +293,6 @@ dependencies = [
 dev = [
     { name = "commitizen" },
     { name = "mypy" },
-    { name = "opengeh-testcommon" },
     { name = "pydantic" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -302,7 +301,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_4.1.0" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.0.1" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
 ]
 
@@ -310,7 +309,6 @@ requires-dist = [
 dev = [
     { name = "commitizen", specifier = ">=4.1.0" },
     { name = "mypy", specifier = ">=1.14.1" },
-    { name = "opengeh-testcommon", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
@@ -499,8 +497,8 @@ wheels = [
 
 [[package]]
 name = "geh-common"
-version = "4.1.0"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_4.1.0#d831812ff35043ab6dce4ec09a37a43203dd079d" }
+version = "5.0.1"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.0.1#cc3c8240a334faaf06ac628c609f121fd527b8ad" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
@@ -717,16 +715,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6d/fa/fbf4001037904031639e6bfbfc02badfc7e12f137a8afa254df6c4c8a670/oauthlib-3.2.2.tar.gz", hash = "sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918", size = 177352 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl", hash = "sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca", size = 151688 },
-]
-
-[[package]]
-name = "opengeh-testcommon"
-version = "0.0.4"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Ftestcommon&rev=3.0.1#9dfc33c2a5c53c91249e632550eea93415ea6013" }
-dependencies = [
-    { name = "delta-spark" },
-    { name = "pyspark" },
-    { name = "pyyaml" },
 ]
 
 [[package]]
