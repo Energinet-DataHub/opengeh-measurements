@@ -9,6 +9,7 @@ from geh_calculated_measurements.electrical_heating.domain.column_names import C
 from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
     get_hourly_energy_in_local_time,
 )
+from geh_calculated_measurements.electrical_heating.infrastructure.debug import debugging
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -66,10 +67,10 @@ def _join_source_metering_point_periods_with_energy_hourly(
         time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION_FROM_GRID]
     )
     print("################# BEFORE BIG JOIN")
-    time_series_points_in_utc.show()
-    consumption.show()
-    supply_to_grid.show()
-    consumption_from_grid.show()
+    debugging(time_series_points_in_utc)
+    debugging(consumption)
+    debugging(supply_to_grid)
+    debugging(consumption_from_grid)
 
     df = (
         parent_and_child_metering_point_and_periods_in_localtime.alias("metering_point")
@@ -84,11 +85,16 @@ def _join_source_metering_point_periods_with_energy_hourly(
             )
             & (
                 F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                >= F.col(f"metering_point.{CalculatedNames.parent_period_start}")
+                >= F.col(f"metering_point.{CalculatedNames.overlap_period_start}")
             )
             & (
                 F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                < F.col(f"metering_point.{CalculatedNames.parent_period_end}")
+                < F.col(f"metering_point.{CalculatedNames.overlap_period_end}")
+            )
+            # TODO: Needed?
+            & (
+                F.year(F.col(f"consumption.{CalculatedNames.observation_time_hourly}"))
+                == F.year(F.col(CalculatedNames.period_year))
             ),
             "inner",
         )
@@ -117,12 +123,15 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .select(
+            # TODO: Need both overlap and parent period?
             F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
             F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
             F.col(f"metering_point.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
+            # F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
+            # F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
             F.col(f"consumption.{CalculatedNames.observation_time_hourly}").alias(
                 CalculatedNames.observation_time_hourly
             ),
@@ -135,7 +144,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
         )
     )
-    df.show()
+    debugging(df)
     return df
 
 
@@ -149,7 +158,7 @@ def _calculate_period_limit(
         ),
     )
 
-    df.show()
+    debugging(df)
     period_window = Window.partitionBy(
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.parent_period_start),
@@ -159,7 +168,6 @@ def _calculate_period_limit(
     df = (
         df.groupBy(
             CalculatedNames.electrical_heating_metering_point_id,
-            # TODO: Why not the overlap period?
             CalculatedNames.parent_period_start,
             CalculatedNames.parent_period_end,
             F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(ColumnNames.date),
@@ -182,7 +190,7 @@ def _calculate_period_limit(
             (F.col("period_limit") - F.col("period_limit_reduction")).alias(CalculatedNames.period_energy_limit),
         )
     )
-    df.show()
+    debugging(df)
 
     return df
 

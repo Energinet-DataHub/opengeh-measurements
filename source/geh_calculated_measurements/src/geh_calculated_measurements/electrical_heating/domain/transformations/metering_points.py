@@ -16,6 +16,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
+from geh_calculated_measurements.electrical_heating.infrastructure.debug import debugging
 
 
 def get_joined_metering_point_periods_in_local_time(
@@ -111,7 +112,7 @@ def _join_children_to_parent_metering_point(
         )
     )
     print("######## JOINED PARENT-CHILDREN")
-    df.show()
+    debugging(df)
     return df
 
 
@@ -167,7 +168,7 @@ def _find_parent_child_overlap_period(
             F.col(CalculatedNames.net_consumption_period_start),
             F.col(CalculatedNames.consumption_from_grid_period_end),
             F.col(CalculatedNames.supply_to_grid_period_end),
-        ).alias("overlap_period_start"),
+        ).alias(CalculatedNames.overlap_period_start),
         F.least(
             F.coalesce(
                 F.col(CalculatedNames.parent_period_end),
@@ -189,15 +190,15 @@ def _find_parent_child_overlap_period(
                 F.col(CalculatedNames.supply_to_grid_period_end),
                 begining_of_year(F.current_date(), years_to_add=1),
             ),
-        ).alias("overlap_period_end"),
-    ).where(F.col("overlap_period_start") < F.col("overlap_period_end"))
+        ).alias(CalculatedNames.overlap_period_end),
+    ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
 
 
 def _split_period_by_year(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     print("######## BEFORE SPLIT BY YEAR")
-    parent_and_child_metering_point_and_periods.show()
+    debugging(parent_and_child_metering_point_and_periods)
     # TODO: Why do we need to select all the periods?
     df = parent_and_child_metering_point_and_periods.select(
         "*",
@@ -208,7 +209,7 @@ def _split_period_by_year(
                 F.coalesce(
                     # Subtract one day to avoid getting the next year if the period ends at new year
                     # TODO: Change to subtract a second
-                    begining_of_year(F.date_add(F.col(CalculatedNames.parent_period_end), -1)),
+                    begining_of_year(F.date_add(F.col(CalculatedNames.parent_period_end), 0)),
                     begining_of_year(F.current_date(), years_to_add=1),
                 ),
                 F.expr("INTERVAL 1 YEAR"),
@@ -229,12 +230,14 @@ def _split_period_by_year(
         )
         .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
         .alias(CalculatedNames.parent_period_end),
-        F.col("period_year"),
+        F.col(CalculatedNames.overlap_period_start),
+        F.col(CalculatedNames.overlap_period_end),
+        F.col(CalculatedNames.period_year),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.consumption_from_grid_metering_point_id),
         F.col(CalculatedNames.supply_to_grid_metering_point_id),
     )
     print("######## AFTER SPLIT BY YEAR")
-    df.show()
+    debugging(df)
     return df
