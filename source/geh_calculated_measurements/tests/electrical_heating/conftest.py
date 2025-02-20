@@ -1,10 +1,11 @@
 ### This file contains the fixtures that are used in the tests. ###
 from pathlib import Path
 from typing import Generator
+from unittest import mock
 
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
-from geh_common.telemetry.logging_configuration import configure_logging
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
@@ -27,6 +28,28 @@ from tests import PROJECT_ROOT
 from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
 
 
+@pytest.fixture(scope="session")
+def env_args_fixture() -> dict[str, str]:
+    env_args = {
+        "CLOUD_ROLE_NAME": "test_role",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
+        "SUBSYSTEM": "test_subsystem",
+    }
+    return env_args
+
+
+@pytest.fixture(scope="session")
+def script_args_fixture() -> list[str]:
+    sys_argv = [
+        "program_name",
+        "--force_configuration",
+        "false",
+        "--orchestration-instance-id",
+        "4a540892-2c0a-46a9-9257-c4e13051d76a",
+    ]
+    return sys_argv
+
+
 @pytest.fixture(scope="module", autouse=True)
 def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
@@ -37,10 +60,15 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 
 
 @pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
+def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+    with (
+        mock.patch("sys.argv", script_args_fixture),
+        mock.patch.dict("os.environ", env_args_fixture, clear=False),
+    ):
+        logging_settings = LoggingSettings()
+        logging_settings.applicationinsights_connection_string = None  # for testing purposes
+        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="session")

@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from pydantic_settings import BaseSettings
+from geh_common.application.pydantic_settings_parsing import ApplicationSettings
 
 
-class CapacitySettlementArgs(BaseSettings):
+class CapacitySettlementArgs(ApplicationSettings):
     orchestration_instance_id: UUID
     time_zone: str = "Europe/Copenhagen"
     calculation_month: int

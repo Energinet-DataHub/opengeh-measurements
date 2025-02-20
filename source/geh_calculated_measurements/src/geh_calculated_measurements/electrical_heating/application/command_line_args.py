@@ -5,12 +5,13 @@ from argparse import Namespace
 from datetime import datetime
 
 import configargparse
-from geh_common.telemetry import Logger, logging_configuration
+from geh_common.telemetry import logging_configuration
+from geh_common.telemetry.logger import Logger
 
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
+from geh_calculated_measurements.electrical_heating.application.environment_variables import (
     get_catalog_name,
     get_electricity_market_data_path,
     get_time_zone,

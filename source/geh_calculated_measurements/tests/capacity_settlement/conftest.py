@@ -1,14 +1,49 @@
+from unittest import mock
+
 import pytest
-from geh_common.telemetry.logging_configuration import configure_logging
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
 from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
 
 
+@pytest.fixture(scope="session")
+def env_args_fixture() -> dict[str, str]:
+    env_args = {
+        "CLOUD_ROLE_NAME": "test_role",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
+        "SUBSYSTEM": "test_subsystem",
+    }
+    return env_args
+
+
+@pytest.fixture(scope="session")
+def script_args_fixture() -> list[str]:
+    sys_argv = [
+        "program_name",
+        "--force_configuration",
+        "false",
+        "--orchestration-instance-id",
+        "4a540892-2c0a-46a9-9257-c4e13051d76a",
+        "--calculation-month",
+        "1",
+        "--calculation-year",
+        "2021",
+    ]
+    return sys_argv
+
+
 @pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
+def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
+    # Command line arguments
+    with (
+        mock.patch("sys.argv", script_args_fixture),
+        mock.patch.dict("os.environ", env_args_fixture, clear=False),
+    ):
+        logging_settings = LoggingSettings()
+        logging_settings.applicationinsights_connection_string = None  # for testing purposes
+        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="session")
