@@ -23,6 +23,11 @@ def pytest_runtest_setup() -> None:
     os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
+    os.environ["EVENT_HUB_NAMESPACE"] = "event_hub_namespace"
+    os.environ["EVENT_HUB_INSTANCE"] = "event_hub_instance"
+    os.environ["TENANT_ID"] = "tenant_id"
+    os.environ["SPN_APP_ID"] = "spn_app_id"
+    os.environ["SPN_APP_SECRET"] = "spn_app_secret"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake"
     os.environ["CONTINUOUS_STREAMING_ENABLED"] = "false"
 

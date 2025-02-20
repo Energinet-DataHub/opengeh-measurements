@@ -3,10 +3,8 @@ from typing import Callable
 from pyspark.sql import DataFrame
 
 import core.utility.shared_helpers as shared_helpers
-from core.bronze.infrastructure.settings import (
-    StorageAccountSettings,
-    SubmittedTransactionsStreamSettings,
-)
+from core.bronze.infrastructure.settings import SubmittedTransactionsStreamSettings
+from core.settings import StorageAccountSettings
 from core.settings.catalog_settings import CatalogSettings
 from core.silver.infrastructure.config import SilverTableNames
 
