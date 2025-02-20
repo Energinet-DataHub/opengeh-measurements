@@ -1,0 +1,43 @@
+name: Detect changes
+
+# DESCRIPTION:
+# This workflow will determine which categories of jobs should be executed,
+# based on detected changes.
+# It should be used by the 'ci-orchestrator.yml' and 'cd.yml' to ensure they both use
+# the same path's to detect changes.
+
+on:
+  workflow_call:
+    outputs:
+      dotnet:
+        value: ${{ jobs.changes.outputs.dotnet }}
+
+jobs:
+  changes:
+    name: Determine relevant jobs
+    runs-on: ubuntu-latest
+    outputs:
+      dotnet: ${{ steps.filter.outputs.dotnet }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            dotnet:
+              - '.github/workflows/cd.yml'
+              - '.github/workflows/ci-dotnet.yml'
+              - 'source/Measurements/**'
+              - 'source/Measurements/Measurements.sln'
+
+      - name: Package content or build has changed
+        id: docker_changed
+        uses: tj-actions/changed-files@v41
+        with:
+          since_last_remote_commit: true
+          files: .docker/**

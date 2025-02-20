@@ -21,6 +21,9 @@ on:
       - main
 
 jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
   cd_reusable:
     name: Continuous Deployment
     uses: ./.github/workflows/reusable-cd.yml
@@ -35,3 +38,56 @@ jobs:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
       send_grid_api_key: ${{ secrets.sendgrid_instance_system_notifications_api_key }}
+
+  dotnet_promote_prerelease:
+    needs: [changes]
+    if: ${{ needs.changes.outputs.dotnet == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/promote-prerelease.yml@v14
+    with:
+      release_name_prefix: dotnet
+
+  dispatch_deployment_event:
+    runs-on: ubuntu-latest
+    needs:
+      [
+        changes,
+        dotnet_promote_prerelease,
+      ]
+    if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.dotnet == 'true' }}
+    steps:
+      - run: echo "${{ toJSON(needs) }}"
+
+      - name: Find associated pull request
+        uses: Energinet-DataHub/.github/.github/actions/find-related-pr-number@v14
+        id: find_pull_request
+
+      - uses: Energinet-DataHub/.github/.github/actions/github-create-token@v14
+        name: Generate Github token
+        id: generate_token
+        with:
+          app_id: ${{ vars.dh3serviceaccount_appid }}
+          private_key: ${{ secrets.dh3serviceaccount_privatekey }}
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          repository: ${{ vars.environment_repository_path }}
+          event-type: migrations-deployment-request-domain
+          # yamllint disable-line rule:quoted-strings
+          client-payload: '{"pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}", "dotnet": "${{ needs.changes.outputs.dotnet }}"}'
+
+  dispatch_failed:
+    needs:
+      [
+        dotnet_promote_prerelease,
+        dispatch_deployment_event,
+      ]
+    if: |
+      always() &&
+      contains(needs.*.result, 'failure')
+    uses: Energinet-DataHub/.github/.github/workflows/notify-team.yml@v14
+    with:
+      team_name: Volt
+      subject: "Deployment dispatch failed: opengeh-measurements"
+    secrets: inherit
