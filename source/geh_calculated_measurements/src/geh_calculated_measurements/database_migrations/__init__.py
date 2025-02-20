@@ -1,5 +1,5 @@
-from geh_calculated_measurements.database_migrations.database_names import (
-    DatabaseNames as MigrationDatabaseNames,
+from geh_calculated_measurements.database_migrations.database_definitions import (
+    DatabaseMigrationsDatabaseDefinition as DatabaseMigrationsDatabaseDefinition,
 )
 
-__all__ = ["MigrationDatabaseNames"]
+__all__ = ["DatabaseMigrationsDatabaseDefinition"]
