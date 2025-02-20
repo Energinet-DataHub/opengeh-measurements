@@ -19,7 +19,7 @@ def calculate_electrical_heating_in_local_time(
 ) -> DataFrame:
     periods_in_localtime = _find_source_metering_point_for_energy(periods_in_localtime)
 
-    periods_with_hourly_energy = _join_source_metering_point_periods_with_energy(
+    periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
         periods_in_localtime,
         time_series_points_in_utc,
         time_zone,
@@ -50,7 +50,7 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     )
 
 
-def _join_source_metering_point_periods_with_energy(
+def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
     time_series_points_in_utc: DataFrame,
     time_zone: str,
@@ -65,6 +65,11 @@ def _join_source_metering_point_periods_with_energy(
     consumption_from_grid = get_hourly_energy_in_local_time(
         time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION_FROM_GRID]
     )
+    print("################# BEFORE BIG JOIN")
+    time_series_points_in_utc.show()
+    consumption.show()
+    supply_to_grid.show()
+    consumption_from_grid.show()
 
     df = (
         parent_and_child_metering_point_and_periods_in_localtime.alias("metering_point")
@@ -79,15 +84,11 @@ def _join_source_metering_point_periods_with_energy(
             )
             & (
                 F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                >= F.col(f"metering_point.{CalculatedNames.overlap_period_start}")
+                >= F.col(f"metering_point.{CalculatedNames.parent_period_start}")
             )
             & (
                 F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                < F.col(f"metering_point.{CalculatedNames.overlap_period_end}")
-            )
-            & (
-                F.year(F.col(f"consumption.{CalculatedNames.observation_time_hourly}"))
-                == F.year(F.col(CalculatedNames.period_year))
+                < F.col(f"metering_point.{CalculatedNames.parent_period_end}")
             ),
             "inner",
         )
@@ -122,8 +123,6 @@ def _join_source_metering_point_periods_with_energy(
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
-            F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
-            F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
             F.col(f"consumption.{CalculatedNames.observation_time_hourly}").alias(
                 CalculatedNames.observation_time_hourly
             ),
@@ -136,33 +135,54 @@ def _join_source_metering_point_periods_with_energy(
             F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
         )
     )
+    df.show()
     return df
 
 
 def _calculate_period_limit(
-    periods_with_energy: DataFrame,
+    periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
-    df = periods_with_energy.select(
+    df = periods_with_energy_hourly.select(
         "*",
-        (
-            F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
-            * _ELECTRICAL_HEATING_LIMIT_YEARLY
-            / days_in_year(F.col(CalculatedNames.parent_period_start))
-        ).alias(CalculatedNames.period_energy_limit),
+        F.coalesce(F.least(F.col("consumption_from_grid_quantity"), F.col("supply_to_grid_quantity")), F.lit(0)).alias(
+            "nettoficeret_hourly"
+        ),
     )
 
-    # TODO: Calculate reduction
+    df.show()
+    period_window = Window.partitionBy(
+        F.col(CalculatedNames.electrical_heating_metering_point_id),
+        F.col(CalculatedNames.parent_period_start),
+        F.col(CalculatedNames.parent_period_end),
+    )
 
-    # Aggregate the energy data to daily
-    df = df.groupBy(
-        CalculatedNames.electrical_heating_metering_point_id,
-        # TODO: Why not the overlap period?
-        CalculatedNames.parent_period_start,
-        CalculatedNames.parent_period_end,
-        F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(ColumnNames.date),
-        # ColumnNames.quantity,
-        CalculatedNames.period_energy_limit,
-    ).agg(F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity))
+    df = (
+        df.groupBy(
+            CalculatedNames.electrical_heating_metering_point_id,
+            # TODO: Why not the overlap period?
+            CalculatedNames.parent_period_start,
+            CalculatedNames.parent_period_end,
+            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(ColumnNames.date),
+        )
+        .agg(
+            F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
+            F.sum(F.col("nettoficeret_hourly")).alias("nettoficeret_daily"),
+        )
+        .select(
+            "*",
+            (
+                F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
+                * _ELECTRICAL_HEATING_LIMIT_YEARLY
+                / days_in_year(F.col(CalculatedNames.parent_period_start))
+            ).alias("period_limit"),
+            F.sum(F.col("nettoficeret_daily")).over(period_window).alias("period_limit_reduction"),
+        )
+        .select(
+            "*",
+            (F.col("period_limit") - F.col("period_limit_reduction")).alias(CalculatedNames.period_energy_limit),
+        )
+    )
+    df.show()
 
     return df
 
@@ -177,6 +197,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
         .orderBy(F.col(ColumnNames.date))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
+
     return time_series_points.select(
         F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
