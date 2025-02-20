@@ -6,9 +6,11 @@ from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
 from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
-from geh_calculated_measurements.electrical_heating.domain import (
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
     CalculatedMeasurements,
-    calculated_measurements_factory,
+)
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import (
+    create as create_calculated_measurements,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
@@ -42,7 +44,7 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, args.time_zone)
 
-    calculated_measurements = calculated_measurements_factory.create(
+    calculated_measurements = create_calculated_measurements(
         changed_electrical_heating_in_utc,
         args.orchestration_instance_id,
         "electrical_heating",
