@@ -22,7 +22,7 @@ runs:
       uses: docker/build-push-action@v5
       with:
         context: .docker
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         push: false
         tags: |
           ghcr.io/energinet-datahub/pyspark-devcontainer:latest
