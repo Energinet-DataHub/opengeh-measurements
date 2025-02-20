@@ -1,7 +1,7 @@
 import sys
+import uuid
 from argparse import Namespace
 from collections.abc import Callable
-from datetime import datetime
 
 import geh_common.telemetry.logging_configuration as config
 from geh_common.telemetry import use_span
@@ -12,12 +12,13 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_job_args import (
+from geh_calculated_measurements.capacity_settlement.application.job_args.command_line_args import (
     parse_command_line_arguments,
     parse_job_arguments,
 )
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
-from geh_calculated_measurements.electrical_heating.infrastructure.spark_initializor import (
+from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsRepository
+from geh_calculated_measurements.capacity_settlement.infrastructure.spark_initializor import (
     initialize_spark,  # put in shared location
 )
 
@@ -52,7 +53,7 @@ def execute_application(
                 }
             )
             span.set_attributes(config.get_extras())
-            parse_job_args(command_line_args)
+            args = parse_job_args(command_line_args)
             spark = initialize_spark()
             _execute_application(spark, args)
 
@@ -83,7 +84,9 @@ def execute_application(
 
         # Read data frames
         time_series_points = measurements_repository.read_time_series_points()
-        execution_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        metering_point_periods = measurements_repository.read_metering_point_periods()
+
+        orchestration_instance_id = uuid.UUID()
 
         # Execute the domain logic
         execute(
@@ -93,6 +96,5 @@ def execute_application(
             args.calculation_month,
             args.calculation_year,
             args.time_zone,
-            args.execution_time,
         )
         

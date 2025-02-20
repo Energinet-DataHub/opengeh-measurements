@@ -8,3 +8,4 @@ class CapacitySettlementArgs(BaseSettings):
     time_zone: str = "Europe/Copenhagen"
     calculation_month: int
     calculation_year: int
+    catalog_name: str
