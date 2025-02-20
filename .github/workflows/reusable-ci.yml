@@ -91,19 +91,16 @@ jobs:
 
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v3
-        if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}
 
       - name: Restore asdf cache
         uses: actions/cache/restore@v4
         id: cache-asdf-restore
-        if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}
         with:
           path: /home/runner/.asdf
           key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
 
       - name: Install dependencies in .tool-versions
         uses: asdf-vm/actions/install@v3
-        if: ${{ steps.check_tool_versions.outputs.exists == 'true' }}
 
       - name: Save asdf cache
         uses: actions/cache/save@v4
