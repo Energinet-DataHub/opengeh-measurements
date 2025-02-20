@@ -34,7 +34,9 @@ set -e
 shopt -s extglob
 
 # Install UV
-pip install uv
+pip install $1
 
 # Run tests
-python -m uv run --directory $1 pytest --junitxml=pytest-results.xml $2
+pushd $1
+    python -m pytest --junitxml=pytest-results.xml $2
+popd
