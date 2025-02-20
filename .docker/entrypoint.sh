@@ -35,7 +35,7 @@ shopt -s extglob
 
 # Install UV
 pushd $(dirname $1)
-    conda develop .
+    pip install .
 popd
 
 # Run tests
