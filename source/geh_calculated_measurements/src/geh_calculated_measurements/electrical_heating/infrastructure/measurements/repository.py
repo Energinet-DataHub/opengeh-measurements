@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from geh_calculated_measurements.electrical_heating.domain import CalculatedMeasurements
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import CalculatedMeasurements
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
 )
