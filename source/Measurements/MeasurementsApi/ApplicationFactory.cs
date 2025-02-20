@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 using Asp.Versioning;
 using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
-using MeasurementsApi.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.MeasurementsApi.Extensions.DependencyInjection;
 
-namespace MeasurementsApi;
+namespace Energinet.DataHub.Measurements.MeasurementsApi;
 
-public class ApplicationFactory
+public static class ApplicationFactory
 {
-    public static WebApplication CreateApplication(string[] args, Dictionary<string, string?>? applicationSettings = default)
+    public static WebApplication CreateApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ public class ApplicationFactory
         builder.Services.AddHealthChecksForWebApp();
 
         // Modules
-        builder.Services.AddMeasurementsModule(builder.Configuration);
+        builder.Services.AddMeasurementsModule();
 
         // Http channels
         builder.Services.AddControllers();

@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>Energinet.DataHub.Measurements.MeasurementsApi</AssemblyName>
+        <RootNamespace>Energinet.DataHub.Measurements.MeasurementsApi</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="14.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Measurements.Application\Measurements.Application.csproj" />
+      <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

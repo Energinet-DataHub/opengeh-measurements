@@ -1,5 +1,5 @@
 ﻿using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
-using MeasurementsApi;
+using Energinet.DataHub.Measurements.MeasurementsApi;
 
 var app = ApplicationFactory.CreateApplication(args);
 

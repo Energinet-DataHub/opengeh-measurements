@@ -1,4 +1,4 @@
-﻿namespace MeasurementsApi.Extensions.DependencyInjection;
+﻿namespace Energinet.DataHub.Measurements.MeasurementsApi.Extensions.DependencyInjection;
 
 public static class AuthenticationExtensions
 {

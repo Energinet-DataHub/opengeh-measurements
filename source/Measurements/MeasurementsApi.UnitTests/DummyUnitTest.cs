@@ -1,4 +1,4 @@
-﻿namespace MeasurementsApi.UnitTests;
+﻿namespace Energinet.DataHub.Measurements.MeasurementsApi.UnitTests;
 
 public class DummyUnitTest
 {
