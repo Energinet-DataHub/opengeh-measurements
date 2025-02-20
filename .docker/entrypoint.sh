@@ -33,4 +33,8 @@ set -e
 # Enable extended globbing. E.g. see https://stackoverflow.com/questions/8525437/list-files-not-matching-a-pattern
 shopt -s extglob
 
+# Install UV
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Run tests
 uv run --directory $1 pytest $2
