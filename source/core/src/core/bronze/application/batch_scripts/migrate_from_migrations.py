@@ -7,7 +7,7 @@ import core.bronze.domain.transformations.migrate_from_migrations_transformation
 from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
     MigrationsSilverTimeSeriesColumnNames,
 )
-from core.bronze.infrastructure.migrated_transactions_repository import (
+from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
 from core.bronze.infrastructure.migration_data.silver_time_series_repository import (
