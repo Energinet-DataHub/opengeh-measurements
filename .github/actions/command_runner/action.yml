@@ -13,5 +13,5 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Run Command
-      run: docker compose -f .docker/docker-compose-action.yml run --rm command bash -c "${{ inputs.command }}"
+      run: docker compose -f .docker/docker-compose-action.yml run --user 1001 --rm command bash -c "${{ inputs.command }}"
       shell: bash
