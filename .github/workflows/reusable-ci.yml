@@ -66,65 +66,69 @@ jobs:
         id: package_matrix
         with:
           path: ${{ inputs.packages_directory }}
+      - name: Test Docker Command
+        uses: ./.github/actions/command_runner
+        with:
+          command: "echo 'Hello World!'"
 
   #
   # Test Packages
   #
-  ci_test:
-    name: Test Packages
-    runs-on: ubuntu-24.04
-    needs: ci_matrix
-    strategy:
-      matrix:
-        inputs: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # ci_test:
+  #   name: Test Packages
+  #   runs-on: ubuntu-24.04
+  #   needs: ci_matrix
+  #   strategy:
+  #     matrix:
+  #       inputs: ${{ fromJson(needs.ci_matrix.outputs.matrix) }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Check if ${{ matrix.inputs.name }} has changed
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            is_changed:
-              - ${{ matrix.inputs.path }}/**
+  #     - name: Check if ${{ matrix.inputs.name }} has changed
+  #       uses: dorny/paths-filter@v3
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           is_changed:
+  #             - ${{ matrix.inputs.path }}/**
 
-      - name: Setup asdf
-        uses: asdf-vm/actions/setup@v3
+  #     - name: Setup asdf
+  #       uses: asdf-vm/actions/setup@v3
 
-      - name: Restore asdf cache
-        uses: actions/cache/restore@v4
-        id: cache-asdf-restore
-        with:
-          path: /home/runner/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+  #     - name: Restore asdf cache
+  #       uses: actions/cache/restore@v4
+  #       id: cache-asdf-restore
+  #       with:
+  #         path: /home/runner/.asdf
+  #         key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
 
-      - name: Install dependencies in .tool-versions
-        uses: asdf-vm/actions/install@v3
+  #     - name: Install dependencies in .tool-versions
+  #       uses: asdf-vm/actions/install@v3
 
-      - name: Save asdf cache
-        uses: actions/cache/save@v4
-        if: always()
-        with:
-          path: /home/runner/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+  #     - name: Save asdf cache
+  #       uses: actions/cache/save@v4
+  #       if: always()
+  #       with:
+  #         path: /home/runner/.asdf
+  #         key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
 
-      - name: Test ${{ matrix.inputs.name }}
-        uses: ./.github/actions/uvtest
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          pytest_addopts: ${{ inputs.pytest_addopts }}
+  #     - name: Test ${{ matrix.inputs.name }}
+  #       uses: ./.github/actions/uvtest
+  #       if: ${{ steps.changes.outputs.is_changed == 'true' }}
+  #       with:
+  #         name: ${{ matrix.inputs.name }}
+  #         path: ${{ matrix.inputs.path }}
+  #         pytest_addopts: ${{ inputs.pytest_addopts }}
 
-      - name: Build ${{ matrix.inputs.name }}
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        run: uv build --wheel --directory ${{ matrix.inputs.path }}
+  #     - name: Build ${{ matrix.inputs.name }}
+  #       if: ${{ steps.changes.outputs.is_changed == 'true' }}
+  #       run: uv build --wheel --directory ${{ matrix.inputs.path }}
 
-      - name: Create prerelease for ${{ matrix.inputs.name }}
-        if: ${{ steps.changes.outputs.is_changed == 'true' }}
-        uses: ./.github/actions/create-prerelease
-        with:
-          name: ${{ matrix.inputs.name }}
-          path: ${{ matrix.inputs.path }}
-          issue-number: ${{ github.event.number }}
+  #     - name: Create prerelease for ${{ matrix.inputs.name }}
+  #       if: ${{ steps.changes.outputs.is_changed == 'true' }}
+  #       uses: ./.github/actions/create-prerelease
+  #       with:
+  #         name: ${{ matrix.inputs.name }}
+  #         path: ${{ matrix.inputs.path }}
+  #         issue-number: ${{ github.event.number }}

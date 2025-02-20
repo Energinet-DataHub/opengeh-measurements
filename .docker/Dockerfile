@@ -48,3 +48,7 @@ ENV PATH=/bin:$PATH
 ENV USER=vscode
 ENV HOME=/home/$USER
 ENV UV_PROJECT_ENVIRONMENT=$HOME/.venv
+
+COPY .docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
