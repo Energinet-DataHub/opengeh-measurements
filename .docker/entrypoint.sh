@@ -35,7 +35,7 @@ shopt -s extglob
 
 # Install UV
 pushd $(dirname $1)
-    pip install .
+    pip install .[dev]
 popd
 
 # Run tests

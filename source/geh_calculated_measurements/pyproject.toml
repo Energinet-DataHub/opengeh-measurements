@@ -16,6 +16,17 @@ dependencies = [
     "tomli>=2.2.1",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.14.1",
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.1",
+    "databricks-sdk>=0.41.0",
+    "pytest-order>=1.3.0",
+    "pytest-xdist>=3.6.1",
+]
+
 [project.scripts]
 execute_electrical_heating = "geh_calculated_measurements.electrical_heating.entry_point:execute"
 execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.entry_point:execute"
