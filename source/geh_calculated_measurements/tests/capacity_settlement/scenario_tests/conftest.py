@@ -3,10 +3,8 @@ from unittest import mock
 
 import pytest
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
-from geh_common.testing.dataframes import (
-    AssertDataframesConfiguration,
-    read_csv,
-)
+from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
+from geh_common.testing.dataframes.read_csv import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
@@ -60,7 +58,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     args = CapacitySettlementTestArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
-    execution_time = "2026-01-04T23:00:00Z"
+
     # Execute the logic
     calculation_output = execute_core_logic(
         spark,
@@ -70,7 +68,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         args.calculation_month,
         args.calculation_year,
         args.time_zone,
-        execution_time,
     )
 
     # Return test cases
