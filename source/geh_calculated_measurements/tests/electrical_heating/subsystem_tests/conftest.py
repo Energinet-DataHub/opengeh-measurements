@@ -1,7 +1,6 @@
 import pytest
 from environment_configuration import EnvironmentConfiguration
 from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
-from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
 
 @pytest.fixture(scope="session")
@@ -10,13 +9,7 @@ def environment_configuration() -> EnvironmentConfiguration:
 
 
 @pytest.fixture(scope="session")
-def databricks_api_client(environment_configuration: EnvironmentConfiguration) -> DatabricksApiClient:
-    return DatabricksApiClient(
-        environment_configuration.databricks_token,
-        environment_configuration.workspace_url,
+def electrical_heating_fixture(environment_configuration: EnvironmentConfiguration) -> ElectricalHeatingFixture:
+    return ElectricalHeatingFixture(
+        environment_configuration,
     )
-
-
-@pytest.fixture(scope="session")
-def electrical_heating_fixture(databricks_api_client: DatabricksApiClient) -> ElectricalHeatingFixture:
-    return ElectricalHeatingFixture(databricks_api_client)

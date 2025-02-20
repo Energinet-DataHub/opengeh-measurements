@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
 class EnvironmentConfiguration(BaseSettings):
@@ -14,6 +14,7 @@ class EnvironmentConfiguration(BaseSettings):
 
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(alias="WORKSPACE_URL")
+    shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
 
     catalog_name: str = Field(alias="CATALOG")
     schema_name: str = Field(alias="SCHEMA")
