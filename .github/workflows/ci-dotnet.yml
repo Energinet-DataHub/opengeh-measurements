@@ -1,0 +1,31 @@
+name: CI dotnet
+
+on:
+  workflow_call: {}
+
+jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
+  dotnet_ci_build:
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-build-prerelease.yml@v14
+    with:
+      solution_file_path: source/Measurements.sln
+
+  dotnet_ci_test_measurements_api_unit_tests:
+    name: Run Measurements Api Unit Tests
+    needs: changes
+    if: ${{ needs.changes.outputs.measuremets_api == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
+    with:
+      tests_dll_file_path: \source\Measurements\MeasurementsApi\MeasurementsApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.UnitTests.dll
+      download_attempt_limit: 20
+
+  dotnet_ci_test_measurements_api_integration_tests:
+    name: Run Measurements Api Integration Tests
+    needs: changes
+    if: ${{ needs.changes.outputs.measuremets_api == 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
+    with:
+      tests_dll_file_path: \source\Measurements\MeasurementsApi\MeasurementsApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.IntegrationTests.dll
+      download_attempt_limit: 20

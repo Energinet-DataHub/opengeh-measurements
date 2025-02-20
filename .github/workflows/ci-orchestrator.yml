@@ -17,6 +17,9 @@ permissions:
   pull-requests: write
 
 jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
   #
   # Reusable CI
   #
@@ -28,6 +31,14 @@ jobs:
       pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'
     secrets:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
+  #
+  # Dotnet CI
+  #
+  ci_dotnet:
+    needs: changes
+    if: ${{ needs.changes.outputs.dotnet == 'true' }}
+    uses: ./.github/workflows/ci-dotnet.yml
 
   #
   # Branch policy status check
