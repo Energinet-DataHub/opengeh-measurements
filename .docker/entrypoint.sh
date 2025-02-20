@@ -37,4 +37,4 @@ shopt -s extglob
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Run tests
-uv run --directory $1 pytest $2
+uv run --directory $1 pytest --junitxml=pytest-results.xml $2
