@@ -1,6 +1,6 @@
 import core.silver.application.streams.calculated_stream as calculated_stream
-import core.silver.application.streams.submitted_transactions as submitted_transactions
 import core.silver.application.streams.notify_transactions_persisted_stream as notify_transactions_persisted_stream
+import core.silver.application.streams.submitted_transactions as submitted_transactions
 from core.utility.environment_variable_helper import get_applicationinsights_connection_string
 
 

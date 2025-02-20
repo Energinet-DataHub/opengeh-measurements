@@ -6,7 +6,7 @@ from core.settings.storage_account_settings import StorageAccountSettings
 from core.utility.shared_helpers import get_checkpoint_path
 
 
-class KafkaStream:
+class ProcessManagerStream:
     kafka_options: dict
 
     def __init__(self) -> None:
