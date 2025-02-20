@@ -1,16 +1,18 @@
 from pydantic_settings import BaseSettings
 
 
-class CatalogSettings(BaseSettings):
+class SilverSettings(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
     Used to define and validate settings for the unity catalog used by package.
 
     Attributes:
-    catalog_name (str): The name of the unity catalog created in infrastructure.
+    silver_container_name (str): The name of the Silver container created in infrastructure.
+    silver_database_name (str): The name of the Silver database created in infrastructure.
     """
 
-    catalog_name: str
+    silver_container_name: str
+    silver_database_name: str
 
     class Config:
         case_sensitive = False

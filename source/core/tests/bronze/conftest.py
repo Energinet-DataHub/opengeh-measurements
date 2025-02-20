@@ -5,8 +5,8 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-from core.migrations import MigrationDatabaseNames, migrations_runner
-from core.settings.catalog_settings import CatalogSettings
+import tests.helpers.schema_helper as schema_helper
+from core.migrations import migrations_runner
 
 
 def pytest_runtest_setup() -> None:
@@ -65,7 +65,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         ],
     ).getOrCreate()
 
-    _create_schemas(session)
+    schema_helper.create_schemas(session)
 
     yield session
 
@@ -116,11 +116,3 @@ def tests_path(source_path: str) -> str:
     file located directly in the integration tests folder.
     """
     return f"{source_path}/tests/bronze"
-
-
-def _create_schemas(spark: SparkSession) -> None:
-    catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.bronze_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")

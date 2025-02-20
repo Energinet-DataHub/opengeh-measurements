@@ -3,7 +3,7 @@ from typing import Optional
 from pyspark.sql import DataFrame, SparkSession
 
 from core.gold.application.ports.silver_port import SilverPort
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.silver_settings import SilverSettings
 
 
 class DeltaSilverAdapter(SilverPort):
@@ -11,10 +11,10 @@ class DeltaSilverAdapter(SilverPort):
         self.spark = spark
 
     def read_stream(self, table_name: str, read_options: Optional[dict] = None) -> DataFrame:
-        catalog_settings = CatalogSettings()  # type: ignore
+        silver_settings = SilverSettings()  # type: ignore
 
         return (
             self.spark.readStream.format("delta")
             .options(**read_options or {})
-            .table(f"{catalog_settings.silver_database_name}.{table_name}")
+            .table(f"{silver_settings.silver_database_name}.{table_name}")
         )

@@ -3,15 +3,15 @@ from typing import Callable
 from pyspark.sql import DataFrame
 
 from core.gold.application.ports.gold_port import GoldPort
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.gold_settings import GoldSettings
 from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
 from core.utility.shared_helpers import get_checkpoint_path
 
 
 class DeltaGoldAdapter(GoldPort):
     def __init__(self) -> None:
-        self.gold_container_name = CatalogSettings().gold_container_name  # type: ignore
-        self.gold_database_name = CatalogSettings().gold_database_name  # type: ignore
+        self.gold_container_name = GoldSettings().gold_container_name  # type: ignore
+        self.gold_database_name = GoldSettings().gold_database_name  # type: ignore
 
     def start_write_stream(
         self,

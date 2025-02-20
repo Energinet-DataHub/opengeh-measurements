@@ -7,9 +7,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
 import core.migrations.migrations_runner as migrations_runner
+import tests.helpers.schema_helper as schema_helper
 from core.gold.domain.schemas.silver_measurements import silver_measurements_schema
-from core.migrations import MigrationDatabaseNames
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
 
 
@@ -44,7 +44,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         .enableHiveSupport()
     ).getOrCreate()
 
-    _create_schemas(session)
+    schema_helper.create_schemas(session)
 
     yield session
 
@@ -97,21 +97,13 @@ def tests_path(source_path: str) -> str:
     return f"{source_path}/tests/migration"
 
 
-def _create_schemas(spark: SparkSession) -> None:
-    catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.bronze_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")
-
-
 @pytest.fixture(scope="session")
 def create_silver_tables(spark: SparkSession) -> None:
-    catalog_settings = CatalogSettings()  # type: ignore
+    silver_settings = SilverSettings()  # type: ignore
 
     create_table_from_schema(
         spark=spark,
-        database=catalog_settings.silver_database_name,
+        database=silver_settings.silver_database_name,
         table_name=SilverTableNames.silver_measurements,
         schema=silver_measurements_schema,
     )
