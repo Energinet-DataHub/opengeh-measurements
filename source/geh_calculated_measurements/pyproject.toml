@@ -47,7 +47,9 @@ addopts = [
     "-ra",
     "-vv",
     "-s",
-    "-n=auto",
+    "-d",
+    "--tx",
+    "popen//python=python"
 ]
 
 [tool.coverage.report]
