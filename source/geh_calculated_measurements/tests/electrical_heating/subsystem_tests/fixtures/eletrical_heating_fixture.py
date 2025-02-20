@@ -27,7 +27,7 @@ class ElectricalHeatingFixture:
         self.credentials = DefaultAzureCredential()
         self.logs_query_client = LogsQueryClient(self.credentials)
         self.secret_client = SecretClient(
-            vault_url=environment_configuration.azure_keyvault_url,
+            vault_url=f"https://{environment_configuration.shared_keyvault_name}.vault.azure.net/",
             credential=self.credentials,
         )
 
@@ -53,7 +53,7 @@ class ElectricalHeatingFixture:
 
         return self._wait_for_condition(workspace_id, query, timeout_seconds, poll_interval_seconds, timespan_minutes)
 
-    # TODO Move to test common paakage in the future
+    # TODO Move to the test common paakage in a future PR.
     def _wait_for_condition(
         self, workspace_id: str, query: str, timeout_seconds: int, poll_interval_seconds: int, timespan_minutes: int
     ) -> LogsQueryResult:
