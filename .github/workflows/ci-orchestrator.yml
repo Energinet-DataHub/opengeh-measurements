@@ -12,9 +12,12 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
   checks: write
+  contents: write
+  id-token: write
+  issues: read
   pull-requests: write
+
 
 jobs:
   #
