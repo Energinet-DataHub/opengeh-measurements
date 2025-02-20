@@ -18,5 +18,7 @@ def databricks_api_client(environment_configuration: EnvironmentConfiguration) -
 
 
 @pytest.fixture(scope="session")
-def electrical_heating_fixture(databricks_api_client: DatabricksApiClient) -> ElectricalHeatingFixture:
-    return ElectricalHeatingFixture(databricks_api_client)
+def electrical_heating_fixture(
+    databricks_api_client: DatabricksApiClient, environment_configuration: EnvironmentConfiguration
+) -> ElectricalHeatingFixture:
+    return ElectricalHeatingFixture(databricks_api_client, environment_configuration)
