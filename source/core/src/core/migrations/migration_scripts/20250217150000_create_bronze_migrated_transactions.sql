@@ -22,7 +22,7 @@ CREATE TABLE {bronze_database}.{bronze_migrated_transactions_table}
     created_in_measurements TIMESTAMP NOT NULL
 )
 USING DELTA
-{SKIP_IN_TEST} CLUSTER BY metering_point_id, transaction_insert_date, valid_from_date, transaction_id
+CLUSTER BY metering_point_id, transaction_insert_date, valid_from_date, transaction_id
 TBLPROPERTIES (
     delta.deletedFileRetentionDuration = "interval 30 days",
     delta.logRetentionDuration = "interval 30 days"

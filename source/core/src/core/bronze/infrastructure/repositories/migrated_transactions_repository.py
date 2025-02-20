@@ -16,12 +16,12 @@ class MigratedTransactionsRepository:
         self,
         spark: SparkSession,
     ) -> None:
-        self._spark = spark
+        self.spark = spark
         self.bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
         self.migrated_transactions_table_name = TableNames.bronze_migrated_transactions_table
 
     def read_measurements_bronze_migrated_transactions(self) -> DataFrame:
-        return self._spark.read.table(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
+        return self.spark.read.table(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
 
     def write_measurements_bronze_migrated(self, data: DataFrame) -> None:
         return (

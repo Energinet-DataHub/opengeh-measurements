@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from pyspark.sql.functions import col, lit
-
 import core.bronze.application.config.spark_session as spark_session
 import core.bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
 from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
@@ -42,11 +40,10 @@ def daily_load_of_migrations_to_measurements(
     migrated_transactions_repository: MigratedTransactionsRepository,
     latest_created_already_migrated: datetime,
 ) -> None:
-    today = datetime.now().date()
-
-    migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
-        (col(MigrationsSilverTimeSeriesColumnNames.created) < lit(today))
-        & (col(MigrationsSilverTimeSeriesColumnNames.created) > lit(latest_created_already_migrated))
+    migrations_data = (
+        migrations_silver_time_series_repository.read_migrations_silver_time_series_written_since_timestamp(
+            latest_created_already_migrated
+        )
     )
 
     migrations_data_transformed = migrate_from_migrations_transformations.map_migrations_to_measurements(
@@ -62,20 +59,15 @@ def full_load_of_migrations_to_measurements(
     migrated_transactions_repository: MigratedTransactionsRepository,
     num_chunks=10,
 ) -> None:
-    migrations_data = migrations_silver_time_series_repository.read_migrations_silver_time_series()
-
-    chunks = MigrationsSilverTimeSeriesRepository.create_chunks_of_partitions_for_data_with_a_single_partition_col(
-        migrations_data,
+    chunks = migrations_silver_time_series_repository.create_chunks_of_partitions_for_data_with_a_single_partition_col(
         MigrationsSilverTimeSeriesColumnNames.partitioning_col,
         num_chunks,
     )
-    today = datetime.now().date()
-
     for chunk in chunks:
-        migrations_data_chunk = migrations_silver_time_series_repository.read_migrations_silver_time_series().filter(
-            (lit(chunk[0]) <= col(MigrationsSilverTimeSeriesColumnNames.partitioning_col))
-            & (col(MigrationsSilverTimeSeriesColumnNames.partitioning_col) <= lit(chunk[-1]))
-            & (col(MigrationsSilverTimeSeriesColumnNames.created) < lit(today))
+        migrations_data_chunk = (
+            migrations_silver_time_series_repository.read_chunk_of_migrations_silver_time_series_partitions(
+                start_partition_date=chunk[0], end_partition_date=chunk[-1]
+            )
         )
 
         migrations_data_transformed = migrate_from_migrations_transformations.map_migrations_to_measurements(
