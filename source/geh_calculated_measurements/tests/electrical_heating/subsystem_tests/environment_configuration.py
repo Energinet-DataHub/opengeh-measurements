@@ -14,7 +14,6 @@ class EnvironmentConfiguration(BaseSettings):
 
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(alias="WORKSPACE_URL")
-    core_workspace_id: str = Field(alias="CORE_WORKSPACE_ID")
     shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
 
     model_config = SettingsConfigDict(
