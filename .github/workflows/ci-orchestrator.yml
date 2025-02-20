@@ -17,6 +17,9 @@ permissions:
   pull-requests: write
 
 jobs:
+  #
+  # Detect changes to start relevant workflows
+  #
   changes:
     uses: ./.github/workflows/detect-changes.yml
 
