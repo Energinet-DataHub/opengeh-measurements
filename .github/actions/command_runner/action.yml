@@ -12,6 +12,6 @@ outputs:
 runs:
   using: docker
   image: ../../../.docker/Dockerfile
-  entrypoint: bash -c
+  entrypoint: /bin/bash -c
   args:
     - ${{ inputs.command }}
