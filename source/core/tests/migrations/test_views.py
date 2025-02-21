@@ -1,8 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
 
+import geh_common.testing.dataframes.assert_schemas as assert_schemas
 import pytest
-import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -222,18 +222,9 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
-        .add_row(
-            metering_point_id=metering_point_id_1,
-            metering_point_type="UNKNOWN",
-        )
-        .add_row(
-            metering_point_id=metering_point_id_2,
-            metering_point_type="capacity_settlement",
-        )
-        .add_row(
-            metering_point_id=metering_point_id_3,
-            metering_point_type="consumption",
-        )
+        .add_row(metering_point_id=metering_point_id_1, metering_point_type="UNKNOWN")
+        .add_row(metering_point_id=metering_point_id_2, metering_point_type="capacity_settlement")
+        .add_row(metering_point_id=metering_point_id_3, metering_point_type="consumption")
         .build()
     )
 

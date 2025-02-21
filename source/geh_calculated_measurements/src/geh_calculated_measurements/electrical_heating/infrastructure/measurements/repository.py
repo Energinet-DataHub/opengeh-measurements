@@ -1,13 +1,13 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabase,
+    CalculatedMeasurementsDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
     CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabase,
+    MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
     TimeSeriesPoints,
@@ -22,8 +22,8 @@ class Repository:
         catalog_name: str | None = None,
     ) -> None:
         self._spark = spark
-        self._calculated_measurements_database_name = CalculatedMeasurementsDatabase.DATABASE_NAME
-        self._calculated_measurements_table_name = CalculatedMeasurementsDatabase.MEASUREMENTS_NAME
+        self._calculated_measurements_database_name = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
+        self._calculated_measurements_table_name = CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME
         self._catalog_name = catalog_name
         if self._catalog_name:
             self._calculated_measurements_full_table_path = f"{self._catalog_name}.{self._calculated_measurements_database_name}.{self._calculated_measurements_table_name}"
@@ -55,5 +55,5 @@ class Repository:
         self,
         table_name: str,
     ) -> DataFrame:
-        name = f"{self._catalog_name}.{MeasurementsGoldDatabase.DATABASE_NAME}.{table_name}"
+        name = f"{self._catalog_name}.{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{table_name}"
         return self._spark.read.format("delta").table(name)
