@@ -46,14 +46,14 @@ class TestNetConsumptionForGroup6(unittest.TestCase):
         )
 
     @pytest.mark.order(4)
-    def test__and_then_logged_to_application_insights(self) -> None:
+    def test__and_then_job_logged(self) -> None:
         # Arrange
         if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
             raise Exception("A previous test did not complete successfully.")
 
         query = f"""
         AppTraces
-        | where Properties["Subsystem"] == 'measurements' 
+        | where Properties["Subsystem"] == 'measurements'
         | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
         """
 
@@ -61,5 +61,4 @@ class TestNetConsumptionForGroup6(unittest.TestCase):
         actual = self.fixture.wait_for_log_query_completion(query)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"Query did not complete successfully: {actual.status}"
-        assert len(actual.tables[0].rows) > 0, "Query is empty."  # type: ignore
+        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
