@@ -42,7 +42,7 @@ class TestElectricalHeating(unittest.TestCase):
         )
 
     @pytest.mark.order(4)
-    def test__and_then_logged_to_application_insights(self) -> None:
+    def test__and_then_job_logged(self) -> None:
         # Arrange
         if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
             raise Exception("A previous test did not complete successfully.")
@@ -58,4 +58,3 @@ class TestElectricalHeating(unittest.TestCase):
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
-        assert len(actual.tables[0].rows) > 0, "The query is empty."

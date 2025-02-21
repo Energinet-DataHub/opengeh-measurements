@@ -14,13 +14,7 @@ class EnvironmentConfiguration(BaseSettings):
 
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(alias="WORKSPACE_URL")
-    workspace_id: str = Field(alias="WORKSPACE_ID")
-
-    # azure_client_id: str = Field(alias="AZURE_CLIENT_ID")
-    # azure_tenant_id: str = Field(alias="AZURE_TENANT_ID")
-    # azure_client_secret: str = Field(alias="AZURE_CLIENT_SECRET")
-    # azure_subscription_id: str = Field(alias="AZURE_SUBSCRIPTION_ID")
-    azure_keyvault_url: str = Field(alias="AZURE_KEYVAULT_URL")
+    shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",
