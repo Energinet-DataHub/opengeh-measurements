@@ -79,10 +79,8 @@ runs:
       shell: bash
       run: |
         # Create base directory
-        mkdir -p '${{ inputs.output_path }}/source' ';'
-        # Copy everything from source to the new directory
-        cp -a source/. '${{ inputs.output_path }}/source'
-        # Remove obj-directories, core and geh_calculated_measurements from artifact
+        mkdir -p '${{ inputs.output_path }}/source/Measurements' ';'
+        # Copy everything from source/Measurements to the new directory
+        cp -a source/Measurements/. '${{ inputs.output_path }}/source/Measurements'
+        # Remove obj-directories from artifact
         find ${{ inputs.output_path }}/ -type d -name 'obj' -exec rm -rf {} +
-        find ${{ inputs.output_path }}/ -type d -name 'core' -exec rm -rf {} +
-        find ${{ inputs.output_path }}/ -type d -name 'geh_calculated_measurements' -exec rm -rf {} +
