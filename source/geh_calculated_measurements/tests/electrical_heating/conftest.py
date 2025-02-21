@@ -13,13 +13,13 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
     CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabase,
+    CalculatedMeasurementsDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
     calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabase,
+    MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
@@ -96,17 +96,17 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
-    create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
+    create_database(spark, CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME)
 
     create_table(
         spark,
-        database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
-        table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
+        database_name=CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        table_name=CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
+    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}-{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}.csv"
 
     df = read_csv_path(spark, file_name, calculated_measurements_schema)
 
@@ -115,20 +115,20 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
 
 @pytest.fixture(scope="session")
 def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
-    create_database(spark, MeasurementsGoldDatabase.DATABASE_NAME)
+    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabase.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME,
+        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+        table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
         schema=time_series_points_v1,
-        table_location=f"{MeasurementsGoldDatabase.DATABASE_NAME}/{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabase.DATABASE_NAME}-{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}.csv"
+    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
     time_series_points = read_csv_path(spark, file_name, time_series_points_v1)
     time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabase.DATABASE_NAME}.{MeasurementsGoldDatabase.TIME_SERIES_POINTS_NAME}",
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
         format="delta",
         mode="overwrite",
     )

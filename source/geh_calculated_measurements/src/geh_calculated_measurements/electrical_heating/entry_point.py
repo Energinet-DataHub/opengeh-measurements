@@ -5,10 +5,10 @@ from geh_common.telemetry.logging_configuration import LoggingSettings, configur
 from geh_calculated_measurements.electrical_heating.application import (
     execute_application,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.application.electrical_heating_args import (
+from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from geh_calculated_measurements.opengeh_electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     initialize_spark,
 )
 
@@ -20,7 +20,7 @@ def execute() -> None:
     orchestrate_business_logic(job_arguments=electrical_heating_args, logging_settings=logging_settings)
 
 
-@start_trace(initial_span_name="orchestrate_business_logic")
+@start_trace()
 def orchestrate_business_logic(job_arguments: ElectricalHeatingArgs, logging_settings: LoggingSettings) -> None:
     logger = Logger(__name__)
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")
