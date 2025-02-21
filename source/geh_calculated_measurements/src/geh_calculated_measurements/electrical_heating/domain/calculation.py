@@ -44,9 +44,9 @@ def execute(
 
     calculated_measurements = create(
         measurements=changed_electrical_heating_in_utc,
-        orchestration_instance_id=UUID("00000000-0000-0000-0000-000000000000"),
-        orchestration_type="orchestration_type",
-        metering_point_type="MeteringPointType.ELECTRICAL",
+        orchestration_instance_id=UUID("00000000-0000-0000-0000-000000000001"),
+        orchestration_type="electrical_heating",
+        metering_point_type="electrical_heating",
     )
 
     return calculated_measurements

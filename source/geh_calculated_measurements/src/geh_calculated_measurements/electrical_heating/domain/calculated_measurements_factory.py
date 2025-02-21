@@ -15,21 +15,19 @@ def create(
     orchestration_type: str,
     metering_point_type: str,
 ) -> CalculatedMeasurementsDaily:
-    df = measurements.withColumn(ColumnNames.orchestration_type, F.lit(orchestration_type)).withColumns(
+    df = measurements.withColumns(
         {
             ColumnNames.orchestration_instance_id: F.lit(str(orchestration_instance_id)),
             ColumnNames.orchestration_type: F.lit(orchestration_type),
             ColumnNames.metering_point_type: F.lit(metering_point_type),
             ColumnNames.transaction_creation_datetime: F.current_timestamp(),
-            ColumnNames.transaction_id: _add_transaction_id(measurements),
+            ColumnNames.transaction_id: _add_transaction_id(),
         }
     )
-
-    df = df.withColumn(ColumnNames.transaction_id, _add_transaction_id(df))
 
     return CalculatedMeasurementsDaily(df)
 
 
-def _add_transaction_id(df: DataFrame) -> Column:
+def _add_transaction_id() -> Column:
     # TODO Implement:
     return F.lit("TODO").alias(ColumnNames.transaction_id)
