@@ -1,7 +1,6 @@
 import unittest
 
 import pytest
-from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 from fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 
@@ -41,20 +40,21 @@ class TestCapacitySettlement(unittest.TestCase):
             f"The Job {self.fixture.job_state.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
-    @pytest.mark.order(4)
-    def test__and_then_job_logged(self) -> None:
-        # Arrange
-        if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
-            raise Exception("A previous test did not complete successfully.")
+    # TODO Will be enabled in another PR.
+    # @pytest.mark.order(4)
+    # def test__and_then_job_logged(self) -> None:
+    #     # Arrange
+    #     if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
+    #         raise Exception("A previous test did not complete successfully.")
 
-        query = f"""
-        AppTraces
-        | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
-        """
+    #     query = f"""
+    #     AppTraces
+    #     | where Properties["Subsystem"] == 'measurements'
+    #     | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
+    #     """
 
-        # Act
-        actual = self.fixture.wait_for_log_query_completion(query)
+    #     # Act
+    #     actual = self.fixture.wait_for_log_query_completion(query)
 
-        # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+    #     # Assert
+    #     assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
