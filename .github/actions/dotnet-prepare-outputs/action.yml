@@ -40,4 +40,4 @@ runs:
           --no-build \
           --no-restore \
           --configuration Release \
-          --output '${{ inputs.output_path }}\Measurements'
+          --output '${{ inputs.output_path }}\dotnet\measurementsapi'
