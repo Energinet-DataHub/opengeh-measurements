@@ -9,6 +9,7 @@ def substitutions() -> dict[str, str]:
     return {
         "{bronze_database}": catalog_settings.bronze_database_name,
         "{bronze_submitted_transactions_table}": BronzeTableNames.bronze_submitted_transactions_table,
+        "{bronze_migrated_transactions_table}": BronzeTableNames.bronze_migrated_transactions_table,
         "{silver_database}": catalog_settings.silver_database_name,
         "{silver_measurements_table}": SilverTableNames.silver_measurements,
         "{gold_database}": catalog_settings.gold_database_name,
