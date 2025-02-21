@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import (
     convert_to_utc,
 )
@@ -46,7 +47,7 @@ def execute(
         measurements=changed_electrical_heating_in_utc,
         orchestration_instance_id=UUID("00000000-0000-0000-0000-000000000001"),
         orchestration_type="electrical_heating",
-        metering_point_type="electrical_heating",
+        metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
     )
 
     return calculated_measurements

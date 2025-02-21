@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal
 
+from geh_common.domain.types import MeteringPointType
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import lit
 
@@ -11,7 +12,18 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_measuremen
 
 
 def _create_dummy_dataframe(spark: SparkSession) -> DataFrame:
-    data = [("1234567890123", datetime.datetime(2024, 3, 2, 23, 0), Decimal("0.123"))]
+    data = [
+        (
+            "electrical_heating",
+            "00000000-0000-0000-0000-000000000001",
+            datetime.datetime(2024, 3, 2, 23, 0),
+            "11111111-0000-0000-0000-000000000001",
+            MeteringPointType.ELECTRICAL_HEATING.value,
+            "1234567890123",
+            datetime.datetime(2024, 3, 2, 23, 0),
+            Decimal("0.123"),
+        )
+    ]
     return spark.createDataFrame(data, calculated_measurements_daily_schema)
 
 
