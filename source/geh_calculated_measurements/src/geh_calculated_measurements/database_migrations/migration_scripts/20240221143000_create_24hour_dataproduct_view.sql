@@ -1,7 +1,7 @@
 %sql
-CREATE VIEW test_view AS
+CREATE OR REPLACE VIEW test_view AS
 WITH _input AS (
-  SELECT * FROM ctl_shres_d_we_002.test.xhtca
+  SELECT * FROM ctl_shres_d_we_002.test.xhtca --TODO: {calculated_measurements_database}.{calculated_measurements_table}
 ),
 hours AS (
   SELECT explode(sequence(
