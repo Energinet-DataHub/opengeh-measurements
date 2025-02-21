@@ -1,7 +1,8 @@
-from typing import Any
-
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
+    CalculatedMeasurementsDaily,
+)
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsRepository,
 )
@@ -9,7 +10,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 
 def test__write_measurements__can_be_read(
     spark: SparkSession,
-    calculated_measurements: Any,
+    calculated_measurements: CalculatedMeasurementsDaily,
 ) -> None:
     # Arrange
     repository = MeasurementsRepository(spark)
