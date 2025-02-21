@@ -10,6 +10,6 @@ def debugging(df: DataFrame, message: str | None = None) -> None:
         return
 
     caller = inspect.stack()[1].function
-    print(f"######## In {caller}: {message}")
+    print(f"######## In {caller}: {message}")  # noqa: T201
 
     df.show()
