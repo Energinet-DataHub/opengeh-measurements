@@ -16,10 +16,10 @@ def _create_dummy_dataframe(spark: SparkSession) -> DataFrame:
         (
             "electrical_heating",
             "00000000-0000-0000-0000-000000000001",
-            datetime.datetime(2024, 3, 2, 23, 0),
             "11111111-0000-0000-0000-000000000001",
-            MeteringPointType.ELECTRICAL_HEATING.value,
+            datetime.datetime(2024, 3, 2, 23, 0),
             "1234567890123",
+            MeteringPointType.ELECTRICAL_HEATING.value,
             datetime.datetime(2024, 3, 2, 23, 0),
             Decimal("0.123"),
         )
