@@ -1,6 +1,6 @@
 import pytest
 from environment_configuration import EnvironmentConfiguration
-from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
+from fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 
 
 @pytest.fixture(scope="session")
@@ -9,11 +9,5 @@ def environment_configuration() -> EnvironmentConfiguration:
 
 
 @pytest.fixture(scope="session")
-def databricks_api_client(
-    environment_configuration: EnvironmentConfiguration,
-) -> DatabricksApiClient:
-    databricksApiClient = DatabricksApiClient(
-        environment_configuration.databricks_token,
-        environment_configuration.workspace_url,
-    )
-    return databricksApiClient
+def capacity_settlement_fixture(environment_configuration: EnvironmentConfiguration) -> CapacitySettlementFixture:
+    return CapacitySettlementFixture(environment_configuration)
