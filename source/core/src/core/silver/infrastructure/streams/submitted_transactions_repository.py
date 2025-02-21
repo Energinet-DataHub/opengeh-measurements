@@ -13,6 +13,5 @@ class SubmittedTransactionsRepository:
         return (
             self.spark.readStream.format("delta")
             .option("ignoreDeletes", "true")
-            .option("skipChangeCommits", "true")
             .table(f"{self.silver_database_name}.{SilverTableNames.silver_measurements}")
         )
