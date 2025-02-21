@@ -22,6 +22,9 @@ jobs:
     with:
       solution_file_path: source/Measurements/Measurements.sln
 
+  #
+  # Run unit tests
+  #
   unit_tests:
     strategy:
       fail-fast: false
@@ -38,6 +41,8 @@ jobs:
       job_name: Unit Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.path }}
 
+  #
+  # Run integration tests
   integration_tests:
     strategy:
       fail-fast: false
