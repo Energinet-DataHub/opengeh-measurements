@@ -4,7 +4,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
     CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabase,
+    MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
     TimeSeriesPoints,
@@ -39,5 +39,5 @@ class Repository:
         self,
         table_name: str,
     ) -> DataFrame:
-        name = f"{self._catalog_name}.{MeasurementsGoldDatabase.DATABASE_NAME}.{table_name}"
+        name = f"{self._catalog_name}.{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{table_name}"
         return self._spark.read.format("delta").table(name)

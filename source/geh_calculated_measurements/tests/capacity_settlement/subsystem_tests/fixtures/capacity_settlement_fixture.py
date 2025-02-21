@@ -17,11 +17,8 @@ class JobState:
     run_result_state: RunResultState
 
 
-class ElectricalHeatingFixture:
-    job_state: JobState
-
+class CapacitySettlementFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
-        self.environment_configuration = environment_configuration
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
@@ -35,17 +32,16 @@ class ElectricalHeatingFixture:
         )
 
     def get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id("ElectricalHeating")
+        return self.databricks_api_client.get_job_id("CapacitySettlement")
 
-    def start_job(self, job_id: int) -> int:
+    def start_job(self, job_id: int, year: int, month: int) -> int:
+        self.job_state.orchestrator_instance_id = str(uuid.uuid4())
         params = [
-            f"--orchestration-instance-id={str(uuid.uuid4())}",
-            f"--catalog-name={self.environment_configuration.catalog_name}",
-            f"--schema-name={self.environment_configuration.schema_name}",
-            f"--time-series-points-table={self.environment_configuration.time_series_points_table}",
-            f"--consumption-points-table={self.environment_configuration.consumption_points_table}",
-            f"--child-points-table={self.environment_configuration.child_points_table}",
+            f"--orchestration-instance-id={self.job_state.orchestrator_instance_id}",
+            f"--calculation-month={month}",
+            f"--calculation-year={year}",
         ]
+
         return self.databricks_api_client.start_job(job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
