@@ -24,6 +24,7 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
+    orchestration_instance_id: UUID,
 ) -> CalculatedMeasurementsDaily:
     """Calculate the electrical heating for the given time series points and metering point periods.
 
@@ -45,7 +46,7 @@ def execute(
 
     calculated_measurements = create(
         measurements=changed_electrical_heating_in_utc,
-        orchestration_instance_id=UUID("00000000-0000-0000-0000-000000000001"),
+        orchestration_instance_id=orchestration_instance_id,
         orchestration_type="electrical_heating",
         metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
     )
