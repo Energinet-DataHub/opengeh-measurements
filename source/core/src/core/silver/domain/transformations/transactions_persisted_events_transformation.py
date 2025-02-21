@@ -27,10 +27,9 @@ def prepare_measurement(df) -> DataFrame:
             df[SilverMeasurementsColNames.orchestration_instance_id].alias(
                 SubmittedTransactionsColumnNames.orchestration_instance_id
             ),
-            F.lit("OT_SUBMITTED_MEASURE_DATA").alias(
+            df[SilverMeasurementsColNames.orchestration_type].alias(
                 SubmittedTransactionsColumnNames.orchestration_type
-            ),  # Temporary fix for dev_003
-            # df[SilverMeasurementsColNames.orchestration_type].alias(SubmittedTransactionsColumnNames.orchestration_type),
+            ),
         ).alias(SubmittedTransactionEventColumnNames.value)
     )
 
