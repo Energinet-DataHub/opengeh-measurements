@@ -47,6 +47,6 @@ ENV PATH=/bin:$PATH
 # Change to non-root user
 ENV USER=vscode
 ENV HOME=/home/$USER
-ENV UV_PROJECT_ENVIRONMENT=$HOME/.venv
+
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
