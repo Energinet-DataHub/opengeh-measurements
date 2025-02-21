@@ -2,6 +2,9 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import to_protobuf
 
+from core.contracts.process_manager.persist_submitted_transaction_proto_version import (
+    PersistSubmittedTransactionProtoVersion,
+)
 from core.contracts.process_manager.submitted_transactions_column_names import (
     SubmittedTransactionEventColumnNames,
     SubmittedTransactionsColumnNames,
@@ -17,11 +20,10 @@ def transform(submitted_transactions: DataFrame) -> DataFrame:
     return submitted_transactions.transform(prepare_measurement).transform(pack_proto)
 
 
-# Todo transform from silver
 def prepare_measurement(df) -> DataFrame:
     return df.select(
         F.struct(
-            F.lit(1).alias(SubmittedTransactionsColumnNames.version),  # TODO: protobuf version!
+            F.lit(PersistSubmittedTransactionProtoVersion.version).alias(SubmittedTransactionsColumnNames.version),
             df[SilverMeasurementsColNames.orchestration_instance_id].alias(
                 SubmittedTransactionsColumnNames.orchestration_instance_id
             ),
