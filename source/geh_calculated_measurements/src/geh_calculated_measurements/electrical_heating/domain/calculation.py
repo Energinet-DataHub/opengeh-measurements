@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from geh_common.pyspark.transformations import (
     convert_to_utc,
 )
@@ -7,6 +9,7 @@ import geh_calculated_measurements.electrical_heating.domain.transformations as 
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
     CalculatedMeasurementsDaily,
 )
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -39,4 +42,11 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)
+    calculated_measurements = create(
+        measurements=changed_electrical_heating_in_utc,
+        orchestration_instance_id=UUID("00000000-0000-0000-0000-000000000000"),
+        orchestration_type="orchestration_type",
+        metering_point_type="MeteringPointType.ELECTRICAL",
+    )
+
+    return calculated_measurements
