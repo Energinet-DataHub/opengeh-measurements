@@ -8,14 +8,12 @@ from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.electrical_heating.infrastructure import (
-    CalculatedMeasurements,
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
+    CalculatedMeasurementsDaily,
+    calculated_measurements_daily_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabase,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
-    calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabase,
@@ -67,22 +65,26 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
+def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurementsDaily:
     create_database(spark, CalculatedMeasurementsDatabase.DATABASE_NAME)
 
     create_table(
         spark,
         database_name=CalculatedMeasurementsDatabase.DATABASE_NAME,
         table_name=CalculatedMeasurementsDatabase.MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
+        schema=calculated_measurements_daily_schema,
         table_location=f"{CalculatedMeasurementsDatabase.DATABASE_NAME}/{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}",
     )
 
     file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabase.DATABASE_NAME}-{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}.csv"
 
-    df = read_csv_path(spark, file_name, calculated_measurements_schema)
+    df = read_csv_path(
+        spark,
+        file_name,
+        schema=calculated_measurements_daily_schema,
+    )
 
-    return CalculatedMeasurements(df)
+    return CalculatedMeasurementsDaily(df)
 
 
 @pytest.fixture(scope="session")
