@@ -1,10 +1,10 @@
 from pyspark.sql import DataFrame, SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
+    CalculatedMeasurementsDaily,
+)
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabaseDefinition,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
-    CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
@@ -33,14 +33,14 @@ class Repository:
             )
 
     def write_calculated_measurements(
-        self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
+        self, calculated_measurements: CalculatedMeasurementsDaily, write_mode: str = "append"
     ) -> None:
         calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
             self._calculated_measurements_full_table_path
         )
 
-    def read_calculated_measurements(self) -> CalculatedMeasurements:
-        return CalculatedMeasurements(self._spark.read.table(self._calculated_measurements_full_table_path))
+    def read_calculated_measurements(self) -> CalculatedMeasurementsDaily:
+        return CalculatedMeasurementsDaily(self._spark.read.table(self._calculated_measurements_full_table_path))
 
     def read_time_series_points(self) -> TimeSeriesPoints:
         # TODO: the table does not yet exist in the database

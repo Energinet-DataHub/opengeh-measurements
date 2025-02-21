@@ -74,6 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
         args.time_zone,
+        args.orchestration_instance_id,
     )
 
     # Sort to make the tests deterministic

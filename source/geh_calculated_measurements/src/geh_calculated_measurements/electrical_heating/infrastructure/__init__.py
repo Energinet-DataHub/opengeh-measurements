@@ -2,7 +2,6 @@ from .electricity_market.child_metering_points.wrapper import ChildMeteringPoint
 from .electricity_market.consumption_metering_point_periods.wrapper import ConsumptionMeteringPointPeriods
 from .electricity_market.repository import Repository as ElectricityMarketRepository
 from .measurements.calculated_measurements.database_definitions import CalculatedMeasurementsDatabaseDefinition
-from .measurements.calculated_measurements.wrapper import CalculatedMeasurements
 from .measurements.measurements_gold.database_definitions import MeasurementsGoldDatabaseDefinition
 from .measurements.measurements_gold.wrapper import TimeSeriesPoints
 from .measurements.repository import Repository as MeasurementsRepository
@@ -16,7 +15,6 @@ __all__ = [
     "ConsumptionMeteringPointPeriods",
     # Measurements core repository, types, and database definitions
     "MeasurementsRepository",
-    "CalculatedMeasurements",
     "TimeSeriesPoints",
     "CalculatedMeasurementsDatabaseDefinition",
     "MeasurementsGoldDatabaseDefinition",
