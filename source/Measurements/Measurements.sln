@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ConfigurationFiles", "_Con
 	ProjectSection(SolutionItems) = preProject
 		stylecop.json = stylecop.json
 		Directory.Build.props = Directory.Build.props
-		.editorconfig = .editorconfig
+		..\..\.editorconfig = ..\..\.editorconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B08982C3-2652-42F9-A12A-350584EB13C8}"

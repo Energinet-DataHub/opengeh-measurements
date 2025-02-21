@@ -6,7 +6,7 @@
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Ya'll got any more of them measurements?.
+    /// Get measurement by id.
     /// </summary>
     /// <param name="measurementId">Id of measurement to fetch.</param>
     /// <returns>Forty-two.</returns>
