@@ -23,16 +23,16 @@ def compile_protobuf(proto_file, descriptor_file, proto_path):
 
 
 def compile_submitted_transaction_persisted() -> None:
-    descriptor_file = "src/core/bronze/infrastructure/contracts/assets/submitted_transaction_persisted.binpb"
-    proto_path = "src/core/bronze/infrastructure/contracts"
+    descriptor_file = "src/core/contracts/process_manager/assets/submitted_transaction_persisted.binpb"
+    proto_path = "src/core/contracts"
     proto_file = "SubmittedTransactionPersisted.proto"
 
     compile_protobuf(proto_file, descriptor_file, proto_path)
 
 
 def compile_persist_submitted_transaction() -> None:
-    descriptor_file = "src/core/bronze/infrastructure/contracts/assets/persist_submitted_transaction.binpb"
-    proto_path = "src/core/bronze/infrastructure/contracts"
+    descriptor_file = "src/core/contracts/process_manager/assets/persist_submitted_transaction.binpb"
+    proto_path = "src/core/contracts"
     proto_file = "PersistSubmittedTransaction.proto"
 
     compile_protobuf(proto_file, descriptor_file, proto_path)
