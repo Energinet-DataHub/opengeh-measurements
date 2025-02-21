@@ -61,18 +61,26 @@ Formatting is according to ADR-144 with the following constraints:
 """
 
 
+## Generate parent_metering_point_id DataFrame
+parent_metering_point_id_df = (
+    spark.range(num_records)
+    .withColumn("parent_metering_point_id", F.expr("uuid()"))
+    .select(F.col("parent_metering_point_id").cast(T.StringType()))
+).cache()
+
+
 ## Generate child metering points function
 def generate_child_metering_points(df, metering_type, share):
     return (
-        df.sample(True, share)
+        df.sample(share, seed=42)
         .withColumn("metering_point_id", F.expr("uuid()"))
         .withColumn("metering_point_type", F.lit(metering_type))
         .withColumn("metering_point_sub_type", F.lit("calculated"))
         .withColumn("resolution", F.lit("PT1H"))
-        .withColumn("coupled_date", F.expr("date_add(current_date(), -365 - int(rand() * 730))"))
+        .withColumn("coupled_date", F.expr("date_add(current_date() - 365, -int(rand() * 1095))"))
         .withColumn(
             "uncoupled_date",
-            F.when(F.expr("rand() < 0.8"), None).otherwise(F.expr("date_add(coupled_date, int(rand() * 365))")),
+            F.when(F.expr("rand() < 0.8"), None).otherwise(F.expr("date_add(coupled_date, int(rand() * 730))")),
         )
         .select(
             F.col("metering_point_id").cast(T.StringType()),
@@ -153,10 +161,10 @@ consumption_metering_points_periods_period1_df = (
         "settlement_month", F.when(F.col("net_settlement_group") == 2, F.lit(1)).otherwise(F.expr("ceil(rand() * 12)"))
     )
     .select(
-        F.col("parent_metering_point_id").alias("metering_point_id"),
-        F.col("has_electrical_heating"),
-        F.col("net_settlement_group"),
-        F.col("settlement_month"),
+        F.col("parent_metering_point_id").alias("metering_point_id").cast(T.StringType()),
+        F.col("has_electrical_heating").cast(T.BooleanType()),
+        F.col("net_settlement_group").cast(T.IntegerType()),
+        F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
         F.col("period_to_date").cast(T.TimestampType()),
     )
@@ -173,10 +181,10 @@ consumption_metering_points_periods_period2_df = (
     .withColumn("period_to_date", F.expr("date_add(period_from_date, cast(rand() * 365 as int))"))
     .withColumn("settlement_month", F.lit(1))
     .select(
-        F.col("metering_point_id"),
-        F.col("has_electrical_heating"),
-        F.col("net_settlement_group"),
-        F.col("settlement_month"),
+        F.col("metering_point_id").cast(T.StringType()),
+        F.col("has_electrical_heating").cast(T.BooleanType()),
+        F.col("net_settlement_group").cast(T.IntegerType()),
+        F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
         F.col("period_to_date").cast(T.TimestampType()),
     )
@@ -195,10 +203,10 @@ consumption_metering_points_periods_period3_df = (
         "settlement_month", F.when(F.col("net_settlement_group") == 2, F.lit(1)).otherwise(F.expr("ceil(rand() * 12)"))
     )
     .select(
-        F.col("metering_point_id"),
-        F.col("has_electrical_heating"),
-        F.col("net_settlement_group"),
-        F.col("settlement_month"),
+        F.col("metering_point_id").cast(T.StringType()),
+        F.col("has_electrical_heating").cast(T.BooleanType()),
+        F.col("net_settlement_group").cast(T.IntegerType()),
+        F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
         F.col("period_to_date").cast(T.TimestampType()),
     )
