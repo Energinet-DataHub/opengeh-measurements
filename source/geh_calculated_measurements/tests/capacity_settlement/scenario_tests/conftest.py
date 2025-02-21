@@ -9,13 +9,13 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.opengeh_capacity_settlement.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
+from geh_calculated_measurements.capacity_settlement.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
     metering_point_periods_v1,
 )
-from geh_calculated_measurements.opengeh_capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
+from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
-from geh_calculated_measurements.opengeh_capacity_settlement.domain.calculation import (
+from geh_calculated_measurements.capacity_settlement.domain.calculation import (
     execute_core_logic,
 )
 from tests.capacity_settlement.scenario_tests.capacity_settlement_test_args import (
@@ -55,7 +55,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     args = CapacitySettlementTestArgs(f"{scenario_path}/when/job_parameters.env")
-    execution_time = "2026-01-04T23:00:00Z"
     # Execute the logic
     calculation_output = execute_core_logic(
         spark,
@@ -65,7 +64,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         args.calculation_month,
         args.calculation_year,
         args.time_zone,
-        execution_time,
     )
 
     # Return test cases
