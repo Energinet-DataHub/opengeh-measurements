@@ -10,11 +10,15 @@ from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
 
-class JobState:
-    orchestrator_instance_id: str
+class CalculationInput:
+    orchestrator_instance_id: uuid.UUID
     job_id: int
+
+
+class JobState:
     run_id: int
     run_result_state: RunResultState
+    calculation_input: CalculationInput = CalculationInput()
 
 
 class ElectricalHeatingFixture:
@@ -34,12 +38,11 @@ class ElectricalHeatingFixture:
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id("ElectricalHeating")
 
-    def start_job(self, job_id: int) -> int:
-        self.job_state.orchestrator_instance_id = str(uuid.uuid4())
+    def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
-            f"--orchestration-instance-id={self.job_state.orchestrator_instance_id}",
+            f"--orchestration-instance-id={str(calculation_input.orchestrator_instance_id)}",
         ]
-        return self.databricks_api_client.start_job(job_id, params)
+        return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
