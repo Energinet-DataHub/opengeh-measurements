@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   #
-  # Detect changes to start relevant workflows
+  # Detect changes to start relevant workflows. Only used for dotnet projects.
   #
   changes:
     uses: ./.github/workflows/detect-changes.yml
