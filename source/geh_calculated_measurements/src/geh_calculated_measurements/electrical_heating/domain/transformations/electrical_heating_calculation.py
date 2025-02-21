@@ -57,6 +57,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
     time_series_points_in_utc: DataFrame,
     time_zone: str,
 ) -> DataFrame:
+    # TODO: Convert to local time before calling this module
     consumption = get_hourly_energy_in_local_time(
         time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION, MeteringPointType.NET_CONSUMPTION]
     )
