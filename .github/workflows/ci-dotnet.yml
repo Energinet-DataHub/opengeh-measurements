@@ -39,4 +39,4 @@ jobs:
       download_attempt_limit: 30
       # Matrix parameters
       job_name: Integration Tests ${{ matrix.tests_filter_expression.name }}
-      tests_dll_file_path: ${{ matrix.tests_filter_expression.paths }}
+      tests_dll_file_path: ${{ matrix.tests_filter_expression.path }}
