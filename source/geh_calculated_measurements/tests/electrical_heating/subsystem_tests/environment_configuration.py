@@ -15,6 +15,8 @@ class EnvironmentConfiguration(BaseSettings):
     databricks_token: str = Field(alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
+    warehouse_id: str = Field(alias="CORE_WAREHOUSE_ID")
+    catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",
