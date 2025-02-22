@@ -10,7 +10,7 @@ jobs:
   dotnet_ci_build:
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-build-prerelease.yml@v14
     with:
-      solution_file_path: source/Measurements/Measurements.sln
+      solution_file_path: source/dotnet/Measurements.sln
 
   #
   # Run unit tests
@@ -21,9 +21,9 @@ jobs:
       matrix:
         tests_filter_expression:
           - name: Measurements
-            path: \source\Measurements\Measurements.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.UnitTests.dll
+            path: \source\dotnet\Measurements.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.UnitTests.dll
           - name: MeasurementsApi
-            path: \source\Measurements\MeasurementsApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.UnitTests.dll
+            path: \source\dotnet\MeasurementsApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.UnitTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
@@ -39,9 +39,9 @@ jobs:
       matrix:
         tests_filter_expression:
           - name: Measurements
-            path: \source\Measurements\Measurements.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.IntegrationTests.dll
+            path: \source\dotnet\Measurements.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.IntegrationTests.dll
           - name: MeasurementsApi
-            path: \source\Measurements\MeasurementsApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.IntegrationTests.dll
+            path: \source\dotnet\MeasurementsApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.IntegrationTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
