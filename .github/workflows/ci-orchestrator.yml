@@ -12,11 +12,30 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
   checks: write
+  contents: write
+  id-token: write
+  issues: read
   pull-requests: write
 
+
 jobs:
+  #
+  # License and Markdown Check
+  #
+  ci_base:
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
+    with:
+      skip_license_check: true
+    secrets:
+      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+
+  #
+  # Detect changes to start relevant workflows. Only used for dotnet projects.
+  #
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+
   #
   # Reusable CI
   #
@@ -30,11 +49,19 @@ jobs:
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
 
   #
+  # Dotnet CI
+  #
+  ci_dotnet:
+    needs: changes
+    if: ${{ needs.changes.outputs.dotnet == 'true' }}
+    uses: ./.github/workflows/ci-dotnet.yml
+
+  #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-24.04
-    needs: [ci_reusable]
+    needs: [ci_reusable, ci_dotnet]
     if: |
       always()
     steps:

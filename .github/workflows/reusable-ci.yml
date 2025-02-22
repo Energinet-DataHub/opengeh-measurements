@@ -42,16 +42,6 @@ permissions:
 
 jobs:
   #
-  # License and Markdown Check
-  #
-  ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@v14
-    with:
-      skip_license_check: true
-    secrets:
-      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
-
-  #
   # Build Package Matrix
   #
   ci_matrix:
