@@ -76,24 +76,24 @@ def execute_application(
     # time_zone: str,
     # execution_time: str,
 
-    @use_span()
-    def _execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
-        # Create repositories to obtain data frames
-        measurements_repository = MeasurementsRepository(spark, args.catalog_name)
 
-        # Read data frames
-        time_series_points = measurements_repository.read_time_series_points()
-        metering_point_periods = measurements_repository.read_metering_point_periods()
+@use_span()
+def _execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
+    # Create repositories to obtain data frames
+    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
 
-        orchestration_instance_id = uuid.UUID()
+    # Read data frames
+    time_series_points = measurements_repository.read_time_series_points()
+    metering_point_periods = measurements_repository.read_metering_point_periods()
 
-        # Execute the domain logic
-        execute(
-            time_series_points,
-            metering_point_periods,
-            orchestration_instance_id,
-            args.calculation_month,
-            args.calculation_year,
-            args.time_zone,
-        )
-        
+    orchestration_instance_id = uuid.UUID()
+
+    # Execute the domain logic
+    execute(
+        time_series_points,
+        metering_point_periods,
+        orchestration_instance_id,
+        args.calculation_month,
+        args.calculation_year,
+        args.time_zone,
+    )

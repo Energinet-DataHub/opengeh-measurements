@@ -2,12 +2,12 @@
 
 import os
 
-from geh_calculated_measurements.capacity_settlement.application.execute_with_deps import execute_with_deps
+from geh_calculated_measurements.electrical_heating.application import execute_application
 
 
 def execute() -> None:
     applicationinsights_connection_string = os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING")
 
-    execute_with_deps(
+    execute_application(
         applicationinsights_connection_string=applicationinsights_connection_string,
     )
