@@ -122,15 +122,12 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .select(
-            # TODO: Need both overlap and parent period?
             F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
             F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
             F.col(f"metering_point.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
-            # F.col(f"metering_point.{CalculatedNames.overlap_period_start}").alias(CalculatedNames.overlap_period_start),
-            # F.col(f"metering_point.{CalculatedNames.overlap_period_end}").alias(CalculatedNames.overlap_period_end),
             F.col(f"consumption.{CalculatedNames.observation_time_hourly}").alias(
                 CalculatedNames.observation_time_hourly
             ),
