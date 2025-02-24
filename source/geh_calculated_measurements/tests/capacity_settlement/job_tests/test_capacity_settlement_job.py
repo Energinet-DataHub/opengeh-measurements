@@ -6,7 +6,7 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.capacity_settlement.application import execute_application
+from geh_calculated_measurements.capacity_settlement.application.calcaulation import execute_application
 from geh_calculated_measurements.capacity_settlement.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
