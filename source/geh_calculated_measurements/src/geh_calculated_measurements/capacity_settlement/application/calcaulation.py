@@ -4,7 +4,7 @@ from argparse import Namespace
 from collections.abc import Callable
 
 import geh_common.telemetry.logging_configuration as config
-from geh_common.telemetry import use_span
+from geh_common.telemetry.decorators import use_span
 from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import SparkSession
@@ -57,6 +57,12 @@ def execute_application(
             spark = initialize_spark()
             _execute_application(spark, args)
 
+            @use_span()
+            def foo():
+                pass
+
+            foo()
+
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:
             if e.code != 0:
@@ -66,15 +72,6 @@ def execute_application(
         except Exception as e:
             span_record_exception(e, span)
             sys.exit(4)
-
-    # spark: SparkSession,
-    # time_series_points: DataFrame,
-    # metering_point_periods: DataFrame,
-    # orchestration_instance_id: UUID,
-    # calculation_month: int,
-    # calculation_year: int,
-    # time_zone: str,
-    # execution_time: str,
 
 
 @use_span()
