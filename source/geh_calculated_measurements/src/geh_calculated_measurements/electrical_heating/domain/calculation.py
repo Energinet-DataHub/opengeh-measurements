@@ -1,3 +1,5 @@
+import logging
+
 from geh_common.pyspark.transformations import (
     convert_to_utc,
 )
@@ -38,5 +40,7 @@ def execute(
     changed_electrical_heating = T.filter_unchanged_electrical_heating(new_electrical_heating, old_electrical_heating)
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
+
+    logging.info(f"number of rows in changed_electrical_heating_in_utc: {changed_electrical_heating_in_utc.count()}")
 
     return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)

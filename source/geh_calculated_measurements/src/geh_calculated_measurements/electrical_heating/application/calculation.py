@@ -94,6 +94,4 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     )
 
     # Write result to table
-    out_put.df.write.mode("overwrite").saveAsTable(
-        f"{args.catalog_name}.{args.schema_name}.{'electrical_heating_output'}"
-    )
+    out_put.df.write.mode("overwrite").saveAsTable(f"{args.catalog_name}.{args.schema_name}.electrical_heating_output")
