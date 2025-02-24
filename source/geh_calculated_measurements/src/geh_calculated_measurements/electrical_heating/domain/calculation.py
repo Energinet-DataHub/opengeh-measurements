@@ -1,16 +1,16 @@
 from uuid import UUID
 
-from geh_common.domain.types import MeteringPointType
+from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.pyspark.transformations import (
     convert_to_utc,
 )
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+from geh_calculated_measurements.common.domain.calculated_measurements import (
     CalculatedMeasurements,
 )
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
+from geh_calculated_measurements.common.domain.calculated_measurements_factory import create
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -47,7 +47,7 @@ def execute(
     calculated_measurements = create(
         measurements=changed_electrical_heating_in_utc,
         orchestration_instance_id=orchestration_instance_id,
-        orchestration_type="electrical_heating",
+        orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
         metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
     )
 
