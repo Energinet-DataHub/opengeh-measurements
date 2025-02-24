@@ -18,7 +18,11 @@ from tests.bronze.helpers.builders.migrations_silver_time_series_builder import 
 @mock.patch(
     "core.bronze.application.batch_scripts.migrate_from_migrations.MigratedTransactionsRepository.write_measurements_bronze_migrated"
 )
+@mock.patch(
+    "core.bronze.application.batch_scripts.migrate_from_migrations.spark_session"
+)
 def test__migrate_time_series_from_migrations_to_measurements__given_no_already_loaded_data__then_perform_full_load(
+    mock_spark_session,
     mock_write_measurements_bronze_migrated,
     mock_calculate_latest_created_timestamp_that_has_been_migrated,
     mock_read_migrations_silver_time_series,
@@ -35,6 +39,7 @@ def test__migrate_time_series_from_migrations_to_measurements__given_no_already_
 
     mock_read_migrations_silver_time_series.return_value = migrations_time_series_data
     mock_calculate_latest_created_timestamp_that_has_been_migrated.return_value = None
+    mock_spark_session.initialize_spark.return_value = spark
 
     # Act
     migrate_from_migrations.migrate_time_series_from_migrations_to_measurements()
@@ -61,7 +66,11 @@ def test__migrate_time_series_from_migrations_to_measurements__given_no_already_
 @mock.patch(
     "core.bronze.application.batch_scripts.migrate_from_migrations.MigratedTransactionsRepository.write_measurements_bronze_migrated"
 )
+@mock.patch(
+    "core.bronze.application.batch_scripts.migrate_from_migrations.spark_session"
+)
 def test__migrate_time_series_from_migrations_to_measurements__given_some_already_loaded_data__then_perform_daily_load(
+    mock_spark_session,
     mock_write_measurements_bronze_migrated,
     mock_calculate_latest_created_timestamp_that_has_been_migrated,
     mock_read_migrations_silver_time_series,
@@ -88,6 +97,7 @@ def test__migrate_time_series_from_migrations_to_measurements__given_some_alread
     mock_calculate_latest_created_timestamp_that_has_been_migrated.return_value = (
         datetime.datetime.now() - datetime.timedelta(days=2)
     )
+    mock_spark_session.initialize_spark.return_value = spark
 
     # Act
     migrate_from_migrations.migrate_time_series_from_migrations_to_measurements()
