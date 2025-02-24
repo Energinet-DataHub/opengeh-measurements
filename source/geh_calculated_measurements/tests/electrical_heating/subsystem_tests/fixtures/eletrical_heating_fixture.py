@@ -11,7 +11,7 @@ from geh_common.testing.container_test.databricks_api_client import DatabricksAp
 
 
 class CalculationInput:
-    orchestrator_instance_id: uuid.UUID
+    orchestration_instance_id: uuid.UUID
     job_id: int
 
 
@@ -40,7 +40,7 @@ class ElectricalHeatingFixture:
 
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
-            f"--orchestration-instance-id={str(calculation_input.orchestrator_instance_id)}",
+            f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
         ]
         return self.databricks_api_client.start_job(calculation_input.job_id, params)
 

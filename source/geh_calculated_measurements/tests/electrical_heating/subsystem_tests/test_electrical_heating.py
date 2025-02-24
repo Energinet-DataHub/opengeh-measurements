@@ -20,7 +20,7 @@ class TestElectricalHeating(unittest.TestCase):
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
-        self.fixture.job_state.calculation_input.orchestrator_instance_id = uuid.uuid4()
+        self.fixture.job_state.calculation_input.orchestration_instance_id = uuid.uuid4()
 
         # Assert
         assert self.fixture.job_state.calculation_input.job_id is not None
@@ -52,7 +52,7 @@ class TestElectricalHeating(unittest.TestCase):
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.calculation_input.orchestrator_instance_id}'
+        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
         """
 
         # Act

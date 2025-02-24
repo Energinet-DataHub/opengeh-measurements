@@ -11,7 +11,7 @@ from geh_common.testing.container_test.databricks_api_client import DatabricksAp
 
 
 class CalculationInput:
-    orchestrator_instance_id: uuid.UUID
+    orchestration_instance_id: uuid.UUID
     job_id: int
     year: int
     month: int
@@ -42,7 +42,7 @@ class CapacitySettlementFixture:
 
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
-            f"--orchestration-instance-id={str(calculation_input.orchestrator_instance_id)}",
+            f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
             f"--calculation-month={calculation_input.month}",
             f"--calculation-year={calculation_input.year}",
         ]
@@ -82,4 +82,4 @@ class CapacitySettlementFixture:
 
             time.sleep(poll_interval_seconds)
 
-        raise TimeoutError(f"Job did not complete within {timeout_seconds} seconds.")
+        raise TimeoutError(f"Waiting time expired. Job did not complete within {timeout_seconds} seconds.")
