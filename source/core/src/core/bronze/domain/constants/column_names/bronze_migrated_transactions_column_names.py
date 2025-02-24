@@ -12,7 +12,7 @@ class BronzeMigratedTransactionsColumnNames:
     valid_to_date = "valid_to_date"
     values = "values"
     created_in_migrations = "created_in_migrations"
-    created_in_measurements = "created_in_measurements"
+    created = "created"
 
 
 class BronzeMigratedTransactionsValuesFieldNames:

@@ -19,7 +19,7 @@ CREATE TABLE {bronze_database}.{bronze_migrated_transactions_table}
         >
     > NOT NULL,
     created_in_migrations TIMESTAMP NOT NULL,
-    created_in_measurements TIMESTAMP NOT NULL
+    created TIMESTAMP NOT NULL
 )
 USING DELTA
 CLUSTER BY (metering_point_id, transaction_insert_date, valid_from_date, transaction_id)
