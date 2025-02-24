@@ -36,7 +36,7 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\dotnet\MeasurementsApi\MeasurementsApi.csproj' \
+          '.\source\Measurements\WebApi\WebApi.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
