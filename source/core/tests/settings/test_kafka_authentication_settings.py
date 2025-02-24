@@ -1,6 +1,6 @@
 import os
 
-from core.bronze.infrastructure.settings import KafkaAuthenticationSettings
+from core.settings import KafkaAuthenticationSettings
 
 
 def test__submitted_transactions_stream_settings__should_create_submitted_transactions_from_env():
@@ -18,7 +18,7 @@ def test__submitted_transactions_stream_settings__should_create_submitted_transa
     os.environ["SPN_APP_SECRET"] = expected_spn_app_secret
 
     # Act
-    actual = KafkaAuthenticationSettings()
+    actual = KafkaAuthenticationSettings()  # type: ignore
 
     # Assert
     assert actual.event_hub_namespace == expected_event_hub_namespace
