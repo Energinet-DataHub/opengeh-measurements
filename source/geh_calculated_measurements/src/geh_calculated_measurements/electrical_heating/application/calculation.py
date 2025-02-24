@@ -18,7 +18,7 @@ from geh_calculated_measurements.electrical_heating.application.job_args.command
 from geh_calculated_measurements.electrical_heating.domain import (
     execute,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.infrastructure import (
     ElectricityMarketRepository,
     MeasurementsRepository,
     initialize_spark,

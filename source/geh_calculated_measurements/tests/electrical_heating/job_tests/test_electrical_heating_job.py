@@ -10,7 +10,7 @@ from geh_calculated_measurements.electrical_heating.application import execute_a
 from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabaseDefinition,
 )
 

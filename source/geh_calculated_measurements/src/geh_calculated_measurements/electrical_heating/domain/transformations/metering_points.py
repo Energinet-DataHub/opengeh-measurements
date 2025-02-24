@@ -12,7 +12,7 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_names impo
 from geh_calculated_measurements.electrical_heating.domain.column_names import (
     ColumnNames,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )

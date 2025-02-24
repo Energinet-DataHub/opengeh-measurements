@@ -2,16 +2,16 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from geh_calculated_measurements.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.wrapper import (
+from geh_calculated_measurements.infrastructure.electricity_market.child_metering_points.wrapper import (
     ChildMeteringPoints,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
+from geh_calculated_measurements.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
+from geh_calculated_measurements.infrastructure.electricity_market.consumption_metering_point_periods.wrapper import (
     ConsumptionMeteringPointPeriods,
 )
 

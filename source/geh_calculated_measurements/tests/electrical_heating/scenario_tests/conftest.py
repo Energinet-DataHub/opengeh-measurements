@@ -11,18 +11,18 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from geh_calculated_measurements.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
+from geh_calculated_measurements.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
 from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
