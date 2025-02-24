@@ -1,4 +1,4 @@
-﻿namespace Energinet.DataHub.Measurements.Measurements.WebApi.IntegrationTests;
+﻿namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests;
 
 public class DummyIntegrationTest
 {
