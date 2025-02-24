@@ -1,6 +1,6 @@
 [project]
 name = "geh_calculated_measurements"
-version = "0.2.0"
+version = "0.1.0"
 description = "A combined package for capacity settlement and electrical heating."
 readme = "README.md"
 requires-python = ">=3.11"
