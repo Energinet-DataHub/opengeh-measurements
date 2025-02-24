@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.WebApi", "Measurements.WebApi\Measurements.WebApi.csproj", "{802BFFC6-A644-432E-82D7-B8E5AC1E2071}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{802BFFC6-A644-432E-82D7-B8E5AC1E2071}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{927D718D-7957-4E90-9901-4C3942387D50}"
 EndProject
