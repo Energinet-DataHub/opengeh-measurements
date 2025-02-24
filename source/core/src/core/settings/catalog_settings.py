@@ -14,6 +14,7 @@ class CatalogSettings(BaseSettings):
     bronze_database_name (str): The name of the Bronze database created in infrastructure.
     silver_database_name (str): The name of the Silver database created in infrastructure.
     gold_database_name (str): The name of the Gold database created in infrastructure.
+    migrations_silver_database_name (str): The name of the Silver database in the Migrations domain. 
     """
 
     catalog_name: str
