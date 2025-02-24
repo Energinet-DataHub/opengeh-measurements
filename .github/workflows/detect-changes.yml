@@ -30,4 +30,4 @@ jobs:
             dotnet:
               - '.github/workflows/cd.yml'
               - '.github/workflows/ci-dotnet.yml'
-              - 'source/dotnet/**'
+              - 'source/Measurements/**'
