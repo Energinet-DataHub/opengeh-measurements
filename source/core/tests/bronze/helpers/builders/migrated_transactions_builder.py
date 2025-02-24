@@ -26,7 +26,7 @@ class MigratedTransactionsBuilder:
         valid_to_date: datetime = datetime(2025, 2, 9, 23, 0, 0),
         values: list[tuple[int, str, float]] = [(i, "D01", Decimal(i)) for i in range(24)],
         created_in_migrations: datetime = datetime(2025, 2, 10, 13, 0, 0),
-        created_in_measurements: datetime = datetime(2025, 2, 10, 14, 0, 0),
+        created: datetime = datetime(2025, 2, 10, 14, 0, 0),
     ) -> "MigratedTransactionsBuilder":
         self.data.append(
             (
@@ -43,7 +43,7 @@ class MigratedTransactionsBuilder:
                 valid_to_date,
                 values,
                 created_in_migrations,
-                created_in_measurements,
+                created,
             )
         )
 

@@ -38,5 +38,5 @@ def map_migrations_to_measurements(migrations_data: DataFrame) -> DataFrame:
         col(MigrationsSilverTimeSeriesColumnNames.created).alias(
             BronzeMigratedTransactionsColumnNames.created_in_migrations
         ),
-        current_timestamp().alias(BronzeMigratedTransactionsColumnNames.created_in_measurements),
+        current_timestamp().alias(BronzeMigratedTransactionsColumnNames.created),
     )

@@ -36,7 +36,7 @@ migrated_transactions_schema = StructType(
             False,
         ),
         StructField(BronzeMigratedTransactionsColumnNames.created_in_migrations, TimestampType(), False),
-        StructField(BronzeMigratedTransactionsColumnNames.created_in_measurements, TimestampType(), False),
+        StructField(BronzeMigratedTransactionsColumnNames.created, TimestampType(), False),
     ]
 )
 
