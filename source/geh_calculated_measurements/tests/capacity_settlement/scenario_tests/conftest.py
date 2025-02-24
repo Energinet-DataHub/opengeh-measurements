@@ -15,9 +15,7 @@ from geh_calculated_measurements.capacity_settlement.contracts.electricity_marke
 from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
-from geh_calculated_measurements.capacity_settlement.domain.calculation import (
-    execute_core_logic,
-)
+from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
 from tests.capacity_settlement.scenario_tests.capacity_settlement_test_args import (
     CapacitySettlementTestArgs,
 )
@@ -56,7 +54,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     args = CapacitySettlementTestArgs(f"{scenario_path}/when/job_parameters.env")
     # Execute the logic
-    calculation_output = execute_core_logic(
+    calculation_output = execute(
         spark,
         time_series_points,
         metering_point_periods,
