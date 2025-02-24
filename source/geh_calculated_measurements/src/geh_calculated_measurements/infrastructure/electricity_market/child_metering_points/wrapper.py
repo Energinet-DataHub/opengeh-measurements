@@ -1,7 +1,7 @@
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from geh_calculated_measurements.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
 )
 
