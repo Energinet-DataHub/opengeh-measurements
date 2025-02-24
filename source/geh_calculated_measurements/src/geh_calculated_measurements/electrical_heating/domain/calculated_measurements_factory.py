@@ -4,8 +4,8 @@ from geh_common.domain.types import MeteringPointType
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
-    CalculatedMeasurementsDaily,
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+    CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.domain.column_names import ColumnNames
 
@@ -15,7 +15,7 @@ def create(
     orchestration_instance_id: UUID,
     orchestration_type: str,
     metering_point_type: MeteringPointType,
-) -> CalculatedMeasurementsDaily:
+) -> CalculatedMeasurements:
     df = measurements.withColumns(
         {
             ColumnNames.orchestration_instance_id: F.lit(str(orchestration_instance_id)),
@@ -26,7 +26,7 @@ def create(
         }
     )
 
-    return CalculatedMeasurementsDaily(df)
+    return CalculatedMeasurements(df)
 
 
 def _add_transaction_id() -> Column:

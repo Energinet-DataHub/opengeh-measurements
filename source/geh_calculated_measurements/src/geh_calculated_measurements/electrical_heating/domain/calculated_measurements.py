@@ -5,16 +5,16 @@ from pyspark.sql import DataFrame
 nullable = True
 
 
-class CalculatedMeasurementsDaily(DataFrameWrapper):
+class CalculatedMeasurements(DataFrameWrapper):
     def __init__(self, df: DataFrame):
         super().__init__(
             df=df,
-            schema=calculated_measurements_daily_schema,
+            schema=calculated_measurements_schema,
             ignore_nullability=True,
         )
 
 
-calculated_measurements_daily_schema = T.StructType(
+calculated_measurements_schema = T.StructType(
     [
         #
         # "electrical_heating" or "capacity_settlement"

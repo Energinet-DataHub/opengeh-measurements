@@ -1,5 +1,5 @@
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
-    calculated_measurements_daily_schema,
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+    calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.electrical_heating.domain.column_names import ColumnNames
@@ -17,7 +17,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 ALL_STRUCT_TYPES = [
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
-    calculated_measurements_daily_schema,
+    calculated_measurements_schema,
     time_series_points_v1,
 ]
 

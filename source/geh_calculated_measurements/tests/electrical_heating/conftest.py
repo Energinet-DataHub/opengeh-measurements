@@ -8,9 +8,9 @@ from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
-    CalculatedMeasurementsDaily,
-    calculated_measurements_daily_schema,
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+    CalculatedMeasurements,
+    calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabaseDefinition,
@@ -65,14 +65,14 @@ def test_files_folder_path(tests_path: str) -> str:
 
 
 @pytest.fixture(scope="session")
-def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurementsDaily:
+def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
     create_database(spark, CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME)
 
     create_table(
         spark,
         database_name=CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
         table_name=CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME,
-        schema=calculated_measurements_daily_schema,
+        schema=calculated_measurements_schema,
         table_location=f"{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}",
     )
 
@@ -81,10 +81,10 @@ def calculated_measurements(spark: SparkSession, test_files_folder_path: str) ->
     df = read_csv_path(
         spark,
         file_name,
-        schema=calculated_measurements_daily_schema,
+        schema=calculated_measurements_schema,
     )
 
-    return CalculatedMeasurementsDaily(df)
+    return CalculatedMeasurements(df)
 
 
 @pytest.fixture(scope="session")

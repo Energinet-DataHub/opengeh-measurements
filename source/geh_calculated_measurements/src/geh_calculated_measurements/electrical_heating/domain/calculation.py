@@ -7,8 +7,8 @@ from geh_common.pyspark.transformations import (
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_daily import (
-    CalculatedMeasurementsDaily,
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+    CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
 from geh_calculated_measurements.electrical_heating.infrastructure import (
@@ -25,7 +25,7 @@ def execute(
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
     orchestration_instance_id: UUID,
-) -> CalculatedMeasurementsDaily:
+) -> CalculatedMeasurements:
     """Calculate the electrical heating for the given time series points and metering point periods.
 
     Returns the calculated electrical heating in UTC where the new value has changed.
