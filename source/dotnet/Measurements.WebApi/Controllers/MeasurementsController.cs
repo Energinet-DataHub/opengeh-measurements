@@ -1,7 +1,7 @@
 ﻿using Energinet.DataHub.Measurements.Application.Handlers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Energinet.DataHub.Measurements.MeasurementsApi.Controllers;
+namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Route("measurements")]

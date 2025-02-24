@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyName>Energinet.DataHub.Measurements.MeasurementsApi.IntegrationTests</AssemblyName>
-        <RootNamespace>Energinet.DataHub.Measurements.MeasurementsApi.IntegrationTests</RootNamespace>
+        <AssemblyName>Energinet.DataHub.Measurements.WebApi.IntegrationTests</AssemblyName>
+        <RootNamespace>Energinet.DataHub.Measurements.WebApi.IntegrationTests</RootNamespace>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
