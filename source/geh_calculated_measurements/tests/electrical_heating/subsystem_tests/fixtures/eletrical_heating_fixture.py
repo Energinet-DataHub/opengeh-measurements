@@ -10,11 +10,15 @@ from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
 
-class JobState:
-    orchestrator_instance_id: str
+class CalculationInput:
+    orchestration_instance_id: uuid.UUID
     job_id: int
+
+
+class JobState:
     run_id: int
     run_result_state: RunResultState
+    calculation_input: CalculationInput = CalculationInput()
 
 
 class ElectricalHeatingFixture:
@@ -46,7 +50,7 @@ class ElectricalHeatingFixture:
             f"--consumption-points-table={self.environment_configuration.consumption_points_table}",
             f"--child-points-table={self.environment_configuration.child_points_table}",
         ]
-        return self.databricks_api_client.start_job(job_id, params)
+        return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)

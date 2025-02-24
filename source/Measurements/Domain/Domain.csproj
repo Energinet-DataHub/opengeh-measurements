@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Energinet.DataHub.Measurements.Domain</AssemblyName>
+        <RootNamespace>Energinet.DataHub.Measurements.Domain</RootNamespace>
+    </PropertyGroup>
+
+</Project>
