@@ -17,9 +17,7 @@ def execute() -> None:
     orchestrate_business_logic(job_arguments=electrical_heating_args, logging_settings=logging_settings)
 
 
-@start_trace(
-    initial_span_name="capacity-settlement-job"
-)  # Wraps orchestrate_business_logic with start_trace: starting a tracer, and provides an initial span with name initial_span_name
+@start_trace()
 def orchestrate_business_logic(job_arguments: CapacitySettlementArgs, logging_settings: LoggingSettings) -> None:
     logger = Logger(__name__)
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")

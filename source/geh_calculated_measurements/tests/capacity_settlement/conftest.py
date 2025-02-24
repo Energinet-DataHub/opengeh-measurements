@@ -40,9 +40,11 @@ def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
     with (
         mock.patch("sys.argv", script_args_fixture),
         mock.patch.dict("os.environ", env_args_fixture, clear=False),
+        mock.patch(
+            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
+        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
     ):
         logging_settings = LoggingSettings()
-        logging_settings.applicationinsights_connection_string = None  # for testing purposes
         configure_logging(logging_settings=logging_settings, extras=None)
 
 
