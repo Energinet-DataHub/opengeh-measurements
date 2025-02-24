@@ -23,7 +23,7 @@ def transform(submitted_transactions: DataFrame) -> DataFrame:
 def prepare_measurement(df) -> DataFrame:
     return df.select(
         F.struct(
-            F.lit(PersistSubmittedTransactionProtoVersion.version).alias(SubmittedTransactionsColumnNames.version),
+            F.lit(PersistSubmittedTransactionProtoVersion.version_1).alias(SubmittedTransactionsColumnNames.version),
             df[SilverMeasurementsColNames.orchestration_instance_id].alias(
                 SubmittedTransactionsColumnNames.orchestration_instance_id
             ),

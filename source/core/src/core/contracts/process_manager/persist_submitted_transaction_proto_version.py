@@ -1,2 +1,2 @@
 class PersistSubmittedTransactionProtoVersion:
-    version = "v1"
+    version_1 = "v1"
