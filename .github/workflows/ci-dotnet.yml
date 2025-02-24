@@ -20,10 +20,10 @@ jobs:
       fail-fast: false
       matrix:
         tests_filter_expression:
-          - name: Measurements
+          - name: Unit Tests
             path: \source\Measurements\UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.UnitTests.dll
-          - name: MeasurementsApi
-            path: \source\Measurements\WebApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.MeasurementsApi.UnitTests.dll
+          - name: WebApi Unit Tests
+            path: \source\Measurements\WebApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.UnitTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
@@ -38,9 +38,9 @@ jobs:
       fail-fast: false
       matrix:
         tests_filter_expression:
-          - name: Measurements
+          - name: Integration Tests
             path: \source\Measurements\IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.IntegrationTests.dll
-          - name: MeasurementsApi
+          - name: WebApi Integration Tests
             path: \source\Measurements\WebApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.IntegrationTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
