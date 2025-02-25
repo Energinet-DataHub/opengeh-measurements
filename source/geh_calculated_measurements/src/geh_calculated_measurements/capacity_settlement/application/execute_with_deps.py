@@ -3,9 +3,9 @@ from argparse import Namespace
 from collections.abc import Callable
 
 import geh_common.telemetry.logging_configuration as config
-from geh_common.telemetry.decorators import use_span
 from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
+from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_args import (
     CapacitySettlementArgs,
@@ -13,6 +13,15 @@ from geh_calculated_measurements.capacity_settlement.application.job_args.capaci
 from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_job_args import (
     parse_command_line_arguments,
     parse_job_arguments,
+)
+from geh_calculated_measurements.capacity_settlement.domain.calculation import execute_core_logic
+from geh_calculated_measurements.electrical_heating.domain.transformations import (
+    get_joined_metering_point_periods_in_local_time,
+)
+from geh_calculated_measurements.electrical_heating.infrastructure import (
+    ElectricityMarketRepository,
+    MeasurementsRepository,
+    initialize_spark,
 )
 
 
@@ -46,14 +55,9 @@ def execute_with_deps(
                 }
             )
             span.set_attributes(config.get_extras())
-            parse_job_args(command_line_args)
-
-            @use_span()
-            def foo() -> None:
-                print("starting...")  # noqa: T201
-                pass
-
-            foo()
+            args = parse_job_args(command_line_args)
+            spark = initialize_spark()
+            _execute_application(spark, args)
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:
@@ -64,3 +68,25 @@ def execute_with_deps(
         except Exception as e:
             span_record_exception(e, span)
             sys.exit(4)
+
+
+def _execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
+    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    time_series_points = measurements_repository.read_time_series_points()
+    consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
+    child_metering_point_periods = electricity_market_repository.read_child_metering_points()
+    metering_point_periods = get_joined_metering_point_periods_in_local_time(
+        consumption_metering_point_periods, child_metering_point_periods, args.time_zone
+    )
+    result = execute_core_logic(
+        spark=spark,
+        time_series_points=time_series_points,
+        metering_point_periods=metering_point_periods,
+        orchestration_instance_id=args.orchestration_instance_id,
+        calculation_month=args.calculation_month,
+        calculation_year=args.calculation_year,
+        time_zone=args.time_zone,
+    )
+
+    return result
