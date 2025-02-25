@@ -43,7 +43,7 @@ class ElectricalHeatingFixture:
 
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
-            f"--orchestration-instance-id={str(uuid.uuid4())}",
+            f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
             f"--catalog-name={self.environment_configuration.catalog_name}",
             f"--schema-name={self.environment_configuration.schema_name}",
             f"--time-series-points-table={self.environment_configuration.time_series_points_table}",
