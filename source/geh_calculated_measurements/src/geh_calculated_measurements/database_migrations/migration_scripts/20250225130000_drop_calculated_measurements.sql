@@ -1,1 +1,1 @@
-DROP TABLE IF NOT EXISTS {calculated_measurements_database}.{calculated_measurements_table}
+DROP TABLE IF EXISTS {calculated_measurements_database}.{calculated_measurements_table}
