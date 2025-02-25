@@ -75,7 +75,7 @@ class CapacitySettlementFixture:
                 result = self.logs_query_client.query_workspace(
                     workspace_id, query, timespan=timedelta(timespan_minutes)
                 )
-                print(len(result.tables))
+                print(len(result.tables))  # noqa: T201
                 if result.status == LogsQueryStatus.SUCCESS and len(result.tables[0].rows) > 0:
                     return result
             except Exception:

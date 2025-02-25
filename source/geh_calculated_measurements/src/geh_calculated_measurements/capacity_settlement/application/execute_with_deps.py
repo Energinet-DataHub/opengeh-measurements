@@ -50,7 +50,7 @@ def execute_with_deps(
 
             @use_span()
             def foo() -> None:
-                print("starting...")
+                print("starting...")  # noqa: T201
                 pass
 
             foo()
