@@ -1,4 +1,5 @@
 import unittest
+import uuid
 
 import pytest
 from azure.monitor.query import LogsQueryStatus
@@ -18,15 +19,16 @@ class TestElectricalHeating(unittest.TestCase):
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
         # Act
-        self.fixture.job_state.job_id = self.fixture.get_job_id()
+        self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
+        self.fixture.job_state.calculation_input.orchestration_instance_id = uuid.uuid4()
 
         # Assert
-        assert self.fixture.job_state.job_id is not None
+        assert self.fixture.job_state.calculation_input.job_id is not None
 
     @pytest.mark.order(2)
     def test__when_job_started(self) -> None:
         # Act
-        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.job_id)
+        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.calculation_input)
 
         # Assert
         assert self.fixture.job_state.run_id is not None
@@ -38,7 +40,7 @@ class TestElectricalHeating(unittest.TestCase):
 
         # Assert
         assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The Job {self.fixture.job_state.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+            f"The Job {self.fixture.job_state.calculation_input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(4)
@@ -50,7 +52,7 @@ class TestElectricalHeating(unittest.TestCase):
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.orchestrator_instance_id}'
+        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
         """
 
         # Act

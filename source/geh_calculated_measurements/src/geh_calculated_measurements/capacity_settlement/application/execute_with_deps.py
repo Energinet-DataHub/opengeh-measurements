@@ -3,6 +3,7 @@ from argparse import Namespace
 from collections.abc import Callable
 
 import geh_common.telemetry.logging_configuration as config
+from geh_common.telemetry.decorators import use_span
 from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 
@@ -46,6 +47,13 @@ def execute_with_deps(
             )
             span.set_attributes(config.get_extras())
             parse_job_args(command_line_args)
+
+            @use_span()
+            def foo() -> None:
+                print("starting...")  # noqa: T201
+                pass
+
+            foo()
 
         # Added as ConfigArgParse uses sys.exit() rather than raising exceptions
         except SystemExit as e:

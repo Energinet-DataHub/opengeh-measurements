@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 
 import core.bronze.domain.transformations.submitted_transactions_transformation as submitted_transactions_transformation
-import core.silver.application.config.spark as spark_session
+import core.silver.application.config.spark_session as spark_session
 import core.silver.domain.transformations.measurements_transformation as measurements_transformation
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
