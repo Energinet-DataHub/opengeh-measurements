@@ -5,7 +5,7 @@ from geh_common.domain.types import MeteringPointType
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import lit
 
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+from geh_calculated_measurements.common.domain.calculated_measurements import (
     CalculatedMeasurements,
     calculated_measurements_schema,
 )
