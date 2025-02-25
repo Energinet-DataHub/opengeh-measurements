@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.common.domain.calculated_measurements import (
     CalculatedMeasurements,
 )
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
 
 
 def test__write_measurements__can_be_read(
@@ -10,7 +11,7 @@ def test__write_measurements__can_be_read(
     calculated_measurements: CalculatedMeasurements,
 ) -> None:
     # Arrange
-    repository = MeasurementsRepository(spark)
+    repository = CalculatedMeasurementsRepository(spark)
     expected_count = calculated_measurements.df.count()
 
     # Act
