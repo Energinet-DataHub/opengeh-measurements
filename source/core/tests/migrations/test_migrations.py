@@ -15,8 +15,8 @@ from tests.silver.schemas.silver_measurements_schema import silver_measurements_
 
 def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrations_executed: None) -> None:
     # Arrange
-
     silver_settings = SilverSettings()  # type: ignore
+
     # Assert
     silver_measurements = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}")
     assert_schemas.assert_schema(actual=silver_measurements.schema, expected=silver_measurements_schema)
@@ -33,11 +33,11 @@ def test__migrations__should_create_gold_measurements(spark: SparkSession, migra
 
 def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, migrations_executed: None):
     # Arrange
-    catalog_settings = CatalogSettings()  # type: ignore
+    bronze_settings = BronzeSettings()  # type: ignore
 
     # Assert
     bronze_migrated = spark.table(
-        f"{catalog_settings.bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}"
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}"
     )
     assert_schemas.assert_schema(actual=bronze_migrated.schema, expected=migrated_transactions_schema)
 
