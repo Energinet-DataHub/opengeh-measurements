@@ -2,10 +2,8 @@ from pathlib import Path
 
 import pytest
 from geh_common.telemetry import logging_configuration
-from geh_common.testing.dataframes import (
-    AssertDataframesConfiguration,
-    read_csv,
-)
+from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
+from geh_common.testing.dataframes.read_csv import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 

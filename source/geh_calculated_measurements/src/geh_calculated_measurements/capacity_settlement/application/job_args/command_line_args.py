@@ -7,7 +7,7 @@ import configargparse
 from geh_common.telemetry import logging_configuration
 from geh_common.telemetry.logger import Logger
 
-from geh_calculated_measurements.capacity_settlement.application import (
+from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 from geh_calculated_measurements.capacity_settlement.application.job_args.environment_variables import get_catalog_name

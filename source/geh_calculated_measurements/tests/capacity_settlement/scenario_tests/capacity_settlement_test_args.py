@@ -1,4 +1,4 @@
-from geh_calculated_measurements.capacity_settlement.application import (
+from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 
