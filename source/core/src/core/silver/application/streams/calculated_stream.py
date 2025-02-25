@@ -9,7 +9,7 @@ from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.settings.silver_settings import SilverSettings
-from core.silver.application.config.spark import initialize_spark
+from core.silver.application.config.spark_session import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import (
     transform_calculated_measurements,
 )

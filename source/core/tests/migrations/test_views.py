@@ -1,8 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
 
+import geh_common.testing.dataframes.assert_schemas as assert_schemas
 import pytest
-import testcommon.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper

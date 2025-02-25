@@ -4,9 +4,9 @@ from pyspark.sql import DataFrame
 
 import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.settings import (
-    StorageAccountSettings,
     SubmittedTransactionsStreamSettings,
 )
+from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
 
