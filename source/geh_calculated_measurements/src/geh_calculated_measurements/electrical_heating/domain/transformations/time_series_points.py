@@ -22,7 +22,6 @@ def get_daily_consumption_energy_in_local_time(time_series_points: TimeSeriesPoi
     consumption_energy = convert_from_utc(consumption_energy, time_zone)
     consumption_energy = calculate_daily_quantity(consumption_energy)
 
-    consumption_energy.printSchema()
     return consumption_energy
 
 
