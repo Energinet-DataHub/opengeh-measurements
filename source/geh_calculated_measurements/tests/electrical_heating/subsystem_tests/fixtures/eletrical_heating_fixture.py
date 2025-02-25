@@ -41,7 +41,7 @@ class ElectricalHeatingFixture:
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id("ElectricalHeating")
 
-    def start_job(self, job_id: int) -> int:
+    def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
             f"--orchestration-instance-id={str(uuid.uuid4())}",
             f"--catalog-name={self.environment_configuration.catalog_name}",
@@ -50,7 +50,7 @@ class ElectricalHeatingFixture:
             f"--consumption-points-table={self.environment_configuration.consumption_points_table}",
             f"--child-points-table={self.environment_configuration.child_points_table}",
         ]
-        return self.databricks_api_client.start_job(job_id, params)
+        return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)

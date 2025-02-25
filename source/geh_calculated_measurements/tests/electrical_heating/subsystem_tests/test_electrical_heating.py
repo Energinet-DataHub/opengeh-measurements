@@ -28,7 +28,7 @@ class TestElectricalHeating(unittest.TestCase):
 
     @pytest.mark.order(2)
     def test__start_job(self):
-        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.calculation_input.job_id)
+        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.calculation_input)
         assert self.fixture.job_state.run_id is not None
 
     @pytest.mark.order(3)
