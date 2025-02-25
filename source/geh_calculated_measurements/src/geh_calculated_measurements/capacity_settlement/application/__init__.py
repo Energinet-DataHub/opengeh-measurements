@@ -1,4 +1,3 @@
 from geh_calculated_measurements.capacity_settlement.application.calcaulation import execute_application
-from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import CapacitySettlementArgs
 
-__all__ = ["execute_application", "CapacitySettlementArgs"]
+__all__ = ["execute_application"]
