@@ -4,11 +4,13 @@ import uuid
 from argparse import Namespace
 
 import configargparse
-from geh_common.telemetry import Logger, logging_configuration
+from geh_common.telemetry import logging_configuration
+from geh_common.telemetry.logger import Logger
 
-from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
+from geh_calculated_measurements.capacity_settlement.application import (
     CapacitySettlementArgs,
 )
+from geh_calculated_measurements.capacity_settlement.application.job_args.environment_variables import get_catalog_name
 
 
 def parse_command_line_arguments() -> Namespace:
@@ -23,6 +25,7 @@ def parse_job_arguments(
 
     with logging_configuration.start_span("capacity_settlement.parse_job_arguments"):
         capacity_settlement_args = CapacitySettlementArgs(
+            catalog_name=get_catalog_name(),
             orchestration_instance_id=uuid.UUID(job_args.orchestration_instance_id),
             calculation_month=job_args.calculation_month,
             calculation_year=job_args.calculation_year,
