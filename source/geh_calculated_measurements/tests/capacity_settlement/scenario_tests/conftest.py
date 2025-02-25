@@ -1,6 +1,8 @@
+import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes import (
     AssertDataframesConfiguration,
@@ -30,9 +32,13 @@ def enable_logging() -> None:
         tracer_name="some tracer name",
     )
 
+@pytest.fixture(scope="module")
+def monkeymodule():
+    with pytest.MonkeyPatch.context() as mp:
+        yield mp
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule: pytest.MonkeyPatch) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
@@ -50,9 +56,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         metering_point_periods_v1,
     )
 
-    args = CapacitySettlementArgs(
-        _env_file=f"{scenario_path}/when/job_parameters.env", catalog_name="spark_catalog"
-    )
+    monkeymodule.setenv("CATALOG_NAME", "spark_catalog")
+    with open(f"{scenario_path}/when/job_parameters.yml") as f:
+        args = yaml.safe_load(f)
+    monkeymodule.setattr(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()])
+    args = CapacitySettlementArgs()
 
     # Execute the logic
     calculation_output = execute(
