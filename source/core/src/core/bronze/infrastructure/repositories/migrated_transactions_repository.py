@@ -8,7 +8,7 @@ from core.bronze.domain.constants.column_names.bronze_migrated_transactions_colu
     BronzeMigratedTransactionsColumnNames,
 )
 from core.bronze.infrastructure.config.table_names import TableNames
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.bronze_settings import BronzeSettings
 
 
 class MigratedTransactionsRepository:
@@ -17,7 +17,7 @@ class MigratedTransactionsRepository:
         spark: SparkSession,
     ) -> None:
         self.spark = spark
-        self.bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+        self.bronze_database_name = BronzeSettings().bronze_database_name  # type: ignore
         self.migrated_transactions_table_name = TableNames.bronze_migrated_transactions_table
 
     def read_measurements_bronze_migrated_transactions(self) -> DataFrame:

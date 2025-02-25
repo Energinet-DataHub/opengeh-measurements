@@ -49,7 +49,8 @@ def execute_with_deps(
             parse_job_args(command_line_args)
 
             @use_span()
-            def foo():
+            def foo() -> None:
+                print("starting...")  # noqa: T201
                 pass
 
             foo()
