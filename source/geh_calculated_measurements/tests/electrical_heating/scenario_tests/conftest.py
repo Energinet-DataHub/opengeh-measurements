@@ -1,6 +1,8 @@
+import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
 from geh_common.testing.dataframes.read_csv import read_csv
@@ -8,6 +10,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
@@ -26,9 +29,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.electricity_m
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
 )
-from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
-    ElectricalHeatingTestArgs,
-)
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
@@ -44,7 +44,13 @@ def enable_logging() -> None:
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def monkeymodule():
+    with pytest.MonkeyPatch.context() as mp:
+        yield mp
+
+
+@pytest.fixture(scope="module")
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule: pytest.MonkeyPatch) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
@@ -67,7 +73,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
+    monkeymodule.setenv("CATALOG_NAME", "spark_catalog")
+    with open(f"{scenario_path}/when/job_parameters.yml") as f:
+        args = yaml.safe_load(f)
+    monkeymodule.setattr(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()])
+    args = ElectricalHeatingArgs()
 
     # Execute the logic
     actual = execute(
