@@ -1,6 +1,7 @@
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
+from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
@@ -26,6 +27,17 @@ def test__migrations__should_create_gold_measurements(spark: SparkSession, migra
     # Assert
     gold_measurements = spark.table(f"{catalog_settings.gold_database_name}.{GoldTableNames.gold_measurements}")
     assert_schemas.assert_schema(actual=gold_measurements.schema, expected=gold_measurements_schema)
+
+
+def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, migrations_executed: None):
+    # Arrange
+    catalog_settings = CatalogSettings()  # type: ignore
+
+    # Assert
+    bronze_migrated = spark.table(
+        f"{catalog_settings.bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}"
+    )
+    assert_schemas.assert_schema(actual=bronze_migrated.schema, expected=migrated_transactions_schema)
 
 
 def test__ingest_submitted_transactions__should_create_submitted_transactions_table(
