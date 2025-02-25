@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 
-from core.settings.catalog_settings import CatalogSettings
 from core.settings.kafka_authentication_settings import KafkaAuthenticationSettings  # todo: simplify import
+from core.settings.silver_settings import SilverSettings
 from core.settings.storage_account_settings import StorageAccountSettings
 from core.utility.shared_helpers import get_checkpoint_path
 
@@ -12,7 +12,7 @@ class ProcessManagerStream:
     def __init__(self) -> None:
         self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
-        self.silver_container_name = CatalogSettings().silver_container_name  # type: ignore
+        self.silver_container_name = SilverSettings().silver_container_name  # type: ignore
 
     def write_stream(
         self,

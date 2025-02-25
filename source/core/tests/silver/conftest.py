@@ -7,8 +7,8 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 import core.utility.shared_helpers as shared_helpers
-from core.migrations import MigrationDatabaseNames, migrations_runner
-from core.settings.catalog_settings import CatalogSettings
+import tests.helpers.schema_helper as schema_helper
+from core.migrations import migrations_runner
 
 
 def pytest_runtest_setup() -> None:
@@ -73,19 +73,11 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         ],
     ).getOrCreate()
 
-    _create_schemas(session)
+    schema_helper.create_schemas(session)
 
     yield session
 
     session.stop()
-
-
-def _create_schemas(spark: SparkSession) -> None:
-    catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.bronze_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")
 
 
 @pytest.fixture(scope="session")
