@@ -31,6 +31,7 @@ class CalculatedNames:
     """The period of the consumption metering point. It is needed to calculate limits for the period."""
     period_energy_limit = "period_energy_limit"
     period_year = "period_year"
+    """The type is TIMESTAMP."""
     supply_to_grid_metering_point_id = "supply_to_grid_metering_point_id"
     supply_to_grid_period_start = "supply_to_grid_period_start"
     supply_to_grid_period_end = "supply_to_grid_period_end"

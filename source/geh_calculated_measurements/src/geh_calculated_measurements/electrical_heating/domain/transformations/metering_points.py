@@ -30,6 +30,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_year(metering_point_periods)
+    metering_point_periods = _remove_nsg2_up2end_without_netcomsumption(metering_point_periods)
 
     return metering_point_periods
 
@@ -242,4 +243,16 @@ def _split_period_by_year(
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.consumption_from_grid_metering_point_id),
         F.col(CalculatedNames.supply_to_grid_metering_point_id),
+    )
+
+
+def _remove_nsg2_up2end_without_netcomsumption(
+    parent_and_child_metering_point_and_periods: DataFrame,
+) -> DataFrame:
+    return parent_and_child_metering_point_and_periods.where(
+        ~(
+            (F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
+            & (F.col(CalculatedNames.net_consumption_metering_point_id).isNull())
+            & (F.year(F.col(CalculatedNames.period_year)) == F.year(F.current_date()))
+        )
     )
