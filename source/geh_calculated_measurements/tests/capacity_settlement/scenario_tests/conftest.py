@@ -32,10 +32,12 @@ def enable_logging() -> None:
         tracer_name="some tracer name",
     )
 
+
 @pytest.fixture(scope="module")
 def monkeymodule():
     with pytest.MonkeyPatch.context() as mp:
         yield mp
+
 
 @pytest.fixture(scope="module")
 def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule: pytest.MonkeyPatch) -> TestCases:
