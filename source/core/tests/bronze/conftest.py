@@ -20,6 +20,7 @@ def pytest_runtest_setup() -> None:
     os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
+    os.environ["MIGRATIONS_SILVER_DATABASE_NAME"] = "migrations_silver"
     os.environ["EVENT_HUB_NAMESPACE"] = "event_hub_namespace"
     os.environ["EVENT_HUB_INSTANCE"] = "event_hub_instance"
     os.environ["TENANT_ID"] = "tenant_id"
