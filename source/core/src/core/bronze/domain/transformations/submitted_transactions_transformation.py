@@ -1,3 +1,5 @@
+from importlib.resources import files
+
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.protobuf.functions import from_protobuf
@@ -7,7 +9,6 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     ValueColumnNames,
 )
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
-from core.bronze.infrastructure.helpers.path_helper import get_protobuf_descriptor_path
 
 alias_name = "measurement_values"
 
@@ -18,7 +19,9 @@ def create_by_packed_submitted_transactions(submitted_transactions: DataFrame) -
 
 
 def _unpack_proto(df) -> DataFrame:
-    descriptor_path = get_protobuf_descriptor_path(DescriptorFileNames.persist_submitted_transaction)
+    descriptor_path = str(
+        files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
+    )
     message_name = "PersistSubmittedTransaction"
 
     options = {"mode": "PERMISSIVE", "recursive.fields.max.depth": "3", "emit.default.values": "true"}
