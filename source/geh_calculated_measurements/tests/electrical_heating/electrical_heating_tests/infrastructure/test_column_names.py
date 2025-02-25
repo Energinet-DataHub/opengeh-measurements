@@ -1,3 +1,6 @@
+from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+    calculated_measurements_schema,
+)
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.electrical_heating.domain.column_names import ColumnNames
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
@@ -5,9 +8,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.electricity_m
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.schema import (
-    calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
     time_series_points_v1,
