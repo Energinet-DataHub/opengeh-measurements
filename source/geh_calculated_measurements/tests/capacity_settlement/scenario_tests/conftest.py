@@ -51,7 +51,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     args = CapacitySettlementArgs(
-        _env_file=f"{scenario_path}/when/job_parameters.env", _env_file_encoding="utf-8", catalog_name="spark_catalog"
+        _env_file=f"{scenario_path}/when/job_parameters.env", catalog_name="spark_catalog"
     )
 
     # Execute the logic
