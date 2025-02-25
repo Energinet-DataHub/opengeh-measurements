@@ -56,7 +56,8 @@ def execute_application(
             _execute_application(spark, args)
 
             @use_span()
-            def foo():
+            def foo() -> None:
+                print("starting...")  # noqa: T201
                 pass
 
             foo()

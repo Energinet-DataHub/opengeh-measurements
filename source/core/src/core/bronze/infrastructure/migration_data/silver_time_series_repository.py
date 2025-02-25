@@ -7,7 +7,7 @@ from core.bronze.domain.constants.column_names.migrations_silver_time_series_col
     MigrationsSilverTimeSeriesColumnNames,
 )
 from core.bronze.infrastructure.config.table_names import MigrationsTableNames
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.migrations_settings import MigrationsSettings
 
 
 class MigrationsSilverTimeSeriesRepository:
@@ -16,8 +16,7 @@ class MigrationsSilverTimeSeriesRepository:
         spark: SparkSession,
     ) -> None:
         self.spark = spark
-        catalog_settings = CatalogSettings()  # type: ignore
-        self.source_database = catalog_settings.migrations_silver_database_name
+        self.source_database = MigrationsSettings().silver_database_name  # type: ignore
         self.source_table_name = MigrationsTableNames.silver_time_series_table
         self.repo_creation_timestamp = datetime.now()
 
