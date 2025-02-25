@@ -9,7 +9,7 @@ from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
+from geh_calculated_measurements.capacity_settlement.application import (
     CapacitySettlementArgs,
 )
 from geh_calculated_measurements.capacity_settlement.application.job_args.command_line_args import (
