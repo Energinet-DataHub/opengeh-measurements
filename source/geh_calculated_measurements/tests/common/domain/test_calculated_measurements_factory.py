@@ -207,19 +207,19 @@ class TestTransactionId:
         def test_returns_different_transaction_ids(self, spark: SparkSession) -> None:
             # Arrange
             measurements = create(spark)
-            orchestration_id_1 = UUID("00000000-0000-0000-0000-000000000001")
-            orchestration_id_2 = UUID("00000000-0000-0000-0000-000000000002")
+            orchestration_instance_id_1 = UUID("00000000-0000-0000-0000-000000000001")
+            orchestration_instance_id_2 = UUID("00000000-0000-0000-0000-000000000002")
 
             # Act
             actual_1 = calculated_measurements_factory.create(
                 measurements,
-                orchestration_id_1,
+                orchestration_instance_id_1,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
             )
             actual_2 = calculated_measurements_factory.create(
                 measurements,
-                orchestration_id_2,
+                orchestration_instance_id_2,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
             )
