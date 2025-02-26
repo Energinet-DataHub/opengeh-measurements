@@ -45,13 +45,7 @@ def test__create_by_submitted_transactions__when_message_does_not_match_protobuf
 ) -> None:
     # Arrange
     value = "not a protobuf message"
-    binary = bytearray(value, "utf-8")
-    submitted_transactions = spark.createDataFrame(
-        [
-            ("key1", "partition1", binary),
-        ],
-        ["key", "partition", "value"],
-    )
+    submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
 
     # Act
     (actual_valid, actual_invalid) = sut.unpack(submitted_transactions)
