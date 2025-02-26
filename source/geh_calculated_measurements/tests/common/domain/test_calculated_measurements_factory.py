@@ -11,7 +11,6 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.domain.model.calculated_measurements import (
-    CalculatedMeasurements,
     calculated_measurements_schema,
 )
 
@@ -83,7 +82,12 @@ class TestWhenInputContainsIrrelevantColumn:
         df = df.withColumn(irrelevant_column, F.lit("test"))
 
         # Act
-        actual = CalculatedMeasurements(df)
+        actual = calculated_measurements_factory.create(
+            df,
+            DEFAULT_ORCHESTRATION_INSTANCE_ID,
+            DEFACULT_ORCHESTRATION_TYPE,
+            DEFAULT_METERING_POINT_TYPE,
+        )
 
         # Assert
         assert irrelevant_column not in actual.df.schema.fieldNames()
