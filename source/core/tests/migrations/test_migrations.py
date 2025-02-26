@@ -1,6 +1,7 @@
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
+from core.bronze.domain.schemas.invalid_submitted_transactions import invalid_submitted_transactions_schema
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
 from core.bronze.infrastructure.config import BronzeTableNames
@@ -53,3 +54,18 @@ def test__ingest_submitted_transactions__should_create_submitted_transactions_ta
         f"{bronze_settings.bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_table}"
     )
     assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=submitted_transactions_schema)
+
+
+def test__migration__should_create_invalid_submitted_transactions_table(
+    spark: SparkSession, migrations_executed
+) -> None:
+    # Arrange
+    bronze_settings = BronzeSettings()  # type: ignore
+
+    # Assert
+    invalid_submitted_transactions = spark.table(
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}"
+    )
+    assert_schemas.assert_schema(
+        actual=invalid_submitted_transactions.schema, expected=invalid_submitted_transactions_schema
+    )
