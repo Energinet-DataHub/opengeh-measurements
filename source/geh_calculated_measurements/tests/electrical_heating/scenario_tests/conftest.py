@@ -10,14 +10,11 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
-)
-from geh_calculated_measurements.electrical_heating.domain.model.schema import (
     time_series_points_v1,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,
