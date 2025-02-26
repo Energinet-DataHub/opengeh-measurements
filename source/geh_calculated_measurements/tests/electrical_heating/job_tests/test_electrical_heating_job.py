@@ -6,12 +6,12 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.infrastructure import (
+    CalculatedMeasurementsInternalDatabaseDefinition,
+)
 from geh_calculated_measurements.electrical_heating.application import execute_application
 from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsInternalDatabaseDefinition,
 )
 
 
