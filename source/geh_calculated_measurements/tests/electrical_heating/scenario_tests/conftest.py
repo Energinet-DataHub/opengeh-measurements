@@ -27,9 +27,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.electricity_m
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
-    time_series_points_v1,
-)
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
