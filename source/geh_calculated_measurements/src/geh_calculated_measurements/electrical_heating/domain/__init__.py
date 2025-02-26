@@ -1,4 +1,8 @@
-from .calculation import execute
-from .column_names import ColumnNames
+from geh_calculated_measurements.electrical_heating.domain.model.time_series_points import (
+    TimeSeriesPoints,
+    time_series_points_v1,
+)
 
-__all__ = ["ColumnNames", "execute"]
+from .calculation import execute
+
+__all__ = ["execute", "TimeSeriesPoints", "time_series_points_v1"]
