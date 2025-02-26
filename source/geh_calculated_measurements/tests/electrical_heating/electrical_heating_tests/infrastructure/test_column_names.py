@@ -1,4 +1,4 @@
-from geh_calculated_measurements.common.domain.calculated_measurements import (
+from geh_calculated_measurements.common.domain.model.calculated_measurements import (
     calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
