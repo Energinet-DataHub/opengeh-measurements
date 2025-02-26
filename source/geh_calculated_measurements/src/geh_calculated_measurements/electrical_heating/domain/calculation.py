@@ -7,14 +7,11 @@ from geh_common.pyspark.transformations import (
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
-    CalculatedMeasurements,
-)
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
+from geh_calculated_measurements.common.domain import CalculatedMeasurements, calculated_measurements_factory
+from geh_calculated_measurements.electrical_heating.domain import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
 )
 
 
@@ -44,7 +41,7 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    calculated_measurements = create(
+    calculated_measurements = calculated_measurements_factory.create(
         measurements=changed_electrical_heating_in_utc,
         orchestration_instance_id=orchestration_instance_id,
         orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
