@@ -9,6 +9,7 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
+    TimeSeriesPoints,
     execute,
     time_series_points_v1,
 )
