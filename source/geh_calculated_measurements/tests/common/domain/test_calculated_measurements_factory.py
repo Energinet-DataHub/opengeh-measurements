@@ -2,6 +2,7 @@ import datetime
 from decimal import Decimal
 from uuid import UUID
 
+import pyspark.sql.types as T
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import DataFrame, Row, SparkSession
 from pyspark.sql.functions import lit
@@ -44,7 +45,16 @@ def create(spark: SparkSession, data: None | Row | list[Row] = None) -> DataFram
         data = [create_row()]
     elif isinstance(data, Row):
         data = [data]
-    return spark.createDataFrame(data)
+
+    schema = T.StructType(
+        [
+            T.StructField(ColumnNames.metering_point_id, T.StringType(), True),
+            T.StructField(ColumnNames.date, T.TimestampType(), False),
+            T.StructField(ColumnNames.quantity, T.DecimalType(18, 3), False),
+        ]
+    )
+
+    return spark.createDataFrame(data, schema=schema)
 
 
 class TestWhenValidInput:
@@ -99,3 +109,31 @@ class TestTransactionId:
 
             # Assert
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
+
+    class TestWhenOneTimeGap:
+        def test_returns_two_distinct_transaction_id(self, spark: SparkSession) -> None:
+            # Arrange
+            rows = [
+                create_row(date=datetime.datetime(2024, 3, 1, 23, 0)),
+                create_row(date=datetime.datetime(2024, 3, 2, 23, 0)),
+                create_row(date=datetime.datetime(2024, 3, 3, 23, 0)),
+                # Here is the gap
+                create_row(date=datetime.datetime(2024, 3, 5, 23, 0)),
+                create_row(date=datetime.datetime(2024, 3, 6, 23, 0)),
+                create_row(date=datetime.datetime(2024, 3, 7, 23, 0)),
+            ]
+            measurements = create(spark, data=rows)
+
+            # Act
+            actual = calculated_measurements_factory.create(
+                measurements,
+                DEFAULT_ORCHESTRATION_INSTANCE_ID,
+                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_METERING_POINT_TYPE,
+            )
+
+            # Assert
+            actual_transaction_ids = actual.df.orderBy(ColumnNames.date).select(ColumnNames.transaction_id).collect()
+            assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 2
+            assert actual_transaction_ids[0][0] == actual_transaction_ids[1][0] == actual_transaction_ids[2][0]
+            assert actual_transaction_ids[3][0] == actual_transaction_ids[4][0] == actual_transaction_ids[5][0]
