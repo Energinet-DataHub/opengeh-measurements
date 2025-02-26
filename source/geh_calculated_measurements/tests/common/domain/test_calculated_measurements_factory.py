@@ -132,6 +132,8 @@ class TestTransactionId:
                 DEFAULT_METERING_POINT_TYPE,
             )
 
+            actual.df.select(ColumnNames.transaction_id).show(truncate=False)
+
             # Assert
             actual_transaction_ids = actual.df.orderBy(ColumnNames.date).select(ColumnNames.transaction_id).collect()
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 2
