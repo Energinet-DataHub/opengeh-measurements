@@ -8,11 +8,9 @@ from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
-    time_series_points_v1,
 )
 from tests import PROJECT_ROOT
 from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
