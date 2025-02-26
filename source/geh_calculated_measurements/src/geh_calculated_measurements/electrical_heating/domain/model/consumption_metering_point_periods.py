@@ -2,6 +2,8 @@ import pyspark.sql.types as t
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
 
+nullable = True
+
 
 class ConsumptionMeteringPointPeriods(DataFrameWrapper):
     """Represents the consumption metering point periods data structure."""
@@ -49,17 +51,17 @@ consumption_metering_point_periods_v1 = t.StructType(
     [
         #
         # GSRN number
-        t.StructField("metering_point_id", t.StringType(), nullable=False),
+        t.StructField("metering_point_id", t.StringType(), not nullable),
         #
         # States whether the metering point has electrical heating in the period
         # true:  The consumption metering has electrical heating in the stated period
         # false: The consumption metering point was previously marked as having electrical
         #        heating in the stated period, but this has been corrected
         # <true | false>
-        t.StructField("has_electrical_heating", t.BooleanType(), nullable=False),
+        t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
         #
         # <2 | 3 | 4 | 5 | 6 | 99 | NULL>
-        t.StructField("net_settlement_group", t.IntegerType(), nullable=True),
+        t.StructField("net_settlement_group", t.IntegerType(), nullable),
         #
         # Settlement month is 1st of January for all consumption with electrical heating except for
         # net settlement group 6, where the date is the scheduled meter reading date.
@@ -69,15 +71,15 @@ consumption_metering_point_periods_v1 = t.StructType(
         t.StructField(
             "settlement_month",
             t.IntegerType(),
-            nullable=False,
+            not nullable,
         ),
         #
         # See the description of periodization of data above.
         # <UTC time>
-        t.StructField("period_from_date", t.TimestampType(), nullable=False),
+        t.StructField("period_from_date", t.TimestampType(), not nullable),
         #
         # See the description of periodization of data above.
         # <UTC time>
-        t.StructField("period_to_date", t.TimestampType(), nullable=True),
+        t.StructField("period_to_date", t.TimestampType(), nullable),
     ]
 )
