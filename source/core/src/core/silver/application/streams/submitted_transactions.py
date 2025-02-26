@@ -17,11 +17,11 @@ def stream_submitted_transactions() -> None:
 
 
 def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
-    (submitted_transactions, invalid_submitted_transactions) = persist_submitted_transaction.unpack(
+    (valid_submitted_transactions, invalid_submitted_transactions) = persist_submitted_transaction.unpack(
         submitted_transactions
     )
 
-    _handle_valid_submitted_transactions(submitted_transactions)
+    _handle_valid_submitted_transactions(valid_submitted_transactions)
     _handle_invalid_submitted_transactions(invalid_submitted_transactions)
 
 
