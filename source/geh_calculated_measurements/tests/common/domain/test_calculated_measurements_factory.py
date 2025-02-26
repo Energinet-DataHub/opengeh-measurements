@@ -6,7 +6,7 @@ import pyspark.sql.types as T
 import pytest
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import DataFrame, Row, SparkSession
-from pyspark.sql.functions import lit
+from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
@@ -18,13 +18,13 @@ from geh_calculated_measurements.common.domain.model.calculated_measurements imp
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEFACULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
 DEFAULT_METERING_POINT_TYPE = MeteringPointType.ELECTRICAL_HEATING
-DEFAULT_DATE = datetime.datetime(2024, 3, 2, 23, 0)
+DEFAULT_DATE = datetime(2024, 3, 2, 23, 0)
 DEFAULT_QUANTITY = Decimal("999.123")
 DEFAULT_METERING_POINT_ID = "1234567890123"
 
 
 def create_row(
-    date: datetime.datetime = DEFAULT_DATE,
+    date: datetime = DEFAULT_DATE,
     quantity: int | Decimal = DEFAULT_QUANTITY,
     metering_point_id: str = DEFAULT_METERING_POINT_ID,
 ) -> Row:
@@ -80,7 +80,7 @@ class TestWhenInputContainsIrrelevantColumn:
         # Arrange
         df = create(spark)
         irrelevant_column = "irrelevant_column"
-        df = df.withColumn(irrelevant_column, lit("test"))
+        df = df.withColumn(irrelevant_column, F.lit("test"))
 
         # Act
         actual = CalculatedMeasurements(df)
@@ -94,9 +94,9 @@ class TestTransactionId:
         def test_returns_one_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime.datetime(2024, 3, 1, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 2, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 3, 23, 0)),
+                create_row(date=datetime(2024, 3, 1, 23, 0)),
+                create_row(date=datetime(2024, 3, 2, 23, 0)),
+                create_row(date=datetime(2024, 3, 3, 23, 0)),
             ]
             measurements = create(spark, data=rows)
 
@@ -139,11 +139,11 @@ class TestTransactionId:
             assert actual_transaction_ids[0][0] == actual_transaction_ids[1][0] == actual_transaction_ids[2][0]
             assert actual_transaction_ids[3][0] == actual_transaction_ids[4][0] == actual_transaction_ids[5][0]
 
-    class TestWhenPeriodCrossDaylightSavingTime:
+    class TestWhenPeriodCrossesDaylightSavingTime:
         @pytest.mark.parametrize(
             "dates",
             [
-                (
+                (  # Entering DST
                     [
                         datetime(2024, 30, 3, 23),
                         datetime(2024, 31, 3, 22),
@@ -174,3 +174,60 @@ class TestTransactionId:
 
             # Assert
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
+
+    class TestWhenMultipleMeteringPoints:
+        def test_returns_one_transaction_id_for_each_metering_point(self, spark: SparkSession) -> None:
+            # Arrange
+            mp_id_1 = "1111111111111"
+            mp_id_2 = "2222222222222"
+            rows = [
+                create_row(date=datetime(2024, 3, 1, 23, 0), metering_point_id=mp_id_1),
+                create_row(date=datetime(2024, 3, 2, 23, 0), metering_point_id=mp_id_1),
+                create_row(date=datetime(2024, 3, 1, 23, 0), metering_point_id=mp_id_2),
+                create_row(date=datetime(2024, 3, 2, 23, 0), metering_point_id=mp_id_2),
+            ]
+
+            measurements = create(spark, data=rows)
+
+            # Act
+            actual = calculated_measurements_factory.create(
+                measurements,
+                DEFAULT_ORCHESTRATION_INSTANCE_ID,
+                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_METERING_POINT_TYPE,
+            )
+
+            # Assert
+            actual_transaction_ids = actual.df.select(ColumnNames.transaction_id)
+            assert actual_transaction_ids.distinct().count() == 2
+            assert actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_1).distinct().count() == 1
+            assert actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_2).distinct().count() == 1
+
+    class TestWhenMultipleOrchestrationInstanceIdsWithSameData:
+        def test_returns_different_transaction_ids(self, spark: SparkSession) -> None:
+            # Arrange
+            measurements = create(spark)
+            orchestration_id_1 = UUID("00000000-0000-0000-0000-000000000001")
+            orchestration_id_2 = UUID("00000000-0000-0000-0000-000000000002")
+
+            # Act
+            actual_1 = calculated_measurements_factory.create(
+                measurements,
+                orchestration_id_1,
+                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_METERING_POINT_TYPE,
+            )
+            actual_2 = calculated_measurements_factory.create(
+                measurements,
+                orchestration_id_2,
+                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_METERING_POINT_TYPE,
+            )
+
+            # Assert
+            assert actual_1.df.select(ColumnNames.transaction_id).distinct().count() == 1
+            assert actual_2.df.select(ColumnNames.transaction_id).distinct().count() == 1
+            assert (
+                actual_1.df.select(ColumnNames.transaction_id).first()
+                != actual_2.df.select(ColumnNames.transaction_id).first()
+            )
