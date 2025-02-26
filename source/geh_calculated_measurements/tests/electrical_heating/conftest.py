@@ -8,6 +8,13 @@ from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.common.domain.calculated_measurements import (
+    CalculatedMeasurements,
+    calculated_measurements_schema,
+)
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
+    CalculatedMeasurementsInternalDatabaseDefinition,
+)
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
