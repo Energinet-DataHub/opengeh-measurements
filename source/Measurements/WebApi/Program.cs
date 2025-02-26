@@ -19,6 +19,7 @@ app.UseAuthorization();
 app.MapLiveHealthChecks();
 app.MapReadyHealthChecks();
 app.MapStatusHealthChecks();
+app.MapControllers();
 
 app.Run();
 
