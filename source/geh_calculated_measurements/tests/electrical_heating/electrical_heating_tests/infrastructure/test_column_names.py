@@ -1,3 +1,4 @@
+from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
     calculated_measurements_schema,
 )
@@ -8,9 +9,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.electricity_m
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.schema import (
-    time_series_points_v1,
 )
 
 # Imports for all other StructTypes in the infrastructure directory

@@ -11,10 +11,10 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_measuremen
     CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
+from geh_calculated_measurements.electrical_heating.domain.model.time_series_points.wrapper import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
 )
 
 

@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain import TimeSeriesPoints, time_series_points_v1
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
     CalculatedMeasurements,
 )
@@ -8,10 +9,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
-    TimeSeriesPoints,
-    time_series_points_v1,
 )
 
 
