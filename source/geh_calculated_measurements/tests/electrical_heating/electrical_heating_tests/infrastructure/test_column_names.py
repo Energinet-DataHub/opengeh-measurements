@@ -1,12 +1,10 @@
 from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
-from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
+from geh_calculated_measurements.electrical_heating.domain import (
     child_metering_points_v1,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.consumption_metering_point_periods.schema import (
     consumption_metering_point_periods_v1,
+    time_series_points_v1,
 )
+from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_STRUCT_TYPES = [
