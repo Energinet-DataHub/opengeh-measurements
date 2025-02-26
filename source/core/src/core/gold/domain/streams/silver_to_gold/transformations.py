@@ -7,10 +7,10 @@ from pyspark.sql.types import TimestampType
 from core.gold.domain.constants.column_names.gold_measurements_column_names import (
     GoldMeasurementsColumnNames,
 )
-from core.gold.domain.constants.column_names.silver_measurements_column_names import (
+from core.gold.domain.constants.enums.resolutions import ResolutionEnum
+from core.silver.domain.constants.column_names.silver_measurements_column_names import (
     SilverMeasurementsColumnNames,
 )
-from core.gold.domain.constants.enums.resolutions import ResolutionEnum
 
 
 def transform_silver_to_gold(df: DataFrame) -> DataFrame:

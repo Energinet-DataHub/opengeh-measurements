@@ -11,7 +11,7 @@ from core.contracts.process_manager.submitted_transactions_column_names import (
     SubmittedTransactionEventColumnNames,
     SubmittedTransactionsColumnNames,
 )
-from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
+from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.domain.constants.descriptor_file_names import DescriptorFileNames
 
 alias_name = "measurement_values"
@@ -25,10 +25,10 @@ def prepare_measurement(df) -> DataFrame:
     return df.select(
         F.struct(
             F.lit(PersistSubmittedTransactionProtoVersion.version_1).alias(SubmittedTransactionsColumnNames.version),
-            df[SilverMeasurementsColNames.orchestration_instance_id].alias(
+            df[SilverMeasurementsColumnNames.orchestration_instance_id].alias(
                 SubmittedTransactionsColumnNames.orchestration_instance_id
             ),
-            df[SilverMeasurementsColNames.orchestration_type].alias(
+            df[SilverMeasurementsColumnNames.orchestration_type].alias(
                 SubmittedTransactionsColumnNames.orchestration_type
             ),
         ).alias(SubmittedTransactionEventColumnNames.value)
