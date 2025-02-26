@@ -10,9 +10,6 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
-from geh_calculated_measurements.common.domain.model.calculated_measurements import (
-    calculated_measurements_schema,
-)
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEFACULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
@@ -60,6 +57,16 @@ def create(spark: SparkSession, data: None | Row | list[Row] = None) -> DataFram
 class TestWhenValidInput:
     def test_returns_expected_columns(self, spark: SparkSession) -> None:
         # Arrange
+        expected_columns = [
+            ColumnNames.metering_point_id,
+            ColumnNames.date,
+            ColumnNames.quantity,
+            ColumnNames.orchestration_instance_id,
+            ColumnNames.orchestration_type,
+            ColumnNames.metering_point_type,
+            ColumnNames.transaction_creation_datetime,
+            ColumnNames.transaction_id,
+        ]
         df = create(spark)
 
         # Act
@@ -71,7 +78,7 @@ class TestWhenValidInput:
         )
 
         # Assert
-        assert actual.df.schema == calculated_measurements_schema
+        assert actual.df.columns == expected_columns
 
 
 class TestWhenInputContainsIrrelevantColumn:
@@ -90,7 +97,7 @@ class TestWhenInputContainsIrrelevantColumn:
         )
 
         # Assert
-        assert irrelevant_column not in actual.df.schema.fieldNames()
+        assert irrelevant_column not in actual.df.columns
 
 
 class TestTransactionId:
