@@ -1,8 +1,9 @@
-import datetime
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
 import pyspark.sql.types as T
+import pytest
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import DataFrame, Row, SparkSession
 from pyspark.sql.functions import lit
@@ -114,13 +115,13 @@ class TestTransactionId:
         def test_returns_two_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime.datetime(2024, 3, 1, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 2, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 3, 23, 0)),
+                create_row(date=datetime(2024, 3, 1, 23, 0)),
+                create_row(date=datetime(2024, 3, 2, 23, 0)),
+                create_row(date=datetime(2024, 3, 3, 23, 0)),
                 # Here is the gap
-                create_row(date=datetime.datetime(2024, 3, 5, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 6, 23, 0)),
-                create_row(date=datetime.datetime(2024, 3, 7, 23, 0)),
+                create_row(date=datetime(2024, 3, 5, 23, 0)),
+                create_row(date=datetime(2024, 3, 6, 23, 0)),
+                create_row(date=datetime(2024, 3, 7, 23, 0)),
             ]
             measurements = create(spark, data=rows)
 
@@ -132,10 +133,44 @@ class TestTransactionId:
                 DEFAULT_METERING_POINT_TYPE,
             )
 
-            actual.df.select(ColumnNames.transaction_id).show(truncate=False)
-
             # Assert
             actual_transaction_ids = actual.df.orderBy(ColumnNames.date).select(ColumnNames.transaction_id).collect()
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 2
             assert actual_transaction_ids[0][0] == actual_transaction_ids[1][0] == actual_transaction_ids[2][0]
             assert actual_transaction_ids[3][0] == actual_transaction_ids[4][0] == actual_transaction_ids[5][0]
+
+    class TestWhenPeriodCrossDaylightSavingTime:
+        @pytest.mark.parametrize(
+            "dates",
+            [
+                (
+                    [
+                        datetime(2024, 30, 3, 23),
+                        datetime(2024, 31, 3, 22),
+                        datetime(2024, 1, 4, 22),
+                    ]
+                ),
+                (  # Exiting DST
+                    [
+                        datetime(2024, 26, 10, 22),
+                        datetime(2024, 27, 10, 23),
+                        datetime(2024, 28, 10, 23),
+                    ]
+                ),
+            ],
+        )
+        def test_returns_one_transaction_id(self, spark: SparkSession, dates: list[datetime]) -> None:
+            # Arrange
+            rows = [create_row(date=date) for date in dates]
+            measurements = create(spark, data=rows)
+
+            # Act
+            actual = calculated_measurements_factory.create(
+                measurements,
+                DEFAULT_ORCHESTRATION_INSTANCE_ID,
+                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_METERING_POINT_TYPE,
+            )
+
+            # Assert
+            assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
