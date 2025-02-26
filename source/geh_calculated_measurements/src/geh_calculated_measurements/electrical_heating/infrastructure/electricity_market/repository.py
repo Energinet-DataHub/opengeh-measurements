@@ -21,17 +21,21 @@ class Repository:
         self,
         spark: SparkSession,
         electricity_market_data_path: str,
+        consumption_metering_point_periods_file_name: str = "consumption_metering_point_periods_v1.csv",
+        child_metering_points_file_name: str = "child_metering_points_v1.csv",
     ) -> None:
         self._spark = spark
         self._electricity_market_data_path = electricity_market_data_path
+        self._consumption_metering_point_periods_file_name = consumption_metering_point_periods_file_name
+        self._child_metering_points_file_name = child_metering_points_file_name
 
     def read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
-        file_path = f"{self._electricity_market_data_path}/consumption_metering_point_periods_v1.csv"
+        file_path = f"{self._electricity_market_data_path}/{self._consumption_metering_point_periods_file_name}"
         df = _read_csv(spark=self._spark, path=file_path, schema=consumption_metering_point_periods_v1)
         return ConsumptionMeteringPointPeriods(df)
 
     def read_child_metering_points(self) -> ChildMeteringPoints:
-        file_path = f"{self._electricity_market_data_path}/child_metering_points_v1.csv"
+        file_path = f"{self._electricity_market_data_path}/{self._child_metering_points_file_name}"
         df = _read_csv(spark=self._spark, path=file_path, schema=child_metering_points_v1)
         return ChildMeteringPoints(df)
 
