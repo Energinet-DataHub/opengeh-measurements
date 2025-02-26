@@ -2,6 +2,7 @@ import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
 import core.silver.infrastructure.protobuf.persist_submitted_transaction as sut
+import tests.helpers.binary_helper as binary_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
@@ -44,7 +45,7 @@ def test__create_by_submitted_transactions__when_message_does_not_match_protobuf
     spark: SparkSession,
 ) -> None:
     # Arrange
-    value = "not a protobuf message"
+    value = binary_helper.generate_random_binary()
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
 
     # Act
