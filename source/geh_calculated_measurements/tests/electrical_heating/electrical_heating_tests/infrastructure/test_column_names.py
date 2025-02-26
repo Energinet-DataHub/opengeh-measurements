@@ -1,7 +1,4 @@
-from geh_calculated_measurements.common.domain import ColumnNames
-from geh_calculated_measurements.common.domain.model.calculated_measurements import (
-    calculated_measurements_schema,
-)
+from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.child_metering_points.schema import (
     child_metering_points_v1,

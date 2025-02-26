@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain.column_names import ColumnNames
+from geh_calculated_measurements.common.domain import ColumnNames
 
 
 def calculate_daily_quantity(time_series: DataFrame) -> DataFrame:
