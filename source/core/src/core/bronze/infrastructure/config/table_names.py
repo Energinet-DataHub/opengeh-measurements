@@ -1,6 +1,7 @@
 class TableNames:
     bronze_submitted_transactions_table = "submitted_transactions"
     bronze_migrated_transactions_table = "migrated_transactions"
+    bronze_invalid_submitted_transactions = "invalid_submitted_transactions"
 
 
 # Table is from the `Migrations` subsystem
