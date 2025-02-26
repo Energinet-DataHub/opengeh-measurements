@@ -1,4 +1,4 @@
-from .calculation import execute_application
-from .electrical_heating_args import ElectricalHeatingArgs
+from geh_calculated_measurements.electrical_heating.application.calculation import execute_application
+from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import ElectricalHeatingArgs
 
 __all__ = ["execute_application", "ElectricalHeatingArgs"]
