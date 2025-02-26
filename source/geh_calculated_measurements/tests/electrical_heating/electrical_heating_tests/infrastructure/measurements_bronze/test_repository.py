@@ -1,10 +1,8 @@
 import pytest
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.electrical_heating.infrastructure import (
-    CalculatedMeasurements,
-    MeasurementsRepository,
-)
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldRepository
 
 
 @pytest.mark.skip(reason="MeasurementsRepository has been changed to read from delta table not csv.")
@@ -13,7 +11,7 @@ def test__write_measurements__can_be_read(
     calculated_measurements: CalculatedMeasurements,
 ) -> None:
     # Arrange
-    repository = MeasurementsRepository(spark)
+    repository = MeasurementsGoldRepository(spark)
     expected_count = calculated_measurements.df.count()
 
     # Act

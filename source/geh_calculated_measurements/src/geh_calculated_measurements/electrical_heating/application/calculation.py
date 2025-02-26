@@ -21,8 +21,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
 )
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ElectricityMarketRepository,
-    MeasurementsRepository,
-    initialize_spark,
+    MeasurementsGoldRepository,
 )
 
 
@@ -77,7 +76,7 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     electricity_market_repository = ElectricityMarketRepository(
         spark, args.catalog_name, args.schema_name, args.consumption_points_table, args.child_points_table
     )
-    measurements_repository = MeasurementsRepository(
+    measurements_gold_repository = MeasurementsGoldRepository(
         spark, args.catalog_name, args.schema_name, args.time_series_points_table
     )
 
