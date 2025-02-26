@@ -22,10 +22,7 @@ public static class ApplicationFactory
         builder.Services.AddControllers();
 
         // => Open API generation
-        builder.Services.AddSwaggerForWebApp(Assembly.GetExecutingAssembly(), swaggerUITitle: "Measurements API");
-
-        // => API versioning
-        builder.Services.AddApiVersioningForWebApp(defaultVersion: new ApiVersion(1, 0));
+        builder.Services.AddSwagger();
 
         // => Authentication/authorization
         builder.Services
