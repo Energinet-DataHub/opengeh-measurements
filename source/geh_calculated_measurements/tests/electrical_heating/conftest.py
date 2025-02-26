@@ -9,17 +9,10 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_database,
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import CalculatedMeasurements
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsInternalDatabaseDefinition,
-)
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
 from tests import PROJECT_ROOT
-from tests.electrical_heating.electrical_heating_tests.domain.test_measurements_daily import (
-    calculated_measurements_schema,
-)
 from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
 
 
@@ -60,29 +53,6 @@ def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
 @pytest.fixture(scope="session")
 def test_files_folder_path(tests_path: str) -> str:
     return f"{tests_path}/utils/test_files"
-
-
-@pytest.fixture(scope="session")
-def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
-    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
-
-    create_table(
-        spark,
-        database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
-        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
-    )
-
-    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}-{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}.csv"
-
-    df = read_csv_path(
-        spark,
-        file_name,
-        schema=calculated_measurements_schema,
-    )
-
-    return CalculatedMeasurements(df)
 
 
 @pytest.fixture(scope="session")

@@ -1,4 +1,4 @@
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 

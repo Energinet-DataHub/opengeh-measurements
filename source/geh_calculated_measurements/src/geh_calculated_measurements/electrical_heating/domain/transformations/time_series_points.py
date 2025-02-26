@@ -3,11 +3,11 @@ from geh_common.pyspark.transformations import convert_from_utc
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.domain import (
+    ColumnNames,
+)
 from geh_calculated_measurements.electrical_heating.domain import (
     TimeSeriesPoints,
-)
-from geh_calculated_measurements.electrical_heating.domain.column_names import (
-    ColumnNames,
 )
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import (
     calculate_daily_quantity,
@@ -22,7 +22,6 @@ def get_daily_consumption_energy_in_local_time(time_series_points: TimeSeriesPoi
     consumption_energy = convert_from_utc(consumption_energy, time_zone)
     consumption_energy = calculate_daily_quantity(consumption_energy)
 
-    consumption_energy.printSchema()
     return consumption_energy
 
 

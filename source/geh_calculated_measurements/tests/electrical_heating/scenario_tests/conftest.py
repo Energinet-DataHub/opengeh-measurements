@@ -7,8 +7,8 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain import (
-    ColumnNames,
     TimeSeriesPoints,
     execute,
     time_series_points_v1,
