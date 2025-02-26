@@ -13,12 +13,8 @@ from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNam
 alias_name = "measurement_values"
 
 
-def create_by_packed_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
-    """Unpacks the protobuf message and maps the fields to the correct columns."""
-    return submitted_transactions.transform(_unpack_proto).transform(_map_submitted_transactions)
-
-
-def _unpack_proto(df) -> DataFrame:
+def unpack(df) -> tuple[DataFrame, DataFrame]:
+    """Return a tuple with the unpacked submitted transactions and the invalid ones."""
     descriptor_path = str(
         files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
     )
@@ -32,10 +28,12 @@ def _unpack_proto(df) -> DataFrame:
         BronzeSubmittedTransactionsColumnNames.partition,
     )
 
-    # TODO: We should quarantine this.
-    unpacked = unpacked.filter(F.col(alias_name).isNotNull())
+    valid_submitted_transactions = unpacked.filter(F.col(alias_name).isNotNull())
+    submitted_transactions = _map_submitted_transactions(valid_submitted_transactions)
 
-    return unpacked
+    invalid_submitted_transactions = unpacked.filter(F.col(alias_name).isNull())
+
+    return (submitted_transactions, invalid_submitted_transactions)
 
 
 def _map_submitted_transactions(df) -> DataFrame:

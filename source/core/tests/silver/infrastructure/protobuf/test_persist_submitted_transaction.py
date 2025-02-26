@@ -1,7 +1,7 @@
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-import core.bronze.domain.transformations.submitted_transactions_transformation as sut
+import core.silver.infrastructure.protobuf.persist_submitted_transaction as sut
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
@@ -9,16 +9,18 @@ from tests.helpers.builders.submitted_transactions_builder import SubmittedTrans
 from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
-def test__create_by_submitted_transactions__should_return_expected_schema(spark: SparkSession) -> None:
+def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
     # Arrange
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row().build()
 
     # Act
-    actual = sut.create_by_packed_submitted_transactions(submitted_transactions)
+    (actual_valid, actual_invalid) = sut.unpack(submitted_transactions)
 
     # Assert
-    assert_schemas.assert_schema(actual.schema, bronze_submitted_transactions_value_schema, ignore_nullability=True)
-    actual_value = actual.collect()[0]
+    assert_schemas.assert_schema(
+        actual_valid.schema, bronze_submitted_transactions_value_schema, ignore_nullability=True
+    )
+    actual_value = actual_valid.collect()[0]
     assert actual_value[ValueColumnNames.version] is not None
     assert actual_value[ValueColumnNames.orchestration_instance_id] is not None
     assert actual_value[ValueColumnNames.orchestration_type] is not None
@@ -52,7 +54,8 @@ def test__create_by_submitted_transactions__when_message_does_not_match_protobuf
     )
 
     # Act
-    actual = sut.create_by_packed_submitted_transactions(submitted_transactions)
+    (actual_valid, actual_invalid) = sut.unpack(submitted_transactions)
 
     # Assert
-    assert actual.count() == 0
+    assert actual_valid.count() == 0
+    assert actual_invalid.count() == 1
