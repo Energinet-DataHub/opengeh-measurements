@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS {calculated_measurements_database}.{calculated_measurements_table}
