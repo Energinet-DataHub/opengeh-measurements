@@ -145,16 +145,16 @@ class TestTransactionId:
             [
                 (  # Entering DST
                     [
-                        datetime(2024, 30, 3, 23),
-                        datetime(2024, 31, 3, 22),
-                        datetime(2024, 1, 4, 22),
+                        datetime(2024, 3, 30, 23),
+                        datetime(2024, 3, 31, 22),
+                        datetime(2024, 4, 1, 22),
                     ]
                 ),
                 (  # Exiting DST
                     [
-                        datetime(2024, 26, 10, 22),
-                        datetime(2024, 27, 10, 23),
-                        datetime(2024, 28, 10, 23),
+                        datetime(2024, 10, 26, 22),
+                        datetime(2024, 10, 27, 23),
+                        datetime(2024, 10, 28, 23),
                     ]
                 ),
             ],
