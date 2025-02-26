@@ -3,7 +3,7 @@ from geh_common.pyspark.transformations import convert_from_utc
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.electrical_heating.domain.column_names import (
+from geh_calculated_measurements.common.domain import (
     ColumnNames,
 )
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import (
