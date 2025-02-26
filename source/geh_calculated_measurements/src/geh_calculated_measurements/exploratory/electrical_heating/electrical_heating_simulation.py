@@ -26,9 +26,12 @@ consumption_from_grid_share = 0.02
 net_consumption_electrical_share = 0.02
 supply_to_grid_share = 0.02
 
-time_series_simulation_days = 365*4
+time_series_simulation_days = 365 * 4
 
 # Parent_id data frame generation --------------------------------------------------------------------------------------
+## Define schema for parent_metering_point_id DataFrame
+parent_metering_point_id_schema = T.StructType([T.StructField("parent_metering_point_id", T.StringType(), True)])
+
 ## Generate parent_metering_point_id DataFrame
 parent_metering_point_id_df = (
     spark.range(num_records)  # Generates values from 0 to num_records - 1
@@ -46,56 +49,49 @@ parent_metering_point_id_df = (
 Child metering points related to electrical heating.
 
 Periods are included when
-- the metering point is of type
+- The metering point is of type
   'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
-- the simulated data will consist of 100% relation to electrical_heating child, plus 20% relation to consumption_from_grid child
-  , plus 20% relation to supply_to_grid child. 
-- the metering point is coupled to a parent metering point
+- The simulated data will consist of 100% relation to electrical_heating child, plus 20% relation to 
+  consumption_from_grid child, plus 20% relation to supply_to_grid child. 
+- The minimum date for coupled date will be bewteen current date - 365 * 4 and current date - 365 days
+- The maximum date for uncoupled date will be between coupled date and couple date + 365 days 
+- The metering point is coupled to a parent metering point
   Note: The same child metering point cannot be re-coupled after being uncoupled
-- the child metering point physical status is connected or disconnected.
-- the period does not end before 2021-01-01
+- The child metering point physical status is connected or disconnected.
+- The period does not end before 2021-01-01
 
 Formatting is according to ADR-144 with the following constraints:
 - No column may use quoted values
 - All date/time values must include seconds
 """
 
-
-## Define schema for parent_metering_point_id DataFrame
-parent_metering_point_id_schema = T.StructType([
-    T.StructField("parent_metering_point_id", T.StringType(), True)
-])
-
-## Generate parent_metering_point_id DataFrame
-parent_metering_point_id_df = (
-    spark.range(num_records)
-    .withColumn("parent_metering_point_id", F.expr("uuid()"))
-    .select(
-        F.col("parent_metering_point_id").cast(T.StringType())
-    )
-).cache()
-
 ## Define schema for child metering points DataFrame
-child_metering_point_schema = T.StructType([
-    T.StructField("metering_point_id", T.StringType(), True),
-    T.StructField("parent_metering_point_id", T.StringType(), True),
-    T.StructField("metering_point_type", T.StringType(), True),
-    T.StructField("metering_point_sub_type", T.StringType(), True),
-    T.StructField("resolution", T.StringType(), True),
-    T.StructField("coupled_date", T.TimestampType(), True),
-    T.StructField("uncoupled_date", T.TimestampType(), True)
-])
+child_metering_point_schema = T.StructType(
+    [
+        T.StructField("metering_point_id", T.StringType(), True),
+        T.StructField("parent_metering_point_id", T.StringType(), True),
+        T.StructField("metering_point_type", T.StringType(), True),
+        T.StructField("metering_point_sub_type", T.StringType(), True),
+        T.StructField("resolution", T.StringType(), True),
+        T.StructField("coupled_date", T.TimestampType(), True),
+        T.StructField("uncoupled_date", T.TimestampType(), True),
+    ]
+)
+
 
 ## Generate child metering points function
 def generate_child_metering_points(df, metering_type, share):
     return (
-        df.sample(share, seed = 42)
+        df.sample(share, seed=42)
         .withColumn("metering_point_id", F.expr("uuid()"))
         .withColumn("metering_point_type", F.lit(metering_type))
         .withColumn("metering_point_sub_type", F.lit("calculated"))
         .withColumn("resolution", F.lit("PT1H"))
         .withColumn("coupled_date", F.expr("date_add(current_date() - 365, -int(rand() * 365 * 3))"))
-        .withColumn("uncoupled_date", F.when(F.expr("rand() < 0.8"), None).otherwise(F.expr("date_add(coupled_date, int(rand() * 365))")))
+        .withColumn(
+            "uncoupled_date",
+            F.when(F.expr("rand() < 0.8"), None).otherwise(F.expr("date_add(coupled_date, int(rand() * 365))")),
+        )
         .select(
             F.col("metering_point_id").cast(T.StringType()),
             F.col("parent_metering_point_id").cast(T.StringType()),
@@ -108,16 +104,24 @@ def generate_child_metering_points(df, metering_type, share):
         .cache()
     )
 
+
 ## Generate child metering point DataFrames
-child_metering_points_electrical_heating_df = generate_child_metering_points(parent_metering_point_id_df, "electrical_heating", electrical_heating_share)
-child_metering_points_consumption_from_grid_df = generate_child_metering_points(parent_metering_point_id_df, "consumption_from_grid", consumption_from_grid_share)
-child_metering_points_net_consumption_df = generate_child_metering_points(parent_metering_point_id_df, "net_consumption", net_consumption_electrical_share)
-child_metering_points_net_supply_to_grid_df = generate_child_metering_points(parent_metering_point_id_df, "supply_to_grid", supply_to_grid_share)
+child_metering_points_electrical_heating_df = generate_child_metering_points(
+    parent_metering_point_id_df, "electrical_heating", electrical_heating_share
+)
+child_metering_points_consumption_from_grid_df = generate_child_metering_points(
+    parent_metering_point_id_df, "consumption_from_grid", consumption_from_grid_share
+)
+child_metering_points_net_consumption_df = generate_child_metering_points(
+    parent_metering_point_id_df, "net_consumption", net_consumption_electrical_share
+)
+child_metering_points_net_supply_to_grid_df = generate_child_metering_points(
+    parent_metering_point_id_df, "supply_to_grid", supply_to_grid_share
+)
 
 ## Combine all DataFrames into a single DataFrame
 child_metering_points_df = (
-    child_metering_points_consumption_from_grid_df
-    .unionAll(child_metering_points_electrical_heating_df)
+    child_metering_points_consumption_from_grid_df.unionAll(child_metering_points_electrical_heating_df)
     .unionAll(child_metering_points_net_consumption_df)
     .unionAll(child_metering_points_net_supply_to_grid_df)
 )
@@ -158,26 +162,25 @@ Formatting is according to ADR-144 with the following constraints:
 """
 
 ## Define schema for consumption_metering_points_periods DataFrames
-consumption_metering_points_schema = T.StructType([
-    T.StructField("metering_point_id", T.StringType(), True),
-    T.StructField("has_electrical_heating", T.BooleanType(), True),
-    T.StructField("net_settlement_group", T.IntegerType(), True),
-    T.StructField("settlement_month", T.IntegerType(), True),
-    T.StructField("period_from_date", T.TimestampType(), True),
-    T.StructField("period_to_date", T.TimestampType(), True)
-])
+consumption_metering_points_schema = T.StructType(
+    [
+        T.StructField("metering_point_id", T.StringType(), True),
+        T.StructField("has_electrical_heating", T.BooleanType(), True),
+        T.StructField("net_settlement_group", T.IntegerType(), True),
+        T.StructField("settlement_month", T.IntegerType(), True),
+        T.StructField("period_from_date", T.TimestampType(), True),
+        T.StructField("period_to_date", T.TimestampType(), True),
+    ]
+)
 
 ## We assume all parent metering points start with an electrical heating child metering point.
 consumption_metering_points_periods_period1_df = (
-    parent_metering_point_id_df
-    .withColumn("net_settlement_group", F.when(F.rand() < 0.8, 2).otherwise(6))
+    parent_metering_point_id_df.withColumn("net_settlement_group", F.when(F.rand() < 0.8, 2).otherwise(6))
     .withColumn("has_electrical_heating", F.lit(True))
     .withColumn("period_from_date", F.expr("current_date() - 365 * 4").cast(T.DateType()))
     .withColumn("period_to_date", F.expr("date_add(period_from_date, int(rand() * 730))"))
     .withColumn(
-        "settlement_month",
-        F.when(F.col("net_settlement_group") == 2, F.lit(1))
-        .otherwise(F.expr("ceil(rand() * 12)"))
+        "settlement_month", F.when(F.col("net_settlement_group") == 2, F.lit(1)).otherwise(F.expr("ceil(rand() * 12)"))
     )
     .select(
         F.col("parent_metering_point_id").alias("metering_point_id").cast(T.StringType()),
@@ -185,39 +188,43 @@ consumption_metering_points_periods_period1_df = (
         F.col("net_settlement_group").cast(T.IntegerType()),
         F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
-        F.when(F.col("period_to_date") > F.expr("current_date()"), None).otherwise(F.col("period_to_date")).cast(T.TimestampType()).alias("period_to_date"),
+        F.when(F.col("period_to_date") > F.expr("current_date()"), None)
+        .otherwise(F.col("period_to_date"))
+        .cast(T.TimestampType())
+        .alias("period_to_date"),
     )
 ).cache()
 
 ## Simulating metering points that uncouple from electrical heating
 consumption_metering_points_periods_period2_df = (
-    consumption_metering_points_periods_period1_df
-    .withColumn("net_settlement_group", F.lit(None).cast(T.IntegerType()))
+    consumption_metering_points_periods_period1_df.withColumn("net_settlement_group", F.lit(None).cast(T.IntegerType()))
     .withColumn("has_electrical_heating", F.lit(False))
     .withColumn("period_from_date", F.expr("date_add(period_to_date, 1)"))
     .withColumn("period_to_date", F.expr("date_add(period_from_date, int(rand() * 730))"))
-    .withColumn("settlement_month", F.lit(1))  
+    .withColumn("settlement_month", F.lit(1))
     .select(
         F.col("metering_point_id").cast(T.StringType()),
         F.col("has_electrical_heating").cast(T.BooleanType()),
         F.col("net_settlement_group").cast(T.IntegerType()),
         F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
-        F.when(F.col("period_to_date") > F.expr("current_date()"), None).otherwise(F.col("period_to_date")).cast(T.TimestampType()).alias("period_to_date"),
+        F.when(F.col("period_to_date") > F.expr("current_date()"), None)
+        .otherwise(F.col("period_to_date"))
+        .cast(T.TimestampType())
+        .alias("period_to_date"),
     )
 ).cache()
 
 ## Simulating metering points that recouple to electrical heating
 consumption_metering_points_periods_period3_df = (
-    consumption_metering_points_periods_period2_df
-    .withColumn("net_settlement_group", F.when(F.rand() < 0.8, 2).otherwise(6))
+    consumption_metering_points_periods_period2_df.withColumn(
+        "net_settlement_group", F.when(F.rand() < 0.8, 2).otherwise(6)
+    )
     .withColumn("has_electrical_heating", F.lit(True))
     .withColumn("period_from_date", F.expr("date_add(period_to_date, 1)"))
     .withColumn("period_to_date", F.expr("date_add(period_from_date, int(rand() * 730))"))
     .withColumn(
-        "settlement_month",
-        F.when(F.col("net_settlement_group") == 2, F.lit(1))
-        .otherwise(F.expr("ceil(rand() * 12)"))
+        "settlement_month", F.when(F.col("net_settlement_group") == 2, F.lit(1)).otherwise(F.expr("ceil(rand() * 12)"))
     )
     .select(
         F.col("metering_point_id").cast(T.StringType()),
@@ -225,16 +232,17 @@ consumption_metering_points_periods_period3_df = (
         F.col("net_settlement_group").cast(T.IntegerType()),
         F.col("settlement_month").cast(T.IntegerType()),
         F.col("period_from_date").cast(T.TimestampType()),
-        F.when(F.col("period_to_date") > F.expr("current_date()"), None).otherwise(F.col("period_to_date")).cast(T.TimestampType()).alias("period_to_date"),
+        F.when(F.col("period_to_date") > F.expr("current_date()"), None)
+        .otherwise(F.col("period_to_date"))
+        .cast(T.TimestampType())
+        .alias("period_to_date"),
     )
 ).cache()
 
 ## Combine all DataFrames into a single DataFrame
-consumption_metering_points_periods_df = (
-    consumption_metering_points_periods_period1_df
-    .unionAll(consumption_metering_points_periods_period2_df)
-    .unionAll(consumption_metering_points_periods_period3_df)
-)
+consumption_metering_points_periods_df = consumption_metering_points_periods_period1_df.unionAll(
+    consumption_metering_points_periods_period2_df
+).unionAll(consumption_metering_points_periods_period3_df)
 
 # Time_series_points data frame generation -----------------------------------------------------------------------------
 """
@@ -247,12 +255,14 @@ consumption_metering_points_periods_df = (
 """
 
 # Define schema for time series DataFrames
-time_series_schema = T.StructType([
-    T.StructField("metering_point_id", T.StringType(), True),
-    T.StructField("observation_time", T.TimestampType(), True),
-    T.StructField("quantity", T.DecimalType(18, 3), True),
-    T.StructField("metering_point_type", T.StringType(), True)
-])
+time_series_schema = T.StructType(
+    [
+        T.StructField("metering_point_id", T.StringType(), True),
+        T.StructField("observation_time", T.TimestampType(), True),
+        T.StructField("quantity", T.DecimalType(18, 3), True),
+        T.StructField("metering_point_type", T.StringType(), True),
+    ]
+)
 
 ## Define the time interval
 ### Generate start and end date
@@ -268,13 +278,12 @@ time_interval_daily_df = (
 
 ## Define the simulation for parent metering point consumption --------------------------------
 parent_time_series_df = (
-    parent_metering_point_id_df
-    .select("parent_metering_point_id")
+    parent_metering_point_id_df.select("parent_metering_point_id")
     .withColumnRenamed("parent_metering_point_id", "metering_point_id")
     .crossJoin(time_interval_daily_df)
-    .withColumn("quantity", (rand() * 5).cast(DecimalType(18, 3)))
+    .withColumn("quantity", F.expr("rand() * 5").cast(T.DecimalType(18, 3)))
     .withColumnRenamed("datetime", "observation_time")
-    .withColumn("metering_point_type", lit("consumption"))
+    .withColumn("metering_point_type", F.lit("consumption"))
     .select(
         F.col("metering_point_id").cast(T.StringType()),
         F.col("observation_time").cast(T.TimestampType()),
@@ -291,8 +300,8 @@ child_time_series_df = (
     child_metering_points_df.select("metering_point_id", "metering_point_type")
     .crossJoin(time_interval_daily_df)
     .crossJoin(time_interval_15min_df)
-    .withColumn("observation_time", expr("timestampadd(SECOND, minutes_offset * 60, datetime)"))
-    .withColumn("quantity", (rand() * 5).cast(DecimalType(18, 3)))
+    .withColumn("observation_time", F.expr("timestampadd(SECOND, minutes_offset * 60, datetime)"))
+    .withColumn("quantity", F.expr("rand() * 5").cast(T.DecimalType(18, 3)))
     .select(
         F.col("metering_point_id").cast(T.StringType()),
         F.col("observation_time").cast(T.TimestampType()),
