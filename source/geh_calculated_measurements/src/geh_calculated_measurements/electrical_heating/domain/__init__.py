@@ -1,4 +1,4 @@
-from geh_calculated_measurements.electrical_heating.domain.model.time_series_points.wrapper import (
+from geh_calculated_measurements.electrical_heating.domain.model.time_series_points import (
     TimeSeriesPoints,
     time_series_points_v1,
 )
