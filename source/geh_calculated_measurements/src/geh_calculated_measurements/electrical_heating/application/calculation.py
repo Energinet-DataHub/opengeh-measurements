@@ -8,6 +8,7 @@ from geh_common.telemetry.span_recording import span_record_exception
 from opentelemetry.trace import SpanKind
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
@@ -81,7 +82,7 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
     )
 
     # Read data frames
-    time_series_points = measurements_repository.read_time_series_points()
+    time_series_points = measurements_gold_repository.read_time_series_points()
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
@@ -91,6 +92,7 @@ def _execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> No
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
+        args.orchestration_instance_id,
     )
 
     # Write result to table

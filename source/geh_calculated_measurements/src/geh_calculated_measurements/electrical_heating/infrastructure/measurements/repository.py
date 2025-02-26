@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.wrapper import (
     CalculatedMeasurements,
 )

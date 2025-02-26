@@ -13,12 +13,8 @@ from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNam
 alias_name = "measurement_values"
 
 
-def create_by_packed_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
-    """Unpacks the protobuf message and maps the fields to the correct columns."""
-    return submitted_transactions.transform(_unpack_proto).transform(_map_submitted_transactions)
-
-
-def _unpack_proto(df) -> DataFrame:
+def unpack(submitted_transactions) -> tuple[DataFrame, DataFrame]:
+    """Return a tuple with the unpacked submitted transactions and the invalid ones."""
     descriptor_path = str(
         files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
     )
@@ -26,20 +22,29 @@ def _unpack_proto(df) -> DataFrame:
 
     options = {"mode": "PERMISSIVE", "recursive.fields.max.depth": "3", "emit.default.values": "true"}
 
-    unpacked = df.select(
-        from_protobuf(df.value, message_name, descFilePath=descriptor_path, options=options).alias(alias_name),
+    unpacked = submitted_transactions.select(
+        from_protobuf(submitted_transactions.value, message_name, descFilePath=descriptor_path, options=options).alias(
+            alias_name
+        ),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
+        BronzeSubmittedTransactionsColumnNames.offset,
+        BronzeSubmittedTransactionsColumnNames.value,
+        BronzeSubmittedTransactionsColumnNames.topic,
+        BronzeSubmittedTransactionsColumnNames.timestamp,
+        BronzeSubmittedTransactionsColumnNames.timestamp_type,
     )
 
-    # TODO: We should quarantine this.
-    unpacked = unpacked.filter(F.col(alias_name).isNotNull())
+    valid_submitted_transactions = _get_valid_submitted_transactions(unpacked)
+    invalid_submitted_transactions = _get_invalid_submitted_transactions(unpacked)
 
-    return unpacked
+    return (valid_submitted_transactions, invalid_submitted_transactions)
 
 
-def _map_submitted_transactions(df) -> DataFrame:
-    return df.select(
+def _get_valid_submitted_transactions(submitted_transactions: DataFrame) -> DataFrame:
+    valid_submitted_transactions = submitted_transactions.filter(F.col(alias_name).isNotNull())
+
+    return valid_submitted_transactions.select(
         F.col(f"{alias_name}.{ValueColumnNames.version}").alias(ValueColumnNames.version),
         F.col(f"{alias_name}.{ValueColumnNames.orchestration_instance_id}").alias(
             ValueColumnNames.orchestration_instance_id
@@ -58,4 +63,18 @@ def _map_submitted_transactions(df) -> DataFrame:
         F.col(f"{alias_name}.{ValueColumnNames.points}").alias(ValueColumnNames.points),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
+    )
+
+
+def _get_invalid_submitted_transactions(submitted_transactions) -> DataFrame:
+    invalid_submitted_transactions = submitted_transactions.filter(F.col(alias_name).isNull())
+
+    return invalid_submitted_transactions.select(
+        BronzeSubmittedTransactionsColumnNames.key,
+        BronzeSubmittedTransactionsColumnNames.partition,
+        BronzeSubmittedTransactionsColumnNames.offset,
+        BronzeSubmittedTransactionsColumnNames.value,
+        BronzeSubmittedTransactionsColumnNames.topic,
+        BronzeSubmittedTransactionsColumnNames.timestamp,
+        BronzeSubmittedTransactionsColumnNames.timestamp_type,
     )
