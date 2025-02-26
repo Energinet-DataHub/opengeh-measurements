@@ -7,11 +7,11 @@ from geh_common.pyspark.transformations import (
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as T
+from geh_calculated_measurements.electrical_heating.domain import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
     CalculatedMeasurements,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_measurements_factory import create
-from geh_calculated_measurements.electrical_heating.domain.model.wrapper import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
