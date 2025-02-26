@@ -9,7 +9,6 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
-    [Route("{measurementId}")]
     public async Task<IActionResult> GetMeasurementAsync(string measurementId)
     {
         var result = await measurementsHandler.GetMeasurementAsync(measurementId);
