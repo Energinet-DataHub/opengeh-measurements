@@ -5,7 +5,7 @@ class BronzeSubmittedTransactionsColumnNames:
     partition = "partition"
     offset = "offset"
     timestamp = "timestamp"
-    timestampType = "timestampType"
+    timestamp_type = "timestampType"
 
 
 class ValueColumnNames:

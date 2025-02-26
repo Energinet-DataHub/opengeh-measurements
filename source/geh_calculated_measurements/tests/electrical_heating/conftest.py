@@ -13,7 +13,7 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_measuremen
     calculated_measurements_schema,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabaseDefinition,
+    CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
@@ -66,17 +66,17 @@ def test_files_folder_path(tests_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def calculated_measurements(spark: SparkSession, test_files_folder_path: str) -> CalculatedMeasurements:
-    create_database(spark, CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(
         spark,
-        database_name=CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
-        table_name=CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME,
+        database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
+        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}-{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}.csv"
+    file_name = f"{test_files_folder_path}/{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}-{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}.csv"
 
     df = read_csv_path(
         spark,
