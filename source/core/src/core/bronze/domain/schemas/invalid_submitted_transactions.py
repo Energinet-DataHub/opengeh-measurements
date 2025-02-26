@@ -12,7 +12,7 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     BronzeSubmittedTransactionsColumnNames,
 )
 
-submitted_transactions_schema = StructType(
+invalid_submitted_transactions_schema = StructType(
     [
         StructField(BronzeSubmittedTransactionsColumnNames.key, BinaryType(), True),
         StructField(BronzeSubmittedTransactionsColumnNames.value, BinaryType(), True),
