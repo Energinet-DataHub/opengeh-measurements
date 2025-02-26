@@ -14,6 +14,8 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_measuremen
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
+)
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
     TimeSeriesPoints,
 )
 

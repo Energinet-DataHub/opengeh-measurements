@@ -13,9 +13,6 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements.
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
-    TimeSeriesPoints,
-)
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.repository import (
     Repository as MeasurementsRepository,
 )
@@ -29,7 +26,6 @@ __all__ = [
     "ConsumptionMeteringPointPeriods",
     # Measurements core repository, types, and database definitions
     "MeasurementsRepository",
-    "TimeSeriesPoints",
     "CalculatedMeasurementsDatabaseDefinition",
     "MeasurementsGoldDatabaseDefinition",
 ]

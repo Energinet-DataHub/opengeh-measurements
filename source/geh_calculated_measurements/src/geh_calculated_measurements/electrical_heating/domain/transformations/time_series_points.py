@@ -9,7 +9,7 @@ from geh_calculated_measurements.electrical_heating.domain.column_names import (
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import (
     calculate_daily_quantity,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.wrapper import (
     TimeSeriesPoints,
 )
 
