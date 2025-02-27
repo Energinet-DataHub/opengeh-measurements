@@ -11,7 +11,7 @@ class DeltaSilverAdapter(SilverPort):
         self.spark = spark
 
     def read_stream(self, table_name: str, read_options: Optional[dict] = None) -> DataFrame:
-        silver_settings = SilverSettings()  # type: ignore
+        silver_settings = SilverSettings()
 
         return (
             self.spark.readStream.format("delta")
