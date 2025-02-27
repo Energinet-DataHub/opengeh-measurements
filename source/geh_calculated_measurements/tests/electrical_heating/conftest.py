@@ -9,7 +9,7 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_database,
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
 )
 from tests import PROJECT_ROOT

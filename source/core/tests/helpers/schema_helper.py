@@ -7,9 +7,9 @@ from core.settings.silver_settings import SilverSettings
 
 
 def create_schemas(spark: SparkSession) -> None:
-    bronze_settings = BronzeSettings()  # type: ignore
-    silver_settings = SilverSettings()  # type: ignore
-    gold_settings = GoldSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
+    silver_settings = SilverSettings()
+    gold_settings = GoldSettings()
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {bronze_settings.bronze_database_name}")
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {silver_settings.silver_database_name}")
