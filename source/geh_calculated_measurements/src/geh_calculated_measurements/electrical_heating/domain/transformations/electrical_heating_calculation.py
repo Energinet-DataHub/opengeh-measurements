@@ -4,8 +4,8 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
+from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.domain.column_names import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
     get_hourly_energy_in_local_time,
 )
