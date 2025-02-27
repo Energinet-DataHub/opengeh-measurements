@@ -34,7 +34,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     warehouse_location = f"{tests_path}/__spark-warehouse__"
 
     session = configure_spark_with_delta_pip(
-        SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
+        SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)  # type: ignore
         .config("spark.sql.streaming.schemaInference", True)
         .config("spark.default.parallelism", 1)
         .config("spark.rdd.compress", False)
