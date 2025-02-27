@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes import (
     AssertDataframesConfiguration,
     read_csv,

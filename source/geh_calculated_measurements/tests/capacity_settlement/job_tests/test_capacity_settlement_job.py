@@ -6,10 +6,7 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.capacity_settlement.application.calcaulation import execute_application
-from geh_calculated_measurements.capacity_settlement.application.job_args.environment_variables import (
-    EnvironmentVariable,
-)
+from geh_calculated_measurements.capacity_settlement.application.calculation import execute_application
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements.calculated_measurements.database_definitions import (
     CalculatedMeasurementsDatabaseDefinition,
 )
@@ -18,9 +15,9 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.measurements
 @pytest.fixture(scope="session")
 def job_environment_variables(test_files_folder_path) -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "spark_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "Europe/Copenhagen",
-        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: test_files_folder_path,
+        "CATALOG_NAME": "spark_catalog",
+        "TIME_ZONE": "Europe/Copenhagen",
+        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
     }
 
 
