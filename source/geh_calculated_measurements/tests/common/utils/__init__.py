@@ -1,3 +1,3 @@
-﻿from tests.common.utils.azure_log_query_client import AzureLogQueryClient
+﻿from tests.common.utils.log_query_client_wrapper import LogQueryClientWrapper
 
-__all__ = ["AzureLogQueryClient"]
+__all__ = ["LogQueryClientWrapper"]

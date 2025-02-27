@@ -5,7 +5,7 @@ from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient, LogsQueryResult, LogsQueryStatus
 
 
-class AzureLogQueryClient:
+class LogQueryClientWrapper:
     def __init__(self, credentials: DefaultAzureCredential) -> None:
         self.logs_query_client = LogsQueryClient(credentials)
 

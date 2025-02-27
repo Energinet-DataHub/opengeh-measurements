@@ -7,7 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
-from tests.common.utils import AzureLogQueryClient
+from tests.common.utils import LogQueryClientWrapper
 
 
 class CalculationInput:
@@ -31,7 +31,7 @@ class CapacitySettlementFixture:
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
-        self.azure_logs_query_client = AzureLogQueryClient(self.credentials)
+        self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
         self.secret_client = SecretClient(
             vault_url=f"https://{environment_configuration.shared_keyvault_name}.vault.azure.net/",
             credential=self.credentials,
