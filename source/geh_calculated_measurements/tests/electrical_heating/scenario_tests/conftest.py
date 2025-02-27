@@ -4,8 +4,7 @@ from pathlib import Path
 import pytest
 import yaml
 from geh_common.telemetry import logging_configuration
-from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
-from geh_common.testing.dataframes.read_csv import read_csv
+from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
@@ -24,15 +23,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
-
-
-@pytest.fixture(scope="session", autouse=True)
-def enable_logging() -> None:
-    """Prevent logging from failing due to missing logging configuration."""
-    logging_configuration.configure_logging(
-        cloud_role_name="some cloud role name",
-        tracer_name="some tracer name",
-    )
 
 
 @pytest.fixture(scope="module")

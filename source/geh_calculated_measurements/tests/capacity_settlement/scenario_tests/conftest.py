@@ -24,15 +24,6 @@ from tests.capacity_settlement.testsession_configuration import (
 )
 
 
-@pytest.fixture(scope="session", autouse=True)
-def enable_logging() -> None:
-    """Prevent logging from failing due to missing logging configuration."""
-    logging_configuration.configure_logging(
-        cloud_role_name="some cloud role name",
-        tracer_name="some tracer name",
-    )
-
-
 @pytest.fixture(scope="module")
 def monkeymodule():
     with pytest.MonkeyPatch.context() as mp:
