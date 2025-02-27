@@ -97,3 +97,30 @@ def test__migration__should_add_is_cancelled_null_constraints(
     assert act_area_threw_exception
     assert count_before == count_after
     
+
+def test__migration__should_add_is_deleted_null_constraints(
+    spark: SparkSession, migrations_executed
+) -> None:
+    # Arrange
+    silver_settings = SilverSettings()
+    silver_data_builder = SilverMeasurementsDataFrameBuilder(spark)
+    silver_data_builder.add_row(is_deleted=None)
+    
+    null_data = silver_data_builder.build()
+    act_area_threw_exception = False       
+    
+    table_name = f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
+    count_before = spark.read.table(table_name).count()
+    
+    # Act 
+    try:
+        null_data.write.mode("append").format("delta").saveAsTable(table_name)
+    except Exception:
+        act_area_threw_exception = True
+
+    count_after = spark.read.table(table_name).count()
+    
+    # Assert
+    assert act_area_threw_exception
+    assert count_before == count_after
+    
