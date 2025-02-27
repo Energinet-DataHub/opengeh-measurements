@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -10,7 +11,7 @@ class SubmittedTransactionsStreamSettings(BaseSettings):
     continuous_streaming_enabled (bool): Indicates whether the continuous streaming is enabled. If false, the stream will stop when no more events are available.
     """
 
-    continuous_streaming_enabled: bool
+    continuous_streaming_enabled: bool = Field(init=False)
 
     class Config:
         case_sensitive = False

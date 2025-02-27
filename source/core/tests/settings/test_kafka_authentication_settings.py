@@ -18,7 +18,7 @@ def test__submitted_transactions_stream_settings__should_create_submitted_transa
     os.environ["SPN_APP_SECRET"] = expected_spn_app_secret
 
     # Act
-    actual = KafkaAuthenticationSettings()  # type: ignore
+    actual = KafkaAuthenticationSettings()
 
     # Assert
     assert actual.event_hub_namespace == expected_event_hub_namespace
