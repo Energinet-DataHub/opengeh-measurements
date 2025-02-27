@@ -12,7 +12,7 @@ from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
-DEFACULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
+DEFAULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
 DEFAULT_METERING_POINT_TYPE = MeteringPointType.ELECTRICAL_HEATING
 DEFAULT_DATE = datetime(2024, 3, 2, 23, 0)
 DEFAULT_QUANTITY = Decimal("999.123")
@@ -74,7 +74,7 @@ class TestWhenValidInput:
         actual = calculated_measurements_factory.create(
             df,
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
-            DEFACULT_ORCHESTRATION_TYPE,
+            DEFAULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
             DEFAULT_TIME_ZONE,
         )
@@ -94,7 +94,7 @@ class TestWhenInputContainsIrrelevantColumn:
         actual = calculated_measurements_factory.create(
             df,
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
-            DEFACULT_ORCHESTRATION_TYPE,
+            DEFAULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
             DEFAULT_TIME_ZONE,
         )
@@ -118,7 +118,7 @@ class TestTransactionId:
             actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
@@ -144,7 +144,7 @@ class TestTransactionId:
             actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
@@ -184,7 +184,7 @@ class TestTransactionId:
             actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
@@ -211,7 +211,7 @@ class TestTransactionId:
             actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
@@ -245,14 +245,14 @@ class TestTransactionId:
             actual_1 = calculated_measurements_factory.create(
                 measurements,
                 orchestration_instance_id_1,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
             actual_2 = calculated_measurements_factory.create(
                 measurements,
                 orchestration_instance_id_2,
-                DEFACULT_ORCHESTRATION_TYPE,
+                DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
