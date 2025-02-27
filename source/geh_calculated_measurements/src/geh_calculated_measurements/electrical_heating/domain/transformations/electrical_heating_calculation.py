@@ -9,7 +9,6 @@ from geh_calculated_measurements.electrical_heating.domain.calculated_names impo
 from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
     get_hourly_energy_in_local_time,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.debug import debugging
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -57,7 +56,6 @@ def _join_source_metering_point_periods_with_energy_hourly(
     time_series_points_in_utc: DataFrame,
     time_zone: str,
 ) -> DataFrame:
-    # TODO: Convert to local time before calling this module
     consumption = get_hourly_energy_in_local_time(
         time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION, MeteringPointType.NET_CONSUMPTION]
     )
@@ -67,16 +65,11 @@ def _join_source_metering_point_periods_with_energy_hourly(
     consumption_from_grid = get_hourly_energy_in_local_time(
         time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION_FROM_GRID]
     )
-    debugging(parent_and_child_metering_point_and_periods_in_localtime, "PARENT_AND_CHILD_METERING_POINT_AND_PERIODS")
-    debugging(consumption, "CONSUMPTION")
-    debugging(supply_to_grid, "SUPPLY_TO_GRID")
-    debugging(consumption_from_grid, "CONSUMPTION_FROM_GRID")
 
-    df = (
+    return (
         parent_and_child_metering_point_and_periods_in_localtime.alias("metering_point")
         # Join each (net)consumption metering point with the (net)consumption time series points
         # Inner join to only include metering points with energy data.
-        # TODO DOC: Only include time series points within the overlapping period of the (net)consumption metering point.
         .join(
             consumption.alias("consumption"),
             (
@@ -146,8 +139,6 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
         )
     )
-    debugging(df)
-    return df
 
 
 # TODO: Use CalculatedNames
@@ -161,14 +152,13 @@ def _calculate_period_limit(
         ),
     )
 
-    debugging(df)
     period_window = Window.partitionBy(
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.parent_period_start),
         F.col(CalculatedNames.parent_period_end),
     )
 
-    df = (
+    return (
         df.groupBy(
             CalculatedNames.electrical_heating_metering_point_id,
             CalculatedNames.parent_period_start,
@@ -193,9 +183,6 @@ def _calculate_period_limit(
             (F.col("period_limit") - F.col("period_limit_reduction")).alias(CalculatedNames.period_energy_limit),
         )
     )
-    debugging(df)
-
-    return df
 
 
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
@@ -219,7 +206,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
 
 
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
-    df = time_series_points.select(
+    return time_series_points.select(
         F.when(
             (F.col(CalculatedNames.cumulative_quantity) >= F.col(CalculatedNames.period_energy_limit))
             & (
@@ -244,5 +231,3 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         F.col(ColumnNames.date),
         F.col(CalculatedNames.period_energy_limit),
     ).drop_duplicates()
-    debugging(df, "ACTUAL")
-    return df
