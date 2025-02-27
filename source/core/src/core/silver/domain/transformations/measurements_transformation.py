@@ -49,6 +49,8 @@ def create_by_unpacked_submitted_transactions(
                 x.quality.alias(SilverMeasurementsColNames.Points.quality),
             ),
         ).alias(SilverMeasurementsColNames.points),
+        F.lit(False).alias(SilverMeasurementsColNames.is_cancelled),
+        F.lit(False).alias(SilverMeasurementsColNames.is_deleted),
         current_utc_time.alias(SilverMeasurementsColNames.created),
     )
 
