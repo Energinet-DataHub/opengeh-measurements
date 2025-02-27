@@ -16,7 +16,7 @@ from tests.silver.schemas.silver_measurements_schema import silver_measurements_
 
 def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrations_executed: None) -> None:
     # Arrange
-    silver_settings = SilverSettings()  # type: ignore
+    silver_settings = SilverSettings()
 
     # Assert
     silver_measurements = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}")
@@ -25,7 +25,7 @@ def test__migrations__should_create_silver_measurements_table(spark: SparkSessio
 
 def test__migrations__should_create_gold_measurements(spark: SparkSession, migrations_executed: None) -> None:
     # Arrange
-    gold_settings = GoldSettings()  # type: ignore
+    gold_settings = GoldSettings()
 
     # Assert
     gold_measurements = spark.table(f"{gold_settings.gold_database_name}.{GoldTableNames.gold_measurements}")
@@ -34,7 +34,7 @@ def test__migrations__should_create_gold_measurements(spark: SparkSession, migra
 
 def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, migrations_executed: None):
     # Arrange
-    bronze_settings = BronzeSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
 
     # Assert
     bronze_migrated = spark.table(
@@ -47,7 +47,7 @@ def test__ingest_submitted_transactions__should_create_submitted_transactions_ta
     spark: SparkSession, migrations_executed: None
 ) -> None:
     # Arrange
-    bronze_settings = BronzeSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
 
     # Assert
     submitted_transactions = spark.table(
@@ -60,7 +60,7 @@ def test__migration__should_create_invalid_submitted_transactions_table(
     spark: SparkSession, migrations_executed
 ) -> None:
     # Arrange
-    bronze_settings = BronzeSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
 
     # Assert
     invalid_submitted_transactions = spark.table(
