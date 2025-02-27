@@ -96,6 +96,7 @@ class TestWhenInputContainsIrrelevantColumn:
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
             DEFACULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
+            DEFAULT_TIME_ZONE,
         )
 
         # Assert
@@ -119,6 +120,7 @@ class TestTransactionId:
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
 
             # Assert
@@ -144,6 +146,7 @@ class TestTransactionId:
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
 
             # Assert
