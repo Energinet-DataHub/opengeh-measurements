@@ -6,12 +6,12 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.infrastructure import (
+    CalculatedMeasurementsInternalDatabaseDefinition,
+)
 from geh_calculated_measurements.electrical_heating.application import execute_application
 from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
     EnvironmentVariable,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabase,
 )
 
 
@@ -37,6 +37,6 @@ def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict,
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsDatabase.DATABASE_NAME}.{CalculatedMeasurementsDatabase.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0

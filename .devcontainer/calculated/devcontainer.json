@@ -9,6 +9,7 @@
   "workspaceFolder": "/workspace/source/geh_calculated_measurements",
   "postStartCommand": "uv sync",
   "containerEnv": {
+    "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venv",
     "UV_CACHE_DIR": "/home/vscode/.cache/uv",
     "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy",
     "RUFF_CACHE_DIR": "/home/vscode/.cache/ruff",
@@ -57,7 +58,7 @@
           "tests"
         ],
         "python.analysis.include": [
-          "/workspace/source/ /**/*"
+          "/workspace/source/**/*"
         ],
         "python.venvPath": "/home/vscode/.venv",
         "python.testing.unittestEnabled": false,
