@@ -6,7 +6,7 @@ from pyspark.sql.types import (
     StructField,
     StructType,
     TimestampType,
-    BooleanType
+    BooleanType,
 )
 
 from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
@@ -38,7 +38,7 @@ silver_measurements_schema = StructType(
             True,
         ),
         StructField(SilverMeasurementsColNames.is_cancelled, BooleanType(), True),
-        StructField(SilverMeasurementsColNames.is_deleted, BooleanType(), True),        
+        StructField(SilverMeasurementsColNames.is_deleted, BooleanType(), True),
         StructField(SilverMeasurementsColNames.created, TimestampType(), True),
     ]
 )

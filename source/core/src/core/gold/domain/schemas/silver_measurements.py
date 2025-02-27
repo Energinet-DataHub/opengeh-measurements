@@ -6,7 +6,7 @@ from pyspark.sql.types import (
     StructField,
     StructType,
     TimestampType,
-    BooleanType
+    BooleanType,
 )
 
 from core.gold.domain.constants.column_names.silver_measurements_column_names import (
