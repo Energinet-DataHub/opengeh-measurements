@@ -151,7 +151,7 @@ The data is periodized; the following transaction types are relevant for determi
 - MANCHGSUP: Tvunget leverandørskifte på målepunkt (BRS-044).
 - MANCOR (HTX): Manuelt korrigering
 
-Periods are  included when
+Periods are included when
 - the metering point physical status is connected or disconnected
 - the period does not end before 2021-01-01
 - the electrical heating is or has been registered for the period
@@ -247,8 +247,8 @@ consumption_metering_points_periods_df = consumption_metering_points_periods_per
 # Time_series_points data frame generation -----------------------------------------------------------------------------
 """
 - Time series points for electricity consumption
-- The table simulates consumption data on 'consumption' metering point (parent), 'supply_to_grid' metering points,
-  'consumption_from_grid' metering points, 'electrical_heating' metering points, and 'net_consumption' metering points.
+- The table simulates consumption data on 'consumption' (parent), 'supply_to_grid', 'consumption_from_grid',
+  'electrical_heating', and 'net_consumption' metering points.
 - The time interval for the 'consumption' metering point is daily where the 'supply_to_grid', 'consumption_from_grid',
   'electrical_heating', and 'net_consumption' are every 15 minutes.
 - The quantity for all types of metering points can vary between 0-5 in quantity (assumption)
@@ -276,7 +276,7 @@ time_interval_daily_df = (
     .select(F.col("datetime").cast(T.TimestampType()))  # Select only the date column
 )
 
-## Define the simulation for parent metering point consumption --------------------------------
+## Define the simulation for parent metering point consumption
 parent_time_series_df = (
     parent_metering_point_id_df.select("parent_metering_point_id")
     .withColumnRenamed("parent_metering_point_id", "metering_point_id")
@@ -292,7 +292,7 @@ parent_time_series_df = (
     )
 )
 
-## Define the simulation for child metering point consumption --------------------------------
+## Define the simulation for child metering point consumption
 ### Define the interval dataframe of 15 minutes simulation observations
 time_interval_15min_df = spark.range(96).selectExpr("id * 15 as minutes_offset")
 
@@ -310,7 +310,7 @@ child_time_series_df = (
     )
 )
 
-## Union the two timeseries tables together -------------------------------------------------
+## Union the two timeseries tables together
 time_series_df = parent_time_series_df.union(child_time_series_df)
 
 
