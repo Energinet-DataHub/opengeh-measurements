@@ -22,7 +22,10 @@ class JobState:
 
 
 class ElectricalHeatingFixture:
+    job_state: JobState
+
     def __init__(self, environment_configuration: EnvironmentConfiguration):
+        self.environment_configuration = environment_configuration
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
@@ -41,6 +44,11 @@ class ElectricalHeatingFixture:
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
             f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
+            f"--catalog-name={self.environment_configuration.catalog_name}",
+            f"--schema-name={self.environment_configuration.schema_name}",
+            f"--time-series-points-table={self.environment_configuration.time_series_points_table}",
+            f"--consumption-points-table={self.environment_configuration.consumption_points_table}",
+            f"--child-points-table={self.environment_configuration.child_points_table}",
         ]
         return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
