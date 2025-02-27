@@ -20,6 +20,6 @@ invalid_submitted_transactions_schema = StructType(
         StructField(BronzeSubmittedTransactionsColumnNames.partition, IntegerType(), True),
         StructField(BronzeSubmittedTransactionsColumnNames.offset, LongType(), True),
         StructField(BronzeSubmittedTransactionsColumnNames.timestamp, TimestampType(), True),
-        StructField(BronzeSubmittedTransactionsColumnNames.timestampType, IntegerType(), True),
+        StructField(BronzeSubmittedTransactionsColumnNames.timestamp_type, IntegerType(), True),
     ]
 )

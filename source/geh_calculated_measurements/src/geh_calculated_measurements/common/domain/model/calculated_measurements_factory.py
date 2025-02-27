@@ -4,10 +4,10 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.electrical_heating.domain.calculated_measurements import (
+from geh_calculated_measurements.common.domain.column_names import ColumnNames
+from geh_calculated_measurements.common.domain.model.calculated_measurements import (
     CalculatedMeasurements,
 )
-from geh_calculated_measurements.electrical_heating.domain.column_names import ColumnNames
 
 
 def create(
