@@ -7,6 +7,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.electrical_heating.domain import (
     ColumnNames,
     execute,
@@ -99,3 +100,25 @@ def assert_dataframes_configuration(
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )
+
+
+def _create_databases(spark: SparkSession) -> None:
+    # """
+    # Create Unity Catalog databases as they are not created by migration scripts.
+    # They are created by infrastructure (in the real environments)
+    # In tests they are created in the single available default database.
+    # """
+
+    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
+    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
+
+    # for database in UnityCatalogDatabaseNames.get_names():
+    #     print(f"Creating database {database}")
+    #     spark.sql(f"CREATE DATABASE IF NOT EXISTS {database}")
+
+
+@pytest.fixture(scope="session")
+def migrations_executed(spark: SparkSession) -> None:
+    # Execute all migrations
+    _create_databases(spark)
+    migrate()

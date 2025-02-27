@@ -7,7 +7,6 @@ import geh_calculated_measurements.database_migrations.substitutions as substitu
 from geh_calculated_measurements.database_migrations.database_definitions import (
     MeasurementsCalculatedInternalDatabaseDefinition,
 )
-from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 
 
 def migrate() -> None:
@@ -17,7 +16,7 @@ def migrate() -> None:
 
 def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
     substitution_variables = substitutions.substitutions()
-    catalog_name = CatalogSettings().catalog_name  # type: ignore
+    catalog_name = "spark_catalog"  # CatalogSettings().catalog_name  # type: ignore
 
     return SparkSqlMigrationsConfiguration(
         migration_schema_name=MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,

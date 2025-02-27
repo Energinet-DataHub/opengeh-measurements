@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {calculated_measurements_database}.{calculated_measurements_table}
+CREATE TABLE IF NOT EXISTS {calculated_measurements_internal_database}.{calculated_measurements_internal_table}
 (
     orchestration_type STRING NOT NULL,
     orchestration_instance_id STRING NOT NULL,
