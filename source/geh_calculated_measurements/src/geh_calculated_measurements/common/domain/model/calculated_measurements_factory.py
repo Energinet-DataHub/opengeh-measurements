@@ -19,6 +19,7 @@ def create(
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
+    time_zone: str,
 ) -> CalculatedMeasurements:
     df = measurements.withColumns(
         {
@@ -26,20 +27,26 @@ def create(
             ColumnNames.orchestration_type: F.lit(orchestration_type.value),
             ColumnNames.metering_point_type: F.lit(metering_point_type.value),
             ColumnNames.transaction_creation_datetime: F.current_timestamp(),
-            ColumnNames.transaction_id: _add_transaction_id(orchestration_instance_id),
+            ColumnNames.transaction_id: _add_transaction_id(orchestration_instance_id, time_zone),
         }
     )
 
     return CalculatedMeasurements(df)
 
 
-def _add_transaction_id(orchestration_instance_id: UUID) -> Column:
+def _add_transaction_id(orchestration_instance_id: UUID, time_zone: str) -> Column:
+    """Create a unique transaction id based on the orchestration instance id, metering point id. If there are gaps in the dates a new transaction id is created.
+
+    The id is a UUID5 based on the transaction id string, which makes it deterministic.
+
+    """
     window_spec = Window.partitionBy(ColumnNames.metering_point_id).orderBy(F.col(ColumnNames.date))
 
-    # Identify gaps in the data
-    gap = F.when(
-        F.lag(F.col(ColumnNames.date)).over(window_spec) != F.col(ColumnNames.date) - F.expr("INTERVAL 1 DAY"), 1
-    ).otherwise(0)
+    # Convert 'date' to local time, so that dates subtract '1 DAY' correctly also for daylight saving time
+    local_date = F.from_utc_timestamp(F.col(ColumnNames.date), time_zone)
+
+    # Identify gaps in the data using local time
+    gap = F.when(F.lag(local_date).over(window_spec) != local_date - F.expr("INTERVAL 1 DAY"), 1).otherwise(0)
 
     transaction_group = F.sum(gap).over(window_spec.rowsBetween(Window.unboundedPreceding, 0))
 

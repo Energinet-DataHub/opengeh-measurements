@@ -17,6 +17,7 @@ DEFAULT_METERING_POINT_TYPE = MeteringPointType.ELECTRICAL_HEATING
 DEFAULT_DATE = datetime(2024, 3, 2, 23, 0)
 DEFAULT_QUANTITY = Decimal("999.123")
 DEFAULT_METERING_POINT_ID = "1234567890123"
+DEFAULT_TIME_ZONE = "Europe/Copenhagen"
 
 
 def create_row(
@@ -75,6 +76,7 @@ class TestWhenValidInput:
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
             DEFACULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
+            DEFAULT_TIME_ZONE,
         )
 
         # Assert
@@ -181,7 +183,9 @@ class TestTransactionId:
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
+            actual.df.show(truncate=False)
 
             # Assert
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
@@ -206,6 +210,7 @@ class TestTransactionId:
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
 
             # Assert
@@ -227,12 +232,14 @@ class TestTransactionId:
                 orchestration_instance_id_1,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
             actual_2 = calculated_measurements_factory.create(
                 measurements,
                 orchestration_instance_id_2,
                 DEFACULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
+                DEFAULT_TIME_ZONE,
             )
 
             # Assert
