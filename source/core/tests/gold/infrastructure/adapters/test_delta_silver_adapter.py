@@ -23,7 +23,7 @@ def test__read_stream__should_return_dataframe(spark: SparkSession, create_silve
 def test__read_stream__should_contain_rows_in_silver(spark: SparkSession):
     # Arrange
     silver_adapter = DeltaSilverAdapter(spark)
-    database_name = SilverSettings().silver_database_name  # type: ignore
+    database_name = SilverSettings().silver_database_name
     table_name = SilverTableNames.silver_measurements
     test_table = f"{table_name}_test_read_stream"
     metering_point_id = random.randint(0, 999999999999999999)
