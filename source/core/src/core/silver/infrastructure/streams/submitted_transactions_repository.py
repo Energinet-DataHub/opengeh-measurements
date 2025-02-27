@@ -9,7 +9,7 @@ from core.silver.infrastructure.config import SilverTableNames
 class SubmittedTransactionsRepository:
     def __init__(self, spark: SparkSession):
         self.spark = spark
-        self.silver_database_name = SilverSettings().silver_database_name  # type: ignore
+        self.silver_database_name = SilverSettings().silver_database_name
 
     def read_submitted_transactions(self) -> DataFrame:
         return (

@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -11,8 +12,8 @@ class GoldSettings(BaseSettings):
     gold_database_name (str): The name of the Gold database created in infrastructure.
     """
 
-    gold_container_name: str
-    gold_database_name: str
+    gold_container_name: str = Field(init=False)
+    gold_database_name: str = Field(init=False)
 
     class Config:
         case_sensitive = False
