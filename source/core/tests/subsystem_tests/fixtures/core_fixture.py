@@ -3,6 +3,7 @@ from azure.identity import DefaultAzureCredential
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
+from tests.helpers.builders.submitted_transactions_builder import ValueBuilder
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings
 from tests.subsystem_tests.settings.kafka_settings import KafkaSettings
 
@@ -51,7 +52,9 @@ class CoreFixture:
 
         event_data_batch = producer.create_batch()
 
-        event_data_batch.add(EventData("This is the second event"))
+        value = ValueBuilder(spark).build()
+
+        event_data_batch.add(EventData(value))
 
         producer.send_batch(event_data_batch)
 

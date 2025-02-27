@@ -25,7 +25,7 @@ def test__dummy_test(spark: SparkSession) -> None:
 @pytest.mark.order(1)
 def test__start_jobs() -> None:
     # Arrange
-    databricks_settings = DatabricksSettings()
+    databricks_settings = DatabricksSettings()  # type: ignore
     fixture = CoreFixture(databricks_settings)
 
     # Act
