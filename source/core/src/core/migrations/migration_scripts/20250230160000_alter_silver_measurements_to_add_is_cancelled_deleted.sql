@@ -7,8 +7,8 @@ SET is_cancelled = false, is_deleted = false
 GO 
 
 ALTER TABLE {silver_database}.{silver_measurements_table}
-ADD is_cancelled_is_not_null_chk CHECK (is_cancelled is not null)
+ADD CONSTRAINT is_cancelled_is_not_null_chk CHECK (is_cancelled is not null)
 GO
 
 ALTER TABLE {silver_database}.{silver_measurements_table}
-ADD is_deleted_is_not_null_chk CHECK (is_deleted is not null)
+ADD CONSTRAINT is_deleted_is_not_null_chk CHECK (is_deleted is not null)
