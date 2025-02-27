@@ -124,7 +124,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"consumption.{CalculatedNames.observation_time_hourly}").alias(
                 CalculatedNames.observation_time_hourly
             ),
-            F.col(f"consumption.{ColumnNames.quantity}").alias(CalculatedNames.consumption_quantity),
+            F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
             F.col(f"supply_to_grid.{ColumnNames.metering_point_id}").alias(
                 CalculatedNames.supply_to_grid_metering_point_id
             ),
@@ -135,21 +135,21 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"consumption_from_grid.{ColumnNames.quantity}").alias(
                 CalculatedNames.consumption_from_grid_quantity
             ),
-            # TODO BJM: Remove
-            F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
         )
     )
 
 
-# TODO: Use CalculatedNames
 def _calculate_period_limit(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
     df = periods_with_energy_hourly.select(
         "*",
-        F.coalesce(F.least(F.col("consumption_from_grid_quantity"), F.col("supply_to_grid_quantity")), F.lit(0)).alias(
-            "nettoficeret_hourly"
-        ),
+        F.coalesce(
+            F.least(
+                F.col(CalculatedNames.consumption_from_grid_quantity), F.col(CalculatedNames.supply_to_grid_quantity)
+            ),
+            F.lit(0),
+        ).alias("nettoficated_hourly"),
     )
 
     period_window = Window.partitionBy(
@@ -167,7 +167,7 @@ def _calculate_period_limit(
         )
         .agg(
             F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
-            F.sum(F.col("nettoficeret_hourly")).alias("nettoficeret_daily"),
+            F.sum(F.col("nettoficated_hourly")).alias("nettoficated_daily"),
         )
         .select(
             "*",
@@ -176,7 +176,7 @@ def _calculate_period_limit(
                 * _ELECTRICAL_HEATING_LIMIT_YEARLY
                 / days_in_year(F.col(CalculatedNames.parent_period_start))
             ).alias("period_limit"),
-            F.sum(F.col("nettoficeret_daily")).over(period_window).alias("period_limit_reduction"),
+            F.sum(F.col("nettoficated_daily")).over(period_window).alias("period_limit_reduction"),
         )
         .select(
             "*",
