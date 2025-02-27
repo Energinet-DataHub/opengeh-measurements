@@ -32,33 +32,24 @@ def test_case(
     table = MeasurementsCalculatedInternalDatabaseDefinition.MEASUREMENTS_NAME
     df.write.format("delta").mode("overwrite").saveAsTable(f"{catalog}.{schema}.{table}")
 
-    actual = spark.sql("SELECT * FROM test_view")
-    print("actual:", actual.show())
-
-    # expected_schema = T.StructType(
-    #     [
-    #         # Metering point ID
-    #         T.StructField("metering_point_id", T.StringType(), False),
-    #         # "electrical_heating" or "capacity_settlement"
-    #         T.StructField("metering_point_type", T.StringType(), False),
-    #         # UTC time
-    #         T.StructField(
-    #             "observation_time",
-    #             T.TimestampType(),
-    #             False,
-    #         ),
-    #         # The calculated quantity
-    #         T.StructField("quantity", T.DecimalType(18, 3), False),
-    #     ]
-    # )
+    actual = spark.sql(
+        """SELECT 
+            orchestration_type,
+            orchestration_instance_id,
+            metering_point_id,
+            transaction_id,
+            transaction_creation_datetime,
+            metering_point_type,
+            date,
+            quantity
+        FROM test_view"""
+    )
 
     expected = read_csv(
         spark,
         f"{scenario_path}/wip_xhtca/then/output.csv",
         calculated_measurements.calculated_measurements_schema,
     )
-
-    print("expected", expected.show())
 
     # Assert
     assert_dataframes_and_schemas(
