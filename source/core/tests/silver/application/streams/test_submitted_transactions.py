@@ -41,8 +41,8 @@ def test__submitted_transactions__should_save_in_silver_measurements(
     mock_checkpoint_path, spark: SparkSession, migrate
 ) -> None:
     # Arrange
-    bronze_settings = BronzeSettings()  # type: ignore
-    silver_settings = SilverSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
+    silver_settings = SilverSettings()
     expected_orchestration_id = identifier_helper.generate_random_string()
     value = ValueBuilder(spark).add_row(orchestration_instance_id=expected_orchestration_id).build()
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
