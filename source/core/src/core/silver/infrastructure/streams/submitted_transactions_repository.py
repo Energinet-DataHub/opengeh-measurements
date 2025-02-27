@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession
 
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
 from core.silver.domain.constants.orchestration_types import OrchestrationTypes
 from core.silver.infrastructure.config import SilverTableNames
@@ -9,7 +9,7 @@ from core.silver.infrastructure.config import SilverTableNames
 class SubmittedTransactionsRepository:
     def __init__(self, spark: SparkSession):
         self.spark = spark
-        self.silver_database_name = CatalogSettings().silver_database_name  # type: ignore
+        self.silver_database_name = SilverSettings().silver_database_name  # type: ignore
 
     def read_submitted_transactions(self) -> DataFrame:
         return (

@@ -1,3 +1,0 @@
-﻿orchestration_type;orchestration_instance_id;metering_point_id;transaction_id;transaction_creation_datetime;metering_point_type;resolution;date;quantity
-electrical_heating;123e4567-e89b-12d3-a456-426614174000;123456789012345678;123456789;2023-01-01T04:00:00Z;electrical_heating;PT1H;2022-12-01T23:00:00Z;100
-electrical_heating;123e4567-e89b-12d3-a456-426614174000;123456789012345678;123456789;2023-01-01T04:00:00Z;electrical_heating;PT1H;2022-12-02T23:00:00Z;200

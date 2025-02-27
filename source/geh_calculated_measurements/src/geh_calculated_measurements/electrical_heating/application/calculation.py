@@ -1,6 +1,7 @@
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
@@ -9,7 +10,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
 )
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ElectricityMarketRepository,
-    MeasurementsRepository,
+    MeasurementsGoldRepository,
 )
 
 
@@ -17,10 +18,10 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
-    measurements_repository = MeasurementsRepository(spark, args.catalog_name)
+    measurements_gold_repository = MeasurementsGoldRepository(spark, args.catalog_name)
 
     # Read data frames
-    time_series_points = measurements_repository.read_time_series_points()
+    time_series_points = measurements_gold_repository.read_time_series_points()
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
@@ -30,4 +31,5 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
         consumption_metering_point_periods,
         child_metering_point_periods,
         args.time_zone,
+        args.orchestration_instance_id,
     )
