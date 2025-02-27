@@ -219,8 +219,20 @@ class TestTransactionId:
             # Assert
             actual_transaction_ids = actual.df.select(ColumnNames.transaction_id)
             assert actual_transaction_ids.distinct().count() == 2
-            assert actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_1).distinct().count() == 1
-            assert actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_2).distinct().count() == 1
+            assert (
+                actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_1)
+                .select(F.col(ColumnNames.transaction_id))
+                .distinct()
+                .count()
+                == 1
+            )
+            assert (
+                actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_2)
+                .select(F.col(ColumnNames.transaction_id))
+                .distinct()
+                .count()
+                == 1
+            )
 
     class TestWhenMultipleOrchestrationInstanceIdsWithSameData:
         def test_returns_different_transaction_ids(self, spark: SparkSession) -> None:
