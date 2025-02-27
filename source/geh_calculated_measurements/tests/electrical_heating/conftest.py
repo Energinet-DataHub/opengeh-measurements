@@ -9,7 +9,6 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_database,
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
-from geh_calculated_measurements.electrical_heating.infrastructure import ElectricityMarketRepository
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
@@ -75,32 +74,3 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
         format="delta",
         mode="overwrite",
     )
-
-
-@pytest.fixture(scope="session")
-def electricity_market_repository_extra_col(
-    spark: SparkSession, test_files_folder_path: str
-) -> ElectricityMarketRepository:
-    return ElectricityMarketRepository(
-        spark,
-        test_files_folder_path,
-        consumption_metering_point_periods_file_name="consumption_metering_point_periods_v1_extra_col.csv",
-        child_metering_points_file_name="child_metering_points_v1_extra_col.csv",
-    )
-
-
-@pytest.fixture(scope="session")
-def electricity_market_repository_missing_col(
-    spark: SparkSession, test_files_folder_path: str
-) -> ElectricityMarketRepository:
-    return ElectricityMarketRepository(
-        spark,
-        test_files_folder_path,
-        consumption_metering_point_periods_file_name="consumption_metering_point_periods_v1_missing_col.csv",
-        child_metering_points_file_name="child_metering_points_v1_missing_col.csv",
-    )
-
-
-@pytest.fixture(scope="session")
-def electricity_market_repository(spark: SparkSession, test_files_folder_path: str) -> ElectricityMarketRepository:
-    return ElectricityMarketRepository(spark, test_files_folder_path)
