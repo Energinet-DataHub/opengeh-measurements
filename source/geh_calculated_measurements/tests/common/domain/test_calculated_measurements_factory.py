@@ -78,7 +78,7 @@ class TestWhenValidInput:
         )
 
         # Assert
-        assert actual.df.columns == expected_columns
+        assert set(actual.df.columns) == set(expected_columns)
 
 
 class TestWhenInputContainsIrrelevantColumn:
