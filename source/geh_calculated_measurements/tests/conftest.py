@@ -23,14 +23,8 @@ def env_args_fixture_logging() -> dict[str, str]:
 def script_args_fixture_logging() -> list[str]:
     sys_argv = [
         "program_name",
-        "--force_configuration",
-        "false",
         "--orchestration-instance-id",
         "00000000-0000-0000-0000-000000000001",
-        "--calculation-month",
-        "1",
-        "--calculation-year",
-        "2021",
     ]
     return sys_argv
 

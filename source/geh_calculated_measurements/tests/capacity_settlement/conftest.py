@@ -6,32 +6,6 @@ from tests.capacity_settlement.testsession_configuration import TestSessionConfi
 
 
 @pytest.fixture(scope="session")
-def env_args_fixture() -> dict[str, str]:
-    env_args = {
-        "CLOUD_ROLE_NAME": "test_role",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
-        "SUBSYSTEM": "test_subsystem",
-    }
-    return env_args
-
-
-@pytest.fixture(scope="session")
-def script_args_fixture() -> list[str]:
-    sys_argv = [
-        "program_name",
-        "--force_configuration",
-        "false",
-        "--orchestration-instance-id",
-        "00000000-0000-0000-0000-000000000001",
-        "--calculation-month",
-        "1",
-        "--calculation-year",
-        "2021",
-    ]
-    return sys_argv
-
-
-@pytest.fixture(scope="session")
 def contracts_path() -> str:
     """
     Returns the source/contract folder path.
