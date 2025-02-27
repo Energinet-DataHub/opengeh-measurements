@@ -1,14 +1,7 @@
 import pytest
-from geh_common.telemetry.logging_configuration import configure_logging
 
 from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
-
-
-@pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")
