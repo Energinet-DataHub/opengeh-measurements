@@ -11,7 +11,7 @@ from core.settings.catalog_settings import CatalogSettings
 
 def migrate() -> None:
     substitution_variables = substitutions.substitutions()
-    catalog_name = CatalogSettings().catalog_name  # type: ignore
+    catalog_name = CatalogSettings().catalog_name
 
     spark_config = SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.measurements_internal_database,
