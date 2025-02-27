@@ -3,12 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from geh_calculated_measurements.electrical_heating.application.job_args.command_line_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
-)
-from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
-    EnvironmentVariable,
+from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
+    ElectricalHeatingArgs,
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
@@ -40,9 +36,9 @@ def sys_argv_from_contract(
 @pytest.fixture(scope="session")
 def job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
-        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: "some_path",
+        "CATALOG_NAME": "some_catalog",
+        "TIME_ZONE": "some_time_zone",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
     }
 
 
@@ -57,9 +53,7 @@ def test_when_parameters__parses_parameters_from_contract(
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
         with patch.dict("os.environ", job_environment_variables):
-            command_line_args = parse_command_line_arguments()
-            # Act
-            actual_args = parse_job_arguments(command_line_args)
+            actual_args = ElectricalHeatingArgs()
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID

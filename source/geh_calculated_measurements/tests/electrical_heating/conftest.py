@@ -4,12 +4,11 @@ from typing import Generator
 
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
-from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.electrical_heating.domain import time_series_points_v1
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements.measurements_gold.database_definitions import (
+from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
 )
 from tests import PROJECT_ROOT
@@ -23,13 +22,6 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     yield
     spark.catalog.clearCache()
-
-
-@pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
 
 
 @pytest.fixture(scope="session")

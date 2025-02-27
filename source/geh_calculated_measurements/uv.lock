@@ -454,7 +454,7 @@ requires-dist = [
     { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
     { name = "configargparse", specifier = "==1.7.0" },
     { name = "delta-spark", specifier = "==3.2.0" },
-    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.1.1" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.1.2" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyspark", specifier = "==3.5.1" },
     { name = "python-dateutil", specifier = "==2.8.2" },
@@ -473,8 +473,8 @@ dev = [
 
 [[package]]
 name = "geh-common"
-version = "5.1.1"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.1.1#d9e3dedc1025a1dcc03ab767f35cd0f8a79c1dda" }
+version = "5.2.0"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.1.2#5bb080e65d4350b6af37c4426dcba48b85d0cbbd" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
@@ -484,6 +484,8 @@ dependencies = [
     { name = "databricks-sdk" },
     { name = "delta-spark" },
     { name = "dependency-injector" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
     { name = "pyspark" },
     { name = "pyyaml" },
 ]
