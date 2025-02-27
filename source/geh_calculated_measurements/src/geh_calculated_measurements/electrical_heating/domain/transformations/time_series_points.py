@@ -4,7 +4,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
-from geh_calculated_measurements.electrical_heating.domain import TimeSeriesPoints
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import (
     calculate_daily_quantity,
     calculate_hourly_quantity,
