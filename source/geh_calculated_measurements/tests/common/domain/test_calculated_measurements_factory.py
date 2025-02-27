@@ -249,6 +249,6 @@ class TestTransactionId:
             assert actual_1.df.select(ColumnNames.transaction_id).distinct().count() == 1
             assert actual_2.df.select(ColumnNames.transaction_id).distinct().count() == 1
             assert (
-                actual_1.df.select(ColumnNames.transaction_id).first()
-                != actual_2.df.select(ColumnNames.transaction_id).first()
+                actual_1.df.collect()[0][ColumnNames.transaction_id]
+                != actual_2.df.collect()[0][ColumnNames.transaction_id]
             )
