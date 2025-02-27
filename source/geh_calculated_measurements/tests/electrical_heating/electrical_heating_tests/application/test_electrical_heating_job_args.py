@@ -6,9 +6,6 @@ import pytest
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )
-from geh_calculated_measurements.electrical_heating.application.environment_variables import (
-    EnvironmentVariable,
-)
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_TIME_ZONE = "some_time_zone"
@@ -39,9 +36,9 @@ def sys_argv_from_contract(
 @pytest.fixture(scope="session")
 def job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "some_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "some_time_zone",
-        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: "some_path",
+        "CATALOG_NAME": "some_catalog",
+        "TIME_ZONE": "some_time_zone",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
     }
 
 
