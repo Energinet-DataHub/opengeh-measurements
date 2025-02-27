@@ -30,7 +30,7 @@ def script_args_fixture_logging() -> list[str]:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging)  -> Generator[None, None, None]:
+def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging) -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
     with (
         mock.patch("sys.argv", script_args_fixture_logging),

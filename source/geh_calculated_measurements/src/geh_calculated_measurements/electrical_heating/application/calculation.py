@@ -1,7 +1,6 @@
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
 )

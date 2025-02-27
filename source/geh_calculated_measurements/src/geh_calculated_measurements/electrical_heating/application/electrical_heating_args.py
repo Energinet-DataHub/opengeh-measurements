@@ -7,6 +7,7 @@ from pydantic import Field
 
 class ElectricalHeatingArgs(ApplicationSettings):
     """Args for the electrical heating job."""
+
     orchestration_instance_id: UUID = Field(init=False)
     time_zone: str = "Europe/Copenhagen"
     execution_start_datetime: datetime = datetime.now()
