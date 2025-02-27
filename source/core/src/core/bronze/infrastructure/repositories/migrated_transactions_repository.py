@@ -17,7 +17,7 @@ class MigratedTransactionsRepository:
         spark: SparkSession,
     ) -> None:
         self.spark = spark
-        self.bronze_database_name = BronzeSettings().bronze_database_name  # type: ignore
+        self.bronze_database_name = BronzeSettings().bronze_database_name
         self.migrated_transactions_table_name = TableNames.bronze_migrated_transactions_table
 
     def read_measurements_bronze_migrated_transactions(self) -> DataFrame:

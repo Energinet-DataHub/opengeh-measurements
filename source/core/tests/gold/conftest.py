@@ -99,7 +99,7 @@ def tests_path(source_path: str) -> str:
 
 @pytest.fixture(scope="session")
 def create_silver_tables(spark: SparkSession) -> None:
-    silver_settings = SilverSettings()  # type: ignore
+    silver_settings = SilverSettings()
 
     create_table_from_schema(
         spark=spark,
