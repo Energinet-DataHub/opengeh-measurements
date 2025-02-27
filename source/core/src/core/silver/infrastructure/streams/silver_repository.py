@@ -4,19 +4,19 @@ from pyspark.sql import DataFrame
 
 import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.settings import (
-    StorageAccountSettings,
     SubmittedTransactionsStreamSettings,
 )
-from core.settings.catalog_settings import CatalogSettings
+from core.settings import StorageAccountSettings
+from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
 
 
 class SilverRepository:
     def __init__(self) -> None:
-        database_name = CatalogSettings().silver_database_name  # type: ignore
+        database_name = SilverSettings().silver_database_name  # type: ignore
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
-        self.silver_container_name = CatalogSettings().silver_container_name  # type: ignore
+        self.silver_container_name = SilverSettings().silver_container_name  # type: ignore
 
     def write_stream(
         self,
