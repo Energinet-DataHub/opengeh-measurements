@@ -26,16 +26,26 @@
 CREATE OR REPLACE VIEW test_view AS
 WITH _input AS (
   SELECT 
+    orchestration_type,
+    orchestration_instance_id,
     transaction_id,
+    transaction_creation_datetime,
+    metering_point_id,
+    metering_point_type,
     date,
     quantity
   FROM {catalog_name}.{calculated_measurements_internal_database}.{calculated_measurements_internal_table} 
 ),
 _hours AS (
   SELECT 
-    _input.date as date,
-    _input.quantity as quantity,
-    _input.transaction_id as transaction_id,
+    _input.orchestration_type,
+    _input.orchestration_instance_id,
+    _input.transaction_id,
+    _input.transaction_creation_datetime,
+    _input.metering_point_id,
+    _input.metering_point_type,
+    _input.date,
+    _input.quantity,
     explode(sequence(
       to_utc_timestamp(FROM_UTC_TIMESTAMP(_input.date, 'Europe/Copenhagen'), 'Europe/Copenhagen'),
       to_utc_timestamp(date_add(FROM_UTC_TIMESTAMP(_input.date, 'Europe/Copenhagen'), 1), 'Europe/Copenhagen'),
@@ -44,9 +54,13 @@ _hours AS (
   FROM _input
 )
 SELECT 
-  _hours.transaction_id as metering_point_id, --TODO: Change this to actually have the correct format
-  'electrical_heating' as metering_point_type,
-  _hours.hour as observation_time,
+  _hours.orchestration_type,
+  _hours.orchestration_instance_id,
+  _hours.transaction_id, --TODO: Change this to actually have the correct format
+  _hours.transaction_creation_datetime,
+  _hours.metering_point_id,
+  _hours.metering_point_type,
+  _hours.hour as date,
   CASE WHEN _hours.hour = to_utc_timestamp(FROM_UTC_TIMESTAMP(_hours.date, 'Europe/Copenhagen'), 'Europe/Copenhagen')
     THEN _hours.quantity
     ELSE 0
