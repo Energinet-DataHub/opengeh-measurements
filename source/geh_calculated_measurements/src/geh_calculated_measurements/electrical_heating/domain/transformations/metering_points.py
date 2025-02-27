@@ -6,13 +6,9 @@ from geh_common.pyspark.transformations import (
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import (
+from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.electrical_heating.domain import (
     CalculatedNames,
-)
-from geh_calculated_measurements.electrical_heating.domain.column_names import (
-    ColumnNames,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
