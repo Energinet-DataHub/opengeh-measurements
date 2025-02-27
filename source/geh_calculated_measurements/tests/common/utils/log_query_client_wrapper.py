@@ -1,4 +1,4 @@
-﻿import time
+import time
 from datetime import timedelta
 
 from azure.identity import DefaultAzureCredential
