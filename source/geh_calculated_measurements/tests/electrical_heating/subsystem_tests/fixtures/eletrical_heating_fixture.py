@@ -25,7 +25,7 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-query = """INSERT INTO measurements (
+query = f"""INSERT INTO {MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME} (
   transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
   metering_point_id, observation_time, quality, metering_point_type -- static variables
 )
