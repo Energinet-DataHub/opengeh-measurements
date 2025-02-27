@@ -1,11 +1,9 @@
 ### This file contains the fixtures that are used in the tests. ###
 from pathlib import Path
 from typing import Generator
-from unittest import mock
 
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
@@ -34,7 +32,7 @@ def script_args_fixture() -> list[str]:
         "--force_configuration",
         "false",
         "--orchestration-instance-id",
-        "4a540892-2c0a-46a9-9257-c4e13051d76a",
+        "00000000-0000-0000-0000-000000000001",
     ]
     return sys_argv
 
@@ -46,20 +44,6 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     yield
     spark.catalog.clearCache()
-
-
-@pytest.fixture(autouse=True)
-def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    with (
-        mock.patch("sys.argv", script_args_fixture),
-        mock.patch.dict("os.environ", env_args_fixture, clear=False),
-        mock.patch(
-            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
-        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
-    ):
-        logging_settings = LoggingSettings()
-        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="session")

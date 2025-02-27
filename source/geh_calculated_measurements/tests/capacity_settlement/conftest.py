@@ -1,7 +1,5 @@
-from unittest import mock
 
 import pytest
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
 from tests import PROJECT_ROOT
 from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
@@ -24,28 +22,13 @@ def script_args_fixture() -> list[str]:
         "--force_configuration",
         "false",
         "--orchestration-instance-id",
-        "4a540892-2c0a-46a9-9257-c4e13051d76a",
+        "00000000-0000-0000-0000-000000000001",
         "--calculation-month",
         "1",
         "--calculation-year",
         "2021",
     ]
     return sys_argv
-
-
-@pytest.fixture(autouse=True)
-def configure_dummy_logging(env_args_fixture, script_args_fixture) -> None:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    # Command line arguments
-    with (
-        mock.patch("sys.argv", script_args_fixture),
-        mock.patch.dict("os.environ", env_args_fixture, clear=False),
-        mock.patch(
-            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
-        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
-    ):
-        logging_settings = LoggingSettings()
-        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="session")

@@ -2,14 +2,12 @@ from geh_common.telemetry.decorators import start_trace
 from geh_common.telemetry.logger import Logger
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 from geh_calculated_measurements.electrical_heating.application import (
     execute_application,
 )
 from geh_calculated_measurements.electrical_heating.application.electrical_heating_args import (
     ElectricalHeatingArgs,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure import (
-    initialize_spark,
 )
 
 

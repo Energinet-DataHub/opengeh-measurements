@@ -1,8 +1,6 @@
 from pathlib import Path
-from unittest import mock
 
 import pytest
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration
 from geh_common.testing.dataframes.read_csv import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
@@ -17,25 +15,10 @@ from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold
 from geh_calculated_measurements.capacity_settlement.domain.calculation import (
     execute_core_logic,
 )
-from tests.capacity_settlement.scenario_tests.capacity_settlement_test_args import (
-    CapacitySettlementTestArgs,
-)
+from geh_calculated_measurements.capacity_settlement.entry_point import CapacitySettlementArgs
 from tests.capacity_settlement.testsession_configuration import (
     TestSessionConfiguration,
 )
-
-
-@pytest.fixture(scope="session", autouse=True)
-def enable_logging(env_args_fixture, script_args_fixture) -> None:
-    """Prevent logging from failing due to missing logging configuration."""
-    # Command line arguments
-    with (
-        mock.patch("sys.argv", script_args_fixture),
-        mock.patch.dict("os.environ", env_args_fixture, clear=False),
-    ):
-        logging_settings = LoggingSettings()
-        logging_settings.applicationinsights_connection_string = None  # for testing purposes
-        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="module")
@@ -57,7 +40,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         metering_point_periods_v1,
     )
 
-    args = CapacitySettlementTestArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
+    args = CapacitySettlementArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
 
     # Execute the logic
     calculation_output = execute_core_logic(

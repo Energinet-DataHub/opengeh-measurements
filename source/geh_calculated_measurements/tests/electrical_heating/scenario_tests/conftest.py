@@ -1,8 +1,6 @@
 from pathlib import Path
-from unittest import mock
 
 import pytest
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
@@ -18,24 +16,10 @@ from geh_calculated_measurements.electrical_heating.domain import (
     execute,
     time_series_points_v1,
 )
-from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
-    ElectricalHeatingTestArgs,
-)
+from geh_calculated_measurements.electrical_heating.entry_point import ElectricalHeatingArgs
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
-
-
-@pytest.fixture(scope="session", autouse=True)
-def enable_logging(env_args_fixture, script_args_fixture) -> None:
-    """Prevent logging from failing due to missing logging configuration."""
-    with (
-        mock.patch("sys.argv", script_args_fixture),
-        mock.patch.dict("os.environ", env_args_fixture, clear=False),
-    ):
-        logging_settings = LoggingSettings()
-        logging_settings.applicationinsights_connection_string = None
-        configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="module")
@@ -62,7 +46,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingTestArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
+    args = ElectricalHeatingArgs(_env_file=f"{scenario_path}/when/job_parameters.env")
 
     # Execute the logic
     actual = execute(
