@@ -19,7 +19,7 @@ class LogQueryClientWrapper:
     ) -> LogsQueryResult:
         """
         Wait for a condition to be met by polling a query on an Azure Log Analytics workspace.
-        Only returns when the query is successful and returns at least one row.
+        Only returns when the query is successful and returns at least one row
         """
         start_time = time.time()
 
