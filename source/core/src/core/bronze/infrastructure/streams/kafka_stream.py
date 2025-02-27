@@ -14,10 +14,10 @@ class KafkaStream:
     kafka_options: dict
 
     def __init__(self) -> None:
-        self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
-        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
-        self.bronze_database_name = BronzeSettings().bronze_database_name  # type: ignore
-        self.bronze_container_name = BronzeSettings().bronze_container_name  # type: ignore
+        self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()
+        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
+        self.bronze_database_name = BronzeSettings().bronze_database_name
+        self.bronze_container_name = BronzeSettings().bronze_container_name
 
     def submit_transactions(self, spark: SparkSession) -> None:
         checkpoint_location = get_checkpoint_path(
@@ -31,7 +31,7 @@ class KafkaStream:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        stream_settings = SubmittedTransactionsStreamSettings()  # type: ignore
+        stream_settings = SubmittedTransactionsStreamSettings()
 
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)

@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -11,7 +12,7 @@ class MigrationsSettings(BaseSettings):
     silver_database_name (str): The name of the silver Migrations database that we should use.
     """
 
-    silver_database_name: str
+    silver_database_name: str = Field(init=False)
 
     class Config:
         case_sensitive = False

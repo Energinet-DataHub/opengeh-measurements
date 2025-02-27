@@ -7,9 +7,9 @@ from core.silver.infrastructure.config import SilverTableNames
 
 
 def substitutions() -> dict[str, str]:
-    bronze_settings = BronzeSettings()  # type: ignore
-    silver_settings = SilverSettings()  # type: ignore
-    gold_settings = GoldSettings()  # type: ignore
+    bronze_settings = BronzeSettings()
+    silver_settings = SilverSettings()
+    gold_settings = GoldSettings()
 
     return {
         "{bronze_database}": bronze_settings.bronze_database_name,

@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -13,7 +14,7 @@ class StorageAccountSettings(BaseSettings):
     case_sensitive (bool): Indicates whether the settings are case-sensitive. Defaults to False.
     """
 
-    DATALAKE_STORAGE_ACCOUNT: str
+    DATALAKE_STORAGE_ACCOUNT: str = Field(init=False)
 
     class Config:
         case_sensitive = False

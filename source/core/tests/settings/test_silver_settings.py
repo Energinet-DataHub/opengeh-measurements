@@ -9,7 +9,7 @@ def test__silver_settings__returns_expected():
     expected_silver_container_name = os.getenv("SILVER_CONTAINER_NAME")
 
     # Act
-    actual = SilverSettings()  # type: ignore
+    actual = SilverSettings()
 
     # Assert
     assert actual.silver_database_name == expected_silver_database_name
