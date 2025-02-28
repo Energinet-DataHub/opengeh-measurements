@@ -3,11 +3,10 @@ import uuid
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
+from common.utils import LogQueryClientWrapper
 from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
-
-from tests.common.utils import LogQueryClientWrapper
 
 
 class CalculationInput:
