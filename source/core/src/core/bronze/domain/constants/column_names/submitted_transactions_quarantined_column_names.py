@@ -1,4 +1,4 @@
-class SilverMeasurementsColNames:
+class SubmittedTransactionsQuarantinedColumnNames:
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"
@@ -11,6 +11,11 @@ class SilverMeasurementsColNames:
     end_datetime = "end_datetime"
     points = "points"
     created = "created"
+    validate_orchestration_type = "validate_orchestration_type"
+    validate_quality = "validate_quality"
+    validate_metering_point_type = "validate_metering_point_type"
+    validate_unit = "validate_unit"
+    validate_resolution = "validate_resolution"
 
     class Points:
         position = "position"
