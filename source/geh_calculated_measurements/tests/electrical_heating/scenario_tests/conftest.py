@@ -1,7 +1,10 @@
 import sys
 from pathlib import Path
+from typing import Generator
+from unittest import mock
 from unittest.mock import patch
 
+import geh_common.telemetry.logging_configuration as config
 import pytest
 import yaml
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
@@ -23,6 +26,20 @@ from geh_calculated_measurements.electrical_heating.domain import (
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging) -> Generator[None, None, None]:
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+    with (
+        mock.patch("sys.argv", script_args_fixture_logging),
+        mock.patch.dict("os.environ", env_args_fixture_logging, clear=False),
+        mock.patch(
+            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
+        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
+    ):
+        logging_settings = config.LoggingSettings()
+        yield config.configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="session")
