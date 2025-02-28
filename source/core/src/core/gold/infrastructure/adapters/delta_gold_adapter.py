@@ -10,8 +10,8 @@ from core.utility.shared_helpers import get_checkpoint_path
 
 class DeltaGoldAdapter(GoldPort):
     def __init__(self) -> None:
-        self.gold_container_name = GoldSettings().gold_container_name  # type: ignore
-        self.gold_database_name = GoldSettings().gold_database_name  # type: ignore
+        self.gold_container_name = GoldSettings().gold_container_name
+        self.gold_database_name = GoldSettings().gold_database_name
 
     def start_write_stream(
         self,

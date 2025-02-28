@@ -10,17 +10,14 @@ from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.application import execute_application
-from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
-    EnvironmentVariable,
-)
 
 
 @pytest.fixture(scope="session")
 def job_environment_variables(test_files_folder_path) -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "spark_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "Europe/Copenhagen",
-        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: test_files_folder_path,
+        "CATALOG_NAME.name": "spark_catalog",
+        "EnvironmentVariable": "Europe/Copenhagen",
+        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
     }
 
 

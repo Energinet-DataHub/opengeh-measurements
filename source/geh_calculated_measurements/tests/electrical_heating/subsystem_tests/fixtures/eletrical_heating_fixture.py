@@ -1,13 +1,13 @@
-import time
 import uuid
-from datetime import timedelta
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from azure.monitor.query import LogsQueryClient, LogsQueryPartialResult, LogsQueryResult, LogsQueryStatus
+from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
+
+from .log_query_client_wrapper import LogQueryClientWrapper
 
 
 class CalculationInput:
@@ -29,7 +29,7 @@ class ElectricalHeatingFixture:
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
-        self.logs_query_client = LogsQueryClient(self.credentials)
+        self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
         self.secret_client = SecretClient(
             vault_url=f"https://{environment_configuration.shared_keyvault_name}.vault.azure.net/",
             credential=self.credentials,
@@ -52,29 +52,4 @@ class ElectricalHeatingFixture:
         if workspace_id is None:
             raise ValueError("The Azure log analytics workspace ID cannot be empty.")
 
-        return self._wait_for_condition(workspace_id, query)
-
-    # TODO Move to the test common paakage in a future PR.
-    def _wait_for_condition(
-        self,
-        workspace_id: str,
-        query: str,
-        timeout_seconds: int = 1000,
-        poll_interval_seconds: int = 5,
-        timespan_minutes: int = 15,
-    ) -> LogsQueryResult:
-        start_time = time.time()
-
-        while time.time() - start_time < timeout_seconds:
-            try:
-                result = self.logs_query_client.query_workspace(
-                    workspace_id, query, timespan=timedelta(timespan_minutes)
-                )
-                if result.status == LogsQueryStatus.SUCCESS and len(result.tables[0].rows) > 0:
-                    return result
-            except Exception:
-                pass
-
-            time.sleep(poll_interval_seconds)
-
-        raise TimeoutError(f"Job did not complete within {timeout_seconds} seconds.")
+        return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
