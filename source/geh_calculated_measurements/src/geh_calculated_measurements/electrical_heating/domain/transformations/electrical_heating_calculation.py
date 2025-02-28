@@ -1,6 +1,5 @@
 from geh_common.domain.types import MeteringPointType, NetSettlementGroup
-from geh_common.pyspark.transformations import days_in_year
-from pyspark.sql import DataFrame, Window
+from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
@@ -85,8 +84,14 @@ def _join_source_metering_point_periods_with_energy_hourly(
                 < F.col(f"metering_point.{CalculatedNames.overlap_period_end}")
             )
             & (
-                F.year(F.col(f"consumption.{CalculatedNames.observation_time_hourly}"))
-                == F.year(F.col(f"metering_point.{CalculatedNames.period_year}"))
+                (
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    >= F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}")
+                )
+                & (
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    < F.add_months(F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}"), 12)
+                )
             ),
             "inner",
         )
@@ -118,6 +123,9 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
             F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
             F.col(f"metering_point.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
+            F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}").alias(
+                CalculatedNames.settlement_month_datetime
+            ),
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
@@ -168,13 +176,14 @@ def _calculate_period_limit(
         .agg(
             F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
             F.sum(F.col("nettoficated_hourly")).alias("nettoficated_daily"),
+            F.first(CalculatedNames.settlement_month_datetime).alias(CalculatedNames.settlement_month_datetime),
         )
         .select(
             "*",
             (
                 F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
                 * _ELECTRICAL_HEATING_LIMIT_YEARLY
-                / days_in_year(F.col(CalculatedNames.parent_period_start))
+                / _days_in_settlement_year(F.col(CalculatedNames.settlement_month_datetime))
             ).alias("period_limit"),
             F.sum(F.col("nettoficated_daily")).over(period_window).alias("period_limit_reduction"),
         )
@@ -183,6 +192,10 @@ def _calculate_period_limit(
             (F.col("period_limit") - F.col("period_limit_reduction")).alias(CalculatedNames.period_energy_limit),
         )
     )
+
+
+def _days_in_settlement_year(settlement_month_datetime: Column) -> Column:
+    return F.datediff(F.add_months(settlement_month_datetime, 12), settlement_month_datetime)
 
 
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:

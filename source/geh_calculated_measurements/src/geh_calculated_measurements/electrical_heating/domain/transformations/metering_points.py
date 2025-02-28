@@ -3,7 +3,7 @@ from geh_common.pyspark.transformations import (
     begining_of_year,
     convert_from_utc,
 )
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
@@ -25,7 +25,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
-    metering_point_periods = _split_period_by_year(metering_point_periods)
+    metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
     metering_point_periods = _remove_nsg2_up2end_without_netcomsumption(metering_point_periods)
 
     return metering_point_periods
@@ -97,6 +97,7 @@ def _join_children_to_parent_metering_point(
         .select(
             F.col(f"parent.{ColumnNames.metering_point_id}").alias(ColumnNames.parent_metering_point_id),
             F.col(f"parent.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
+            F.col(f"parent.{ColumnNames.settlement_month}").alias(ColumnNames.settlement_month),
             F.col(f"parent.{ColumnNames.period_from_date}").alias(CalculatedNames.parent_period_start),
             F.col(f"parent.{ColumnNames.period_to_date}").alias(CalculatedNames.parent_period_end),
             F.col(f"electrical_heating.{ColumnNames.metering_point_id}").alias(
@@ -134,45 +135,56 @@ def _join_children_to_parent_metering_point(
 def _close_open_ended_periods(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
-    """Close open ended periods by setting the end date to the end of the current year."""
-    return parent_and_child_metering_point_and_periods.select(
-        "*", begining_of_year(F.current_date(), years_to_add=1).alias("end_of_year")
+    """Close open ended periods by setting the end date to the end of the current settlement year."""
+    settlement_year_end = "settlement_year_end"
+
+    return parent_and_child_metering_point_and_periods.withColumn(
+        settlement_year_end, _settlement_year_end_datetime(F.col(ColumnNames.settlement_month))
     ).select(
         # Consumption metering point
         F.col(ColumnNames.parent_metering_point_id),
         F.col(ColumnNames.net_settlement_group),
+        F.col(ColumnNames.settlement_month),
         F.col(CalculatedNames.parent_period_start),
         F.coalesce(
             F.col(CalculatedNames.parent_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(CalculatedNames.parent_period_end),
         # Electrical heating metering point
         F.col(CalculatedNames.electrical_heating_period_start),
         F.coalesce(
             F.col(CalculatedNames.electrical_heating_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(CalculatedNames.electrical_heating_period_end),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         # Net consumption metering point
         F.col(CalculatedNames.net_consumption_period_start),
         F.coalesce(
             F.col(CalculatedNames.net_consumption_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(CalculatedNames.net_consumption_period_end),
         F.col(CalculatedNames.net_consumption_metering_point_id),
         # Consumption from grid metering point
         CalculatedNames.consumption_from_grid_metering_point_id,
         CalculatedNames.consumption_from_grid_period_start,
-        F.coalesce(CalculatedNames.consumption_from_grid_period_end, "end_of_year").alias(
+        F.coalesce(CalculatedNames.consumption_from_grid_period_end, settlement_year_end).alias(
             CalculatedNames.consumption_from_grid_period_end
         ),
         # Supply to grid metering point
         CalculatedNames.supply_to_grid_metering_point_id,
         CalculatedNames.supply_to_grid_period_start,
-        F.coalesce(CalculatedNames.supply_to_grid_period_end, "end_of_year").alias(
+        F.coalesce(CalculatedNames.supply_to_grid_period_end, settlement_year_end).alias(
             CalculatedNames.supply_to_grid_period_end
         ),
     )
+
+
+def _settlement_year_end_datetime(settlement_month: Column) -> Column:
+    """Return the end of the settlement year based on the settlement month (integer)."""
+    return F.when(
+        F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))) <= F.current_date(),
+        F.add_months(F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))), 12),
+    ).otherwise(F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))))
 
 
 def _find_parent_child_overlap_period(
@@ -200,7 +212,8 @@ def _find_parent_child_overlap_period(
     ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
 
 
-def _split_period_by_year(
+# TODO BJM: Update to use settlement month instead of year
+def _split_period_by_settlement_month(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.select(
@@ -234,7 +247,7 @@ def _split_period_by_year(
         .alias(CalculatedNames.parent_period_end),
         F.col(CalculatedNames.overlap_period_start),
         F.col(CalculatedNames.overlap_period_end),
-        F.col(CalculatedNames.period_year),
+        F.col("period_year").alias(CalculatedNames.settlement_month_datetime),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.consumption_from_grid_metering_point_id),
@@ -249,6 +262,6 @@ def _remove_nsg2_up2end_without_netcomsumption(
         ~(
             (F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & (F.col(CalculatedNames.net_consumption_metering_point_id).isNull())
-            & (F.year(F.col(CalculatedNames.period_year)) == F.year(F.current_date()))
+            & (F.year(F.col(CalculatedNames.settlement_month_datetime)) == F.year(F.current_date()))
         )
     )

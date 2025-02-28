@@ -27,7 +27,7 @@ def execute(
 
     Returns the calculated electrical heating in UTC where the new value has changed.
     """
-    # The periods are in local time and are split by year
+    # The periods are in local time and are split by settlement month
     metering_point_periods = T.get_joined_metering_point_periods_in_local_time(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
