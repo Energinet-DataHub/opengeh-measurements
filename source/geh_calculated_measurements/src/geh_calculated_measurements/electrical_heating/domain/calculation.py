@@ -48,6 +48,7 @@ def execute(
         orchestration_instance_id=orchestration_instance_id,
         orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
         metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
+        time_zone=time_zone,
     )
 
     return calculated_measurements
