@@ -3,11 +3,13 @@ from pathlib import Path
 import pytest
 from geh_common.telemetry import logging_configuration
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
-from geh_common.testing.scenario_testing import TestCase, TestCases
+from geh_common.testing.dataframes.write_to_delta import write_when_files_to_delta
+from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_names
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.common.domain.model import calculated_measurements
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
@@ -73,13 +75,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Sort to make the tests deterministic
     actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(ColumnNames.date))
 
-    # Return test cases
+    # test_cases = test_cases_for_data_products
+
     return TestCases(
         [
-            TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual,
-            ),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual),
         ]
     )
 
@@ -101,13 +101,8 @@ def _create_databases(spark: SparkSession) -> None:
     # They are created by infrastructure (in the real environments)
     # In tests they are created in the single available default database.
     # """
-
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
-
-    # for database in UnityCatalogDatabaseNames.get_names():
-    #     print(f"Creating database {database}")
-    #     spark.sql(f"CREATE DATABASE IF NOT EXISTS {database}")
 
 
 @pytest.fixture(scope="session")
@@ -115,3 +110,40 @@ def migrations_executed(spark: SparkSession) -> None:
     # Execute all migrations
     _create_databases(spark)
     migrate()
+
+
+@pytest.fixture(scope="module")
+def test_cases_for_data_products(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+    # Get the path to the scenario
+    scenario_path = str(Path(request.module.__file__).parent)
+
+    # Populate the delta tables with the 'when' files
+    path_schema_tuples = [
+        (
+            "measurements_calculated_internal.measurements.csv",
+            calculated_measurements.calculated_measurements_schema,
+        )
+    ]
+    write_when_files_to_delta(
+        spark,
+        scenario_path,
+        path_schema_tuples,
+    )
+
+    # Receive a list of 'then' file names
+    then_files = get_then_names(scenario_path)
+
+    # Construct a list of TestCase objects
+    test_cases = []
+    for path_name in then_files:
+        actual = spark.sql(f"SELECT * FROM {path_name}")
+
+        test_cases.append(
+            TestCase(
+                expected_csv_path=f"{scenario_path}/then/{path_name}.csv",
+                actual=actual,
+            )
+        )
+
+    # Return test cases
+    return TestCases(test_cases)
