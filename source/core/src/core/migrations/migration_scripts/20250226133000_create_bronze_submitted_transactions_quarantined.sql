@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {silver_database}.{submitted_transactions_quarantined_table}
+CREATE TABLE IF NOT EXISTS {bronze_database}.{submitted_transactions_quarantined_table}
 (
     orchestration_type STRING,
     orchestration_instance_id STRING,
@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS {silver_database}.{submitted_transactions_quarantined
     transaction_id STRING,
     transaction_creation_datetime TIMESTAMP,
     metering_point_type STRING,
-    product STRING,
     unit STRING,
     resolution STRING,
     start_datetime TIMESTAMP,
@@ -18,7 +17,7 @@ CREATE TABLE IF NOT EXISTS {silver_database}.{submitted_transactions_quarantined
             quality STRING
         >
     >,
-    created TIMESTAMP,
+    created TIMESTAMP NOT NULL,
     validate_orchestration_type BOOLEAN NOT NULL,
     validate_quality BOOLEAN NOT NULL,
     validate_metering_point_type BOOLEAN NOT NULL,

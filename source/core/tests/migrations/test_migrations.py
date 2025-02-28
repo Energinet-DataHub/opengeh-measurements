@@ -10,7 +10,7 @@ from core.gold.infrastructure.config import GoldTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
-from core.silver.domain.schemas.submitted_transactions import submitted_transactions_quarantined_schema
+from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
 from core.silver.infrastructure.config import SilverTableNames
 from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
 
@@ -76,11 +76,11 @@ def test__migration__should_create_submitted_transactions_quarantined_table(
     spark: SparkSession, migrations_executed
 ) -> None:
     # Arrange
-    silver_settings = SilverSettings()
+    bronze_settings = BronzeSettings()
 
     # Assert
     submitted_transactions_quarantined = spark.table(
-        f"{silver_settings.silver_database_name}.{SilverTableNames.submitted_transactions_quarantined}"
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.submitted_transactions_quarantined}"
     )
     assert_schemas.assert_schema(
         actual=submitted_transactions_quarantined.schema, expected=submitted_transactions_quarantined_schema
