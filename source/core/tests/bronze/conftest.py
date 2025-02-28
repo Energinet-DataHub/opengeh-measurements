@@ -27,6 +27,9 @@ def pytest_runtest_setup() -> None:
     os.environ["SPN_APP_ID"] = "spn_app_id"
     os.environ["SPN_APP_SECRET"] = "spn_app_secret"
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake_storage_account_name"
+    os.environ["DATABRICKS_WORKSPACE_URL"] = "workspace-url"
+    os.environ["DATABRICKS_TOKEN"] = "token"
+    os.environ["DATABRICKS_JOBS"] = "job1,job2"
 
 
 @pytest.fixture(scope="session")
