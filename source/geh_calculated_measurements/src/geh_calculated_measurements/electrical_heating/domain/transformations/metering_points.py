@@ -25,7 +25,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
-    metering_point_periods = _split_period_by_year(metering_point_periods)
+    metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
     metering_point_periods = _remove_nsg2_up2end_without_netcomsumption(metering_point_periods)
 
     return metering_point_periods
@@ -97,6 +97,7 @@ def _join_children_to_parent_metering_point(
         .select(
             F.col(f"parent.{ColumnNames.metering_point_id}").alias(ColumnNames.parent_metering_point_id),
             F.col(f"parent.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
+            F.col(f"parent.{ColumnNames.settlement_month}").alias(ColumnNames.settlement_month),
             F.col(f"parent.{ColumnNames.period_from_date}").alias(CalculatedNames.parent_period_start),
             F.col(f"parent.{ColumnNames.period_to_date}").alias(CalculatedNames.parent_period_end),
             F.col(f"electrical_heating.{ColumnNames.metering_point_id}").alias(
@@ -134,13 +135,15 @@ def _join_children_to_parent_metering_point(
 def _close_open_ended_periods(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
-    """Close open ended periods by setting the end date to the end of the current year."""
+    """Close open ended periods by setting the end date to the end of the current settlement year."""
+    # TODO BJM: Next step HERE
     return parent_and_child_metering_point_and_periods.select(
         "*", begining_of_year(F.current_date(), years_to_add=1).alias("end_of_year")
     ).select(
         # Consumption metering point
         F.col(ColumnNames.parent_metering_point_id),
         F.col(ColumnNames.net_settlement_group),
+        F.col(ColumnNames.settlement_month),
         F.col(CalculatedNames.parent_period_start),
         F.coalesce(
             F.col(CalculatedNames.parent_period_end),
@@ -200,7 +203,7 @@ def _find_parent_child_overlap_period(
     ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
 
 
-def _split_period_by_year(
+def _split_period_by_settlement_month(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.select(
@@ -234,7 +237,7 @@ def _split_period_by_year(
         .alias(CalculatedNames.parent_period_end),
         F.col(CalculatedNames.overlap_period_start),
         F.col(CalculatedNames.overlap_period_end),
-        F.col(CalculatedNames.period_year),
+        F.col("period_year").alias(CalculatedNames.settlement_month_datetime),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.consumption_from_grid_metering_point_id),
@@ -249,6 +252,6 @@ def _remove_nsg2_up2end_without_netcomsumption(
         ~(
             (F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & (F.col(CalculatedNames.net_consumption_metering_point_id).isNull())
-            & (F.year(F.col(CalculatedNames.period_year)) == F.year(F.current_date()))
+            & (F.year(F.col(CalculatedNames.settlement_month_datetime)) == F.year(F.current_date()))
         )
     )
