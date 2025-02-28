@@ -7,6 +7,9 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
+from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
 from tests.common.utils import LogQueryClientWrapper
 
 
@@ -23,11 +26,22 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
+query = f"""
+        INSERT INTO {MeasurementsGoldDatabaseDefinition.MEASUREMENTS} VALUES
+        ('test',2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
+    """
+
+
 class CapacitySettlementFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
+        ).seed(
+            warehouse_id=environment_configuration.warehouse_id,
+            catalog=environment_configuration.catalog_name,
+            schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+            statement=query,
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
