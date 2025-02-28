@@ -7,7 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
 
-from tests.common.utils import LogQueryClientWrapper
+from .log_query_client_wrapper import LogQueryClientWrapper
 
 
 class CalculationInput:
