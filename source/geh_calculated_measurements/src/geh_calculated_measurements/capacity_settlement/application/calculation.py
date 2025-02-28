@@ -7,6 +7,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
     ElectricityMarketRepository,
     MeasurementsGoldRepository,
 )
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
 
 
 @use_span()
@@ -20,7 +21,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
     metering_point_periods = electricity_market_repository.read_metering_point_periods()
 
     # Execute the domain logic
-    execute(
+    calculated_measurements = execute(
         time_series_points,
         metering_point_periods,
         args.orchestration_instance_id,
@@ -28,3 +29,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
         args.time_zone,
     )
+
+    # Write the calculated measurements
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
+    calculated_measurements_repository.write_calculated_measurements(calculated_measurements)

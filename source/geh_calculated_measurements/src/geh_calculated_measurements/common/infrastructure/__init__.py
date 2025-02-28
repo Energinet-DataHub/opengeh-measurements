@@ -2,8 +2,6 @@ from geh_calculated_measurements.common.infrastructure.calculated_measurements.d
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.common.infrastructure.repository import Repository as CalculatedMeasurementsRepository
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
-__all__ = [
-    "CalculatedMeasurementsInternalDatabaseDefinition",
-    "CalculatedMeasurementsRepository",
-]
+__all__ = ["CalculatedMeasurementsInternalDatabaseDefinition", "CalculatedMeasurementsRepository", "initialize_spark"]
