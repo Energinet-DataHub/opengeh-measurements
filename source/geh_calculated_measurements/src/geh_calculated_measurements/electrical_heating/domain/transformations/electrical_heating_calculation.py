@@ -137,6 +137,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
+@debugging()
 def _calculate_period_limit(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
