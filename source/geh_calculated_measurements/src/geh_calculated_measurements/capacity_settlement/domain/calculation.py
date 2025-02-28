@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
 from geh_common.telemetry import use_span
-from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
@@ -14,12 +14,12 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
 def execute(
-    spark: SparkSession,
     time_series_points: TimeSeriesPoints,
     metering_point_periods: MeteringPointPeriods,
     orchestration_instance_id: UUID,
@@ -28,7 +28,6 @@ def execute(
     time_zone: str,
 ) -> CalculationOutput:
     calculations = _create_calculations(
-        spark,
         orchestration_instance_id,
         calculation_month,
         calculation_year,
@@ -91,7 +90,6 @@ def execute(
 
 
 def _create_calculations(
-    spark: SparkSession,
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
@@ -105,6 +103,7 @@ def _create_calculations(
             StructField("execution_time", TimestampType(), False),
         ]
     )
+    spark = initialize_spark()
     return spark.createDataFrame(
         [
             (
