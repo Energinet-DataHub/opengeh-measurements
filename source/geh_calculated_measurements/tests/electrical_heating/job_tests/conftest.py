@@ -44,7 +44,7 @@ def create_calculated_measurements_table(spark: SparkSession, test_files_folder_
         database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
         table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )
 
 
