@@ -23,7 +23,7 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-def query(catalog: str, schema: str, table: str = "measurements") -> str:
+def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
     return f"""INSERT INTO {catalog}.{schema}.{table} (
   transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
   metering_point_id, observation_time, quality, metering_point_type -- static variables
@@ -47,7 +47,7 @@ class ElectricalHeatingFixture:
             environment_configuration.workspace_url,
         ).execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
-            statement=query(
+            statement=seed_data_query(
                 catalog=environment_configuration.catalog_name,
                 schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
             ),
