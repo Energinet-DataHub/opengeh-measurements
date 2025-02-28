@@ -34,6 +34,8 @@ def execute(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
 
+    # It's important that time series are aggregated hourly before converting to local time.
+    # The reason is that when moving from DST to standard time, the same hour is repeated in local time.
     time_series_points_hourly = calculate_hourly_quantity(time_series_points.df)
     time_series_points_hourly_in_local_time = convert_from_utc(time_series_points_hourly, time_zone)
     new_electrical_heating = T.calculate_electrical_heating_in_local_time(
