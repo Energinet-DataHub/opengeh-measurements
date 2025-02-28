@@ -1,12 +1,11 @@
 from datetime import datetime
 from uuid import UUID
 
-# from geh_common.application.settings import ApplicationSettings
+from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
-from pydantic_settings import BaseSettings
 
 
-class ElectricalHeatingArgs(BaseSettings, cli_parse_args=True):
+class ElectricalHeatingArgs(ApplicationSettings):
     """Args for the electrical heating job."""
 
     orchestration_instance_id: UUID = Field(init=False)
