@@ -34,7 +34,7 @@ def execute(
         calculation_year,
     )
 
-    metering_point_periods = _add_selection_period_columns(
+    metering_point_periods_with_selection_period = _add_selection_period_columns(
         metering_point_periods.df,
         calculation_month=calculation_month,
         calculation_year=calculation_year,
@@ -53,7 +53,7 @@ def execute(
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
-        time_series_points_hourly, metering_point_periods.df, grouping
+        time_series_points_hourly, metering_point_periods_with_selection_period, grouping
     )
 
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
