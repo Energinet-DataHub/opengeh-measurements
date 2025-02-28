@@ -4,6 +4,7 @@ from pyspark.sql import SparkSession
 from core.bronze.domain.schemas.invalid_submitted_transactions import invalid_submitted_transactions_schema
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
+from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from core.gold.infrastructure.config import GoldTableNames
@@ -68,4 +69,19 @@ def test__migration__should_create_invalid_submitted_transactions_table(
     )
     assert_schemas.assert_schema(
         actual=invalid_submitted_transactions.schema, expected=invalid_submitted_transactions_schema
+    )
+
+
+def test__migration__should_create_submitted_transactions_quarantined_table(
+    spark: SparkSession, migrations_executed
+) -> None:
+    # Arrange
+    bronze_settings = BronzeSettings()
+
+    # Assert
+    submitted_transactions_quarantined = spark.table(
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.submitted_transactions_quarantined}"
+    )
+    assert_schemas.assert_schema(
+        actual=submitted_transactions_quarantined.schema, expected=submitted_transactions_quarantined_schema
     )
