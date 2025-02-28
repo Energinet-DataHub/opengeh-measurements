@@ -58,7 +58,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
 
     # Execute the logic
     calculation_output = execute(
-        spark,
         time_series_points,
         metering_point_periods,
         args.orchestration_instance_id,
