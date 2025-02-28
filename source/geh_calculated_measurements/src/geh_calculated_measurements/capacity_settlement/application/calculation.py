@@ -1,4 +1,3 @@
-import uuid
 
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
@@ -17,13 +16,11 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
     time_series_points = measurements_repository.read_time_series_points()
     metering_point_periods = measurements_repository.read_metering_point_periods()
 
-    orchestration_instance_id = uuid.UUID()
-
     # Execute the domain logic
     execute(
         time_series_points,
         metering_point_periods,
-        orchestration_instance_id,
+        args.orchestration_instance_id,
         args.calculation_month,
         args.calculation_year,
         args.time_zone,
