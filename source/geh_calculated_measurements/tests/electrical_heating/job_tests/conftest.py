@@ -3,8 +3,9 @@ from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
-    time_series_points_v1,
+from geh_calculated_measurements.electrical_heating.infrastructure import (
+    MeasurementsGoldDatabaseDefinition,
+    electrical_heating_v1,
 )
 
 
@@ -21,12 +22,12 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
         spark,
         database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
         table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
-        schema=time_series_points_v1,
+        schema=electrical_heating_v1,
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
     )
 
     file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
-    time_series_points = read_csv_path(spark, file_name, time_series_points_v1)
+    time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
         format="delta",
