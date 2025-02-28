@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -23,14 +24,15 @@ from tests.capacity_settlement.testsession_configuration import (
 )
 
 
-@pytest.fixture(scope="module")
-def monkeymodule():
-    with pytest.MonkeyPatch.context() as mp:
-        yield mp
+@pytest.fixture(scope="session")
+def job_environment_variables() -> dict:
+    return {
+        "CATALOG_NAME": "some_catalog",
+    }
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule: pytest.MonkeyPatch) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environment_variables: dict) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
@@ -48,11 +50,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule
         metering_point_periods_v1,
     )
 
-    monkeymodule.setenv("CATALOG_NAME", "spark_catalog")
-    with open(f"{scenario_path}/when/job_parameters.yml") as f:
-        args = yaml.safe_load(f)
-    monkeymodule.setattr(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()])
-    args = CapacitySettlementArgs()
+    with patch.dict("os.environ", job_environment_variables):
+        with open(f"{scenario_path}/when/job_parameters.yml") as f:
+            args = yaml.safe_load(f)
+        with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
+            args = CapacitySettlementArgs()
 
     # Execute the logic
     calculation_output = execute(
