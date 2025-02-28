@@ -1,4 +1,3 @@
-
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
