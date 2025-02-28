@@ -1,7 +1,7 @@
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.capacity_settlement.infrastructure.measurements.measurements_gold.schema import (
+from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
     metering_point_periods_v1,
     time_series_points_v1,
 )
