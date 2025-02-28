@@ -188,7 +188,6 @@ class TestTransactionId:
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
             )
-            actual.df.show(truncate=False)
 
             # Assert
             assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
