@@ -15,6 +15,7 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
+from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
 

@@ -7,6 +7,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
     ElectricityMarketRepository,
     MeasurementsGoldRepository,
 )
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
 
 
 @use_span()
