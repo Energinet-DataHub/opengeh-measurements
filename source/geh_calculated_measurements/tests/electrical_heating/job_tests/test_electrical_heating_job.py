@@ -2,7 +2,6 @@ import uuid
 from typing import Any
 from unittest.mock import patch
 
-import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
@@ -10,15 +9,6 @@ from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.application import execute_application
-
-
-@pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path) -> dict:
-    return {
-        "CATALOG_NAME.name": "spark_catalog",
-        "EnvironmentVariable": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
-    }
 
 
 def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
