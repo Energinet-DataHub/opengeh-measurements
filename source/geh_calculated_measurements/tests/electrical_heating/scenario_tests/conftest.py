@@ -55,6 +55,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, monkeymodule
     )
 
     monkeymodule.setenv("CATALOG_NAME", "spark_catalog")
+    monkeymodule.setenv("TIME_ZONE", "Europe/Copenhagen")
+    monkeymodule.setenv("ELECTRICITY_MARKET_DATA_PATH", "some_path")
     with open(f"{scenario_path}/when/job_parameters.yml") as f:
         args = yaml.safe_load(f)
     monkeymodule.setattr(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()])
