@@ -2,7 +2,7 @@
 
 | Column name | Data type | Nullable | Description | Constraints |
 | - | - | - | - | - |
-| orchestration_type | StringType | True | - | valid values ["submitted_measure_data", "migration", "electrical_heating", "capacity_settlement"] |
+| orchestration_type | StringType | True | - | valid values ["submitted", "migration", "electrical_heating", "capacity_settlement"] |
 | orchestration_instance_id | StringType | True | - | - |
 | metering_point_id | StringType | True | The GSRN number that uniquely identifies the metering point | Exactly 18 digits |
 | transaction_id | StringType | True | Contains an ID for the specific time series transaction, provided by the sender or the source system. Uniqueness not guaranteed | - |
