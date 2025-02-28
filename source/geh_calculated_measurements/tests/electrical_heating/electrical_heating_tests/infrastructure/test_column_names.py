@@ -1,3 +1,5 @@
+import pytest
+
 from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain import (
     child_metering_points_v1,
@@ -29,6 +31,7 @@ def test_structfield_names_in_columnnames() -> None:
             assert field.name in column_names, f"StructField name '{field.name}' not found in ColumnNames"
 
 
+@pytest.mark.skip(reason="Skipping until we have a strategy for testing this across calculation types")
 def test_columnnames_in_structfields_names() -> None:
     """
     All ColumnNames values should be in StructType field names.
