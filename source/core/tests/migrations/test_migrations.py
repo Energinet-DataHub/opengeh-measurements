@@ -4,13 +4,13 @@ from pyspark.sql import SparkSession
 from core.bronze.domain.schemas.invalid_submitted_transactions import invalid_submitted_transactions_schema
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
+from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
-from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
 from core.silver.infrastructure.config import SilverTableNames
 from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
 
