@@ -5,7 +5,7 @@ from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
-from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
+from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from .log_query_client_wrapper import LogQueryClientWrapper
 
