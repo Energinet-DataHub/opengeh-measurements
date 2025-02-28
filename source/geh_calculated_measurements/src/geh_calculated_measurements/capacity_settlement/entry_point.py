@@ -8,6 +8,7 @@ from geh_calculated_measurements.capacity_settlement.application import calculat
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
+from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
 
 def execute() -> None:
@@ -22,4 +23,5 @@ def orchestrate_business_logic(job_arguments: CapacitySettlementArgs, logging_se
     logger = Logger(__name__)
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")
     logger.info(f"Command line arguments retrieved for electrical heating job Oriented Parameters: {job_arguments}")
-    calculation.execute(job_arguments=job_arguments)
+    spark = initialize_spark()
+    calculation.execute(spark, args=job_arguments)
