@@ -3,9 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from geh_calculated_measurements.capacity_settlement.application.job_args.capacity_settlement_job_args import (
-    parse_command_line_arguments,
-    parse_job_arguments,
+from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
+    CapacitySettlementArgs,
 )
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
@@ -55,9 +54,7 @@ def test_when_parameters__parses_parameters_from_contract(
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
         with patch.dict("os.environ", job_environment_variables):
-            command_line_args = parse_command_line_arguments()
-            # Act
-            actual_args = parse_job_arguments(command_line_args)
+            actual_args = CapacitySettlementArgs()
 
     # Assert
     assert actual_args.orchestration_instance_id == DEFAULT_ORCHESTRATION_INSTANCE_ID

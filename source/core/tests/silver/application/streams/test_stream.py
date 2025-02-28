@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 from pyspark.sql import DataFrame, SparkSession
 
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.silver_settings import SilverSettings
 from core.silver.application.streams.calculated_stream import (
     _batch_operations,
     _execute,
@@ -76,11 +76,11 @@ def test__calculated_stream_should_read_and_write(mock_writer, mock_BronzeReposi
 @mock.patch("core.silver.application.streams.calculated_stream.transform_calculated_measurements")
 def test__batch_operations(mock_transform_calculated_measurements):
     # Arrange
-    catalog_settings = CatalogSettings()  # type: ignore
+    silver_settings = SilverSettings()
     mock_df = mock.Mock(spec=DataFrame)
     mock_transformed_df = mock.Mock(spec=DataFrame)
     mock_transform_calculated_measurements.return_value = mock_transformed_df
-    expected_target_table_name = f"{catalog_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
+    expected_target_table_name = f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
 
     # Act
     _batch_operations(mock_df, 1)

@@ -1,8 +1,8 @@
 import os
 from unittest import mock
 
-from core.bronze.infrastructure.settings.storage_account_settings import StorageAccountSettings
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.silver_settings import SilverSettings
+from core.settings.storage_account_settings import StorageAccountSettings
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
 
@@ -12,8 +12,8 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
     mocked_batch_operation = mock.Mock()
     expected_checkpoint_path = mock_checkpoint_path.return_value
 
-    expected_data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
-    expected_silver_container_name = CatalogSettings().silver_container_name  # type: ignore
+    expected_data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
+    expected_silver_container_name = SilverSettings().silver_container_name
 
     # Act
     SilverRepository().write_stream(mocked_measurements, mocked_batch_operation)

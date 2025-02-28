@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
 from core.gold.infrastructure.config import GoldTableNames
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.gold_settings import GoldSettings
 from tests.gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
 
 
@@ -16,7 +16,7 @@ def test__start_write_stream__should_write_to_gold_table(
 ):
     # Arrange
     gold_adapter = DeltaGoldAdapter()
-    gold_database_name = CatalogSettings().gold_database_name  # type: ignore
+    gold_database_name = GoldSettings().gold_database_name
     source_table = GoldTableNames.gold_measurements
     target_table = f"{source_table}_test_write_stream"
     metering_point_id = random.randint(0, 999999999999999999)
@@ -51,7 +51,7 @@ def test__start_write_stream__should_write_to_gold_table(
 def test__append__should_append_to_gold_table(spark: SparkSession):
     # Arrange
     gold_adapter = DeltaGoldAdapter()
-    gold_database_name = CatalogSettings().gold_database_name  # type: ignore
+    gold_database_name = GoldSettings().gold_database_name
     metering_point_id = random.randint(0, 999999999999999999)
     df_gold = GoldMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id).build()
 
