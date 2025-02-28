@@ -11,12 +11,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
-<<<<<<< HEAD
 from geh_calculated_measurements.common.domain.model import calculated_measurements
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
-=======
 from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
->>>>>>> main
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -83,7 +80,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(ColumnNames.date))
 
     # test_cases = test_cases_for_data_products
-
     return TestCases(
         [
             TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual),
@@ -120,7 +116,7 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="module")
-def test_cases_for_data_products(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases_for_hourly_calculated_measurements(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 
