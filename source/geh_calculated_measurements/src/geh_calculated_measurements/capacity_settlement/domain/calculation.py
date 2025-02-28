@@ -17,7 +17,7 @@ from geh_calculated_measurements.capacity_settlement.domain.column_names import 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
-def execute_core_logic(
+def execute(
     spark: SparkSession,
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
