@@ -3,6 +3,7 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
+from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
@@ -13,6 +14,7 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
+from geh_calculated_measurements.common.domain import calculated_measurements_factory
 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
@@ -78,6 +80,14 @@ def execute(
         F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
         F.col(ColumNames.date),
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
+    )
+
+    calculated_measurments = calculated_measurements_factory.create(
+        measurements,
+        orchestration_instance_id,
+        OrchestrationType.CAPACITY_SETTLEMENT,
+        MeteringPointType.CAPACITY_SETTLEMENT,
+        time_zone: str,
     )
 
     calculation_output = CalculationOutput(
