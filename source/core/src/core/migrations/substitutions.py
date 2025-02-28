@@ -18,6 +18,7 @@ def substitutions() -> dict[str, str]:
         "{silver_database}": silver_settings.silver_database_name,
         "{bronze_migrated_transactions_table}": BronzeTableNames.bronze_migrated_transactions_table,
         "{silver_measurements_table}": SilverTableNames.silver_measurements,
+        "{submitted_transactions_quarantined_table}": BronzeTableNames.submitted_transactions_quarantined,
         "{gold_database}": gold_settings.gold_database_name,
         "{gold_measurements}": GoldTableNames.gold_measurements,
         "{gold_electrical_heating_v1}": GoldViewNames.electrical_heating_v1,
