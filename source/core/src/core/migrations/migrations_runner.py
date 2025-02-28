@@ -14,7 +14,7 @@ def migrate() -> None:
     spark_config = _configure_spark_sql_migrations()
 
     databricks_settings = DatabricksSettings()
-    print(databricks_settings.databricks_jobs)
+    print(databricks_settings.databricks_jobs)  # noqa: T201
 
     migration_pipeline.migrate(spark_config)
 
