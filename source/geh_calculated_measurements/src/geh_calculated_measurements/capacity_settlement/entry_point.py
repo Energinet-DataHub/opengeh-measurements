@@ -4,11 +4,11 @@ from geh_common.telemetry.decorators import start_trace
 from geh_common.telemetry.logger import Logger
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
+from geh_calculated_measurements.capacity_settlement.application import execute_application
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
 from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
-from geh_calculated_measurements.electrical_heating.application import execute_application
 
 
 def execute() -> None:
