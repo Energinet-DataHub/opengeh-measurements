@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {bronze_database}.{submitted_transactions_quarantined_table}
+CREATE TABLE {bronze_database}.{submitted_transactions_quarantined_table}
 (
     orchestration_type STRING,
     orchestration_instance_id STRING,
