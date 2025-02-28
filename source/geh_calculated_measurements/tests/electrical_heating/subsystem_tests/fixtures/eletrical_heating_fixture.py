@@ -7,10 +7,6 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-
 from .log_query_client_wrapper import LogQueryClientWrapper
 
 
@@ -46,10 +42,8 @@ class ElectricalHeatingFixture:
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
-        ).seed(
+        ).execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
-            catalog=environment_configuration.catalog_name,
-            schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
             statement=query,
         )
         self.job_state = JobState()
