@@ -38,7 +38,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 @pytest.fixture(scope="session")
 def job_environment_variables(test_files_folder_path) -> dict:
     return {
-        "CATALOG_NAME.name": "spark_catalog",
+        "CATALOG_NAME": "spark_catalog",
         "TIME_ZONE": "Europe/Copenhagen",
         "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
     }
