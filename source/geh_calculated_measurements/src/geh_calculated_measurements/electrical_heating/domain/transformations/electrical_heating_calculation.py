@@ -6,23 +6,19 @@ from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
-    get_hourly_energy_in_local_time,
-)
+from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
 
 
-def calculate_electrical_heating_in_local_time(
-    time_series_points_in_utc: DataFrame, periods_in_localtime: DataFrame, time_zone: str
-) -> DataFrame:
-    periods_in_localtime = _find_source_metering_point_for_energy(periods_in_localtime)
+def calculate_electrical_heating_in_local_time(time_series_points_hourly: DataFrame, periods: DataFrame) -> DataFrame:
+    """Input data frames must be hourly and in local time."""
+    periods = _find_source_metering_point_for_energy(periods)
 
     periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
-        periods_in_localtime,
-        time_series_points_in_utc,
-        time_zone,
+        periods,
+        time_series_points_hourly,
     )
     periods_with_daily_energy_and_limit = _calculate_period_limit(periods_with_hourly_energy)
 
@@ -51,19 +47,21 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     )
 
 
+@debugging()
 def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
-    time_series_points_in_utc: DataFrame,
-    time_zone: str,
+    time_series_points_hourly: DataFrame,
 ) -> DataFrame:
-    consumption = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION, MeteringPointType.NET_CONSUMPTION]
+    consumption = time_series_points_hourly.where(
+        F.col(ColumnNames.metering_point_type).isin(
+            MeteringPointType.CONSUMPTION.value, MeteringPointType.NET_CONSUMPTION.value
+        )
     )
-    supply_to_grid = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.SUPPLY_TO_GRID]
+    supply_to_grid = time_series_points_hourly.where(
+        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.SUPPLY_TO_GRID.value)
     )
-    consumption_from_grid = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION_FROM_GRID]
+    consumption_from_grid = time_series_points_hourly.where(
+        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.CONSUMPTION_FROM_GRID.value)
     )
 
     return (
@@ -185,6 +183,7 @@ def _calculate_period_limit(
     )
 
 
+@debugging()
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
@@ -205,6 +204,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
+@debugging()
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.when(

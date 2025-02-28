@@ -2,6 +2,7 @@ from uuid import UUID
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.pyspark.transformations import (
+    convert_from_utc,
     convert_to_utc,
 )
 from geh_common.telemetry import use_span
@@ -13,6 +14,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
+from geh_calculated_measurements.electrical_heating.domain.transformations.common import calculate_hourly_quantity
 
 
 @use_span()
@@ -32,8 +34,10 @@ def execute(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
 
+    time_series_points_hourly = calculate_hourly_quantity(time_series_points.df)
+    time_series_points_hourly_in_local_time = convert_from_utc(time_series_points_hourly, time_zone)
     new_electrical_heating = T.calculate_electrical_heating_in_local_time(
-        time_series_points.df, metering_point_periods, time_zone
+        time_series_points_hourly_in_local_time, metering_point_periods
     )
 
     old_electrical_heating = T.get_daily_energy_in_local_time(
