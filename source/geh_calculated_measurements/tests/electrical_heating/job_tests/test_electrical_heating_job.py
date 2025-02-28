@@ -11,7 +11,12 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.electrical_heating.entry_point import execute
 
 
-def test_execute(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
+def test_execute(
+    spark: SparkSession,
+    job_environment_variables: dict,
+    seed_gold_table: Any,
+    create_calculated_measurements_table: Any,
+) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
