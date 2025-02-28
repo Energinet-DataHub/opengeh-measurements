@@ -87,11 +87,11 @@ def execute(
         orchestration_instance_id,
         OrchestrationType.CAPACITY_SETTLEMENT,
         MeteringPointType.CAPACITY_SETTLEMENT,
-        time_zone: str,
+        time_zone,
     )
 
     calculation_output = CalculationOutput(
-        measurements=measurements,
+        measurements=calculated_measurments,
         calculations=calculations,
         ten_largest_quantities=ten_largest_quantities,
     )
