@@ -14,7 +14,8 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
-from geh_calculated_measurements.capacity_settlement.domain.model import MeteringPointPeriods, TimeSeriesPoints
+from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
+from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import initialize_spark
 
