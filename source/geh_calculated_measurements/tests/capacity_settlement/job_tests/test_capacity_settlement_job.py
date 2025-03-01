@@ -7,9 +7,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.application.calculation import execute_application
-from geh_calculated_measurements.capacity_settlement.infrastructure.measurements.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabaseDefinition,
-)
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 
 
 @pytest.fixture(scope="session")
@@ -34,6 +32,6 @@ def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict,
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsDatabaseDefinition.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
