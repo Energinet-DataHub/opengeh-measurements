@@ -212,47 +212,65 @@ def _find_parent_child_overlap_period(
     ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
 
 
-# TODO BJM: Update to use settlement month instead of year
 def _split_period_by_settlement_month(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
+    settlement_year_date = "settlement_year_date"
+
     return parent_and_child_metering_point_and_periods.select(
         "*",
-        # create a row for each year in the period
+        # create a row for each settlement year in the period
         F.explode(
             F.sequence(
-                begining_of_year(F.col(CalculatedNames.parent_period_start)),
+                _begining_of_settlement_year(
+                    F.col(CalculatedNames.parent_period_start), F.col(ColumnNames.settlement_month)
+                ),
                 F.coalesce(
                     # Subtract a tiny bit to avoid including the next year if the period ends at new year
-                    begining_of_year(F.expr(f"{CalculatedNames.parent_period_end} - INTERVAL 1 SECOND")),
-                    begining_of_year(F.current_date(), years_to_add=1),
+                    _begining_of_settlement_year(
+                        F.expr(f"{CalculatedNames.parent_period_end} - INTERVAL 1 SECOND"),
+                        F.col(ColumnNames.settlement_month),
+                    ),
+                    begining_of_year(
+                        _begining_of_settlement_year(F.current_date(), F.col(ColumnNames.settlement_month)),
+                        years_to_add=1,
+                    ),
                 ),
                 F.expr("INTERVAL 1 YEAR"),
             )
-        ).alias("period_year"),
+        ).alias(settlement_year_date),
+        # TODO BJM: Update to use settlement month instead of year
     ).select(
         F.col(ColumnNames.parent_metering_point_id),
         F.col(ColumnNames.net_settlement_group),
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col("period_year")),
+            F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col(settlement_year_date)),
             F.col(CalculatedNames.parent_period_start),
         )
-        .otherwise(begining_of_year(date=F.col("period_year")))
+        .otherwise(begining_of_year(date=F.col(settlement_year_date)))
         .alias(CalculatedNames.parent_period_start),
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_end)) == F.year(F.col("period_year")),
+            F.year(F.col(CalculatedNames.parent_period_end)) == F.year(F.col(settlement_year_date)),
             F.col(CalculatedNames.parent_period_end),
         )
-        .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
+        .otherwise(begining_of_year(date=F.col(settlement_year_date), years_to_add=1))
         .alias(CalculatedNames.parent_period_end),
         F.col(CalculatedNames.overlap_period_start),
         F.col(CalculatedNames.overlap_period_end),
-        F.col("period_year").alias(CalculatedNames.settlement_month_datetime),
+        F.col(settlement_year_date).alias(CalculatedNames.settlement_month_datetime),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.net_consumption_metering_point_id),
         F.col(CalculatedNames.consumption_from_grid_metering_point_id),
         F.col(CalculatedNames.supply_to_grid_metering_point_id),
     )
+
+
+def _begining_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
+    """Return the first date, which is the 1st of the settlement_month and is no later than period_start_date."""
+    return F.when(
+        F.to_date(F.concat_ws("-", F.year(period_start_date), settlement_month, F.lit("1"))) <= period_start_date,
+        F.to_date(F.concat_ws("-", F.year(period_start_date), settlement_month, F.lit("1"))),
+    ).otherwise(F.to_date(F.concat_ws("-", F.year(period_start_date) - 1, settlement_month, F.lit("1"))))
 
 
 def _remove_nsg2_up2end_without_netcomsumption(
