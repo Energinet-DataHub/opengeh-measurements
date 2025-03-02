@@ -1,6 +1,5 @@
 from geh_common.domain.types import MeteringPointType, NetSettlementGroup
 from geh_common.pyspark.transformations import (
-    begining_of_year,
     convert_from_utc,
 )
 from pyspark.sql import Column, DataFrame
@@ -26,7 +25,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
-    metering_point_periods = _remove_nsg2_up2end_without_netcomsumption(metering_point_periods)
+    metering_point_periods = _remove_net_settlement_group_2_up2end_without_netcomsumption(metering_point_periods)
 
     return metering_point_periods
 
@@ -231,29 +230,29 @@ def _split_period_by_settlement_month(
                         F.expr(f"{CalculatedNames.parent_period_end} - INTERVAL 1 SECOND"),
                         F.col(ColumnNames.settlement_month),
                     ),
-                    begining_of_year(
+                    F.add_months(
                         _begining_of_settlement_year(F.current_date(), F.col(ColumnNames.settlement_month)),
-                        years_to_add=1,
+                        12,
                     ),
                 ),
                 F.expr("INTERVAL 1 YEAR"),
             )
         ).alias(settlement_year_date),
-        # TODO BJM: Update to use settlement month instead of year
     ).select(
         F.col(ColumnNames.parent_metering_point_id),
         F.col(ColumnNames.net_settlement_group),
+        # When period starts withing the settlement year, use that date, otherwise use the settlement year start
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_start)) == F.year(F.col(settlement_year_date)),
+            _is_in_settlement_year(F.col(CalculatedNames.parent_period_start), F.col(settlement_year_date)),
             F.col(CalculatedNames.parent_period_start),
         )
-        .otherwise(begining_of_year(date=F.col(settlement_year_date)))
+        .otherwise(F.col(settlement_year_date))
         .alias(CalculatedNames.parent_period_start),
         F.when(
-            F.year(F.col(CalculatedNames.parent_period_end)) == F.year(F.col(settlement_year_date)),
+            _is_in_settlement_year(F.col(CalculatedNames.parent_period_end), F.col(settlement_year_date)),
             F.col(CalculatedNames.parent_period_end),
         )
-        .otherwise(begining_of_year(date=F.col(settlement_year_date), years_to_add=1))
+        .otherwise(F.add_months(F.col(settlement_year_date), 12))
         .alias(CalculatedNames.parent_period_end),
         F.col(CalculatedNames.overlap_period_start),
         F.col(CalculatedNames.overlap_period_end),
@@ -265,6 +264,10 @@ def _split_period_by_settlement_month(
     )
 
 
+def _is_in_settlement_year(date: Column, settlement_year_date: Column) -> Column:
+    return (date >= settlement_year_date) & (date < F.add_months(settlement_year_date, 12))
+
+
 def _begining_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
     """Return the first date, which is the 1st of the settlement_month and is no later than period_start_date."""
     return F.when(
@@ -273,7 +276,8 @@ def _begining_of_settlement_year(period_start_date: Column, settlement_month: Co
     ).otherwise(F.to_date(F.concat_ws("-", F.year(period_start_date) - 1, settlement_month, F.lit("1"))))
 
 
-def _remove_nsg2_up2end_without_netcomsumption(
+# TODO BJM: Update to use settlement month instead of year
+def _remove_net_settlement_group_2_up2end_without_netcomsumption(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.where(
