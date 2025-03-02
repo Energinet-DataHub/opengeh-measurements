@@ -276,7 +276,6 @@ def _begining_of_settlement_year(period_start_date: Column, settlement_month: Co
     ).otherwise(F.to_date(F.concat_ws("-", F.year(period_start_date) - 1, settlement_month, F.lit("1"))))
 
 
-# TODO BJM: Update to use settlement month instead of year
 def _remove_net_settlement_group_2_up2end_without_netcomsumption(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
@@ -284,6 +283,7 @@ def _remove_net_settlement_group_2_up2end_without_netcomsumption(
         ~(
             (F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & (F.col(CalculatedNames.net_consumption_metering_point_id).isNull())
-            & (F.year(F.col(CalculatedNames.settlement_month_datetime)) == F.year(F.current_date()))
+            # When current date is in the settlement year, then we're in a up-to-end period
+            & _is_in_settlement_year(F.current_date(), F.col(CalculatedNames.settlement_month_datetime))
         )
     )
