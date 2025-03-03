@@ -29,6 +29,7 @@ from tests.capacity_settlement.testsession_configuration import (
 def job_environment_variables() -> dict:
     return {
         "CATALOG_NAME": "some_catalog",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
     }
 
 
