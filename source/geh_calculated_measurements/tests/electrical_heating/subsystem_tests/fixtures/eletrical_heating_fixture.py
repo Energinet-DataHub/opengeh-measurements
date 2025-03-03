@@ -7,11 +7,9 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from tests.common.utils import LogQueryClientWrapper
+from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
 
+from .log_query_client_wrapper import LogQueryClientWrapper
 
 
 class CalculationInput:
@@ -25,7 +23,8 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-query = """INSERT INTO measurements (
+def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
+    return f"""INSERT INTO {catalog}.{schema}.{table} (
   transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
   metering_point_id, observation_time, quality, metering_point_type -- static variables
 )
@@ -46,11 +45,12 @@ class ElectricalHeatingFixture:
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
-        ).seed(
+        ).execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
-            catalog=environment_configuration.catalog_name,
-            schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-            statement=query,
+            statement=seed_data_query(
+                catalog=environment_configuration.catalog_name,
+                schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+            ),
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
