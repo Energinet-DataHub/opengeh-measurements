@@ -10,7 +10,9 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from tests.common.utils import LogQueryClientWrapper
+
+from .log_query_client_wrapper import LogQueryClientWrapper
+
 
 class CalculationInput:
     orchestration_instance_id: uuid.UUID
@@ -25,7 +27,8 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-query = f"""
+def query(catalog: str, schema: str, table: str = "measurements") -> str:
+    return f"""
         INSERT INTO {MeasurementsGoldDatabaseDefinition.MEASUREMENTS} VALUES
         ('test',2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
     """
@@ -36,11 +39,12 @@ class CapacitySettlementFixture:
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
-        ).seed(
+        ).execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
-            catalog=environment_configuration.catalog_name,
-            schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-            statement=query,
+            statement=query(
+                catalog=environment_configuration.catalog_name,
+                schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+            ),
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
