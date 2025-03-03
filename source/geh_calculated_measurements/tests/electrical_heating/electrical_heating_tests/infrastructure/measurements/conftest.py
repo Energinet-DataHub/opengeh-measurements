@@ -56,3 +56,18 @@ def measurements_gold_repository(
         spark,
         get_default_catalog,
     )
+
+
+@pytest.fixture(autouse=True, scope="function")
+def reset_test_table_after_each_test(spark: SparkSession, setup_test_table) -> None:
+    """Reset the test table to its original state after each test."""
+    # The test runs here
+    yield
+
+    # After the test completes, restore the original table
+    original_table = f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
+    test_table = f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+
+    # Copy from base table back to test table
+    df_original = spark.read.table(original_table)
+    df_original.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(test_table)
