@@ -36,7 +36,7 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
             .otherwise(F.col(SilverMeasurementsColumnNames.start_datetime))
         ).alias(GoldMeasurementsColumnNames.observation_time),
         F.col(f"col.{SilverMeasurementsColumnNames.Points.quantity}").alias(GoldMeasurementsColumnNames.quantity),
-        _get_qualtity().alias(GoldMeasurementsColumnNames.quality),
+        _get_quality().alias(GoldMeasurementsColumnNames.quality),
         F.col(SilverMeasurementsColumnNames.metering_point_type).alias(GoldMeasurementsColumnNames.metering_point_type),
         F.col(SilverMeasurementsColumnNames.transaction_id).alias(GoldMeasurementsColumnNames.transaction_id),
         F.col(SilverMeasurementsColumnNames.transaction_creation_datetime).alias(
@@ -87,7 +87,7 @@ def _get_hourly_observation_time() -> Column:
     )
 
 
-def _get_qualtity() -> Column:
+def _get_quality() -> Column:
     col_name = f"col.{SilverMeasurementsColumnNames.Points.quality}"
     return (
         F.when(F.col(col_name) == SubmittedTransactionsQuality.Q_CALCULATED.value, QuantityQuality.CALCULATED.value)
