@@ -1,12 +1,12 @@
-import random
 from unittest import mock
 
 from pyspark.sql import SparkSession
 
+import tests.helpers.identifier_helper as identifier_helper
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.gold_settings import GoldSettings
-from tests.gold.helpers.gold_builder import GoldMeasurementsDataFrameBuilder
+from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
 
 
 @mock.patch("os.getenv")
@@ -19,10 +19,8 @@ def test__start_write_stream__should_write_to_gold_table(
     gold_database_name = GoldSettings().gold_database_name
     source_table = GoldTableNames.gold_measurements
     target_table = f"{source_table}_test_write_stream"
-    metering_point_id = random.randint(0, 999999999999999999)
-    df_gold = (
-        GoldMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id, quality="Bad").build()
-    )
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    df_gold = GoldMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id, quality="Bad").build()
     df_gold.write.format("delta").mode("append").saveAsTable(f"{gold_database_name}.{source_table}")
     df_stream_gold = spark.readStream.format("delta").table(f"{gold_database_name}.{source_table}")
     mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
@@ -52,8 +50,8 @@ def test__append__should_append_to_gold_table(spark: SparkSession):
     # Arrange
     gold_adapter = DeltaGoldAdapter()
     gold_database_name = GoldSettings().gold_database_name
-    metering_point_id = random.randint(0, 999999999999999999)
-    df_gold = GoldMeasurementsDataFrameBuilder(spark).add_row(metering_point_id=metering_point_id).build()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    df_gold = GoldMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
 
     # Act
     gold_adapter.append(df_gold, GoldTableNames.gold_measurements)
