@@ -11,6 +11,7 @@ from core.gold.domain.constants.column_names.gold_measurements_column_names impo
 gold_measurements_schema = StructType(
     [
         StructField(GoldMeasurementsColumnNames.metering_point_id, StringType(), True),
+        StructField(GoldMeasurementsColumnNames.orchestration_type, StringType(), True),
         StructField(GoldMeasurementsColumnNames.observation_time, TimestampType(), True),
         StructField(GoldMeasurementsColumnNames.quantity, DecimalType(18, 3), True),
         StructField(GoldMeasurementsColumnNames.quality, StringType(), True),

@@ -55,7 +55,7 @@
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         "python.testing.pytestArgs": [
-          "tests"
+          ".", "--no-cov"
         ],
         "python.analysis.include": [
           "/workspace/source/**/*"
