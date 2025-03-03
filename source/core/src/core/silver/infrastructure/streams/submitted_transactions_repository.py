@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from core.settings.silver_settings import SilverSettings
-from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
+from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.domain.constants.orchestration_types import OrchestrationTypes
 from core.silver.infrastructure.config import SilverTableNames
 
@@ -17,6 +17,6 @@ class SubmittedTransactionsRepository:
             .option("ignoreDeletes", "true")
             .table(f"{self.silver_database_name}.{SilverTableNames.silver_measurements}")
             .filter(
-                f"{SilverMeasurementsColNames.orchestration_type} = '{OrchestrationTypes.SUBMITTED_MEASURE_DATA.value}'"
+                f"{SilverMeasurementsColumnNames.orchestration_type} = '{OrchestrationTypes.SUBMITTED_MEASURE_DATA.value}'"
             )
         )
