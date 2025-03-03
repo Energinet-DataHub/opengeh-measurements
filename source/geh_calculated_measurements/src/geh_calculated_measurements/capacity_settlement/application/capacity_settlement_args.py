@@ -9,3 +9,5 @@ class CapacitySettlementArgs(ApplicationSettings):
     time_zone: str = "Europe/Copenhagen"
     calculation_month: int = Field(init=False)
     calculation_year: int = Field(init=False)
+    catalog_name: str = Field(init=False)
+    electricity_market_data_path: str = Field(init=False)

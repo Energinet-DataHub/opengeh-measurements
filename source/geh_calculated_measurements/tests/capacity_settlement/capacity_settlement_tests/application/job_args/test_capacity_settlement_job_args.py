@@ -40,6 +40,7 @@ def sys_argv_from_contract(
 def job_environment_variables() -> dict:
     return {
         "CATALOG_NAME": "some_catalog",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
     }
 
 
