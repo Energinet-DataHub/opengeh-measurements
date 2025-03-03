@@ -1,12 +1,12 @@
 from pyspark.sql.types import (
     ArrayType,
+    BooleanType,
     DecimalType,
     IntegerType,
     StringType,
     StructField,
     StructType,
     TimestampType,
-    BooleanType,
 )
 
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
