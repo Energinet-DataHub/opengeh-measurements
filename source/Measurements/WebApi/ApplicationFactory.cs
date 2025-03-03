@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Asp.Versioning;
-using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
+﻿using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Measurements.WebApi;

@@ -14,6 +14,7 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
 
     return exploded_df.select(
         F.col(SilverMeasurementsColumnNames.metering_point_id).alias(GoldMeasurementsColumnNames.metering_point_id),
+        F.col(SilverMeasurementsColumnNames.orchestration_type).alias(GoldMeasurementsColumnNames.orchestration_type),
         (
             # When monthly resolution
             F.when(
