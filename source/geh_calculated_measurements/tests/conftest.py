@@ -15,6 +15,7 @@ def env_args_fixture_logging() -> dict[str, str]:
         "CLOUD_ROLE_NAME": "test_role",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
         "SUBSYSTEM": "test_subsystem",
+        "CATALOG_NAME": "spark_catalog",
     }
     return env_args
 
