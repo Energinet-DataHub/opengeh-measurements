@@ -1,3 +1,4 @@
+from geh_common.databricks.databricks_api_client import DatabricksApiClient
 from geh_common.migrations import (
     SparkSqlMigrationsConfiguration,
     migration_pipeline,
@@ -13,13 +14,9 @@ from core.settings.databricks_settings import DatabricksSettings
 def migrate() -> None:
     spark_config = _configure_spark_sql_migrations()
 
-    databricks_settings = DatabricksSettings()
-    print(f"Databricks jobs: {databricks_settings.databricks_jobs}")  # noqa: T201
-    jobs = databricks_settings.databricks_jobs.split(",")
-    for job in jobs:
-        print(job)  # noqa: T201
-
+    _stop_job_runs()
     migration_pipeline.migrate(spark_config)
+    _start_jobs()
 
 
 def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
@@ -33,3 +30,30 @@ def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
     )
+
+
+def _stop_job_runs() -> None:
+    databricks_settings = DatabricksSettings()
+    databricks_api_client = DatabricksApiClient(
+        databricks_settings.databricks_workspace_url, databricks_settings.databricks_token
+    )
+
+    jobs = databricks_settings.databricks_jobs.split(",")
+    for job in jobs:
+        print(job)  # noqa: T201
+        job_id = databricks_api_client.get_job_id(job)
+        run_id = databricks_api_client.get_job_run_id(job_id)
+        databricks_api_client.cancel_job_run(run_id)
+
+
+def _start_jobs() -> None:
+    databricks_settings = DatabricksSettings()
+    databricks_api_client = DatabricksApiClient(
+        databricks_settings.databricks_workspace_url, databricks_settings.databricks_token
+    )
+
+    jobs = databricks_settings.databricks_jobs.split(",")
+    for job in jobs:
+        print(job)  # noqa: T201
+        job_id = databricks_api_client.get_job_id(job)
+        databricks_api_client.start_job(job_id, [])
