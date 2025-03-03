@@ -13,6 +13,7 @@ class GoldMeasurementsBuilder:
     def add_row(
         self,
         metering_point_id: str | None = "502938475674839281",
+        orchestration_type: str = "submitted",
         observation_time: datetime | None = datetime.now(),
         quantity: Decimal | None = Decimal(random.uniform(1, 1000)),
         quality=None,
@@ -25,6 +26,7 @@ class GoldMeasurementsBuilder:
         self.data.append(
             (
                 metering_point_id,
+                orchestration_type,
                 observation_time,
                 quantity,
                 quality or random.choice(["measured", "estimated", "calculated", "missing"]),
