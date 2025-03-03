@@ -17,9 +17,7 @@ class LogQueryClientWrapper:
         poll_interval_seconds: int = 5,
         timespan_minutes: int = 15,
     ) -> LogsQueryResult:
-        """Wait for a condition to be met by polling a query on an Azure Log Analytics workspace.
-        Only returns when the query is successful and returns at least one row.
-        """
+        """Wait for a condition to be met by polling a query on an Azure Log Analytics workspace. Only returns when the query is successful and returns at least one row."""
         start_time = time.time()
 
         while time.time() - start_time < timeout_seconds:
