@@ -2,7 +2,7 @@ from datetime import datetime
 from importlib.resources import files
 
 import pyspark.sql.functions as F
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.protobuf.functions import to_protobuf
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -54,7 +54,7 @@ class Value:
 
 
 class ValueBuilder:
-    def __init__(self, spark: SparkSession):
+    def __init__(self, spark: SparkSession) -> None:
         self.spark = spark
         self.data = []
 
@@ -131,7 +131,7 @@ class ValueBuilder:
 
 
 class SubmittedTransactionsBuilder:
-    def __init__(self, spark: SparkSession):
+    def __init__(self, spark: SparkSession) -> None:
         self.spark = spark
         self.data = []
 
@@ -152,5 +152,48 @@ class SubmittedTransactionsBuilder:
 
         return self
 
-    def build(self):
+    def build(self) -> DataFrame:
         return self.spark.createDataFrame(self.data, schema=submitted_transactions_schema)
+
+
+class UnpackedSubmittedTransactionsBuilder:
+    def __init__(self, spark: SparkSession) -> None:
+        self.spark = spark
+        self.data = []
+
+    def add_row(
+        self,
+        version: int = 1,
+        orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
+        orchestration_type: str = "OT_UNSPECIFIED",
+        metering_point_id: str = "503928175928475638",
+        transaction_id: str = "5a76d246-ceae-459f-9e9f",
+        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
+        metering_point_type: str = "MPT_UNSPECIFIED",
+        unit: str = "U_UNSPECIFIED",
+        resolution: str = "R_UNSPECIFIED",
+        start_datetime: datetime = datetime_helper.random_datetime(),
+        end_datetime: datetime = datetime_helper.random_datetime(),
+        points: list = [Point()],
+    ) -> "UnpackedSubmittedTransactionsBuilder":
+        self.data.append(
+            Value(
+                version,
+                orchestration_instance_id,
+                orchestration_type,
+                metering_point_id,
+                transaction_id,
+                transaction_creation_datetime,
+                metering_point_type,
+                unit,
+                resolution,
+                start_datetime,
+                end_datetime,
+                points,
+            )
+        )
+
+        return self
+
+    def build(self) -> DataFrame:
+        return self.spark.createDataFrame(self.data, schema=bronze_submitted_transactions_value_schema)
