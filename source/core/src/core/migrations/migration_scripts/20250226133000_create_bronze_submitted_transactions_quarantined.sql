@@ -18,11 +18,11 @@ CREATE TABLE {bronze_database}.{submitted_transactions_quarantined_table}
         >
     >,
     created TIMESTAMP NOT NULL,
-    validate_orchestration_type BOOLEAN NOT NULL,
-    validate_quality BOOLEAN NOT NULL,
-    validate_metering_point_type BOOLEAN NOT NULL,
-    validate_unit BOOLEAN NOT NULL,
-    validate_resolution BOOLEAN NOT NULL
+    validate_orchestration_type_enum BOOLEAN NOT NULL,
+    validate_quality_enum BOOLEAN NOT NULL,
+    validate_metering_point_type_enum BOOLEAN NOT NULL,
+    validate_unit_enum BOOLEAN NOT NULL,
+    validate_resolution_enum BOOLEAN NOT NULL
 )
 USING DELTA
 CLUSTER BY (transaction_id, transaction_creation_datetime, metering_point_id, start_datetime)
