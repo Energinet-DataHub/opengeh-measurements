@@ -4,7 +4,8 @@ import uuid
 import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
-from fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+
+from tests.capacity_settlement.subsystem_tests.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 
 
 class TestCapacitySettlement(unittest.TestCase):
@@ -56,7 +57,7 @@ class TestCapacitySettlement(unittest.TestCase):
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
         """
 
         # Act

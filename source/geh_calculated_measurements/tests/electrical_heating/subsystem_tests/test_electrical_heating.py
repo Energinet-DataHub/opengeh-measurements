@@ -4,7 +4,8 @@ import uuid
 import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
-from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+
+from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
 class TestElectricalHeating(unittest.TestCase):
@@ -52,7 +53,7 @@ class TestElectricalHeating(unittest.TestCase):
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{self.fixture.job_state.calculation_input.orchestration_instance_id}'
         """
 
         # Act
