@@ -1,14 +1,13 @@
 import os
 from typing import Callable, Generator
-from unittest.mock import patch
+from unittest import mock
 
+import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-import core.utility.shared_helpers as shared_helpers
 import tests.helpers.schema_helper as schema_helper
-from core.migrations import migrations_runner
 
 
 def pytest_runtest_setup() -> None:
@@ -84,15 +83,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 @pytest.fixture(scope="session")
-def migrate(spark: SparkSession) -> None:
-    """
-    This is actually the main part of all our tests.
-    The reason for being a fixture is that we want to run it only once per session.
-    """
-    migrations_runner.migrate()
-
-
-@pytest.fixture(scope="session")
 def file_path_finder() -> Callable[[str], str]:
     """
     Returns the path of the file.
@@ -129,17 +119,36 @@ def tests_path(source_path: str) -> str:
     return f"{source_path}/tests/silver"
 
 
+@pytest.fixture(scope="session")
+def env_args_fixture_logging() -> dict[str, str]:
+    env_args = {
+        "CLOUD_ROLE_NAME": "test_role",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
+        "SUBSYSTEM": "test_subsystem",
+    }
+    return env_args
+
+
+@pytest.fixture(scope="session")
+def script_args_fixture_logging() -> list[str]:
+    sys_argv = [
+        "program_name",
+        "--orchestration-instance-id",
+        "00000000-0000-0000-0000-000000000001",
+    ]
+    return sys_argv
+
+
 @pytest.fixture(autouse=True)
-def configure_dummy_logging() -> None:
+def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging):
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    from geh_common.telemetry.logging_configuration import configure_logging
 
-    configure_logging(cloud_role_name="any-cloud-role-name", tracer_name="any-tracer-name")
-
-
-@pytest.fixture
-def mock_checkpoint_path():
-    with patch.object(
-        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/silver/__checkpoints__"
-    ) as mock_checkpoint_path:
-        yield mock_checkpoint_path
+    with (
+        mock.patch("sys.argv", script_args_fixture_logging),
+        mock.patch.dict("os.environ", env_args_fixture_logging, clear=False),
+        mock.patch(
+            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
+        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
+    ):
+        logging_settings = config.LoggingSettings()  # type: ignore
+        yield config.configure_logging(logging_settings=logging_settings, extras=None)  # type: ignore

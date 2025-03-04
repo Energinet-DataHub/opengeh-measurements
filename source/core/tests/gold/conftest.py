@@ -6,7 +6,6 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
-import core.migrations.migrations_runner as migrations_runner
 import tests.helpers.schema_helper as schema_helper
 from core.gold.domain.schemas.silver_measurements import silver_measurements_schema
 from core.settings.silver_settings import SilverSettings
@@ -52,15 +51,6 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     yield session
 
     session.stop()
-
-
-@pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession) -> None:
-    """
-    This is actually the main part of all our tests.
-    The reason for being a fixture is that we want to run it only once per session.
-    """
-    migrations_runner.migrate()
 
 
 @pytest.fixture(scope="session")
