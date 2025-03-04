@@ -8,29 +8,6 @@ from pyspark.sql import SparkSession
 import tests.helpers.schema_helper as schema_helper
 
 
-def pytest_runtest_setup() -> None:
-    """
-    This function is called before each test function is executed.
-    """
-    os.environ["CATALOG_NAME"] = "spark_catalog"
-    os.environ["BRONZE_CONTAINER_NAME"] = "bronze"
-    os.environ["SILVER_CONTAINER_NAME"] = "silver"
-    os.environ["GOLD_CONTAINER_NAME"] = "gold"
-    os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
-    os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
-    os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
-    os.environ["MIGRATIONS_SILVER_DATABASE_NAME"] = "migrations_silver"
-    os.environ["EVENT_HUB_NAMESPACE"] = "event_hub_namespace"
-    os.environ["EVENT_HUB_INSTANCE"] = "event_hub_instance"
-    os.environ["TENANT_ID"] = "tenant_id"
-    os.environ["SPN_APP_ID"] = "spn_app_id"
-    os.environ["SPN_APP_SECRET"] = "spn_app_secret"
-    os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake_storage_account_name"
-    os.environ["DATABRICKS_WORKSPACE_URL"] = "workspace-url"
-    os.environ["DATABRICKS_TOKEN"] = "token"
-    os.environ["DATABRICKS_JOBS"] = "job1,job2"
-
-
 @pytest.fixture(scope="session")
 def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     warehouse_location = f"{tests_path}/__spark-warehouse__"

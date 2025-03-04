@@ -12,22 +12,6 @@ from core.silver.domain.schemas.silver_measurements import silver_measurements_s
 from core.silver.infrastructure.config import SilverTableNames
 
 
-def pytest_runtest_setup() -> None:
-    """
-    This function is called before each test function is executed.
-    """
-    os.environ["CATALOG_NAME"] = "spark_catalog"
-    os.environ["BRONZE_CONTAINER_NAME"] = "bronze"
-    os.environ["SILVER_CONTAINER_NAME"] = "silver"
-    os.environ["GOLD_CONTAINER_NAME"] = "gold"
-    os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
-    os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
-    os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
-    os.environ["DATABRICKS_WORKSPACE_URL"] = "workspace-url"
-    os.environ["DATABRICKS_TOKEN"] = "token"
-    os.environ["DATABRICKS_JOBS"] = "job1,job2"
-
-
 @pytest.fixture(scope="session")
 def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     warehouse_location = f"{tests_path}/__spark-warehouse__"
