@@ -54,7 +54,8 @@ def test__start_jobs__calls_expected(mock_databricks_settings, mock_databricks_a
 
     # Assert
     mock_databricks_api_client.assert_called_once_with(
-        mock_settings_instance.databricks_workspace_url, mock_settings_instance.databricks_token
+        databricks_host=mock_settings_instance.databricks_workspace_url,
+        databricks_token=mock_settings_instance.databricks_token,
     )
     assert mock_client_instance.get_job_id.call_count == 2
     assert mock_client_instance.start_job.call_count == 2

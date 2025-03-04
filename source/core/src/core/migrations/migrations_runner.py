@@ -56,7 +56,8 @@ def _stop_job_runs() -> None:
 def _start_jobs() -> None:
     databricks_settings = DatabricksSettings()
     databricks_api_client = DatabricksApiClient(
-        databricks_settings.databricks_workspace_url, databricks_settings.databricks_token
+        databricks_host=databricks_settings.databricks_workspace_url,
+        databricks_token=databricks_settings.databricks_token,
     )
 
     jobs = databricks_settings.databricks_jobs.split(",")
