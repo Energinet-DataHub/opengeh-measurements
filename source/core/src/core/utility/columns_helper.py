@@ -1,6 +1,5 @@
-import pyspark.sql.functions as F
 from pyspark.sql import Column
-from pyspark.sql.functions import lit, when, col
+from pyspark.sql.functions import col, lit, when
 
 
 def is_not_null(column_name: str) -> Column:
