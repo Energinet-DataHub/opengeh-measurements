@@ -18,7 +18,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     TimeSeriesPoints,
 )
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.domain.debug import log_dataframe
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import calculate_hourly_quantity
 
 
@@ -46,7 +45,6 @@ def execute(
         CalculatedNames.observation_time_hourly_lt,
         F.from_utc_timestamp(F.col(CalculatedNames.observation_time_hourly), time_zone),
     )
-    log_dataframe(time_series_points_hourly)
     new_electrical_heating = T.calculate_electrical_heating_in_local_time(
         time_series_points_hourly, metering_point_periods
     )

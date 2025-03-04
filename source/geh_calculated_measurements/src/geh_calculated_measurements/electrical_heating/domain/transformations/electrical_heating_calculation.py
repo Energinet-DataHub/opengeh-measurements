@@ -6,7 +6,6 @@ from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -46,7 +45,6 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     )
 
 
-@debugging()
 def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
     time_series_points_hourly: DataFrame,
@@ -136,7 +134,6 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
-@debugging()
 def _calculate_period_limit(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
@@ -183,7 +180,6 @@ def _calculate_period_limit(
     )
 
 
-@debugging()
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
@@ -204,7 +200,6 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     ).drop_duplicates()
 
 
-@debugging()
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.when(
