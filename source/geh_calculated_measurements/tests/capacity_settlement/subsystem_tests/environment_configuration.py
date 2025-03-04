@@ -13,12 +13,12 @@ class EnvironmentConfiguration(ApplicationSettings):
     This class must be included when running tests in CD.
     """
 
-    warehouse_id: str = Field(alias="CORE_WAREHOUSE_ID")
-    catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
+    warehouse_id: str = Field(init=False, alias="CORE_WAREHOUSE_ID")
+    catalog_name: str = Field(init=False, alias="SHARED_CATALOG_NAME")
 
-    databricks_token: str = Field(alias="DATABRICKS_TOKEN")
-    workspace_url: str = Field(alias="WORKSPACE_URL")
-    shared_keyvault_name: str = Field(alias="SHARED_KEYVAULT_NAME")
+    databricks_token: str = Field(init=False, alias="DATABRICKS_TOKEN")
+    workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
+    shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",
