@@ -18,6 +18,7 @@ from geh_calculated_measurements.capacity_settlement.contracts.electricity_marke
 from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
     time_series_points_v1,
 )
+from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
 from tests.capacity_settlement.testsession_configuration import (
     TestSessionConfiguration,
@@ -28,6 +29,7 @@ from tests.capacity_settlement.testsession_configuration import (
 def job_environment_variables() -> dict:
     return {
         "CATALOG_NAME": "some_catalog",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
     }
 
 
@@ -58,9 +60,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
 
     # Execute the logic
     calculation_output = execute(
-        spark,
-        time_series_points,
-        metering_point_periods,
+        TimeSeriesPoints(time_series_points),
+        MeteringPointPeriods(metering_point_periods),
         args.orchestration_instance_id,
         args.calculation_month,
         args.calculation_year,
@@ -76,7 +77,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.measurements,
+                actual=calculation_output.measurements.df,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/ten_largest_quantities.csv",
