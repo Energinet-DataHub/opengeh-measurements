@@ -8,7 +8,6 @@ from databricks.sdk.service.jobs import RunResultState
 from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
-@pytest.mark.skip(reason="This test is not ready to run.")
 class TestElectricalHeating(unittest.TestCase):
     """
     Subsystem test that verifies a Databricks electrical heating job runs successfully to completion.
