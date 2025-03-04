@@ -11,7 +11,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     [HttpGet]
     public async Task<IActionResult> GetMeasurementAsync(string measurementId)
     {
-        var result = await measurementsHandler.GetMeasurementAsync(measurementId);
+        var result = await measurementsHandler.GetMeasurementAsync(measurementId, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow);
 
         return Ok(result);
     }
