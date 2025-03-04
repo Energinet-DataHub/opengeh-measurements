@@ -16,7 +16,7 @@ metering_point_type_enum_params = [pytest.param(x.value, 1) for x in MeteringPoi
         pytest.param("", 0),
     ].__add__(metering_point_type_enum_params),
 )
-def test_metering_point_type_enum_validations(
+def test__metering_point_type_enum_validations(
     spark: SparkSession,
     metering_point_type: str,
     expected_count: int,
