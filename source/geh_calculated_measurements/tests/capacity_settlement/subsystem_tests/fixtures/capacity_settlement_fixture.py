@@ -7,9 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
+from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
 
 from .log_query_client_wrapper import LogQueryClientWrapper
 
@@ -17,8 +15,6 @@ from .log_query_client_wrapper import LogQueryClientWrapper
 class CalculationInput:
     orchestration_instance_id: uuid.UUID
     job_id: int
-    year: int
-    month: int
 
 
 class JobState:
@@ -27,7 +23,7 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-def query(catalog: str, schema: str, table: str = "measurements") -> str:
+def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
     return f"""
         INSERT INTO {MeasurementsGoldDatabaseDefinition.MEASUREMENTS} VALUES
         ('test',2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
@@ -41,7 +37,7 @@ class CapacitySettlementFixture:
             environment_configuration.workspace_url,
         ).execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
-            statement=query(
+            statement=seed_data_query(
                 catalog=environment_configuration.catalog_name,
                 schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
             ),
@@ -55,15 +51,12 @@ class CapacitySettlementFixture:
         )
 
     def get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id("CapacitySettlement")
+        return self.databricks_api_client.get_job_id("ElectricalHeating")
 
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
             f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
-            f"--calculation-month={calculation_input.month}",
-            f"--calculation-year={calculation_input.year}",
         ]
-
         return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:

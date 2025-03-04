@@ -7,7 +7,7 @@ from databricks.sdk.service.jobs import RunResultState
 from environment_configuration import EnvironmentConfiguration
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
+from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldDatabaseDefinition
 
 from .log_query_client_wrapper import LogQueryClientWrapper
 
