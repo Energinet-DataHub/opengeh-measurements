@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WebApi\WebApi.csproj" />
+      <ProjectReference Include="..\Measurements.WebApi\Measurements.WebApi.csproj" />
     </ItemGroup>
 
 </Project>
