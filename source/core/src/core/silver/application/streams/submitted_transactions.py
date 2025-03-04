@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame
 
+import core.bronze.domain.transformations.submitted_transactions_quarantined_transformations as submitted_transactions_quarantined_transformations
 import core.silver.application.config.spark_session as spark_session
 import core.silver.domain.transformations.measurements_transformation as measurements_transformation
 import core.silver.domain.validations.submitted_transactions_to_silver_validation as submitted_transactions_to_silver_validation
@@ -36,7 +37,14 @@ def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> N
     (valid_measurements, invalid_measurements) = submitted_transactions_to_silver_validation.validate(measurements)
 
     SilverRepository().append(valid_measurements)
-    SubmittedTransactionsQuarantinedRepository().append(invalid_measurements)
+
+    submitted_transactions_quarantined = submitted_transactions_quarantined_transformations.map_silver_measurements_to_submitted_transactions_quarantined(
+        invalid_measurements
+    )
+
+    submitted_transactions_quarantined.show()
+
+    SubmittedTransactionsQuarantinedRepository().append(submitted_transactions_quarantined)
 
 
 def _handle_invalid_submitted_transactions(invalid_submitted_transactions: DataFrame) -> None:
