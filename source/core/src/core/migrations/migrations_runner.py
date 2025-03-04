@@ -40,9 +40,15 @@ def _stop_job_runs() -> None:
 
     jobs = databricks_settings.databricks_jobs.split(",")
     for job in jobs:
-        print(job)  # noqa: T201
+        print(f"Finding job run for job: {job}")  # noqa: T201
         job_id = databricks_api_client.get_job_id(job)
-        run_id = databricks_api_client.get_job_run_id(job_id)
+        run_id = databricks_api_client.get_latest_job_run_id(job_id)
+
+        if run_id is None:
+            print(f"No job runs found for job {job}")  # noqa: T201
+            continue
+
+        print(f"Canceling job run {run_id} for job {job}")  # noqa: T201
         databricks_api_client.cancel_job_run(run_id)
 
 
@@ -54,6 +60,6 @@ def _start_jobs() -> None:
 
     jobs = databricks_settings.databricks_jobs.split(",")
     for job in jobs:
-        print(job)  # noqa: T201
+        print(f"Starting job {job}")  # noqa: T201
         job_id = databricks_api_client.get_job_id(job)
         databricks_api_client.start_job(job_id, [])
