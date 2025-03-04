@@ -11,8 +11,10 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
+from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 
 
+@debugging()
 def get_joined_metering_point_periods_in_local_time(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,

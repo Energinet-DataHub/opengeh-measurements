@@ -5,6 +5,7 @@ from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
     get_hourly_energy_in_local_time,
 )
@@ -41,7 +42,11 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     return metering_point_periods.select(
         "*",
         F.when(
-            (F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
+            (
+                F.col(ColumnNames.net_settlement_group).isin(
+                    NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
+                )
+            )
             & (F.col(CalculatedNames.net_consumption_metering_point_id).isNotNull()),
             F.col(CalculatedNames.net_consumption_metering_point_id),
         )
@@ -50,6 +55,7 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     )
 
 
+@debugging()
 def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
     time_series_points_in_utc: DataFrame,
@@ -147,6 +153,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
+@debugging()
 def _calculate_period_limit(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
