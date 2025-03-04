@@ -1,9 +1,11 @@
 from datetime import timedelta
 
 import pyspark.sql.functions as F
+from geh_common.domain.types.quantity_quality import QuantityQuality
 from pyspark.sql import Column, DataFrame
 from pyspark.sql.types import TimestampType
 
+from core.bronze.domain.constants.enums.quality import SubmittedTransactionsQuality
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.domain.constants.enums.resolutions import ResolutionEnum
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
@@ -34,7 +36,7 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
             .otherwise(F.col(SilverMeasurementsColumnNames.start_datetime))
         ).alias(GoldMeasurementsColumnNames.observation_time),
         F.col(f"col.{SilverMeasurementsColumnNames.Points.quantity}").alias(GoldMeasurementsColumnNames.quantity),
-        F.col(f"col.{SilverMeasurementsColumnNames.Points.quality}").alias(GoldMeasurementsColumnNames.quality),
+        _get_quality().alias(GoldMeasurementsColumnNames.quality),
         F.col(SilverMeasurementsColumnNames.metering_point_type).alias(GoldMeasurementsColumnNames.metering_point_type),
         F.col(SilverMeasurementsColumnNames.transaction_id).alias(GoldMeasurementsColumnNames.transaction_id),
         F.col(SilverMeasurementsColumnNames.transaction_creation_datetime).alias(
@@ -82,4 +84,15 @@ def _get_15_minutes_observation_time() -> Column:
 def _get_hourly_observation_time() -> Column:
     return F.unix_timestamp(F.col(SilverMeasurementsColumnNames.start_datetime)) + (
         (F.col(f"col.{SilverMeasurementsColumnNames.Points.position}") - F.lit(1)) * F.lit(timedelta(hours=1).seconds)
+    )
+
+
+def _get_quality() -> Column:
+    col_name = f"col.{SilverMeasurementsColumnNames.Points.quality}"
+    return (
+        F.when(F.col(col_name) == SubmittedTransactionsQuality.Q_CALCULATED.value, QuantityQuality.CALCULATED.value)
+        .when(F.col(col_name) == SubmittedTransactionsQuality.Q_ESTIMATED.value, QuantityQuality.ESTIMATED.value)
+        .when(F.col(col_name) == SubmittedTransactionsQuality.Q_MEASURED.value, QuantityQuality.MEASURED.value)
+        .when(F.col(col_name) == SubmittedTransactionsQuality.Q_MISSING.value, QuantityQuality.MISSING.value)
+        .otherwise(F.col(col_name))
     )
