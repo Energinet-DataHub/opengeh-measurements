@@ -2,11 +2,11 @@ import pytest
 
 from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain import (
+    CalculatedNames,
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
     time_series_points_v1,
 )
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_STRUCT_TYPES = [
