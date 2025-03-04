@@ -7,6 +7,7 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
     InvalidSubmittedTransactionsRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
+from core.silver.domain.validations.submitted_transactions_to_silver_validation import validate
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
 
@@ -28,7 +29,10 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
 def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> None:
     spark = spark_session.initialize_spark()
     measurements = measurements_transformation.create_by_unpacked_submitted_transactions(spark, submitted_transactions)
-    SilverRepository().append(measurements)
+
+    (valid_measurements, invalid_measurements) = validate(measurements)
+
+    SilverRepository().append(valid_measurements)
 
 
 def _handle_invalid_submitted_transactions(invalid_submitted_transactions: DataFrame) -> None:
