@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{802BFFC6-A644-432E-82D7-B8E5AC1E2071}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.WebApi", "Measurements.WebApi\Measurements.WebApi.csproj", "{802BFFC6-A644-432E-82D7-B8E5AC1E2071}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{927D718D-7957-4E90-9901-4C3942387D50}"
 EndProject
@@ -13,21 +13,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ConfigurationFiles", "_Con
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B08982C3-2652-42F9-A12A-350584EB13C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.UnitTests", "WebApi.UnitTests\WebApi.UnitTests.csproj", "{F85086F0-8FFA-4C31-A510-906E34744013}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.WebApi.UnitTests", "Measurements.WebApi.UnitTests\Measurements.WebApi.UnitTests.csproj", "{F85086F0-8FFA-4C31-A510-906E34744013}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.IntegrationTests", "WebApi.IntegrationTests\WebApi.IntegrationTests.csproj", "{A765051E-5966-4EC3-A779-E0E7C75020D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.WebApi.IntegrationTests", "Measurements.WebApi.IntegrationTests\Measurements.WebApi.IntegrationTests.csproj", "{A765051E-5966-4EC3-A779-E0E7C75020D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{2A827A76-7A14-40DA-8C46-34C4610C2785}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.Infrastructure", "Measurements.Infrastructure\Measurements.Infrastructure.csproj", "{2A827A76-7A14-40DA-8C46-34C4610C2785}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{82F77EC2-396D-45D5-BF3D-AFBE11B810D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.Application", "Measurements.Application\Measurements.Application.csproj", "{82F77EC2-396D-45D5-BF3D-AFBE11B810D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{F317B8B1-CFB0-4B24-9DC9-B7E8305927D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.Domain", "Measurements.Domain\Measurements.Domain.csproj", "{F317B8B1-CFB0-4B24-9DC9-B7E8305927D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{15A4A9BC-7231-4E9A-8529-F9DF93F6E23E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{8A85F759-2718-4D65-A550-A2B15420664F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.UnitTests", "Measurements.UnitTests\Measurements.UnitTests.csproj", "{8A85F759-2718-4D65-A550-A2B15420664F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{DA2EFE45-7DDB-4E69-BC05-12A9005E8856}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurements.IntegrationTests", "Measurements.IntegrationTests\Measurements.IntegrationTests.csproj", "{DA2EFE45-7DDB-4E69-BC05-12A9005E8856}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
