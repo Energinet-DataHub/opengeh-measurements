@@ -8,6 +8,6 @@ from core.contracts.process_manager.enums.metering_point_type import MeteringPoi
 
 
 def validate_metering_point_type_enum() -> Column:
-    """Quality check: QCST01-01"""
+    """Quality check: QCST01-01."""
     valid_metering_point_types = [name for name in MeteringPointType._member_names_ if name != "MPT_UNSPECIFIED"]
     return F.col(SubmittedTransactionsUnpackedColumnNames.metering_point_type).isin(valid_metering_point_types)
