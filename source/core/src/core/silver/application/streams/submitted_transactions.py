@@ -6,6 +6,9 @@ import core.silver.infrastructure.protobuf.persist_submitted_transaction as pers
 from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repository import (
     InvalidSubmittedTransactionsRepository,
 )
+from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_repository import (
+    SubmittedTransactionsQuarantinedRepository,
+)
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.silver.domain.validations.submitted_transactions_to_silver_validation import validate
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
@@ -33,6 +36,7 @@ def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> N
     (valid_measurements, invalid_measurements) = validate(measurements)
 
     SilverRepository().append(valid_measurements)
+    SubmittedTransactionsQuarantinedRepository().append(invalid_measurements)
 
 
 def _handle_invalid_submitted_transactions(invalid_submitted_transactions: DataFrame) -> None:
