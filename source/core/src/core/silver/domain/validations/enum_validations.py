@@ -28,6 +28,6 @@ def validate_quality_enum() -> Column:
     return F.lit(True)
 
 
-def validate_validate_orchestration_type_enum() -> Column:
+def validate_orchestration_type_enum() -> Column:
     """Quality check: QCST01-05."""
     return F.lit(True)

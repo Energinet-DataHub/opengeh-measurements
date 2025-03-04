@@ -13,7 +13,7 @@ def all_validations_list() -> list[Callable[[], Column]]:
         enum_validations.validate_resolution_enum,
         enum_validations.validate_unit_enum,
         enum_validations.validate_quality_enum,
-        enum_validations.validate_validate_orchestration_type_enum,
+        enum_validations.validate_orchestration_type_enum,
     ]
 
 
