@@ -2,6 +2,7 @@ from pyspark.sql import DataFrame
 
 import core.silver.application.config.spark_session as spark_session
 import core.silver.domain.transformations.measurements_transformation as measurements_transformation
+import core.silver.domain.validations.submitted_transactions_to_silver_validation as submitted_transactions_to_silver_validation
 import core.silver.infrastructure.protobuf.persist_submitted_transaction as persist_submitted_transaction
 from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repository import (
     InvalidSubmittedTransactionsRepository,
@@ -10,7 +11,6 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
     SubmittedTransactionsQuarantinedRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.domain.validations.submitted_transactions_to_silver_validation import validate
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
 
@@ -33,7 +33,7 @@ def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> N
     spark = spark_session.initialize_spark()
     measurements = measurements_transformation.create_by_unpacked_submitted_transactions(spark, submitted_transactions)
 
-    (valid_measurements, invalid_measurements) = validate(measurements)
+    (valid_measurements, invalid_measurements) = submitted_transactions_to_silver_validation.validate(measurements)
 
     SilverRepository().append(valid_measurements)
     SubmittedTransactionsQuarantinedRepository().append(invalid_measurements)

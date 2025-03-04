@@ -32,7 +32,7 @@ class Value:
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = "MPT_UNSPECIFIED",
+        metering_point_type: str = "MPT_PRODUCTION",
         unit: str = "U_UNSPECIFIED",
         resolution: str = "R_UNSPECIFIED",
         start_datetime: datetime = datetime_helper.random_datetime(),
@@ -66,7 +66,7 @@ class ValueBuilder:
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = "MPT_UNSPECIFIED",
+        metering_point_type: str = "MPT_PRODUCTION",
         unit: str = "U_UNSPECIFIED",
         resolution: str = "R_UNSPECIFIED",
         start_datetime: datetime = datetime_helper.random_datetime(),
@@ -114,6 +114,7 @@ class ValueBuilder:
                 ValueColumnNames.points,
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
+
         descriptor_path = str(
             files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
         )

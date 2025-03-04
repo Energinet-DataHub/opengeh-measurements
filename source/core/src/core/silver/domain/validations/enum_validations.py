@@ -26,3 +26,8 @@ def validate_unit_enum() -> Column:
 def validate_quality_enum() -> Column:
     """Quality check: QCST01-04."""
     return F.lit(True)
+
+
+def validate_validate_orchestration_type_enum() -> Column:
+    """Quality check: QCST01-05."""
+    return F.lit(True)
