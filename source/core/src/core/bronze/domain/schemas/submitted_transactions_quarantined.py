@@ -42,10 +42,12 @@ submitted_transactions_quarantined_schema = StructType(
             True,
         ),
         StructField(SubmittedTransactionsQuarantinedColumnNames.created, TimestampType(), False),
-        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_orchestration_type, BooleanType(), False),
-        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_quality, BooleanType(), False),
-        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_metering_point_type, BooleanType(), False),
-        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_unit, BooleanType(), False),
-        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_resolution, BooleanType(), False),
+        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_orchestration_type_enum, BooleanType(), False),
+        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_quality_enum, BooleanType(), False),
+        StructField(
+            SubmittedTransactionsQuarantinedColumnNames.validate_metering_point_type_enum, BooleanType(), False
+        ),
+        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_unit_enum, BooleanType(), False),
+        StructField(SubmittedTransactionsQuarantinedColumnNames.validate_resolution_enum, BooleanType(), False),
     ]
 )
