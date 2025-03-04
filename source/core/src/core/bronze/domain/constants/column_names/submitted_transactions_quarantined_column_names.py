@@ -10,6 +10,8 @@ class SubmittedTransactionsQuarantinedColumnNames:
     start_datetime = "start_datetime"
     end_datetime = "end_datetime"
     points = "points"
+    is_cancelled = "is_cancelled"
+    is_deleted = "is_deleted"
     created = "created"
     validate_orchestration_type = "validate_orchestration_type"
     validate_quality = "validate_quality"
