@@ -63,7 +63,8 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = ["D", "D401", "E", "F", "I", "T201", "UP"]
+# See more here: https://docs.astral.sh/ruff/rules/
+select = ["D", "D401", "E", "F", "I", "T201", "UP", "PT"]
 ignore = [
     "D100",
     "D101",
