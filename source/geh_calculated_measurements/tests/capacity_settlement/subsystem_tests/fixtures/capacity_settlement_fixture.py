@@ -4,10 +4,10 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
-from environment_configuration import EnvironmentConfiguration
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.testing import LogQueryClientWrapper
+from tests.capacity_settlement.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 class CalculationInput:
