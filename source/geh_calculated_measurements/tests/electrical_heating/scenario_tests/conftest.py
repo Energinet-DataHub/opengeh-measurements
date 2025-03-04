@@ -76,7 +76,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     # Sort to make the tests deterministic
     actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(ColumnNames.date))
 
-    # test_cases = test_cases_for_data_products
+    # Return test cases
     return TestCases(
         [
             TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual),
