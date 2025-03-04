@@ -6,6 +6,7 @@ from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
+from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
 from tests.capacity_settlement.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.capacity_settlement.subsystem_tests.fixtures.log_query_client_wrapper import LogQueryClientWrapper
 
@@ -21,9 +22,9 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
+def seed_data_query(catalog: str, schema: str, table: str) -> str:
     return f"""
-        INSERT INTO {MeasurementsGoldDatabaseDefinition.MEASUREMENTS} VALUES
+        INSERT INTO {catalog}.{schema}.{table} VALUES
         ('test',2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
     """
 
@@ -38,6 +39,7 @@ class CapacitySettlementFixture:
             statement=seed_data_query(
                 catalog=environment_configuration.catalog_name,
                 schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+                table=MeasurementsGoldDatabaseDefinition.MEASUREMENTS,
             ),
         )
         self.job_state = JobState()

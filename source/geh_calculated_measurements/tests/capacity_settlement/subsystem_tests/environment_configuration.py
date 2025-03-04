@@ -1,12 +1,13 @@
 from pathlib import Path
 
+from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
-class EnvironmentConfiguration(BaseSettings):
+class EnvironmentConfiguration(ApplicationSettings):
     """
     Contains the environment configuration for the tests.
     This class must be included when running tests in CD.
