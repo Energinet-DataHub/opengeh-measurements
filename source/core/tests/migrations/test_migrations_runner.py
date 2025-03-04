@@ -33,7 +33,8 @@ def test__stop_job_runs__calls_expected(mock_databricks_settings, mock_databrick
 
     # Assert
     mock_databricks_api_client.assert_called_once_with(
-        mock_settings_instance.databricks_workspace_url, mock_settings_instance.databricks_token
+        databricks_host=mock_settings_instance.databricks_workspace_url,
+        databricks_token=mock_settings_instance.databricks_token,
     )
     assert mock_client_instance.get_job_id.call_count == 2
     assert mock_client_instance.get_latest_job_run_id.call_count == 2
