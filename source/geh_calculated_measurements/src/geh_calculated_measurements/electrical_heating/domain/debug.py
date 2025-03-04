@@ -8,7 +8,7 @@ DEBUG = False
 ROWS = 50
 
 
-def _log_dataframe(df: DataFrame, message: str | None = None) -> None:
+def log_dataframe(df: DataFrame, message: str | None = None) -> None:
     if not DEBUG:
         return
 
@@ -24,7 +24,7 @@ def debugging(name: str | None = None) -> Callable[..., Any]:
         def wrapper(*args, **kwargs):
             result = func(*args, **kwargs)
             if isinstance(result, DataFrame):
-                _log_dataframe(result, f"Output of {func.__name__}")
+                log_dataframe(result, f"Output of {func.__name__}")
             return result
 
         return wrapper
