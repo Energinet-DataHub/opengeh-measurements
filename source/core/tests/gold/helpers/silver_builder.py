@@ -49,6 +49,13 @@ class SilverMeasurementsDataFrameBuilder:
         )
         return self
 
+    def generate_point(self, position: int = 1, quantity: Decimal = Decimal(1.0), quality: str = "measured"):
+        return {
+            "position": position,
+            "quantity": quantity,
+            "quality": quality,
+        }
+
     def _generate_default_points(self):
         return [
             {
