@@ -1,5 +1,6 @@
 from pyspark.sql.types import (
     ArrayType,
+    BooleanType,
     DecimalType,
     IntegerType,
     StringType,
@@ -8,34 +9,36 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-from core.silver.domain.constants.col_names_silver_measurements import SilverMeasurementsColNames
+from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 silver_measurements_schema = StructType(
     [
-        StructField(SilverMeasurementsColNames.orchestration_type, StringType(), True),
-        StructField(SilverMeasurementsColNames.orchestration_instance_id, StringType(), True),
-        StructField(SilverMeasurementsColNames.metering_point_id, StringType(), True),
-        StructField(SilverMeasurementsColNames.transaction_id, StringType(), True),
-        StructField(SilverMeasurementsColNames.transaction_creation_datetime, TimestampType(), True),
-        StructField(SilverMeasurementsColNames.metering_point_type, StringType(), True),
-        StructField(SilverMeasurementsColNames.unit, StringType(), True),
-        StructField(SilverMeasurementsColNames.resolution, StringType(), True),
-        StructField(SilverMeasurementsColNames.start_datetime, TimestampType(), True),
-        StructField(SilverMeasurementsColNames.end_datetime, TimestampType(), True),
+        StructField(SilverMeasurementsColumnNames.orchestration_type, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.orchestration_instance_id, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.metering_point_id, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.transaction_id, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.transaction_creation_datetime, TimestampType(), True),
+        StructField(SilverMeasurementsColumnNames.metering_point_type, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.unit, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.resolution, StringType(), True),
+        StructField(SilverMeasurementsColumnNames.start_datetime, TimestampType(), True),
+        StructField(SilverMeasurementsColumnNames.end_datetime, TimestampType(), True),
         StructField(
-            SilverMeasurementsColNames.points,
+            SilverMeasurementsColumnNames.points,
             ArrayType(
                 StructType(
                     [
-                        StructField(SilverMeasurementsColNames.Points.position, IntegerType(), True),
-                        StructField(SilverMeasurementsColNames.Points.quantity, DecimalType(18, 3), True),
-                        StructField(SilverMeasurementsColNames.Points.quality, StringType(), True),
+                        StructField(SilverMeasurementsColumnNames.Points.position, IntegerType(), True),
+                        StructField(SilverMeasurementsColumnNames.Points.quantity, DecimalType(18, 3), True),
+                        StructField(SilverMeasurementsColumnNames.Points.quality, StringType(), True),
                     ]
                 ),
                 True,
             ),
             True,
         ),
-        StructField(SilverMeasurementsColNames.created, TimestampType(), True),
+        StructField(SilverMeasurementsColumnNames.is_cancelled, BooleanType(), True),
+        StructField(SilverMeasurementsColumnNames.is_deleted, BooleanType(), True),
+        StructField(SilverMeasurementsColumnNames.created, TimestampType(), True),
     ]
 )

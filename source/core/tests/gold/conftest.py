@@ -7,8 +7,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
 import tests.helpers.schema_helper as schema_helper
-from core.gold.domain.schemas.silver_measurements import silver_measurements_schema
 from core.settings.silver_settings import SilverSettings
+from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 from core.silver.infrastructure.config import SilverTableNames
 
 

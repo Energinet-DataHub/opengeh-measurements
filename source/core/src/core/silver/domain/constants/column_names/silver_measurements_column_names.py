@@ -1,4 +1,4 @@
-class SilverMeasurementsColNames:
+class SilverMeasurementsColumnNames:
     orchestration_type = "orchestration_type"
     orchestration_instance_id = "orchestration_instance_id"
     metering_point_id = "metering_point_id"
@@ -10,6 +10,8 @@ class SilverMeasurementsColNames:
     start_datetime = "start_datetime"
     end_datetime = "end_datetime"
     points = "points"
+    is_cancelled = "is_cancelled"
+    is_deleted = "is_deleted"
     created = "created"
 
     class Points:
