@@ -58,7 +58,7 @@ def measurements_gold_repository(
     )
 
 
-@pytest.fixture(autouse=True, scope="function")
+@pytest.fixture(autouse=True)
 def reset_test_table_after_each_test(spark: SparkSession, setup_test_table) -> None:
     """Reset the test table to its original state after each test."""
     # The test runs here
