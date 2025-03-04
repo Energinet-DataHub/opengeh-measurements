@@ -12,7 +12,7 @@ from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
-from tests.gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
+from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
 
 
@@ -76,7 +76,7 @@ def test__migration__should_create_invalid_submitted_transactions_table(
 def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSession, migrations_executed) -> None:
     # Arrange
     silver_settings = SilverSettings()
-    silver_data_builder = SilverMeasurementsDataFrameBuilder(spark)
+    silver_data_builder = SilverMeasurementsBuilder(spark)
     silver_data_builder.add_row(is_cancelled=None)
 
     null_data = silver_data_builder.build()
@@ -101,7 +101,7 @@ def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSessio
 def test__migration__should_add_is_deleted_null_constraints(spark: SparkSession, migrations_executed) -> None:
     # Arrange
     silver_settings = SilverSettings()
-    silver_data_builder = SilverMeasurementsDataFrameBuilder(spark)
+    silver_data_builder = SilverMeasurementsBuilder(spark)
     silver_data_builder.add_row(is_deleted=None)
 
     null_data = silver_data_builder.build()

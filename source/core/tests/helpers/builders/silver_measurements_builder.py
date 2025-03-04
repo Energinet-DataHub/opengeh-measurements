@@ -5,7 +5,7 @@ from decimal import Decimal
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
 
-class SilverMeasurementsDataFrameBuilder:
+class SilverMeasurementsBuilder:
     def __init__(self, spark_session):
         self.spark = spark_session
         self.data = []

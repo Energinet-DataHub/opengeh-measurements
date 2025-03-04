@@ -11,7 +11,7 @@ from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
 
 
-class SilverRepository:
+class SilverMeasurementsRepository:
     def __init__(self) -> None:
         database_name = SilverSettings().silver_database_name
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
@@ -48,14 +48,11 @@ class SilverRepository:
 
         :param measurements: DataFrame containing the data to be appended.
         """
-        measurements.show()
-
         existing_data = measurements.sparkSession.table(self.table)
         new_data = measurements.alias("new_data")
 
-        columns_to_check = [col for col in measurements.columns if col != "created"]
-        condition = " AND ".join([f"existing_data.{col} = new_data.{col}" for col in columns_to_check])
+        condition = [new_data[column] == existing_data[column] for column in new_data.columns if column != "created"]
+
         filtered_data = new_data.join(existing_data.alias("existing_data"), condition, "left_anti")
 
-        if filtered_data.count() > 0:
-            filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+        filtered_data.write.format("delta").mode("append").saveAsTable(self.table)

@@ -14,9 +14,9 @@ from tests.helpers.builders.submitted_transactions_builder import SubmittedTrans
 
 @mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
 @mock.patch("core.silver.application.streams.submitted_transactions.BronzeRepository")
-@mock.patch("core.silver.application.streams.submitted_transactions.SilverRepository")
+@mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository")
 def test__submitted_transactions__should_call_expected(
-    mock_SilverRepository,
+    mock_SilverMeasurementsRepository,
     mock_BronzeRepository,
     mock_initialize_spark,
 ) -> None:
@@ -26,7 +26,7 @@ def test__submitted_transactions__should_call_expected(
     mock_submitted_transactions = mock.Mock()
     mock_BronzeRepository.return_value = mock_submitted_transactions
     mock_write_measurements = mock.Mock()
-    mock_SilverRepository.return_value = mock_write_measurements
+    mock_SilverMeasurementsRepository.return_value = mock_write_measurements
 
     # Act
     sut.stream_submitted_transactions()
@@ -34,7 +34,7 @@ def test__submitted_transactions__should_call_expected(
     # Assert
     mock_initialize_spark.assert_called_once()
     mock_BronzeRepository.assert_called_once()
-    mock_SilverRepository.assert_called_once()
+    mock_SilverMeasurementsRepository.assert_called_once()
 
 
 def test__submitted_transactions__should_save_in_silver_measurements(
