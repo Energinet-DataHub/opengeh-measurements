@@ -3,6 +3,8 @@ from azure.keyvault.secrets import SecretClient
 
 
 class TestConfiguration:
+    __test__ = False
+
     def __init__(self, azure_keyvault_url: str):
         self._credential = DefaultAzureCredential()
         self._azure_keyvault_url = azure_keyvault_url
@@ -23,4 +25,6 @@ class TestConfiguration:
 
     def _get_secret_value(self, secret_name: str) -> str:
         secret = self._secret_client.get_secret(secret_name)
+        if not secret.value:
+            raise ValueError(f"Secret {secret_name} not found in Azure Key Vault")
         return secret.value
