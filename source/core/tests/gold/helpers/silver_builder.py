@@ -23,6 +23,8 @@ class SilverMeasurementsDataFrameBuilder:
         start_datetime=None,
         end_datetime=None,
         points=None,
+        is_cancelled=False,
+        is_deleted=False,
         created=None,
     ):
         if points is None:
@@ -40,6 +42,8 @@ class SilverMeasurementsDataFrameBuilder:
                 start_datetime or datetime.now(),
                 end_datetime or datetime.now(),
                 points,
+                is_cancelled,
+                is_deleted,
                 created or datetime.now(),
             )
         )

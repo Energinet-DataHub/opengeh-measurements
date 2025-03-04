@@ -12,6 +12,7 @@ from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
+from tests.gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
 from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
 
 
@@ -70,6 +71,56 @@ def test__migration__should_create_invalid_submitted_transactions_table(
     assert_schemas.assert_schema(
         actual=invalid_submitted_transactions.schema, expected=invalid_submitted_transactions_schema
     )
+
+
+def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSession, migrations_executed) -> None:
+    # Arrange
+    silver_settings = SilverSettings()
+    silver_data_builder = SilverMeasurementsDataFrameBuilder(spark)
+    silver_data_builder.add_row(is_cancelled=None)
+
+    null_data = silver_data_builder.build()
+    act_area_threw_exception = False
+
+    table_name = f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
+    count_before = spark.read.table(table_name).count()
+
+    # Act
+    try:
+        null_data.write.mode("append").format("delta").saveAsTable(table_name)
+    except Exception:
+        act_area_threw_exception = True
+
+    count_after = spark.read.table(table_name).count()
+
+    # Assert
+    assert act_area_threw_exception
+    assert count_before == count_after
+
+
+def test__migration__should_add_is_deleted_null_constraints(spark: SparkSession, migrations_executed) -> None:
+    # Arrange
+    silver_settings = SilverSettings()
+    silver_data_builder = SilverMeasurementsDataFrameBuilder(spark)
+    silver_data_builder.add_row(is_deleted=None)
+
+    null_data = silver_data_builder.build()
+    act_area_threw_exception = False
+
+    table_name = f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}"
+    count_before = spark.read.table(table_name).count()
+
+    # Act
+    try:
+        null_data.write.mode("append").format("delta").saveAsTable(table_name)
+    except Exception:
+        act_area_threw_exception = True
+
+    count_after = spark.read.table(table_name).count()
+
+    # Assert
+    assert act_area_threw_exception
+    assert count_before == count_after
 
 
 def test__migration__should_create_submitted_transactions_quarantined_table(
