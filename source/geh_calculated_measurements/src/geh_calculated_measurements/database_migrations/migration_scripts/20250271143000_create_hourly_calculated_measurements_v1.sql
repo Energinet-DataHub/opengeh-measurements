@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW hourly_calculated_measurements_v1 AS
+CREATE OR REPLACE VIEW {catalog_name}.{calculated_measurements_internal_database}.hourly_calculated_measurements_v1 AS
 WITH _input AS (
   SELECT 
     orchestration_type,
@@ -23,7 +23,7 @@ _hours AS (
     _input.quantity,
     explode(sequence(
       to_utc_timestamp(FROM_UTC_TIMESTAMP(_input.date, 'Europe/Copenhagen'), 'Europe/Copenhagen'),
-      to_utc_timestamp(date_add(FROM_UTC_TIMESTAMP(_input.date, 'Europe/Copenhagen'), 1), 'Europe/Copenhagen'),
+      to_utc_timestamp(date_add(FROM_UTC_TIMESTAMP(_input.date, 'Europe/Copenhagen'), 1) - interval 1 hour, 'Europe/Copenhagen'),
       interval 1 hour
     )) as hour
   FROM _input

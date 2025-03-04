@@ -7,11 +7,11 @@ from geh_common.testing.scenario_testing import TestCases, get_then_names
 def test_case(
     migrations_executed: None,
     patch_environment,
-    test_cases_for_hourly_calculated_measurements: TestCases,
+    test_cases: TestCases,
     assert_dataframes_configuration: AssertDataframesConfiguration,
     name: str,
 ) -> None:
-    test_case = test_cases_for_hourly_calculated_measurements[name]
+    test_case = test_cases[name]
 
     assert_dataframes_and_schemas(
         actual=test_case.actual,
