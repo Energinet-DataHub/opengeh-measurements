@@ -81,5 +81,8 @@ def test__when_source_contains_wrong_data_type_raises_exception(
         )
     )
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(
+        AssertionError,
+        match=r"Schema mismatch\. Expected column name 'quantity' to have type DecimalType\(18,3\), but got type StringType\(\)",
+    ):
         measurements_gold_repository.read_time_series_points()
