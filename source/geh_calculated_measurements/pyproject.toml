@@ -40,7 +40,15 @@ dev = [
 
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output.
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=geh_calculated_measurements -ra -vv -s"
+addopts = [
+    "--import-mode=importlib",
+    "--cov-report=term",
+    "--cov-report=xml:coverage.xml",
+    "--cov=geh_calculated_measurements",
+    "-ra",
+    "-vv",
+    "-s",
+]
 
 [tool.coverage.report]
 fail_under = 0
