@@ -13,10 +13,9 @@ from geh_calculated_measurements.capacity_settlement.domain.calculated_names imp
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
-from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
 from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
 from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
-from geh_calculated_measurements.common.domain import calculated_measurements_factory
+from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
@@ -46,12 +45,12 @@ def execute(
     time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points.df)
 
     grouping = [
-        ColumNames.metering_point_id,
-        ColumNames.selection_period_start,
-        ColumNames.selection_period_end,
-        ColumNames.child_metering_point_id,
-        ColumNames.child_period_from_date,
-        ColumNames.child_period_to_date,
+        ColumnNames.metering_point_id,
+        ColumnNames.selection_period_start,
+        ColumnNames.selection_period_end,
+        ColumnNames.child_metering_point_id,
+        ColumnNames.child_period_from_date,
+        ColumnNames.child_period_to_date,
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
@@ -59,9 +58,9 @@ def execute(
     )
 
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
-        ColumNames.metering_point_id,
-        ColumNames.quantity,
-        ColumNames.observation_time,
+        ColumnNames.metering_point_id,
+        ColumnNames.quantity,
+        ColumnNames.observation_time,
     )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
@@ -78,9 +77,9 @@ def execute(
     time_series_points_within_child_period = _filter_date_within_child_period(time_series_points_exploded_to_daily)
 
     measurements = time_series_points_within_child_period.select(
-        F.col(ColumNames.child_metering_point_id).alias(ColumNames.metering_point_id),
-        F.col(ColumNames.date),
-        F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
+        F.col(ColumnNames.child_metering_point_id).alias(ColumnNames.metering_point_id),
+        F.col(ColumnNames.date),
+        F.col(ColumnNames.quantity).cast(DecimalType(18, 3)),
     )
 
     calculated_measurments = calculated_measurements_factory.create(
@@ -133,11 +132,13 @@ def _transform_quarterly_time_series_to_hourly(
 ) -> DataFrame:
     # Reduces observation time to hour value
     time_series_points = time_series_points.withColumn(
-        ColumNames.observation_time, F.date_trunc("hour", ColumNames.observation_time)
+        ColumnNames.observation_time, F.date_trunc("hour", ColumnNames.observation_time)
     )
     # group by all columns except quantity and then sum the quantity
-    group_by = [col for col in time_series_points.columns if col != ColumNames.quantity]
-    time_series_points = time_series_points.groupBy(group_by).agg(F.sum(ColumNames.quantity).alias(ColumNames.quantity))
+    group_by = [col for col in time_series_points.columns if col != ColumnNames.quantity]
+    time_series_points = time_series_points.groupBy(group_by).agg(
+        F.sum(ColumnNames.quantity).alias(ColumnNames.quantity)
+    )
 
     return time_series_points
 
@@ -168,13 +169,13 @@ def _add_selection_period_columns(
     )
 
     metering_point_periods = metering_point_periods.withColumn(
-        ColumNames.selection_period_start,
+        ColumnNames.selection_period_start,
         F.when(
             F.col(CalculatedNames.period_from_date) > F.lit(selection_period_start_min),
             F.col(CalculatedNames.period_from_date),
         ).otherwise(F.lit(selection_period_start_min)),
     ).withColumn(
-        ColumNames.selection_period_end,
+        ColumnNames.selection_period_end,
         F.when(
             F.col(CalculatedNames.period_to_date) <= F.lit(selection_period_end_max),
             F.col(CalculatedNames.period_to_date),
@@ -190,13 +191,13 @@ def _ten_largest_quantities_in_selection_periods(
     grouping: list[str],
 ) -> DataFrame:
     time_series_points = time_series_points.join(
-        metering_point_periods, on=ColumNames.metering_point_id, how="inner"
+        metering_point_periods, on=ColumnNames.metering_point_id, how="inner"
     ).where(
-        (F.col(ColumNames.observation_time) >= F.col(ColumNames.selection_period_start))
-        & (F.col(ColumNames.observation_time) < F.col(ColumNames.selection_period_end))
+        (F.col(ColumnNames.observation_time) >= F.col(ColumnNames.selection_period_start))
+        & (F.col(ColumnNames.observation_time) < F.col(ColumnNames.selection_period_end))
     )
 
-    window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumNames.quantity).desc())
+    window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumnNames.quantity).desc())
 
     time_series_points = time_series_points.withColumn("row_number", F.row_number().over(window_spec)).filter(
         F.col("row_number") <= 10
@@ -208,7 +209,7 @@ def _ten_largest_quantities_in_selection_periods(
 def _average_ten_largest_quantities_in_selection_periods(
     time_series_points: DataFrame, grouping: list[str]
 ) -> DataFrame:
-    measurements = time_series_points.groupBy(grouping).agg(F.avg(ColumNames.quantity).alias(ColumNames.quantity))
+    measurements = time_series_points.groupBy(grouping).agg(F.avg(ColumnNames.quantity).alias(ColumnNames.quantity))
     return measurements
 
 
@@ -232,11 +233,11 @@ def _explode_to_daily(
         ),
     )
 
-    df = df.withColumn(ColumNames.date, F.to_utc_timestamp("date_local", time_zone))
+    df = df.withColumn(ColumnNames.date, F.to_utc_timestamp("date_local", time_zone))
 
     df = df.filter(
-        (F.col(ColumNames.selection_period_start) <= F.col(ColumNames.date))
-        & (F.col(ColumNames.selection_period_end) > F.col(ColumNames.date))
+        (F.col(ColumnNames.selection_period_start) <= F.col(ColumnNames.date))
+        & (F.col(ColumnNames.selection_period_end) > F.col(ColumnNames.date))
     )
 
     return df
@@ -244,9 +245,9 @@ def _explode_to_daily(
 
 def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
     return time_series_points_exploded_to_daily.filter(
-        (F.col(ColumNames.date) >= F.col(ColumNames.child_period_from_date))
+        (F.col(ColumnNames.date) >= F.col(ColumnNames.child_period_from_date))
         & (
-            (F.col(ColumNames.date) < F.col(ColumNames.child_period_to_date))
-            | F.col(ColumNames.child_period_to_date).isNull()
+            (F.col(ColumnNames.date) < F.col(ColumnNames.child_period_to_date))
+            | F.col(ColumnNames.child_period_to_date).isNull()
         )
     )
