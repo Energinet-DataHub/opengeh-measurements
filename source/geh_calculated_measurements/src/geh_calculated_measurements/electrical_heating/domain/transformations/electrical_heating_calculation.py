@@ -1,4 +1,4 @@
-from geh_common.domain.types import MeteringPointType, NetSettlementGroup
+from geh_common.domain.types import NetSettlementGroup
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
@@ -54,24 +54,12 @@ def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
     time_series_points_hourly: DataFrame,
 ) -> DataFrame:
-    consumption = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type).isin(
-            MeteringPointType.CONSUMPTION.value, MeteringPointType.NET_CONSUMPTION.value
-        )
-    )
-    supply_to_grid = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.SUPPLY_TO_GRID.value)
-    )
-    consumption_from_grid = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.CONSUMPTION_FROM_GRID.value)
-    )
-
     return (
         parent_and_child_metering_point_and_periods_in_localtime.alias("metering_point")
         # Join each (net)consumption metering point with the (net)consumption time series points
         # Inner join to only include metering points with energy data.
         .join(
-            consumption.alias("consumption"),
+            time_series_points_hourly.alias("consumption"),
             (
                 F.col(f"consumption.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.energy_source_metering_point_id}")
@@ -86,18 +74,18 @@ def _join_source_metering_point_periods_with_energy_hourly(
             )
             & (
                 (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
                     >= F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}")
                 )
                 & (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
                     < F.add_months(F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}"), 12)
                 )
             ),
             "inner",
         )
         .join(
-            supply_to_grid.alias("supply_to_grid"),
+            time_series_points_hourly.alias("supply_to_grid"),
             (
                 F.col(f"supply_to_grid.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.supply_to_grid_metering_point_id}")
@@ -109,7 +97,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .join(
-            consumption_from_grid.alias("consumption_from_grid"),
+            time_series_points_hourly.alias("consumption_from_grid"),
             (
                 F.col(f"consumption_from_grid.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.consumption_from_grid_metering_point_id}")
