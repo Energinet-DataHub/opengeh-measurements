@@ -1,4 +1,4 @@
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.electrical_heating.domain.ephemiral_column_names import EphemiralColumnNames
 from geh_calculated_measurements.electrical_heating.domain.model.child_metering_points import (
     ChildMeteringPoints,
     child_metering_points_v1,
@@ -16,7 +16,7 @@ from .calculation import execute
 
 __all__ = [
     "execute",
-    "CalculatedNames",
+    "EphemiralColumnNames",
     "TimeSeriesPoints",
     "time_series_points_v1",
     "ChildMeteringPoints",
