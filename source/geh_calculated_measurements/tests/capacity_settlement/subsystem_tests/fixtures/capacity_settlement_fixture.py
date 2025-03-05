@@ -6,6 +6,7 @@ from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
+from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.capacity_settlement.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -23,11 +24,24 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
+def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
+    return f"""
+        INSERT INTO {catalog}.{schema}.{table} VALUES
+        ('test', 'DUMMY_VALUE', '2025-12-02 00:00:00', 1.1, 'Medium', 'test', 'test', '2025-12-02 00:00:00', '2025-12-02 00:00:00', '2025-12-02 00:00:00')
+    """
+
+
 class CapacitySettlementFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
+        ).execute_statement(
+            warehouse_id=environment_configuration.warehouse_id,
+            statement=seed_data_query(
+                catalog=environment_configuration.catalog_name,
+                schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+            ),
         )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
@@ -46,7 +60,6 @@ class CapacitySettlementFixture:
             f"--calculation-month={calculation_input.month}",
             f"--calculation-year={calculation_input.year}",
         ]
-
         return self.databricks_api_client.start_job(calculation_input.job_id, params)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
