@@ -20,7 +20,7 @@ from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold
 )
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
-from tests.capacity_settlement.testsession_configuration import (
+from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
 

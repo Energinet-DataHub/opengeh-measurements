@@ -12,7 +12,7 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 from tests import PROJECT_ROOT
-from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
