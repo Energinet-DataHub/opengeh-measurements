@@ -1,13 +1,24 @@
 import os
 from typing import Callable, Generator
 from unittest import mock
+from unittest.mock import patch
 
 import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+import core.utility.shared_helpers as shared_helpers
+import tests.helpers.environment_variables_helpers as environment_variables_helpers
 import tests.helpers.schema_helper as schema_helper
+from core.migrations import migrations_runner
+
+
+def pytest_runtest_setup() -> None:
+    """
+    This function is called before each test function is executed.
+    """
+    environment_variables_helpers.set_test_environment_variables()
 
 
 @pytest.fixture(scope="session")
@@ -59,6 +70,17 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 @pytest.fixture(scope="session")
+@patch("core.migrations.migrations_runner.DatabricksApiClient")
+@patch("core.migrations.migrations_runner.DatabricksSettings")
+def migrations_executed(databricks_settings, spark: SparkSession) -> None:
+    """
+    This is actually the main part of all our tests.
+    The reason for being a fixture is that we want to run it only once per session.
+    """
+    migrations_runner.migrate()
+
+
+@pytest.fixture(scope="session")
 def file_path_finder() -> Callable[[str], str]:
     """
     Returns the path of the file.
@@ -82,17 +104,6 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
     file located directly in the integration tests folder.
     """
     return file_path_finder(f"{__file__}/../..")
-
-
-@pytest.fixture(scope="session")
-def tests_path(source_path: str) -> str:
-    """
-    Returns the <repo-root>/source folder path.
-    Please note that this only works if current folder haven't been changed prior using `os.chdir()`.
-    The correctness also relies on the prerequisite that this function is actually located in a
-    file located directly in the integration tests folder.
-    """
-    return f"{source_path}/tests/silver"
 
 
 @pytest.fixture(scope="session")
@@ -128,3 +139,11 @@ def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_loggin
     ):
         logging_settings = config.LoggingSettings()  # type: ignore
         yield config.configure_logging(logging_settings=logging_settings, extras=None)  # type: ignore
+
+
+@pytest.fixture
+def mock_checkpoint_path():
+    with patch.object(
+        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/__checkpoints__"
+    ) as mock_checkpoint_path:
+        yield mock_checkpoint_path
