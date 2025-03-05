@@ -27,7 +27,7 @@ class TestCapacitySettlement(unittest.TestCase):
         assert self.fixture.job_state.calculation_input.job_id is not None
 
     @pytest.mark.order(2)
-    def test__when_job_started(self) -> None:
+    def test__when_job_is_started(self) -> None:
         # Act
         self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.calculation_input)
 
@@ -44,10 +44,8 @@ class TestCapacitySettlement(unittest.TestCase):
             f"The Job {self.fixture.job_state.calculation_input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
-    # TODO AJW. This test is failing. The job is not logging the expected data.
-    @pytest.mark.skip("The job is not logging the expected data.")
     @pytest.mark.order(4)
-    def test__and_then_job_logged(self) -> None:
+    def test__and_then_job_telemetry_is_created(self) -> None:
         # Arrange
         if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
             raise Exception("A previous test did not complete successfully.")
