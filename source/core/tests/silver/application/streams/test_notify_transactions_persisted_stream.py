@@ -3,7 +3,7 @@ from unittest import mock
 import core.silver.application.streams.notify_transactions_persisted_stream as sut
 
 
-@mock.patch("core.silver.application.config.spark_session.initialize_spark")
+@mock.patch("core.silver.infrastructure.config.spark_session.initialize_spark")
 @mock.patch(
     "core.silver.infrastructure.streams.submitted_transactions_repository.SubmittedTransactionsRepository.read_submitted_transactions"
 )

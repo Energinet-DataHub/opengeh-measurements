@@ -1,5 +1,5 @@
 from core.gold.application.config.spark import initialize_spark
-from core.gold.application.streams.measurements_silver_to_gold.measurements_stream_processor import (
+from core.gold.application.streams.measurements_stream_processor import (
     StreamProcessorMeasurements,
 )
 from core.gold.infrastructure.adapters.delta_gold_adapter import DeltaGoldAdapter
