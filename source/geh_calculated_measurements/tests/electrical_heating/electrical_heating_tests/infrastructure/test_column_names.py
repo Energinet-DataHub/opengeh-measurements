@@ -2,7 +2,7 @@ import pytest
 
 from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain import (
-    CalculatedNames,
+    EphemiralNames,
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
     time_series_points_v1,
@@ -63,8 +63,8 @@ def test_no_overlap_between_columnnames_and_calculatednames() -> None:
     ]
     calculated_names = [
         attr
-        for attr in dir(CalculatedNames)
-        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemiralNames)
+        if not callable(getattr(EphemiralNames, attr)) and not attr.startswith("__")
     ]
 
     # Check for overlap
@@ -90,8 +90,8 @@ def test_calculatednames_attributes_are_sorted() -> None:
     # Get all attribute names from _CalculatedNames class
     calculated_names = [
         attr
-        for attr in dir(CalculatedNames)
-        if not callable(getattr(CalculatedNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemiralNames)
+        if not callable(getattr(EphemiralNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the calculated names are sorted

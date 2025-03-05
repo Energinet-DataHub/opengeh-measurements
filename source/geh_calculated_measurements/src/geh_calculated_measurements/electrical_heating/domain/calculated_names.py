@@ -1,4 +1,4 @@
-class CalculatedNames:
+class EphemiralNames:
     """Names of calculated columns."""
 
     consumption_from_grid_metering_point_id = "consumption_from_grid_metering_point_id"

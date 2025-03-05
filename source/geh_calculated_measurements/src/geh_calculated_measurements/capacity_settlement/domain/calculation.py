@@ -9,7 +9,6 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from geh_calculated_measurements.capacity_settlement.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
@@ -47,8 +46,8 @@ def execute(
 
     grouping = [
         ColumnNames.metering_point_id,
-        ColumnNames.selection_period_start,
-        ColumnNames.selection_period_end,
+        EphemeralColumnNames.selection_period_start,
+        EphemeralColumnNames.selection_period_end,
         ColumnNames.child_metering_point_id,
         ColumnNames.child_period_from_date,
         ColumnNames.child_period_to_date,
@@ -162,24 +161,21 @@ def _add_selection_period_columns(
     selection_period_end_max = calculation_end_date
 
     metering_point_periods = metering_point_periods.filter(
-        (F.col(CalculatedNames.period_from_date) < calculation_end_date)
-        & (
-            (F.col(CalculatedNames.period_to_date) > calculation_start_date)
-            | F.col(CalculatedNames.period_to_date).isNull()
-        )
+        (F.col(ColumnNames.period_from_date) < calculation_end_date)
+        & ((F.col(ColumnNames.period_to_date) > calculation_start_date) | F.col(ColumnNames.period_to_date).isNull())
     )
 
     metering_point_periods = metering_point_periods.withColumn(
         EphemeralColumnNames.selection_period_start,
         F.when(
-            F.col(CalculatedNames.period_from_date) > F.lit(selection_period_start_min),
-            F.col(CalculatedNames.period_from_date),
+            F.col(ColumnNames.period_from_date) > F.lit(selection_period_start_min),
+            F.col(ColumnNames.period_from_date),
         ).otherwise(F.lit(selection_period_start_min)),
     ).withColumn(
         EphemeralColumnNames.selection_period_end,
         F.when(
-            F.col(CalculatedNames.period_to_date) <= F.lit(selection_period_end_max),
-            F.col(CalculatedNames.period_to_date),
+            F.col(ColumnNames.period_to_date) <= F.lit(selection_period_end_max),
+            F.col(ColumnNames.period_to_date),
         ).otherwise(F.lit(selection_period_end_max)),
     )
 
