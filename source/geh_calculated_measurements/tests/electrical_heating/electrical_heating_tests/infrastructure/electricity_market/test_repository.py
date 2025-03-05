@@ -1,5 +1,4 @@
 import pytest
-from py4j.protocol import Py4JJavaError
 
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     ElectricityMarketRepository,
@@ -9,10 +8,10 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 def test__when_missing_expected_column_raises_exception(
     electricity_market_repository_missing_col: ElectricityMarketRepository,
 ) -> None:
-    with pytest.raises(Py4JJavaError):
-        electricity_market_repository_missing_col.read_consumption_metering_point_periods().df.collect()
-    with pytest.raises(Py4JJavaError):
-        electricity_market_repository_missing_col.read_child_metering_points().df.collect()
+    with pytest.raises(ValueError, match=r"Column has_electrical_heating not found in CSV"):
+        electricity_market_repository_missing_col.read_consumption_metering_point_periods()
+    with pytest.raises(ValueError, match=r"Column metering_point_sub_type not found in CSV"):
+        electricity_market_repository_missing_col.read_child_metering_points()
 
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(

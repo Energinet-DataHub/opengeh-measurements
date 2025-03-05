@@ -3,7 +3,7 @@ import random
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 import pytest
-from pyspark.errors.exceptions.captured import AnalysisException
+from pyspark.errors import AnalysisException
 
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
@@ -30,7 +30,11 @@ def test__when_missing_expected_column_raises_exception(
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
-    with pytest.raises(AnalysisException):
+
+    with pytest.raises(
+        AnalysisException,
+        match=r"\[UNRESOLVED_COLUMN.WITH_SUGGESTION\] A column or function parameter with name `quantity` cannot be resolved\. Did you mean one of the following\? \[`observation_time`, `metering_point_id`, `metering_point_type`\]",
+    ):
         measurements_gold_repository.read_time_series_points()
 
 
