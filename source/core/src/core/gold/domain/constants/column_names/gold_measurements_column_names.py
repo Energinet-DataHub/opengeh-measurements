@@ -1,5 +1,6 @@
 class GoldMeasurementsColumnNames:
     metering_point_id = "metering_point_id"
+    orchestration_type = "orchestration_type"
     observation_time = "observation_time"
     quantity = "quantity"
     quality = "quality"

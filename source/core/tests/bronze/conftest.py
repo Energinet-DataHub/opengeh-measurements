@@ -5,27 +5,7 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
-from core.migrations import MigrationDatabaseNames, migrations_runner
-from core.settings.catalog_settings import CatalogSettings
-
-
-def pytest_runtest_setup() -> None:
-    """
-    This function is called before each test function is executed.
-    """
-    os.environ["CATALOG_NAME"] = "spark_catalog"
-    os.environ["BRONZE_CONTAINER_NAME"] = "bronze"
-    os.environ["SILVER_CONTAINER_NAME"] = "silver"
-    os.environ["GOLD_CONTAINER_NAME"] = "gold"
-    os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
-    os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
-    os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
-    os.environ["EVENT_HUB_NAMESPACE"] = "event_hub_namespace"
-    os.environ["EVENT_HUB_INSTANCE"] = "event_hub_instance"
-    os.environ["TENANT_ID"] = "tenant_id"
-    os.environ["SPN_APP_ID"] = "spn_app_id"
-    os.environ["SPN_APP_SECRET"] = "spn_app_secret"
-    os.environ["DATALAKE_STORAGE_ACCOUNT"] = "datalake_storage_account_name"
+import tests.helpers.schema_helper as schema_helper
 
 
 @pytest.fixture(scope="session")
@@ -65,20 +45,11 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
         ],
     ).getOrCreate()
 
-    _create_schemas(session)
+    schema_helper.create_schemas(session)
 
     yield session
 
     session.stop()
-
-
-@pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession) -> None:
-    """
-    This is actually the main part of all our tests.
-    The reason for being a fixture is that we want to run it only once per session.
-    """
-    migrations_runner.migrate()
 
 
 @pytest.fixture(scope="session")
@@ -116,11 +87,3 @@ def tests_path(source_path: str) -> str:
     file located directly in the integration tests folder.
     """
     return f"{source_path}/tests/bronze"
-
-
-def _create_schemas(spark: SparkSession) -> None:
-    catalog_settings = CatalogSettings()  # type: ignore
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MigrationDatabaseNames.measurements_internal_database}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.bronze_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.silver_database_name}")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {catalog_settings.gold_database_name}")

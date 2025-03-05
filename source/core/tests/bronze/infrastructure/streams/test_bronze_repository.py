@@ -4,7 +4,7 @@ from pyspark.sql import SparkSession
 
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.settings.catalog_settings import CatalogSettings
+from core.settings.bronze_settings import BronzeSettings
 
 
 def test__read_submitted_transactions__should_read_from_submitted_transactions_table(
@@ -24,7 +24,7 @@ def test__read_submitted_transactions__should_read_from_submitted_transactions_t
     # Arrange
     mock_spark = Mock()
     bronze_repository = BronzeRepository(mock_spark)
-    bronze_database_name = CatalogSettings().bronze_database_name  # type: ignore
+    bronze_database_name = BronzeSettings().bronze_database_name
 
     # Act
     bronze_repository.read_submitted_transactions()

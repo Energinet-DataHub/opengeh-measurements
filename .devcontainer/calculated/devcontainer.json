@@ -39,12 +39,21 @@
         "ms-python.python",
         "ms-vscode-remote.remote-containers",
         "janisdd.vscode-edit-csv",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "eamodio.gitlens"
       ],
       "settings": {
         "csv-edit.readOption_hasHeader": "true",
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.analysis.typeCheckingMode": "basic",
+        "python.testing.pytestArgs": [
+          ".",
+          "--no-cov"
+        ],
+        "python.analysis.include": [
+          "/workspace/source/**/*"
+        ],
         "python.venvPath": "/home/vscode/.venv",
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.inheritEnv": true,

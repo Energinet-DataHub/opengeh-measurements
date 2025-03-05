@@ -1,11 +1,12 @@
 import pytest
-from environment_configuration import EnvironmentConfiguration
-from fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+
+from tests.electrical_heating.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
 @pytest.fixture(scope="session")
 def environment_configuration() -> EnvironmentConfiguration:
-    return EnvironmentConfiguration()  # type: ignore
+    return EnvironmentConfiguration()
 
 
 @pytest.fixture(scope="session")
