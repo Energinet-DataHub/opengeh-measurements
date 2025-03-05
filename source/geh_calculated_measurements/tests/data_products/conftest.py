@@ -46,7 +46,7 @@ def _create_databases(spark: SparkSession) -> None:
     # """
     # Create Unity Catalog databases as they are not created by migration scripts.
     # They are created by infrastructure (in the real environments)
-    # In tests they are created in the single available default database.
+    # In tests they are created in the single available default catalog.
     # """
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
