@@ -52,9 +52,6 @@
           "tests",
           "--no-cov"
         ],
-        "python.analysis.include": [
-          "${workspaceFolder}/**"
-        ],
         // Editor settings
         "editor.formatOnSave": true,
         "editor.tabSize": 2,
