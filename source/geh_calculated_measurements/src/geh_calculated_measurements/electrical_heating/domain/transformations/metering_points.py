@@ -202,15 +202,15 @@ def _find_parent_child_overlap_period(
             F.col(CalculatedNames.net_consumption_period_start),
             F.col(CalculatedNames.consumption_from_grid_period_start),
             F.col(CalculatedNames.supply_to_grid_period_start),
-        ).alias(CalculatedNames.overlap_period_start),
+        ).alias(CalculatedNames.overlap_period_start_lt),
         F.least(
             F.col(CalculatedNames.parent_period_end),
             F.col(CalculatedNames.electrical_heating_period_end),
             F.col(CalculatedNames.net_consumption_period_end),
             F.col(CalculatedNames.consumption_from_grid_period_end),
             F.col(CalculatedNames.supply_to_grid_period_end),
-        ).alias(CalculatedNames.overlap_period_end),
-    ).where(F.col(CalculatedNames.overlap_period_start) < F.col(CalculatedNames.overlap_period_end))
+        ).alias(CalculatedNames.overlap_period_end_lt),
+    ).where(F.col(CalculatedNames.overlap_period_start_lt) < F.col(CalculatedNames.overlap_period_end_lt))
 
 
 def _split_period_by_settlement_month(
@@ -256,8 +256,8 @@ def _split_period_by_settlement_month(
         )
         .otherwise(F.add_months(F.col(settlement_year_date), 12))
         .alias(CalculatedNames.parent_period_end),
-        F.col(CalculatedNames.overlap_period_start),
-        F.col(CalculatedNames.overlap_period_end),
+        F.col(CalculatedNames.overlap_period_start_lt),
+        F.col(CalculatedNames.overlap_period_end_lt),
         F.col(settlement_year_date).alias(CalculatedNames.settlement_month_datetime),
         F.col(CalculatedNames.electrical_heating_metering_point_id),
         F.col(CalculatedNames.net_consumption_metering_point_id),
