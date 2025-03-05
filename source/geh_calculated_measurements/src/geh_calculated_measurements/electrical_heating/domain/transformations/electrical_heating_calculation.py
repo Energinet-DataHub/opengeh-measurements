@@ -3,8 +3,8 @@ from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
-from geh_calculated_measurements.common.domain import ColumnNames
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
+from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.electrical_heating.domain.ephemiral_column_names import EphemiralColumnNames
 from geh_calculated_measurements.electrical_heating.domain.debug import debugging, log_dataframe
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
@@ -38,15 +38,15 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
         "*",
         F.when(
             (
-                F.col(ColumnNames.net_settlement_group).isin(
+                F.col(ContractColumnNames.net_settlement_group).isin(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
             )
-            & (F.col(CalculatedNames.net_consumption_metering_point_id).isNotNull()),
-            F.col(CalculatedNames.net_consumption_metering_point_id),
+            & (F.col(EphemiralColumnNames.net_consumption_metering_point_id).isNotNull()),
+            F.col(EphemiralColumnNames.net_consumption_metering_point_id),
         )
-        .otherwise(F.col(ColumnNames.parent_metering_point_id))
-        .alias(CalculatedNames.energy_source_metering_point_id),
+        .otherwise(F.col(ContractColumnNames.parent_metering_point_id))
+        .alias(EphemiralColumnNames.energy_source_metering_point_id),
     )
 
 
@@ -62,25 +62,25 @@ def _join_source_metering_point_periods_with_energy_hourly(
         .join(
             time_series_points_hourly.alias("consumption"),
             (
-                F.col(f"consumption.{ColumnNames.metering_point_id}")
-                == F.col(f"metering_point.{CalculatedNames.energy_source_metering_point_id}")
+                F.col(f"consumption.{ContractColumnNames.metering_point_id}")
+                == F.col(f"metering_point.{EphemiralColumnNames.energy_source_metering_point_id}")
             )
             & (
-                F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
-                >= F.col(f"metering_point.{CalculatedNames.overlap_period_start_lt}")
+                F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}")
+                >= F.col(f"metering_point.{EphemiralColumnNames.overlap_period_start_lt}")
             )
             & (
-                F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
-                < F.col(f"metering_point.{CalculatedNames.overlap_period_end_lt}")
+                F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}")
+                < F.col(f"metering_point.{EphemiralColumnNames.overlap_period_end_lt}")
             )
             & (
                 (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
-                    >= F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}")
+                    F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}")
+                    >= F.col(f"metering_point.{EphemiralColumnNames.settlement_month_datetime}")
                 )
                 & (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
-                    < F.add_months(F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}"), 12)
+                    F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}")
+                    < F.add_months(F.col(f"metering_point.{EphemiralColumnNames.settlement_month_datetime}"), 12)
                 )
             ),
             "inner",
@@ -88,50 +88,59 @@ def _join_source_metering_point_periods_with_energy_hourly(
         .join(
             time_series_points_hourly.alias("supply_to_grid"),
             (
-                F.col(f"supply_to_grid.{ColumnNames.metering_point_id}")
-                == F.col(f"metering_point.{CalculatedNames.supply_to_grid_metering_point_id}")
+                F.col(f"supply_to_grid.{ContractColumnNames.metering_point_id}")
+                == F.col(f"metering_point.{EphemiralColumnNames.supply_to_grid_metering_point_id}")
             )
             & (
-                F.col(f"supply_to_grid.{CalculatedNames.observation_time_hourly}")
-                == F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                F.col(f"supply_to_grid.{EphemiralColumnNames.observation_time_hourly}")
+                == F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly}")
             ),
             "left",
         )
         .join(
             time_series_points_hourly.alias("consumption_from_grid"),
             (
-                F.col(f"consumption_from_grid.{ColumnNames.metering_point_id}")
-                == F.col(f"metering_point.{CalculatedNames.consumption_from_grid_metering_point_id}")
+                F.col(f"consumption_from_grid.{ContractColumnNames.metering_point_id}")
+                == F.col(f"metering_point.{EphemiralColumnNames.consumption_from_grid_metering_point_id}")
             )
             & (
-                F.col(f"consumption_from_grid.{CalculatedNames.observation_time_hourly}")
-                == F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                F.col(f"consumption_from_grid.{EphemiralColumnNames.observation_time_hourly}")
+                == F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly}")
             ),
             "left",
         )
         .select(
-            F.col(f"metering_point.{CalculatedNames.parent_period_start}").alias(CalculatedNames.parent_period_start),
-            F.col(f"metering_point.{CalculatedNames.parent_period_end}").alias(CalculatedNames.parent_period_end),
-            F.col(f"metering_point.{ColumnNames.net_settlement_group}").alias(ColumnNames.net_settlement_group),
-            F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}").alias(
-                CalculatedNames.settlement_month_datetime
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_start}").alias(EphemiralColumnNames.parent_period_start),
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_end}").alias(EphemiralColumnNames.parent_period_end),
+            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
+            F.col(f"metering_point.{EphemiralColumnNames.settlement_month_datetime}").alias(
+                EphemiralColumnNames.settlement_month_datetime
             ),
-            F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
-                CalculatedNames.electrical_heating_metering_point_id
+            F.col(f"metering_point.{EphemiralColumnNames.electrical_heating_metering_point_id}").alias(
+                EphemiralColumnNames.electrical_heating_metering_point_id
             ),
-            F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}").alias(
-                CalculatedNames.observation_time_hourly_lt
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_end}").alias(
+                EphemiralColumnNames.parent_period_end
             ),
-            F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
-            F.col(f"supply_to_grid.{ColumnNames.metering_point_id}").alias(
-                CalculatedNames.supply_to_grid_metering_point_id
+            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(
+                ContractColumnNames.net_settlement_group
             ),
-            F.col(f"supply_to_grid.{ColumnNames.quantity}").alias(CalculatedNames.supply_to_grid_quantity),
-            F.col(f"consumption_from_grid.{ColumnNames.metering_point_id}").alias(
-                CalculatedNames.consumption_from_grid_metering_point_id
+            F.col(f"metering_point.{EphemiralColumnNames.electrical_heating_metering_point_id}").alias(
+                EphemiralColumnNames.electrical_heating_metering_point_id
             ),
-            F.col(f"consumption_from_grid.{ColumnNames.quantity}").alias(
-                CalculatedNames.consumption_from_grid_quantity
+            F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}").alias(
+                EphemiralColumnNames.observation_time_hourly_lt
+            ),
+            F.col(f"consumption.{ContractColumnNames.quantity}").alias(ContractColumnNames.quantity),
+            F.col(f"supply_to_grid.{ContractColumnNames.metering_point_id}").alias(
+                EphemiralColumnNames.supply_to_grid_metering_point_id
+            ),
+            F.col(f"supply_to_grid.{ContractColumnNames.quantity}").alias(EphemiralColumnNames.supply_to_grid_quantity),
+            F.col(f"consumption_from_grid.{ContractColumnNames.metering_point_id}").alias(
+                EphemiralColumnNames.consumption_from_grid_metering_point_id
+            ),
+            F.col(f"consumption_from_grid.{ContractColumnNames.quantity}").alias(
+                EphemiralColumnNames.consumption_from_grid_quantity
             ),
         )
     )
@@ -143,29 +152,29 @@ def _calculate_period_limit(periods_with_hourly_energy):
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
     periods_with_daily_energy_and_limit_no_nsg = (
-        periods_with_hourly_energy.where(F.col(ColumnNames.net_settlement_group).isNull())
+        periods_with_hourly_energy.where(F.col(EphemiralColumnNames.net_settlement_group).isNull())
         .groupBy(
-            CalculatedNames.electrical_heating_metering_point_id,
-            CalculatedNames.parent_period_start,
-            CalculatedNames.parent_period_end,
-            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+            EphemiralColumnNames.electrical_heating_metering_point_id,
+            EphemiralColumnNames.parent_period_start,
+            EphemiralColumnNames.parent_period_end,
+            F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(EphemiralColumnNames.date),
         )
         .agg(
-            F.sum(ColumnNames.quantity).alias(ColumnNames.quantity),
-            F.first(CalculatedNames.base_period_limit).alias(CalculatedNames.period_energy_limit),
+            F.sum(EphemiralColumnNames.quantity).alias(EphemiralColumnNames.quantity),
+            F.first(EphemiralColumnNames.base_period_limit).alias(EphemiralColumnNames.period_energy_limit),
         )
     )
     log_dataframe(periods_with_daily_energy_and_limit_no_nsg, "periods_with_daily_energy_and_limit_no_nsg")
 
     periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2(
         periods_with_hourly_energy.where(
-            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2
+            F.col(EphemiralColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2
         )
     )
     log_dataframe(periods_with_daily_energy_and_limit_nsg2, "periods_with_daily_energy_and_limit_nsg2")
     periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6(
         periods_with_hourly_energy.where(
-            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6
+            F.col(EphemiralColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6
         )
     )
     log_dataframe(periods_with_daily_energy_and_limit_nsg6, "periods_with_daily_energy_and_limit_nsg6")
@@ -179,10 +188,10 @@ def _calculate_period_limit(periods_with_hourly_energy):
 @debugging()
 def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataFrame:
     return periods_with_energy_hourly.withColumn(
-        CalculatedNames.base_period_limit,
-        F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
+        EphemiralColumnNames.base_period_limit,
+        F.datediff(F.col(EphemiralColumnNames.parent_period_end), F.col(EphemiralColumnNames.parent_period_start))
         * _ELECTRICAL_HEATING_LIMIT_YEARLY
-        / _days_in_settlement_year(F.col(CalculatedNames.settlement_month_datetime)),
+        / _days_in_settlement_year(F.col(EphemiralColumnNames.settlement_month_datetime)),
     )
 
 
@@ -195,30 +204,31 @@ def _calculate_period_limit__net_settlement_group_2(
         "*",
         F.coalesce(
             F.least(
-                F.col(CalculatedNames.consumption_from_grid_quantity), F.col(CalculatedNames.supply_to_grid_quantity)
+                F.col(EphemiralColumnNames.consumption_from_grid_quantity),
+                F.col(EphemiralColumnNames.supply_to_grid_quantity),
             ),
             F.lit(0),
         ).alias("nettoficated_hourly"),
     )
 
     period_window = Window.partitionBy(
-        F.col(CalculatedNames.electrical_heating_metering_point_id),
-        F.col(CalculatedNames.parent_period_start),
-        F.col(CalculatedNames.parent_period_end),
+        F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
+        F.col(EphemiralColumnNames.parent_period_start),
+        F.col(EphemiralColumnNames.parent_period_end),
     )
 
     return (
         df.groupBy(
-            CalculatedNames.electrical_heating_metering_point_id,
-            CalculatedNames.parent_period_start,
-            CalculatedNames.parent_period_end,
-            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+            EphemiralColumnNames.electrical_heating_metering_point_id,
+            EphemiralColumnNames.parent_period_start,
+            EphemiralColumnNames.parent_period_end,
+            F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(ContractColumnNames.date),
         )
         .agg(
-            F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
+            F.sum(F.col(ContractColumnNames.quantity)).alias(ContractColumnNames.quantity),
             F.sum(F.col("nettoficated_hourly")).alias("nettoficated_daily"),
-            F.first(CalculatedNames.settlement_month_datetime).alias(CalculatedNames.settlement_month_datetime),
-            F.first(CalculatedNames.base_period_limit).alias(CalculatedNames.base_period_limit),
+            F.first(EphemiralColumnNames.settlement_month_datetime).alias(EphemiralColumnNames.settlement_month_datetime),
+            F.first(EphemiralColumnNames.base_period_limit).alias(EphemiralColumnNames.base_period_limit),
         )
         .select(
             "*",
@@ -226,13 +236,13 @@ def _calculate_period_limit__net_settlement_group_2(
             F.sum(F.col("nettoficated_daily")).over(period_window).alias("period_limit_reduction"),
         )
         .select(
-            CalculatedNames.electrical_heating_metering_point_id,
-            CalculatedNames.parent_period_start,
-            CalculatedNames.parent_period_end,
-            ColumnNames.date,
-            ColumnNames.quantity,
-            (F.col(CalculatedNames.base_period_limit) - F.col("period_limit_reduction")).alias(
-                CalculatedNames.period_energy_limit
+            EphemiralColumnNames.electrical_heating_metering_point_id,
+            EphemiralColumnNames.parent_period_start,
+            EphemiralColumnNames.parent_period_end,
+            ContractColumnNames.date,
+            ContractColumnNames.quantity,
+            (F.col(EphemiralColumnNames.base_period_limit) - F.col("period_limit_reduction")).alias(
+                EphemiralColumnNames.period_energy_limit
             ),
         )
     )
@@ -244,9 +254,9 @@ def _calculate_period_limit__net_settlement_group_6(
 ) -> DataFrame:
     # Window used to aggregate values for the whole period
     period_window = Window.partitionBy(
-        F.col(CalculatedNames.electrical_heating_metering_point_id),
-        F.col(CalculatedNames.parent_period_start),
-        F.col(CalculatedNames.parent_period_end),
+        F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
+        F.col(EphemiralColumnNames.parent_period_start),
+        F.col(EphemiralColumnNames.parent_period_end),
     )
 
     return (
@@ -254,33 +264,33 @@ def _calculate_period_limit__net_settlement_group_6(
         periods_with_energy_hourly.withColumn(
             "period_limit_reduction",
             F.least(
-                F.sum(F.col(CalculatedNames.consumption_from_grid_quantity)).over(period_window),
-                F.sum(F.col(CalculatedNames.supply_to_grid_quantity)).over(period_window),
+                F.sum(F.col(EphemiralColumnNames.consumption_from_grid_quantity)).over(period_window),
+                F.sum(F.col(EphemiralColumnNames.supply_to_grid_quantity)).over(period_window),
             ),
         )
         # Then aggregate to a row per day
         .groupBy(
-            CalculatedNames.electrical_heating_metering_point_id,
-            CalculatedNames.parent_period_start,
-            CalculatedNames.parent_period_end,
-            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+            EphemiralColumnNames.electrical_heating_metering_point_id,
+            EphemiralColumnNames.parent_period_start,
+            EphemiralColumnNames.parent_period_end,
+            F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(EphemiralColumnNames.date),
         )
         # Calculate daily values + keep period values (using F.first())
         .agg(
-            F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
-            (F.first(CalculatedNames.base_period_limit) - F.first("period_limit_reduction")).alias(
-                CalculatedNames.period_energy_limit
+            F.sum(F.col(EphemiralColumnNames.quantity)).alias(EphemiralColumnNames.quantity),
+            (F.first(EphemiralColumnNames.base_period_limit) - F.first("period_limit_reduction")).alias(
+                EphemiralColumnNames.period_energy_limit
             ),
-            F.first(CalculatedNames.settlement_month_datetime).alias(CalculatedNames.settlement_month_datetime),
+            F.first(EphemiralColumnNames.settlement_month_datetime).alias(EphemiralColumnNames.settlement_month_datetime),
         )
         # TODO: Remove or keep?
         .select(
-            CalculatedNames.electrical_heating_metering_point_id,
-            CalculatedNames.parent_period_start,
-            CalculatedNames.parent_period_end,
-            ColumnNames.date,
-            ColumnNames.quantity,
-            CalculatedNames.period_energy_limit,
+            EphemiralColumnNames.electrical_heating_metering_point_id,
+            EphemiralColumnNames.parent_period_start,
+            EphemiralColumnNames.parent_period_end,
+            EphemiralColumnNames.date,
+            EphemiralColumnNames.quantity,
+            EphemiralColumnNames.period_energy_limit,
         )
     )
 
@@ -292,46 +302,46 @@ def _days_in_settlement_year(settlement_month_datetime: Column) -> Column:
 def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
     period_window = (
         Window.partitionBy(
-            F.col(CalculatedNames.electrical_heating_metering_point_id),
-            F.col(CalculatedNames.parent_period_start),
-            F.col(CalculatedNames.parent_period_end),
+            F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
+            F.col(EphemiralColumnNames.parent_period_start),
+            F.col(EphemiralColumnNames.parent_period_end),
         )
-        .orderBy(F.col(ColumnNames.date))
+        .orderBy(F.col(ContractColumnNames.date))
         .rowsBetween(Window.unboundedPreceding, Window.currentRow)
     )
 
     return time_series_points.select(
-        F.sum(F.col(ColumnNames.quantity)).over(period_window).alias(CalculatedNames.cumulative_quantity),
-        F.col(CalculatedNames.electrical_heating_metering_point_id),
-        F.col(ColumnNames.date),
-        F.col(ColumnNames.quantity),
-        F.col(CalculatedNames.period_energy_limit),
+        F.sum(F.col(ContractColumnNames.quantity)).over(period_window).alias(EphemiralColumnNames.cumulative_quantity),
+        F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
+        F.col(ContractColumnNames.date),
+        F.col(ContractColumnNames.quantity),
+        F.col(EphemiralColumnNames.period_energy_limit),
     ).drop_duplicates()
 
 
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
     return time_series_points.select(
         F.when(
-            (F.col(CalculatedNames.cumulative_quantity) >= F.col(CalculatedNames.period_energy_limit))
+            (F.col(EphemiralColumnNames.cumulative_quantity) >= F.col(EphemiralColumnNames.period_energy_limit))
             & (
-                F.col(CalculatedNames.cumulative_quantity) - F.col(ColumnNames.quantity)
-                < F.col(CalculatedNames.period_energy_limit)
+                F.col(EphemiralColumnNames.cumulative_quantity) - F.col(ContractColumnNames.quantity)
+                < F.col(EphemiralColumnNames.period_energy_limit)
             ),
-            F.col(CalculatedNames.period_energy_limit)
-            + F.col(ColumnNames.quantity)
-            - F.col(CalculatedNames.cumulative_quantity),
+            F.col(EphemiralColumnNames.period_energy_limit)
+            + F.col(ContractColumnNames.quantity)
+            - F.col(EphemiralColumnNames.cumulative_quantity),
         )
         .when(
-            F.col(CalculatedNames.cumulative_quantity) > F.col(CalculatedNames.period_energy_limit),
+            F.col(EphemiralColumnNames.cumulative_quantity) > F.col(EphemiralColumnNames.period_energy_limit),
             0,
         )
         .otherwise(
-            F.col(ColumnNames.quantity),
+            F.col(ContractColumnNames.quantity),
         )
         .cast(DecimalType(18, 3))
-        .alias(ColumnNames.quantity),
-        F.col(CalculatedNames.cumulative_quantity),
-        F.col(CalculatedNames.electrical_heating_metering_point_id).alias(ColumnNames.metering_point_id),
-        F.col(ColumnNames.date),
-        F.col(CalculatedNames.period_energy_limit),
+        .alias(ContractColumnNames.quantity),
+        F.col(EphemiralColumnNames.cumulative_quantity),
+        F.col(EphemiralColumnNames.electrical_heating_metering_point_id).alias(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.date),
+        F.col(EphemiralColumnNames.period_energy_limit),
     ).drop_duplicates()

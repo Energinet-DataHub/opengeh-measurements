@@ -15,9 +15,9 @@ from geh_calculated_measurements.common.domain import (
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
+    EphemiralColumnNames,
     TimeSeriesPoints,
 )
-from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import calculate_hourly_quantity
 
 
@@ -42,8 +42,8 @@ def execute(
     # The reason is that when moving from DST to standard time, the same hour is repeated in local time.
     time_series_points_hourly = calculate_hourly_quantity(time_series_points.df)
     time_series_points_hourly = time_series_points_hourly.withColumn(
-        CalculatedNames.observation_time_hourly_lt,
-        F.from_utc_timestamp(F.col(CalculatedNames.observation_time_hourly), time_zone),
+        EphemiralColumnNames.observation_time_hourly_lt,
+        F.from_utc_timestamp(F.col(EphemiralColumnNames.observation_time_hourly), time_zone),
     )
     new_electrical_heating = T.calculate_electrical_heating_in_local_time(
         time_series_points_hourly, metering_point_periods

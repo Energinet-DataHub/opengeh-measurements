@@ -9,7 +9,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
@@ -74,7 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(F.col(ColumnNames.metering_point_id), F.col(ColumnNames.date))
+    actual = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
 
     # Return test cases
     return TestCases(
