@@ -39,7 +39,7 @@ jobs:
   # Reusable CI
   #
   ci_reusable:
-    uses: Energinet-DataHub/.github/.github/workflows/python-uv-ci.yml@ci/python-cicd
+    uses: Energinet-DataHub/.github/.github/workflows/python-uv-ci.yml@v14
     with:
       packages_directory: source
       pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'

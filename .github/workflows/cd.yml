@@ -28,7 +28,7 @@ jobs:
     name: Continuous Deployment
     needs: [changes]
     if: ${{ needs.changes.outputs.dotnet != 'true' }}
-    uses: Energinet-DataHub/.github/.github/workflows/python-uv-cd.yml@ci/python-cicd
+    uses: Energinet-DataHub/.github/.github/workflows/python-uv-cd.yml@v14
     with:
       subsystem_name: Measurements
       notification_email: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
