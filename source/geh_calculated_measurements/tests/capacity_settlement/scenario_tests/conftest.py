@@ -20,6 +20,7 @@ from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold
 )
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
+from geh_calculated_measurements.capacity_settlement.domain.calculation_output import CalculationOutput
 from tests.capacity_settlement.testsession_configuration import (
     TestSessionConfiguration,
 )
@@ -59,7 +60,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
             args = CapacitySettlementArgs()
 
     # Execute the logic
-    calculation_output = execute(
+    calculation_output: CalculationOutput = execute(
         TimeSeriesPoints(time_series_points),
         MeteringPointPeriods(metering_point_periods),
         args.orchestration_instance_id,
@@ -77,7 +78,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.measurements.df,
+                actual=calculation_output.calculated_measurements.df,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/ten_largest_quantities.csv",
