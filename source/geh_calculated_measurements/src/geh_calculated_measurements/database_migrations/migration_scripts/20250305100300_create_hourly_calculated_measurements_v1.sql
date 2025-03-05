@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW {catalog_name}.{calculated_measurements_internal_database}.hourly_calculated_measurements_v1 AS
+CREATE OR REPLACE VIEW {catalog_name}.{calculated_measurements_database}.hourly_calculated_measurements_v1 AS
 WITH _input AS (
   SELECT 
     orchestration_type,
@@ -9,7 +9,7 @@ WITH _input AS (
     metering_point_type,
     date,
     quantity
-  FROM {catalog_name}.{calculated_measurements_internal_database}.{calculated_measurements_internal_table} 
+  FROM {catalog_name}.{calculated_measurements_database}.{calculated_measurements_table} 
 ),
 _hours AS (
   SELECT 

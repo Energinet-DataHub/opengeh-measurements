@@ -8,7 +8,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_na
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain.model import calculated_measurements
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 from tests import PROJECT_ROOT
@@ -74,7 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Populate the delta tables with the 'when' files
     path_schema_tuples = [
         (
-            "measurements_calculated_internal.calculated_measurements.csv",
+            "measurements_calculated.calculated_measurements.csv",
             calculated_measurements.calculated_measurements_schema,
         )
     ]
@@ -89,7 +89,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     # Construct a list of TestCase objects
     test_cases = []
-    schema = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
+    schema = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
     catalog = CatalogSettings().catalog_name
     for path_name in then_files:
         actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
