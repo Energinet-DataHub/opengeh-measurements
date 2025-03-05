@@ -1,20 +1,19 @@
 """
 ## PURPOSE
 The purpose is to test scenarios where limit is not 4000 with NSG6
-Also to test settlement moth != January
+Also to test settlement month != January
 
 ## DESIGN CONSIDERATIONS
 CASE 2
-                                               |Settlement month 3       |Period change July 1st                  Today|
-                   Nov 2023_________|2024_______|_________________________|______________________________|2025__________
-Parent start/end:       |-----------------------|-------------------------|------------------------------------------...
-Periods:                |_______________________|_________________________|_________________________________________
-Days in period:         | 61 days               | 91 days  | 275 days                     | N/A
-Measurement data:        ++         +++        +++                            ++
+                                    |2024                                 |Period change July 1st        |Settlement month 9   |2025      Today|
+                   Nov 2023_________|_____________________________________|______________________________|_____________________|________________
+Periods:                |_________________________________________________|______________________________|______________________________________
+Days in period:         | 61 days                                         | 91 days                      | N/A
+Measurement data:       ++                                               +++                            +++                     ++
 
-NSG2 type:
-- D15/End:              |___________|__________|______________________________|
-- D15/Up to End:                                                              |___________
+NSG6 type:
+- D15/End:              |________________________________________________________________________________|
+- D15/Up to End:                                                                                         |______________________________________
 
 CASE 3 (summer/winter time)
                                    |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
