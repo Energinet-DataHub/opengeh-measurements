@@ -1,7 +1,6 @@
-import random
-from datetime import datetime
 from decimal import Decimal
 
+import tests.helpers.datetime_helper as datetime_helper
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
 
@@ -16,16 +15,16 @@ class SilverMeasurementsBuilder:
         orchestration_instance_id="60a518a2-7c7e-4aec-8332",
         metering_point_id="503928175928475638",
         transaction_id="5a76d246-ceae-459f-9e9f",
-        transaction_creation_datetime=None,
-        metering_point_type="",
-        unit="",
-        resolution="",
-        start_datetime=None,
-        end_datetime=None,
+        transaction_creation_datetime=datetime_helper.get_datetime(year=2020, month=1),
+        metering_point_type="E18",
+        unit="KWH",
+        resolution="PT1H",
+        start_datetime=datetime_helper.get_datetime(year=2020, month=1),
+        end_datetime=datetime_helper.get_datetime(year=2020, month=2),
         points=None,
         is_cancelled=False,
         is_deleted=False,
-        created=None,
+        created=datetime_helper.get_datetime(year=2020, month=1, day=1),
     ):
         if points is None:
             points = self._generate_default_points()
@@ -35,16 +34,16 @@ class SilverMeasurementsBuilder:
                 orchestration_instance_id,
                 metering_point_id,
                 transaction_id,
-                transaction_creation_datetime or datetime.now(),
-                metering_point_type or random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
-                unit or random.choice(["KWH", "MWH", "MVARH", "KVARH", "KW"]),
-                resolution or random.choice(["PT15M", "PT1H", "P1M"]),
-                start_datetime or datetime.now(),
-                end_datetime or datetime.now(),
+                transaction_creation_datetime,
+                metering_point_type,
+                unit,
+                resolution,
+                start_datetime,
+                end_datetime,
                 points,
                 is_cancelled,
                 is_deleted,
-                created or datetime.now(),
+                created,
             )
         )
         return self
@@ -60,8 +59,8 @@ class SilverMeasurementsBuilder:
         return [
             {
                 "position": position,
-                "quantity": Decimal(round(random.uniform(0, 1000), 3)),
-                "quality": random.choice(["measured", "estimated", "calculated", "missing"]),
+                "quantity": Decimal(1.0),
+                "quality": "measured",
             }
             for position in range(1, 25)
         ]

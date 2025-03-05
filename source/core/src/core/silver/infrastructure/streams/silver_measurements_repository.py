@@ -8,6 +8,7 @@ from core.bronze.infrastructure.settings import (
 )
 from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
+from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
 
 
@@ -43,16 +44,33 @@ class SilverMeasurementsRepository:
     def append(self, measurements: DataFrame) -> None:
         measurements.write.format("delta").mode("append").saveAsTable(self.table)
 
-    def append_if_not_exists(self, measurements: DataFrame) -> None:
+    def append_if_not_exists(self, silver_measurements: DataFrame) -> None:
         """Append to the table unless there are duplicates based on all columns except 'created'.
 
-        :param measurements: DataFrame containing the data to be appended.
+        :param silver_measurements: DataFrame containing the data to be appended.
         """
-        existing_data = measurements.sparkSession.table(self.table)
-        new_data = measurements.alias("new_data")
+        existing_data = silver_measurements.sparkSession.table(self.table)
+        new_data = silver_measurements.alias("new_data")
 
-        condition = [new_data[column] == existing_data[column] for column in new_data.columns if column != "created"]
+        condition = [new_data[column] == existing_data[column] for column in self._merge_columns()]
 
         filtered_data = new_data.join(existing_data.alias("existing_data"), condition, "left_anti")
 
         filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+
+    def _merge_columns(self) -> list[str]:
+        return [
+            SilverMeasurementsColumnNames.orchestration_type,
+            SilverMeasurementsColumnNames.orchestration_instance_id,
+            SilverMeasurementsColumnNames.metering_point_id,
+            SilverMeasurementsColumnNames.transaction_id,
+            SilverMeasurementsColumnNames.transaction_creation_datetime,
+            SilverMeasurementsColumnNames.metering_point_type,
+            SilverMeasurementsColumnNames.unit,
+            SilverMeasurementsColumnNames.resolution,
+            SilverMeasurementsColumnNames.start_datetime,
+            SilverMeasurementsColumnNames.end_datetime,
+            SilverMeasurementsColumnNames.points,
+            SilverMeasurementsColumnNames.is_cancelled,
+            SilverMeasurementsColumnNames.is_deleted,
+        ]
