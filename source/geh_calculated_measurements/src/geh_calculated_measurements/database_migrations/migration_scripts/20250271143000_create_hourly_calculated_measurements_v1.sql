@@ -35,7 +35,7 @@ SELECT
   _hours.transaction_creation_datetime,
   _hours.metering_point_id,
   _hours.metering_point_type,
-  _hours.hour as datetime,
+  _hours.hour as obsevation_time,
   CASE WHEN _hours.hour = to_utc_timestamp(FROM_UTC_TIMESTAMP(_hours.date, 'Europe/Copenhagen'), 'Europe/Copenhagen')
     THEN _hours.quantity
     ELSE 0
