@@ -1,3 +1,3 @@
 class MeasurementsGoldDatabaseDefinition:
     DATABASE_NAME = "measurements_gold"
-    MEASUREMENTS = "measurements"
+    MEASUREMENTS = "capacity_settlement_v1"

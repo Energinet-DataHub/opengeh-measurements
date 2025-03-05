@@ -14,6 +14,8 @@ from tests.capacity_settlement.subsystem_tests.environment_configuration import 
 class CalculationInput:
     orchestration_instance_id: uuid.UUID
     job_id: int
+    year: int
+    month: int
 
 
 class JobState:
@@ -22,10 +24,10 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-def seed_data_query(catalog: str, schema: str, table: str) -> str:
+def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
     return f"""
         INSERT INTO {catalog}.{schema}.{table} VALUES
-        ('test', 'DUMMY_VALUE', '2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
+        ('test', 'DUMMY_VALUE', '2025-12-02 00:00:00', 1.1, 'Medium', 'test', 'test', '2025-12-02 00:00:00', '2025-12-02 00:00:00', '2025-12-02 00:00:00')
     """
 
 
@@ -39,7 +41,6 @@ class CapacitySettlementFixture:
             statement=seed_data_query(
                 catalog=environment_configuration.catalog_name,
                 schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-                table=MeasurementsGoldDatabaseDefinition.MEASUREMENTS,
             ),
         )
         self.job_state = JobState()
@@ -51,11 +52,13 @@ class CapacitySettlementFixture:
         )
 
     def get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id("ElectricalHeating")
+        return self.databricks_api_client.get_job_id("CapacitySettlement")
 
     def start_job(self, calculation_input: CalculationInput) -> int:
         params = [
             f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
+            f"--calculation-month={calculation_input.month}",
+            f"--calculation-year={calculation_input.year}",
         ]
         return self.databricks_api_client.start_job(calculation_input.job_id, params)
 

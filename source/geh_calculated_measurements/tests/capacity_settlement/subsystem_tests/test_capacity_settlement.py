@@ -22,6 +22,8 @@ class TestCapacitySettlement(unittest.TestCase):
         # Act
         self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
         self.fixture.job_state.calculation_input.orchestration_instance_id = uuid.uuid4()
+        self.fixture.job_state.calculation_input.year = 2024
+        self.fixture.job_state.calculation_input.month = 1
 
         # Assert
         assert self.fixture.job_state.calculation_input.job_id is not None
