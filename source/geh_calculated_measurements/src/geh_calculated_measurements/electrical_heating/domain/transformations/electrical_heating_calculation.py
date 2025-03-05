@@ -110,9 +110,15 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .select(
-            F.col(f"metering_point.{EphemiralColumnNames.parent_period_start}").alias(EphemiralColumnNames.parent_period_start),
-            F.col(f"metering_point.{EphemiralColumnNames.parent_period_end}").alias(EphemiralColumnNames.parent_period_end),
-            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_start}").alias(
+                EphemiralColumnNames.parent_period_start
+            ),
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_end}").alias(
+                EphemiralColumnNames.parent_period_end
+            ),
+            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(
+                ContractColumnNames.net_settlement_group
+            ),
             F.col(f"metering_point.{EphemiralColumnNames.electrical_heating_metering_point_id}").alias(
                 EphemiralColumnNames.electrical_heating_metering_point_id
             ),
