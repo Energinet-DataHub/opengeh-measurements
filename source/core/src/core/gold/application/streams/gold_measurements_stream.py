@@ -1,6 +1,6 @@
 from pyspark.sql.dataframe import DataFrame
 
-from core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
+import core.gold.domain.streams.silver_to_gold.transformations as transformations
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 from core.silver.infrastructure.streams.silver_repository import SilverRepository
 
@@ -10,6 +10,6 @@ def stream_measurements_silver_to_gold() -> None:
     GoldMeasurementsRepository().start_write_stream(silver_measurements, pipeline_measurements_silver_to_gold)
 
 
-def pipeline_measurements_silver_to_gold(df_silver: DataFrame, batch_id: int) -> None:
-    df_gold = transform_silver_to_gold(df_silver)
-    GoldMeasurementsRepository().append_if_not_exists(df_gold)
+def pipeline_measurements_silver_to_gold(silver_measurements: DataFrame, batch_id: int) -> None:
+    gold_measurements = transformations.transform_silver_to_gold(silver_measurements)
+    GoldMeasurementsRepository().append_if_not_exists(gold_measurements)

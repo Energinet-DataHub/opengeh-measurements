@@ -30,11 +30,13 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     sut.GoldMeasurementsRepository = Mock(return_value=gold_repo_mock)
-    df_silver_mock = Mock()
-    batch_id = 0
+    transform_mock = Mock()
+    sut.transformations.transform_silver_to_gold = transform_mock
+    silver_measurements_mock = Mock()
 
     # Act
-    sut.pipeline_measurements_silver_to_gold(df_silver_mock, batch_id)
+    sut.pipeline_measurements_silver_to_gold(silver_measurements_mock, 0)
 
     # Assert
-    gold_repo_mock.append_if_not_exists.assert_called_once_with(df_silver_mock)
+    transform_mock.assert_called_once_with(silver_measurements_mock)
+    gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
