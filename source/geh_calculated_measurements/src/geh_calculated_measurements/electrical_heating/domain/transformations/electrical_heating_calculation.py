@@ -1,4 +1,4 @@
-from geh_common.domain.types import MeteringPointType, NetSettlementGroup
+from geh_common.domain.types import NetSettlementGroup
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
@@ -6,23 +6,17 @@ from pyspark.sql.types import DecimalType
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.electrical_heating.domain.debug import debugging
-from geh_calculated_measurements.electrical_heating.domain.transformations.time_series_points import (
-    get_hourly_energy_in_local_time,
-)
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
 
 
-def calculate_electrical_heating_in_local_time(
-    time_series_points_in_utc: DataFrame, periods_in_localtime: DataFrame, time_zone: str
-) -> DataFrame:
-    periods_in_localtime = _find_source_metering_point_for_energy(periods_in_localtime)
+def calculate_electrical_heating_in_local_time(time_series_points_hourly: DataFrame, periods: DataFrame) -> DataFrame:
+    periods = _find_source_metering_point_for_energy(periods)
 
     periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
-        periods_in_localtime,
-        time_series_points_in_utc,
-        time_zone,
+        periods,
+        time_series_points_hourly,
     )
     periods_with_daily_energy_and_limit = _calculate_period_limit(periods_with_hourly_energy)
 
@@ -58,51 +52,40 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
 @debugging()
 def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
-    time_series_points_in_utc: DataFrame,
-    time_zone: str,
+    time_series_points_hourly: DataFrame,
 ) -> DataFrame:
-    consumption = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION, MeteringPointType.NET_CONSUMPTION]
-    )
-    supply_to_grid = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.SUPPLY_TO_GRID]
-    )
-    consumption_from_grid = get_hourly_energy_in_local_time(
-        time_series_points_in_utc, time_zone, [MeteringPointType.CONSUMPTION_FROM_GRID]
-    )
-
     return (
         parent_and_child_metering_point_and_periods_in_localtime.alias("metering_point")
         # Join each (net)consumption metering point with the (net)consumption time series points
         # Inner join to only include metering points with energy data.
         .join(
-            consumption.alias("consumption"),
+            time_series_points_hourly.alias("consumption"),
             (
                 F.col(f"consumption.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.energy_source_metering_point_id}")
             )
             & (
-                F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                >= F.col(f"metering_point.{CalculatedNames.overlap_period_start}")
+                F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
+                >= F.col(f"metering_point.{CalculatedNames.overlap_period_start_lt}")
             )
             & (
-                F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
-                < F.col(f"metering_point.{CalculatedNames.overlap_period_end}")
+                F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
+                < F.col(f"metering_point.{CalculatedNames.overlap_period_end_lt}")
             )
             & (
                 (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
                     >= F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}")
                 )
                 & (
-                    F.col(f"consumption.{CalculatedNames.observation_time_hourly}")
+                    F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}")
                     < F.add_months(F.col(f"metering_point.{CalculatedNames.settlement_month_datetime}"), 12)
                 )
             ),
             "inner",
         )
         .join(
-            supply_to_grid.alias("supply_to_grid"),
+            time_series_points_hourly.alias("supply_to_grid"),
             (
                 F.col(f"supply_to_grid.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.supply_to_grid_metering_point_id}")
@@ -114,7 +97,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .join(
-            consumption_from_grid.alias("consumption_from_grid"),
+            time_series_points_hourly.alias("consumption_from_grid"),
             (
                 F.col(f"consumption_from_grid.{ColumnNames.metering_point_id}")
                 == F.col(f"metering_point.{CalculatedNames.consumption_from_grid_metering_point_id}")
@@ -135,8 +118,8 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"metering_point.{CalculatedNames.electrical_heating_metering_point_id}").alias(
                 CalculatedNames.electrical_heating_metering_point_id
             ),
-            F.col(f"consumption.{CalculatedNames.observation_time_hourly}").alias(
-                CalculatedNames.observation_time_hourly
+            F.col(f"consumption.{CalculatedNames.observation_time_hourly_lt}").alias(
+                CalculatedNames.observation_time_hourly_lt
             ),
             F.col(f"consumption.{ColumnNames.quantity}").alias(ColumnNames.quantity),
             F.col(f"supply_to_grid.{ColumnNames.metering_point_id}").alias(
@@ -178,7 +161,7 @@ def _calculate_period_limit(
             CalculatedNames.electrical_heating_metering_point_id,
             CalculatedNames.parent_period_start,
             CalculatedNames.parent_period_end,
-            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly)).alias(ColumnNames.date),
+            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
         )
         .agg(
             F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
