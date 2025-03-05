@@ -21,7 +21,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
     metering_point_periods = electricity_market_repository.read_metering_point_periods()
 
     # Execute the domain logic
-    calculated_measurements = execute(
+    calculation_output = execute(
         time_series_points,
         metering_point_periods,
         args.orchestration_instance_id,
@@ -29,6 +29,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
         args.time_zone,
     )
+    calculated_measurements = calculation_output.measurements
 
     # Write the calculated measurements
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
