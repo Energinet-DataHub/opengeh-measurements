@@ -9,7 +9,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements
 class CalculationOutput:
     """Contains the output of a calculation."""
 
-    measurements: CalculatedMeasurements
+    calculated_measurements: CalculatedMeasurements
 
     calculations: DataFrame
 
