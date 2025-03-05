@@ -39,8 +39,6 @@ class SilverRepository:
         )
 
         stream_settings = SubmittedTransactionsStreamSettings()
-        print("TEST ME HEREEEE")
-        print(stream_settings.continuous_streaming_enabled)
 
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
