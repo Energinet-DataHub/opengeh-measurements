@@ -62,7 +62,7 @@ def test__submitted_transactions__should_save_in_silver_measurements(
     assert silver_table.count() == 1
 
 
-def test__submitted_transactions__when_invalid_should_save_in_bronze_submitted_transactions_quarantined(
+def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_submitted_transactions_quarantined(
     mock_checkpoint_path, spark: SparkSession, migrate
 ) -> None:
     # Arrange
