@@ -13,6 +13,7 @@ from geh_calculated_measurements.capacity_settlement.domain.calculated_names imp
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
+from geh_calculated_measurements.capacity_settlement.domain.ephemeral_column_names import EphemeralColumnNames
 from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
 from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_factory
@@ -169,13 +170,13 @@ def _add_selection_period_columns(
     )
 
     metering_point_periods = metering_point_periods.withColumn(
-        ColumnNames.selection_period_start,
+        EphemeralColumnNames.selection_period_start,
         F.when(
             F.col(CalculatedNames.period_from_date) > F.lit(selection_period_start_min),
             F.col(CalculatedNames.period_from_date),
         ).otherwise(F.lit(selection_period_start_min)),
     ).withColumn(
-        ColumnNames.selection_period_end,
+        EphemeralColumnNames.selection_period_end,
         F.when(
             F.col(CalculatedNames.period_to_date) <= F.lit(selection_period_end_max),
             F.col(CalculatedNames.period_to_date),
@@ -193,8 +194,8 @@ def _ten_largest_quantities_in_selection_periods(
     time_series_points = time_series_points.join(
         metering_point_periods, on=ColumnNames.metering_point_id, how="inner"
     ).where(
-        (F.col(ColumnNames.observation_time) >= F.col(ColumnNames.selection_period_start))
-        & (F.col(ColumnNames.observation_time) < F.col(ColumnNames.selection_period_end))
+        (F.col(ColumnNames.observation_time) >= F.col(EphemeralColumnNames.selection_period_start))
+        & (F.col(ColumnNames.observation_time) < F.col(EphemeralColumnNames.selection_period_end))
     )
 
     window_spec = Window.partitionBy(grouping).orderBy(F.col(ColumnNames.quantity).desc())
@@ -236,8 +237,8 @@ def _explode_to_daily(
     df = df.withColumn(ColumnNames.date, F.to_utc_timestamp("date_local", time_zone))
 
     df = df.filter(
-        (F.col(ColumnNames.selection_period_start) <= F.col(ColumnNames.date))
-        & (F.col(ColumnNames.selection_period_end) > F.col(ColumnNames.date))
+        (F.col(EphemeralColumnNames.selection_period_start) <= F.col(ColumnNames.date))
+        & (F.col(EphemeralColumnNames.selection_period_end) > F.col(ColumnNames.date))
     )
 
     return df
