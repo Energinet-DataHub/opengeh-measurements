@@ -32,6 +32,7 @@ def get_joined_metering_point_periods_in_local_time(
     return metering_point_periods
 
 
+@debugging()
 def _join_children_to_parent_metering_point(
     child_metering_point_and_periods: DataFrame,
     parent_metering_point_and_periods: DataFrame,
@@ -96,15 +97,11 @@ def _join_children_to_parent_metering_point(
             "left",
         )
         .select(
-            F.col(f"parent.{ContractColumnNames.metering_point_id}").alias(ContractColumnNames.parent_metering_point_id),
-            F.col(f"parent.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
-            F.col(f"parent.{ContractColumnNames.settlement_month}").alias(ContractColumnNames.settlement_month),
-            F.col(f"parent.{ContractColumnNames.period_from_date}").alias(EphemiralColumnNames.parent_period_start),
-            F.col(f"parent.{ContractColumnNames.period_to_date}").alias(EphemiralColumnNames.parent_period_end),
-            F.col(f"electrical_heating.{ContractColumnNames.metering_point_id}").alias(
-                EphemiralColumnNames.electrical_heating_metering_point_id
+            F.col(f"parent.{ContractColumnNames.metering_point_id}").alias(
+                ContractColumnNames.parent_metering_point_id
             ),
             F.col(f"parent.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
+            F.col(f"parent.{ContractColumnNames.settlement_month}").alias(ContractColumnNames.settlement_month),
             F.col(f"parent.{ContractColumnNames.period_from_date}").alias(EphemiralColumnNames.parent_period_start),
             F.col(f"parent.{ContractColumnNames.period_to_date}").alias(EphemiralColumnNames.parent_period_end),
             F.col(f"electrical_heating.{ContractColumnNames.metering_point_id}").alias(
