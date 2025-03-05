@@ -37,7 +37,7 @@ SELECT
     '2024-11-30T23:00:00Z' AS observation_time, 
     'measured' AS quality, -- quality
     'consumption' AS metering_point_type,
-    'electrical_heating' AS orchestration_type"""
+    'submitted' AS orchestration_type"""
 
 
 class ElectricalHeatingFixture:
