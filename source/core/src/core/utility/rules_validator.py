@@ -7,8 +7,9 @@ from pyspark.sql.dataframe import DataFrame
 
 
 def validate(df: DataFrame, validation_rules: list[Callable[[], Column]]) -> tuple[DataFrame, DataFrame]:
-    for rule in validation_rules:
-        df = df.withColumn(rule.__name__, rule())
+    validation_columns = {rule.__name__: rule() for rule in validation_rules}
+
+    df = df.withColumns(validation_columns)
 
     is_valid = reduce(lambda x, y: (x & F.col(y.__name__)), validation_rules, F.lit(True))
 
