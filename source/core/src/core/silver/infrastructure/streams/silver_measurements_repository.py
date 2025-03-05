@@ -41,9 +41,6 @@ class SilverMeasurementsRepository:
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
-    def append(self, measurements: DataFrame) -> None:
-        measurements.write.format("delta").mode("append").saveAsTable(self.table)
-
     def append_if_not_exists(self, silver_measurements: DataFrame) -> None:
         """Append to the table unless there are duplicates based on all columns except 'created'.
 
