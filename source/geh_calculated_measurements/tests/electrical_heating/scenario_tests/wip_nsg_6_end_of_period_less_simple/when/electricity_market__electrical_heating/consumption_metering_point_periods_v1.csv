@@ -1,0 +1,2 @@
+metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
+170000000000600201;true;6;1;2023-12-31T23:00:00Z;;Case 1: Period is one year (2024) because we are in 2025 now.
