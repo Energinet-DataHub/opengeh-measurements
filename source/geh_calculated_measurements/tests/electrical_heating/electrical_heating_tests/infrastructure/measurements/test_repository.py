@@ -26,11 +26,11 @@ def test__when_missing_expected_column_raises_exception(
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
-    pytest.raises(
-        ValueError,
-        match=r"[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column or function parameter with name `quantity` cannot be resolved. Did you mean one of the following? [`observation_time`, `metering_point_id`, `metering_point_type`]",
-    )
-    measurements_gold_repository.read_time_series_points()
+    with pytest.raises(
+        Exception,  # Using more generic Exception since the actual type appears to be a PySpark AnalysisException
+        match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\] A column or function parameter with name `quantity` cannot be resolved\. Did you mean one of the following\?.*",
+    ):
+        measurements_gold_repository.read_time_series_points()
 
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
