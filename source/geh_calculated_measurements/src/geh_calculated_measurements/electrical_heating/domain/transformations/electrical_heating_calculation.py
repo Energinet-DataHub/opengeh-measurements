@@ -110,20 +110,14 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "left",
         )
         .select(
-            F.col(f"metering_point.{EphemiralColumnNames.parent_period_start}").alias(
-                EphemiralColumnNames.parent_period_start
-            ),
-            F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}").alias(
-                EphemiralColumnNames.observation_time_hourly_lt
-            ),
-            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(
-                ContractColumnNames.net_settlement_group
-            ),
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_start}").alias(EphemiralColumnNames.parent_period_start),
+            F.col(f"metering_point.{EphemiralColumnNames.parent_period_end}").alias(EphemiralColumnNames.parent_period_end),
+            F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
             F.col(f"metering_point.{EphemiralColumnNames.electrical_heating_metering_point_id}").alias(
                 EphemiralColumnNames.electrical_heating_metering_point_id
             ),
-            F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly}").alias(
-                EphemiralColumnNames.observation_time_hourly
+            F.col(f"consumption.{EphemiralColumnNames.observation_time_hourly_lt}").alias(
+                EphemiralColumnNames.observation_time_hourly_lt
             ),
             F.col(f"consumption.{ContractColumnNames.quantity}").alias(ContractColumnNames.quantity),
             F.col(f"supply_to_grid.{ContractColumnNames.metering_point_id}").alias(
