@@ -25,7 +25,7 @@ class JobState:
 def seed_data_query(catalog: str, schema: str, table: str) -> str:
     return f"""
         INSERT INTO {catalog}.{schema}.{table} VALUES
-        ('test',2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
+        ('test', 'DUMMY_VALUE', '2025-13-02,1.1,'Medium','test','test',2025-13-02,2025-13-02,2025-13-02)
     """
 
 
