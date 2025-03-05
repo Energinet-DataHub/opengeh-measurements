@@ -38,11 +38,13 @@ def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> N
 
     SilverRepository().append(valid_measurements)
 
+    _handle_submitted_transactions_quarantined(invalid_measurements)
+
+
+def _handle_submitted_transactions_quarantined(invalid_measurements):
     submitted_transactions_quarantined = submitted_transactions_quarantined_transformations.map_silver_measurements_to_submitted_transactions_quarantined(
         invalid_measurements
     )
-
-    submitted_transactions_quarantined.show()
 
     SubmittedTransactionsQuarantinedRepository().append(submitted_transactions_quarantined)
 
