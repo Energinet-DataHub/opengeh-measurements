@@ -12,14 +12,14 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import CapacitySettlementArgs
-from geh_calculated_measurements.capacity_settlement.contracts.electricity_market__capacity_settlement.metering_point_periods_v1 import (
-    metering_point_periods_v1,
-)
-from geh_calculated_measurements.capacity_settlement.contracts.measurements_gold.time_series_points_v1 import (
-    time_series_points_v1,
-)
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
+from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_market.schema import (
+    metering_point_periods_v1,
+)
+from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
+    time_series_points_v1,
+)
 from tests.capacity_settlement.testsession_configuration import (
     TestSessionConfiguration,
 )
