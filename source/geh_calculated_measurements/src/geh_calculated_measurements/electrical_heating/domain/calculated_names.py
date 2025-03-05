@@ -4,6 +4,9 @@ class CalculatedNames:
     `_lt` suffixes stands for local time.
     """
 
+    base_period_limit = "base_period_limit"
+    """The base period limit for the period. The base limit represents the fraction of the yearly base limit
+    adjusted to how many days there are in the period compared to a whole year."""
     consumption_from_grid_metering_point_id = "consumption_from_grid_metering_point_id"
     consumption_from_grid_period_start = "consumption_from_grid_period_start"
     consumption_from_grid_period_end = "consumption_from_grid_period_end"

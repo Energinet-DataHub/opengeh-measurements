@@ -5,7 +5,7 @@ from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ColumnNames
 from geh_calculated_measurements.electrical_heating.domain.calculated_names import CalculatedNames
-from geh_calculated_measurements.electrical_heating.domain.debug import debugging
+from geh_calculated_measurements.electrical_heating.domain.debug import debugging, log_dataframe
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -18,6 +18,7 @@ def calculate_electrical_heating_in_local_time(time_series_points_hourly: DataFr
         periods,
         time_series_points_hourly,
     )
+
     periods_with_daily_energy_and_limit = _calculate_period_limit(periods_with_hourly_energy)
 
     new_electrical_heating = _aggregate_quantity_over_period(periods_with_daily_energy_and_limit)
@@ -136,10 +137,60 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
+# TODO: Can this be simplified? Can we avoid the union?
 @debugging()
-def _calculate_period_limit(
+def _calculate_period_limit(periods_with_hourly_energy):
+    periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
+
+    periods_with_daily_energy_and_limit_no_nsg = (
+        periods_with_hourly_energy.where(F.col(ColumnNames.net_settlement_group).isNull())
+        .groupBy(
+            CalculatedNames.electrical_heating_metering_point_id,
+            CalculatedNames.parent_period_start,
+            CalculatedNames.parent_period_end,
+            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+        )
+        .agg(
+            F.sum(ColumnNames.quantity).alias(ColumnNames.quantity),
+            F.first(CalculatedNames.base_period_limit).alias(CalculatedNames.period_energy_limit),
+        )
+    )
+    log_dataframe(periods_with_daily_energy_and_limit_no_nsg, "periods_with_daily_energy_and_limit_no_nsg")
+
+    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2(
+        periods_with_hourly_energy.where(
+            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2
+        )
+    )
+    log_dataframe(periods_with_daily_energy_and_limit_nsg2, "periods_with_daily_energy_and_limit_nsg2")
+    periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6(
+        periods_with_hourly_energy.where(
+            F.col(ColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6
+        )
+    )
+    log_dataframe(periods_with_daily_energy_and_limit_nsg6, "periods_with_daily_energy_and_limit_nsg6")
+    periods_with_daily_energy_and_limit = periods_with_daily_energy_and_limit_no_nsg.union(
+        periods_with_daily_energy_and_limit_nsg2
+    ).union(periods_with_daily_energy_and_limit_nsg6)
+
+    return periods_with_daily_energy_and_limit
+
+
+@debugging()
+def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataFrame:
+    return periods_with_energy_hourly.withColumn(
+        CalculatedNames.base_period_limit,
+        F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
+        * _ELECTRICAL_HEATING_LIMIT_YEARLY
+        / _days_in_settlement_year(F.col(CalculatedNames.settlement_month_datetime)),
+    )
+
+
+@debugging()
+def _calculate_period_limit__net_settlement_group_2(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
+    # Move to .agg() below?
     df = periods_with_energy_hourly.select(
         "*",
         F.coalesce(
@@ -167,19 +218,69 @@ def _calculate_period_limit(
             F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
             F.sum(F.col("nettoficated_hourly")).alias("nettoficated_daily"),
             F.first(CalculatedNames.settlement_month_datetime).alias(CalculatedNames.settlement_month_datetime),
+            F.first(CalculatedNames.base_period_limit).alias(CalculatedNames.base_period_limit),
         )
         .select(
             "*",
-            (
-                F.datediff(F.col(CalculatedNames.parent_period_end), F.col(CalculatedNames.parent_period_start))
-                * _ELECTRICAL_HEATING_LIMIT_YEARLY
-                / _days_in_settlement_year(F.col(CalculatedNames.settlement_month_datetime))
-            ).alias("period_limit"),
+            # TODO: Move to .agg() above?
             F.sum(F.col("nettoficated_daily")).over(period_window).alias("period_limit_reduction"),
         )
         .select(
-            "*",
-            (F.col("period_limit") - F.col("period_limit_reduction")).alias(CalculatedNames.period_energy_limit),
+            CalculatedNames.electrical_heating_metering_point_id,
+            CalculatedNames.parent_period_start,
+            CalculatedNames.parent_period_end,
+            ColumnNames.date,
+            ColumnNames.quantity,
+            (F.col(CalculatedNames.base_period_limit) - F.col("period_limit_reduction")).alias(
+                CalculatedNames.period_energy_limit
+            ),
+        )
+    )
+
+
+@debugging()
+def _calculate_period_limit__net_settlement_group_6(
+    periods_with_energy_hourly: DataFrame,
+) -> DataFrame:
+    # Window used to aggregate values for the whole period
+    period_window = Window.partitionBy(
+        F.col(CalculatedNames.electrical_heating_metering_point_id),
+        F.col(CalculatedNames.parent_period_start),
+        F.col(CalculatedNames.parent_period_end),
+    )
+
+    return (
+        # Calculate the period limit reduction
+        periods_with_energy_hourly.withColumn(
+            "period_limit_reduction",
+            F.least(
+                F.sum(F.col(CalculatedNames.consumption_from_grid_quantity)).over(period_window),
+                F.sum(F.col(CalculatedNames.supply_to_grid_quantity)).over(period_window),
+            ),
+        )
+        # Then aggregate to a row per day
+        .groupBy(
+            CalculatedNames.electrical_heating_metering_point_id,
+            CalculatedNames.parent_period_start,
+            CalculatedNames.parent_period_end,
+            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+        )
+        # Calculate daily values + keep period values (using F.first())
+        .agg(
+            F.sum(F.col(ColumnNames.quantity)).alias(ColumnNames.quantity),
+            (F.first(CalculatedNames.base_period_limit) - F.first("period_limit_reduction")).alias(
+                CalculatedNames.period_energy_limit
+            ),
+            F.first(CalculatedNames.settlement_month_datetime).alias(CalculatedNames.settlement_month_datetime),
+        )
+        # TODO: Remove or keep?
+        .select(
+            CalculatedNames.electrical_heating_metering_point_id,
+            CalculatedNames.parent_period_start,
+            CalculatedNames.parent_period_end,
+            ColumnNames.date,
+            ColumnNames.quantity,
+            CalculatedNames.period_energy_limit,
         )
     )
 
