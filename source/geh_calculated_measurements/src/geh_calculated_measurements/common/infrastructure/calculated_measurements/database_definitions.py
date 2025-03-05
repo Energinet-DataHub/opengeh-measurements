@@ -1,3 +1,3 @@
 class CalculatedMeasurementsInternalDatabaseDefinition:
     DATABASE_NAME = "measurements_calculated_internal"
-    MEASUREMENTS_NAME = "measurements"
+    MEASUREMENTS_NAME = "calculated_measurements"
