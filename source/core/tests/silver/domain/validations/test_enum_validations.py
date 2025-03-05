@@ -6,6 +6,11 @@ from core.contracts.process_manager.enums.metering_point_type import MeteringPoi
 from tests.helpers.builders.submitted_transactions_builder import UnpackedSubmittedTransactionsBuilder
 
 metering_point_type_enum_params = [pytest.param(x.value, 1) for x in MeteringPointType if x.value != "MPT_UNSPECIFIED"]
+# resolution_enum_params = [pytest.param(x.value, 1) for x in Dh2ResolutionEnum] + [
+#     pytest.param(x.value, 1) for x in Dh3ResolutionEnum
+# ]
+# unit_enum_params = [pytest.param(x.value, 1) for x in UnitEnum]
+# quality_enum_params = [pytest.param(x.value, 1) for x in Dh2QualityEnum]
 
 
 @pytest.mark.parametrize(
