@@ -75,33 +75,3 @@ exclude = ["notebooks/*"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[tool.pyright]
-include = ["src"]
-exclude = [
-    "**/node_modules",
-    "**/__pycache__",
-    "**/__checkpoints__",
-    "**/__metastore_db__",
-    "**/__spark_warehouse__",
-]
-
-[tool.pyright]
-include = ["src"]
-exclude = [
-    "**/node_modules",
-    "**/__pycache__",
-    "**/__checkpoints__",
-    "**/__metastore_db__",
-    "**/__spark_warehouse__",
-]
-
-[tool.pyright]
-include = ["src"]
-exclude = [
-    "**/node_modules",
-    "**/__pycache__",
-    "**/__checkpoints__",
-    "**/__metastore_db__",
-    "**/__spark_warehouse__",
-]
