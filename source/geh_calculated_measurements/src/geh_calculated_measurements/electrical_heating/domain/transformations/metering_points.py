@@ -199,15 +199,15 @@ def _find_parent_child_overlap_period(
             F.col(EphemiralColumnNames.net_consumption_period_start),
             F.col(EphemiralColumnNames.consumption_from_grid_period_start),
             F.col(EphemiralColumnNames.supply_to_grid_period_start),
-        ).alias(EphemiralColumnNames.overlap_period_start),
+        ).alias(EphemiralColumnNames.overlap_period_start_lt),
         F.least(
             F.col(EphemiralColumnNames.parent_period_end),
             F.col(EphemiralColumnNames.electrical_heating_period_end),
             F.col(EphemiralColumnNames.net_consumption_period_end),
             F.col(EphemiralColumnNames.consumption_from_grid_period_end),
             F.col(EphemiralColumnNames.supply_to_grid_period_end),
-        ).alias(EphemiralColumnNames.overlap_period_end),
-    ).where(F.col(EphemiralColumnNames.overlap_period_start) < F.col(EphemiralColumnNames.overlap_period_end))
+        ).alias(EphemiralColumnNames.overlap_period_end_lt),
+    ).where(F.col(EphemiralColumnNames.overlap_period_start_lt) < F.col(EphemiralColumnNames.overlap_period_end_lt))
 
 
 def _split_period_by_year(
@@ -242,9 +242,9 @@ def _split_period_by_year(
         )
         .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
         .alias(EphemiralColumnNames.parent_period_end),
-        F.col(EphemiralColumnNames.overlap_period_start),
-        F.col(EphemiralColumnNames.overlap_period_end),
-        F.col(EphemiralColumnNames.period_year),
+        F.col(EphemiralColumnNames.overlap_period_start_lt),
+        F.col(EphemiralColumnNames.overlap_period_end_lt),
+        F.col(EphemiralColumnNames.period_year_lt),
         F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
         F.col(EphemiralColumnNames.net_consumption_metering_point_id),
         F.col(EphemiralColumnNames.consumption_from_grid_metering_point_id),
@@ -259,6 +259,6 @@ def _remove_nsg2_up2end_without_netcomsumption(
         ~(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & (F.col(EphemiralColumnNames.net_consumption_metering_point_id).isNull())
-            & (F.year(F.col(EphemiralColumnNames.period_year)) == F.year(F.current_date()))
+            & (F.year(F.col(EphemiralColumnNames.period_year_lt)) == F.year(F.current_date()))
         )
     )
