@@ -1,9 +1,6 @@
-import random
-
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 import pytest
-from pyspark.errors import AnalysisException
 
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
@@ -16,11 +13,10 @@ def test__when_missing_expected_column_raises_exception(
 ) -> None:
     # Read the existing table data
     df = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
     # Drop a random column
-    random_column = random.choice(df.columns)
-    df = df.drop(random_column)
+    df = df.drop(F.col("quantity"))
 
     (
         df.write.format("delta")
@@ -30,12 +26,11 @@ def test__when_missing_expected_column_raises_exception(
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
-
-    with pytest.raises(
-        AnalysisException,
-        match=r"\[UNRESOLVED_COLUMN.WITH_SUGGESTION\] A column or function parameter with name `quantity` cannot be resolved\. Did you mean one of the following\? \[`observation_time`, `metering_point_id`, `metering_point_type`\]",
-    ):
-        measurements_gold_repository.read_time_series_points()
+    pytest.raises(
+        ValueError,
+        match=r"[UNRESOLVED_COLUMN.WITH_SUGGESTION] A column or function parameter with name `quantity` cannot be resolved. Did you mean one of the following? [`observation_time`, `metering_point_id`, `metering_point_type`]",
+    )
+    measurements_gold_repository.read_time_series_points()
 
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
@@ -43,7 +38,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 ) -> None:
     # Read the existing table data
     df_original = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
     # Add a random column
     df = df_original.withColumn("extra_col", F.lit("extra_value"))
@@ -67,7 +62,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
 ) -> None:
     # Read the existing table data
     df = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
     df = df.select(
         F.col("metering_point_id"),

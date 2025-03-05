@@ -12,8 +12,8 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 )
 
 
-@pytest.fixture(scope="session")
-def setup_test_table(spark: SparkSession) -> None:
+@pytest.fixture(autouse=True)
+def test_table_inserted(spark: SparkSession) -> None:
     """Create a test database and table for measurements_gold."""
     # Create the database
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
@@ -38,36 +38,19 @@ def setup_test_table(spark: SparkSession) -> None:
         schema=electrical_heating_v1,
     )
 
-    test_data.write.format("delta").mode("overwrite").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
+    test_data.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
 
 
 @pytest.fixture(scope="session")
-def get_default_catalog(spark: SparkSession) -> str:
+def default_catalog(spark: SparkSession) -> str:
     return spark.catalog.currentCatalog()
 
 
 @pytest.fixture(scope="session")
-def measurements_gold_repository(
-    spark: SparkSession, setup_test_table: None, get_default_catalog: str
-) -> MeasurementsGoldRepository:
+def measurements_gold_repository(spark: SparkSession, default_catalog: str) -> MeasurementsGoldRepository:
     return MeasurementsGoldRepository(
         spark,
-        get_default_catalog,
+        default_catalog,
     )
-
-
-@pytest.fixture(autouse=True)
-def reset_test_table_after_each_test(spark: SparkSession, setup_test_table) -> None:
-    """Reset the test table to its original state after each test."""
-    # The test runs here
-    yield
-
-    # After the test completes, restore the original table
-    original_table = f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}_base"
-    test_table = f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
-
-    # Copy from base table back to test table
-    df_original = spark.read.table(original_table)
-    df_original.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(test_table)
