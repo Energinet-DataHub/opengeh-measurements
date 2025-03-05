@@ -62,7 +62,7 @@ def execute(
         ColumNames.metering_point_id,
         ColumNames.quantity,
         ColumNames.observation_time,
-    )
+    ).withColumn("orchestration_instance_id", F.lit(str(orchestration_instance_id)))
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
         time_series_points_ten_largest_quantities, grouping

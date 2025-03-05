@@ -30,8 +30,8 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
         args.time_zone,
     )
-    calculated_measurements = calculation_output.calculated_measurements
 
     # Write the calculated measurements
+    calculated_measurements = calculation_output.calculated_measurements
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements)

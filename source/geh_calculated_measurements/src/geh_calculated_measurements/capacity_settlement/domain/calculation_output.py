@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.common.domain import CalculatedMeasurements, TenLargestQuantities
 
 
 @dataclass
@@ -13,4 +13,4 @@ class CalculationOutput:
 
     calculations: DataFrame
 
-    ten_largest_quantities: DataFrame
+    ten_largest_quantities: TenLargestQuantities
