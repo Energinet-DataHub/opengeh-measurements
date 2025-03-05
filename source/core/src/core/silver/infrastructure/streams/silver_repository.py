@@ -2,6 +2,7 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.settings import (
     SubmittedTransactionsStreamSettings,
@@ -17,6 +18,10 @@ class SilverRepository:
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.silver_container_name = SilverSettings().silver_container_name
+        self.spark = spark_session.initialize_spark()
+
+    def read(self) -> DataFrame:
+        return self.spark.read.table(self.table)
 
     def write_stream(
         self,
@@ -34,6 +39,8 @@ class SilverRepository:
         )
 
         stream_settings = SubmittedTransactionsStreamSettings()
+        print("TEST ME HEREEEE")
+        print(stream_settings.continuous_streaming_enabled)
 
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
