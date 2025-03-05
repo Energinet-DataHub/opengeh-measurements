@@ -5,13 +5,17 @@
     "dockerfile": "../Dockerfile",
     "args": {
       "UBUNTU_VERSION": "24.04",
-      "ASDF_VERSION": "0.15.0"
+      "ASDF_VERSION": "0.16.2"
     }
   },
+  "runArgs": [
+    "--name",
+    "core"
+  ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/workspace/source/core",
   "remoteUser": "vscode",
-  "postCreateCommand": "~/scripts/post-create.sh",
+  "postCreateCommand": "~/scripts/post-create.sh ~",
   "postStartCommand": "uv sync",
   "containerEnv": {
     "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venv",
@@ -37,9 +41,26 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-containers",
+        "janisdd.vscode-edit-csv",
+        "mechatroner.rainbow-csv",
+        "eamodio.gitlens"
       ],
       "settings": {
+        "csv-edit.readOption_hasHeader": "true",
+        "python.testing.pytestArgs": [
+          "tests",
+          "--no-cov"
+        ],
+        "python.analysis.include": [
+          "${workspaceFolder}/**"
+        ],
+        // Editor settings
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
         "search.exclude": {
           "**/.git": true,
           "**/.cache": true,
@@ -49,16 +70,28 @@
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
         "files.autoSave": "onFocusChange", // Automatically save files when focus changes
-        "editor.tabSize": 2,
-        "editor.rulers": [
-          120
-        ],
-        "editor.formatOnSave": true,
+        "github.copilot.editor.enableAutoCompletions": true,
+        // Ruff Settings
         "ruff.lineLength": 120,
-        "ruff.lint.run": "onSave",
+        "ruff.organizeImports": true,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit", // Organize imports on save
+            "source.fixAll": "explicit" // Run the Ruff formatter on save
+          }
+        },
+        // Python settings
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.venvPath": "/home/vscode/.venv",
+        "python.languageServer": "Pylance", // Use Pylance as the language server        
+        "python.testing.pytestEnabled": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.languageServerMode": "full", // Use the full language server mode
+        "python.analysis.autoFormatStrings": true, // Automatically format strings
+        // Terminal settings
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.inheritEnv": true,
         "terminal.integrated.profiles.linux": {
