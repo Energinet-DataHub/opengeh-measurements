@@ -33,4 +33,9 @@
       <ProjectReference Include="..\Measurements.WebApi\Measurements.WebApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Assets\measurement.json" />
+      <EmbeddedResource Include="Assets\measurement.json" />
+    </ItemGroup>
+
 </Project>

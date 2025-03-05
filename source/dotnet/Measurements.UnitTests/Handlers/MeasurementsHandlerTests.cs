@@ -1,5 +1,5 @@
-﻿using AutoFixture.Xunit2;
-using Energinet.DataHub.Measurements.Infrastructure.Handlers;
+﻿using Energinet.DataHub.Measurements.Infrastructure.Handlers;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Handlers;
 
@@ -11,16 +11,15 @@ public class MeasurementsHandlerTests
         // Arrange
         var sut = new MeasurementsHandler();
         var meteringPointId = Guid.NewGuid().ToString();
-        var startDate = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero);
-        var endDate = new DateTimeOffset(2024, 6, 2, 0, 0, 0, TimeSpan.Zero);
+        var startDate = SystemClock.Instance.GetCurrentInstant();
+        var endDate = SystemClock.Instance.GetCurrentInstant();
 
         // Act
         var actual = await sut.GetMeasurementAsync(meteringPointId, startDate, endDate);
-        var actualTransaction = actual.Transactions.First();
+        var actualPoint = actual.Points.First();
 
         // Assert
-        Assert.Equal(startDate, actualTransaction.StartTimestamp);
-        Assert.Equal(endDate, actualTransaction.EndTimestamp);
-        Assert.Equal(42, actualTransaction.Quantity);
+        Assert.Equal(meteringPointId, actual.MeteringPointId);
+        Assert.Equal(42, actualPoint.Quantity);
     }
 }

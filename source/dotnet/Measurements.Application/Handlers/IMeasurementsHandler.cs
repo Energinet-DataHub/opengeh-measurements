@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Domain;
+﻿using Energinet.DataHub.Measurements.Application.Responses;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Handlers;
 
@@ -8,14 +9,11 @@ namespace Energinet.DataHub.Measurements.Application.Handlers;
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Get measurement by id.
+    /// Get measurement by id and period.
     /// </summary>
-    /// <param name="meteringPointId">Id of measurement to fetch.</param>
+    /// <param name="meteringPointId"></param>
     /// <param name="startDate"></param>
     /// <param name="endDate"></param>
     /// <returns>Forty-two.</returns>
-    Task<Measurement> GetMeasurementAsync(
-        string meteringPointId,
-        DateTimeOffset startDate,
-        DateTimeOffset endDate);
+    Task<GetMeasurementResponse> GetMeasurementAsync(string meteringPointId, Instant startDate, Instant endDate);
 }
