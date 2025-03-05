@@ -32,7 +32,8 @@ RUN $HOME/scripts/install-asdf.sh $ASDF_VERSION \
   && echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> $HOME/.zshrc
 
 # Install Databricks CLI
-RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh \
+  && curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 # Persist command history
 RUN mkdir /commandhistory \
