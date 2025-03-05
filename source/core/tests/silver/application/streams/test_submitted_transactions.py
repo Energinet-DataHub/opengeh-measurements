@@ -38,7 +38,7 @@ def test__submitted_transactions__should_call_expected(
 
 
 def test__submitted_transactions__should_save_in_silver_measurements(
-    mock_checkpoint_path, spark: SparkSession, migrate
+    mock_checkpoint_path, spark: SparkSession, migrations_executed
 ) -> None:
     # Arrange
     bronze_settings = BronzeSettings()

@@ -6,7 +6,7 @@ from tests.capacity_settlement.subsystem_tests.fixtures.capacity_settlement_fixt
 
 @pytest.fixture(scope="session")
 def environment_configuration() -> EnvironmentConfiguration:
-    return EnvironmentConfiguration()  # type: ignore
+    return EnvironmentConfiguration()
 
 
 @pytest.fixture(scope="session")
