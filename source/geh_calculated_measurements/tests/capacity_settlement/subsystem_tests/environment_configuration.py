@@ -12,7 +12,7 @@ class EnvironmentConfiguration(ApplicationSettings):
     Contains the environment configuration for the tests.
     This class must be included when running tests in CD.
     """
-    
+
     warehouse_id: str = Field(init=False, alias="CORE_WAREHOUSE_ID")
     catalog_name: str = Field(init=False, alias="SHARED_CATALOG_NAME")
 
