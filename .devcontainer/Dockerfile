@@ -21,17 +21,15 @@ RUN apt-get update \
 ENV USER=vscode
 ENV HOME=/home/$USER
 
-# Install asdf
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v${ASDF_VERSION} --depth 1
-RUN echo ". $HOME/.asdf/asdf.sh" >> $HOME/.bashrc \
-  && echo ". $HOME/.asdf/completions/asdf.bash" >> $HOME/.bashrc \
-  && echo ". $HOME/.asdf/asdf.sh" >> $HOME/.zshrc \
-  && chown -R $USER:$USER $HOME/.asdf
-
 # Add tool-versions and startup script
 COPY --chown=${USER}:${USER} .tool-versions $HOME/.tool-versions
 COPY --chown=${USER}:${USER} .devcontainer/scripts $HOME/scripts
 RUN chmod +x $HOME/scripts/*
+
+# Install asdf
+RUN $HOME/scripts/install-asdf.sh $ASDF_VERSION \
+  && echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> $HOME/.bashrc \
+  && echo 'export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> $HOME/.zshrc
 
 # Install Databricks CLI
 RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
