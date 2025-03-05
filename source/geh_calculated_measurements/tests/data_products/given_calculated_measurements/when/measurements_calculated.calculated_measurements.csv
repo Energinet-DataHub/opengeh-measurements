@@ -1,0 +1,6 @@
+orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_id;metering_point_type;date;quantity;#comment
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-29 23:00:00Z;2.1;changing to summertime
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-30 22:00:00Z;140000000000170201;electrical_heating;2025-03-30 22:00:00Z;2.1;Day after changing to summertime
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2024-02-29 23:00:00Z;140000000000170201;electrical_heating;2024-02-29 23:00:00Z;2.1;Leap year 2024
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-10-25 22:00:00Z;140000000000170201;electrical_heating;2025-10-25 22:00:00Z;2.1;Changing to wintertime
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-10-26 23:00:00Z;140000000000170201;electrical_heating;2025-10-26 23:00:00Z;2.1;Day after changing to wintertime 

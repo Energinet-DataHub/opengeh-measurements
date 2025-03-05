@@ -1,7 +1,7 @@
 import pytest
 
 from tests import PROJECT_ROOT
-from tests.capacity_settlement.testsession_configuration import TestSessionConfiguration
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="session")

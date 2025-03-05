@@ -6,7 +6,7 @@ import pytest
 from pyspark.sql import SparkSession
 
 from tests import PROJECT_ROOT
-from tests.electrical_heating.testsession_configuration import TestSessionConfiguration
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
