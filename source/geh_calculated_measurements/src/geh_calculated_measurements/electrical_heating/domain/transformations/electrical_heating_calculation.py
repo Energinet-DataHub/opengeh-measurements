@@ -50,15 +50,15 @@ def _join_source_metering_point_periods_with_energy_hourly(
     time_series_points_hourly: DataFrame,
 ) -> DataFrame:
     consumption = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type).isin(
+        F.col(ContractColumnNames.metering_point_type).isin(
             MeteringPointType.CONSUMPTION.value, MeteringPointType.NET_CONSUMPTION.value
         )
     )
     supply_to_grid = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.SUPPLY_TO_GRID.value)
+        F.col(ContractColumnNames.metering_point_type) == F.lit(MeteringPointType.SUPPLY_TO_GRID.value)
     )
     consumption_from_grid = time_series_points_hourly.where(
-        F.col(ColumnNames.metering_point_type) == F.lit(MeteringPointType.CONSUMPTION_FROM_GRID.value)
+        F.col(ContractColumnNames.metering_point_type) == F.lit(MeteringPointType.CONSUMPTION_FROM_GRID.value)
     )
 
     return (
@@ -165,7 +165,7 @@ def _calculate_period_limit(
             EphemiralColumnNames.electrical_heating_metering_point_id,
             EphemiralColumnNames.parent_period_start,
             EphemiralColumnNames.parent_period_end,
-            F.date_trunc("day", F.col(CalculatedNames.observation_time_hourly_lt)).alias(ColumnNames.date),
+            F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(ContractColumnNames.date),
         )
         .agg(
             F.sum(F.col(ContractColumnNames.quantity)).alias(ContractColumnNames.quantity),
