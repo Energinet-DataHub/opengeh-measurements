@@ -1,296 +1,208 @@
 metering_point_id;quantity;observation_time;metering_point_type;#comment
-170000000001500202;8.277;2023-10-31T23:00:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-060000001500170202;27.525;2023-10-31T23:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-070000001500170202;8.277;2023-10-31T23:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-150000001500170202;0;2023-10-31T23:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-170000000001500202;13.081;2023-10-31T23:15:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-060000001500170202;48.159;2023-10-31T23:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-070000001500170202;13.081;2023-10-31T23:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-150000001500170202;0;2023-10-31T23:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-170000000001500202;48.436;2023-10-31T23:30:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-060000001500170202;0.36;2023-10-31T23:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-070000001500170202;48.436;2023-10-31T23:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-150000001500170202;48.076;2023-10-31T23:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-170000000001500202;43.421;2023-10-31T23:45:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-060000001500170202;16.673;2023-10-31T23:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-070000001500170202;43.421;2023-10-31T23:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
-150000001500170202;26.748;2023-10-31T23:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
-170000000001500202;43.017;2023-11-01T00:00:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-060000001500170202;31.796;2023-11-01T00:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-070000001500170202;43.017;2023-11-01T00:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-150000001500170202;11.221;2023-11-01T00:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-170000000001500202;27.611;2023-11-01T00:15:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-060000001500170202;12.92;2023-11-01T00:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-070000001500170202;27.611;2023-11-01T00:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-150000001500170202;14.691;2023-11-01T00:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-170000000001500202;22.73;2023-11-01T00:30:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-060000001500170202;48.765;2023-11-01T00:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-070000001500170202;22.73;2023-11-01T00:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-150000001500170202;0;2023-11-01T00:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-170000000001500202;11.683;2023-11-01T00:45:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-060000001500170202;25.836;2023-11-01T00:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-070000001500170202;11.683;2023-11-01T00:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
-150000001500170202;0;2023-11-01T00:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
-170000000001500202;38.561;2023-11-01T23:00:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-060000001500170202;40.294;2023-11-01T23:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-070000001500170202;38.561;2023-11-01T23:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-150000001500170202;0;2023-11-01T23:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-170000000001500202;30.434;2023-11-01T23:15:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-060000001500170202;18.422;2023-11-01T23:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-070000001500170202;30.434;2023-11-01T23:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-150000001500170202;12.012;2023-11-01T23:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-170000000001500202;26.951;2023-11-01T23:30:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-060000001500170202;40.57;2023-11-01T23:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-070000001500170202;26.951;2023-11-01T23:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-150000001500170202;0;2023-11-01T23:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-170000000001500202;7.777;2023-11-01T23:45:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-060000001500170202;14.058;2023-11-01T23:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-070000001500170202;7.777;2023-11-01T23:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
-150000001500170202;0;2023-11-01T23:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
-170000000001500202;8.223;2023-11-02T00:00:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-060000001500170202;36.298;2023-11-02T00:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-070000001500170202;8.223;2023-11-02T00:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-150000001500170202;0;2023-11-02T00:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-170000000001500202;38.732;2023-11-02T00:15:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-060000001500170202;5.069;2023-11-02T00:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-070000001500170202;38.732;2023-11-02T00:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-150000001500170202;33.663;2023-11-02T00:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-170000000001500202;38.134;2023-11-02T00:30:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-060000001500170202;39.099;2023-11-02T00:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-070000001500170202;38.134;2023-11-02T00:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-150000001500170202;0;2023-11-02T00:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-170000000001500202;26.222;2023-11-02T00:45:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-060000001500170202;39.989;2023-11-02T00:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-070000001500170202;26.222;2023-11-02T00:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
-150000001500170202;0;2023-11-02T00:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
-170000000001500202;4.611;2023-12-31T21:00:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-060000001500170202;21.647;2023-12-31T21:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-070000001500170202;4.611;2023-12-31T21:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-150000001500170202;0;2023-12-31T21:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-170000000001500202;22.467;2023-12-31T21:15:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-060000001500170202;46.697;2023-12-31T21:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-070000001500170202;22.467;2023-12-31T21:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-150000001500170202;0;2023-12-31T21:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-170000000001500202;7.704;2023-12-31T21:30:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-060000001500170202;34.751;2023-12-31T21:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-070000001500170202;7.704;2023-12-31T21:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-150000001500170202;0;2023-12-31T21:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-170000000001500202;8.959;2023-12-31T21:45:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-060000001500170202;12.662;2023-12-31T21:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-070000001500170202;8.959;2023-12-31T21:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 23
-150000001500170202;0;2023-12-31T21:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 23
-170000000001500202;22.792;2023-12-31T22:00:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-060000001500170202;28.538;2023-12-31T22:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-070000001500170202;22.792;2023-12-31T22:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-150000001500170202;0;2023-12-31T22:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-170000000001500202;6.635;2023-12-31T22:15:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-060000001500170202;45.164;2023-12-31T22:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-070000001500170202;6.635;2023-12-31T22:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-150000001500170202;0;2023-12-31T22:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-170000000001500202;40.372;2023-12-31T22:30:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-060000001500170202;0.08;2023-12-31T22:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-070000001500170202;40.372;2023-12-31T22:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-150000001500170202;40.292;2023-12-31T22:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-170000000001500202;23.952;2023-12-31T22:45:00Z;consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-060000001500170202;18.841;2023-12-31T22:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-070000001500170202;23.952;2023-12-31T22:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 365 - Hour 24
-150000001500170202;5.111;2023-12-31T22:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 365 - Hour 24
-170000000001500202;37.471;2023-12-31T23:00:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-060000001500170202;29.375;2023-12-31T23:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-070000001500170202;37.471;2023-12-31T23:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-150000001500170202;8.096;2023-12-31T23:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-170000000001500202;85.223;2023-12-31T23:15:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-060000001500170202;1.426;2023-12-31T23:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-070000001500170202;85.223;2023-12-31T23:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-150000001500170202;83.797;2023-12-31T23:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-170000000001500202;20.875;2023-12-31T23:30:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-060000001500170202;52.465;2023-12-31T23:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-070000001500170202;20.875;2023-12-31T23:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-150000001500170202;0;2023-12-31T23:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-170000000001500202;3.009;2023-12-31T23:45:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-060000001500170202;50.961;2023-12-31T23:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-070000001500170202;3.009;2023-12-31T23:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 1
-150000001500170202;0;2023-12-31T23:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 1
-170000000001500202;80.478;2024-01-01T00:00:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-060000001500170202;74.196;2024-01-01T00:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-070000001500170202;80.478;2024-01-01T00:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-150000001500170202;6.282;2024-01-01T00:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-170000000001500202;7.38;2024-01-01T00:15:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-060000001500170202;3.395;2024-01-01T00:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-070000001500170202;7.38;2024-01-01T00:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-150000001500170202;3.985;2024-01-01T00:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-170000000001500202;42.267;2024-01-01T00:30:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-060000001500170202;38.672;2024-01-01T00:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-070000001500170202;42.267;2024-01-01T00:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-150000001500170202;3.595;2024-01-01T00:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-170000000001500202;81.305;2024-01-01T00:45:00Z;consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-060000001500170202;62.045;2024-01-01T00:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-070000001500170202;81.305;2024-01-01T00:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 1 - Hour 2
-150000001500170202;19.26;2024-01-01T00:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 1 - Hour 2
-170000000001500202;74.706;2024-01-01T23:00:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-060000001500170202;76.248;2024-01-01T23:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-070000001500170202;74.706;2024-01-01T23:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-150000001500170202;0;2024-01-01T23:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-170000000001500202;54.301;2024-01-01T23:15:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-060000001500170202;69.752;2024-01-01T23:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-070000001500170202;54.301;2024-01-01T23:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-150000001500170202;0;2024-01-01T23:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-170000000001500202;36.116;2024-01-01T23:30:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-060000001500170202;20.416;2024-01-01T23:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-070000001500170202;36.116;2024-01-01T23:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-150000001500170202;15.7;2024-01-01T23:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-170000000001500202;58.761;2024-01-01T23:45:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-060000001500170202;72.225;2024-01-01T23:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-070000001500170202;58.761;2024-01-01T23:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 1
-150000001500170202;0;2024-01-01T23:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 1
-170000000001500202;47.12;2024-01-02T00:00:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-060000001500170202;34.072;2024-01-02T00:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-070000001500170202;47.12;2024-01-02T00:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-150000001500170202;13.048;2024-01-02T00:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-170000000001500202;78.303;2024-01-02T00:15:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-060000001500170202;12.019;2024-01-02T00:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-070000001500170202;78.303;2024-01-02T00:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-150000001500170202;66.284;2024-01-02T00:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-170000000001500202;44.239;2024-01-02T00:30:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-060000001500170202;28.218;2024-01-02T00:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-070000001500170202;44.239;2024-01-02T00:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-150000001500170202;16.021;2024-01-02T00:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-170000000001500202;15.647;2024-01-02T00:45:00Z;consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-060000001500170202;78.787;2024-01-02T00:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-070000001500170202;15.647;2024-01-02T00:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 2 - Hour 2
-150000001500170202;0;2024-01-02T00:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 2 - Hour 2
-170000000001500202;43.282;2024-03-31T20:00:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-060000001500170202;36.737;2024-03-31T20:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-070000001500170202;43.282;2024-03-31T20:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-150000001500170202;6.545;2024-03-31T20:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-170000000001500202;58.983;2024-03-31T20:15:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-060000001500170202;44.385;2024-03-31T20:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-070000001500170202;58.983;2024-03-31T20:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-150000001500170202;14.598;2024-03-31T20:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-170000000001500202;1.45;2024-03-31T20:30:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-060000001500170202;7.404;2024-03-31T20:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-070000001500170202;1.45;2024-03-31T20:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-150000001500170202;0;2024-03-31T20:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-170000000001500202;4.734;2024-03-31T20:45:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-060000001500170202;61.48;2024-03-31T20:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-070000001500170202;4.734;2024-03-31T20:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 23
-150000001500170202;0;2024-03-31T20:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 23
-170000000001500202;37.776;2024-03-31T21:00:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-060000001500170202;31.444;2024-03-31T21:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-070000001500170202;37.776;2024-03-31T21:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-150000001500170202;6.332;2024-03-31T21:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-170000000001500202;21.651;2024-03-31T21:15:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-060000001500170202;43.588;2024-03-31T21:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-070000001500170202;21.651;2024-03-31T21:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-150000001500170202;0;2024-03-31T21:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-170000000001500202;3.189;2024-03-31T21:30:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-060000001500170202;60.353;2024-03-31T21:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-070000001500170202;3.189;2024-03-31T21:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-150000001500170202;0;2024-03-31T21:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-170000000001500202;2.192;2024-03-31T21:45:00Z;consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-060000001500170202;8.224;2024-03-31T21:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-070000001500170202;2.192;2024-03-31T21:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 91 - Hour 24
-150000001500170202;0;2024-03-31T21:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 91 - Hour 24
-170000000001500202;60.537;2024-03-31T22:00:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-060000001500170202;162.136;2024-03-31T22:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-070000001500170202;60.537;2024-03-31T22:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-150000001500170202;0;2024-03-31T22:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-170000000001500202;50.985;2024-03-31T22:15:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-060000001500170202;94.31;2024-03-31T22:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-070000001500170202;50.985;2024-03-31T22:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-150000001500170202;0;2024-03-31T22:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-170000000001500202;115.93;2024-03-31T22:30:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-060000001500170202;5.853;2024-03-31T22:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-070000001500170202;115.93;2024-03-31T22:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-150000001500170202;110.077;2024-03-31T22:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-170000000001500202;11.517;2024-03-31T22:45:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-060000001500170202;74.387;2024-03-31T22:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-070000001500170202;11.517;2024-03-31T22:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 1
-150000001500170202;0;2024-03-31T22:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 1
-170000000001500202;71.776;2024-03-31T23:00:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-060000001500170202;162.398;2024-03-31T23:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-070000001500170202;71.776;2024-03-31T23:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-150000001500170202;0;2024-03-31T23:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-170000000001500202;229.111;2024-03-31T23:15:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-060000001500170202;161.528;2024-03-31T23:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-070000001500170202;229.111;2024-03-31T23:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-150000001500170202;67.583;2024-03-31T23:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-170000000001500202;189.839;2024-03-31T23:30:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-060000001500170202;106.306;2024-03-31T23:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-070000001500170202;189.839;2024-03-31T23:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-150000001500170202;83.533;2024-03-31T23:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-170000000001500202;228.073;2024-03-31T23:45:00Z;consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-060000001500170202;140.284;2024-03-31T23:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-070000001500170202;228.073;2024-03-31T23:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 92 - Hour 2
-150000001500170202;87.789;2024-03-31T23:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 92 - Hour 2
-170000000001500202;121.407;2024-04-01T22:00:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-060000001500170202;46.451;2024-04-01T22:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-070000001500170202;121.407;2024-04-01T22:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-150000001500170202;74.956;2024-04-01T22:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-170000000001500202;207.746;2024-04-01T22:15:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-060000001500170202;103.989;2024-04-01T22:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-070000001500170202;207.746;2024-04-01T22:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-150000001500170202;103.757;2024-04-01T22:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-170000000001500202;87.14;2024-04-01T22:30:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-060000001500170202;67.93;2024-04-01T22:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-070000001500170202;87.14;2024-04-01T22:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-150000001500170202;19.21;2024-04-01T22:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-170000000001500202;127.5;2024-04-01T22:45:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-060000001500170202;66.521;2024-04-01T22:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-070000001500170202;127.5;2024-04-01T22:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 1
-150000001500170202;60.979;2024-04-01T22:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 1
-170000000001500202;147.665;2024-04-01T23:00:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-060000001500170202;210.786;2024-04-01T23:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-070000001500170202;147.665;2024-04-01T23:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-150000001500170202;0;2024-04-01T23:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-170000000001500202;162.698;2024-04-01T23:15:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-060000001500170202;241.995;2024-04-01T23:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-070000001500170202;162.698;2024-04-01T23:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-150000001500170202;0;2024-04-01T23:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-170000000001500202;235.411;2024-04-01T23:30:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-060000001500170202;153.002;2024-04-01T23:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-070000001500170202;235.411;2024-04-01T23:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-150000001500170202;82.409;2024-04-01T23:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-170000000001500202;95.405;2024-04-01T23:45:00Z;consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-060000001500170202;112.93;2024-04-01T23:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-070000001500170202;95.405;2024-04-01T23:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 93 - Hour 2
-150000001500170202;0;2024-04-01T23:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 93 - Hour 2
-170000000001500202;20.514;2024-12-31T21:00:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-060000001500170202;38.775;2024-12-31T21:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-070000001500170202;20.514;2024-12-31T21:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-150000001500170202;0;2024-12-31T21:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-170000000001500202;46.947;2024-12-31T21:15:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-060000001500170202;133.079;2024-12-31T21:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-070000001500170202;46.947;2024-12-31T21:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-150000001500170202;0;2024-12-31T21:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-170000000001500202;198.443;2024-12-31T21:30:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-060000001500170202;148.311;2024-12-31T21:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-070000001500170202;198.443;2024-12-31T21:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-150000001500170202;50.132;2024-12-31T21:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-170000000001500202;135.48;2024-12-31T21:45:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-060000001500170202;0.926;2024-12-31T21:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-070000001500170202;135.48;2024-12-31T21:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 23
-150000001500170202;134.554;2024-12-31T21:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 23
-170000000001500202;179.835;2024-12-31T22:00:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-060000001500170202;136.67;2024-12-31T22:00:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-070000001500170202;179.835;2024-12-31T22:00:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-150000001500170202;43.165;2024-12-31T22:00:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-170000000001500202;14.423;2024-12-31T22:15:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-060000001500170202;221.346;2024-12-31T22:15:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-070000001500170202;14.423;2024-12-31T22:15:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-150000001500170202;0;2024-12-31T22:15:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-170000000001500202;138.743;2024-12-31T22:30:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-060000001500170202;134.91;2024-12-31T22:30:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-070000001500170202;138.743;2024-12-31T22:30:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-150000001500170202;3.833;2024-12-31T22:30:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-170000000001500202;222.622;2024-12-31T22:45:00Z;consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-060000001500170202;90.816;2024-12-31T22:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-070000001500170202;222.622;2024-12-31T22:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
-150000001500170202;131.806;2024-12-31T22:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-170000000001500202;40;2024-12-31T23:00:00Z;consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-060000001500170202;20;2024-12-31T23:00:00Z;supply_to_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-070000001500170202;40;2024-12-31T23:00:00Z;consumption_from_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-150000001500170202;20;2024-12-31T23:00:00Z;net_consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+170000000000600202;195.67;2023-10-31T23:00:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+060000000600170202;101.884;2023-10-31T23:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+070000000600170202;195.67;2023-10-31T23:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+150000000600170202;93.786;2023-10-31T23:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+170000000000600202;122.621;2023-10-31T23:15:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+060000000600170202;135.966;2023-10-31T23:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+070000000600170202;122.621;2023-10-31T23:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+150000000600170202;0;2023-10-31T23:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+170000000000600202;176.962;2023-10-31T23:30:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+060000000600170202;45.57;2023-10-31T23:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+070000000600170202;176.962;2023-10-31T23:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+150000000600170202;131.392;2023-10-31T23:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+170000000000600202;96.169;2023-10-31T23:45:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+060000000600170202;150.809;2023-10-31T23:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+070000000600170202;96.169;2023-10-31T23:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 1
+150000000600170202;0;2023-10-31T23:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 1
+170000000000600202;131.889;2023-11-01T00:00:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+060000000600170202;171.148;2023-11-01T00:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+070000000600170202;131.889;2023-11-01T00:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+150000000600170202;0;2023-11-01T00:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+170000000000600202;67.03;2023-11-01T00:15:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+060000000600170202;127.136;2023-11-01T00:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+070000000600170202;67.03;2023-11-01T00:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+150000000600170202;0;2023-11-01T00:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+170000000000600202;103.581;2023-11-01T00:30:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+060000000600170202;138.778;2023-11-01T00:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+070000000600170202;103.581;2023-11-01T00:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+150000000600170202;0;2023-11-01T00:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+170000000000600202;67.983;2023-11-01T00:45:00Z;consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+060000000600170202;39.347;2023-11-01T00:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+070000000600170202;67.983;2023-11-01T00:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 304 - Hour 2
+150000000600170202;28.636;2023-11-01T00:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 304 - Hour 2
+170000000000600202;5.36;2023-11-01T23:00:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+060000000600170202;90.371;2023-11-01T23:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+070000000600170202;5.36;2023-11-01T23:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+150000000600170202;0;2023-11-01T23:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+170000000000600202;161.586;2023-11-01T23:15:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+060000000600170202;159.653;2023-11-01T23:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+070000000600170202;161.586;2023-11-01T23:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+150000000600170202;1.933;2023-11-01T23:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+170000000000600202;108.375;2023-11-01T23:30:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+060000000600170202;71.675;2023-11-01T23:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+070000000600170202;108.375;2023-11-01T23:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+150000000600170202;36.7;2023-11-01T23:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+170000000000600202;114.506;2023-11-01T23:45:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+060000000600170202;0.662;2023-11-01T23:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+070000000600170202;114.506;2023-11-01T23:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 1
+150000000600170202;113.844;2023-11-01T23:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 1
+170000000000600202;74.73;2023-11-02T00:00:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+060000000600170202;34.138;2023-11-02T00:00:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+070000000600170202;74.73;2023-11-02T00:00:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+150000000600170202;40.592;2023-11-02T00:00:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+170000000000600202;72.536;2023-11-02T00:15:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+060000000600170202;180.059;2023-11-02T00:15:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+070000000600170202;72.536;2023-11-02T00:15:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+150000000600170202;0;2023-11-02T00:15:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+170000000000600202;36.989;2023-11-02T00:30:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+060000000600170202;23.229;2023-11-02T00:30:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+070000000600170202;36.989;2023-11-02T00:30:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+150000000600170202;13.76;2023-11-02T00:30:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+170000000000600202;15.357;2023-11-02T00:45:00Z;consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+060000000600170202;82.775;2023-11-02T00:45:00Z;supply_to_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+070000000600170202;15.357;2023-11-02T00:45:00Z;consumption_from_grid;Case 2 - period 1: 2023 Day 305 - Hour 2
+150000000600170202;0;2023-11-02T00:45:00Z;net_consumption;Case 2 - period 1: 2023 Day 305 - Hour 2
+170000000000600202;152.812;2024-06-30T20:00:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+060000000600170202;152.34;2024-06-30T20:00:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+070000000600170202;152.812;2024-06-30T20:00:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+150000000600170202;0.472;2024-06-30T20:00:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+170000000000600202;92.005;2024-06-30T20:15:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+060000000600170202;184.747;2024-06-30T20:15:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+070000000600170202;92.005;2024-06-30T20:15:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+150000000600170202;0;2024-06-30T20:15:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+170000000000600202;42.599;2024-06-30T20:30:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+060000000600170202;166.564;2024-06-30T20:30:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+070000000600170202;42.599;2024-06-30T20:30:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+150000000600170202;0;2024-06-30T20:30:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+170000000000600202;0.568;2024-06-30T20:45:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+060000000600170202;67.5;2024-06-30T20:45:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+070000000600170202;0.568;2024-06-30T20:45:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 23
+150000000600170202;0;2024-06-30T20:45:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 23
+170000000000600202;152.972;2024-06-30T21:00:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+060000000600170202;161.923;2024-06-30T21:00:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+070000000600170202;152.972;2024-06-30T21:00:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+150000000600170202;0;2024-06-30T21:00:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+170000000000600202;143.248;2024-06-30T21:15:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+060000000600170202;9.819;2024-06-30T21:15:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+070000000600170202;143.248;2024-06-30T21:15:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+150000000600170202;133.429;2024-06-30T21:15:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+170000000000600202;68.42;2024-06-30T21:30:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+060000000600170202;125.346;2024-06-30T21:30:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+070000000600170202;68.42;2024-06-30T21:30:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+150000000600170202;0;2024-06-30T21:30:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+170000000000600202;169.801;2024-06-30T21:45:00Z;consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+060000000600170202;12.372;2024-06-30T21:45:00Z;supply_to_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+070000000600170202;169.801;2024-06-30T21:45:00Z;consumption_from_grid;Case 2 - period 1: 2024 Day 182 - Hour 24
+150000000600170202;157.429;2024-06-30T21:45:00Z;net_consumption;Case 2 - period 1: 2024 Day 182 - Hour 24
+170000000000600202;7.97;2024-06-30T22:00:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+060000000600170202;41.126;2024-06-30T22:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+070000000600170202;7.97;2024-06-30T22:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+150000000600170202;0;2024-06-30T22:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+170000000000600202;24.772;2024-06-30T22:15:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+060000000600170202;38.182;2024-06-30T22:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+070000000600170202;24.772;2024-06-30T22:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+150000000600170202;0;2024-06-30T22:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+170000000000600202;34.718;2024-06-30T22:30:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+060000000600170202;30.738;2024-06-30T22:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+070000000600170202;34.718;2024-06-30T22:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+150000000600170202;3.98;2024-06-30T22:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+170000000000600202;25.926;2024-06-30T22:45:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+060000000600170202;9.145;2024-06-30T22:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+070000000600170202;25.926;2024-06-30T22:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 1
+150000000600170202;16.781;2024-06-30T22:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 1
+170000000000600202;17.694;2024-06-30T23:00:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+060000000600170202;11.959;2024-06-30T23:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+070000000600170202;17.694;2024-06-30T23:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+150000000600170202;5.735;2024-06-30T23:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+170000000000600202;24.551;2024-06-30T23:15:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+060000000600170202;36.807;2024-06-30T23:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+070000000600170202;24.551;2024-06-30T23:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+150000000600170202;0;2024-06-30T23:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+170000000000600202;34.739;2024-06-30T23:30:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+060000000600170202;19.265;2024-06-30T23:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+070000000600170202;34.739;2024-06-30T23:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+150000000600170202;15.474;2024-06-30T23:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+170000000000600202;19.246;2024-06-30T23:45:00Z;consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+060000000600170202;31.786;2024-06-30T23:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+070000000600170202;19.246;2024-06-30T23:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 183 - Hour 2
+150000000600170202;0;2024-06-30T23:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 183 - Hour 2
+170000000000600202;38.773;2024-07-01T22:00:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+060000000600170202;14.047;2024-07-01T22:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+070000000600170202;38.773;2024-07-01T22:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+150000000600170202;24.726;2024-07-01T22:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+170000000000600202;49.471;2024-07-01T22:15:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+060000000600170202;36.328;2024-07-01T22:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+070000000600170202;49.471;2024-07-01T22:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+150000000600170202;13.143;2024-07-01T22:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+170000000000600202;8.101;2024-07-01T22:30:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+060000000600170202;16.07;2024-07-01T22:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+070000000600170202;8.101;2024-07-01T22:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+150000000600170202;0;2024-07-01T22:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+170000000000600202;27.096;2024-07-01T22:45:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+060000000600170202;4.545;2024-07-01T22:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+070000000600170202;27.096;2024-07-01T22:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 1
+150000000600170202;22.551;2024-07-01T22:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 1
+170000000000600202;0.462;2024-07-01T23:00:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+060000000600170202;46.737;2024-07-01T23:00:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+070000000600170202;0.462;2024-07-01T23:00:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+150000000600170202;0;2024-07-01T23:00:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+170000000000600202;36.288;2024-07-01T23:15:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+060000000600170202;41.43;2024-07-01T23:15:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+070000000600170202;36.288;2024-07-01T23:15:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+150000000600170202;0;2024-07-01T23:15:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+170000000000600202;23.759;2024-07-01T23:30:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+060000000600170202;2.081;2024-07-01T23:30:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+070000000600170202;23.759;2024-07-01T23:30:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+150000000600170202;21.678;2024-07-01T23:30:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+170000000000600202;1.186;2024-07-01T23:45:00Z;consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+060000000600170202;0.414;2024-07-01T23:45:00Z;supply_to_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+070000000600170202;1.186;2024-07-01T23:45:00Z;consumption_from_grid;Case 2 - period 2: 2024 Day 184 - Hour 2
+150000000600170202;0.772;2024-07-01T23:45:00Z;net_consumption;Case 2 - period 2: 2024 Day 184 - Hour 2
+170000000000600202;0.633;2024-08-31T20:00:00Z;consumption;Case 2 - period 2: last day - Hour 23
+060000000600170202;10.419;2024-08-31T20:00:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 23
+070000000600170202;0.633;2024-08-31T20:00:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 23
+150000000600170202;0;2024-08-31T20:00:00Z;net_consumption;Case 2 - period 2: last day - Hour 23
+170000000000600202;44.29;2024-08-31T20:15:00Z;consumption;Case 2 - period 2: last day - Hour 23
+060000000600170202;25.603;2024-08-31T20:15:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 23
+070000000600170202;44.29;2024-08-31T20:15:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 23
+150000000600170202;18.687;2024-08-31T20:15:00Z;net_consumption;Case 2 - period 2: last day - Hour 23
+170000000000600202;48.987;2024-08-31T20:30:00Z;consumption;Case 2 - period 2: last day - Hour 23
+060000000600170202;42.846;2024-08-31T20:30:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 23
+070000000600170202;48.987;2024-08-31T20:30:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 23
+150000000600170202;6.141;2024-08-31T20:30:00Z;net_consumption;Case 2 - period 2: last day - Hour 23
+170000000000600202;22.248;2024-08-31T20:45:00Z;consumption;Case 2 - period 2: last day - Hour 23
+060000000600170202;43.14;2024-08-31T20:45:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 23
+070000000600170202;22.248;2024-08-31T20:45:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 23
+150000000600170202;0;2024-08-31T20:45:00Z;net_consumption;Case 2 - period 2: last day - Hour 23
+170000000000600202;45.381;2024-08-31T21:00:00Z;consumption;Case 2 - period 2: last day - Hour 24
+060000000600170202;5.585;2024-08-31T21:00:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 24
+070000000600170202;45.381;2024-08-31T21:00:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 24
+150000000600170202;39.796;2024-08-31T21:00:00Z;net_consumption;Case 2 - period 2: last day - Hour 24
+170000000000600202;25.769;2024-08-31T21:15:00Z;consumption;Case 2 - period 2: last day - Hour 24
+060000000600170202;4.553;2024-08-31T21:15:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 24
+070000000600170202;25.769;2024-08-31T21:15:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 24
+150000000600170202;21.216;2024-08-31T21:15:00Z;net_consumption;Case 2 - period 2: last day - Hour 24
+170000000000600202;24.57;2024-08-31T21:30:00Z;consumption;Case 2 - period 2: last day - Hour 24
+060000000600170202;49.05;2024-08-31T21:30:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 24
+070000000600170202;24.57;2024-08-31T21:30:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 24
+150000000600170202;0;2024-08-31T21:30:00Z;net_consumption;Case 2 - period 2: last day - Hour 24
+170000000000600202;19.539;2024-08-31T21:45:00Z;consumption;Case 2 - period 2: last day - Hour 24
+060000000600170202;22.753;2024-08-31T21:45:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 24
+070000000600170202;19.539;2024-08-31T21:45:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 24
+150000000600170202;0;2024-08-31T21:45:00Z;net_consumption;Case 2 - period 2: last day - Hour 24
+170000000000600202;2000;2024-08-31T22:00:00Z;consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+060000000600170202;1000;2024-08-31T22:00:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+070000000600170202;2000;2024-08-31T22:00:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+150000000600170202;1000;2024-08-31T22:00:00Z;net_consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+170000000000600202;4000;2024-12-31T22:45:00Z;consumption;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
+060000000600170202;2000;2024-12-31T22:45:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
+070000000600170202;4000;2024-12-31T22:45:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
+150000000600170202;2000;2024-12-31T22:45:00Z;net_consumption;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
+170000000000600202;4000;2024-12-31T23:00:00Z;consumption;Case 2 - period 3 (D15 Up to End): First quarter of 2025 (limit hit)
+060000000600170202;2000;2024-12-31T23:00:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): First quarter of 2025 (limit hit)
+070000000600170202;4000;2024-12-31T23:00:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): First quarter of 2025 (limit hit)
+150000000600170202;2000;2024-12-31T23:00:00Z;net_consumption;Case 2 - period 3 (D15 Up to End): First quarter of 2025 (limit hit)
 170000000001500203;9.644;2024-03-29T23:00:00Z;consumption;Case 3 - day 1
 060000001500170203;26.592;2024-03-29T23:00:00Z;supply_to_grid;Case 3 - day 1
 070000001500170203;9.644;2024-03-29T23:00:00Z;consumption_from_grid;Case 3 - day 1
