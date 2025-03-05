@@ -26,6 +26,8 @@ jobs:
 
   cd_reusable:
     name: Continuous Deployment
+    needs: [changes]
+    if: ${{ needs.changes.outputs.dotnet != 'true' }}
     uses: ./.github/workflows/reusable-cd.yml
     with:
       subsystem_name: Measurements

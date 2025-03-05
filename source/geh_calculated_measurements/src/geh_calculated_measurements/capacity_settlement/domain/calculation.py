@@ -3,18 +3,21 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
+from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculated_names import CalculatedNames
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
-from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
+from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
+from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
+from geh_calculated_measurements.common.domain import calculated_measurements_factory
+from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
@@ -80,8 +83,16 @@ def execute(
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
+    calculated_measurments = calculated_measurements_factory.create(
+        measurements,
+        orchestration_instance_id,
+        OrchestrationType.CAPACITY_SETTLEMENT,
+        MeteringPointType.CAPACITY_SETTLEMENT,
+        time_zone,
+    )
+
     calculation_output = CalculationOutput(
-        measurements=measurements,
+        calculated_measurements=calculated_measurments,
         calculations=calculations,
         ten_largest_quantities=ten_largest_quantities,
     )
