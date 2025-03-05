@@ -18,6 +18,9 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_market.schema import (
     metering_point_periods_v1,
 )
+from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
+    time_series_points_v1,
+)
 from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
