@@ -3,7 +3,7 @@ ARG UBUNTU_VERSION=24.04
 # Base image
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-${UBUNTU_VERSION}
 
-ARG ASDF_VERSION=0.15.0
+ARG ASDF_VERSION=0.16.0
 
 # Install System Dependencies
 RUN apt-get update \
