@@ -1,8 +1,8 @@
 import pytest
 
-from geh_calculated_measurements.common.domain import ColumnNames, calculated_measurements_schema
+from geh_calculated_measurements.common.domain import ContractColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain import (
-    EphemiralNames,
+    EphemiralColumnNames,
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
     time_series_points_v1,
@@ -22,7 +22,9 @@ def test_structfield_names_in_columnnames() -> None:
 
     # Get all attribute names from ColumnNames class
     column_names = [
-        attr for attr in dir(ColumnNames) if not callable(getattr(ColumnNames, attr)) and not attr.startswith("__")
+        attr
+        for attr in dir(ContractColumnNames)
+        if not callable(getattr(ContractColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check StructField names in all StructTypes
@@ -40,7 +42,9 @@ def test_columnnames_in_structfields_names() -> None:
 
     # Get all attribute names from ColumnNames class
     column_names = [
-        attr for attr in dir(ColumnNames) if not callable(getattr(ColumnNames, attr)) and not attr.startswith("__")
+        attr
+        for attr in dir(ContractColumnNames)
+        if not callable(getattr(ContractColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Collect all field names from all StructTypes
@@ -59,12 +63,14 @@ def test_no_overlap_between_columnnames_and_calculatednames() -> None:
 
     # Get all attribute names from ColumnNames and _CalculatedNames classes
     column_names = [
-        attr for attr in dir(ColumnNames) if not callable(getattr(ColumnNames, attr)) and not attr.startswith("__")
+        attr
+        for attr in dir(ContractColumnNames)
+        if not callable(getattr(ContractColumnNames, attr)) and not attr.startswith("__")
     ]
     calculated_names = [
         attr
-        for attr in dir(EphemiralNames)
-        if not callable(getattr(EphemiralNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemiralColumnNames)
+        if not callable(getattr(EphemiralColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check for overlap
@@ -77,7 +83,9 @@ def test_columnnames_attributes_are_sorted() -> None:
 
     # Get all attribute names from ColumnNames class
     column_names = [
-        attr for attr in dir(ColumnNames) if not callable(getattr(ColumnNames, attr)) and not attr.startswith("__")
+        attr
+        for attr in dir(ContractColumnNames)
+        if not callable(getattr(ContractColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the column names are sorted
@@ -90,8 +98,8 @@ def test_calculatednames_attributes_are_sorted() -> None:
     # Get all attribute names from _CalculatedNames class
     calculated_names = [
         attr
-        for attr in dir(EphemiralNames)
-        if not callable(getattr(EphemiralNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemiralColumnNames)
+        if not callable(getattr(EphemiralColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the calculated names are sorted

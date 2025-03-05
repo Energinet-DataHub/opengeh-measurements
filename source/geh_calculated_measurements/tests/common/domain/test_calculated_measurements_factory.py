@@ -8,7 +8,7 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import DataFrame, Row, SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
@@ -29,9 +29,9 @@ def create_row(
         quantity = Decimal(quantity)
 
     row = {
-        ColumnNames.metering_point_id: metering_point_id,
-        ColumnNames.date: date,
-        ColumnNames.quantity: quantity,
+        ContractColumnNames.metering_point_id: metering_point_id,
+        ContractColumnNames.date: date,
+        ContractColumnNames.quantity: quantity,
     }
 
     return Row(**row)
@@ -46,9 +46,9 @@ def create(spark: SparkSession, data: None | Row | list[Row] = None) -> DataFram
 
     schema = T.StructType(
         [
-            T.StructField(ColumnNames.metering_point_id, T.StringType(), True),
-            T.StructField(ColumnNames.date, T.TimestampType(), False),
-            T.StructField(ColumnNames.quantity, T.DecimalType(18, 3), False),
+            T.StructField(ContractColumnNames.metering_point_id, T.StringType(), True),
+            T.StructField(ContractColumnNames.date, T.TimestampType(), False),
+            T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
         ]
     )
 
@@ -59,14 +59,14 @@ class TestWhenValidInput:
     def test_returns_expected_columns(self, spark: SparkSession) -> None:
         # Arrange
         expected_columns = [
-            ColumnNames.metering_point_id,
-            ColumnNames.date,
-            ColumnNames.quantity,
-            ColumnNames.orchestration_instance_id,
-            ColumnNames.orchestration_type,
-            ColumnNames.metering_point_type,
-            ColumnNames.transaction_creation_datetime,
-            ColumnNames.transaction_id,
+            ContractColumnNames.metering_point_id,
+            ContractColumnNames.date,
+            ContractColumnNames.quantity,
+            ContractColumnNames.orchestration_instance_id,
+            ContractColumnNames.orchestration_type,
+            ContractColumnNames.metering_point_type,
+            ContractColumnNames.transaction_creation_datetime,
+            ContractColumnNames.transaction_id,
         ]
         df = create(spark)
 
@@ -124,7 +124,7 @@ class TestTransactionId:
             )
 
             # Assert
-            assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
+            assert actual.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
 
     class TestWhenOneTimeGap:
         def test_returns_two_distinct_transaction_id(self, spark: SparkSession) -> None:
@@ -150,8 +150,10 @@ class TestTransactionId:
             )
 
             # Assert
-            actual_transaction_ids = actual.df.orderBy(ColumnNames.date).select(ColumnNames.transaction_id).collect()
-            assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 2
+            actual_transaction_ids = (
+                actual.df.orderBy(ContractColumnNames.date).select(ContractColumnNames.transaction_id).collect()
+            )
+            assert actual.df.select(ContractColumnNames.transaction_id).distinct().count() == 2
             assert actual_transaction_ids[0][0] == actual_transaction_ids[1][0] == actual_transaction_ids[2][0]
             assert actual_transaction_ids[3][0] == actual_transaction_ids[4][0] == actual_transaction_ids[5][0]
 
@@ -190,7 +192,7 @@ class TestTransactionId:
             )
 
             # Assert
-            assert actual.df.select(ColumnNames.transaction_id).distinct().count() == 1
+            assert actual.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
 
     class TestWhenMultipleMeteringPoints:
         def test_returns_one_transaction_id_for_each_metering_point(self, spark: SparkSession) -> None:
@@ -216,18 +218,18 @@ class TestTransactionId:
             )
 
             # Assert
-            actual_transaction_ids = actual.df.select(ColumnNames.transaction_id)
+            actual_transaction_ids = actual.df.select(ContractColumnNames.transaction_id)
             assert actual_transaction_ids.distinct().count() == 2
             assert (
-                actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_1)
-                .select(F.col(ColumnNames.transaction_id))
+                actual.df.where(F.col(ContractColumnNames.metering_point_id) == mp_id_1)
+                .select(F.col(ContractColumnNames.transaction_id))
                 .distinct()
                 .count()
                 == 1
             )
             assert (
-                actual.df.where(F.col(ColumnNames.metering_point_id) == mp_id_2)
-                .select(F.col(ColumnNames.transaction_id))
+                actual.df.where(F.col(ContractColumnNames.metering_point_id) == mp_id_2)
+                .select(F.col(ContractColumnNames.transaction_id))
                 .distinct()
                 .count()
                 == 1
@@ -257,9 +259,9 @@ class TestTransactionId:
             )
 
             # Assert
-            assert actual_1.df.select(ColumnNames.transaction_id).distinct().count() == 1
-            assert actual_2.df.select(ColumnNames.transaction_id).distinct().count() == 1
+            assert actual_1.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
+            assert actual_2.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
             assert (
-                actual_1.df.collect()[0][ColumnNames.transaction_id]
-                != actual_2.df.collect()[0][ColumnNames.transaction_id]
+                actual_1.df.collect()[0][ContractColumnNames.transaction_id]
+                != actual_2.df.collect()[0][ContractColumnNames.transaction_id]
             )
