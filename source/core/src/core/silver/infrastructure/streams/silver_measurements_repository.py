@@ -8,10 +8,11 @@ from core.bronze.infrastructure.settings import (
 )
 from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
+from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
 
 
-class SilverRepository:
+class SilverMeasurementsRepository:
     def __init__(self) -> None:
         database_name = SilverSettings().silver_database_name
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
@@ -40,22 +41,33 @@ class SilverRepository:
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
-    def append(self, measurements: DataFrame) -> None:
-        measurements.write.format("delta").mode("append").saveAsTable(self.table)
-
-    def append_if_not_exists(self, measurements: DataFrame) -> None:
+    def append_if_not_exists(self, silver_measurements: DataFrame) -> None:
         """Append to the table unless there are duplicates based on all columns except 'created'.
 
-        :param measurements: DataFrame containing the data to be appended.
+        :param silver_measurements: DataFrame containing the data to be appended.
         """
-        measurements.show()
+        existing_data = silver_measurements.sparkSession.table(self.table)
+        new_data = silver_measurements.alias("new_data")
 
-        existing_data = measurements.sparkSession.table(self.table)
-        new_data = measurements.alias("new_data")
+        condition = [new_data[column] == existing_data[column] for column in self._merge_columns()]
 
-        columns_to_check = [col for col in measurements.columns if col != "created"]
-        condition = " AND ".join([f"existing_data.{col} = new_data.{col}" for col in columns_to_check])
         filtered_data = new_data.join(existing_data.alias("existing_data"), condition, "left_anti")
 
-        if filtered_data.count() > 0:
-            filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+        filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+
+    def _merge_columns(self) -> list[str]:
+        return [
+            SilverMeasurementsColumnNames.orchestration_type,
+            SilverMeasurementsColumnNames.orchestration_instance_id,
+            SilverMeasurementsColumnNames.metering_point_id,
+            SilverMeasurementsColumnNames.transaction_id,
+            SilverMeasurementsColumnNames.transaction_creation_datetime,
+            SilverMeasurementsColumnNames.metering_point_type,
+            SilverMeasurementsColumnNames.unit,
+            SilverMeasurementsColumnNames.resolution,
+            SilverMeasurementsColumnNames.start_datetime,
+            SilverMeasurementsColumnNames.end_datetime,
+            SilverMeasurementsColumnNames.points,
+            SilverMeasurementsColumnNames.is_cancelled,
+            SilverMeasurementsColumnNames.is_deleted,
+        ]
