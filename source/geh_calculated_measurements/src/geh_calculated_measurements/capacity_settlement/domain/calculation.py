@@ -92,7 +92,7 @@ def execute(
     )
 
     calculation_output = CalculationOutput(
-        measurements=calculated_measurments,
+        calculated_measurements=calculated_measurments,
         calculations=calculations,
         ten_largest_quantities=ten_largest_quantities,
     )
