@@ -1,4 +1,6 @@
-class ColumnNames:
+class ContractColumnNames:
+    """Column names used in the dataframes."""
+
     coupled_date = "coupled_date"
     child_metering_point_id = "child_metering_point_id"
     child_period_from_date = "child_period_from_date"
