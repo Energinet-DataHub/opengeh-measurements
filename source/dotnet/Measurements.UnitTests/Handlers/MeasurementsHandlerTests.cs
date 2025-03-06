@@ -17,13 +17,12 @@ public class MeasurementsHandlerTests
         Mock<IMeasurementRepository> measurementRepositoryMock)
     {
         // Arrange
-        var now = SystemClock.Instance.GetCurrentInstant();
+        var now = Instant.FromUtc(2021, 1, 1, 0, 0);
+        var request = new GetMeasurementRequest("123456789", now, now.Plus(Duration.FromDays(1)));
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .ReturnsAsync(new Measurement("123456789", Unit.KWh, [new Point(now, 42, Quality.Measured)]));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
-
-        var request = new GetMeasurementRequest("123456789", now, now.Plus(Duration.FromDays(1)));
 
         // Act
         var actual = await sut.GetMeasurementAsync(request);
