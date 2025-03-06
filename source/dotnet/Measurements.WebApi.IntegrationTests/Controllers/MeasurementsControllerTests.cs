@@ -9,24 +9,33 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 public class MeasurementsControllerTests(WebApiFixture fixture)
     : IClassFixture<WebApiFixture>
 {
+    private readonly HttpClient _client = fixture.CreateClient();
+
     [Fact]
-    public async Task GetAsync_ReturnsFortyTwo()
+    public async Task GetAsync_ReturnsValidMeasurement()
     {
         // Arrange
-        const string meteringPointId = "1234567890";
-        var startDate = Instant.FromUtc(2022, 1, 1, 0, 0);
-        var endDate = Instant.FromUtc(2022, 1, 2, 0, 0);
-        var client = fixture.CreateClient();
-        var url = $"measurements?meteringPointId={meteringPointId}&startDate={startDate}&endDate={endDate}";
+        const string expectedMeteringPointId = "1234567890";
+        var url = CreateUrl(expectedMeteringPointId);
 
         // Act
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var measurementResponse = new JsonSerializer().Deserialize<GetMeasurementResponse>(responseBody);
+        var actualResponse = await _client.GetAsync(url);
+        actualResponse.EnsureSuccessStatusCode();
+        var actualBody = await actualResponse.Content.ReadAsStringAsync();
+        var actualContentType = actualResponse.Content.Headers.ContentType!.MediaType!;
+        var actualMeasurementResponse = new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
 
         // Assert
-        Assert.Equal(meteringPointId, measurementResponse.MeteringPointId);
-        Assert.Equal(42, measurementResponse.Points.First().Quantity);
+        Assert.Equal("application/json", actualContentType);
+        Assert.Equal(expectedMeteringPointId, actualMeasurementResponse.MeteringPointId);
+        Assert.Equal(24, actualMeasurementResponse.Points.Count());
+        Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == "measured"));
+    }
+
+    private string CreateUrl(string expectedMeteringPointId)
+    {
+        var startDate = Instant.FromUtc(2022, 1, 1, 0, 0);
+        var endDate = Instant.FromUtc(2022, 1, 2, 0, 0);
+        return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 }
