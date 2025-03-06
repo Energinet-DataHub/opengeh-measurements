@@ -63,9 +63,9 @@ def execute(
 
     ten_largest_quantities = TenLargestQuantities(
         time_series_points_ten_largest_quantities.select(
-            ContractColumnNames.metering_point_id,
-            ContractColumnNames.quantity,
-            ContractColumnNames.observation_time,
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.quantity).cast(DecimalType(18, 3)),
+            F.col(ContractColumnNames.observation_time),
         ).withColumn(ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id)))
     )
 
