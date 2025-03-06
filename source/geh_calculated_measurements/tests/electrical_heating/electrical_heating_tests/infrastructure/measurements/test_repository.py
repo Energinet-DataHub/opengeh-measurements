@@ -40,7 +40,6 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     df_original = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
-    # Add a random column
     df = df_original.withColumn("extra_col", F.lit("extra_value"))
 
     (
