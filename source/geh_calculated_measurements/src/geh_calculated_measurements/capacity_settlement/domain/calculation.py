@@ -3,8 +3,9 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
+from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
-from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
@@ -13,34 +14,36 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.column_names import ColumNames
+from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
+from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
+from geh_calculated_measurements.common.domain import calculated_measurements_factory
+from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
 # This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
-def execute_core_logic(
-    spark: SparkSession,
-    time_series_points: DataFrame,
-    metering_point_periods: DataFrame,
+def execute(
+    time_series_points: TimeSeriesPoints,
+    metering_point_periods: MeteringPointPeriods,
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
 ) -> CalculationOutput:
     calculations = _create_calculations(
-        spark,
         orchestration_instance_id,
         calculation_month,
         calculation_year,
     )
 
-    metering_point_periods = _add_selection_period_columns(
-        metering_point_periods,
+    metering_point_periods_with_selection_period = _add_selection_period_columns(
+        metering_point_periods.df,
         calculation_month=calculation_month,
         calculation_year=calculation_year,
         time_zone=time_zone,
     )
 
-    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points)
+    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points.df)
 
     grouping = [
         ColumNames.metering_point_id,
@@ -52,7 +55,7 @@ def execute_core_logic(
     ]
 
     time_series_points_ten_largest_quantities = _ten_largest_quantities_in_selection_periods(
-        time_series_points_hourly, metering_point_periods, grouping
+        time_series_points_hourly, metering_point_periods_with_selection_period, grouping
     )
 
     ten_largest_quantities = time_series_points_ten_largest_quantities.select(
@@ -80,8 +83,16 @@ def execute_core_logic(
         F.col(ColumNames.quantity).cast(DecimalType(18, 3)),
     )
 
+    calculated_measurments = calculated_measurements_factory.create(
+        measurements,
+        orchestration_instance_id,
+        OrchestrationType.CAPACITY_SETTLEMENT,
+        MeteringPointType.CAPACITY_SETTLEMENT,
+        time_zone,
+    )
+
     calculation_output = CalculationOutput(
-        measurements=measurements,
+        measurements=calculated_measurments,
         calculations=calculations,
         ten_largest_quantities=ten_largest_quantities,
     )
@@ -90,7 +101,6 @@ def execute_core_logic(
 
 
 def _create_calculations(
-    spark: SparkSession,
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
@@ -104,6 +114,7 @@ def _create_calculations(
             StructField("execution_time", TimestampType(), False),
         ]
     )
+    spark = initialize_spark()
     return spark.createDataFrame(
         [
             (

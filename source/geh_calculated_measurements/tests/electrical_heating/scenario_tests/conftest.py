@@ -1,13 +1,16 @@
+import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
-from geh_common.telemetry import logging_configuration
+import yaml
 from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -17,25 +20,22 @@ from geh_calculated_measurements.electrical_heating.domain import (
     execute,
     time_series_points_v1,
 )
-from tests.electrical_heating.scenario_tests.electrical_heating_test_args import (
-    ElectricalHeatingTestArgs,
-)
 from tests.electrical_heating.testsession_configuration import (
     TestSessionConfiguration,
 )
 
 
-@pytest.fixture(scope="session", autouse=True)
-def enable_logging() -> None:
-    """Prevent logging from failing due to missing logging configuration."""
-    logging_configuration.configure_logging(
-        cloud_role_name="some cloud role name",
-        tracer_name="some tracer name",
-    )
+@pytest.fixture(scope="session")
+def job_environment_variables() -> dict:
+    return {
+        "CATALOG_NAME": "some_catalog",
+        "TIME_ZONE": "Europe/Copenhagen",
+        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
+    }
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environment_variables: dict) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
@@ -58,7 +58,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         child_metering_points_v1,
     )
 
-    args = ElectricalHeatingTestArgs(f"{scenario_path}/when/job_parameters.env")
+    with patch.dict("os.environ", job_environment_variables):
+        with open(f"{scenario_path}/when/job_parameters.yml") as f:
+            args = yaml.safe_load(f)
+        with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
+            args = ElectricalHeatingArgs()
 
     # Execute the logic
     actual = execute(
