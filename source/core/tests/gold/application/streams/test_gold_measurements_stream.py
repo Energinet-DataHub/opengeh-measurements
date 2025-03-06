@@ -10,6 +10,7 @@ from core.silver.infrastructure.repositories.silver_measurements_repository impo
 def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession):
     # Arrange
     silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
+    sut.SilverMeasurementsRepository = Mock(return_value=silver_repo_mock)
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     sut.GoldMeasurementsRepository = Mock(return_value=gold_repo_mock)
     silver_repo_mock.read.return_value = Mock()
