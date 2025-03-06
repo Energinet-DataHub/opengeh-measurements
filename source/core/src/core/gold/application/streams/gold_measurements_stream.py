@@ -2,11 +2,11 @@ from pyspark.sql.dataframe import DataFrame
 
 import core.gold.domain.streams.silver_to_gold.transformations as transformations
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.silver.infrastructure.streams.silver_repository import SilverRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_measurements_silver_to_gold() -> None:
-    silver_measurements = SilverRepository().read()
+    silver_measurements = SilverMeasurementsRepository().read()
     GoldMeasurementsRepository().start_write_stream(silver_measurements, pipeline_measurements_silver_to_gold)
 
 

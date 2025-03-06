@@ -12,7 +12,7 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
     SubmittedTransactionsQuarantinedRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.infrastructure.streams.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_submitted_transactions() -> None:

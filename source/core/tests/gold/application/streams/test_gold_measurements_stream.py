@@ -4,14 +4,14 @@ from pyspark.sql import SparkSession
 
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.silver.infrastructure.streams.silver_repository import SilverRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession):
     # Arrange
-    silver_repo_mock = Mock(spec=SilverRepository)
+    silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
-    sut.SilverRepository = Mock(return_value=silver_repo_mock)
+    sut = Mock(return_value=silver_repo_mock)
     sut.GoldMeasurementsRepository = Mock(return_value=gold_repo_mock)
     silver_repo_mock.read.return_value = Mock()
 
