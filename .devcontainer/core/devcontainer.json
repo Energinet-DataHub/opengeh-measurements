@@ -25,7 +25,7 @@
     // Persist the bash/zsh history between sessions
     "source=core-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
