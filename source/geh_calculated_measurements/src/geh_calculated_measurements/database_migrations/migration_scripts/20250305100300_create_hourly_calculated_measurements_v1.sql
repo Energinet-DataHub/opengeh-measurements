@@ -9,7 +9,7 @@ WITH _input AS (
     metering_point_type,
     date,
     quantity
-  FROM {catalog_name}.{calculated_measurements_database}.{calculated_measurements_table} 
+  FROM {catalog_name}.{calculated_measurements_database}.calculated_measurements 
 ),
 _hours AS (
   SELECT 
