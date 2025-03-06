@@ -26,8 +26,29 @@ class JobState:
 
 def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
     return f"""
-        INSERT INTO {catalog}.{schema}.{table} VALUES
-        ('test', 'DUMMY_VALUE', '2025-12-02 00:00:00', 1.1, 'Medium', 'test', 'test', '2025-12-02 00:00:00', '2025-12-02 00:00:00', '2025-12-02 00:00:00')
+        INSERT INTO {catalog}.{schema}.{table} (
+            metering_point_id,
+            orchestration_type,
+            observation_time,
+            quantity,
+            quality,
+            metering_point_type,
+            transaction_id,
+            transaction_creation_datetime,
+            created,
+            modified
+        )
+        SELECT
+            'test' AS metering_point_id,
+            'DUMMY_VALUE' AS orchestration_type,
+            '2025-12-02 00:00:00' AS observation_time,
+            1.7 AS quantity,
+            'Medium' AS quality,
+            'test' AS metering_point_type,
+            'test' AS transaction_id,
+            '2025-12-02 00:00:00' AS transaction_creation_datetime,
+            '2025-12-02 00:00:00' AS created,
+            '2025-12-02 00:00:00' AS modified
     """
 
 
