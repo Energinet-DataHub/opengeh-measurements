@@ -113,3 +113,31 @@ def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid
     mock_unpack.assert_called_once_with(mock_submitted_transactions)
     mock_handle_valid.assert_called_once_with(mock_valid_transactions)
     mock_handle_invalid.assert_called_once_with(mock_invalid_transactions)
+
+
+def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_submitted_transactions_quarantined(
+    mock_checkpoint_path, spark: SparkSession, migrations_executed
+) -> None:
+    # Arrange
+    bronze_settings = BronzeSettings()
+    expected_orchestration_id = identifier_helper.generate_random_string()
+    value = (
+        ValueBuilder(spark)
+        .add_row(orchestration_instance_id=expected_orchestration_id, metering_point_type="MPT_UNSPECIFIED")
+        .build()
+    )
+    submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transactions,
+        bronze_settings.bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+
+    # Act
+    sut.stream_submitted_transactions()
+
+    # Assert
+    bronze_submitted_transactions_quarantined_table = spark.table(
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_quarantined}"
+    ).where(f"orchestration_instance_id = '{expected_orchestration_id}'")
+    assert bronze_submitted_transactions_quarantined_table.count() == 1

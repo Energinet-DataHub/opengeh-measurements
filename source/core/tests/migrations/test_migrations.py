@@ -131,7 +131,7 @@ def test__migration__should_create_submitted_transactions_quarantined_table(
 
     # Assert
     submitted_transactions_quarantined = spark.table(
-        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.submitted_transactions_quarantined}"
+        f"{bronze_settings.bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_quarantined}"
     )
     assert_schemas.assert_schema(
         actual=submitted_transactions_quarantined.schema, expected=submitted_transactions_quarantined_schema
