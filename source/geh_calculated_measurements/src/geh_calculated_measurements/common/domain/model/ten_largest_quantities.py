@@ -2,7 +2,7 @@ import pyspark.sql.types as T
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 
 nullable = True
 
