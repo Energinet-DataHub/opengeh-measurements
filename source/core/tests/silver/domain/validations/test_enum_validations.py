@@ -56,11 +56,7 @@ def test__quality_enum_validations(
 ) -> None:
     points = PointsBuilder(spark).add_row(quality=quality).build()
 
-    print(points[0].quality)
-
     unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(points=points).build()
-
-    unpacked_submitted_transactions.show()
 
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
     assert actual.count() == expected_count
