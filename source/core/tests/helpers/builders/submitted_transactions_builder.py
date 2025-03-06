@@ -22,9 +22,7 @@ from tests.silver.schemas.bronze_submitted_transactions_value_schema import bron
 
 
 class Point:
-    def __init__(
-        self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = Quality.Q_UNSPECIFIED.value
-    ) -> None:
+    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = Quality.Q_MEASURED.value) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = quality
@@ -39,7 +37,7 @@ class PointsBuilder:
         self,
         position: int = 1,
         quantity=DecimalValue(1, 0),
-        quality: str = Quality.Q_UNSPECIFIED.value,
+        quality: str = Quality.Q_MEASURED.value,
     ) -> "PointsBuilder":
         self.data.append(Point(position, quantity, quality))
         return self
