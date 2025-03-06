@@ -184,11 +184,13 @@ def _calculate_period_limit(periods_with_hourly_energy):
 
 @debugging()
 def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataFrame:
-    return periods_with_energy_hourly.withColumn(
-        EphemiralColumnNames.base_period_limit,
-        F.datediff(F.col(EphemiralColumnNames.parent_period_end), F.col(EphemiralColumnNames.parent_period_start))
-        * _ELECTRICAL_HEATING_LIMIT_YEARLY
-        / _days_in_settlement_year(F.col(EphemiralColumnNames.settlement_month_datetime)),
+    return periods_with_energy_hourly.select(
+        "*",
+        (
+            F.datediff(F.col(EphemiralColumnNames.parent_period_end), F.col(EphemiralColumnNames.parent_period_start))
+            * _ELECTRICAL_HEATING_LIMIT_YEARLY
+            / _days_in_settlement_year(F.col(EphemiralColumnNames.settlement_month_datetime))
+        ).alias(EphemiralColumnNames.base_period_limit),
     )
 
 
@@ -260,12 +262,14 @@ def _calculate_period_limit__net_settlement_group_6(
 
     return (
         # Calculate the period limit reduction
-        periods_with_energy_hourly.withColumn(
-            "period_limit_reduction",
-            F.least(
-                F.sum(F.col(EphemiralColumnNames.consumption_from_grid_quantity)).over(period_window),
-                F.sum(F.col(EphemiralColumnNames.supply_to_grid_quantity)).over(period_window),
-            ),
+        periods_with_energy_hourly.select(
+            "*",
+            (
+                F.least(
+                    F.sum(F.col(EphemiralColumnNames.consumption_from_grid_quantity)).over(period_window),
+                    F.sum(F.col(EphemiralColumnNames.supply_to_grid_quantity)).over(period_window),
+                )
+            ).alias("period_limit_reduction"),
         )
         # Then aggregate to a row per day
         .groupBy(

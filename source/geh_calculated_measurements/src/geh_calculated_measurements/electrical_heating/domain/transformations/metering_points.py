@@ -1,7 +1,5 @@
 from geh_common.domain.types import MeteringPointType, NetSettlementGroup
-from geh_common.pyspark.transformations import (
-    convert_from_utc,
-)
+from geh_common.pyspark.transformations import convert_from_utc
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
@@ -150,8 +148,8 @@ def _close_open_ended_periods(
     """Close open ended periods by setting the end date to the end of the current settlement year."""
     settlement_year_end = "settlement_year_end"
 
-    return parent_and_child_metering_point_and_periods.withColumn(
-        settlement_year_end, _settlement_year_end_datetime(F.col(ContractColumnNames.settlement_month))
+    return parent_and_child_metering_point_and_periods.select(
+        "*", _settlement_year_end_datetime(F.col(ContractColumnNames.settlement_month)).alias(settlement_year_end)
     ).select(
         # Consumption metering point
         F.col(ContractColumnNames.parent_metering_point_id),
