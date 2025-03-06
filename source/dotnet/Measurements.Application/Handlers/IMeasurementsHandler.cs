@@ -1,5 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Application.Responses;
-using NodaTime;
+﻿using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Application.Responses;
 
 namespace Energinet.DataHub.Measurements.Application.Handlers;
 
@@ -9,11 +9,8 @@ namespace Energinet.DataHub.Measurements.Application.Handlers;
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Get measurement by id and period.
+    /// Get measurement that matches request.
     /// </summary>
-    /// <param name="meteringPointId"></param>
-    /// <param name="startDate"></param>
-    /// <param name="endDate"></param>
-    /// <returns>Forty-two.</returns>
-    Task<GetMeasurementResponse> GetMeasurementAsync(string meteringPointId, Instant startDate, Instant endDate);
+    /// <param name="getMeasurementRequest"></param>
+    Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest getMeasurementRequest);
 }
