@@ -2,7 +2,7 @@ from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.common.domain import ContractColumnNames
 
 nullable = True
 
@@ -23,18 +23,18 @@ class TimeSeriesPoints(DataFrameWrapper):
 
 time_series_points_v1 = T.StructType(
     [
-        T.StructField(ColumnNames.metering_point_id, T.StringType(), not nullable),
+        T.StructField(ContractColumnNames.metering_point_id, T.StringType(), not nullable),
         #
         # 'consumption' | 'capacity_settlement'
-        T.StructField(ColumnNames.metering_point_type, T.StringType(), not nullable),
+        T.StructField(ContractColumnNames.metering_point_type, T.StringType(), not nullable),
         #
         # UTC time
         T.StructField(
-            ColumnNames.observation_time,
+            ContractColumnNames.observation_time,
             T.TimestampType(),
             not nullable,
         ),
         #
-        T.StructField(ColumnNames.quantity, T.DecimalType(18, 3), not nullable),
+        T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), not nullable),
     ]
 )
