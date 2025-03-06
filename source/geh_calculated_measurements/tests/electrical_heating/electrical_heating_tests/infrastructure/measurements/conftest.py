@@ -41,12 +41,6 @@ def measurments_gold_with_data(spark: SparkSession) -> None:
     test_data.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
-    # drop the table after the test
-    yield
-
-    spark.sql(
-        f"DROP TABLE {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
-    )
 
 
 @pytest.fixture(scope="session")
