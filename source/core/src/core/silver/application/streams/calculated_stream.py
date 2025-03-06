@@ -9,11 +9,11 @@ from pyspark.sql import DataFrame, SparkSession
 
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.settings.silver_settings import SilverSettings
-from core.silver.application.config.spark_session import initialize_spark
 from core.silver.domain.transformations.transform_calculated_measurements import (
     transform_calculated_measurements,
 )
 from core.silver.infrastructure.config import SilverTableNames
+from core.silver.infrastructure.config.spark_session import initialize_spark
 from core.silver.infrastructure.streams import writer
 from core.utility.environment_variable_helper import (
     get_applicationinsights_connection_string,

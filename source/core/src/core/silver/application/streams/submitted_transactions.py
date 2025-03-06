@@ -1,9 +1,9 @@
 from pyspark.sql import DataFrame
 
 import core.bronze.domain.transformations.submitted_transactions_quarantined_transformations as submitted_transactions_quarantined_transformations
-import core.silver.application.config.spark_session as spark_session
 import core.silver.domain.transformations.measurements_transformation as measurements_transformation
 import core.silver.domain.validations.submitted_transactions_to_silver_validation as submitted_transactions_to_silver_validation
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.silver.infrastructure.protobuf.persist_submitted_transaction as persist_submitted_transaction
 from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repository import (
     InvalidSubmittedTransactionsRepository,
@@ -12,7 +12,7 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
     SubmittedTransactionsQuarantinedRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.infrastructure.streams.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_submitted_transactions() -> None:
