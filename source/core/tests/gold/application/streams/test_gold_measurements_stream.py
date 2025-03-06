@@ -11,7 +11,6 @@ def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession
     # Arrange
     silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
-    sut = Mock(return_value=silver_repo_mock)
     sut.GoldMeasurementsRepository = Mock(return_value=gold_repo_mock)
     silver_repo_mock.read.return_value = Mock()
 
