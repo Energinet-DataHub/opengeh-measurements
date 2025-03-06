@@ -33,11 +33,15 @@ def test__orchestration_type_enum_validations(
     orchestration_type: str,
     expected_count: int,
 ) -> None:
+    # Arrange
     unpacked_submitted_transactions = (
         UnpackedSubmittedTransactionsBuilder(spark).add_row(orchestration_type=orchestration_type).build()
     )
 
+    # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_orchestration_type_enum())
+
+    # Assert
     assert actual.count() == expected_count
 
 
@@ -54,12 +58,28 @@ def test__quality_enum_validations(
     quality: str,
     expected_count: int,
 ) -> None:
+    # Arrange
     points = PointsBuilder(spark).add_row(quality=quality).build()
-
     unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(points=points).build()
 
+    # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
+
+    # Assert
     assert actual.count() == expected_count
+
+
+def test__quality_enum_validations_when_points_column_is_null__then_data_is_invalid(
+    spark: SparkSession,
+) -> None:
+    # Arrange
+    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).build()
+
+    # Act
+    actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
+
+    # Assert
+    assert actual.count() == 0
 
 
 @pytest.mark.parametrize(
@@ -75,11 +95,15 @@ def test__metering_point_type_enum_validations(
     metering_point_type: str,
     expected_count: int,
 ) -> None:
+    # Arrange
     unpacked_submitted_transactions = (
         UnpackedSubmittedTransactionsBuilder(spark).add_row(metering_point_type=metering_point_type).build()
     )
 
+    # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_metering_point_type_enum())
+
+    # Assert
     assert actual.count() == expected_count
 
 
@@ -96,9 +120,13 @@ def test__unit_enum_validations(
     unit: str,
     expected_count: int,
 ) -> None:
+    # Arrange
     unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(unit=unit).build()
 
+    # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_unit_enum())
+
+    # Assert
     assert actual.count() == expected_count
 
 
@@ -115,7 +143,11 @@ def test__resolution_enum_validations(
     resolution: str,
     expected_count: int,
 ) -> None:
+    # Arrange
     unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(resolution=resolution).build()
 
+    # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_resolution_enum())
+
+    # Assert
     assert actual.count() == expected_count
