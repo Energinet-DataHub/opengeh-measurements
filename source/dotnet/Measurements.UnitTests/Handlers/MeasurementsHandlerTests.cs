@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Dynamic;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Domain;
@@ -19,9 +20,16 @@ public class MeasurementsHandlerTests
         // Arrange
         var now = Instant.FromUtc(2021, 1, 1, 0, 0);
         var request = new GetMeasurementRequest("123456789", now, now.Plus(Duration.FromDays(1)));
+        dynamic raw = new ExpandoObject();
+        raw.metering_point_id = "123456789";
+        raw.unit = "KWh";
+        raw.observation_time = now;
+        raw.quantity = 42;
+        raw.quality = "Measured";
+        var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
-            .ReturnsAsync(new Measurement("123456789", Unit.KWh, [new Point(now, 42, Quality.Measured)]));
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
@@ -31,6 +39,6 @@ public class MeasurementsHandlerTests
         // Assert
         Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
         Assert.Equal(42, actualPoint.Quantity);
-        Assert.Equal(Quality.Measured.ToString(), actualPoint.Quality);
+        Assert.Equal(Quality.Measured, actualPoint.Quality);
     }
 }

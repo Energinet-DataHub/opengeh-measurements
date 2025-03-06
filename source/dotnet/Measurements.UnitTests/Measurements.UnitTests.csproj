@@ -25,6 +25,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Application\Measurements.Application.csproj" />
       <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
+      <ProjectReference Include="..\Measurements.WebApi\Measurements.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

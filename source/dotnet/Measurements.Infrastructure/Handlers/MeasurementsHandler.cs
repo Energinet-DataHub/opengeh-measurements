@@ -1,5 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Application.Dtos;
-using Energinet.DataHub.Measurements.Application.Handlers;
+﻿using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Application.Responses;
@@ -11,16 +10,11 @@ public class MeasurementsHandler(IMeasurementRepository measurementRepository)
 {
     public async Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest request)
     {
-        var foundMeasurement = await measurementRepository.GetMeasurementAsync(
+        var foundMeasurements = measurementRepository.GetMeasurementAsync(
             request.MeteringPointId,
             request.StartDate,
-            request.EndDate);
+            request.EndDate) ?? throw new Exception("No measurement found for metering point during period");
 
-        var response = new GetMeasurementResponse(
-            foundMeasurement.MeteringPointId,
-            foundMeasurement.Unit.ToString(),
-            foundMeasurement.Points.Select(x => new PointDto(x.ObservationTime, x.Quantity, x.Quality.ToString())));
-
-        return await Task.FromResult(response);
+        return await GetMeasurementResponse.CreateAsync(foundMeasurements);
     }
 }

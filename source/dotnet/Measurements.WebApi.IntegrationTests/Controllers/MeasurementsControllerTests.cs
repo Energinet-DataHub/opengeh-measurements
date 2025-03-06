@@ -1,4 +1,5 @@
 ﻿using Energinet.DataHub.Measurements.Application.Responses;
+using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using NodaTime;
@@ -29,7 +30,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         Assert.Equal("application/json", actualContentType);
         Assert.Equal(expectedMeteringPointId, actualMeasurementResponse.MeteringPointId);
         Assert.Equal(24, actualMeasurementResponse.Points.Count());
-        Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == "measured"));
+        Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == Quality.Measured));
     }
 
     private string CreateUrl(string expectedMeteringPointId)

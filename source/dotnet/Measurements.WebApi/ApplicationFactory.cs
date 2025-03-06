@@ -14,7 +14,7 @@ public static class ApplicationFactory
         builder.Services.AddHealthChecksForWebApp();
 
         // Modules
-        builder.Services.AddMeasurementsModule();
+        builder.Services.AddMeasurementsModule(builder.Configuration);
 
         // Http channels
         builder.Services.AddControllers();

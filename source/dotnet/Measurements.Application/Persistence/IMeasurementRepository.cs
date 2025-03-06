@@ -1,5 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Domain;
-using NodaTime;
+﻿using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
@@ -14,5 +13,5 @@ public interface IMeasurementRepository
     /// <param name="meteringPointId"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    Task<Measurement> GetMeasurementAsync(string meteringPointId, Instant from, Instant to);
+    IAsyncEnumerable<MeasurementResult> GetMeasurementAsync(string meteringPointId, Instant from, Instant to);
 }
