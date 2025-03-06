@@ -13,15 +13,15 @@ def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession
     sut.SilverMeasurementsRepository = Mock(return_value=silver_repo_mock)
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     sut.GoldMeasurementsRepository = Mock(return_value=gold_repo_mock)
-    silver_repo_mock.read.return_value = Mock()
+    silver_repo_mock.read_stream.return_value = Mock()
 
     # Act
     sut.stream_measurements_silver_to_gold()
 
     # Assert
-    silver_repo_mock.read.assert_called_once()
+    silver_repo_mock.read_stream.assert_called_once()
     gold_repo_mock.start_write_stream.assert_called_once_with(
-        silver_repo_mock.read.return_value,
+        silver_repo_mock.read_stream.return_value,
         sut.pipeline_measurements_silver_to_gold,
     )
 
