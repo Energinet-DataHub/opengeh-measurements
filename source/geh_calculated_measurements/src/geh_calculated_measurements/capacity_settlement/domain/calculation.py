@@ -61,11 +61,13 @@ def execute(
         time_series_points_hourly, metering_point_periods_with_selection_period, grouping
     )
 
-    ten_largest_quantities = TenLargestQuantities(time_series_points_ten_largest_quantities.select(
-        ContractColumnNames.metering_point_id,
-        ContractColumnNames.quantity,
-        ContractColumnNames.observation_time,
-    ).withColumn(ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id))))
+    ten_largest_quantities = TenLargestQuantities(
+        time_series_points_ten_largest_quantities.select(
+            ContractColumnNames.metering_point_id,
+            ContractColumnNames.quantity,
+            ContractColumnNames.observation_time,
+        ).withColumn(ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id)))
+    )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
         time_series_points_ten_largest_quantities, grouping
