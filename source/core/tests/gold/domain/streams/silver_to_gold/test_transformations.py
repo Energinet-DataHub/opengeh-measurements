@@ -11,12 +11,12 @@ from core.bronze.domain.constants.enums.quality import SubmittedTransactionsQual
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
-from tests.gold.helpers.silver_builder import SilverMeasurementsDataFrameBuilder
+from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
 def test__transform_silver_to_gold__should_match_gold_schema(spark: SparkSession) -> None:
     # Arrange
-    df_silver = SilverMeasurementsDataFrameBuilder(spark).add_row().build()
+    df_silver = SilverMeasurementsBuilder(spark).add_row().build()
 
     # Act
     df_gold = transform_silver_to_gold(df_silver)
@@ -27,7 +27,7 @@ def test__transform_silver_to_gold__should_match_gold_schema(spark: SparkSession
 
 def test__explode_silver_points__should_explode_to_expected(spark: SparkSession) -> None:
     # Arrange
-    df_silver = SilverMeasurementsDataFrameBuilder(spark).add_row().build()
+    df_silver = SilverMeasurementsBuilder(spark).add_row().build()
 
     # Act
     df_gold = transform_silver_to_gold(df_silver)
@@ -45,7 +45,7 @@ def test__transform_silver_to_gold__monthly_resolution_first_day_of_month__shoul
     # Arrange
     start_date_time = datetime.datetime(2021, 1, 1, 0, 0, 0)
     df_silver = (
-        SilverMeasurementsDataFrameBuilder(spark)
+        SilverMeasurementsBuilder(spark)
         .add_row(
             resolution="PT1M",
             start_datetime=start_date_time,
@@ -74,7 +74,7 @@ def test__transform_silver_to_gold__monthly_resolution_not_first_day_of_month__s
     # Arrange
     start_date_time = datetime.datetime(2021, 2, 2, 0, 0, 0)
     df_silver = (
-        SilverMeasurementsDataFrameBuilder(spark)
+        SilverMeasurementsBuilder(spark)
         .add_row(
             resolution="PT1M",
             start_datetime=start_date_time,
@@ -101,7 +101,7 @@ def test__transform_silver_to_gold__hourly_resolution__returns_correct_observati
     # Arrange
     start_date_time = datetime.datetime(2021, 1, 1, 0, 0, 0)
     df_silver = (
-        SilverMeasurementsDataFrameBuilder(spark)
+        SilverMeasurementsBuilder(spark)
         .add_row(
             resolution="PT1H",
             start_datetime=start_date_time,
@@ -124,7 +124,7 @@ def test__transform_silver_to_gold__fifty_minutes_resolution__returns_correct_ob
     # Arrange
     start_date_time = datetime.datetime(2021, 1, 1, 0, 0, 0)
     df_silver = (
-        SilverMeasurementsDataFrameBuilder(spark)
+        SilverMeasurementsBuilder(spark)
         .add_row(
             resolution="PT15M",
             start_datetime=start_date_time,
@@ -157,10 +157,10 @@ def test__transform_silver_to_gold__when_quality_is_set__should_return_expected(
     submitted_quality, expected_quality, spark: SparkSession
 ) -> None:
     # Arrange
-    builder = SilverMeasurementsDataFrameBuilder(spark)
+    builder = SilverMeasurementsBuilder(spark)
     point = builder.generate_point(quality=submitted_quality)
 
-    silver_measurements = SilverMeasurementsDataFrameBuilder(spark).add_row(points=[point]).build()
+    silver_measurements = SilverMeasurementsBuilder(spark).add_row(points=[point]).build()
 
     # Act
     actual = transform_silver_to_gold(silver_measurements)
