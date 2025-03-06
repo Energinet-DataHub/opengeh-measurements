@@ -74,7 +74,7 @@ def test__append_if_not_exists__when_row_already_exists_in_table__should_not_app
     # Act
     SilverMeasurementsRepository().append_if_not_exists(silver_measurements)
 
-    # Arrange
+    # Assert
     actual = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )
@@ -94,7 +94,7 @@ def test__append_if_not_exists__when_not_exists_in_table__should_append(
     # Act
     SilverMeasurementsRepository().append_if_not_exists(silver_measurements)
 
-    # Arrange
+    # Assert
     actual = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )
