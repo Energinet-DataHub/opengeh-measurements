@@ -30,13 +30,14 @@ jobs:
     if: ${{ needs.changes.outputs.dotnet != 'true' }}
     uses: Energinet-DataHub/.github/.github/workflows/python-uv-cd.yml@v14
     with:
+      packages_directory: source
       subsystem_name: Measurements
       notification_email: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
       sender_email: ${{ vars.email_internal_sender }}
+      postfix_latest: true
+      dispatch_deployment_event: true
       environment_repository_path: ${{ vars.environment_repository_path }}
       dh3serviceaccount_appid: ${{ vars.dh3serviceaccount_appid }}
-      max_release_search_depth: 1000
-      postfix_latest: true
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
