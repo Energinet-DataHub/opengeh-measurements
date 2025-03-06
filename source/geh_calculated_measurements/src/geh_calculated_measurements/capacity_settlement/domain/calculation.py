@@ -15,7 +15,11 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 from geh_calculated_measurements.capacity_settlement.domain.ephemeral_column_names import EphemeralColumnNames
 from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
 from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
-from geh_calculated_measurements.common.domain import ContractColumnNames, calculated_measurements_factory
+from geh_calculated_measurements.common.domain import (
+    ContractColumnNames,
+    TenLargestQuantities,
+    calculated_measurements_factory,
+)
 from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
@@ -57,10 +61,12 @@ def execute(
         time_series_points_hourly, metering_point_periods_with_selection_period, grouping
     )
 
-    ten_largest_quantities = time_series_points_ten_largest_quantities.select(
-        ContractColumnNames.metering_point_id,
-        ContractColumnNames.quantity,
-        ContractColumnNames.observation_time,
+    ten_largest_quantities = TenLargestQuantities(
+        time_series_points_ten_largest_quantities.select(
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.quantity).cast(DecimalType(18, 3)),
+            F.col(ContractColumnNames.observation_time),
+        ).withColumn(ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id)))
     )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
