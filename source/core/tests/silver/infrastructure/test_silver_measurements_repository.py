@@ -131,7 +131,7 @@ def test__append_if_not_exists__when_only_created_col_is_different__should_not_a
     # Act
     SilverMeasurementsRepository().append_if_not_exists(silver_measurements)
 
-    # Arrange
+    # Assert
     actual = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )
@@ -173,7 +173,7 @@ def test__append_if_not_exists__when_data_exists_but_no_duplicates__should_appen
     # Act
     SilverMeasurementsRepository().append_if_not_exists(silver_measurements)
 
-    # Arrange
+    # Assert
     actual = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )

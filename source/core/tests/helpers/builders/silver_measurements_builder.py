@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+from geh_common.domain.types.metering_point_type import MeteringPointType
+
 import tests.helpers.datetime_helper as datetime_helper
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
@@ -16,7 +18,7 @@ class SilverMeasurementsBuilder:
         metering_point_id="503928175928475638",
         transaction_id="5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime=datetime_helper.get_datetime(year=2020, month=1),
-        metering_point_type="E18",
+        metering_point_type=MeteringPointType.PRODUCTION.value,
         unit="KWH",
         resolution="PT1H",
         start_datetime=datetime_helper.get_datetime(year=2020, month=1),
