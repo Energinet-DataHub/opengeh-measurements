@@ -15,5 +15,5 @@ __all__ = [
     "calculated_measurements_factory",
     "ContractColumnNames",
     "TenLargestQuantities",
-    "ten_largest_quantities_schema"
+    "ten_largest_quantities_schema",
 ]
