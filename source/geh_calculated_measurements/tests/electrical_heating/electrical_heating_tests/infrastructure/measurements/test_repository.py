@@ -11,11 +11,10 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 def test__when_missing_expected_column_raises_exception(
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
-    # Read the existing table data
+    # Arrange
     df = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
-    # Drop a random column
     df = df.drop(F.col("quantity"))
 
     (
@@ -26,8 +25,9 @@ def test__when_missing_expected_column_raises_exception(
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
+    # Act/Assert
     with pytest.raises(
-        Exception,  # Using more generic Exception since the actual type appears to be a PySpark AnalysisException
+        Exception,
         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\] A column or function parameter with name `quantity` cannot be resolved\. Did you mean one of the following\?.*",
     ):
         measurements_gold_repository.read_time_series_points()
@@ -36,10 +36,11 @@ def test__when_missing_expected_column_raises_exception(
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
-    # Read the existing table data
+    # Arrange
     df_original = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
+    col_original = df_original.columns
     df = df_original.withColumn("extra_col", F.lit("extra_value"))
 
     (
@@ -50,16 +51,16 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
-
+    # Act
     col_with_extra = measurements_gold_repository.read_time_series_points().df.columns
-    col_original = df_original.columns
+    # Assert
     assert col_with_extra == col_original
 
 
 def test__when_source_contains_wrong_data_type_raises_exception(
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
-    # Read the existing table data
+    # Arrange
     df = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
@@ -78,7 +79,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
-
+    # Act/Assert
     with pytest.raises(
         AssertionError,
         match=r"Schema mismatch\. Expected column name 'quantity' to have type DecimalType\(18,3\), but got type StringType\(\)",

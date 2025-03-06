@@ -13,7 +13,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 
 
 @pytest.fixture(autouse=True)
-def test_table_inserted(spark: SparkSession) -> None:
+def measurments_gold_with_data(spark: SparkSession) -> None:
     """Create a test database and table for measurements_gold."""
     # Create the database
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
@@ -40,6 +40,12 @@ def test_table_inserted(spark: SparkSession) -> None:
 
     test_data.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+    )
+    # drop the table after the test
+    yield
+
+    spark.sql(
+        f"DROP TABLE {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
 
 
