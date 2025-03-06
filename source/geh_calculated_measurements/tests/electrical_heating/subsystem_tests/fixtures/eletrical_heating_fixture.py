@@ -24,19 +24,20 @@ class JobState:
 
 def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
     return f"""INSERT INTO {catalog}.{schema}.{table} (
-  transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
-  metering_point_id, observation_time, quality, metering_point_type -- static variables
+    transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
+  metering_point_id, observation_time, quality, metering_point_type, orchestration_type -- static variables
 )
 SELECT
-    REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id, -- transaction_id
-    CAST(RAND() * 1000000 AS DECIMAL(18, 3)) AS quantity, -- quantity
-    GETDATE() AS transaction_creation_datetime, -- transaction_creation_datetime
+    REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id, 
+    CAST(RAND() * 1000000 AS DECIMAL(18, 3)) AS quantity, 
+    GETDATE() AS transaction_creation_datetime, 
     GETDATE() AS created, -- created
     GETDATE() AS modified, -- modified
-    '170000030000000201' AS metering_point_id, -- metering_point_id
-    '2024-11-30T23:00:00Z' AS observation_time, -- observation_time
+    '170000030000000201' AS metering_point_id, 
+    '2024-11-30T23:00:00Z' AS observation_time, 
     'measured' AS quality, -- quality
-    'consumption' AS metering_point_type -- metering_point_type"""
+    'consumption' AS metering_point_type,
+    'submitted' AS orchestration_type"""
 
 
 class ElectricalHeatingFixture:
