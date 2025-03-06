@@ -1,4 +1,4 @@
-class CalculatedNames:
+class EphemiralColumnNames:
     """Names of calculated columns.
 
     `_lt` suffixes stands for local time.
@@ -22,7 +22,6 @@ class CalculatedNames:
     net_consumption_metering_point_id = "net_consumption_metering_point_id"
     net_consumption_period_end = "net_consumption_period_end"
     net_consumption_period_start = "net_consumption_period_start"
-    net_consumption_period_end = "net_consumption_period_end"
     observation_time_hourly = "observation_time_hourly"
     observation_time_hourly_lt = "observation_time_hourly_local_time"
     overlap_period_end_lt = "overlap_period_end"
