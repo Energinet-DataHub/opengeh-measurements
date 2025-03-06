@@ -41,7 +41,7 @@ SELECT
     'submitted' AS orchestration_type"""
 
 
-class ElectricalHeatingFixture:
+class GenericElectricalHeatingFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: Boolean):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
