@@ -21,7 +21,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
     time_series_points_v1,
 )
-from tests.capacity_settlement.testsession_configuration import (
+from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
 

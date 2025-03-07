@@ -20,7 +20,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
     execute,
     time_series_points_v1,
 )
-from tests.electrical_heating.testsession_configuration import (
+from tests.testsession_configuration import (
     TestSessionConfiguration,
 )
 
@@ -79,10 +79,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     # Return test cases
     return TestCases(
         [
-            TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual,
-            ),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual),
         ]
     )
 
