@@ -1,5 +1,6 @@
 import pytest
 from pyspark.sql import SparkSession
+from pyspark.sql.types import ArrayType, StringType, StructField, StructType
 
 import core.silver.domain.validations.enum_validations as enum_validations
 from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
@@ -73,7 +74,27 @@ def test__quality_enum_validations_when_points_column_is_null__then_data_is_inva
     spark: SparkSession,
 ) -> None:
     # Arrange
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).build()
+    testschema = StructType(
+        [
+            StructField("id", StringType(), False),
+            StructField(
+                "points",
+                ArrayType(
+                    StructType(
+                        [
+                            StructField("quality", StringType(), True),
+                        ]
+                    ),
+                    True,
+                ),
+                True,
+            ),
+        ]
+    )
+
+    data = [("124", None)]
+
+    unpacked_submitted_transactions = spark.createDataFrame(data, schema=testschema)
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
