@@ -18,8 +18,15 @@ RUN apt-get update \
   && apt-get clean
 
 # Change to non-root user
-ENV USER=vscode
-ENV HOME=/home/$USER
+ENV USER=vscode \
+    HOME=/home/vscode \
+    UV_PROJECT_ENVIRONMENT=/home/vscode/.venv \
+    ASDF_DATA_DIR=/home/vscode/.asdf \
+    UV_CACHE_DIR=/home/vscode/.cache/uv \
+    MYPY_CACHE_DIR=/home/vscode/.cache/mypy \
+    RUFF_CACHE_DIR=/home/vscode/.cache/ruff \
+    PYTHONPYCACHEPREFIX=/home/vscode/.cache/pycache
+
 
 # Add tool-versions and startup script
 COPY --chown=${USER}:${USER} .tool-versions $HOME/.tool-versions
@@ -34,6 +41,18 @@ RUN $HOME/scripts/install-asdf.sh $ASDF_VERSION \
 # Install Databricks CLI
 RUN curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh \
   && curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Create cache directories
+RUN mkdir -p $ASDF_DATA_DIR \
+  && mkdir -p $UV_CACHE_DIR \
+  && mkdir -p $MYPY_CACHE_DIR \
+  && mkdir -p $RUFF_CACHE_DIR \
+  && mkdir -p $PYTHONPYCACHEPREFIX \
+  && chown -R $USER $ASDF_DATA_DIR \
+  && chown -R $USER $UV_CACHE_DIR \
+  && chown -R $USER $MYPY_CACHE_DIR \
+  && chown -R $USER $RUFF_CACHE_DIR \
+  && chown -R $USER $PYTHONPYCACHEPREFIX
 
 # Persist command history
 RUN mkdir /commandhistory \
