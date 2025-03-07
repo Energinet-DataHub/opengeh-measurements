@@ -9,7 +9,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain import CalculatedMeasurements, ContractColumnNames
 from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
@@ -65,7 +65,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
             args = ElectricalHeatingArgs()
 
     # Execute the logic
-    actual = execute(
+    actual: CalculatedMeasurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
@@ -74,14 +74,14 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     )
 
     # Sort to make the tests deterministic
-    actual = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
+    actual_df = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
 
     # Return test cases
     return TestCases(
         [
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual,
+                actual=actual_df.cache(),
             ),
         ]
     )
