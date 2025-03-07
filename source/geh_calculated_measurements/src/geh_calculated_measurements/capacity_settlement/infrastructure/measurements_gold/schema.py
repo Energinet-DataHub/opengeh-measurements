@@ -3,20 +3,18 @@ import pyspark.sql.types as t
 nullable = True
 
 
-# Time series points related to electrical heating.
+# Time series points related to capacity settlement.
 #
 # Points are included when:
 # - the unit is kWh
 # - the metering point type is one of those listed below
-# - the observation time is after 2021-01-01
-time_series_points_v1 = t.StructType(
+capacity_settlement_v1 = t.StructType(
     [
         #
         # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # 'consumption' | 'supply_to_grid' | 'consumption_from_grid' |
-        # 'electrical_heating' | 'net_consumption'
+        # 'consumption' | 'capcity_settlement'
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
         # UTC time

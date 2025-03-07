@@ -19,3 +19,9 @@ def contracts_path() -> str:
 def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
     settings_file_path = PROJECT_ROOT / "tests" / "capacity_settlement" / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
+
+
+@pytest.fixture(scope="session")
+def tests_path() -> str:
+    """Returns the tests folder path."""
+    return (PROJECT_ROOT / "tests" / "capacity_settlement").as_posix()
