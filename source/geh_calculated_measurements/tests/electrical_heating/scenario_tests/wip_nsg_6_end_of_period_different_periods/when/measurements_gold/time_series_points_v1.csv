@@ -191,10 +191,10 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 060000000600170202;22.753;2024-08-31T21:45:00Z;supply_to_grid;Case 2 - period 2: last day - Hour 24
 070000000600170202;19.539;2024-08-31T21:45:00Z;consumption_from_grid;Case 2 - period 2: last day - Hour 24
 150000000600170202;0;2024-08-31T21:45:00Z;net_consumption;Case 2 - period 2: last day - Hour 24
-170000000000600203;2000;2024-08-31T22:00:00Z;consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
-060000000600170203;1000;2024-08-31T22:00:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
-070000000600170203;2000;2024-08-31T22:00:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
-150000000600170203;1000;2024-08-31T22:00:00Z;net_consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+170000000000600202;2000;2024-08-31T22:00:00Z;consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+060000000600170202;1000;2024-08-31T22:00:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+070000000600170202;2000;2024-08-31T22:00:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
+150000000600170202;1000;2024-08-31T22:00:00Z;net_consumption;Case 2 - period 3 (D15 Up to End): Day 1 - Hour 1 of settlement month.
 170000000000600202;4000;2024-12-31T22:45:00Z;consumption;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
 060000000600170202;2000;2024-12-31T22:45:00Z;supply_to_grid;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
 070000000600170202;4000;2024-12-31T22:45:00Z;consumption_from_grid;Case 2 - period 3 (D15 Up to End): Last quarter of 2024
