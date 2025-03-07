@@ -5,4 +5,8 @@
         <RootNamespace>Energinet.DataHub.Measurements.Domain</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
+
 </Project>
