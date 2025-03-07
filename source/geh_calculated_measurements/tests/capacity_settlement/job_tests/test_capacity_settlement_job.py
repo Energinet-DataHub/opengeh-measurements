@@ -2,33 +2,30 @@ import uuid
 from typing import Any
 from unittest.mock import patch
 
-import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.capacity_settlement.application.calculation import execute_application
+from geh_calculated_measurements.capacity_settlement.entry_point import execute
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path) -> dict:
-    return {
-        "CATALOG_NAME": "spark_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
-    }
+def _get_job_parameters(orchestration_instance_id: str) -> list[str]:
+    return [
+        "dummy_script_name",
+        f"--orchestration-instance-id={orchestration_instance_id}",
+        "--calculation-year=2026",
+        "--calculation-month=1",
+    ]
 
 
-@pytest.mark.skip(reason="Skipping this until write (results) functionality has been implemented")
-def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
+def test_execute(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
-    sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
     # Act
-    with patch("sys.argv", sys_argv):
+    with patch("sys.argv", _get_job_parameters(orchestration_instance_id)):
         with patch.dict("os.environ", job_environment_variables):
-            execute_application()
+            execute()
 
     # Assert
     actual = spark.read.table(
