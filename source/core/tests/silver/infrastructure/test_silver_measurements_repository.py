@@ -10,7 +10,7 @@ from core.settings.silver_settings import SilverSettings
 from core.settings.storage_account_settings import StorageAccountSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
-from core.silver.infrastructure.streams.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 

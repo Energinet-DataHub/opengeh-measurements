@@ -2,6 +2,7 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.settings import (
     SubmittedTransactionsStreamSettings,
@@ -18,6 +19,10 @@ class SilverMeasurementsRepository:
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.silver_container_name = SilverSettings().silver_container_name
+
+    def read_stream(self) -> DataFrame:
+        spark = spark_session.initialize_spark()
+        return spark.readStream.format("delta").option("ignoreDeletes", "true").table(self.table)
 
     def write_stream(
         self,
