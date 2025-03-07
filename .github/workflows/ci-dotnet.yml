@@ -48,3 +48,4 @@ jobs:
       # Matrix parameters
       job_name: Integration Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.path }}
+      azure_keyvault_url: ${{ vars.integration_test_azure_keyvault_url }}
