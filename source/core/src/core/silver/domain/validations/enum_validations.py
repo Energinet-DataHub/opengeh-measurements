@@ -9,7 +9,7 @@ from core.contracts.process_manager.enums.orchestration_type import Orchestratio
 from core.contracts.process_manager.enums.quality import Quality
 from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
-from core.utility.columns_helper import column_is_not_null
+from core.utility.columns_helper import invalid_if_null
 
 
 def validate_orchestration_type_enum() -> Column:
@@ -24,7 +24,7 @@ def validate_quality_enum() -> Column:
     """Quality check: QCST01-02."""
     valid_qualities = [name for name in Quality._member_names_ if name != Quality.Q_UNSPECIFIED.value]
 
-    return column_is_not_null(SubmittedTransactionsUnpackedColumnNames.points).otherwise(
+    return invalid_if_null(SubmittedTransactionsUnpackedColumnNames.points).otherwise(
         F.forall(
             F.col(SubmittedTransactionsUnpackedColumnNames.Points.quality),
             lambda x: x.isNotNull() & x.isin(valid_qualities),
