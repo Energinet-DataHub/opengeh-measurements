@@ -74,7 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Populate the delta tables with the 'when' files
     path_schema_tuples = [
         (
-            "measurements_calculated.calculated_measurements.csv",
+            "measurements_calculated_internal.calculated_measurements.csv",
             calculated_measurements.calculated_measurements_schema,
         )
     ]
