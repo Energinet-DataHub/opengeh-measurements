@@ -71,6 +71,7 @@ def spark() -> Generator[SparkSession, None, None]:
     yield session
     session.stop()
 
+
 # TODO JVM: Fix this so it does not trigger in CD
 # # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 # def pytest_collection_modifyitems(config, items) -> None:
