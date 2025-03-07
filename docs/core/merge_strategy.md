@@ -20,4 +20,4 @@ This strategy is about appending to a delta table, unless the rows already exist
 | **Silver** | | |
 | | Measurements | Append If Not Exists |
 | **Gold** | | |
-| | Measurements | Append |
+| | Measurements | Append If Not Exists |

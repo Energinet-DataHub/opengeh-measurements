@@ -222,7 +222,7 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
 
     # Act
     actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.capacity_settlement_v1}").where(
-        f"metering_point_id in ({metering_point_id_1}, {metering_point_id_2}, {metering_point_id_3})"
+        f"metering_point_id in ('{metering_point_id_1}','{metering_point_id_2}','{metering_point_id_3}')"
     )
 
     # Assert
