@@ -12,6 +12,6 @@ class SubmittedTransactionsUnpackedColumnNames:
     points = "points"
 
     class Points:
-        position = "position"
-        quantity = "quantity"
-        quality = "quality"
+        position = "points.position"
+        quantity = "points.quantity"
+        quality = "points.quality"
