@@ -20,6 +20,9 @@ class EnvironmentConfiguration(ApplicationSettings):
     workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
 
+    cluster_id: str = Field(alias="CORE_WAREHOUSE_ID")
+    catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
+
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",
         env_file_encoding="utf-8",
