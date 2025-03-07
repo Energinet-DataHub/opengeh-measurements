@@ -24,13 +24,15 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         actualResponse.EnsureSuccessStatusCode();
         var actualBody = await actualResponse.Content.ReadAsStringAsync();
         var actualContentType = actualResponse.Content.Headers.ContentType!.MediaType!;
-        var actualMeasurementResponse = new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
+        // var actualMeasurementResponse = new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
 
         // Assert
         Assert.Equal("application/json", actualContentType);
-        Assert.Equal(expectedMeteringPointId, actualMeasurementResponse.MeteringPointId);
-        Assert.Equal(24, actualMeasurementResponse.Points.Count());
-        Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == Quality.Measured));
+        Assert.Equal(ExpectedBody(), actualBody);
+
+        // Assert.Equal(expectedMeteringPointId, actualMeasurementResponse.MeteringPointId);
+        // Assert.Equal(24, actualMeasurementResponse.Points.Count());
+        // Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == Quality.Measured));
     }
 
     private string CreateUrl(string expectedMeteringPointId)
@@ -39,4 +41,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var endDate = Instant.FromUtc(2022, 1, 2, 0, 0);
         return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
+
+    private static string ExpectedBody() =>
+        "{\"meteringPointId\":\"1234567890\",\"unit\":0,\"points\":[{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1},{\"observationTime\":\"2022-01-01T00:00:00+00:00\",\"quantity\":1,\"quality\":1}]}";
 }

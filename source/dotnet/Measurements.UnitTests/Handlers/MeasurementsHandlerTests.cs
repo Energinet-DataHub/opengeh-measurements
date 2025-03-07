@@ -19,7 +19,7 @@ public class MeasurementsHandlerTests
     {
         // Arrange
         var now = Instant.FromUtc(2021, 1, 1, 0, 0);
-        var request = new GetMeasurementRequest("123456789", now, now.Plus(Duration.FromDays(1)));
+        var request = new GetMeasurementRequest("123456789", now.ToDateTimeOffset(), now.Plus(Duration.FromDays(1)).ToDateTimeOffset());
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
         raw.unit = "KWh";

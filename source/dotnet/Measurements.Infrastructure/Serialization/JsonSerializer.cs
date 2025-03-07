@@ -4,7 +4,11 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Serialization;
 
 public class JsonSerializer
 {
-    private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+    private readonly JsonSerializerOptions _options = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        IncludeFields = false,
+    };
 
     public T Deserialize<T>(string value)
     {

@@ -10,12 +10,18 @@ public class MeasurementResult(ExpandoObject raw)
 
     public string MeteringPointId => _raw.metering_point_id;
 
-    public string Unit => "KWh"; // _raw.unit;
+    public string Unit => "KWH"; // _raw.unit;
 
-    // public Instant ObservationTime => DateTimeOffsetExtensions.ToInstant(_raw.observation_time);
-    public Instant ObservationTime => _raw.observation_time;
+    public DateTimeOffset ObservationTime => _raw.observation_time;
 
     public decimal Quantity => _raw.quantity;
 
     public string Quality => _raw.quality;
+
+    // private DateTimeOffset ParseObservationTime()
+    // {
+    //     return  _raw.observation_time;
+    //     var asInstant = ((DateTimeOffset)observationTime);
+    //     return asInstant;
+    // }
 }

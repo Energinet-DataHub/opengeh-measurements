@@ -1,30 +1,34 @@
-﻿using Energinet.DataHub.Measurements.Application.Persistence;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
+using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetMeasurementResponse
 {
-    public string MeteringPointId { get; private set; }
+    public string MeteringPointId { get; init; }
 
-    public Unit Unit { get; private set; }
+    public Unit Unit { get; init; }
 
-    public IReadOnlyCollection<Point> Points { get; private set; }
+    public IReadOnlyCollection<Point> Points { get; init; }
 
-    private GetMeasurementResponse(string meteringPointId, Unit unit, List<Point> points)
+    [JsonConstructor]
+    [Browsable(false)]
+    public GetMeasurementResponse(string meteringPointId, Unit unit, List<Point> points)
     {
         MeteringPointId = meteringPointId;
         Unit = unit;
         Points = points;
     }
 
-    public static async Task<GetMeasurementResponse> CreateAsync(IAsyncEnumerable<MeasurementResult> measurements)
+    public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var meteringPointId = string.Empty;
         var unit = Unit.Unknown;
         var points = new List<Point>();
 
-        await foreach (var measurement in measurements)
+        foreach (var measurement in measurements)
         {
             meteringPointId = measurement.MeteringPointId;
             unit = ParseUnit(measurement.Unit);
@@ -43,8 +47,9 @@ public class GetMeasurementResponse
     {
         return quality switch
         {
-            "Measured" => Quality.Measured,
-            "Estimated" => Quality.Estimated,
+            "measured" => Quality.Measured,
+            "estimated" => Quality.Estimated,
+            "calculated" => Quality.Calculated,
             _ => throw new Exception("Unknown quality"),
         };
     }
@@ -53,8 +58,8 @@ public class GetMeasurementResponse
     {
         return unit switch
         {
-            "KWh" => Unit.KWh,
-            "MWh" => Unit.MWh,
+            "KWH" => Unit.kWh,
+            "MWH" => Unit.MWh,
             _ => throw new Exception("Unknown unit"),
         };
     }

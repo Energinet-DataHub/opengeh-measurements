@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="7.2.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />

@@ -2,7 +2,9 @@
 
 public enum Unit
 {
-    KWh,
+#pragma warning disable SA1300
+    kWh,
+#pragma warning restore SA1300
     MWh,
     Unknown,
 }
