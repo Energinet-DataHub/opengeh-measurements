@@ -145,7 +145,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
 
 # TODO: Can this be simplified? Can we avoid the union?
 @debugging()
-def _calculate_period_limit(periods_with_hourly_energy):
+def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
     periods_with_daily_energy_and_limit_no_nsg = (
@@ -163,15 +163,20 @@ def _calculate_period_limit(periods_with_hourly_energy):
     )
     log_dataframe(periods_with_daily_energy_and_limit_no_nsg, "periods_with_daily_energy_and_limit_no_nsg")
 
-    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2(
+    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2_and_6(
         periods_with_hourly_energy.where(
-            F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2
+            (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
+            | (
+                (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
+                & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) > F.current_date())
+            )
         )
     )
     log_dataframe(periods_with_daily_energy_and_limit_nsg2, "periods_with_daily_energy_and_limit_nsg2")
-    periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6(
+    periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6_end_of_period(
         periods_with_hourly_energy.where(
-            F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6
+            (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
+            & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date())
         )
     )
     log_dataframe(periods_with_daily_energy_and_limit_nsg6, "periods_with_daily_energy_and_limit_nsg6")
@@ -195,9 +200,14 @@ def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataF
 
 
 @debugging()
-def _calculate_period_limit__net_settlement_group_2(
+def _calculate_period_limit__net_settlement_group_2_and_6(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
+    """Calculate the period limit.
+
+    For net settlement group 2: Both up to end and end of period."
+    For net settlement group 6: Only up 2 end of period."
+    """
     # Move to .agg() below?
     df = periods_with_energy_hourly.select(
         "*",
@@ -250,7 +260,7 @@ def _calculate_period_limit__net_settlement_group_2(
 
 
 @debugging()
-def _calculate_period_limit__net_settlement_group_6(
+def _calculate_period_limit__net_settlement_group_6_end_of_period(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
     # Window used to aggregate values for the whole period
