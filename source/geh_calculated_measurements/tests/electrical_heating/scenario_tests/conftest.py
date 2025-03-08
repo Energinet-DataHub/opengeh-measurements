@@ -4,25 +4,20 @@ from unittest.mock import patch
 
 import pytest
 import yaml
-from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
+from geh_calculated_measurements.common.domain import (CalculatedMeasurements,
+                                                       ContractColumnNames)
+from geh_calculated_measurements.electrical_heating.application import \
+    ElectricalHeatingArgs
+from geh_calculated_measurements.electrical_heating.domain import (
+    ChildMeteringPoints, ConsumptionMeteringPointPeriods, TimeSeriesPoints,
+    child_metering_points_v1, consumption_metering_point_periods_v1, execute,
+    time_series_points_v1)
+from geh_common.testing.dataframes import (AssertDataframesConfiguration,
+                                           read_csv)
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-
-from geh_calculated_measurements.common.domain import CalculatedMeasurements, ContractColumnNames
-from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
-from geh_calculated_measurements.electrical_heating.domain import (
-    ChildMeteringPoints,
-    ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
-    child_metering_points_v1,
-    consumption_metering_point_periods_v1,
-    execute,
-    time_series_points_v1,
-)
-from tests.electrical_heating.testsession_configuration import (
-    TestSessionConfiguration,
-)
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="session")
@@ -79,10 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     # Return test cases
     return TestCases(
         [
-            TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=actual_df.cache(),
-            ),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual_df.cache()),
         ]
     )
 
