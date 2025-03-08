@@ -4,6 +4,9 @@ class EphemiralColumnNames:
     `_lt` suffixes stands for local time.
     """
 
+    base_period_limit = "base_period_limit"
+    """The base period limit for the period. The base limit represents the fraction of the yearly base limit
+    adjusted to how many days there are in the period compared to a whole year."""
     consumption_from_grid_metering_point_id = "consumption_from_grid_metering_point_id"
     consumption_from_grid_period_start = "consumption_from_grid_period_start"
     consumption_from_grid_period_end = "consumption_from_grid_period_end"
@@ -35,6 +38,7 @@ class EphemiralColumnNames:
     period_energy_limit = "period_energy_limit"
     period_year_lt = "period_year"
     """The type is TIMESTAMP."""
+    settlement_month_datetime = "settlement_month_datetime"
     supply_to_grid_metering_point_id = "supply_to_grid_metering_point_id"
     supply_to_grid_period_start = "supply_to_grid_period_start"
     supply_to_grid_period_end = "supply_to_grid_period_end"
