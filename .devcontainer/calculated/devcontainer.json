@@ -29,7 +29,7 @@
     // Persist the bash/zsh history between sessions
     "source=geh_calculated_measurements-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:UserProfile}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
     // Mount the local cache directory - speeds up the build process
     "source=${localWorkspaceFolder}/.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
   ],
@@ -83,7 +83,7 @@
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "python.venvPath": "/home/vscode/.venv",
-        "python.languageServer": "Pylance", // Use Pylance as the language server        
+        "python.languageServer": "Pylance", // Use Pylance as the language server
         "python.testing.pytestEnabled": true,
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.languageServerMode": "full", // Use the full language server mode
