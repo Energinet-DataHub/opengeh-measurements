@@ -22,10 +22,10 @@ public class MeasurementsHandlerTests
         var request = new GetMeasurementRequest("123456789", now.ToDateTimeOffset(), now.Plus(Duration.FromDays(1)).ToDateTimeOffset());
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
-        raw.unit = "KWh";
-        raw.observation_time = now;
+        raw.unit = "KWH";
+        raw.observation_time = now.ToDateTimeOffset();
         raw.quantity = 42;
-        raw.quality = "Measured";
+        raw.quality = "measured";
         var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
