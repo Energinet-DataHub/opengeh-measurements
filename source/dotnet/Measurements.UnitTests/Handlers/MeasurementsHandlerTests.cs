@@ -21,12 +21,7 @@ public class MeasurementsHandlerTests
         // Arrange
         var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
-        dynamic raw = new ExpandoObject();
-        raw.metering_point_id = "123456789";
-        raw.unit = "KWH";
-        raw.observation_time = now;
-        raw.quantity = 42;
-        raw.quality = "measured";
+        var raw = CreateRaw(now);
         var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
@@ -58,5 +53,16 @@ public class MeasurementsHandlerTests
         // Act
         // Assert
         await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetMeasurementAsync(request));
+    }
+
+    private static dynamic CreateRaw(DateTimeOffset now)
+    {
+        dynamic raw = new ExpandoObject();
+        raw.metering_point_id = "123456789";
+        raw.unit = "KWH";
+        raw.observation_time = now;
+        raw.quantity = 42;
+        raw.quality = "measured";
+        return raw;
     }
 }

@@ -10,7 +10,7 @@ public class GetMeasurementResponse
 {
     public string MeteringPointId { get; init; } = string.Empty;
 
-    public Unit Unit { get; init; } = Unit.Unknown;
+    public Unit Unit { get; init; }
 
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
@@ -28,22 +28,27 @@ public class GetMeasurementResponse
     public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var meteringPointId = string.Empty;
-        var unit = Unit.Unknown;
+        var unitRaw = string.Empty;
         var points = new List<Point>();
 
         foreach (var measurement in measurements)
         {
             meteringPointId = measurement.MeteringPointId;
-            unit = ParseUnit(measurement.Unit);
+            unitRaw = measurement.Unit;
             points.Add(new Point(
                 measurement.ObservationTime,
                 measurement.Quantity,
                 ParseQuality(measurement.Quality)));
         }
 
-        return meteringPointId == string.Empty || unit == Unit.Unknown || points.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new GetMeasurementResponse(meteringPointId, unit, points);
+        if (meteringPointId == string.Empty || points.Count <= 0)
+        {
+            throw new MeasurementsNotFoundException();
+        }
+
+        var unit = ParseUnit(unitRaw);
+
+        return new GetMeasurementResponse(meteringPointId, unit, points);
     }
 
     private static Quality ParseQuality(string quality)
@@ -53,7 +58,7 @@ public class GetMeasurementResponse
             "measured" => Quality.Measured,
             "estimated" => Quality.Estimated,
             "calculated" => Quality.Calculated,
-            _ => throw new Exception("Unknown quality"),
+            _ => throw new ArgumentOutOfRangeException(nameof(quality)),
         };
     }
 
@@ -63,7 +68,7 @@ public class GetMeasurementResponse
         {
             "KWH" => Unit.KWh,
             "MWH" => Unit.MWh,
-            _ => throw new Exception("Unknown unit"),
+            _ => throw new ArgumentOutOfRangeException(nameof(unit)),
         };
     }
 }

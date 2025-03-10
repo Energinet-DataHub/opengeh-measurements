@@ -4,5 +4,4 @@ public enum Unit
 {
     KWh,
     MWh,
-    Unknown,
 }
