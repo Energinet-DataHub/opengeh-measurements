@@ -18,12 +18,12 @@ public class MeasurementsHandlerTests
         Mock<IMeasurementRepository> measurementRepositoryMock)
     {
         // Arrange
-        var now = Instant.FromUtc(2021, 1, 1, 0, 0);
-        var request = new GetMeasurementRequest("123456789", now.ToDateTimeOffset(), now.Plus(Duration.FromDays(1)).ToDateTimeOffset());
+        var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
         raw.unit = "KWH";
-        raw.observation_time = now.ToDateTimeOffset();
+        raw.observation_time = now;
         raw.quantity = 42;
         raw.quality = "measured";
         var measurementResult = new MeasurementResult(raw);

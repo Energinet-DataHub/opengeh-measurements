@@ -1,6 +1,4 @@
 ﻿using System.Dynamic;
-using NodaTime;
-using NodaTime.Extensions;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 

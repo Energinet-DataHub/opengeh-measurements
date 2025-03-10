@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Serialization;
 
@@ -8,6 +9,7 @@ public class JsonSerializer
     {
         PropertyNameCaseInsensitive = true,
         IncludeFields = false,
+        Converters = { new JsonStringEnumConverter() },
     };
 
     public T Deserialize<T>(string value)
