@@ -9,6 +9,7 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
+from geh_calculated_measurements.capacity_settlement.domain import TenLargestQuantities
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
@@ -17,7 +18,6 @@ from geh_calculated_measurements.capacity_settlement.domain.model.metering_point
 from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
-    TenLargestQuantities,
     calculated_measurements_factory,
 )
 from geh_calculated_measurements.common.infrastructure import initialize_spark
