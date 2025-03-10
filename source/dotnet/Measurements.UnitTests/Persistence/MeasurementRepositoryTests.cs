@@ -37,9 +37,7 @@ public class MeasurementRepositoryTests
         Assert.Equal(10, actual.Count);
     }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private static async IAsyncEnumerable<ExpandoObject> CreateMeasurementResults(int count)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         for (var i = 0; i < count; i++)
         {
@@ -49,6 +47,7 @@ public class MeasurementRepositoryTests
             raw.observation_time = Instant.FromUtc(2021, 1, 1, 0, 0);
             raw.quantity = 42;
             raw.quality = "Measured";
+            await Task.Yield();
             yield return raw;
         }
     }
