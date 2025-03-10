@@ -27,7 +27,7 @@ class TestCapacitySettlement(unittest.TestCase):
             GoldTableRow(
                 metering_point_id=METERING_POINT_ID,
                 observation_time=OBSERVATION_TIME,
-                metering_point_type=MeteringPointType,
+                metering_point_type=MeteringPointType.CONSUMPTION,
             )
         )
 
