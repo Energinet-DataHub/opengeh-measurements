@@ -1,4 +1,4 @@
-﻿import pyspark.sql.types as t
+import pyspark.sql.types as t
 
 consumption_metering_point_v1 = t.StructType(
     [
