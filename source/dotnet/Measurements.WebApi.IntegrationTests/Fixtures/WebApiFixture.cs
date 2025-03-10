@@ -2,8 +2,10 @@
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
@@ -55,6 +57,12 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
+
+        // This can be used for changing registrations in the container (e.g. for mocks).
+        builder.ConfigureServices(services =>
+        {
+            services.AddSingleton<IAuthorizationHandler>(new AllowAnonymous());
+        });
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
@@ -69,30 +77,16 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
         return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+    }
 
-        // "'1234567890','2022-01-01T00:00:00Z',1.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',2.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',3.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',4.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',5.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',6.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',7.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',8.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',9.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',10.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',11.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',12.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',13.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',14.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',15.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',16.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',17.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',18.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',19.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',20.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',21.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',22.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',23.0,'measured'",
-        // "'1234567890','2022-01-01T00:00:00Z',24.0,'measured'",
+    private sealed class AllowAnonymous : IAuthorizationHandler
+    {
+        public Task HandleAsync(AuthorizationHandlerContext context)
+        {
+            foreach (var requirement in context.PendingRequirements.ToList())
+                context.Succeed(requirement);
+
+            return Task.CompletedTask;
+        }
     }
 }
