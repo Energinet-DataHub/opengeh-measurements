@@ -7,11 +7,11 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetMeasurementResponse
 {
-    public string MeteringPointId { get; set; } = string.Empty;
+    public string MeteringPointId { get; init; } = string.Empty;
 
-    public Unit Unit { get; set; } = Unit.Unknown;
+    public Unit Unit { get; init; } = Unit.Unknown;
 
-    public IReadOnlyCollection<Point> Points { get; set; } = [];
+    public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
