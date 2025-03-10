@@ -60,7 +60,7 @@ public class GetMeasurementResponse
     {
         return unit switch
         {
-            "KWH" => Unit.kWh,
+            "KWH" => Unit.KWh,
             "MWH" => Unit.MWh,
             _ => throw new Exception("Unknown unit"),
         };

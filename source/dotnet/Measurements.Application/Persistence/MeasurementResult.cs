@@ -15,11 +15,4 @@ public class MeasurementResult(ExpandoObject raw)
     public decimal Quantity => _raw.quantity;
 
     public string Quality => _raw.quality;
-
-    // private DateTimeOffset ParseObservationTime()
-    // {
-    //     return  _raw.observation_time;
-    //     var asInstant = ((DateTimeOffset)observationTime);
-    //     return asInstant;
-    // }
 }
