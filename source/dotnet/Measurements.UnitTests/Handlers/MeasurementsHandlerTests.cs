@@ -1,5 +1,6 @@
 ﻿using System.Dynamic;
 using AutoFixture.Xunit2;
+using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Domain;
@@ -14,7 +15,7 @@ public class MeasurementsHandlerTests
 {
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsync_WhenCalled_ThenReturnsMeasurementsForPeriod(
+    public async Task GetMeasurementAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementRepository> measurementRepositoryMock)
     {
         // Arrange
@@ -40,5 +41,22 @@ public class MeasurementsHandlerTests
         Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
+    }
+
+    [Fact]
+    public async Task GetMeasurementsAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
+        var measurementRepositoryMock = new Mock<IMeasurementRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Returns(AsyncEnumerable.Empty<MeasurementResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetMeasurementAsync(request));
     }
 }

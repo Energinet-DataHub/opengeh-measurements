@@ -42,7 +42,7 @@ public class GetMeasurementResponse
         }
 
         return meteringPointId == string.Empty || unit == Unit.Unknown || points.Count <= 0
-            ? throw new MeasurementsNotFoundException("No measurements found for metering point during period.")
+            ? throw new MeasurementsNotFoundException()
             : new GetMeasurementResponse(meteringPointId, unit, points);
     }
 
