@@ -143,7 +143,6 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
-# TODO: Can this be simplified? Can we avoid the union?
 @debugging()
 def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
@@ -243,7 +242,6 @@ def _calculate_period_limit__net_settlement_group_2_and_6(
         )
         .select(
             "*",
-            # TODO: Move to .agg() above?
             F.sum(F.col("nettoficated_daily")).over(period_window).alias("period_limit_reduction"),
         )
         .select(
@@ -298,7 +296,6 @@ def _calculate_period_limit__net_settlement_group_6_end_of_period(
                 EphemiralColumnNames.settlement_month_datetime
             ),
         )
-        # TODO: Remove or keep?
         .select(
             EphemiralColumnNames.electrical_heating_metering_point_id,
             EphemiralColumnNames.parent_period_start,
