@@ -73,7 +73,7 @@ def test__quality_enum_validations_when_points_column_is_null__then_data_is_inva
     spark: SparkSession,
 ) -> None:
     # Arrange
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).build()
+    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(points=None).build()
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())

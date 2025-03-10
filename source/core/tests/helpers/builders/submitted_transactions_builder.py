@@ -60,7 +60,7 @@ class Value:
         resolution: str = Resolution.R_PT15M.value,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list = [Point()],
+        points: list | None = [Point()],
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id
@@ -198,7 +198,7 @@ class UnpackedSubmittedTransactionsBuilder:
         resolution: str = Resolution.R_PT15M.value,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list = [Point()],
+        points: list | None = [Point()],
     ) -> "UnpackedSubmittedTransactionsBuilder":
         self.data.append(
             Value(
