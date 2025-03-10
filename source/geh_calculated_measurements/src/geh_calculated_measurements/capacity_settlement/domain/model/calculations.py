@@ -29,6 +29,6 @@ calculations_schema = T.StructType(
         T.StructField("calculation_month", T.IntegerType(), not nullable),
         #
         # Execution time of the calculation
-        T.StructField("execute_time", T.TimestampType(), not nullable),
+        T.StructField("execution_time", T.TimestampType(), not nullable),
     ]
 )
