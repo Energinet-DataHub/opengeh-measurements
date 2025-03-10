@@ -5,7 +5,7 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.pyspark.transformations import convert_to_utc
 from geh_common.telemetry import use_span
 
-import geh_calculated_measurements.electrical_heating.domain.transformations as T
+import geh_calculated_measurements.electrical_heating.domain.transformations as trans
 from geh_calculated_measurements.common.domain import CalculatedMeasurements, calculated_measurements_factory
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
@@ -29,7 +29,7 @@ def execute(
     Returns the calculated electrical heating in UTC where the new value has changed.
     """
     # The periods are in local time and are split by settlement month
-    metering_point_periods = T.get_joined_metering_point_periods_in_local_time(
+    metering_point_periods = trans.get_joined_metering_point_periods_in_local_time(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
 
@@ -42,14 +42,16 @@ def execute(
             EphemiralColumnNames.observation_time_hourly_lt
         ),
     )
-    new_electrical_heating = T.calculate_electrical_heating_in_local_time(
+    new_electrical_heating = trans.calculate_electrical_heating_in_local_time(
         time_series_points_hourly, metering_point_periods
     )
 
-    old_electrical_heating = T.get_daily_energy_in_local_time(
+    old_electrical_heating = trans.get_daily_energy_in_local_time(
         time_series_points.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
     )
-    changed_electrical_heating = T.filter_unchanged_electrical_heating(new_electrical_heating, old_electrical_heating)
+    changed_electrical_heating = trans.filter_unchanged_electrical_heating(
+        new_electrical_heating, old_electrical_heating
+    )
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
