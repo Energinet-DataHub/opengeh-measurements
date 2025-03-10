@@ -78,11 +78,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.calculated_measurements.df,
+                actual=calculation_output.calculated_measurements.df.cache(),
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/ten_largest_quantities.csv",
-                actual=calculation_output.ten_largest_quantities.df,
+                actual=calculation_output.ten_largest_quantities.df.cache(),
             ),
         ]
     )
