@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
@@ -10,7 +11,7 @@ public class MeasurementResult(ExpandoObject raw)
 
     public string Unit => "KWH"; // _raw.unit;
 
-    public DateTimeOffset ObservationTime => _raw.observation_time;
+    public Instant ObservationTime => Instant.FromDateTimeOffset(_raw.observation_time);
 
     public decimal Quantity => _raw.quantity;
 

@@ -1,3 +1,5 @@
-﻿namespace Energinet.DataHub.Measurements.Domain;
+﻿using NodaTime;
 
-public record Point(DateTimeOffset ObservationTime, decimal Quantity, Quality Quality);
+namespace Energinet.DataHub.Measurements.Domain;
+
+public record Point(Instant ObservationTime, decimal Quantity, Quality Quality);
