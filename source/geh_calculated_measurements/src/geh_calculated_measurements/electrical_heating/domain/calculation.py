@@ -28,27 +28,34 @@ def execute(
 
     Returns the calculated electrical heating in UTC where the new value has changed.
     """
-    # The periods are in local time and are split by settlement month
+    # Join metering point periods and return them in local time and split by settlement month
     metering_point_periods = trans.get_joined_metering_point_periods_in_local_time(
         consumption_metering_point_periods, child_metering_points, time_zone
     )
 
     # It's important that time series are aggregated hourly before converting to local time.
-    # The reason is that when moving from DST to standard time, the same hour is repeated in local time.
+    # The reason is that when moving from DST to standard time, the same hour is duplicated in local time.
     time_series_points_hourly = calculate_hourly_quantity(time_series_points.df)
+
+    # Add observation time in local time
     time_series_points_hourly = time_series_points_hourly.select(
         "*",
         F.from_utc_timestamp(F.col(EphemiralColumnNames.observation_time_hourly), time_zone).alias(
             EphemiralColumnNames.observation_time_hourly_lt
         ),
     )
+
+    # Calculate electrical heating in local time
     new_electrical_heating = trans.calculate_electrical_heating_in_local_time(
         time_series_points_hourly, metering_point_periods
     )
 
+    # Get old electrical heating in local time
     old_electrical_heating = trans.get_daily_energy_in_local_time(
         time_series_points.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
     )
+
+    # Filter out unchanged electrical heating
     changed_electrical_heating = trans.filter_unchanged_electrical_heating(
         new_electrical_heating, old_electrical_heating
     )
