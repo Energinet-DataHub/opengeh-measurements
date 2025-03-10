@@ -281,10 +281,8 @@ def _is_in_settlement_year(date: Column, settlement_year_date: Column) -> Column
 
 def _begining_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
     """Return the first date, which is the 1st of the settlement_month and is no later than period_start_date."""
-    return F.when(
-        F.to_date(F.concat_ws("-", F.year(period_start_date), settlement_month, F.lit("1"))) <= period_start_date,
-        F.to_date(F.concat_ws("-", F.year(period_start_date), settlement_month, F.lit("1"))),
-    ).otherwise(F.to_date(F.concat_ws("-", F.year(period_start_date) - 1, settlement_month, F.lit("1"))))
+    settlement_date = F.make_date(F.year(period_start_date), settlement_month, F.lit(1))
+    return F.when(settlement_date <= period_start_date, settlement_date).otherwise(F.add_months(settlement_date, -12))
 
 
 def _remove_net_settlement_group_2_up2end_without_netcomsumption(
