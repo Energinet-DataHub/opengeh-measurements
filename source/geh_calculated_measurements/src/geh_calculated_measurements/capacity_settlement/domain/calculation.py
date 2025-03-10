@@ -9,7 +9,7 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
 
-from geh_calculated_measurements.capacity_settlement.domain import TenLargestQuantities
+from geh_calculated_measurements.capacity_settlement.domain import Calculations, TenLargestQuantities
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
@@ -109,7 +109,7 @@ def _create_calculations(
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
-) -> DataFrame:
+) -> Calculations:
     execution_time = datetime.now(UTC).replace(microsecond=0)
     schema = StructType(
         [
@@ -120,16 +120,18 @@ def _create_calculations(
         ]
     )
     spark = initialize_spark()
-    return spark.createDataFrame(
-        [
-            (
-                str(orchestration_instance_id),
-                calculation_year,
-                calculation_month,
-                execution_time,
-            )
-        ],
-        schema=schema,
+    return Calculations(
+        spark.createDataFrame(
+            [
+                (
+                    str(orchestration_instance_id),
+                    calculation_year,
+                    calculation_month,
+                    execution_time,
+                )
+            ],
+            schema=schema,
+        )
     )
 
 
