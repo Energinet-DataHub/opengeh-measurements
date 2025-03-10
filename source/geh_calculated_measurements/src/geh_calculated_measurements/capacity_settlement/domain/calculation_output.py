@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements, TenLargestQuantities
+from geh_calculated_measurements.capacity_settlement.domain import TenLargestQuantities
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
 
 
 @dataclass
