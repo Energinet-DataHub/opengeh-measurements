@@ -1,0 +1,40 @@
+from datetime import datetime
+from pyspark.sql import DataFrame
+
+import core.bronze.application.config.spark_session as spark_session
+import core.bronze.domain.transformations.migrate_from_migrations_transformations as migrate_from_migrations_transformations
+from core.bronze.domain.constants.column_names.migrations_silver_time_series_column_names import (
+    MigrationsSilverTimeSeriesColumnNames,
+) 
+from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
+    MigratedTransactionsRepository,
+)
+from core.silver.infrastructure.repositories.silver_measurements_repository import (
+    SilverMeasurementsRepository,
+)
+from core.silver.infrastructure.streams.writer import write_stream
+import core.silver.domain.transformations.migrations_transformation as migrations_transformation 
+from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
+
+def batch_migrated_transactions_to_silver() -> None:
+    spark = spark_session.initialize_spark()
+    bronze_migrated_transactions_repository = MigratedTransactionsRepository(spark)
+    silver_repository = SilverMeasurementsRepository()
+    
+    bronze_migrated = bronze_migrated_transactions_repository.read_measurements_bronze_migrated_transactions_as_stream()
+    
+    silver_repository.write_stream(
+        measurements=bronze_migrated,
+        orchestration_type=OrchestrationTypeEnum.MIGRATED, 
+        batch_operation=_batch_operation,
+    ) 
+
+
+def _batch_operation(batch_df: DataFrame, batch_id: int) -> None:
+    bronze_migrated_as_silver = migrations_transformation.create_by_migrated_transactions(batch_df)
+    SilverMeasurementsRepository().append_if_not_exists(
+        silver_measurements=bronze_migrated_as_silver,
+        txn_version=batch_id,
+        txn_app_id="migrated_bronze_to_silver_v1",
+    )
+    

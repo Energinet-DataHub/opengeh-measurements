@@ -13,12 +13,16 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
-
+from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
-    SilverMeasurementsRepository().write_stream(submitted_transactions, _batch_operation)
+    SilverMeasurementsRepository().write_stream(
+        submitted_transactions, 
+        OrchestrationTypeEnum.SUBMITTED, 
+        _batch_operation,
+    )
 
 
 def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
