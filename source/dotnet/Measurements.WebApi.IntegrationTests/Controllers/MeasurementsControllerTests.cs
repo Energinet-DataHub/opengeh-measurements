@@ -17,6 +17,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
+        var expectedBody = ExpectedBody();
         var url = CreateUrl(expectedMeteringPointId);
 
         // Act
@@ -24,15 +25,10 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         actualResponse.EnsureSuccessStatusCode();
         var actualBody = await actualResponse.Content.ReadAsStringAsync();
         var actualContentType = actualResponse.Content.Headers.ContentType!.MediaType!;
-        // var actualMeasurementResponse = new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
 
         // Assert
         Assert.Equal("application/json", actualContentType);
-        Assert.Equal(ExpectedBody(), actualBody);
-
-        // Assert.Equal(expectedMeteringPointId, actualMeasurementResponse.MeteringPointId);
-        // Assert.Equal(24, actualMeasurementResponse.Points.Count());
-        // Assert.True(actualMeasurementResponse.Points.All(p => p.Quality == Quality.Measured));
+        Assert.Equal(expectedBody, actualBody);
     }
 
     private string CreateUrl(string expectedMeteringPointId)
