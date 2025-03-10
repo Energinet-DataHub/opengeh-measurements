@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS {catalog_name}.{calculated_measurements_internal_data
 (
     orchestration_instance_id STRING NOT NULL,
     calculation_year INT NOT NULL,
-    calculation_month INT NOT NULL
-    execution_time TIMESTAMP NOT NULL,
+    calculation_month INT NOT NULL,
+    execution_time TIMESTAMP NOT NULL
 )
 USING DELTA
 TBLPROPERTIES (
