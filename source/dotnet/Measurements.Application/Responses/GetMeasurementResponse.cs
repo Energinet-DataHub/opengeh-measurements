@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
+using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Domain;
 
@@ -41,7 +42,7 @@ public class GetMeasurementResponse
         }
 
         return meteringPointId == string.Empty || unit == Unit.Unknown || points.Count <= 0
-            ? throw new Exception("Measurement could not be created from result.")
+            ? throw new MeasurementsNotFoundException("No measurements found for metering point during period.")
             : new GetMeasurementResponse(meteringPointId, unit, points);
     }
 
