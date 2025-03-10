@@ -4,8 +4,15 @@ import uuid
 import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
+from geh_common.domain.types import MeteringPointType
 
 from tests.capacity_settlement.subsystem_tests.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+from tests.capacity_settlement.subsystem_tests.seed_gold_table import GoldTableRow
+
+METERING_POINT_ID = "170000040000000201"
+CALCULATION_YEAR = 2025
+CALCULATION_MONTH = 1
+OBSERVATION_TIME = "2025-01-01T00:00:00Z"
 
 
 class TestCapacitySettlement(unittest.TestCase):
@@ -16,14 +23,21 @@ class TestCapacitySettlement(unittest.TestCase):
     @pytest.fixture(autouse=True, scope="class")
     def setup_fixture(self, capacity_settlement_fixture: CapacitySettlementFixture) -> None:
         TestCapacitySettlement.fixture = capacity_settlement_fixture
+        TestCapacitySettlement.fixture.seed_gold_table(
+            GoldTableRow(
+                metering_point_id=METERING_POINT_ID,
+                observation_time=OBSERVATION_TIME,
+                metering_point_type=MeteringPointType,
+            )
+        )
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
         self.fixture.job_state.calculation_input.orchestration_instance_id = uuid.uuid4()
-        self.fixture.job_state.calculation_input.year = 2024
-        self.fixture.job_state.calculation_input.month = 1
+        self.fixture.job_state.calculation_input.year = CALCULATION_YEAR
+        self.fixture.job_state.calculation_input.month = CALCULATION_MONTH
 
         # Assert
         assert self.fixture.job_state.calculation_input.job_id is not None

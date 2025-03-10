@@ -6,9 +6,9 @@ from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.capacity_settlement.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.capacity_settlement.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from tests.capacity_settlement.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 
 class CalculationInput:
@@ -24,46 +24,8 @@ class JobState:
     calculation_input: CalculationInput = CalculationInput()
 
 
-def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
-    return f"""
-        INSERT INTO {catalog}.{schema}.{table} (
-            metering_point_id,
-            orchestration_type,
-            observation_time,
-            quantity,
-            quality,
-            metering_point_type,
-            transaction_id,
-            transaction_creation_datetime,
-            created,
-            modified
-        )
-        SELECT
-            'test' AS metering_point_id,
-            'DUMMY_VALUE' AS orchestration_type,
-            '2025-12-02 00:00:00' AS observation_time,
-            1.7 AS quantity,
-            'Medium' AS quality,
-            'test' AS metering_point_type,
-            'test' AS transaction_id,
-            '2025-12-02 00:00:00' AS transaction_creation_datetime,
-            '2025-12-02 00:00:00' AS created,
-            '2025-12-02 00:00:00' AS modified
-    """
-
-
 class CapacitySettlementFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration):
-        self.databricks_api_client = DatabricksApiClient(
-            environment_configuration.databricks_token,
-            environment_configuration.workspace_url,
-        ).execute_statement(
-            warehouse_id=environment_configuration.warehouse_id,
-            statement=seed_data_query(
-                catalog=environment_configuration.catalog_name,
-                schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-            ),
-        )
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
@@ -71,6 +33,15 @@ class CapacitySettlementFixture:
             vault_url=f"https://{environment_configuration.shared_keyvault_name}.vault.azure.net/",
             credential=self.credentials,
         )
+        self.environment_configuration = environment_configuration
+        self.databricks_api_client = DatabricksApiClient(
+            self.environment_configuration.databricks_token,
+            self.environment_configuration.workspace_url,
+        )
+        self.gold_table_seeder = GoldTableSeeder(environment_configuration)
+
+    def seed_gold_table(self, row: GoldTableRow) -> None:
+        self.gold_table_seeder.seed_gold_table(row)
 
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id("CapacitySettlement")
