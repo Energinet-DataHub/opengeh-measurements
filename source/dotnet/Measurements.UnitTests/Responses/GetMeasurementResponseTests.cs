@@ -14,9 +14,9 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementResult>
         {
-            new(CreateRaw("KWH", "measured")),
-            new(CreateRaw("KWH", "measured")),
-            new(CreateRaw("KWH", "measured")),
+            new(CreateRaw()),
+            new(CreateRaw()),
+            new(CreateRaw()),
         };
 
         // Act
