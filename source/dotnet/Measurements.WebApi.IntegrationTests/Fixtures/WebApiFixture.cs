@@ -36,7 +36,6 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         const string tableName = "measurements";
         var columnDefinitions = CreateMeasurementsColumnDefinitions();
-        var columnNames = columnDefinitions.Keys.ToArray();
         var rows = CreateRows();
 
         await DatabricksSchemaManager.CreateSchemaAsync();
@@ -57,12 +56,6 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-
-        // This can be used for changing registrations in the container (e.g. for mocks).
-        builder.ConfigureServices(services =>
-        {
-            services.AddSingleton<IAuthorizationHandler>(new AllowAnonymous());
-        });
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
@@ -77,16 +70,5 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
         return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
-    }
-
-    private sealed class AllowAnonymous : IAuthorizationHandler
-    {
-        public Task HandleAsync(AuthorizationHandlerContext context)
-        {
-            foreach (var requirement in context.PendingRequirements.ToList())
-                context.Succeed(requirement);
-
-            return Task.CompletedTask;
-        }
     }
 }

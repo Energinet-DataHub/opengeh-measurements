@@ -2,7 +2,6 @@
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Extensions;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
-using NodaTime;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
@@ -17,7 +16,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var url = CreateUrl(expectedMeteringPointId);
+        const string startDate = "2022-01-01T00:00:00Z";
+        const string endDate = "2022-01-02T00:00:00Z";
+        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await _client.GetAsync(url);
@@ -27,13 +28,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         Assert.Equal(expectedMeteringPointId, actual.MeteringPointId);
         Assert.Equal(Unit.KWh, actual.Unit);
         Assert.Equal(24, actual.Points.Count);
+        Assert.True(actual.Points.All(p => p.ObservationTime.ToString() == startDate));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
-    private static string CreateUrl(string expectedMeteringPointId)
+    private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
     {
-        var startDate = Instant.FromUtc(2022, 1, 1, 0, 0);
-        var endDate = Instant.FromUtc(2022, 1, 2, 0, 0);
         return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
