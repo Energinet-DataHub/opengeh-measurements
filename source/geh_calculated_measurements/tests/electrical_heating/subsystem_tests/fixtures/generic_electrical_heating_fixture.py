@@ -1,5 +1,4 @@
 import uuid
-from xmlrpc.client import Boolean
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
@@ -41,8 +40,8 @@ SELECT
     'submitted' AS orchestration_type"""
 
 
-class GenericElectricalHeatingFixture:
-    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: Boolean):
+class BaseJobFixture:
+    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: bool):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
