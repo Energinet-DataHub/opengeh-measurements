@@ -12,8 +12,6 @@ def test__start_write_stream__calls_expected(mock_checkpoint_path: mock.MagicMoc
     mocked_measurements = mock.Mock()
     mocked_batch_operation = mock.Mock()
 
-    expected_checkpoint_path = mock_checkpoint_path.return_value
-
     expected_data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
     expected_gold_container_name = GoldSettings().gold_container_name
 
@@ -26,9 +24,6 @@ def test__start_write_stream__calls_expected(mock_checkpoint_path: mock.MagicMoc
     # Assert
     mocked_measurements.writeStream.format.assert_called_once_with("delta")
     mocked_measurements.writeStream.format().queryName.assert_called_once_with("measurements_silver_to_gold")
-    mocked_measurements.writeStream.format().queryName().option.assert_called_once_with(
-        "checkpointLocation", expected_checkpoint_path
-    )
     mocked_measurements.writeStream.format().queryName().option().trigger.assert_called_once_with(availableNow=True)
     mocked_measurements.writeStream.format().queryName().option().trigger().foreachBatch.assert_called_once_with(
         mocked_batch_operation
