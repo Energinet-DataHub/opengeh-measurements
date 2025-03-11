@@ -191,10 +191,8 @@ def _close_open_ended_periods(
 
 def _settlement_year_end_datetime(settlement_month: Column) -> Column:
     """Return the end of the settlement year based on the settlement month (integer)."""
-    return F.when(
-        F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))) <= F.current_date(),
-        F.add_months(F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))), 12),
-    ).otherwise(F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1"))))
+    temp = F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1")))
+    return F.when(temp <= F.current_date(), F.add_months(temp, 12)).otherwise(temp)
 
 
 def _find_parent_child_overlap_period(
