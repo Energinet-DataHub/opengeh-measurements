@@ -4,12 +4,8 @@ from typing import Callable, Generator
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType
 
 import tests.helpers.schema_helper as schema_helper
-from core.settings.silver_settings import SilverSettings
-from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
-from core.silver.infrastructure.config import SilverTableNames
 
 
 @pytest.fixture(scope="session")
@@ -72,41 +68,3 @@ def tests_path(source_path: str) -> str:
     file located directly in the integration tests folder.
     """
     return f"{source_path}/tests/migration"
-
-
-@pytest.fixture(scope="session")
-def create_silver_tables(spark: SparkSession) -> None:
-    silver_settings = SilverSettings()
-
-    create_table_from_schema(
-        spark=spark,
-        database=silver_settings.silver_database_name,
-        table_name=SilverTableNames.silver_measurements,
-        schema=silver_measurements_schema,
-    )
-
-
-def create_table_from_schema(
-    spark: SparkSession,
-    database: str,
-    table_name: str,
-    schema: StructType,
-    enable_change_data_feed: bool = False,
-) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {database}")
-
-    schema_df = spark.createDataFrame([], schema=schema)
-    ddl = schema_df._jdf.schema().toDDL()
-
-    sql_command = f"CREATE TABLE IF NOT EXISTS {database}.{table_name} ({ddl}) USING DELTA"
-
-    tbl_properties = []
-
-    if enable_change_data_feed:
-        tbl_properties.append("delta.enableChangeDataFeed = true")
-
-    if len(tbl_properties) > 0:
-        tbl_properties_string = ", ".join(tbl_properties)
-        sql_command += f" TBLPROPERTIES ({tbl_properties_string})"
-
-    spark.sql(sql_command)

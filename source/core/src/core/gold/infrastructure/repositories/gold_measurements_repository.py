@@ -2,7 +2,7 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
-import core.gold.application.config.spark as spark_session
+import core.gold.infrastructure.config.spark as spark_session
 import core.utility.delta_table_helper as delta_table_helper
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.infrastructure.config import GoldTableNames
