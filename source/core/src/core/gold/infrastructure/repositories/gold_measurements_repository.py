@@ -35,9 +35,7 @@ class GoldMeasurementsRepository:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        stream_settings = StreamingSettings()
-
-        if stream_settings.continuous_streaming_enabled is False:
+        if StreamingSettings().continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
