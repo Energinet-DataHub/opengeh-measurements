@@ -1,0 +1,30 @@
+﻿using Energinet.DataHub.Measurements.Client;
+using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Client.Extensions.Options;
+using Measurements.Client.UnitTests.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Measurements.Client.UnitTests;
+
+public class ClientExtensionsTests
+{
+    [Fact]
+    public void AddMeasurementsClient_WhenOptionsAreConfigured_ThenClientsCanBeCreated()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddInMemoryConfiguration(new Dictionary<string, string?>()
+        {
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost:5001",
+        });
+
+        // Act
+        services.AddMeasurementsClient();
+
+        // Assert
+        var actual = services
+            .BuildServiceProvider()
+            .GetRequiredService<IMeasurementsClient>();
+        Assert.IsType<MeasurementsClient>(actual);
+    }
+}
