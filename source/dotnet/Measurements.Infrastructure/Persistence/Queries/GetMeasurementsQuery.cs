@@ -22,11 +22,11 @@ public class GetMeasurementsQuery : DatabricksStatement
     protected override string GetSqlStatement()
     {
         return
-            $"select {MeasurementsColumnNames.MeteringPointId}, {MeasurementsColumnNames.ObservationTime}, {MeasurementsColumnNames.Quantity}, {MeasurementsColumnNames.Quality} " +
-            $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.measurements " +
-            $"where {MeasurementsColumnNames.MeteringPointId} = '{_meteringPointId}' " +
-            $"and {MeasurementsColumnNames.ObservationTime} >= '{_startDate}' " +
-            $"and {MeasurementsColumnNames.ObservationTime} < '{_endDate}' " +
-            $"order by {MeasurementsColumnNames.ObservationTime}";
+            $"select {MeasurementsCatalogConstants.MeteringPointIdColumnName}, {MeasurementsCatalogConstants.ObservationTimeColumnName}, {MeasurementsCatalogConstants.QuantityColumnName}, {MeasurementsCatalogConstants.QualityColumnName} " +
+            $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsCatalogConstants.TableName} " +
+            $"where {MeasurementsCatalogConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
+            $"and {MeasurementsCatalogConstants.ObservationTimeColumnName} >= '{_startDate}' " +
+            $"and {MeasurementsCatalogConstants.ObservationTimeColumnName} < '{_endDate}' " +
+            $"order by {MeasurementsCatalogConstants.ObservationTimeColumnName}";
     }
 }
