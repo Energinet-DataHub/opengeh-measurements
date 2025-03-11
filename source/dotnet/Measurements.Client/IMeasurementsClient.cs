@@ -12,5 +12,5 @@ public interface IMeasurementsClient
     /// Get measurement for a specific day.
     /// </summary>
     /// <returns>Measurement for the specified day. Null if no measurements exists.</returns>
-    Task<MeasurementDto?> GetMeasurementAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken);
+    Task<MeasurementDto?> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken);
 }

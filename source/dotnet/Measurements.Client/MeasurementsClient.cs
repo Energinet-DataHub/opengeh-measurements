@@ -15,7 +15,7 @@ public class MeasurementsClient : IMeasurementsClient
         _measurementsApiClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
-    public async Task<MeasurementDto?> GetMeasurementAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<MeasurementDto?> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var response = await _measurementsApiClient
             .GetAsync(
