@@ -2,6 +2,7 @@ from datetime import datetime
 
 from geh_common.databricks import DatabricksApiClient
 from geh_common.domain.types import MeteringPointType
+
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 

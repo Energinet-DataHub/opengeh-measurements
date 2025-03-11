@@ -7,8 +7,8 @@ from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.testing import LogQueryClientWrapper
-from tests.subsystem_tests.capacity_settlement.environment_configuration import EnvironmentConfiguration
-from tests.capacity_settlement.seed_gold_table import GoldTableRow, GoldTableSeeder
+from tests.subsystem_tests.capacity_settlement.seed_gold_table import GoldTableRow, GoldTableSeeder
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 class CalculationInput:
