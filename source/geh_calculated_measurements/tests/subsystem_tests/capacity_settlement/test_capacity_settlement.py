@@ -6,8 +6,8 @@ from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.domain.types import MeteringPointType
 
-from tests.capacity_settlement.subsystem_tests.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
-from tests.capacity_settlement.subsystem_tests.seed_gold_table import GoldTableRow
+from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+from tests.subsystem_tests.capacity_settlement.seed_gold_table import GoldTableRow
 
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
