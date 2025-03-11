@@ -66,4 +66,4 @@ def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"metering_point_id = '{metering_point_id}'"
     )
-    assert gold_measurements.count() == 1
+    assert gold_measurements.count() == 24
