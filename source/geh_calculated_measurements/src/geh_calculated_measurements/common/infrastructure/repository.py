@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 
 from geh_calculated_measurements.capacity_settlement.domain import Calculations, TenLargestQuantities
 from geh_calculated_measurements.common.domain import (
@@ -24,50 +24,50 @@ class Repository:
             return f"{self._catalog_name}.{database_name}.{table_name}"
         return f"{database_name}.{table_name}"
 
-    def write_calculated_measurements(
-        self, calculated_measurements: CalculatedMeasurements, write_mode: str = "append"
-    ) -> None:
-        calculated_measurements.df.write.format("delta").mode(write_mode).saveAsTable(
-            self._get_full_table_path(CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME)
-        )
-
-    def read_calculated_measurements(self) -> CalculatedMeasurements:
-        return CalculatedMeasurements(
-            self._spark.read.table(
-                self._get_full_table_path(CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME)
-            )
-        )
-
-    def write_calculations(self, calculations: Calculations, write_mode: str = "append") -> None:
-        calculations.df.write.format("delta").mode(write_mode).saveAsTable(
-            self._get_full_table_path(
-                CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME
-            )
-        )
-
-    def read_calculations(self) -> Calculations:
-        return Calculations(
-            self._spark.read.table(
-                self._get_full_table_path(
-                    CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME
-                )
-            )
-        )
-
-    def write_ten_largest_quantities(
-        self, ten_largest_quantities: TenLargestQuantities, write_mode: str = "append"
-    ) -> None:
-        ten_largest_quantities.df.write.format("delta").mode(write_mode).saveAsTable(
-            self._get_full_table_path(
+    def _map_data_to_table_and_dataframe(
+        self, data: CalculatedMeasurements | Calculations | TenLargestQuantities
+    ) -> tuple[str, DataFrame]:
+        """Map the input data to the corresponding table name and DataFrame."""
+        if isinstance(data, CalculatedMeasurements):
+            table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME
+            df = data.df
+        elif isinstance(data, Calculations):
+            table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME
+            df = data.df
+        elif isinstance(data, TenLargestQuantities):
+            table_name = (
                 CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME
             )
-        )
+            df = data.df
+        else:
+            raise ValueError(f"Unsupported data type: {type(data)}")
 
-    def read_ten_largest_quantities(self) -> TenLargestQuantities:
-        return TenLargestQuantities(
-            self._spark.read.table(
-                self._get_full_table_path(
-                    CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME
-                )
-            )
-        )
+        return table_name, df
+
+    def write(
+        self, data: CalculatedMeasurements | Calculations | TenLargestQuantities, write_mode: str = "append"
+    ) -> None:
+        """Write the data to the specified Delta table."""
+        table_name, df = self._map_data_to_table_and_dataframe(data)
+
+        if table_name is not None and df is not None:
+            df.write.format("delta").mode(write_mode).saveAsTable(self._get_full_table_path(table_name))
+        else:
+            raise ValueError("Could not determine table name or dataframe from input data.")
+
+    DATA_TYPE_TO_TABLE_NAME = {
+        CalculatedMeasurements: CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
+        Calculations: CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME,
+        TenLargestQuantities: CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME,
+    }
+
+    def read(
+        self, data_type: type[CalculatedMeasurements | Calculations | TenLargestQuantities]
+    ) -> CalculatedMeasurements | Calculations | TenLargestQuantities:
+        """Read data from a Delta table."""
+        table_name = self.DATA_TYPE_TO_TABLE_NAME.get(data_type)
+        if not table_name:
+            raise ValueError(f"Unsupported data type: {data_type}")
+
+        df = self._spark.read.table(self._get_full_table_path(table_name))
+        return data_type(df)

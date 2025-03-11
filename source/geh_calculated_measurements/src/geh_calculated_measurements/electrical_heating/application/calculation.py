@@ -36,4 +36,4 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
 
     # Write the calculated measurements
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
-    calculated_measurements_repository.write_calculated_measurements(calculated_measurements)
+    calculated_measurements_repository.write(calculated_measurements)
