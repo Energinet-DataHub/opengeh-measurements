@@ -31,7 +31,16 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.time_zone,
     )
 
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
+
     # Write the calculated measurements
     calculated_measurements = calculation_output.calculated_measurements
-    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements)
+
+    # Write the calculations output
+    calculations = calculation_output.calculations
+    calculated_measurements_repository.write_calculations(calculations)
+
+    # Write the ten largest quantities
+    ten_largest_quantities = calculation_output.ten_largest_quantities
+    calculated_measurements_repository.write_ten_largest_quantities(ten_largest_quantities)
