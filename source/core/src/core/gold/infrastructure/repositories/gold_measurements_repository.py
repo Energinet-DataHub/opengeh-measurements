@@ -24,13 +24,14 @@ class GoldMeasurementsRepository:
         source_table: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
+        query_name = "measurements_silver_to_gold"
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            self.data_lake_settings, self.gold_database_name, GoldTableNames.gold_measurements
+            self.data_lake_settings, self.gold_container_name, GoldTableNames.gold_measurements
         )
 
         write_stream = (
-            source_table.writeStream.outputMode("append")
-            .format("delta")
+            source_table.writeStream.format("delta")
+            .queryName(query_name)
             .option("checkpointLocation", checkpoint_location)
         )
 
