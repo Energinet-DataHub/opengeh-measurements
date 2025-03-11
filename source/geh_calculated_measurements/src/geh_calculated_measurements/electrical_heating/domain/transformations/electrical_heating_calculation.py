@@ -4,7 +4,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.electrical_heating.domain.debug import debugging, log_dataframe
+from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 from geh_calculated_measurements.electrical_heating.domain.ephemiral_column_names import EphemiralColumnNames
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
@@ -147,43 +147,37 @@ def _join_source_metering_point_periods_with_energy_hourly(
 def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
-    # Prevent multiple evaluations of this expensive data frame
-    periods_with_hourly_energy = periods_with_hourly_energy.cache()
+    periods_with_hourly_energy = periods_with_hourly_energy.select(
+        "*",
+        (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date()).alias(
+            "is_end_of_period"
+        ),
+    )
 
-    periods_with_daily_energy_and_limit_no_nsg = (
+    # Prevent multiple evaluations of this expensive data frame
+    periods_with_hourly_energy.cache()
+
+    no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(
         periods_with_hourly_energy.where(
-            F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) > F.current_date()
-        )
-        .groupBy(
-            EphemiralColumnNames.electrical_heating_metering_point_id,
-            EphemiralColumnNames.parent_period_start,
-            EphemiralColumnNames.parent_period_end,
-            F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(ContractColumnNames.date),
-        )
-        .agg(
-            F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity),
-            F.first(EphemiralColumnNames.base_period_limit).alias(EphemiralColumnNames.period_energy_limit),
+            F.col(ContractColumnNames.net_settlement_group).isNull() | (~F.col("is_end_of_period"))
         )
     )
-    log_dataframe(periods_with_daily_energy_and_limit_no_nsg, "periods_with_daily_energy_and_limit_no_nsg")
 
-    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2_end_of_period(
+    nsg2_end_of_period = _calculate_period_limit__net_settlement_group_2_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
-            & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date())
+            & F.col("is_end_of_period")
         )
     )
 
-    periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6_end_of_period(
+    nsg6_end_of_period = _calculate_period_limit__net_settlement_group_6_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
-            & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date())
+            & F.col("is_end_of_period")
         )
     )
 
-    periods_with_daily_energy_and_limit = periods_with_daily_energy_and_limit_no_nsg.union(
-        periods_with_daily_energy_and_limit_nsg2
-    ).union(periods_with_daily_energy_and_limit_nsg6)
+    periods_with_daily_energy_and_limit = no_nsg_or_up2end.union(nsg2_end_of_period).union(nsg6_end_of_period)
 
     return periods_with_daily_energy_and_limit
 
@@ -197,6 +191,21 @@ def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataF
             * _ELECTRICAL_HEATING_LIMIT_YEARLY
             / _days_in_settlement_year(F.col(EphemiralColumnNames.settlement_month_datetime))
         ).alias(EphemiralColumnNames.base_period_limit),
+    )
+
+
+@debugging()
+def _calculate_period_limit__no_net_settlement_group_or_up2end(
+    periods_with_energy_hourly: DataFrame,
+) -> DataFrame:
+    return periods_with_energy_hourly.groupBy(
+        EphemiralColumnNames.electrical_heating_metering_point_id,
+        EphemiralColumnNames.parent_period_start,
+        EphemiralColumnNames.parent_period_end,
+        F.date_trunc("day", F.col(EphemiralColumnNames.observation_time_hourly_lt)).alias(ContractColumnNames.date),
+    ).agg(
+        F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity),
+        F.first(EphemiralColumnNames.base_period_limit).alias(EphemiralColumnNames.period_energy_limit),
     )
 
 
