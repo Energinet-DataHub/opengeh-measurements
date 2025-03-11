@@ -7,11 +7,9 @@ from core.silver.infrastructure.repositories.silver_measurements_repository impo
 
 def stream_measurements_silver_to_gold() -> None:
     silver_measurements = SilverMeasurementsRepository().read_stream()
-    print("TEST ME HERE")  # noqa: T201
     GoldMeasurementsRepository().write_stream(silver_measurements, _batch_operation)
 
 
 def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
     gold_measurements = transformations.transform_silver_to_gold(silver_measurements)
-    print("TEST ME HERE2 ")  # noqa: T201
     GoldMeasurementsRepository().append_if_not_exists(gold_measurements)
