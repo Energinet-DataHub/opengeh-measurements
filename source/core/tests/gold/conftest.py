@@ -1,40 +1,13 @@
 import os
-from typing import Callable, Generator
+from typing import Callable
 
 import pytest
-from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
-import tests.helpers.schema_helper as schema_helper
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 from core.silver.infrastructure.config import SilverTableNames
-
-
-@pytest.fixture(scope="session")
-def spark(tests_path: str) -> Generator[SparkSession, None, None]:
-    warehouse_location = f"{tests_path}/__spark-warehouse__"
-
-    session = configure_spark_with_delta_pip(
-        SparkSession.builder.config("spark.sql.warehouse.dir", warehouse_location)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-        .config(
-            "javax.jdo.option.ConnectionURL",
-            f"jdbc:derby:;databaseName={tests_path}/__metastore_db__;create=true",
-        )
-        .enableHiveSupport()
-    ).getOrCreate()
-
-    schema_helper.create_schemas(session)
-
-    yield session
-
-    session.stop()
 
 
 @pytest.fixture(scope="session")

@@ -10,6 +10,7 @@ from pyspark.sql import SparkSession
 
 import core.utility.shared_helpers as shared_helpers
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
+import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.schema_helper as schema_helper
 from core.migrations import migrations_runner
 
@@ -143,7 +144,10 @@ def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_loggin
 
 @pytest.fixture
 def mock_checkpoint_path():
+    unique_checkpoint_path = identifier_helper.generate_random_string()
     with patch.object(
-        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/__checkpoints__"
+        shared_helpers,
+        shared_helpers.get_checkpoint_path.__name__,
+        return_value=f"tests/__checkpoints__/{unique_checkpoint_path}",
     ) as mock_checkpoint_path:
         yield mock_checkpoint_path
