@@ -12,4 +12,5 @@ def stream_measurements_silver_to_gold() -> None:
 
 def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
     gold_measurements = transformations.transform_silver_to_gold(silver_measurements)
+    gold_measurements.show()
     GoldMeasurementsRepository().append_if_not_exists(gold_measurements)
