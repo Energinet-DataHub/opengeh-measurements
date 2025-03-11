@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 from pyspark.sql import DataFrame
 
-DEBUG = True
+DEBUG = False
 ROWS = 50
 
 

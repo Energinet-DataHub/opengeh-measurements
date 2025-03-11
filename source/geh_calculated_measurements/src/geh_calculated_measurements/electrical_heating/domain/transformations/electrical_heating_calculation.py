@@ -151,7 +151,9 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = periods_with_hourly_energy.cache()
 
     periods_with_daily_energy_and_limit_no_nsg = (
-        periods_with_hourly_energy.where(F.col(ContractColumnNames.net_settlement_group).isNull())
+        periods_with_hourly_energy.where(
+            F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) > F.current_date()
+        )
         .groupBy(
             EphemiralColumnNames.electrical_heating_metering_point_id,
             EphemiralColumnNames.parent_period_start,
@@ -165,23 +167,20 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     )
     log_dataframe(periods_with_daily_energy_and_limit_no_nsg, "periods_with_daily_energy_and_limit_no_nsg")
 
-    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2_and_6(
+    periods_with_daily_energy_and_limit_nsg2 = _calculate_period_limit__net_settlement_group_2_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
-            | (
-                (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
-                & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) > F.current_date())
-            )
+            & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date())
         )
     )
-    log_dataframe(periods_with_daily_energy_and_limit_nsg2, "periods_with_daily_energy_and_limit_nsg2")
+
     periods_with_daily_energy_and_limit_nsg6 = _calculate_period_limit__net_settlement_group_6_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
             & (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date())
         )
     )
-    log_dataframe(periods_with_daily_energy_and_limit_nsg6, "periods_with_daily_energy_and_limit_nsg6")
+
     periods_with_daily_energy_and_limit = periods_with_daily_energy_and_limit_no_nsg.union(
         periods_with_daily_energy_and_limit_nsg2
     ).union(periods_with_daily_energy_and_limit_nsg6)
@@ -202,7 +201,7 @@ def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataF
 
 
 @debugging()
-def _calculate_period_limit__net_settlement_group_2_and_6(
+def _calculate_period_limit__net_settlement_group_2_end_of_period(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
     """Calculate the period limit.
@@ -210,7 +209,6 @@ def _calculate_period_limit__net_settlement_group_2_and_6(
     For net settlement group 2: Both up to end and end of period."
     For net settlement group 6: Only up 2 end of period."
     """
-    # Move to .agg() below?
     df = periods_with_energy_hourly.select(
         "*",
         F.coalesce(
@@ -253,9 +251,9 @@ def _calculate_period_limit__net_settlement_group_2_and_6(
             EphemiralColumnNames.parent_period_end,
             ContractColumnNames.date,
             ContractColumnNames.quantity,
-            (F.col(EphemiralColumnNames.base_period_limit) - F.col("period_limit_reduction")).alias(
-                EphemiralColumnNames.period_energy_limit
-            ),
+            (
+                F.greatest(F.col(EphemiralColumnNames.base_period_limit) - F.col("period_limit_reduction"), F.lit(0))
+            ).alias(EphemiralColumnNames.period_energy_limit),
         )
     )
 
