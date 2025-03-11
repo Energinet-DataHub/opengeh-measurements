@@ -9,10 +9,10 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     EphemiralColumnNames,
 )
-from geh_calculated_measurements.electrical_heating.domain.debug import debugging
+from geh_calculated_measurements.testing import testing
 
 
-@debugging()
+@testing()
 def get_joined_metering_point_periods_in_local_time(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
@@ -30,7 +30,7 @@ def get_joined_metering_point_periods_in_local_time(
     return metering_point_periods
 
 
-@debugging()
+@testing()
 def _join_children_to_parent_metering_point(
     child_metering_point_and_periods: DataFrame,
     parent_metering_point_and_periods: DataFrame,

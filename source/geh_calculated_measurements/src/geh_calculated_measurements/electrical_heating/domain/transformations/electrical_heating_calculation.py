@@ -4,8 +4,8 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.electrical_heating.domain.debug import debugging
 from geh_calculated_measurements.electrical_heating.domain.ephemiral_column_names import EphemiralColumnNames
+from geh_calculated_measurements.testing import testing
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -50,7 +50,7 @@ def _find_source_metering_point_for_energy(metering_point_periods: DataFrame) ->
     )
 
 
-@debugging()
+@testing()
 def _join_source_metering_point_periods_with_energy_hourly(
     parent_and_child_metering_point_and_periods_in_localtime: DataFrame,
     time_series_points_hourly: DataFrame,
@@ -143,7 +143,7 @@ def _join_source_metering_point_periods_with_energy_hourly(
     )
 
 
-@debugging()
+@testing()
 def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
@@ -182,7 +182,7 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     return periods_with_daily_energy_and_limit
 
 
-@debugging()
+@testing()
 def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataFrame:
     return periods_with_energy_hourly.select(
         "*",
@@ -194,7 +194,7 @@ def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataF
     )
 
 
-@debugging()
+@testing()
 def _calculate_period_limit__no_net_settlement_group_or_up2end(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
@@ -209,7 +209,7 @@ def _calculate_period_limit__no_net_settlement_group_or_up2end(
     )
 
 
-@debugging()
+@testing()
 def _calculate_period_limit__net_settlement_group_2_end_of_period(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
@@ -267,7 +267,7 @@ def _calculate_period_limit__net_settlement_group_2_end_of_period(
     )
 
 
-@debugging()
+@testing()
 def _calculate_period_limit__net_settlement_group_6_end_of_period(
     periods_with_energy_hourly: DataFrame,
 ) -> DataFrame:
