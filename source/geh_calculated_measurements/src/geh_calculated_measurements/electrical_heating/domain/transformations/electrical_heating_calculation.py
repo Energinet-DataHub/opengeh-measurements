@@ -147,6 +147,9 @@ def _join_source_metering_point_periods_with_energy_hourly(
 def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
+    # Prevent multiple evaluations of this expensive data frame
+    periods_with_hourly_energy = periods_with_hourly_energy.cache()
+
     periods_with_daily_energy_and_limit_no_nsg = (
         periods_with_hourly_energy.where(F.col(ContractColumnNames.net_settlement_group).isNull())
         .groupBy(
