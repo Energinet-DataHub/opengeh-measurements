@@ -53,10 +53,8 @@ def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
     spark: SparkSession, migrations_executed, mock_checkpoint_path
 ) -> None:
     # Arrange
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    silver_measurements = (
-        SilverMeasurementsBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
-    )
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    silver_measurements = SilverMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
     table_helper.append_to_table(
         silver_measurements, SilverSettings().silver_database_name, SilverTableNames.silver_measurements
     )
@@ -66,6 +64,6 @@ def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
 
     # Arrange
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
-        f"orchestration_instance_id = '{orchestration_instance_id}'"
+        f"metering_point_id = '{metering_point_id}'"
     )
     assert gold_measurements.count() == 1
