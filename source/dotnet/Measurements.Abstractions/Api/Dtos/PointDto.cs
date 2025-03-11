@@ -1,6 +1,6 @@
 ﻿using NodaTime;
 
-namespace Measurements.Abstractions.Api.Dtos;
+namespace Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 
 /// <summary>
 /// Represents a single measurement point.

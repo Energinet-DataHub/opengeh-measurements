@@ -5,13 +5,13 @@ namespace Energinet.DataHub.Measurements.Application.Persistence;
 /// <summary>
 /// Repository for fetching measurements.
 /// </summary>
-public interface IMeasurementRepository
+public interface IMeasurementsRepository
 {
     /// <summary>
-    /// Get measurement for a given metering point in period defined by from and to timestamps.
+    /// Get measurements for a given metering point in period defined by from and to timestamps.
     /// </summary>
     /// <param name="meteringPointId"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    IAsyncEnumerable<MeasurementResult> GetMeasurementAsync(string meteringPointId, Instant from, Instant to);
+    IAsyncEnumerable<MeasurementsResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to);
 }

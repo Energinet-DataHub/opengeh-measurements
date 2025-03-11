@@ -1,10 +1,9 @@
-﻿using Energinet.DataHub.Measurements.Client;
-using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Measurements.Client.UnitTests.Extensions;
+using Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Measurements.Client.UnitTests;
+namespace Energinet.DataHub.Measurements.Client.UnitTests;
 
 public class ClientExtensionsTests
 {

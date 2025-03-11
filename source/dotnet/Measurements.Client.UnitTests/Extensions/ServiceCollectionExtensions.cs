@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Measurements.Client.UnitTests.Extensions;
+namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
 
 public static class ServiceCollectionExtensions
 {

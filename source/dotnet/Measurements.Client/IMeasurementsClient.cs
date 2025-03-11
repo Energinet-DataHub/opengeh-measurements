@@ -1,5 +1,5 @@
-﻿using Measurements.Abstractions.Api.Dtos;
-using Measurements.Abstractions.Api.Queries;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
+using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 
 namespace Energinet.DataHub.Measurements.Client;
 

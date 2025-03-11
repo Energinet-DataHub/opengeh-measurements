@@ -1,6 +1,6 @@
 ﻿using NodaTime;
 
-namespace Measurements.Abstractions.Api.Queries;
+namespace Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 
 /// <summary>
 /// Query for getting all measurements for a metering point on a specific day.

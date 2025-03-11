@@ -1,4 +1,4 @@
-﻿namespace Measurements.Abstractions.Api.Dtos;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 
 /// <summary>
 /// Represents a series of measurements (points) for a single metering point.
