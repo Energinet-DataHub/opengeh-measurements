@@ -65,7 +65,7 @@ def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
     sut.stream_measurements_silver_to_gold()
 
     # Arrange
-    gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.executed_migrations}").where(
+    gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )
     assert gold_measurements.count() == 1
