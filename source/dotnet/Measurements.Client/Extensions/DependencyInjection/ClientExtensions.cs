@@ -19,7 +19,7 @@ public static class ClientExtensions
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
-        services.AddHttpClient(MeasurementsClientNames.MeasurementsApi, (sp, httpClient) =>
+        services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (sp, httpClient) =>
         {
             var options = sp.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             httpClient.BaseAddress = new Uri(options.BaseAddress);

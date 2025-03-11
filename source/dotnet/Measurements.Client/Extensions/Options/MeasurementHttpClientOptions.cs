@@ -7,5 +7,5 @@ public class MeasurementHttpClientOptions
     public const string SectionName = "MeasurementsHttpClient";
 
     [Required(AllowEmptyStrings = false)]
-    public string BaseAddress { get; set; } = string.Empty;
+    public string BaseAddress { get; init; } = string.Empty;
 }
