@@ -1,5 +1,7 @@
 ﻿using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Measurements.WebApi;
 
@@ -14,10 +16,15 @@ public static class ApplicationFactory
         builder.Services.AddHealthChecksForWebApp();
 
         // Modules
-        builder.Services.AddMeasurementsModule();
+        builder.Services.AddMeasurementsModule(builder.Configuration);
 
         // Http channels
-        builder.Services.AddControllers();
+        builder.Services
+            .AddControllers()
+            .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+        });
 
         // => Open API generation
         builder.Services.AddSwagger();
