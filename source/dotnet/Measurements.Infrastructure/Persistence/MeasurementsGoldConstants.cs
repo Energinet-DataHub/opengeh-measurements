@@ -1,6 +1,6 @@
 ﻿namespace Energinet.DataHub.Measurements.Infrastructure.Persistence;
 
-public static class MeasurementsCatalogConstants
+public static class MeasurementsGoldConstants
 {
     public const string TableName = "measurements";
     public const string MeteringPointIdColumnName = "metering_point_id";
