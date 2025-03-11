@@ -2,6 +2,7 @@
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -32,13 +33,12 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        const string tableName = "measurements";
         var columnDefinitions = CreateMeasurementsColumnDefinitions();
         var rows = CreateRows();
 
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(tableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(tableName, rows);
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsCatalogConstants.TableName, columnDefinitions);
+        await DatabricksSchemaManager.InsertAsync(MeasurementsCatalogConstants.TableName, rows);
     }
 
     public new async Task DisposeAsync()
