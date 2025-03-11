@@ -1,6 +1,6 @@
 import pytest
 
-from tests.subsystem_tests.capacity_settlement.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 
 

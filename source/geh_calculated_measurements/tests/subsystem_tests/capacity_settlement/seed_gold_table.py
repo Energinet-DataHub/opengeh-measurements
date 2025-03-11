@@ -3,8 +3,6 @@ from datetime import datetime
 from geh_common.databricks import DatabricksApiClient
 from geh_common.domain.types import MeteringPointType
 
-from tests.capacity_settlement.subsystem_tests.conftest import EnvironmentConfiguration
-
 
 class GoldTableRow:
     metering_point_id: str
