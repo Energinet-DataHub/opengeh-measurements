@@ -37,8 +37,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         var rows = CreateRows();
 
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsCatalogConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsCatalogConstants.TableName, rows);
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
     }
 
     public new async Task DisposeAsync()

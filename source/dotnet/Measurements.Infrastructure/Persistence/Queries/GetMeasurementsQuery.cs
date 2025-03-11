@@ -22,11 +22,11 @@ public class GetMeasurementsQuery : DatabricksStatement
     protected override string GetSqlStatement()
     {
         return
-            $"select {MeasurementsCatalogConstants.MeteringPointIdColumnName}, {MeasurementsCatalogConstants.ObservationTimeColumnName}, {MeasurementsCatalogConstants.QuantityColumnName}, {MeasurementsCatalogConstants.QualityColumnName} " +
-            $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsCatalogConstants.TableName} " +
-            $"where {MeasurementsCatalogConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
-            $"and {MeasurementsCatalogConstants.ObservationTimeColumnName} >= '{_startDate}' " +
-            $"and {MeasurementsCatalogConstants.ObservationTimeColumnName} < '{_endDate}' " +
-            $"order by {MeasurementsCatalogConstants.ObservationTimeColumnName}";
+            $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName} " +
+            $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
+            $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate}' " +
+            $"order by {MeasurementsGoldConstants.ObservationTimeColumnName}";
     }
 }
