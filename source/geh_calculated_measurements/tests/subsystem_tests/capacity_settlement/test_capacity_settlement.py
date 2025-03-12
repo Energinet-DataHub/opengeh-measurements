@@ -9,6 +9,7 @@ from geh_common.domain.types import MeteringPointType
 
 from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 from tests.subsystem_tests.capacity_settlement.seed_gold_table import GoldTableRow
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
@@ -22,8 +23,8 @@ class TestCapacitySettlement(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, capacity_settlement_fixture: CapacitySettlementFixture) -> None:
-        TestCapacitySettlement.fixture = capacity_settlement_fixture
+    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+        TestCapacitySettlement.fixture = CapacitySettlementFixture(environment_configuration)
         TestCapacitySettlement.fixture.seed_gold_table(
             GoldTableRow(
                 metering_point_id=METERING_POINT_ID,
