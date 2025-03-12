@@ -287,10 +287,14 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 060000001500170202;90.816;2024-12-31T22:45:00Z;supply_to_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
 070000001500170202;222.622;2024-12-31T22:45:00Z;consumption_from_grid;Case 2 - period 3: 2024 Day 366 - Hour 24
 150000001500170202;131.806;2024-12-31T22:45:00Z;net_consumption;Case 2 - period 3: 2024 Day 366 - Hour 24
-170000000001500202;40;2024-12-31T23:00:00Z;consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-060000001500170202;20;2024-12-31T23:00:00Z;supply_to_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-070000001500170202;40;2024-12-31T23:00:00Z;consumption_from_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
-150000001500170202;20;2024-12-31T23:00:00Z;net_consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+170000000001500202;2500;2024-12-31T23:00:00Z;consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+060000001500170202;2500;2024-12-31T23:00:00Z;supply_to_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+070000001500170202;5000;2024-12-31T23:00:00Z;consumption_from_grid;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+150000001500170202;2500;2024-12-31T23:00:00Z;net_consumption;Case 2 - period 4: 2025 Day 1 - Hour 1. (D15 Up to End)
+170000000001500202;2500;2025-01-01T23:00:00Z;consumption;Case 2 - period 4: 2025 Day 2 - Hour 1. (D15 Up to End)
+060000001500170202;2500;2025-01-01T23:00:00Z;supply_to_grid;Case 2 - period 4: 2025 Day 2 - Hour 1. (D15 Up to End)
+070000001500170202;5000;2025-01-01T23:00:00Z;consumption_from_grid;Case 2 - period 4: 2025 Day 2 - Hour 1. (D15 Up to End)
+150000001500170202;2500;2025-01-01T23:00:00Z;net_consumption;Case 2 - period 4: 2025 Day 2 - Hour 1. (D15 Up to End)
 170000000001500203;9.644;2024-03-29T23:00:00Z;consumption;Case 3 - day 1
 060000001500170203;26.592;2024-03-29T23:00:00Z;supply_to_grid;Case 3 - day 1
 070000001500170203;9.644;2024-03-29T23:00:00Z;consumption_from_grid;Case 3 - day 1

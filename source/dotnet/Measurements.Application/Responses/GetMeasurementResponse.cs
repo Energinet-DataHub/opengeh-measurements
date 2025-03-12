@@ -25,7 +25,7 @@ public class GetMeasurementResponse
         Points = points;
     }
 
-    public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
+    public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
     {
         var meteringPointId = string.Empty;
         var unitRaw = string.Empty;
