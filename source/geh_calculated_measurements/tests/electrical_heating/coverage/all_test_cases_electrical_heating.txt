@@ -9,3 +9,4 @@ Base consumption metering point behaviour
 
 Summer/winter time
 "If it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45"
+"If it is the day of winter daylight savings change THEN we should aggregate daily consumption for 25 hours AND last quarter of the day is UTC 22.45"
