@@ -1,9 +1,6 @@
 from geh_common.domain.types import MeteringPointType, NetSettlementGroup
-from geh_common.pyspark.transformations import (
-    begining_of_year,
-    convert_from_utc,
-)
-from pyspark.sql import DataFrame
+from geh_common.pyspark.transformations import convert_from_utc
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
@@ -12,8 +9,10 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     EphemiralColumnNames,
 )
+from geh_calculated_measurements.testing import testing
 
 
+@testing()
 def get_joined_metering_point_periods_in_local_time(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
@@ -25,12 +24,13 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
-    metering_point_periods = _split_period_by_year(metering_point_periods)
-    metering_point_periods = _remove_nsg2_up2end_without_netcomsumption(metering_point_periods)
+    metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
+    metering_point_periods = _remove_net_settlement_group_2_up2end_without_netconsumption(metering_point_periods)
 
     return metering_point_periods
 
 
+@testing()
 def _join_children_to_parent_metering_point(
     child_metering_point_and_periods: DataFrame,
     parent_metering_point_and_periods: DataFrame,
@@ -99,6 +99,7 @@ def _join_children_to_parent_metering_point(
                 ContractColumnNames.parent_metering_point_id
             ),
             F.col(f"parent.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
+            F.col(f"parent.{ContractColumnNames.settlement_month}").alias(ContractColumnNames.settlement_month),
             F.col(f"parent.{ContractColumnNames.period_from_date}").alias(EphemiralColumnNames.parent_period_start),
             F.col(f"parent.{ContractColumnNames.period_to_date}").alias(EphemiralColumnNames.parent_period_end),
             F.col(f"electrical_heating.{ContractColumnNames.metering_point_id}").alias(
@@ -144,45 +145,54 @@ def _join_children_to_parent_metering_point(
 def _close_open_ended_periods(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
-    """Close open ended periods by setting the end date to the end of the current year."""
+    """Close open ended periods by setting the end date to the end of the current settlement year."""
+    settlement_year_end = "settlement_year_end"
+
     return parent_and_child_metering_point_and_periods.select(
-        "*", begining_of_year(F.current_date(), years_to_add=1).alias("end_of_year")
+        "*", _settlement_year_end_datetime(F.col(ContractColumnNames.settlement_month)).alias(settlement_year_end)
     ).select(
         # Consumption metering point
         F.col(ContractColumnNames.parent_metering_point_id),
         F.col(ContractColumnNames.net_settlement_group),
+        F.col(ContractColumnNames.settlement_month),
         F.col(EphemiralColumnNames.parent_period_start),
         F.coalesce(
             F.col(EphemiralColumnNames.parent_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(EphemiralColumnNames.parent_period_end),
         # Electrical heating metering point
         F.col(EphemiralColumnNames.electrical_heating_period_start),
         F.coalesce(
             F.col(EphemiralColumnNames.electrical_heating_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(EphemiralColumnNames.electrical_heating_period_end),
         F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
         # Net consumption metering point
         F.col(EphemiralColumnNames.net_consumption_period_start),
         F.coalesce(
             F.col(EphemiralColumnNames.net_consumption_period_end),
-            "end_of_year",
+            settlement_year_end,
         ).alias(EphemiralColumnNames.net_consumption_period_end),
         F.col(EphemiralColumnNames.net_consumption_metering_point_id),
         # Consumption from grid metering point
         EphemiralColumnNames.consumption_from_grid_metering_point_id,
         EphemiralColumnNames.consumption_from_grid_period_start,
-        F.coalesce(EphemiralColumnNames.consumption_from_grid_period_end, "end_of_year").alias(
+        F.coalesce(EphemiralColumnNames.consumption_from_grid_period_end, settlement_year_end).alias(
             EphemiralColumnNames.consumption_from_grid_period_end
         ),
         # Supply to grid metering point
         EphemiralColumnNames.supply_to_grid_metering_point_id,
         EphemiralColumnNames.supply_to_grid_period_start,
-        F.coalesce(EphemiralColumnNames.supply_to_grid_period_end, "end_of_year").alias(
+        F.coalesce(EphemiralColumnNames.supply_to_grid_period_end, settlement_year_end).alias(
             EphemiralColumnNames.supply_to_grid_period_end
         ),
     )
+
+
+def _settlement_year_end_datetime(settlement_month: Column) -> Column:
+    """Return the end of the settlement year based on the settlement month (integer)."""
+    temp = F.to_date(F.concat_ws("-", F.year(F.current_date()), settlement_month, F.lit("1")))
+    return F.when(temp <= F.current_date(), F.add_months(temp, 12)).otherwise(temp)
 
 
 def _find_parent_child_overlap_period(
@@ -210,41 +220,52 @@ def _find_parent_child_overlap_period(
     ).where(F.col(EphemiralColumnNames.overlap_period_start_lt) < F.col(EphemiralColumnNames.overlap_period_end_lt))
 
 
-def _split_period_by_year(
+def _split_period_by_settlement_month(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
+    settlement_year_date = "settlement_year_date"
+
     return parent_and_child_metering_point_and_periods.select(
         "*",
-        # create a row for each year in the period
+        # create a row for each settlement year in the period
         F.explode(
             F.sequence(
-                begining_of_year(F.col(EphemiralColumnNames.parent_period_start)),
+                _beginning_of_settlement_year(
+                    F.col(EphemiralColumnNames.parent_period_start), F.col(ContractColumnNames.settlement_month)
+                ),
                 F.coalesce(
                     # Subtract a tiny bit to avoid including the next year if the period ends at new year
-                    begining_of_year(F.expr(f"{EphemiralColumnNames.parent_period_end} - INTERVAL 1 SECOND")),
-                    begining_of_year(F.current_date(), years_to_add=1),
+                    _beginning_of_settlement_year(
+                        F.expr(f"{EphemiralColumnNames.parent_period_end} - INTERVAL 1 SECOND"),
+                        F.col(ContractColumnNames.settlement_month),
+                    ),
+                    F.add_months(
+                        _beginning_of_settlement_year(F.current_date(), F.col(ContractColumnNames.settlement_month)),
+                        12,
+                    ),
                 ),
                 F.expr("INTERVAL 1 YEAR"),
             )
-        ).alias("period_year"),
+        ).alias(settlement_year_date),
     ).select(
         F.col(ContractColumnNames.parent_metering_point_id),
         F.col(ContractColumnNames.net_settlement_group),
+        # When period starts withing the settlement year, use that date, otherwise use the settlement year start
         F.when(
-            F.year(F.col(EphemiralColumnNames.parent_period_start)) == F.year(F.col("period_year")),
+            _is_in_settlement_year(F.col(EphemiralColumnNames.parent_period_start), F.col(settlement_year_date)),
             F.col(EphemiralColumnNames.parent_period_start),
         )
-        .otherwise(begining_of_year(date=F.col("period_year")))
+        .otherwise(F.col(settlement_year_date))
         .alias(EphemiralColumnNames.parent_period_start),
         F.when(
-            F.year(F.col(EphemiralColumnNames.parent_period_end)) == F.year(F.col("period_year")),
+            _is_in_settlement_year(F.col(EphemiralColumnNames.parent_period_end), F.col(settlement_year_date)),
             F.col(EphemiralColumnNames.parent_period_end),
         )
-        .otherwise(begining_of_year(date=F.col("period_year"), years_to_add=1))
+        .otherwise(F.add_months(F.col(settlement_year_date), 12))
         .alias(EphemiralColumnNames.parent_period_end),
         F.col(EphemiralColumnNames.overlap_period_start_lt),
         F.col(EphemiralColumnNames.overlap_period_end_lt),
-        F.col(EphemiralColumnNames.period_year_lt),
+        F.col(settlement_year_date).alias(EphemiralColumnNames.settlement_month_datetime),
         F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
         F.col(EphemiralColumnNames.net_consumption_metering_point_id),
         F.col(EphemiralColumnNames.consumption_from_grid_metering_point_id),
@@ -252,13 +273,24 @@ def _split_period_by_year(
     )
 
 
-def _remove_nsg2_up2end_without_netcomsumption(
+def _is_in_settlement_year(date: Column, settlement_year_date: Column) -> Column:
+    return (date >= settlement_year_date) & (date < F.add_months(settlement_year_date, 12))
+
+
+def _beginning_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
+    """Return the first date, which is the 1st of the settlement_month and is no later than period_start_date."""
+    settlement_date = F.make_date(F.year(period_start_date), settlement_month, F.lit(1))
+    return F.when(settlement_date <= period_start_date, settlement_date).otherwise(F.add_months(settlement_date, -12))
+
+
+def _remove_net_settlement_group_2_up2end_without_netconsumption(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.where(
         ~(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & (F.col(EphemiralColumnNames.net_consumption_metering_point_id).isNull())
-            & (F.year(F.col(EphemiralColumnNames.period_year_lt)) == F.year(F.current_date()))
+            # When current date is in the settlement year, then we're in a up-to-end period
+            & _is_in_settlement_year(F.current_date(), F.col(EphemiralColumnNames.settlement_month_datetime))
         )
     )
