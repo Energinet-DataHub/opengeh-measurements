@@ -14,7 +14,7 @@ from core.utility.columns_helper import invalid_if_null
 
 def validate_orchestration_type_enum() -> Column:
     """Quality check: QCST01-01."""
-    valid_orchestration_types = [name for name in GehCommonOrchestrationType._member_names_]
+    valid_orchestration_types = [name.value for name in GehCommonOrchestrationType]
     return F.col(SubmittedTransactionsUnpackedColumnNames.orchestration_type).isin(valid_orchestration_types)
 
 
@@ -32,17 +32,17 @@ def validate_quality_enum() -> Column:
 
 def validate_metering_point_type_enum() -> Column:
     """Quality check: QCST01-03."""
-    valid_metering_point_types = [name for name in GehCommonMeteringPointType._member_names_]
+    valid_metering_point_types = [name.value for name in GehCommonMeteringPointType]
     return F.col(SubmittedTransactionsUnpackedColumnNames.metering_point_type).isin(valid_metering_point_types)
 
 
 def validate_unit_enum() -> Column:
     """Quality check: QCST01-04."""
-    valid_units = [name for name in GehCommonUnit._member_names_]
+    valid_units = [name.value for name in GehCommonUnit]
     return F.col(SubmittedTransactionsUnpackedColumnNames.unit).isin(valid_units)
 
 
 def validate_resolution_enum() -> Column:
     """Quality check: QCST01-05."""
-    valid_resolutions = [name for name in GehCommonResolution._member_names_]
+    valid_resolutions = [name.value for name in GehCommonResolution]
     return F.col(SubmittedTransactionsUnpackedColumnNames.resolution).isin(valid_resolutions)
