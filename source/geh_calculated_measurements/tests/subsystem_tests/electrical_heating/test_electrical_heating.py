@@ -5,7 +5,7 @@ import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 
-from tests.electrical_heating.subsystem_tests.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+from tests.subsystem_tests.electrical_heating.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
 class TestElectricalHeating(unittest.TestCase):
