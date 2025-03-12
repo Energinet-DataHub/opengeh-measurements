@@ -77,6 +77,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     # Return test cases
     return TestCases(
         [
+            # Cache actual in order to prevent the assertion to potentially evaluate the same DataFrame multiple times
             TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual_df.cache()),
         ]
     )
