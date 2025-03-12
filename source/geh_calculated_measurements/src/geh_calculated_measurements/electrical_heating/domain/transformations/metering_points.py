@@ -7,7 +7,7 @@ from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    EphemiralColumnNames,
+    EphemeralColumnNames,
 )
 from geh_calculated_measurements.testing import testing
 
@@ -100,43 +100,43 @@ def _join_children_to_parent_metering_point(
             ),
             F.col(f"parent.{ContractColumnNames.net_settlement_group}").alias(ContractColumnNames.net_settlement_group),
             F.col(f"parent.{ContractColumnNames.settlement_month}").alias(ContractColumnNames.settlement_month),
-            F.col(f"parent.{ContractColumnNames.period_from_date}").alias(EphemiralColumnNames.parent_period_start),
-            F.col(f"parent.{ContractColumnNames.period_to_date}").alias(EphemiralColumnNames.parent_period_end),
+            F.col(f"parent.{ContractColumnNames.period_from_date}").alias(EphemeralColumnNames.parent_period_start),
+            F.col(f"parent.{ContractColumnNames.period_to_date}").alias(EphemeralColumnNames.parent_period_end),
             F.col(f"electrical_heating.{ContractColumnNames.metering_point_id}").alias(
-                EphemiralColumnNames.electrical_heating_metering_point_id
+                EphemeralColumnNames.electrical_heating_metering_point_id
             ),
             F.col(f"electrical_heating.{ContractColumnNames.coupled_date}").alias(
-                EphemiralColumnNames.electrical_heating_period_start
+                EphemeralColumnNames.electrical_heating_period_start
             ),
             F.col(f"electrical_heating.{ContractColumnNames.uncoupled_date}").alias(
-                EphemiralColumnNames.electrical_heating_period_end
+                EphemeralColumnNames.electrical_heating_period_end
             ),
             F.col(f"net_consumption.{ContractColumnNames.metering_point_id}").alias(
-                EphemiralColumnNames.net_consumption_metering_point_id
+                EphemeralColumnNames.net_consumption_metering_point_id
             ),
             F.col(f"net_consumption.{ContractColumnNames.coupled_date}").alias(
-                EphemiralColumnNames.net_consumption_period_start
+                EphemeralColumnNames.net_consumption_period_start
             ),
             F.col(f"net_consumption.{ContractColumnNames.uncoupled_date}").alias(
-                EphemiralColumnNames.net_consumption_period_end
+                EphemeralColumnNames.net_consumption_period_end
             ),
             F.col(f"consumption_from_grid.{ContractColumnNames.metering_point_id}").alias(
-                EphemiralColumnNames.consumption_from_grid_metering_point_id
+                EphemeralColumnNames.consumption_from_grid_metering_point_id
             ),
             F.col(f"consumption_from_grid.{ContractColumnNames.coupled_date}").alias(
-                EphemiralColumnNames.consumption_from_grid_period_start
+                EphemeralColumnNames.consumption_from_grid_period_start
             ),
             F.col(f"consumption_from_grid.{ContractColumnNames.uncoupled_date}").alias(
-                EphemiralColumnNames.consumption_from_grid_period_end
+                EphemeralColumnNames.consumption_from_grid_period_end
             ),
             F.col(f"supply_to_grid.{ContractColumnNames.metering_point_id}").alias(
-                EphemiralColumnNames.supply_to_grid_metering_point_id
+                EphemeralColumnNames.supply_to_grid_metering_point_id
             ),
             F.col(f"supply_to_grid.{ContractColumnNames.coupled_date}").alias(
-                EphemiralColumnNames.supply_to_grid_period_start
+                EphemeralColumnNames.supply_to_grid_period_start
             ),
             F.col(f"supply_to_grid.{ContractColumnNames.uncoupled_date}").alias(
-                EphemiralColumnNames.supply_to_grid_period_end
+                EphemeralColumnNames.supply_to_grid_period_end
             ),
         )
     )
@@ -155,36 +155,36 @@ def _close_open_ended_periods(
         F.col(ContractColumnNames.parent_metering_point_id),
         F.col(ContractColumnNames.net_settlement_group),
         F.col(ContractColumnNames.settlement_month),
-        F.col(EphemiralColumnNames.parent_period_start),
+        F.col(EphemeralColumnNames.parent_period_start),
         F.coalesce(
-            F.col(EphemiralColumnNames.parent_period_end),
+            F.col(EphemeralColumnNames.parent_period_end),
             settlement_year_end,
-        ).alias(EphemiralColumnNames.parent_period_end),
+        ).alias(EphemeralColumnNames.parent_period_end),
         # Electrical heating metering point
-        F.col(EphemiralColumnNames.electrical_heating_period_start),
+        F.col(EphemeralColumnNames.electrical_heating_period_start),
         F.coalesce(
-            F.col(EphemiralColumnNames.electrical_heating_period_end),
+            F.col(EphemeralColumnNames.electrical_heating_period_end),
             settlement_year_end,
-        ).alias(EphemiralColumnNames.electrical_heating_period_end),
-        F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
+        ).alias(EphemeralColumnNames.electrical_heating_period_end),
+        F.col(EphemeralColumnNames.electrical_heating_metering_point_id),
         # Net consumption metering point
-        F.col(EphemiralColumnNames.net_consumption_period_start),
+        F.col(EphemeralColumnNames.net_consumption_period_start),
         F.coalesce(
-            F.col(EphemiralColumnNames.net_consumption_period_end),
+            F.col(EphemeralColumnNames.net_consumption_period_end),
             settlement_year_end,
-        ).alias(EphemiralColumnNames.net_consumption_period_end),
-        F.col(EphemiralColumnNames.net_consumption_metering_point_id),
+        ).alias(EphemeralColumnNames.net_consumption_period_end),
+        F.col(EphemeralColumnNames.net_consumption_metering_point_id),
         # Consumption from grid metering point
-        EphemiralColumnNames.consumption_from_grid_metering_point_id,
-        EphemiralColumnNames.consumption_from_grid_period_start,
-        F.coalesce(EphemiralColumnNames.consumption_from_grid_period_end, settlement_year_end).alias(
-            EphemiralColumnNames.consumption_from_grid_period_end
+        EphemeralColumnNames.consumption_from_grid_metering_point_id,
+        EphemeralColumnNames.consumption_from_grid_period_start,
+        F.coalesce(EphemeralColumnNames.consumption_from_grid_period_end, settlement_year_end).alias(
+            EphemeralColumnNames.consumption_from_grid_period_end
         ),
         # Supply to grid metering point
-        EphemiralColumnNames.supply_to_grid_metering_point_id,
-        EphemiralColumnNames.supply_to_grid_period_start,
-        F.coalesce(EphemiralColumnNames.supply_to_grid_period_end, settlement_year_end).alias(
-            EphemiralColumnNames.supply_to_grid_period_end
+        EphemeralColumnNames.supply_to_grid_metering_point_id,
+        EphemeralColumnNames.supply_to_grid_period_start,
+        F.coalesce(EphemeralColumnNames.supply_to_grid_period_end, settlement_year_end).alias(
+            EphemeralColumnNames.supply_to_grid_period_end
         ),
     )
 
@@ -204,20 +204,20 @@ def _find_parent_child_overlap_period(
         # and the children metering point periods.
         # We, however, assume that there is only one overlapping period between the periods
         F.greatest(
-            F.col(EphemiralColumnNames.parent_period_start),
-            F.col(EphemiralColumnNames.electrical_heating_period_start),
-            F.col(EphemiralColumnNames.net_consumption_period_start),
-            F.col(EphemiralColumnNames.consumption_from_grid_period_start),
-            F.col(EphemiralColumnNames.supply_to_grid_period_start),
-        ).alias(EphemiralColumnNames.overlap_period_start_lt),
+            F.col(EphemeralColumnNames.parent_period_start),
+            F.col(EphemeralColumnNames.electrical_heating_period_start),
+            F.col(EphemeralColumnNames.net_consumption_period_start),
+            F.col(EphemeralColumnNames.consumption_from_grid_period_start),
+            F.col(EphemeralColumnNames.supply_to_grid_period_start),
+        ).alias(EphemeralColumnNames.overlap_period_start_lt),
         F.least(
-            F.col(EphemiralColumnNames.parent_period_end),
-            F.col(EphemiralColumnNames.electrical_heating_period_end),
-            F.col(EphemiralColumnNames.net_consumption_period_end),
-            F.col(EphemiralColumnNames.consumption_from_grid_period_end),
-            F.col(EphemiralColumnNames.supply_to_grid_period_end),
-        ).alias(EphemiralColumnNames.overlap_period_end_lt),
-    ).where(F.col(EphemiralColumnNames.overlap_period_start_lt) < F.col(EphemiralColumnNames.overlap_period_end_lt))
+            F.col(EphemeralColumnNames.parent_period_end),
+            F.col(EphemeralColumnNames.electrical_heating_period_end),
+            F.col(EphemeralColumnNames.net_consumption_period_end),
+            F.col(EphemeralColumnNames.consumption_from_grid_period_end),
+            F.col(EphemeralColumnNames.supply_to_grid_period_end),
+        ).alias(EphemeralColumnNames.overlap_period_end_lt),
+    ).where(F.col(EphemeralColumnNames.overlap_period_start_lt) < F.col(EphemeralColumnNames.overlap_period_end_lt))
 
 
 def _split_period_by_settlement_month(
@@ -231,12 +231,12 @@ def _split_period_by_settlement_month(
         F.explode(
             F.sequence(
                 _beginning_of_settlement_year(
-                    F.col(EphemiralColumnNames.parent_period_start), F.col(ContractColumnNames.settlement_month)
+                    F.col(EphemeralColumnNames.parent_period_start), F.col(ContractColumnNames.settlement_month)
                 ),
                 F.coalesce(
                     # Subtract a tiny bit to avoid including the next year if the period ends at new year
                     _beginning_of_settlement_year(
-                        F.expr(f"{EphemiralColumnNames.parent_period_end} - INTERVAL 1 SECOND"),
+                        F.expr(f"{EphemeralColumnNames.parent_period_end} - INTERVAL 1 SECOND"),
                         F.col(ContractColumnNames.settlement_month),
                     ),
                     F.add_months(
@@ -252,24 +252,24 @@ def _split_period_by_settlement_month(
         F.col(ContractColumnNames.net_settlement_group),
         # When period starts withing the settlement year, use that date, otherwise use the settlement year start
         F.when(
-            _is_in_settlement_year(F.col(EphemiralColumnNames.parent_period_start), F.col(settlement_year_date)),
-            F.col(EphemiralColumnNames.parent_period_start),
+            _is_in_settlement_year(F.col(EphemeralColumnNames.parent_period_start), F.col(settlement_year_date)),
+            F.col(EphemeralColumnNames.parent_period_start),
         )
         .otherwise(F.col(settlement_year_date))
-        .alias(EphemiralColumnNames.parent_period_start),
+        .alias(EphemeralColumnNames.parent_period_start),
         F.when(
-            _is_in_settlement_year(F.col(EphemiralColumnNames.parent_period_end), F.col(settlement_year_date)),
-            F.col(EphemiralColumnNames.parent_period_end),
+            _is_in_settlement_year(F.col(EphemeralColumnNames.parent_period_end), F.col(settlement_year_date)),
+            F.col(EphemeralColumnNames.parent_period_end),
         )
         .otherwise(F.add_months(F.col(settlement_year_date), 12))
-        .alias(EphemiralColumnNames.parent_period_end),
-        F.col(EphemiralColumnNames.overlap_period_start_lt),
-        F.col(EphemiralColumnNames.overlap_period_end_lt),
-        F.col(settlement_year_date).alias(EphemiralColumnNames.settlement_month_datetime),
-        F.col(EphemiralColumnNames.electrical_heating_metering_point_id),
-        F.col(EphemiralColumnNames.net_consumption_metering_point_id),
-        F.col(EphemiralColumnNames.consumption_from_grid_metering_point_id),
-        F.col(EphemiralColumnNames.supply_to_grid_metering_point_id),
+        .alias(EphemeralColumnNames.parent_period_end),
+        F.col(EphemeralColumnNames.overlap_period_start_lt),
+        F.col(EphemeralColumnNames.overlap_period_end_lt),
+        F.col(settlement_year_date).alias(EphemeralColumnNames.settlement_month_datetime),
+        F.col(EphemeralColumnNames.electrical_heating_metering_point_id),
+        F.col(EphemeralColumnNames.net_consumption_metering_point_id),
+        F.col(EphemeralColumnNames.consumption_from_grid_metering_point_id),
+        F.col(EphemeralColumnNames.supply_to_grid_metering_point_id),
     )
 
 
@@ -289,8 +289,8 @@ def _remove_net_settlement_group_2_up2end_without_netconsumption(
     return parent_and_child_metering_point_and_periods.where(
         ~(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
-            & (F.col(EphemiralColumnNames.net_consumption_metering_point_id).isNull())
+            & (F.col(EphemeralColumnNames.net_consumption_metering_point_id).isNull())
             # When current date is in the settlement year, then we're in a up-to-end period
-            & _is_in_settlement_year(F.current_date(), F.col(EphemiralColumnNames.settlement_month_datetime))
+            & _is_in_settlement_year(F.current_date(), F.col(EphemeralColumnNames.settlement_month_datetime))
         )
     )
