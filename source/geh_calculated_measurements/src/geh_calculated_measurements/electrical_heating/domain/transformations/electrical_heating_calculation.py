@@ -149,7 +149,7 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
 
     periods_with_hourly_energy = periods_with_hourly_energy.select(
         "*",
-        (F.add_months(EphemiralColumnNames.settlement_month_datetime, 12) <= F.current_date()).alias(
+        (F.add_months(F.col(EphemiralColumnNames.settlement_month_datetime), 12) <= F.current_date()).alias(
             "is_end_of_period"
         ),
     )

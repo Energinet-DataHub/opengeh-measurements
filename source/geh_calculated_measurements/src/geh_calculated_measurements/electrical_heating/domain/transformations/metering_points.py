@@ -230,17 +230,17 @@ def _split_period_by_settlement_month(
         # create a row for each settlement year in the period
         F.explode(
             F.sequence(
-                _begining_of_settlement_year(
+                _beginning_of_settlement_year(
                     F.col(EphemiralColumnNames.parent_period_start), F.col(ContractColumnNames.settlement_month)
                 ),
                 F.coalesce(
                     # Subtract a tiny bit to avoid including the next year if the period ends at new year
-                    _begining_of_settlement_year(
+                    _beginning_of_settlement_year(
                         F.expr(f"{EphemiralColumnNames.parent_period_end} - INTERVAL 1 SECOND"),
                         F.col(ContractColumnNames.settlement_month),
                     ),
                     F.add_months(
-                        _begining_of_settlement_year(F.current_date(), F.col(ContractColumnNames.settlement_month)),
+                        _beginning_of_settlement_year(F.current_date(), F.col(ContractColumnNames.settlement_month)),
                         12,
                     ),
                 ),
@@ -277,7 +277,7 @@ def _is_in_settlement_year(date: Column, settlement_year_date: Column) -> Column
     return (date >= settlement_year_date) & (date < F.add_months(settlement_year_date, 12))
 
 
-def _begining_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
+def _beginning_of_settlement_year(period_start_date: Column, settlement_month: Column) -> Column:
     """Return the first date, which is the 1st of the settlement_month and is no later than period_start_date."""
     settlement_date = F.make_date(F.year(period_start_date), settlement_month, F.lit(1))
     return F.when(settlement_date <= period_start_date, settlement_date).otherwise(F.add_months(settlement_date, -12))
