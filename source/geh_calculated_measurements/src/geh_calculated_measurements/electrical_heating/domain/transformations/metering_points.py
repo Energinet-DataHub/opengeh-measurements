@@ -25,7 +25,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
-    metering_point_periods = _remove_net_settlement_group_2_up2end_without_netcomsumption(metering_point_periods)
+    metering_point_periods = _remove_net_settlement_group_2_up2end_without_netconsumption(metering_point_periods)
 
     return metering_point_periods
 
@@ -283,7 +283,7 @@ def _beginning_of_settlement_year(period_start_date: Column, settlement_month: C
     return F.when(settlement_date <= period_start_date, settlement_date).otherwise(F.add_months(settlement_date, -12))
 
 
-def _remove_net_settlement_group_2_up2end_without_netcomsumption(
+def _remove_net_settlement_group_2_up2end_without_netconsumption(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.where(
