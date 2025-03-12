@@ -1,7 +1,7 @@
 import pytest
 
-from tests.capacity_settlement.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.capacity_settlement.subsystem_tests.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+from tests.subsystem_tests.capacity_settlement.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
 
 
 @pytest.fixture(scope="session")
