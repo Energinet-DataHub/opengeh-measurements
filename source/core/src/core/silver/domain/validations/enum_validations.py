@@ -1,24 +1,20 @@
 import pyspark.sql.functions as F
+from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
+from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import Column
 
 from core.bronze.domain.constants.column_names.submitted_transactions_unpacked_column_names import (
     SubmittedTransactionsUnpackedColumnNames,
 )
-
 from core.contracts.process_manager.enums.quality import Quality
-from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
-from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
-from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
-from geh_common.domain.types.
 from core.utility.columns_helper import invalid_if_null
 
 
 def validate_orchestration_type_enum() -> Column:
     """Quality check: QCST01-01."""
-    valid_orchestration_types = [
-        name for name in GehCommonOrchestrationType._member_names_
-    ]
+    valid_orchestration_types = [name for name in GehCommonOrchestrationType._member_names_]
     return F.col(SubmittedTransactionsUnpackedColumnNames.orchestration_type).isin(valid_orchestration_types)
 
 
@@ -36,9 +32,7 @@ def validate_quality_enum() -> Column:
 
 def validate_metering_point_type_enum() -> Column:
     """Quality check: QCST01-03."""
-    valid_metering_point_types = [
-        name for name in GehCommonMeteringPointType._member_names_
-    ]
+    valid_metering_point_types = [name for name in GehCommonMeteringPointType._member_names_]
     return F.col(SubmittedTransactionsUnpackedColumnNames.metering_point_type).isin(valid_metering_point_types)
 
 
