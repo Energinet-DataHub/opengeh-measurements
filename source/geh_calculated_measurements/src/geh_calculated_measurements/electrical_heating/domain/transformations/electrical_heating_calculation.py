@@ -341,7 +341,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
         F.col(ContractColumnNames.date),
         F.col(ContractColumnNames.quantity),
         F.col(EphemeralColumnNames.period_energy_limit),
-    ).drop_duplicates()
+    )
 
 
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
@@ -369,4 +369,4 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         F.col(EphemeralColumnNames.electrical_heating_metering_point_id).alias(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
         F.col(EphemeralColumnNames.period_energy_limit),
-    ).drop_duplicates()
+    )
