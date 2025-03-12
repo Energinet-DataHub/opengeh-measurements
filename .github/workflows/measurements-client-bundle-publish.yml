@@ -47,20 +47,12 @@ on:
   workflow_dispatch: {}
 
 env:
-  # Conditions
   # TRIGGERED_BY_PR_COMMIT is true if this run is automatically triggered by a commit in a Pull Request (feature branch)
   TRIGGERED_BY_PR_COMMIT: ${{ github.event_name == 'pull_request' }}
   # BASE_SHA must be set to 'main' if this run is triggered manually; otherwise file changes will not be detected correctly
   BASE_SHA: ${{ (github.event_name == 'workflow_dispatch') && 'main' || '' }}
   # Necessary to manage Azure resources from automated tests
   AZURE_KEYVAULT_URL: ${{ vars.integration_test_azure_keyvault_url }}
-  # Set value used by 'AzuriteManager'
-  #  Use 'AzuriteBlobFolderPath' for TestCommon version 4.2.0 and lower
-  AzuriteBlobFolderPath: ${{ github.workspace }}\node_modules\.bin\
-  #  Use 'AzuriteFolderPath' for TestCommon version 4.3.0 and higher
-  AzuriteFolderPath: ${{ github.workspace }}\node_modules\.bin\
-  # Overrides settings in 'functionhost.settings.json'
-  FunctionAppHostPath: ${{ github.workspace }}\node_modules\azure-functions-core-tools\bin\func.dll
 
 jobs:
   build_and_publish:
