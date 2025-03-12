@@ -3,6 +3,7 @@ using Energinet.DataHub.Core.Databricks.SqlStatementExecution.Formats;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NodaTime;
 
@@ -10,13 +11,16 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Persistence;
 
 public class MeasurementRepository(
     DatabricksSqlWarehouseQueryExecutor databricksSqlWarehouseQueryExecutor,
-    IOptions<DatabricksSchemaOptions> databricksSchemaOptions)
+    IOptions<DatabricksSchemaOptions> databricksSchemaOptions,
+    ILogger<IMeasurementRepository> logger)
     : IMeasurementRepository
 {
     public async IAsyncEnumerable<MeasurementResult> GetMeasurementAsync(string meteringPointId, Instant from, Instant to)
     {
         var statement =
             new GetMeasurementsQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
+
+        logger.LogInformation("Sending query to Databricks: {Query}", statement.ToString());
 
         var rows = databricksSqlWarehouseQueryExecutor
             .ExecuteStatementAsync(statement, Format.ApacheArrow);
