@@ -33,7 +33,15 @@ def test_execute(
             execute()
 
     # Assert
-    actual = spark.read.table(
+    actual_calculated_measurements = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
-    assert actual.count() > 0
+    actual_calculations = spark.read.table(
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME}"
+    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    actual_ten_largest_quantities = spark.read.table(
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME}"
+    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    assert actual_calculated_measurements.count() > 0
+    assert actual_calculations.count() > 0
+    assert actual_ten_largest_quantities.count() > 0
