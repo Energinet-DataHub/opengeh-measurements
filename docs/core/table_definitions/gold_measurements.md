@@ -9,8 +9,8 @@ This table contains measurements which is presented as one measurement value per
 | orchestration_instance_id | StringType | True | - | Not null |
 | observation_time | TimestampType | True | The time when the energy was consumed/produced/exchanged | - |
 | quantity | Decimal(18, 3) | True | The energy quantity. Negative values allowed. May be null when the quality is 'missing' | - |
-| quality | StringType | True | The quality of the energy quantity | Valid [quality](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/src/geh_common/domain/types/quantity_quality.py) values |
-| metering_point_type | StringType | True | - | Valid [metering point type](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/src/geh_common/domain/types/metering_point_type.py) values |
+| quality | StringType | True | The quality of the energy quantity | Valid [quality](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/source/geh_common/src/geh_common/domain/types/quantity_quality.py) values |
+| metering_point_type | StringType | True | - | Valid [metering point type](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/source/geh_common/src/geh_common/domain/types/metering_point_type.py) values |
 | unit | StringType | True | - | Not null |
 | resolution | StringType | True | - | Not null |
 | transaction_id | StringType | True | Contains an ID for the specific time series transaction, provided by the sender or the source system. Uniqueness not guaranteed | - |
