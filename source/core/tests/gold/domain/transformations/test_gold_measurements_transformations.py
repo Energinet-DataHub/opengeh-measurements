@@ -7,10 +7,10 @@ import pytest
 from geh_common.domain.types.quantity_quality import QuantityQuality
 from pyspark.sql import SparkSession
 
+import core.gold.domain.transformations.gold_measurements_transformations as sut
 from core.bronze.domain.constants.enums.quality import SubmittedTransactionsQuality
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
-from core.gold.domain.streams.silver_to_gold.transformations import transform_silver_to_gold
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
@@ -19,7 +19,7 @@ def test__transform_silver_to_gold__should_match_gold_schema(spark: SparkSession
     df_silver = SilverMeasurementsBuilder(spark).add_row().build()
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert_schemas.assert_schema(actual=df_gold.schema, expected=gold_measurements_schema, ignore_nullability=True)
@@ -30,7 +30,7 @@ def test__explode_silver_points__should_explode_to_expected(spark: SparkSession)
     df_silver = SilverMeasurementsBuilder(spark).add_row().build()
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert df_gold.count() == 24
@@ -61,7 +61,7 @@ def test__transform_silver_to_gold__monthly_resolution_first_day_of_month__shoul
     )
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert df_gold.count() == 1
@@ -90,7 +90,7 @@ def test__transform_silver_to_gold__monthly_resolution_not_first_day_of_month__s
     )
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert df_gold.count() == 1
@@ -110,7 +110,7 @@ def test__transform_silver_to_gold__hourly_resolution__returns_correct_observati
     )
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert df_gold.count() == 24
@@ -133,7 +133,7 @@ def test__transform_silver_to_gold__fifty_minutes_resolution__returns_correct_ob
     )
 
     # Act
-    df_gold = transform_silver_to_gold(df_silver)
+    df_gold = sut.transform_silver_to_gold(df_silver)
 
     # Assert
     assert df_gold.count() == 24
@@ -163,7 +163,7 @@ def test__transform_silver_to_gold__when_quality_is_set__should_return_expected(
     silver_measurements = SilverMeasurementsBuilder(spark).add_row(points=[point]).build()
 
     # Act
-    actual = transform_silver_to_gold(silver_measurements)
+    actual = sut.transform_silver_to_gold(silver_measurements)
 
     # Assert
     actual_row = actual.collect()[0]
