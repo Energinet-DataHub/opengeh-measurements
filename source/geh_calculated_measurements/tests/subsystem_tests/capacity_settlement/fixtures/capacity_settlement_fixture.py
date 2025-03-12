@@ -25,7 +25,8 @@ class JobState:
 
 
 class CapacitySettlementFixture:
-    def __init__(self, environment_configuration: EnvironmentConfiguration):
+    def __init__(self):
+        environment_configuration = EnvironmentConfiguration()
         self.job_state = JobState()
         self.credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)

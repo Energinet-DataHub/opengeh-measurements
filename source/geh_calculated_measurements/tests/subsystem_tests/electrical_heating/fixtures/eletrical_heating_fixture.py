@@ -41,7 +41,8 @@ SELECT
 
 
 class ElectricalHeatingFixture:
-    def __init__(self, environment_configuration: EnvironmentConfiguration):
+    def __init__(self):
+        environment_configuration = EnvironmentConfiguration()
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,

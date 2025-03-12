@@ -6,7 +6,6 @@ from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 
 from tests.subsystem_tests.electrical_heating.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
-from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 class TestElectricalHeating(unittest.TestCase):
@@ -15,8 +14,8 @@ class TestElectricalHeating(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        TestElectricalHeating.fixture = ElectricalHeatingFixture(environment_configuration)
+    def setup_fixture(self) -> None:
+        TestElectricalHeating.fixture = ElectricalHeatingFixture()
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

@@ -23,8 +23,8 @@ class TestCapacitySettlement(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        TestCapacitySettlement.fixture = CapacitySettlementFixture(environment_configuration)
+    def setup_fixture(self) -> None:
+        TestCapacitySettlement.fixture = CapacitySettlementFixture()
         TestCapacitySettlement.fixture.seed_gold_table(
             GoldTableRow(
                 metering_point_id=METERING_POINT_ID,
