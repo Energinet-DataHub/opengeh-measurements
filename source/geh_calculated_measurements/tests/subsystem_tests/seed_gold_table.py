@@ -31,6 +31,7 @@ class GoldTableSeeder:
             INSERT INTO {self.fully_qualified_table_name} (
                 metering_point_id,
                 orchestration_type,
+                orchestration_instance_id,
                 observation_time,
                 quantity,
                 quality,
@@ -45,6 +46,7 @@ class GoldTableSeeder:
             SELECT
                 '{row.metering_point_id}' AS metering_point_id,
                 '{row.orchestration_type}' AS orchestration_type,
+                REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS orchestration_instance_id,                
                 '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}' AS observation_time,
                 {row.quantity} AS quantity,
                 '{row.quality}' AS quality,
