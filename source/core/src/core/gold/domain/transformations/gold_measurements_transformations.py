@@ -17,6 +17,9 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
     return exploded_df.select(
         F.col(SilverMeasurementsColumnNames.metering_point_id).alias(GoldMeasurementsColumnNames.metering_point_id),
         F.col(SilverMeasurementsColumnNames.orchestration_type).alias(GoldMeasurementsColumnNames.orchestration_type),
+        F.col(SilverMeasurementsColumnNames.orchestration_instance_id).alias(
+            GoldMeasurementsColumnNames.orchestration_instance_id
+        ),
         (
             # When monthly resolution
             F.when(
@@ -38,6 +41,8 @@ def transform_silver_to_gold(df: DataFrame) -> DataFrame:
         F.col(f"col.{SilverMeasurementsColumnNames.Points.quantity}").alias(GoldMeasurementsColumnNames.quantity),
         _get_quality().alias(GoldMeasurementsColumnNames.quality),
         F.col(SilverMeasurementsColumnNames.metering_point_type).alias(GoldMeasurementsColumnNames.metering_point_type),
+        F.col(SilverMeasurementsColumnNames.unit).alias(GoldMeasurementsColumnNames.unit),
+        F.col(SilverMeasurementsColumnNames.resolution).alias(GoldMeasurementsColumnNames.resolution),
         F.col(SilverMeasurementsColumnNames.transaction_id).alias(GoldMeasurementsColumnNames.transaction_id),
         F.col(SilverMeasurementsColumnNames.transaction_creation_datetime).alias(
             GoldMeasurementsColumnNames.transaction_creation_datetime
