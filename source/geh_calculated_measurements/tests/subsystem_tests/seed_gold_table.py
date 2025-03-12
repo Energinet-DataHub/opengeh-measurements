@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -11,10 +12,12 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 class GoldTableRow:
     metering_point_id: str
     orchestration_type: str = "submitted"
+    orchestration_instance_id: uuid.UUID = uuid.uuid4()
     observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0)
     quantity: str = "1.700"
     quality: str = "measured"
     metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION
+    transaction_id: uuid.UUID = uuid.uuid4()
 
 
 class GoldTableSeeder:
@@ -46,14 +49,14 @@ class GoldTableSeeder:
             SELECT
                 '{row.metering_point_id}' AS metering_point_id,
                 '{row.orchestration_type}' AS orchestration_type,
-                REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS orchestration_instance_id,                
+                '{str(row.orchestration_instance_id)}' AS orchestration_instance_id,                
                 '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}' AS observation_time,
                 {row.quantity} AS quantity,
                 '{row.quality}' AS quality,
                 '{row.metering_point_type.value}' AS metering_point_type,
                 'kWh' AS unit,
                 'PT1H' as resolution,
-                REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id,
+                '{str(row.transaction_id)}' AS transaction_id,
                 GETDATE() AS transaction_creation_datetime,
                 GETDATE() AS created,
                 GETDATE() AS modified
