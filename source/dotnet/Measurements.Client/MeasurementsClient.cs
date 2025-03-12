@@ -23,10 +23,7 @@ public class MeasurementsClient : IMeasurementsClient
                 cancellationToken)
             .ConfigureAwait(false);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return null;
-        }
+        response.EnsureSuccessStatusCode();
 
         var measurementDto = await response.Content
             .ReadFromJsonAsync<MeasurementDto>(cancellationToken)
