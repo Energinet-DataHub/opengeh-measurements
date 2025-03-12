@@ -10,7 +10,7 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
-from tests.electrical_heating.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.electrical_heating.environment_configuration import EnvironmentConfiguration
 
 
 @dataclass
