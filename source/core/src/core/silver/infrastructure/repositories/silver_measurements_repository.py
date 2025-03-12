@@ -11,6 +11,7 @@ from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
+from core.utility import delta_table_helper
 
 
 class SilverMeasurementsRepository:
@@ -51,14 +52,14 @@ class SilverMeasurementsRepository:
 
         :param silver_measurements: DataFrame containing the data to be appended.
         """
-        existing_data = silver_measurements.sparkSession.table(self.table)
-        new_data = silver_measurements.alias("new_data")
+        spark = spark_session.initialize_spark()
 
-        condition = [new_data[column] == existing_data[column] for column in self._merge_columns()]
-
-        filtered_data = new_data.join(existing_data.alias("existing_data"), condition, "left_anti")
-
-        filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+        delta_table_helper.append_if_not_exists(
+            spark,
+            silver_measurements,
+            self.table,
+            self._merge_columns(),
+        )
 
     def _merge_columns(self) -> list[str]:
         return [

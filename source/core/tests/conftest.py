@@ -103,7 +103,18 @@ def source_path(file_path_finder: Callable[[str], str]) -> str:
     The correctness also relies on the prerequisite that this function is actually located in a
     file located directly in the integration tests folder.
     """
-    return file_path_finder(f"{__file__}/../..")
+    return file_path_finder(f"{__file__}/..")
+
+
+@pytest.fixture(scope="session")
+def tests_path(source_path: str) -> str:
+    """
+    Returns the <repo-root>/source folder path.
+    Please note that this only works if current folder haven't been changed prior using `os.chdir()`.
+    The correctness also relies on the prerequisite that this function is actually located in a
+    file located directly in the integration tests folder.
+    """
+    return f"{source_path}/tests"
 
 
 @pytest.fixture(scope="session")
@@ -144,6 +155,8 @@ def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_loggin
 @pytest.fixture
 def mock_checkpoint_path():
     with patch.object(
-        shared_helpers, shared_helpers.get_checkpoint_path.__name__, return_value="tests/__checkpoints__"
+        shared_helpers,
+        shared_helpers.get_storage_base_path.__name__,
+        return_value="tests/__checkpoints__/",
     ) as mock_checkpoint_path:
         yield mock_checkpoint_path
