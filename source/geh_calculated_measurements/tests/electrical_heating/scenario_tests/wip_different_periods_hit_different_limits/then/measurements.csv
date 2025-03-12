@@ -1,6 +1,7 @@
 orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2023-12-12T23:00:00Z;339.726;Case 1: Limit hit for period 1
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-01-09T23:00:00Z;4000;Case 1: Limit hit for period 2
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2023-12-12T23:00:00Z;339.726;Case 1: Period 1 - limit hit for period 1
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-01-09T23:00:00Z;4000;Case 1: Period 2 - limit hit for period 2
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-01-09T23:00:00Z;4000;Case 1: Period 3 - limit hit for period 2
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170202;2023-12-12T23:00:00Z;438.356;Case 2: Limit hit for period 1
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170202;2024-01-09T23:00:00Z;655.738;Case 2: Limit hit for period 2
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-02-29T23:00:00Z;10.929;Case 3: Limit hit
