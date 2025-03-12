@@ -18,6 +18,8 @@ jobs:
             path: \source\dotnet\Measurements.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.UnitTests.dll
           - name: WebApi Unit Tests
             path: \source\dotnet\Measurements.WebApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.UnitTests.dll
+          - name: Client Unit Tests
+            path: \source\dotnet\Measurements.Client.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.Client.UnitTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
@@ -33,6 +35,8 @@ jobs:
             path: \source\dotnet\Measurements.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.IntegrationTests.dll
           - name: WebApi Integration Tests
             path: \source\dotnet\Measurements.WebApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.IntegrationTests.dll
+          - name: Client Integration Tests
+            path: \source\dotnet\Measurements.Client.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.Client.IntegrationTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
