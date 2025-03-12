@@ -16,6 +16,7 @@ def test__start_write_stream__calls_expected(mock_checkpoint_path: mock.MagicMoc
         )
 
         # Assert
+        mocked_measurements.writeStream.format.assert_called_once_with("delta")
         mocked_measurements.writeStream.format().queryName.assert_called_once_with("measurements_silver_to_gold")
         mocked_measurements.writeStream.format().queryName().option().trigger.assert_called_once_with(availableNow=True)
         mocked_measurements.writeStream.format().queryName().option().trigger().foreachBatch.assert_called_once_with(
