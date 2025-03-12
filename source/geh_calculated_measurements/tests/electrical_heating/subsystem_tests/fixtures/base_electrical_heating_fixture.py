@@ -1,4 +1,6 @@
 import uuid
+from dataclasses import dataclass, field
+from typing import Optional
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
@@ -11,33 +13,37 @@ from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.electrical_heating.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
+@dataclass
 class CalculationInput:
     orchestration_instance_id: uuid.UUID
     job_id: int
 
 
+@dataclass
 class JobState:
     run_id: int
-    run_result_state: RunResultState
-    calculation_input: CalculationInput = CalculationInput()
+    calculation_input: CalculationInput
+    run_result_state: Optional[RunResultState] = field(default=None)
 
 
 def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
-    return f"""INSERT INTO {catalog}.{schema}.{table} (
-    transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
-  metering_point_id, observation_time, quality, metering_point_type, orchestration_type -- static variables
-)
-SELECT
-    REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id, 
-    CAST(RAND() * 1000000 AS DECIMAL(18, 3)) AS quantity, 
-    GETDATE() AS transaction_creation_datetime, 
-    GETDATE() AS created, -- created
-    GETDATE() AS modified, -- modified
-    '170000030000000201' AS metering_point_id, 
-    '2024-11-30T23:00:00Z' AS observation_time, 
-    'measured' AS quality, -- quality
-    'consumption' AS metering_point_type,
-    'submitted' AS orchestration_type"""
+    return f"""
+            INSERT INTO {catalog}.{schema}.{table} (
+                transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
+                metering_point_id, observation_time, quality, metering_point_type, orchestration_type -- static variables
+            )
+            SELECT
+                REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id, 
+                CAST(RAND() * 1000000 AS DECIMAL(18, 3)) AS quantity, 
+                GETDATE() AS transaction_creation_datetime, 
+                GETDATE() AS created, -- created
+                GETDATE() AS modified, -- modified
+                '170000030000000201' AS metering_point_id, 
+                '2024-11-30T23:00:00Z' AS observation_time, 
+                'measured' AS quality, -- quality
+                'consumption' AS metering_point_type,
+                'submitted' AS orchestration_type
+            """
 
 
 class BaseJobFixture:
@@ -54,7 +60,8 @@ class BaseJobFixture:
                     schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
                 ),
             )
-        self.job_state = JobState()
+        self.job_state = None
+        self.calculation_input = None
         self.credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
         self.secret_client = SecretClient(
@@ -62,6 +69,19 @@ class BaseJobFixture:
             credential=self.credentials,
         )
         self.job_name = job_name
+
+    def create_job_state(self, run_id, run_result_state, calculation_input):
+        self.job_state = JobState(run_id, run_result_state, calculation_input)
+
+    def create_calculation_input(self, orchestration_instance_id):
+        job_id = self.get_job_id()
+        self.calculation_input = CalculationInput(orchestration_instance_id, job_id)
+
+    def set_run_result_state(self, run_result_state):
+        self.job_state.run_result_state = run_result_state
+
+    def get_job_name(self) -> str:
+        return self.job_name
 
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id(self.job_name)
