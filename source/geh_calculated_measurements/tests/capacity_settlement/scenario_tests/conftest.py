@@ -19,7 +19,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_
     metering_point_periods_v1,
 )
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
-    time_series_points_v1,
+    capacity_settlement_v1,
 )
 from tests.testsession_configuration import (
     TestSessionConfiguration,
@@ -45,7 +45,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
     time_series_points = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
-        time_series_points_v1,
+        capacity_settlement_v1,
     )
     metering_point_periods = read_csv(
         spark,
@@ -74,7 +74,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
         [
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/calculations.csv",
-                actual=calculation_output.calculations,
+                actual=calculation_output.calculations.df,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
