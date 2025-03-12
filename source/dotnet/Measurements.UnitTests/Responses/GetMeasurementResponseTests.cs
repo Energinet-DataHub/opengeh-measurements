@@ -12,7 +12,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenMeasurementsExist_ThenReturnsGetMeasurementResponse()
     {
         // Arrange
-        var measurements = new List<MeasurementResult>
+        var measurements = new List<MeasurementsResult>
         {
             new(CreateRaw()),
             new(CreateRaw()),
@@ -37,7 +37,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenUnitKnown_ThenReturnsGetMeasurementResponse(string unit, Unit expectedUnit)
     {
         // Arrange
-        var measurements = new List<MeasurementResult>
+        var measurements = new List<MeasurementsResult>
         {
             new(CreateRaw(unit: unit)),
         };
@@ -56,7 +56,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenQualityKnown_ThenReturnsGetMeasurementResponse(string quality, Quality expectedQuality)
     {
         // Arrange
-        var measurements = new List<MeasurementResult>
+        var measurements = new List<MeasurementsResult>
         {
             new(CreateRaw(quality: quality)),
         };
@@ -72,7 +72,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenQualityUnknown_ThenThrowsException()
     {
         // Arrange
-        var measurements = new List<MeasurementResult>
+        var measurements = new List<MeasurementsResult>
         {
             new(CreateRaw(quality: "UnknownQuality")),
         };
