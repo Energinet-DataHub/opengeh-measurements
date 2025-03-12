@@ -1,0 +1,5 @@
+﻿"Electrical heating without net settlement group"
+"If (total period consumption < period limit) AND (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to consumption metering point for the day"
+"If (total period consumption < period limit) AND (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to consumption metering point for the day"
+"If (total period consumption => period limit) THEN 0 should be added to consumption metering point for the day"
+"If period = 1 year AND there is no net settlement group end of period THEN period limit = 4000"
