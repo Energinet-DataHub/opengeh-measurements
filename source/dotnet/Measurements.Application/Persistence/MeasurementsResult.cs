@@ -3,7 +3,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
-public class MeasurementResult(ExpandoObject raw)
+public class MeasurementsResult(ExpandoObject raw)
 {
     private readonly dynamic _raw = raw;
 
