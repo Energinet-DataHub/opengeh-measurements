@@ -2,7 +2,6 @@
 using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
-using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -19,7 +18,7 @@ public class MeasurementsClient : IMeasurementsClient
     {
         var response = await _httpClient
             .GetAsync(
-                $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={query.Date}&EndDate={query.Date.Plus(Duration.FromDays(1))}",
+                $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={query.Date}&EndDate={query.Date.AddDays(1)}",
                 cancellationToken)
             .ConfigureAwait(false);
 
