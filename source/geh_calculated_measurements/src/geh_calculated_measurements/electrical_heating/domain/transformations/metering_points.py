@@ -11,6 +11,9 @@ from geh_calculated_measurements.electrical_heating.domain import (
 )
 from geh_calculated_measurements.testing import testing
 
+_ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
+"""Limit in kWh."""
+
 
 @testing()
 def get_joined_metering_point_periods_in_local_time(
@@ -26,6 +29,10 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
     metering_point_periods = _remove_net_settlement_group_2_up2end_without_netconsumption(metering_point_periods)
+
+    # This is more related to the actual energy, but it should be cheaper to calculate here
+    # before creating massive data frames by joining with energy data
+    metering_point_periods = _calculate_base_period_limit(metering_point_periods)
 
     return metering_point_periods
 
@@ -294,3 +301,19 @@ def _remove_net_settlement_group_2_up2end_without_netconsumption(
             & _is_in_settlement_year(F.current_date(), F.col(EphemeralColumnNames.settlement_month_datetime))
         )
     )
+
+
+@testing()
+def _calculate_base_period_limit(periods_with_energy_hourly: DataFrame) -> DataFrame:
+    return periods_with_energy_hourly.select(
+        "*",
+        (
+            F.datediff(F.col(EphemeralColumnNames.parent_period_end), F.col(EphemeralColumnNames.parent_period_start))
+            * _ELECTRICAL_HEATING_LIMIT_YEARLY
+            / _days_in_settlement_year(F.col(EphemeralColumnNames.settlement_month_datetime))
+        ).alias(EphemeralColumnNames.base_period_limit),
+    )
+
+
+def _days_in_settlement_year(settlement_month_datetime: Column) -> Column:
+    return F.datediff(F.add_months(settlement_month_datetime, 12), settlement_month_datetime)
