@@ -49,8 +49,8 @@ class GoldTableSeeder:
                 {row.quantity} AS quantity,
                 '{row.quality}' AS quality,
                 '{row.metering_point_type.value}' AS metering_point_type,
-                "kWh" AS unit
-                "PT1H" as resolution,
+                'kWh' AS unit,
+                'PT1H' as resolution,
                 REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id,
                 GETDATE() AS transaction_creation_datetime,
                 GETDATE() AS created,
