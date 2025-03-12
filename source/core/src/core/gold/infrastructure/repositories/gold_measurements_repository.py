@@ -18,6 +18,7 @@ class GoldMeasurementsRepository:
         self.gold_database_name = GoldSettings().gold_database_name
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.table = f"{self.gold_database_name}.{GoldTableNames.gold_measurements}"
+        self.spark = spark_session.initialize_spark()
 
     def write_stream(
         self,
@@ -45,10 +46,8 @@ class GoldMeasurementsRepository:
 
         :param gold_measurements: DataFrame containing the data to be appended.
         """
-        spark = spark_session.initialize_spark()
-
         delta_table_helper.append_if_not_exists(
-            spark,
+            self.spark,
             gold_measurements,
             self.table,
             self._merge_columns(),
