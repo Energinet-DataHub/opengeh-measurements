@@ -12,7 +12,6 @@ def test__when_missing_expected_column_raises_exception(
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
     # Arrange
-
     df = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
@@ -27,8 +26,7 @@ def test__when_missing_expected_column_raises_exception(
         )
     )
 
-    # Act/Assert
-
+    # Assert
     with pytest.raises(
         Exception,
         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\] A column or function parameter with name `quantity` cannot be resolved\. Did you mean one of the following\?.*",
@@ -40,7 +38,6 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
     # Arrange
-
     df_original = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
@@ -57,11 +54,9 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     )
 
     # Act
-
     col_with_extra = measurements_gold_repository.read_time_series_points().df.columns
 
     # Assert
-
     assert col_with_extra == col_original
 
 
@@ -69,7 +64,6 @@ def test__when_source_contains_wrong_data_type_raises_exception(
     measurements_gold_repository: MeasurementsGoldRepository,
 ) -> None:
     # Arrange
-
     df = measurements_gold_repository._spark.read.table(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
@@ -89,8 +83,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
         )
     )
 
-    # Act/Assert
-
+    # Assert
     with pytest.raises(
         AssertionError,
         match=r"Schema mismatch\. Expected column name 'quantity' to have type DecimalType\(18,3\), but got type StringType\(\)",
