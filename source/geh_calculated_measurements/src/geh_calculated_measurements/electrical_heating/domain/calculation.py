@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements, ca
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    EphemiralColumnNames,
+    EphemeralColumnNames,
     TimeSeriesPoints,
 )
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import calculate_hourly_quantity
@@ -40,8 +40,8 @@ def execute(
     # Add observation time in local time
     time_series_points_hourly = time_series_points_hourly.select(
         "*",
-        F.from_utc_timestamp(F.col(EphemiralColumnNames.observation_time_hourly), time_zone).alias(
-            EphemiralColumnNames.observation_time_hourly_lt
+        F.from_utc_timestamp(F.col(EphemeralColumnNames.observation_time_hourly), time_zone).alias(
+            EphemeralColumnNames.observation_time_hourly_lt
         ),
     )
 
