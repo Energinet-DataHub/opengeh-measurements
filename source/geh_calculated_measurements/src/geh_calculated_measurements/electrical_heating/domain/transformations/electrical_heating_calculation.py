@@ -113,6 +113,9 @@ def _join_source_metering_point_periods_with_energy_hourly(
             F.col(f"metering_point.{EphemeralColumnNames.parent_period_end}").alias(
                 EphemeralColumnNames.parent_period_end
             ),
+            F.col(f"metering_point.{EphemeralColumnNames.is_end_of_period}").alias(
+                EphemeralColumnNames.is_end_of_period
+            ),
             F.col(f"metering_point.{ContractColumnNames.net_settlement_group}").alias(
                 ContractColumnNames.net_settlement_group
             ),
@@ -145,33 +148,26 @@ def _join_source_metering_point_periods_with_energy_hourly(
 
 @testing()
 def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
-    periods_with_hourly_energy = periods_with_hourly_energy.select(
-        "*",
-        (F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), 12) <= F.current_date()).alias(
-            "is_end_of_period"
-        ),
-    )
-
     # Prevent multiple evaluations of this expensive data frame
     periods_with_hourly_energy.cache()
 
     no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(
         periods_with_hourly_energy.where(
-            F.col(ContractColumnNames.net_settlement_group).isNull() | (~F.col("is_end_of_period"))
+            F.col(ContractColumnNames.net_settlement_group).isNull() | (~F.col(EphemeralColumnNames.is_end_of_period))
         )
     )
 
     nsg2_end_of_period = _calculate_period_limit__net_settlement_group_2_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
-            & F.col("is_end_of_period")
+            & F.col(EphemeralColumnNames.is_end_of_period)
         )
     )
 
     nsg6_end_of_period = _calculate_period_limit__net_settlement_group_6_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
-            & F.col("is_end_of_period")
+            & F.col(EphemeralColumnNames.is_end_of_period)
         )
     )
 

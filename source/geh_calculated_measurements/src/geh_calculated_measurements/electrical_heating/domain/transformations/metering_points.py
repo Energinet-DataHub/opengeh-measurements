@@ -34,6 +34,13 @@ def get_joined_metering_point_periods_in_local_time(
     # before creating massive data frames by joining with energy data
     metering_point_periods = _calculate_base_period_limit(metering_point_periods)
 
+    metering_point_periods = metering_point_periods.select(
+        "*",
+        (F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), 12) <= F.current_date()).alias(
+            EphemeralColumnNames.is_end_of_period
+        ),
+    )
+
     return metering_point_periods
 
 
