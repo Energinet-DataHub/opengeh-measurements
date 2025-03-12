@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dotnet: ${{ steps.filter.outputs.dotnet }}
-      packages: ${{ steps.filter.outputs.packages }}
+      nuget-packages: ${{ steps.filter.outputs.nuget-packages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
               - '.github/workflows/cd.yml'
               - '.github/workflows/ci-dotnet.yml'
               - 'source/dotnet/**'
-            packages:
+            nuget-packages:
               - 'docs/Measurements.Client/**'
               - 'source/dotnet/Measurements.Client*/**'
               - 'source/dotnet/Measurements.Abstractions*/**'
