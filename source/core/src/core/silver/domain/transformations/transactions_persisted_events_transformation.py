@@ -36,9 +36,11 @@ def prepare_measurement(df) -> DataFrame:
 
 def pack_proto(df) -> DataFrame:
     descriptor_path = str(
-        files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.submitted_transaction_persisted)
+        files("core.contracts.process_manager.assets").joinpath(
+            DescriptorFileNames.brs021_forward_metered_data_notify_v1
+        )
     )
-    message_name = "SubmittedTransactionPersisted"
+    message_name = "Brs021ForwardMeteredDataNotifyV1"
     return df.withColumn(
         Brs021ForwardMeteredDataNotifyV1EventColumnNames.value,
         to_protobuf(Brs021ForwardMeteredDataNotifyV1EventColumnNames.value, message_name, descFilePath=descriptor_path),
