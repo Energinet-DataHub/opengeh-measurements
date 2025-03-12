@@ -57,6 +57,7 @@ def test__when_child_source_contains_unexpected_columns_returns_data_without_une
     assert child_with_extra_input_col.df.columns == child.df.columns
 
 
+# should be use if this repository reads from a source that contains data type e.g. delta table
 @pytest.mark.skip(reason="csv file does not contain data type")
 def test__when_source_contains_wrong_data_type_raises_exception(
     electricity_market_repository_wrong_data_type: ElectricityMarketRepository,
