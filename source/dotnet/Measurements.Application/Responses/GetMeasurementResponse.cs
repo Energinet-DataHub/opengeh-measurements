@@ -67,7 +67,6 @@ public class GetMeasurementResponse
     {
         return unit.ToLower() switch
         {
-            "kilo_watt_hour" => Unit.kWh,
             "kwh" => Unit.kWh,
             "kw" => Unit.kW,
             "mw" => Unit.MW,

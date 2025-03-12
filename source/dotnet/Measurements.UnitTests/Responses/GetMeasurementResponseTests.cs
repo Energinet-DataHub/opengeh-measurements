@@ -31,7 +31,6 @@ public class GetMeasurementResponseTests
     }
 
     [Theory]
-    [InlineData("KILO_WATT_HOUR", Unit.kWh)]
     [InlineData("KWH", Unit.kWh)]
     [InlineData("KW", Unit.kW)]
     [InlineData("MW", Unit.MW)]
