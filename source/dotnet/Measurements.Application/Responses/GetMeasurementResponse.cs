@@ -53,27 +53,28 @@ public class GetMeasurementResponse
 
     private static Quality ParseQuality(string quality)
     {
-        return quality switch
+        return quality.ToLower() switch
         {
-            "measured" => Quality.Measured,
-            "estimated" => Quality.Estimated,
-            "calculated" => Quality.Calculated,
             "missing" => Quality.Missing,
+            "estimated" => Quality.Estimated,
+            "measured" => Quality.Measured,
+            "calculated" => Quality.Calculated,
             _ => throw new ArgumentOutOfRangeException(nameof(quality)),
         };
     }
 
     private static Unit ParseUnit(string unit)
     {
-        return unit switch
+        return unit.ToLower() switch
         {
-            "kwh" => Unit.Kwh,
-            "kw" => Unit.Kw,
-            "mw" => Unit.Mw,
-            "mwh" => Unit.Mwh,
+            "kilo_watt_hour" => Unit.kWh,
+            "kwh" => Unit.kWh,
+            "kw" => Unit.kW,
+            "mw" => Unit.MW,
+            "mwh" => Unit.MWh,
             "tonne" => Unit.Tonne,
-            "kvarh" => Unit.Kvarh,
-            "mvar" => Unit.Mvar,
+            "kvarh" => Unit.kVArh,
+            "mvar" => Unit.MVAr,
             _ => throw new ArgumentOutOfRangeException(nameof(unit)),
         };
     }

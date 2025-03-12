@@ -24,20 +24,21 @@ public class GetMeasurementResponseTests
 
         // Assert
         Assert.Equal("123456789", actual.MeteringPointId);
-        Assert.Equal(Unit.Kwh, actual.Unit);
+        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(3, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Quantity == 42));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
     [Theory]
-    [InlineData("kwh", Unit.Kwh)]
-    [InlineData("kw", Unit.Kw)]
-    [InlineData("mw", Unit.Mw)]
-    [InlineData("mwh", Unit.Mwh)]
-    [InlineData("tonne", Unit.Tonne)]
-    [InlineData("kvarh", Unit.Kvarh)]
-    [InlineData("mvar", Unit.Mvar)]
+    [InlineData("KILO_WATT_HOUR", Unit.kWh)]
+    [InlineData("KWH", Unit.kWh)]
+    [InlineData("KW", Unit.kW)]
+    [InlineData("MW", Unit.MW)]
+    [InlineData("MWH", Unit.MWh)]
+    [InlineData("TONNE", Unit.Tonne)]
+    [InlineData("KVARH", Unit.kVArh)]
+    [InlineData("MVAR", Unit.MVAr)]
     public void Create_WhenUnitKnown_ThenReturnsGetMeasurementResponse(string unit, Unit expectedUnit)
     {
         // Arrange

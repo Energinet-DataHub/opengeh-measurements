@@ -34,7 +34,7 @@ public class MeasurementsHandlerTests
 
         // Assert
         Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
-        Assert.Equal(Unit.Kwh, actual.Unit);
+        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
     }
