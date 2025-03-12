@@ -31,7 +31,7 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
     )
 
     _handle_valid_submitted_transactions(valid_submitted_transactions, batchId)
-    _handle_invalid_submitted_transactions(invalid_submitted_transactions, batchId)
+    _handle_invalid_submitted_transactions(invalid_submitted_transactions)
 
 
 def _handle_valid_submitted_transactions(submitted_transactions: DataFrame, batchId: int) -> None:
