@@ -1,5 +1,6 @@
 import unittest
 import uuid
+from datetime import datetime
 
 import pytest
 from azure.monitor.query import LogsQueryStatus
@@ -12,7 +13,7 @@ from tests.subsystem_tests.capacity_settlement.seed_gold_table import GoldTableR
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
-OBSERVATION_TIME = "2025-01-01T00:00:00Z"
+OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
 
 
 class TestCapacitySettlement(unittest.TestCase):

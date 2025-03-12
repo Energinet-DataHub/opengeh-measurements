@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 
 from geh_common.databricks import DatabricksApiClient
@@ -6,10 +7,11 @@ from geh_common.domain.types import MeteringPointType
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
+@dataclass
 class GoldTableRow:
     metering_point_id: str
     orchestration_type: str = "submitted"
-    observation_time: datetime
+    observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0)
     quantity: str = "1.700"
     quality: str = "measured"
     metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION
