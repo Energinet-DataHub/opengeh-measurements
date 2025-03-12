@@ -1,6 +1,6 @@
 import pytest
 
-from tests.subsystem_tests.electrical_heating.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 @pytest.fixture(scope="session")

@@ -10,7 +10,7 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
-from tests.subsystem_tests.electrical_heating.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 @dataclass
@@ -70,14 +70,14 @@ class BaseJobFixture:
         )
         self.job_name = job_name
 
-    def create_job_state(self, run_id, run_result_state, calculation_input):
+    def create_job_state(self, run_id, run_result_state, calculation_input) -> None:
         self.job_state = JobState(run_id, run_result_state, calculation_input)
 
-    def create_calculation_input(self, orchestration_instance_id):
+    def create_calculation_input(self, orchestration_instance_id) -> None:
         job_id = self.get_job_id()
         self.calculation_input = CalculationInput(orchestration_instance_id, job_id)
 
-    def set_run_result_state(self, run_result_state):
+    def set_run_result_state(self, run_result_state) -> None:
         self.job_state.run_result_state = run_result_state
 
     def get_job_name(self) -> str:
