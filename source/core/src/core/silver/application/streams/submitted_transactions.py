@@ -13,12 +13,16 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
-
+from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
-    SilverMeasurementsRepository().write_stream(submitted_transactions, _batch_operation)
+    SilverMeasurementsRepository().write_stream(
+        submitted_transactions, 
+        OrchestrationTypeEnum.SUBMITTED, 
+        _batch_operation,
+    )
 
 
 def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
@@ -26,17 +30,21 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
         submitted_transactions
     )
 
-    _handle_valid_submitted_transactions(valid_submitted_transactions)
+    _handle_valid_submitted_transactions(valid_submitted_transactions, batchId)
     _handle_invalid_submitted_transactions(invalid_submitted_transactions)
 
 
-def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> None:
+def _handle_valid_submitted_transactions(submitted_transactions: DataFrame, batchId: int) -> None:
     spark = spark_session.initialize_spark()
     measurements = measurements_transformation.create_by_unpacked_submitted_transactions(spark, submitted_transactions)
 
     (valid_measurements, invalid_measurements) = submitted_transactions_to_silver_validation.validate(measurements)
 
-    SilverMeasurementsRepository().append_if_not_exists(valid_measurements)
+    SilverMeasurementsRepository().append_if_not_exists(
+        valid_measurements, 
+        txn_version=batchId, 
+        txn_app_id="submitted_transactions_to_silver_v1",
+    )
 
     _handle_submitted_transactions_quarantined(invalid_measurements)
 

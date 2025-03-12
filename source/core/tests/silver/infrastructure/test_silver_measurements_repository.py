@@ -11,6 +11,7 @@ from core.settings.storage_account_settings import StorageAccountSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
@@ -24,7 +25,11 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
     expected_silver_container_name = SilverSettings().silver_container_name
 
     # Act
-    SilverMeasurementsRepository().write_stream(mocked_measurements, mocked_batch_operation)
+    SilverMeasurementsRepository().write_stream(
+        mocked_measurements, 
+        OrchestrationTypeEnum.SUBMITTED, 
+        mocked_batch_operation,
+    )
 
     # Assert
     mocked_measurements.writeStream.outputMode.assert_called_once_with("append")
@@ -50,7 +55,11 @@ def test__write_measurements__when_contionous_streaming_is_disabled__should_not_
     mocked_batch_operation = mock.Mock()
 
     # Act
-    SilverMeasurementsRepository().write_stream(mocked_measurements, mocked_batch_operation)
+    SilverMeasurementsRepository().write_stream(
+        mocked_measurements, 
+        OrchestrationTypeEnum.SUBMITTED,
+        mocked_batch_operation,
+    )
 
     # Assert
     mocked_measurements.writeStream.outputMode().option().trigger.assert_not_called()
