@@ -5,25 +5,25 @@ import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 
-from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+from tests.subsystem_tests.missing_measurements_log.fixtures.missing_measurements_log_fixture import (
+    MissingMeasurementsLogFixture,
+)
 
 
-class TestCapacitySettlement(unittest.TestCase):
+class TestMissingMeasurementsLog(unittest.TestCase):
     """
-    Subsystem test that verifies a Databricks capacity settlement job runs successfully to completion.
+    Subsystem test that verifies a Databricks missing meaurements log job runs successfully to completion.
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, fixture: CapacitySettlementFixture) -> None:
-        TestCapacitySettlement.fixture = fixture
+    def setup_fixture(self, fixture: MissingMeasurementsLogFixture) -> None:
+        TestMissingMeasurementsLog.fixture = fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
         self.fixture.job_state.calculation_input.orchestration_instance_id = uuid.uuid4()
-        self.fixture.job_state.calculation_input.year = 2024
-        self.fixture.job_state.calculation_input.month = 1
 
         # Assert
         assert self.fixture.job_state.calculation_input.job_id is not None
