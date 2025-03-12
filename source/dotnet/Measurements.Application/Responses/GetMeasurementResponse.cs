@@ -58,6 +58,7 @@ public class GetMeasurementResponse
             "measured" => Quality.Measured,
             "estimated" => Quality.Estimated,
             "calculated" => Quality.Calculated,
+            "missing" => Quality.Missing,
             _ => throw new ArgumentOutOfRangeException(nameof(quality)),
         };
     }
@@ -66,8 +67,13 @@ public class GetMeasurementResponse
     {
         return unit switch
         {
-            "KWH" => Unit.KWh,
-            "MWH" => Unit.MWh,
+            "kwh" => Unit.Kwh,
+            "kw" => Unit.Kw,
+            "mw" => Unit.Mw,
+            "mwh" => Unit.Mwh,
+            "tonne" => Unit.Tonne,
+            "kvarh" => Unit.Kvarh,
+            "mvar" => Unit.Mvar,
             _ => throw new ArgumentOutOfRangeException(nameof(unit)),
         };
     }

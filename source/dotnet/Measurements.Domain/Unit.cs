@@ -2,6 +2,11 @@
 
 public enum Unit
 {
-    KWh,
-    MWh,
+    Kwh,
+    Kw,
+    Mw,
+    Mwh,
+    Tonne,
+    Kvarh,
+    Mvar,
 }

@@ -24,16 +24,20 @@ public class GetMeasurementResponseTests
 
         // Assert
         Assert.Equal("123456789", actual.MeteringPointId);
-        Assert.Equal(Unit.KWh, actual.Unit);
+        Assert.Equal(Unit.Kwh, actual.Unit);
         Assert.Equal(3, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Quantity == 42));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
     [Theory]
-    [InlineData("KWH", Unit.KWh)]
-    [InlineData("MWH", Unit.KWh)] // TODO: Fix when unit exists in data
-    [InlineData("Unknown", Unit.KWh)] // TODO: Fix when unit exists in data
+    [InlineData("kwh", Unit.Kwh)]
+    [InlineData("kw", Unit.Kw)]
+    [InlineData("mw", Unit.Mw)]
+    [InlineData("mwh", Unit.Mwh)]
+    [InlineData("tonne", Unit.Tonne)]
+    [InlineData("kvarh", Unit.Kvarh)]
+    [InlineData("mvar", Unit.Mvar)]
     public void Create_WhenUnitKnown_ThenReturnsGetMeasurementResponse(string unit, Unit expectedUnit)
     {
         // Arrange
@@ -53,6 +57,7 @@ public class GetMeasurementResponseTests
     [InlineData("measured", Quality.Measured)]
     [InlineData("estimated", Quality.Estimated)]
     [InlineData("calculated", Quality.Calculated)]
+    [InlineData("missing", Quality.Missing)]
     public void Create_WhenQualityKnown_ThenReturnsGetMeasurementResponse(string quality, Quality expectedQuality)
     {
         // Arrange
@@ -82,7 +87,7 @@ public class GetMeasurementResponseTests
         Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
-    private static ExpandoObject CreateRaw(string unit = "KWH", string quality = "measured")
+    private static ExpandoObject CreateRaw(string unit = "kwh", string quality = "measured")
     {
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
