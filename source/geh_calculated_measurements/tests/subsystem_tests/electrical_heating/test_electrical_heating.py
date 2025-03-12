@@ -14,8 +14,8 @@ class TestElectricalHeating(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, fixture: ElectricalHeatingFixture) -> None:
-        TestElectricalHeating.fixture = fixture
+    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture) -> None:
+        TestElectricalHeating.fixture = electrical_heating_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

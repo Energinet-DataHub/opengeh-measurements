@@ -14,8 +14,8 @@ class TestCapacitySettlement(unittest.TestCase):
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, fixture: CapacitySettlementFixture) -> None:
-        TestCapacitySettlement.fixture = fixture
+    def setup_fixture(self, capacity_settlement_fixture: CapacitySettlementFixture) -> None:
+        TestCapacitySettlement.fixture = capacity_settlement_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

@@ -12,12 +12,12 @@ from tests.subsystem_tests.missing_measurements_log.fixtures.missing_measurement
 
 class TestMissingMeasurementsLog(unittest.TestCase):
     """
-    Subsystem test that verifies a Databricks missing meaurements log job runs successfully to completion.
+    Subsystem test that verifies a Databricks missing measurements log job runs successfully to completion.
     """
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, fixture: MissingMeasurementsLogFixture) -> None:
-        TestMissingMeasurementsLog.fixture = fixture
+    def setup_fixture(self, missing_measurements_log_fixture: MissingMeasurementsLogFixture) -> None:
+        TestMissingMeasurementsLog.fixture = missing_measurements_log_fixture
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

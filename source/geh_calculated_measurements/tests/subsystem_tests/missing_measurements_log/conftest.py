@@ -1,7 +1,9 @@
 import pytest
 
-from tests.subsystem_tests.capacity_settlement.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
+from tests.subsystem_tests.missing_measurements_log.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.missing_measurements_log.fixtures.missing_measurements_log_fixture import (
+    MissingMeasurementsLogFixture,
+)
 
 
 @pytest.fixture(scope="session")
@@ -10,5 +12,7 @@ def environment_configuration() -> EnvironmentConfiguration:
 
 
 @pytest.fixture(scope="session")
-def capacity_settlement_fixture(environment_configuration: EnvironmentConfiguration) -> CapacitySettlementFixture:
-    return CapacitySettlementFixture(environment_configuration)
+def missing_measurements_log_fixture(
+    environment_configuration: EnvironmentConfiguration,
+) -> MissingMeasurementsLogFixture:
+    return MissingMeasurementsLogFixture(environment_configuration)
