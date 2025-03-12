@@ -22,8 +22,6 @@ class EphemeralColumnNames:
     The metering point id from which to get the energy data.
     This is the net consumption metering point id if it exists, otherwise it's the consumption metering point id.
     """
-    is_end_of_period = "is_end_of_period"
-    """Boolean column that is true when the period ends before "today". Otherwise, it's false."""
     net_consumption_metering_point_id = "net_consumption_metering_point_id"
     net_consumption_period_end = "net_consumption_period_end"
     net_consumption_period_start = "net_consumption_period_start"
