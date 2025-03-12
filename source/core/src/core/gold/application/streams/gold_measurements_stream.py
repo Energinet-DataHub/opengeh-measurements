@@ -1,6 +1,6 @@
 from pyspark.sql.dataframe import DataFrame
 
-import core.gold.domain.streams.silver_to_gold.transformations as transformations
+import core.gold.domain.transformations.gold_measurements_transformations as transformations
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
