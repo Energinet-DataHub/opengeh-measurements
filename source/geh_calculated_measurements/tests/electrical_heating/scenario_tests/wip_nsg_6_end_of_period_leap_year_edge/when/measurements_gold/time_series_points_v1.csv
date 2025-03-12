@@ -2,9 +2,9 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 060000000600170204;250;2023-10-31T23:00:00Z;supply_to_grid;Case 4 - period 1 (non-leap): Day 1
 070000000600170204;500;2023-10-31T23:00:00Z;consumption_from_grid;Case 4 - period 1 (non-leap): Day 1
 150000000600170204;250;2023-10-31T23:00:00Z;net_consumption;Case 4 - period 1 (non-leap): Day 1
-060000000600170204;100;2024-01-31T22:45:00Z;supply_to_grid;Case 4 - period 1 (non-leap): Day 62
-070000000600170204;200;2024-01-31T22:45:00Z;consumption_from_grid;Case 4 - period 1 (non-leap): Day 62
-150000000600170204;100;2024-01-31T22:45:00Z;net_consumption;Case 4 - period 1 (non-leap): Day 62
+060000000600170204;300;2024-01-31T22:45:00Z;supply_to_grid;Case 4 - period 1 (non-leap): Day 62
+070000000600170204;600;2024-01-31T22:45:00Z;consumption_from_grid;Case 4 - period 1 (non-leap): Day 62
+150000000600170204;300;2024-01-31T22:45:00Z;net_consumption;Case 4 - period 1 (non-leap): Day 62
 060000000600170204;500;2024-01-31T23:00:00Z;supply_to_grid;Case 4 - period 2 (leap): Day 1
 070000000600170204;1000;2024-01-31T23:00:00Z;consumption_from_grid;Case 4 - period 2 (leap): Day 1
 150000000600170204;500;2024-01-31T23:00:00Z;net_consumption;Case 4 - period 2 (leap): Day 1

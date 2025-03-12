@@ -1,6 +1,6 @@
 orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2023-10-31T23:00:00Z;250;Case 4: Period 1, Day 1 (Nov. 1st)
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2024-01-30T23:00:00Z;79.452;Case 4: Period 1, Day 62 - Limit (329.452) hit
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2024-01-30T23:00:00Z;208.219;Case 4: Period 1, Day 62 - Limit (458.219) hit
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2024-01-31T23:00:00Z;500;Case 4: Period 2, Day 1 (Feb. 1st)
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2024-06-29T22:00:00Z;150.273;Case 4: Period 2, Day 151 - Limit (650.273) hit
 electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170204;2024-06-30T22:00:00Z;500;Case 4: Period 3, Day 1 (Jul. 1st)
