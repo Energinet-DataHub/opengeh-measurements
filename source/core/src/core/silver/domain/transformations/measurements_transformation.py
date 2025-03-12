@@ -21,7 +21,7 @@ def transform(spark: SparkSession, unpacked_submitted_transactions: DataFrame) -
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = unpacked_submitted_transactions.select(
-        _align_orchestration_type.alias(SilverMeasurementsColumnNames.orchestration_type),
+        _align_orchestration_type().alias(SilverMeasurementsColumnNames.orchestration_type),
         unpacked_submitted_transactions[ValueColumnNames.orchestration_instance_id].alias(
             SilverMeasurementsColumnNames.orchestration_instance_id
         ),
@@ -34,9 +34,9 @@ def transform(spark: SparkSession, unpacked_submitted_transactions: DataFrame) -
         unpacked_submitted_transactions[ValueColumnNames.transaction_creation_datetime].alias(
             SilverMeasurementsColumnNames.transaction_creation_datetime
         ),
-        _align_metering_point_type.alias(SilverMeasurementsColumnNames.metering_point_type),
-        _align_unit.alias(SilverMeasurementsColumnNames.unit),
-        _align_resolution.alias(SilverMeasurementsColumnNames.resolution),
+        _align_metering_point_type().alias(SilverMeasurementsColumnNames.metering_point_type),
+        _align_unit().alias(SilverMeasurementsColumnNames.unit),
+        _align_resolution().alias(SilverMeasurementsColumnNames.resolution),
         unpacked_submitted_transactions[ValueColumnNames.start_datetime].alias(
             SilverMeasurementsColumnNames.start_datetime
         ),
