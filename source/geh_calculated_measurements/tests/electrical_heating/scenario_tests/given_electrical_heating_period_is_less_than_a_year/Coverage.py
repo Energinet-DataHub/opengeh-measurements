@@ -36,6 +36,21 @@ Child 2 start/end:            |--------|
 Measurement data:     +  +  +  +  +  +  +
 Added to child:       *  *     *  *  *
 
+CASE 6 - non-matching parent/child periods
+This is really an invalid state, but it can happen i production, so we include a test for it.
+
+Parent start/end:   |-------------------...
+Child start/end:    |---------|
+Measurement data:   +++++++++++++++++++++++
+Added to child:     ***********
+
+CASE 7 - no child MP
+This is really an invalid state, but it can happen i production, so we include a test for it.
+Parent start/end:   |-------------------...
+Child start/end:    nothing
+Measurement data:    ++
+Added to child:     nothing
+
 ## CASES TESTED
 """
 Base consumption metering point behaviour
