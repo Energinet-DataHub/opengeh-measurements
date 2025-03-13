@@ -2,6 +2,7 @@ from datetime import datetime
 from importlib.resources import files
 
 import pyspark.sql.functions as F
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.protobuf.functions import to_protobuf
 
@@ -51,7 +52,7 @@ class Value:
         self,
         version: int = 1,
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        orchestration_type: str = GehCommonOrchestrationType.SUBMITTED.value,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
