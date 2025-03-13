@@ -8,17 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
-[Collection(nameof(MeasurementsClientAppCollection))]
+[Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementsClientTests
 {
-    private MeasurementsClientAppFixture Fixture { get; }
+    private MeasurementsClientFixture Fixture { get; }
 
     private IMeasurementsClient MeasurementsClient { get; }
 
-    public MeasurementsClientTests(MeasurementsClientAppFixture fixture)
+    public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
         Fixture = fixture;
-
         MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
     }
 

@@ -6,7 +6,7 @@
 /// xUnit documentation of collection fixtures:
 ///  * https://xunit.net/docs/shared-context#collection-fixture
 /// </summary>
-[CollectionDefinition(nameof(MeasurementsClientAppCollection))]
-public class MeasurementsClientAppCollection : ICollectionFixture<MeasurementsClientAppFixture>
+[CollectionDefinition(nameof(MeasurementsClientCollection))]
+public class MeasurementsClientCollection : ICollectionFixture<MeasurementsClientFixture>
 {
 }

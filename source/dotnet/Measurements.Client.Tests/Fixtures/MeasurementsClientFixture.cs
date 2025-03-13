@@ -14,7 +14,7 @@ using IHttpClientFactory = System.Net.Http.IHttpClientFactory;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
-public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
 
@@ -22,14 +22,14 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
 
     public HttpClient HttpClient { get; }
 
-    public MeasurementsClientAppFixture()
+    public MeasurementsClientFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
         DatabricksSchemaManager = new DatabricksSchemaManager(
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
-        HttpClient = CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost:7202") });
+        HttpClient = CreateClient();
     }
 
     public async Task InitializeAsync()
@@ -49,19 +49,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureKestrel(options =>
-        {
-            options.ListenLocalhost(7202);
-        });
-
-        builder.ConfigureServices(services =>
-        {
-            services.Configure<KestrelServerOptions>(options =>
-            {
-                options.ListenLocalhost(7202);
-            });
-        });
-
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
@@ -81,15 +68,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        // var rows = new List<List<string>>();
-        // var date = new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero);
-        // for (var i = 0; i < 23; i++)
-        // {
-        //     rows.Add(["'1234567890'", "'kwh'", $"'{date:yyyy-MM-ddTHH:mm:ssZ}'", $"'{i}.0'", "'measured'"]);
-        //     date = date.Add(TimeSpan.FromHours(1));
-        // }
-        //
-        // return rows.AsEnumerable();
         return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
     }
 }
