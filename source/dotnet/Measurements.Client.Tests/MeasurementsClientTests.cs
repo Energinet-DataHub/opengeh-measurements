@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+﻿using System.Net;
+using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.Tests.Extensions;
@@ -7,28 +8,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
-[Collection(nameof(MeasurementsClientAppCollection))]
+[Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementsClientTests
 {
-    private MeasurementsClientAppFixture Fixture { get; }
-
-    private ServiceProvider ServiceProvider { get; }
+    private MeasurementsClientFixture Fixture { get; }
 
     private IMeasurementsClient MeasurementsClient { get; }
 
-    public MeasurementsClientTests(MeasurementsClientAppFixture fixture)
+    public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
         Fixture = fixture;
-
-        var services = new ServiceCollection();
-        services.AddInMemoryConfiguration(new Dictionary<string, string?>
-        {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"]
-                = "https://localhost:7202",
-        });
-        services.AddMeasurementsClient();
-        ServiceProvider = services.BuildServiceProvider();
-        MeasurementsClient = ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
     }
 
     [Fact]
@@ -47,5 +37,20 @@ public class MeasurementsClientTests
         Assert.Equal(query.MeteringPointId, result.MeteringPointId);
         Assert.Equal(24, result.Points.Count);
         Assert.True(result.Points.All(p => p.Quality == "Measured"));
+    }
+
+    [Fact]
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsNotFound()
+    {
+        // Arrange
+        var query = new GetMeasurementsForDayQuery(
+            "1234567890",
+            new DateTimeOffset(1900, 1, 2, 0, 0, 0, TimeSpan.Zero));
+
+        // Act
+        var result = await Assert.ThrowsAsync<HttpRequestException>(() => MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None));
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 }

@@ -7,22 +7,29 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using IHttpClientFactory = System.Net.Http.IHttpClientFactory;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
-public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
 
     public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
-    public MeasurementsClientAppFixture()
+    public HttpClient HttpClient { get; }
+
+    public MeasurementsClientFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
         DatabricksSchemaManager = new DatabricksSchemaManager(
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        HttpClient = CreateClient();
     }
 
     public async Task InitializeAsync()
@@ -37,6 +44,7 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
     {
         await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
+        HttpClient.Dispose();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -46,7 +54,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-        builder.UseSetting($"{nameof(MeasurementHttpClientOptions.SectionName)}:{nameof(MeasurementHttpClientOptions.BaseAddress)}", "https://localhost:7202");
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
@@ -61,15 +68,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        // var rows = new List<List<string>>();
-        // var date = new DateTimeOffset(2025, 1, 3, 0, 0, 0, TimeSpan.Zero);
-        // for (var i = 0; i < 23; i++)
-        // {
-        //     rows.Add(["'1234567890'", "'kwh'", $"'{date:yyyy-MM-ddTHH:mm:ssZ}'", $"'{i}.0'", "'measured'"]);
-        //     date = date.Add(TimeSpan.FromHours(1));
-        // }
-        //
-        // return rows.AsEnumerable();
         return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
     }
 }
