@@ -1,6 +1,6 @@
 import unittest
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from azure.monitor.query import LogsQueryStatus
@@ -16,7 +16,7 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
-OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
 
 
 class TestCapacitySettlement(unittest.TestCase):
@@ -28,9 +28,10 @@ class TestCapacitySettlement(unittest.TestCase):
         return [
             GoldTableRow(
                 metering_point_id=METERING_POINT_ID,
-                observation_time=OBSERVATION_TIME,
+                observation_time=FIRST_OBSERVATION_TIME + timedelta(hours=i),
                 metering_point_type=MeteringPointType.CONSUMPTION,
             )
+            for i in range(10)
         ]
 
     @pytest.fixture(autouse=True, scope="class")
