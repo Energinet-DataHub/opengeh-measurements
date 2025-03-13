@@ -9,3 +9,11 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 170000000000000204;1;2024-02-29T23:00:00Z;consumption;Case 4: First day with EH. Limit = 306/366*4000 = 3344,262
 170000000000000204;1;2024-03-01T23:00:00Z;consumption;Case 4: 2nd day with EH
 170000000000000204;4000;2024-03-02T23:00:00Z;consumption;Case 4: 3nd day with EH - limit hit
+170000000000000205;1000;2024-01-15T12:00:00Z;consumption;Case 5: Period 1
+170000000000000205;1000;2024-02-15T12:00:00Z;consumption;Case 5: Period 1
+170000000000000205;1000;2024-03-15T12:00:00Z;consumption;Case 5: Outside Period
+170000000000000205;1000;2024-04-15T12:00:00Z;consumption;Case 5: Outside Period
+170000000000000205;1000;2024-05-15T12:00:00Z;consumption;Case 5: Period 2
+170000000000000205;1000;2024-06-15T12:00:00Z;consumption;Case 5: Period 2
+170000000000000205;1000;2024-07-15T12:00:00Z;consumption;Case 5: Period 2
+170000000000000205;1000;2024-08-15T12:00:00Z;consumption;Case 5: Outside Period

@@ -10,8 +10,8 @@ Parent start/end:   |---------|         |---|   |---...
 Child 1 start/end:  |---------|
 Child 2 start/end:                      |---|
 Child 3 start/end:                              |---...
-Measurement data:   +++++++++++++++++++++++********
-Added to child:     ***********         *****   *******
+Measurement data:   +++++++++++++++++++++++*********
+Added to child:     ***********         *****   ****
 
 ## CASES TESTED
 """
