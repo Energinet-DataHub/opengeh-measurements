@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Extensions;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using Xunit;
 
@@ -12,13 +12,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 {
     private readonly HttpClient _client = fixture.CreateClient();
 
-    [Theory]
-    [InlineData("2022-01-01T00:00:00Z", "2022-01-02T00:00:00Z")]
-    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement(
-        string startDate, string endDate)
+    [Fact]
+    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-01-01T00:00:00Z";
+        const string endDate = "2022-01-02T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -58,6 +58,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         response.EnsureSuccessStatusCode();
         var actualBody = await response.Content.ReadAsStringAsync();
-        return actualBody.DeserializeJson<GetMeasurementResponse>();
+        return new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
     }
 }

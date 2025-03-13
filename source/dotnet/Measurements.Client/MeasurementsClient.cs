@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;

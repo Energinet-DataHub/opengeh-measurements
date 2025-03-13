@@ -24,7 +24,7 @@ public class MeasurementsClientTests
         services.AddInMemoryConfiguration(new Dictionary<string, string?>
         {
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"]
-                = Fixture.HttpClient.BaseAddress!.ToString(),
+                = "https://localhost:7202",
         });
         services.AddMeasurementsClient();
         ServiceProvider = services.BuildServiceProvider();
@@ -36,13 +36,16 @@ public class MeasurementsClientTests
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery(
-            "MeteringPointId",
-            new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero));
+            "1234567890",
+            new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
 
         // Act
         var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
+        Assert.Equal(query.MeteringPointId, result.MeteringPointId);
+        Assert.Equal(24, result.Points.Count);
+        Assert.True(result.Points.All(p => p.Quality == "Measured"));
     }
 }

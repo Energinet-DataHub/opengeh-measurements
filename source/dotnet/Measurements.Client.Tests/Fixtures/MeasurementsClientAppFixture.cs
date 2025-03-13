@@ -9,14 +9,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
-public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class MeasurementsClientAppFixture : IAsyncLifetime
 {
     public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
 
     public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
-    public HttpClient HttpClient { get; }
-
+    // public HttpClient HttpClient { get; }
     public MeasurementsClientAppFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -24,7 +23,8 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
-        HttpClient = CreateClient();
+
+        // HttpClient = CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost:7202") });
     }
 
     public async Task InitializeAsync()
@@ -35,22 +35,21 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
-    public new async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
-        HttpClient.Dispose();
+
+        // HttpClient.Dispose();
     }
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
-        builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
-        builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-    }
-
+    // protected override void ConfigureWebHost(IWebHostBuilder builder)
+    // {
+    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
+    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
+    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
+    //     builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
+    //     builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
+    // }
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
         new()
         {
@@ -72,6 +71,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
         // }
         //
         // return rows.AsEnumerable();
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2025-01-03T00:00:00Z'", "1.0", "'measured'" });
+        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
     }
 }
