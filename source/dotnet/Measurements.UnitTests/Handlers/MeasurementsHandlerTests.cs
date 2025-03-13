@@ -34,6 +34,7 @@ public class MeasurementsHandlerTests
 
         // Assert
         Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
+        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
     }
@@ -59,7 +60,7 @@ public class MeasurementsHandlerTests
     {
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
-        raw.unit = "KWH";
+        raw.unit = "kwh";
         raw.observation_time = now;
         raw.quantity = 42;
         raw.quality = "measured";
