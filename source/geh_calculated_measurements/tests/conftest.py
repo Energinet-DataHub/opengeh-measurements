@@ -7,6 +7,9 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+from tests import TESTS_ROOT
+from tests.testsession_configuration import TestSessionConfiguration
+
 
 @pytest.fixture(scope="session")
 def env_args_fixture_logging() -> dict[str, str]:
@@ -71,3 +74,9 @@ def spark() -> Generator[SparkSession, None, None]:
     session = configure_spark_with_delta_pip(session).getOrCreate()
     yield session
     session.stop()
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration() -> TestSessionConfiguration:
+    settings_file_path = TESTS_ROOT / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)

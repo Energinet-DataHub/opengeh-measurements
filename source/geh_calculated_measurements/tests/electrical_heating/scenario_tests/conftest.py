@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 import yaml
-from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
+from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing, read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
@@ -91,4 +91,12 @@ def assert_dataframes_configuration(
         show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
+    )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_testing_decorator(test_session_configuration: TestSessionConfiguration) -> None:
+    configure_testing(
+        is_testing=test_session_configuration.scenario_tests.testing_decorator_enabled,
+        rows=test_session_configuration.scenario_tests.testing_decorator_max_rows,
     )

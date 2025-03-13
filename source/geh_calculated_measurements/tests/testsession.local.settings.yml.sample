@@ -27,3 +27,16 @@ scenario_tests:
   # Options: True | False
   # `True` is the default.
   ignore_extra_columns_in_actual: True
+
+  # Use this setting to enable the `geh_common.testing.dataframes` `@testing` decorator.
+  # When decorator is applied to a function and this is enabled then data frame returned by the function
+  # will be logged.
+  # Options: True | False
+  # `False` is the default.
+  testing_decorator_enabled: False
+
+  # Use this setting to set the maximum number of rows to display in the test console when using the
+  # `geh_common.testing.dataframes` `@testing` decorator.
+  # Options: Any integer value
+  # `50` is the default.
+  testing_decorator_max_rows: 50

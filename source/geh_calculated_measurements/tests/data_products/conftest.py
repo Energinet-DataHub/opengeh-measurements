@@ -11,7 +11,7 @@ from geh_calculated_measurements.common.domain.model import calculated_measureme
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import PROJECT_ROOT
+from tests import PROJECT_ROOT, TESTS_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
 
@@ -27,7 +27,7 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 @pytest.fixture(scope="session")
 def tests_path() -> str:
     """Returns the tests folder path."""
-    return (PROJECT_ROOT / "tests" / "data_products").as_posix()
+    return (TESTS_ROOT / "data_products").as_posix()
 
 
 @pytest.fixture(scope="session")
