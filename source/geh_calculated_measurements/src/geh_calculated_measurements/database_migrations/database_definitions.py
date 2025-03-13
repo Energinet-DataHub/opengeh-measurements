@@ -1,14 +1,14 @@
-from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
-#class MeasurementsCalculatedInternalDatabaseDefinition:
+# class MeasurementsCalculatedInternalDatabaseDefinition:
 #    # TODO; hardcoded data
 #    measurements_calculated_internal_database = "measurements_calculated_internal"
 #    executed_migrations_table_name = "executed_migrations"
 #    MEASUREMENTS_NAME = "measurements"    NOTE: This is not being used
 
 
-class MeasurementsCalculatedInternalDatabaseDefinition(ApplicationSettings):
+class MeasurementsCalculatedInternalDatabaseDefinition(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
     Used to define and validate settings for the unity catalog used by package.
@@ -19,8 +19,5 @@ class MeasurementsCalculatedInternalDatabaseDefinition(ApplicationSettings):
 
     measurements_calculated_internal_database: str = Field(init=False)
 
-    MEASUREMENTS_NAME: str = Field(init=False)
-    executed_migrations_table_name: str = Field(init=False)
-
-    class Config:
-        case_sensitive = False
+    # MEASUREMENTS_NAME: str = Field(init=False)
+    executed_migrations_table_name: str = Field(init=False)  # executed_migrations

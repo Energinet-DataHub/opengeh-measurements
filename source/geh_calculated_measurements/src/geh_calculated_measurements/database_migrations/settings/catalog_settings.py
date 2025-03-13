@@ -1,8 +1,9 @@
-from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
-class CatalogSettings(ApplicationSettings):
+# todo: remove applicationsettings
+class CatalogSettings(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
     Used to define and validate settings for the unity catalog used by package.
@@ -12,6 +13,3 @@ class CatalogSettings(ApplicationSettings):
     """
 
     catalog_name: str = Field(init=False)
-
-    class Config:
-        case_sensitive = False
