@@ -185,11 +185,11 @@ def _align_metering_point_type() -> Column:
 
 def _align_unit() -> Column:
     return (
-        F.when(F.col(SilverMeasurementsColumnNames.unit) == GehCommonUnit.KWH.value, CoreUnit.U_KWH.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == GehCommonUnit.KW.value, CoreUnit.U_KW.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == GehCommonUnit.MWH.value, CoreUnit.U_MWH.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == GehCommonUnit.TONNE.value, CoreUnit.U_TONNE.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == GehCommonUnit.KVARH.value, CoreUnit.U_KVARH.value)
+        F.when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KWH.value, GehCommonUnit.KWH.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KW.value, GehCommonUnit.KW.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_MWH.value, GehCommonUnit.MWH.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_TONNE.value, GehCommonUnit.TONNE.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KVARH.value, GehCommonUnit.KVARH.value)
         .otherwise(F.col(SilverMeasurementsColumnNames.unit))
     )
 
