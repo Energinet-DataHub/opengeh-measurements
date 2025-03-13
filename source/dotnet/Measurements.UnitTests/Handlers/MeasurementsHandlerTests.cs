@@ -16,15 +16,15 @@ public class MeasurementsHandlerTests
     [Theory]
     [InlineAutoData]
     public async Task GetMeasurementAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
-        Mock<IMeasurementRepository> measurementRepositoryMock)
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
         // Arrange
         var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
         var raw = CreateRaw(now);
-        var measurementResult = new MeasurementResult(raw);
+        var measurementResult = new MeasurementsResult(raw);
         measurementRepositoryMock
-            .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
@@ -34,6 +34,7 @@ public class MeasurementsHandlerTests
 
         // Assert
         Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
+        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
     }
@@ -44,10 +45,10 @@ public class MeasurementsHandlerTests
         // Arrange
         var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
-        var measurementRepositoryMock = new Mock<IMeasurementRepository>();
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
-            .Setup(x => x.GetMeasurementAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
-            .Returns(AsyncEnumerable.Empty<MeasurementResult>());
+            .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Returns(AsyncEnumerable.Empty<MeasurementsResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
@@ -59,7 +60,7 @@ public class MeasurementsHandlerTests
     {
         dynamic raw = new ExpandoObject();
         raw.metering_point_id = "123456789";
-        raw.unit = "KWH";
+        raw.unit = "kwh";
         raw.observation_time = now;
         raw.quantity = 42;
         raw.quality = "measured";

@@ -8,12 +8,12 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence;
 
-public class MeasurementRepository(
+public class MeasurementsRepository(
     DatabricksSqlWarehouseQueryExecutor databricksSqlWarehouseQueryExecutor,
     IOptions<DatabricksSchemaOptions> databricksSchemaOptions)
-    : IMeasurementRepository
+    : IMeasurementsRepository
 {
-    public async IAsyncEnumerable<MeasurementResult> GetMeasurementAsync(string meteringPointId, Instant from, Instant to)
+    public async IAsyncEnumerable<MeasurementsResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to)
     {
         var statement =
             new GetMeasurementsQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
@@ -22,6 +22,6 @@ public class MeasurementRepository(
             .ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)
-            yield return new MeasurementResult(row);
+            yield return new MeasurementsResult(row);
     }
 }
