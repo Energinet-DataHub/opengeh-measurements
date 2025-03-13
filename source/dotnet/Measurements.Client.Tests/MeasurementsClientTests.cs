@@ -12,23 +12,24 @@ public class MeasurementsClientTests
 {
     private MeasurementsClientAppFixture Fixture { get; }
 
-    private ServiceProvider ServiceProvider { get; }
-
+    // private ServiceProvider ServiceProvider { get; }
     private IMeasurementsClient MeasurementsClient { get; }
 
     public MeasurementsClientTests(MeasurementsClientAppFixture fixture)
     {
         Fixture = fixture;
 
-        var services = new ServiceCollection();
-        services.AddInMemoryConfiguration(new Dictionary<string, string?>
-        {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"]
-                = "https://localhost:7202",
-        });
-        services.AddMeasurementsClient();
-        ServiceProvider = services.BuildServiceProvider();
-        MeasurementsClient = ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        // var services = new ServiceCollection();
+        // services.AddInMemoryConfiguration(new Dictionary<string, string?>
+        // {
+        //     [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"]
+        //         = Fixture.HttpClient.BaseAddress!.AbsoluteUri,
+        // });
+        // services.AddMeasurementsClient();
+        // ServiceProvider = services.BuildServiceProvider();
+
+        // MeasurementsClient = ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
     }
 
     [Fact]

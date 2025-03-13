@@ -7,6 +7,10 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using IHttpClientFactory = System.Net.Http.IHttpClientFactory;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
@@ -16,6 +20,8 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
 
     public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
+    public HttpClient HttpClient { get; }
+
     public MeasurementsClientAppFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -23,6 +29,7 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        HttpClient = CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost:7202") });
     }
 
     public async Task InitializeAsync()
@@ -37,16 +44,32 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
     {
         await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
+        HttpClient.Dispose();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureKestrel(options =>
+        {
+            options.ListenLocalhost(7202);
+        });
+
+        builder.ConfigureServices(services =>
+        {
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.ListenLocalhost(7202);
+            });
+
+            services.RemoveAll<IHttpClientFactory>();
+            services.AddSingleton<IHttpClientFactory, FakeHttpClientFactory>(_ => new FakeHttpClientFactory(HttpClient));
+        });
+
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-        builder.UseSetting($"{nameof(MeasurementHttpClientOptions.SectionName)}:{nameof(MeasurementHttpClientOptions.BaseAddress)}", "https://localhost:7202");
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
