@@ -60,9 +60,6 @@ public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsy
             {
                 options.ListenLocalhost(7202);
             });
-
-            services.RemoveAll<IHttpClientFactory>();
-            services.AddSingleton<IHttpClientFactory, FakeHttpClientFactory>(_ => new FakeHttpClientFactory(HttpClient));
         });
 
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
