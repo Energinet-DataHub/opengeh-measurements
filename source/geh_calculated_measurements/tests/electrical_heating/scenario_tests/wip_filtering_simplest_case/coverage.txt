@@ -1,0 +1,8 @@
+﻿
+
+
+CASE 0
+                        __|2024_______________
+Consumption start/end:    |---------...
+Measurement data:           +++++++++++++++++++++
+Periods:                     |____________
