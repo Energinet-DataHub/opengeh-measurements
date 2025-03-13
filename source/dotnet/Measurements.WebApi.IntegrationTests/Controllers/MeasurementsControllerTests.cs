@@ -12,13 +12,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 {
     private readonly HttpClient _client = fixture.CreateClient();
 
-    [Fact]
-    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement()
+    [Theory]
+    [InlineData("2022-01-01T00:00:00Z", "2022-01-02T00:00:00Z")]
+    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement(
+        string startDate, string endDate)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-01T00:00:00Z";
-        const string endDate = "2022-01-02T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act

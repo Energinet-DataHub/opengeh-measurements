@@ -4,19 +4,19 @@ using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.Tests.Extensions;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
-public class MeasurementsClientTests : IAsyncLifetime
+[Collection(nameof(MeasurementsClientAppCollection))]
+public class MeasurementsClientTests
 {
     private MeasurementsClientAppFixture Fixture { get; }
 
     private ServiceProvider ServiceProvider { get; }
 
-    public MeasurementsClientTests(
-        MeasurementsClientAppFixture fixture,
-        ITestOutputHelper testOutputHelper)
+    private IMeasurementsClient MeasurementsClient { get; }
+
+    public MeasurementsClientTests(MeasurementsClientAppFixture fixture)
     {
         Fixture = fixture;
 
@@ -28,29 +28,19 @@ public class MeasurementsClientTests : IAsyncLifetime
         });
         services.AddMeasurementsClient();
         ServiceProvider = services.BuildServiceProvider();
-    }
-
-    public Task InitializeAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DisposeAsync()
-    {
-        throw new NotImplementedException();
+        MeasurementsClient = ServiceProvider.GetRequiredService<IMeasurementsClient>();
     }
 
     [Fact]
     public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurementDto()
     {
         // Arrange
-        var client = ServiceProvider.GetRequiredService<IMeasurementsClient>();
         var query = new GetMeasurementsForDayQuery(
             "MeteringPointId",
             new DateTimeOffset(2025, 3, 1, 0, 0, 0, TimeSpan.Zero));
 
         // Act
-        var result = await client.GetMeasurementsForDayAsync(query, CancellationToken.None);
+        var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
