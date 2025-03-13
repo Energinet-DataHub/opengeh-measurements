@@ -13,12 +13,20 @@ class EnvironmentConfiguration(ApplicationSettings):
     This class must be included when running tests in CD.
     """
 
-    warehouse_id: str = Field(init=False, alias="CORE_WAREHOUSE_ID")
+    warehouse_id: str = Field(init=False, alias="CALCULATED_MEASUREMENTS_WAREHOUSE_ID")
     catalog_name: str = Field(init=False, alias="SHARED_CATALOG_NAME")
 
     databricks_token: str = Field(init=False, alias="DATABRICKS_TOKEN")
     workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
+
+    # for performance test
+
+    schema_name: str = Field(alias="SHARED_SCHEMA_NAME")
+
+    time_series_points_table: str = Field(alias="TIME_SERIES_POINTS")
+    consumption_points_table: str = Field(alias="CONSUMPTION_METERING_POINTS")
+    child_points_table: str = Field(alias="CHILD_METERING_POINTS")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",

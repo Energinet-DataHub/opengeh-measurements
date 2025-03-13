@@ -3,13 +3,13 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
-public class MeasurementResult(ExpandoObject raw)
+public class MeasurementsResult(ExpandoObject raw)
 {
     private readonly dynamic _raw = raw;
 
     public string MeteringPointId => _raw.metering_point_id;
 
-    public string Unit => "KWH"; // TODO: _raw.unit;
+    public string Unit => _raw.unit;
 
     public Instant ObservationTime => Instant.FromDateTimeOffset(_raw.observation_time);
 

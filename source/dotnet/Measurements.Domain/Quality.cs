@@ -5,4 +5,5 @@ public enum Quality
     Estimated,
     Measured,
     Calculated,
+    Missing,
 }

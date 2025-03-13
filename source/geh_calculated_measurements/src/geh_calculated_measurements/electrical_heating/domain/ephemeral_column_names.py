@@ -1,4 +1,4 @@
-class EphemiralColumnNames:
+class EphemeralColumnNames:
     """Names of calculated columns.
 
     `_lt` suffixes stands for local time.
