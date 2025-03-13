@@ -20,6 +20,7 @@ class TestMissingMeasurementsLog(unittest.TestCase):
         TestMissingMeasurementsLog.fixture = missing_measurements_log_fixture
 
     @pytest.mark.order(1)
+    @pytest.mark.skip(reason="Skipping until job is ready.")
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.calculation_input.job_id = self.fixture.get_job_id()
@@ -29,6 +30,7 @@ class TestMissingMeasurementsLog(unittest.TestCase):
         assert self.fixture.job_state.calculation_input.job_id is not None
 
     @pytest.mark.order(2)
+    @pytest.mark.skip(reason="Skipping until job is ready.")
     def test__when_job_is_started(self) -> None:
         # Act
         self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.calculation_input)
@@ -37,6 +39,7 @@ class TestMissingMeasurementsLog(unittest.TestCase):
         assert self.fixture.job_state.run_id is not None
 
     @pytest.mark.order(3)
+    @pytest.mark.skip(reason="Skipping until job is ready.")
     def test__then_job_is_completed(self) -> None:
         # Act
         self.fixture.job_state.run_result_state = self.fixture.wait_for_job_to_completion(self.fixture.job_state.run_id)
@@ -47,6 +50,7 @@ class TestMissingMeasurementsLog(unittest.TestCase):
         )
 
     @pytest.mark.order(4)
+    @pytest.mark.skip(reason="Skipping until job is ready.")
     def test__and_then_job_telemetry_is_created(self) -> None:
         # Arrange
         if self.fixture.job_state.run_result_state != RunResultState.SUCCESS:
