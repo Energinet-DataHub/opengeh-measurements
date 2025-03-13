@@ -21,7 +21,6 @@ class TestElectricalHeating(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="ElectricalHeating",
-                seed_data=True,
                 params=self.params,
             )
         return self.fixture
