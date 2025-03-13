@@ -2,6 +2,7 @@
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
@@ -9,13 +10,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
-public class MeasurementsClientAppFixture : IAsyncLifetime
+public class MeasurementsClientAppFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
 
     public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
-    // public HttpClient HttpClient { get; }
     public MeasurementsClientAppFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -23,8 +23,6 @@ public class MeasurementsClientAppFixture : IAsyncLifetime
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
-
-        // HttpClient = CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost:7202") });
     }
 
     public async Task InitializeAsync()
@@ -35,21 +33,22 @@ public class MeasurementsClientAppFixture : IAsyncLifetime
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
-    public async Task DisposeAsync()
+    public new async Task DisposeAsync()
     {
+        await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
-
-        // HttpClient.Dispose();
     }
 
-    // protected override void ConfigureWebHost(IWebHostBuilder builder)
-    // {
-    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
-    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
-    //     builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
-    //     builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
-    //     builder.UseSetting($"{nameof(DatabricksSchemaOptions)}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-    // }
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
+        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
+        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
+        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
+        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
+        builder.UseSetting($"{nameof(MeasurementHttpClientOptions.SectionName)}:{nameof(MeasurementHttpClientOptions.BaseAddress)}", "https://localhost:7202");
+    }
+
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
         new()
         {
