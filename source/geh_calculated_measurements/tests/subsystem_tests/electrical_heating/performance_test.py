@@ -1,0 +1,58 @@
+import pytest
+
+from geh_calculated_measurements.electrical_heating.domain import ChildMeteringPoints, ConsumptionMeteringPointPeriods
+from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
+    Repository as ElectricityMarketRepository,
+)
+from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
+from tests.subsystem_tests.electrical_heating.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.electrical_heating.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
+from tests.subsystem_tests.electrical_heating.test_electrical_heating import TestElectricalHeating
+
+
+# The test with performance configuration
+class TestElectricalHeatingPerformance(TestElectricalHeating):
+    """Test with performance configuration using delta tables"""
+
+    @pytest.fixture(autouse=True, scope="class")
+    def setup_fixture(self, electrical_heating_fixture: ElectricalHeatingFixture) -> None:
+        TestElectricalHeating.fixture = electrical_heating_fixture
+
+    @pytest.fixture(autouse=True, scope="class")
+    def patch_repositories(
+        self, monkeypatch: pytest.MonkeyPatch, environment_configuration: EnvironmentConfiguration
+    ) -> None:
+        # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
+        monkeypatch.setattr(
+            MeasurementsGoldDatabaseDefinition,
+            "DATABASE_NAME",
+            environment_configuration.schema_name,
+        )
+        monkeypatch.setattr(
+            MeasurementsGoldDatabaseDefinition,
+            "TIME_SERIES_POINTS_NAME",
+            environment_configuration.time_series_points_table,
+        )
+
+        # Patch read_consumption_metering_point_periods
+        def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
+            table_name = f"{environment_configuration.schema_name}.{environment_configuration.consumption_points_table}"
+            df = self._spark.read.format("delta").table(table_name)
+            return ConsumptionMeteringPointPeriods(df)
+
+        # Patch read_child_metering_points
+        def patched_read_child_metering_points(self) -> ChildMeteringPoints:
+            table_name = f"{environment_configuration.schema_name}.{environment_configuration.child_points_table}"
+            df = self._spark.read.format("delta").table(table_name)
+            return ChildMeteringPoints(df)
+
+        monkeypatch.setattr(
+            ElectricityMarketRepository,
+            "read_consumption_metering_point_periods",
+            patched_read_consumption_metering_point_periods,
+        )
+        monkeypatch.setattr(
+            ElectricityMarketRepository, "read_child_metering_points", patched_read_child_metering_points
+        )
