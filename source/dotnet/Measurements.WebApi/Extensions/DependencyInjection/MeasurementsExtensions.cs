@@ -21,7 +21,7 @@ public static class MeasurementsExtensions
 
         services.AddNodaTimeForApplication();
         services.AddScoped<IMeasurementsHandler, MeasurementsHandler>();
-        services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+        services.AddScoped<IMeasurementsRepository, MeasurementsRepository>();
 
         return services;
     }

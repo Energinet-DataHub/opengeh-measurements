@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Persistence;
 
-public class MeasurementRepositoryTests
+public class MeasurementsRepositoryTests
 {
     [Theory]
     [InlineAutoData]
@@ -28,10 +28,10 @@ public class MeasurementRepositoryTests
             .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetMeasurementsQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
-        var sut = new MeasurementRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetMeasurementAsync(meteringPointId, from, to).ToListAsync();
+        var actual = await sut.GetMeasurementsAsync(meteringPointId, from, to).ToListAsync();
 
         // Assert
         Assert.Equal(10, actual.Count);

@@ -7,13 +7,13 @@ using NodaTime.Extensions;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Handlers;
 
-public class MeasurementsHandler(IMeasurementRepository measurementRepository)
+public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     : IMeasurementsHandler
 {
     public async Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest request)
     {
-        var foundMeasurements = await measurementRepository
-            .GetMeasurementAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
+        var foundMeasurements = await measurementsRepository
+            .GetMeasurementsAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
             .ToListAsync() ?? throw new MeasurementsNotFoundException();
 
         return GetMeasurementResponse.Create(foundMeasurements);

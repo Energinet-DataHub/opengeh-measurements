@@ -59,14 +59,15 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
         new()
         {
-            { "metering_point_id", ("STRING", false) },
-            { "observation_time", ("TIMESTAMP", false) },
-            { "quantity", ("DECIMAL(18, 6)", false) },
-            { "quality", ("STRING", false) },
+            { MeasurementsGoldConstants.MeteringPointIdColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.UnitColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
     }
 }
