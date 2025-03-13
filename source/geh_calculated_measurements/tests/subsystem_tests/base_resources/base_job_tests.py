@@ -9,6 +9,14 @@ class BaseJobTests:
     @pytest.fixture(autouse=True, scope="class")
     @abstractmethod
     def setup_fixture():
+        """
+        Abstract fixture method to be implemented by subclasses.
+
+        This method is necessary due to the stateless nature of pytest, wherein the state is cleared between
+        individual test executions. To address this limitation, this fixture can be called to retrieve the
+        state between the tests. By setting the scope to `class`, we ensure that only the implementation
+        subclass has access to the state.
+        """
         pass
 
     @pytest.mark.order(1)
