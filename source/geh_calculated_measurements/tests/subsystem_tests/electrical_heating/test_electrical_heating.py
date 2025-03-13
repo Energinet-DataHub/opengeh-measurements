@@ -1,3 +1,4 @@
+import unittest
 import uuid
 
 import pytest
@@ -7,7 +8,7 @@ from databricks.sdk.service.jobs import RunResultState
 from tests.subsystem_tests.electrical_heating.fixtures.eletrical_heating_fixture import ElectricalHeatingFixture
 
 
-class TestElectricalHeating:
+class TestElectricalHeating(unittest.TestCase):
     """
     Subsystem test that verifies a Databricks electrical heating job runs successfully to completion.
     """
