@@ -82,9 +82,6 @@ class BaseJobFixture:
     def set_run_result_state(self, run_result_state) -> None:
         self.job_state.run_result_state = run_result_state
 
-    def get_job_name(self) -> str:
-        return self.job_name
-
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id(self.job_name)
 
@@ -93,9 +90,6 @@ class BaseJobFixture:
         if calculation_input.params:
             for key, value in calculation_input.params.items():
                 params_list.append(f"--{key}={value}")
-        # params = [
-        #     f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
-        # ]
         return self.databricks_api_client.start_job(calculation_input.job_id, params_list)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
