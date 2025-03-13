@@ -56,7 +56,6 @@ def test__read_submitted_transaction__returns_expected(spark: SparkSession, migr
     (
         SubmittedTransactionsRepository(spark)
         .read_submitted_transactions()
-        .where(f"{SilverMeasurementsColumnNames.orchestration_instance_id} = '{orchestration_instance_id}'")
         .writeStream.format("delta")
         .outputMode("append")
         .trigger(availableNow=True)
