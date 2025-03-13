@@ -7,7 +7,6 @@ from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -53,14 +52,7 @@ class BaseJobFixture:
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
         )
-        if seed_data:
-            self.databricks_api_client.execute_statement(
-                warehouse_id=environment_configuration.warehouse_id,
-                statement=seed_data_query(
-                    catalog=environment_configuration.catalog_name,
-                    schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-                ),
-            )
+
         self.job_state = None
         self.calculation_input = None
         self.credentials = DefaultAzureCredential()
