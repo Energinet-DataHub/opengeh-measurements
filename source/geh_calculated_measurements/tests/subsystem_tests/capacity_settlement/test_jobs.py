@@ -15,7 +15,7 @@ class TestCapacitySettlement(BaseJobTests):
     fixture = None
 
     params = {
-        "orchestration-instance-id": uuid.uuid4(),
+        "orchestration-instance-id": str(uuid.uuid4()),
         "calculation-month": 1,
         "calculation-year": 2024,
     }

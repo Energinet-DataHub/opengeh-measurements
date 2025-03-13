@@ -50,7 +50,7 @@ class BaseJobTests:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.params["orchestration_instance_id"]}'
+        | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.params.get("orchestration-instance-id")}'
         """
 
         # Act
