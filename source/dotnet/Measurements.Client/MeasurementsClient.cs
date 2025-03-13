@@ -18,7 +18,7 @@ public class MeasurementsClient : IMeasurementsClient
     {
         var response = await _httpClient
             .GetAsync(
-                $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={query.Date}&EndDate={query.Date.AddDays(1)}",
+                $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={query.Date:yyyy-MM-ddTHH:mm:ssZ}&EndDate={query.Date.AddDays(1):yyyy-MM-ddTHH:mm:ssZ}",
                 cancellationToken)
             .ConfigureAwait(false);
 
