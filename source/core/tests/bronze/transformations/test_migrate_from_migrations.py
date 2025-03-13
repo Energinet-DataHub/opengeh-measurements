@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 
 import core.bronze.application.batch_scripts.migrate_from_migrations as migrate_from_migrations
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
-from tests.bronze.helpers.builders.migrations_silver_time_series_builder import MigrationsSilverTimeSeriesBuilder
+from tests.helpers.builders.migrations_silver_time_series_builder import MigrationsSilverTimeSeriesBuilder
 
 
 @mock.patch(

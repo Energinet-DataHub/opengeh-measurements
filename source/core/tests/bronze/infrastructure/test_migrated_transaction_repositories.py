@@ -9,7 +9,7 @@ from core.bronze.domain.schemas.migrated_transactions import migrated_transactio
 from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
     MigratedTransactionsRepository,
 )
-from tests.bronze.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
+from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
 def test__read_measurements_bronze_migrated_transactions_as_batch__should_return_the_correct_dataframe(
