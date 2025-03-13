@@ -29,7 +29,15 @@ class GoldTableSeeder:
         )
         self.warehouse_id = environment_configuration.warehouse_id
 
-    def _get_statement(self, row: GoldTableRow) -> str:
+    def _get_statement(self, rows: list[GoldTableRow]) -> str:
+        values = ",\n".join(
+            [
+                f"('{row.metering_point_id}', '{row.orchestration_type}', '{str(row.orchestration_instance_id)}', "
+                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {row.quantity}, '{row.quality}', "
+                f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', GETDATE(), GETDATE(), GETDATE())"
+                for row in rows
+            ]
+        )
         return f"""
             INSERT INTO {self.fully_qualified_table_name} (
                 metering_point_id,
@@ -46,24 +54,15 @@ class GoldTableSeeder:
                 created,
                 modified
             )
-            SELECT
-                '{row.metering_point_id}' AS metering_point_id,
-                '{row.orchestration_type}' AS orchestration_type,
-                '{str(row.orchestration_instance_id)}' AS orchestration_instance_id,                
-                '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}' AS observation_time,
-                {row.quantity} AS quantity,
-                '{row.quality}' AS quality,
-                '{row.metering_point_type.value}' AS metering_point_type,
-                'kWh' AS unit,
-                'PT1H' as resolution,
-                '{str(row.transaction_id)}' AS transaction_id,
-                GETDATE() AS transaction_creation_datetime,
-                GETDATE() AS created,
-                GETDATE() AS modified
+            VALUES
+            {values}
         """
 
-    def seed_gold_table(self, row: GoldTableRow) -> None:
+    def seed(self, rows: GoldTableRow | list[GoldTableRow]) -> None:
+        if isinstance(rows, GoldTableRow):
+            rows = [rows]
+
         self.databricks_api_client.execute_statement(
             warehouse_id=self.warehouse_id,
-            statement=self._get_statement(row),
+            statement=self._get_statement(rows),
         )

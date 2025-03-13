@@ -7,8 +7,11 @@ from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.domain.types import MeteringPointType
 
-from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import CapacitySettlementFixture
-from tests.subsystem_tests.seed_gold_table import GoldTableRow
+from tests.subsystem_tests.capacity_settlement.fixtures.capacity_settlement_fixture import (
+    CapacitySettlementFixture,
+)
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
@@ -21,16 +24,21 @@ class TestCapacitySettlement(unittest.TestCase):
     Subsystem test that verifies a Databricks capacity settlement job runs successfully to completion.
     """
 
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self) -> None:
-        TestCapacitySettlement.fixture = CapacitySettlementFixture()
-        TestCapacitySettlement.fixture.seed_gold_table(
+    def _get_gold_table_rows(self) -> list[GoldTableRow]:
+        return [
             GoldTableRow(
                 metering_point_id=METERING_POINT_ID,
                 observation_time=OBSERVATION_TIME,
                 metering_point_type=MeteringPointType.CONSUMPTION,
             )
-        )
+        ]
+
+    @pytest.fixture(autouse=True, scope="class")
+    def setup_fixture(self) -> None:
+        environment_configuration = EnvironmentConfiguration()
+        self.fixture = CapacitySettlementFixture()
+        table_seeder = GoldTableSeeder(environment_configuration)
+        table_seeder.seed(self._get_gold_table_rows())
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

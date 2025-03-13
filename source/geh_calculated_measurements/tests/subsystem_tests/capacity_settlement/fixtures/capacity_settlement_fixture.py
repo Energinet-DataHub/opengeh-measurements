@@ -8,7 +8,6 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 
 class CalculationInput:
@@ -39,10 +38,6 @@ class CapacitySettlementFixture:
             self.environment_configuration.databricks_token,
             self.environment_configuration.workspace_url,
         )
-        self.gold_table_seeder = GoldTableSeeder(environment_configuration)
-
-    def seed_gold_table(self, row: GoldTableRow) -> None:
-        self.gold_table_seeder.seed_gold_table(row)
 
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id("CapacitySettlement")
