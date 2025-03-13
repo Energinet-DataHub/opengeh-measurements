@@ -5,7 +5,7 @@ from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
 
 
-class NetConsumptionGroupSixArgs(ApplicationSettings):
+class NetConsumptionGroup6Args(ApplicationSettings):
     """Args for net consumption group six job."""
 
     orchestration_instance_id: UUID = Field(init=False)
