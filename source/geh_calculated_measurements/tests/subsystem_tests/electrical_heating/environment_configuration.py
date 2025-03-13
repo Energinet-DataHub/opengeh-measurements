@@ -22,11 +22,11 @@ class EnvironmentConfiguration(ApplicationSettings):
 
     # for performance test
 
-    schema_name: str = Field(alias="SHARED_SCHEMA_NAME")
+    schema_name: str = Field(default="", alias="SHARED_SCHEMA_NAME")
 
-    time_series_points_table: str = Field(alias="TIME_SERIES_POINTS")
-    consumption_points_table: str = Field(alias="CONSUMPTION_METERING_POINTS")
-    child_points_table: str = Field(alias="CHILD_METERING_POINTS")
+    time_series_points_table: str = Field(default="", alias="TIME_SERIES_POINTS")
+    consumption_points_table: str = Field(default="", alias="CONSUMPTION_METERING_POINTS")
+    child_points_table: str = Field(default="", alias="CHILD_METERING_POINTS")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",

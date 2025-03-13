@@ -12,7 +12,7 @@ from tests.subsystem_tests.electrical_heating.fixtures.eletrical_heating_fixture
 from tests.subsystem_tests.electrical_heating.test_electrical_heating import TestElectricalHeating
 
 
-# The test with performance configuration
+@pytest.mark.skip(reason="only run if performance test is needed")
 class TestElectricalHeatingPerformance(TestElectricalHeating):
     """Test with performance configuration using delta tables"""
 
