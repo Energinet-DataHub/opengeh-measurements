@@ -1,3 +1,3 @@
 # Green Energy Hub Calculated Measurements
 
-Includes calculations related to electrical heating and capacity settlement.
+Includes calculations related to electrical heating, capacity settlement and missing measurements log.
