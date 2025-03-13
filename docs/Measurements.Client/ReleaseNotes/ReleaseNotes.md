@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 1.1.2
+
+- Serialize response with string enum values.
+
 ## Version 1.1.1
 
 - Bugfix. Parse DateTimeOffset from Client as valid format.
