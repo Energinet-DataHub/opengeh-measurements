@@ -34,7 +34,7 @@ class GoldTableSeeder:
         values = ",\n".join(
             [
                 f"('{row.metering_point_id}', '{row.orchestration_type}', '{str(row.orchestration_instance_id)}', "
-                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {str(row.quantity)}, '{row.quality}', "
+                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {str(row.quantity.quantize(Decimal(1.000)))}, '{row.quality}', "
                 f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', GETDATE(), GETDATE(), GETDATE())"
                 for row in rows
             ]
