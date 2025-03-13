@@ -2,15 +2,10 @@
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using IHttpClientFactory = System.Net.Http.IHttpClientFactory;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
