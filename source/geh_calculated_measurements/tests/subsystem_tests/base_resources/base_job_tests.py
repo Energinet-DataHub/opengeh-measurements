@@ -1,4 +1,3 @@
-import uuid
 from abc import abstractmethod
 
 import pytest
@@ -15,7 +14,7 @@ class BaseJobTests:
     @pytest.mark.order(1)
     def test__given_job_input(self, setup_fixture) -> None:
         # Act
-        setup_fixture.create_calculation_input(uuid.uuid4())
+        setup_fixture.create_calculation_input()
 
         # Assert
         assert setup_fixture.calculation_input.job_id is not None
@@ -51,7 +50,7 @@ class BaseJobTests:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.params["orchestration_instance_id"]}'
         """
 
         # Act

@@ -1,4 +1,3 @@
-import uuid
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -15,7 +14,7 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 @dataclass
 class CalculationInput:
-    orchestration_instance_id: uuid.UUID
+    params: dict
     job_id: int
 
 
@@ -47,7 +46,9 @@ def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> s
 
 
 class BaseJobFixture:
-    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: bool):
+    def __init__(
+        self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: bool, params: dict
+    ):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
@@ -69,13 +70,14 @@ class BaseJobFixture:
             credential=self.credentials,
         )
         self.job_name = job_name
+        self.params = params
 
     def create_job_state(self, run_id, run_result_state, calculation_input) -> None:
         self.job_state = JobState(run_id, run_result_state, calculation_input)
 
-    def create_calculation_input(self, orchestration_instance_id) -> None:
+    def create_calculation_input(self) -> None:
         job_id = self.get_job_id()
-        self.calculation_input = CalculationInput(orchestration_instance_id, job_id)
+        self.calculation_input = CalculationInput(self.params, job_id)
 
     def set_run_result_state(self, run_result_state) -> None:
         self.job_state.run_result_state = run_result_state
@@ -87,10 +89,14 @@ class BaseJobFixture:
         return self.databricks_api_client.get_job_id(self.job_name)
 
     def start_job(self, calculation_input: CalculationInput) -> int:
-        params = [
-            f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
-        ]
-        return self.databricks_api_client.start_job(calculation_input.job_id, params)
+        params_list = []
+        if calculation_input.params:
+            for key, value in calculation_input.params.items():
+                params_list.append(f"--{key}={value}")
+        # params = [
+        #     f"--orchestration-instance-id={str(calculation_input.orchestration_instance_id)}",
+        # ]
+        return self.databricks_api_client.start_job(calculation_input.job_id, params_list)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
