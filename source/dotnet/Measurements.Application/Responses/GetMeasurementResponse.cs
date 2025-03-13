@@ -53,10 +53,11 @@ public class GetMeasurementResponse
 
     private static Quality ParseQuality(string quality)
     {
-        return quality switch
+        return quality.ToLower() switch
         {
-            "measured" => Quality.Measured,
+            "missing" => Quality.Missing,
             "estimated" => Quality.Estimated,
+            "measured" => Quality.Measured,
             "calculated" => Quality.Calculated,
             _ => throw new ArgumentOutOfRangeException(nameof(quality)),
         };
@@ -64,10 +65,15 @@ public class GetMeasurementResponse
 
     private static Unit ParseUnit(string unit)
     {
-        return unit switch
+        return unit.ToLower() switch
         {
-            "KWH" => Unit.KWh,
-            "MWH" => Unit.MWh,
+            "kwh" => Unit.kWh,
+            "kw" => Unit.kW,
+            "mw" => Unit.MW,
+            "mwh" => Unit.MWh,
+            "tonne" => Unit.Tonne,
+            "kvarh" => Unit.kVArh,
+            "mvar" => Unit.MVAr,
             _ => throw new ArgumentOutOfRangeException(nameof(unit)),
         };
     }
