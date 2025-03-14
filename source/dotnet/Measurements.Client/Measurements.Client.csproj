@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
-        <PackageVersion>1.1.3$(VersionSuffix)</PackageVersion>
+        <PackageVersion>1.1.4$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Client library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>
@@ -46,6 +46,5 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
-      <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

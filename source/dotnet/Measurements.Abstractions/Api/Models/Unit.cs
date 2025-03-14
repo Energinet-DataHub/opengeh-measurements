@@ -1,6 +1,6 @@
-﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
-public enum UnitDto
+public enum Unit
 {
 #pragma warning disable SA1300
     kWh = 0,
