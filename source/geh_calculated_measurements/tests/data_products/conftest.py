@@ -1,6 +1,5 @@
 ### This file contains the fixtures that are used in the tests. ###
 from pathlib import Path
-from typing import Generator
 
 import pytest
 from geh_common.testing.dataframes import AssertDataframesConfiguration, write_when_files_to_delta
@@ -11,23 +10,7 @@ from geh_calculated_measurements.common.domain.model import calculated_measureme
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import PROJECT_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
-
-
-@pytest.fixture(scope="module", autouse=True)
-def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
-    """
-    Clear the cache after each test module to avoid memory issues.
-    """
-    yield
-    spark.catalog.clearCache()
-
-
-@pytest.fixture(scope="session")
-def contracts_path() -> str:
-    """Returns the source/contract folder path."""
-    return (PROJECT_ROOT / "src" / "geh_calculated_measurements" / "data_products" / "contracts").as_posix()
 
 
 def _create_databases(spark: SparkSession) -> None:

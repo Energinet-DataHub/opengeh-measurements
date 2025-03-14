@@ -18,7 +18,7 @@ def test_files_folder_path() -> str:
 
 
 @pytest.fixture(scope="session")
-def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def gold_table_seeded(spark: SparkSession, test_files_folder_path: str) -> None:
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -39,7 +39,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
 
 @pytest.fixture(scope="session")
-def create_calculated_measurements_table(spark: SparkSession) -> None:
+def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(
