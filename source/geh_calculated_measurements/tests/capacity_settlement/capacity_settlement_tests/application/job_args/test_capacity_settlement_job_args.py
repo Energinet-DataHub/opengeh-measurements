@@ -7,6 +7,9 @@ from geh_calculated_measurements.capacity_settlement.application.capacity_settle
     CapacitySettlementArgs,
 )
 from tests import PROJECT_ROOT
+from tests.capacity_settlement.job_tests import create_job_environment_variables
+
+_CONTRACTS_PATH = f"{PROJECT_ROOT}/src/geh_calculated_measurements/capacity_settlement/contracts/"
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
@@ -25,9 +28,7 @@ def _get_contract_parameters(filename: str) -> list[str]:
 
 @pytest.fixture(scope="session")
 def contract_parameters() -> list[str]:
-    job_parameters = _get_contract_parameters(
-        f"{PROJECT_ROOT}/src/geh_calculated_measurements/capacity_settlement/contracts/parameters-reference.txt"
-    )
+    job_parameters = _get_contract_parameters(f"{_CONTRACTS_PATH}/parameters-reference.txt")
 
     return job_parameters
 
@@ -39,16 +40,7 @@ def sys_argv_from_contract(
     return ["dummy_script_name"] + contract_parameters
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables() -> dict:
-    return {
-        "CATALOG_NAME": "some_catalog",
-        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
-    }
-
-
 def test_when_parameters__parses_parameters_from_contract(
-    job_environment_variables: dict,
     sys_argv_from_contract: list[str],
 ) -> None:
     """
@@ -57,7 +49,7 @@ def test_when_parameters__parses_parameters_from_contract(
     """
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
-        with patch.dict("os.environ", job_environment_variables):
+        with patch.dict("os.environ", create_job_environment_variables()):
             actual_args = CapacitySettlementArgs()
 
     # Assert
