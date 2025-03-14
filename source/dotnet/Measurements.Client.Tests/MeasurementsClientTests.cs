@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
@@ -32,7 +33,7 @@ public class MeasurementsClientTests
         Assert.NotNull(result);
         Assert.Equal(query.MeteringPointId, result.MeteringPointId);
         Assert.Equal(24, result.Points.Count);
-        Assert.True(result.Points.All(p => p.Quality == "Measured"));
+        Assert.True(result.Points.All(p => p.Quality == QualityDto.Measured));
     }
 
     [Fact]
