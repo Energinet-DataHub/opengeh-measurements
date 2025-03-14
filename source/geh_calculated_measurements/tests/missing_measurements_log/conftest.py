@@ -1,12 +1,9 @@
-### This file contains the fixtures that are used in the tests. ###
-from pathlib import Path
 from typing import Generator
 
 import pytest
 from pyspark.sql import SparkSession
 
-from tests import PROJECT_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
+from tests import PROJECT_ROOT, TESTS_ROOT
 
 CONTAINER_NAME = "missing_measurements_log"
 
@@ -23,16 +20,10 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 @pytest.fixture(scope="session")
 def tests_path() -> str:
     """Returns the tests folder path."""
-    return (PROJECT_ROOT / "tests" / CONTAINER_NAME).as_posix()
+    return (TESTS_ROOT / CONTAINER_NAME).as_posix()
 
 
 @pytest.fixture(scope="session")
 def contracts_path() -> str:
     """Returns the source/contract folder path."""
     return (PROJECT_ROOT / "src" / "geh_calculated_measurements" / CONTAINER_NAME / "contracts").as_posix()
-
-
-@pytest.fixture(scope="session")
-def test_session_configuration(tests_path: str) -> TestSessionConfiguration:
-    settings_file_path = Path(tests_path) / "testsession.local.settings.yml"
-    return TestSessionConfiguration.load(settings_file_path)
