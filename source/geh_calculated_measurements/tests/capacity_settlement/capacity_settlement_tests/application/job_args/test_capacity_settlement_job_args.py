@@ -6,6 +6,7 @@ import pytest
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
+from tests.capacity_settlement.job_tests import create_job_environment_variables
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
@@ -36,16 +37,7 @@ def sys_argv_from_contract(
     return ["dummy_script_name"] + contract_parameters
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables() -> dict:
-    return {
-        "CATALOG_NAME": "some_catalog",
-        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
-    }
-
-
 def test_when_parameters__parses_parameters_from_contract(
-    job_environment_variables: dict,
     sys_argv_from_contract: list[str],
 ) -> None:
     """
@@ -54,7 +46,7 @@ def test_when_parameters__parses_parameters_from_contract(
     """
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
-        with patch.dict("os.environ", job_environment_variables):
+        with patch.dict("os.environ", create_job_environment_variables()):
             actual_args = CapacitySettlementArgs()
 
     # Assert
