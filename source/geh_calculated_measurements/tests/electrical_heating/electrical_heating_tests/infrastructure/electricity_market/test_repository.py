@@ -6,14 +6,14 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 
 
 def test__when_consumption_missing_expected_column_raises_exception(
-    electricity_market_repository_missing_col: ElectricityMarketRepository, monkeypatch
+    electricity_market_repository_missing_col: ElectricityMarketRepository,
 ) -> None:
     with pytest.raises(ValueError, match=r"Column has_electrical_heating not found in CSV"):
         electricity_market_repository_missing_col.read_consumption_metering_point_periods()
 
 
 def test__when_child_missing_expected_column_raises_exception(
-    electricity_market_repository_missing_col: ElectricityMarketRepository, monkeypatch
+    electricity_market_repository_missing_col: ElectricityMarketRepository,
 ) -> None:
     with pytest.raises(ValueError, match=r"Column metering_point_sub_type not found in CSV"):
         electricity_market_repository_missing_col.read_child_metering_points()
