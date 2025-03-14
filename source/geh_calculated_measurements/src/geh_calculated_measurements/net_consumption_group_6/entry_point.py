@@ -3,9 +3,9 @@ from geh_common.telemetry.logger import Logger
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 
 from geh_calculated_measurements.common.infrastructure import initialize_spark
-from geh_calculated_measurements.net_consumption_group_6.application import (
+from geh_calculated_measurements.net_consumption_group_6.application import execute_application
+from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
     NetConsumptionGroup6Args,
-    execute_application,
 )
 
 
