@@ -63,6 +63,6 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.4", "'measured'" });
     }
 }
