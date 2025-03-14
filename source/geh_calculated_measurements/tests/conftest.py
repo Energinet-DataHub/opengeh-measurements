@@ -103,7 +103,7 @@ def _get_spark():
     session = configure_spark_with_delta_pip(
         SparkSession.Builder().master("local").config(conf=spark_conf).enableHiveSupport()
     ).getOrCreate()
-    session.sparkContext.setCheckpointDir(tempfile.mkdtemp())
+    session.sparkContext.setCheckpointDir(data_dir)
     return session, data_dir
 
 
