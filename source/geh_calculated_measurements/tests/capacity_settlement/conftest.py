@@ -1,7 +1,6 @@
 import pytest
 
-from tests import PROJECT_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
+from tests import PROJECT_ROOT, TESTS_ROOT
 
 
 @pytest.fixture(scope="session")
@@ -16,12 +15,6 @@ def contracts_path() -> str:
 
 
 @pytest.fixture(scope="session")
-def test_session_configuration() -> TestSessionConfiguration:  # noqa: F821
-    settings_file_path = PROJECT_ROOT / "tests" / "capacity_settlement" / "testsession.local.settings.yml"
-    return TestSessionConfiguration.load(settings_file_path)
-
-
-@pytest.fixture(scope="session")
 def tests_path() -> str:
     """Returns the tests folder path."""
-    return (PROJECT_ROOT / "tests" / "capacity_settlement").as_posix()
+    return (TESTS_ROOT / "capacity_settlement").as_posix()

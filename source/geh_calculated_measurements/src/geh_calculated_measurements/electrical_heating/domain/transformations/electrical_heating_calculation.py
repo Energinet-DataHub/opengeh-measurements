@@ -1,11 +1,11 @@
 from geh_common.domain.types import NetSettlementGroup
+from geh_common.testing.dataframes import testing
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.electrical_heating.domain.ephemeral_column_names import EphemeralColumnNames
-from geh_calculated_measurements.testing import testing
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
@@ -338,7 +338,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
         F.col(ContractColumnNames.date),
         F.col(ContractColumnNames.quantity),
         F.col(EphemeralColumnNames.period_energy_limit),
-    ).drop_duplicates()
+    )
 
 
 def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
@@ -366,4 +366,4 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         F.col(EphemeralColumnNames.electrical_heating_metering_point_id).alias(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
         F.col(EphemeralColumnNames.period_energy_limit),
-    ).drop_duplicates()
+    )

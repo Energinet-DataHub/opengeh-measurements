@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Extensions;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using Xunit;
 
@@ -27,7 +27,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Assert
         Assert.Equal(expectedMeteringPointId, actual.MeteringPointId);
-        Assert.Equal(Unit.KWh, actual.Unit);
+        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(24, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.ObservationTime.ToString() == startDate));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
@@ -58,6 +58,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         response.EnsureSuccessStatusCode();
         var actualBody = await response.Content.ReadAsStringAsync();
-        return actualBody.DeserializeJson<GetMeasurementResponse>();
+        return new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
     }
 }

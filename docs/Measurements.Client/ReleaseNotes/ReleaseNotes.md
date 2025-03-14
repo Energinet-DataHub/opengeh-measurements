@@ -1,5 +1,17 @@
 # Measurements.Client Release Notes
 
-## Version 0.1.0
+## Version 1.1.2
+
+- Serialize response with string enum values.
+
+## Version 1.1.1
+
+- Bugfix. Parse DateTimeOffset from Client as valid format.
+
+## Version 1.1.0
+
+- Converted from NodaTime Instant to DateTimeOffset.
+
+## Version 1.0.0
 
 - MVP release for exposing data for simple UI presentation.
