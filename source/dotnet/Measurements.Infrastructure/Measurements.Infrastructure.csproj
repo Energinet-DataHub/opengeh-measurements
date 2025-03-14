@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <PackageReference Include="Energinet.DataHub.Core.Databricks.SqlStatementExecution" Version="12.0.2" />
+      <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     </ItemGroup>
 
 </Project>
