@@ -1,12 +1,10 @@
 ### This file contains the fixtures that are used in the tests. ###
-from pathlib import Path
 from typing import Generator
 
 import pytest
 from pyspark.sql import SparkSession
 
 from tests import PROJECT_ROOT, TESTS_ROOT
-from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module", autouse=True)
