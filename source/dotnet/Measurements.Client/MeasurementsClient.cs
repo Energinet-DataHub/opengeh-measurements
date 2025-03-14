@@ -22,13 +22,8 @@ public class MeasurementsClient : IMeasurementsClient
 
         response.EnsureSuccessStatusCode();
 
-        // var measurementDto = await response.Content
-        //     .ReadFromJsonAsync<MeasurementDto>(cancellationToken)
-        //     .ConfigureAwait(false);
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        var measDto = new JsonSerializer().Deserialize<MeasurementDto>(content);
-
-        return measDto;
+        return new JsonSerializer().Deserialize<MeasurementDto>(content);
     }
 
     private static string CreateUrl(GetMeasurementsForDayQuery query)
