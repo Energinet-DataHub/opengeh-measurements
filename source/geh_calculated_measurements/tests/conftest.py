@@ -5,7 +5,11 @@ from unittest import mock
 import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
+from geh_common.testing.dataframes import configure_testing
 from pyspark.sql import SparkSession
+
+from tests import TESTS_ROOT
+from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="session")
@@ -71,3 +75,17 @@ def spark() -> Generator[SparkSession, None, None]:
     session = configure_spark_with_delta_pip(session).getOrCreate()
     yield session
     session.stop()
+
+
+@pytest.fixture(scope="session")
+def test_session_configuration() -> TestSessionConfiguration:
+    settings_file_path = TESTS_ROOT / "testsession.local.settings.yml"
+    return TestSessionConfiguration.load(settings_file_path)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_testing_decorator(test_session_configuration: TestSessionConfiguration) -> None:
+    configure_testing(
+        is_testing=test_session_configuration.scenario_tests.testing_decorator_enabled,
+        rows=test_session_configuration.scenario_tests.testing_decorator_max_rows,
+    )
