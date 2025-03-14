@@ -1,6 +1,6 @@
 import pytest
 
-from tests import PROJECT_ROOT, TESTS_ROOT
+from tests import PROJECT_ROOT
 
 
 @pytest.fixture(scope="session")
@@ -12,9 +12,3 @@ def contracts_path() -> str:
     actually located in a file located directly in the tests folder.
     """
     return f"{PROJECT_ROOT}/src/geh_calculated_measurements/capacity_settlement/contracts"
-
-
-@pytest.fixture(scope="session")
-def tests_path() -> str:
-    """Returns the tests folder path."""
-    return (TESTS_ROOT / "capacity_settlement").as_posix()
