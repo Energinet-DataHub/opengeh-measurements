@@ -61,7 +61,7 @@ def test__when_child_source_contains_unexpected_columns_returns_data_without_une
     spark: SparkSession,
 ) -> None:
     # Arrange
-    child = _create_repository.read_child_metering_points()
+    child = _create_repository(spark).read_child_metering_points()
 
     # Act
     child_with_extra_input_col = _create_repository_with_extra_col(spark).read_child_metering_points()
