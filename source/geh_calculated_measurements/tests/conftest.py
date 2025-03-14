@@ -1,6 +1,8 @@
 ### This file contains the fixtures that are used in the tests. ###
 import logging
 import os
+import shutil
+import atexit
 import sys
 import tempfile
 from typing import Generator
@@ -62,6 +64,7 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 
 
 def _get_spark():
+    data_dir = tempfile.mkdtemp()
     spark_conf = SparkConf().setAll(
         [
             (k, v)
@@ -71,7 +74,8 @@ def _get_spark():
                 "spark.sql.catalogImplementation": "hive",
                 "spark.sql.shuffle.partitions": "10",
                 "spark.databricks.delta.snapshotPartitions": "2",
-                "spark.driver.extraJavaOptions": f"-Ddelta.log.cacheSize=3 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -Dderby.system.home={tempfile.mkdtemp()}",
+                "spark.driver.extraJavaOptions": f"-Ddelta.log.cacheSize=3 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -Dderby.system.home={data_dir}",
+                "spark.executor.extraJavaOptions": f"-Ddelta.log.cacheSize=3 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -Dderby.system.home={data_dir}",
                 "spark.ui.showConsoleProgress": "false",
                 "spark.ui.enabled": "false",
                 "spark.ui.dagGraph.retainedRootRDDs": "1",
@@ -84,9 +88,9 @@ def _get_spark():
                 "spark.driver.memory": "2g",
                 "spark.executor.memory": "2g",
                 "spark.executor.cores": "1",
-                "spark.sql.warehouse.dir": tempfile.mkdtemp(),
+                "spark.sql.warehouse.dir": f"{data_dir}/warehouse",
                 "spark.sql.session.timeZone": "UTC",
-                "javax.jdo.option.ConnectionURL": f"jdbc:derby:;databaseName={tempfile.mkdtemp()}/__metastore_db__;create=true",
+                "javax.jdo.option.ConnectionURL": f"jdbc:derby:;databaseName={data_dir}/__metastore_db__;create=true",
                 "javax.jdo.option.ConnectionDriverName": "org.apache.derby.jdbc.EmbeddedDriver",
                 "javax.jdo.option.ConnectionUserName": "APP",
                 "javax.jdo.option.ConnectionPassword": "mine",
@@ -100,11 +104,11 @@ def _get_spark():
         SparkSession.Builder().master("local").config(conf=spark_conf).enableHiveSupport()
     ).getOrCreate()
     session.sparkContext.setCheckpointDir(tempfile.mkdtemp())
-    return session
+    return session, data_dir
 
 
-_spark = _get_spark()
-
+_spark, _data_dir = _get_spark()
+atexit.register(lambda: shutil.rmtree(_data_dir, ignore_errors=True))
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
@@ -146,3 +150,4 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
         sys.stdout = open(logs_dir / f"tests_{worker_id}.out", "w")
+
