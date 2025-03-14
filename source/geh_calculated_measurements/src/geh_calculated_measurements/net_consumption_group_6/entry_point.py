@@ -20,6 +20,8 @@ def execute() -> None:
 def orchestrate_business_logic(job_arguments: NetConsumptionGroup6Args, logging_settings: LoggingSettings) -> None:
     logger = Logger(__name__)
     logger.info(f"Command line arguments / env variables retrieved for Logging Settings: {logging_settings}")
-    logger.info(f"Command line arguments retrieved for electrical heating job Oriented Parameters: {job_arguments}")
+    logger.info(
+        f"Command line arguments retrieved for net consumption group 6 job Oriented Parameters: {job_arguments}"
+    )
     spark = initialize_spark()
     execute_application(spark, args=job_arguments)
