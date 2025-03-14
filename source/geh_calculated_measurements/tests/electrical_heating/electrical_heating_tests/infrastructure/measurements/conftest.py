@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 import pytest
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -26,14 +27,15 @@ def measurements_gold_with_data(spark: SparkSession) -> None:
         schema=electrical_heating_v1,
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
     )
+    zone_info = ZoneInfo("Europe/Copenhagen")
     test_data = spark.createDataFrame(
         [
-            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("10.500")),
-            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 1, 0, 0), Decimal("12.750")),
-            ("223456789012345", "electrical_heating", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("25.000")),
-            ("323456789012345", "supply_to_grid", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("5.250")),
-            ("423456789012345", "consumption_from_grid", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("8.125")),
-            ("523456789012345", "net_consumption", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("15.000")),
+            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=zone_info), Decimal("10.500")),
+            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 1, 0, 0, tzinfo=zone_info), Decimal("12.750")),
+            ("223456789012345", "electrical_heating", datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=zone_info), Decimal("25.000")),
+            ("323456789012345", "supply_to_grid", datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=zone_info), Decimal("5.250")),
+            ("423456789012345", "consumption_from_grid", datetime.datetime(2022, 1, 2, 0, 0, 0, tzinfo=zone_info), Decimal("8.125")),
+            ("523456789012345", "net_consumption", datetime.datetime(2022, 1, 2, 0, 0, 0, tzinfo=zone_info), Decimal("15.000")),
         ],
         schema=electrical_heating_v1,
     )
