@@ -110,6 +110,7 @@ def _get_spark():
 _spark, _data_dir = _get_spark()
 atexit.register(lambda: shutil.rmtree(_data_dir, ignore_errors=True))
 
+
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
     """
@@ -150,4 +151,3 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
         sys.stdout = open(logs_dir / f"tests_{worker_id}.out", "w")
-
