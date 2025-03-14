@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 1.1.3
+
+- Bugfix. Deserializing MeasurementDto
+
 ## Version 1.1.2
 
 - Serialize response with string enum values.
