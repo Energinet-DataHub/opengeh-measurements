@@ -1,7 +1,6 @@
 ### This file contains the fixtures that are used in the tests. ###
 import logging
 import os
-import shutil
 import sys
 import tempfile
 from typing import Generator
@@ -40,9 +39,7 @@ def script_args_fixture_logging() -> list[str]:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_dummy_logging(
-    env_args_fixture_logging, script_args_fixture_logging
-) -> Generator[None, None, None]:
+def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging) -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
     with (
         mock.patch("sys.argv", script_args_fixture_logging),
@@ -100,10 +97,7 @@ def _get_spark():
         ]
     )
     session = configure_spark_with_delta_pip(
-        SparkSession.Builder()
-        .master("local")
-        .config(conf=spark_conf)
-        .enableHiveSupport()
+        SparkSession.Builder().master("local").config(conf=spark_conf).enableHiveSupport()
     ).getOrCreate()
     session.sparkContext.setCheckpointDir(tempfile.mkdtemp())
     return session
@@ -139,7 +133,7 @@ def configure_testing_decorator(
 
 def pytest_configure(config):
     """Write logs to a file in the logs directory
-    
+
     pytest-xdist does not support '-s' option, so we need to write logs to a file.
     """
     logs_dir = TESTS_ROOT / "logs"
