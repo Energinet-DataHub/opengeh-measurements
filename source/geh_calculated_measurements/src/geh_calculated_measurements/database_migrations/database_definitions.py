@@ -1,13 +1,6 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-# class MeasurementsCalculatedInternalDatabaseDefinition:
-#    # TODO; hardcoded data
-#    measurements_calculated_internal_database = "measurements_calculated_internal"
-#    executed_migrations_table_name = "executed_migrations"
-#    MEASUREMENTS_NAME = "measurements"    NOTE: This is not being used
-
-
 class MeasurementsCalculatedInternalDatabaseDefinition(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
