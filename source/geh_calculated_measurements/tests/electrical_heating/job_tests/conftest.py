@@ -39,7 +39,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
 
 @pytest.fixture(scope="session")
-def create_calculated_measurements_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def create_calculated_measurements_table(spark: SparkSession) -> None:
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -52,7 +52,7 @@ def create_calculated_measurements_table(spark: SparkSession, test_files_folder_
 
 
 @pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path) -> dict:
+def job_environment_variables(test_files_folder_path: str) -> dict:
     return {
         "CATALOG_NAME": "spark_catalog",
         "TIME_ZONE": "Europe/Copenhagen",
