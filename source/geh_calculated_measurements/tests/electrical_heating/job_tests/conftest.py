@@ -9,16 +9,11 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
     electrical_heating_v1,
 )
-from tests import TESTS_ROOT
+from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path() -> str:
-    return (TESTS_ROOT / "electrical_heating" / "job_tests" / "test_files").as_posix()
-
-
-@pytest.fixture(scope="session")
-def gold_table_seeded(spark: SparkSession, test_files_folder_path: str) -> None:
+def gold_table_seeded(spark: SparkSession) -> None:
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -29,7 +24,7 @@ def gold_table_seeded(spark: SparkSession, test_files_folder_path: str) -> None:
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
     time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
     time_series_points.write.option("overwriteSchema", "true").saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
@@ -49,12 +44,3 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
         schema=calculated_measurements_schema,
         table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )
-
-
-@pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path: str) -> dict:
-    return {
-        "CATALOG_NAME": "spark_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
-    }
