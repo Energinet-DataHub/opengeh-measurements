@@ -3,7 +3,7 @@ from typing import Generator
 import pytest
 from pyspark.sql import SparkSession
 
-from tests import PROJECT_ROOT, TESTS_ROOT
+from tests import PROJECT_ROOT
 
 CONTAINER_NAME = "missing_measurements_log"
 
@@ -15,12 +15,6 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     yield
     spark.catalog.clearCache()
-
-
-@pytest.fixture(scope="session")
-def tests_path() -> str:
-    """Returns the tests folder path."""
-    return (TESTS_ROOT / CONTAINER_NAME).as_posix()
 
 
 @pytest.fixture(scope="session")
