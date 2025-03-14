@@ -14,7 +14,7 @@ class CalculatedMeasurementsInternalDatabaseDefinition(BaseSettings):
     CAPACITY_SETTLEMENT_CALCULATIONS_NAME = "capacity_settlement_calculations"
 
 
-class CalculatedMeasurementsDatabaseDefinition:
+class CalculatedMeasurementsDatabaseDefinition(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
     Used to define and validate settings for the unity catalog used by package.
