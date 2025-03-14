@@ -11,15 +11,16 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.measurements
 )
 from geh_calculated_measurements.common.domain import calculated_measurements_schema
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from tests import TESTS_ROOT
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/job_tests/test_files"
+def test_files_folder_path() -> str:
+    return (TESTS_ROOT / "capacity_settlement" / "job_tests" / "test_files").as_posix()
 
 
 @pytest.fixture(scope="session")
-def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def gold_table_seeded(spark: SparkSession, test_files_folder_path: str) -> None:
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -40,7 +41,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
 
 @pytest.fixture(scope="session")
-def create_calculated_measurements_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(

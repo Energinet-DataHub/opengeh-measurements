@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 1.1.4
+
+- Bugfix. Don't reference Measurements from Client.
+
 ## Version 1.1.3
 
 - Bugfix. Deserializing MeasurementDto
