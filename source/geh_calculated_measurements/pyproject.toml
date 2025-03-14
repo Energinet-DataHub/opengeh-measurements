@@ -54,7 +54,7 @@ addopts = [
     "-vv",
     "-s",
     # Configure pytest-xdist - see more here https://pytest-xdist.readthedocs.io/en/latest/distribution.html
-    "--dist=load",
+    "--dist=loadfile",
     "-n=logical"
 ]
 
