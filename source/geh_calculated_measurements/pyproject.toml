@@ -39,6 +39,7 @@ dev = [
     "ruff>=0.9.1",
     "databricks-sdk>=0.41.0",
     "pytest-order>=1.3.0",
+    "pytest-xdist>=3.6.1",
 ]
 
 [tool.pytest.ini_options]
@@ -51,6 +52,9 @@ addopts = [
     "-ra",
     "-vv",
     "-s",
+    # Configure pytest-xdist - see more here https://pytest-xdist.readthedocs.io/en/latest/distribution.html
+    "--dist=loadfile",
+    "-n=auto"
 ]
 
 [tool.coverage.report]
