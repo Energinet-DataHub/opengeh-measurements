@@ -6,6 +6,10 @@ import pytest
 from geh_calculated_measurements.missing_measurements_log.application.missing_measurements_log_args import (
     MissingMeasurementsLogArgs,
 )
+from tests import PROJECT_ROOT
+from tests.missing_measurements_log import CONTAINER_NAME
+
+_CONTRACTS_PATH = (PROJECT_ROOT / "src" / "geh_calculated_measurements" / CONTAINER_NAME / "contracts").as_posix()
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_TIME_ZONE = "some_time_zone"
@@ -21,8 +25,8 @@ def _get_contract_parameters(filename: str) -> list[str]:
 
 
 @pytest.fixture(scope="session")
-def contract_parameters(contracts_path: str) -> list[str]:
-    job_parameters = _get_contract_parameters(f"{contracts_path}/parameters-reference.txt")
+def contract_parameters() -> list[str]:
+    job_parameters = _get_contract_parameters(f"{_CONTRACTS_PATH}/parameters-reference.txt")
     return job_parameters
 
 

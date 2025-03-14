@@ -8,6 +8,7 @@ from delta import configure_spark_with_delta_pip
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from tests import TESTS_ROOT
 from tests.testsession_configuration import TestSessionConfiguration
 
@@ -79,12 +80,17 @@ def spark() -> Generator[SparkSession, None, None]:
 
 @pytest.fixture(scope="session")
 def test_session_configuration() -> TestSessionConfiguration:
+    """Load the test session configuration from the testsession.local.settings.yml file.
+
+    This is a useful feature for developers who wants to run the tests with different configurations
+    on their local machine. The file is not included in the repository, so it's up to the developer to create it.
+    """
     settings_file_path = TESTS_ROOT / "testsession.local.settings.yml"
     return TestSessionConfiguration.load(settings_file_path)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def configure_testing_decorator(test_session_configuration: TestSessionConfiguration) -> None:
+def _configure_testing_decorator(test_session_configuration: TestSessionConfiguration) -> None:
     configure_testing(
         is_testing=test_session_configuration.scenario_tests.testing_decorator_enabled,
         rows=test_session_configuration.scenario_tests.testing_decorator_max_rows,
@@ -103,3 +109,23 @@ def assert_dataframes_configuration(
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )
+
+
+def _create_databases(spark: SparkSession) -> None:
+    # """
+    # Create Unity Catalog databases as they are not created by migration scripts.
+    # They are created by infrastructure (in the real environments)
+    # In tests they are created in the single available default catalog.
+    # """
+    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
+    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
+
+
+@pytest.fixture(scope="session")
+def migrations_executed(spark: SparkSession) -> None:
+    """Executes all migrations.
+
+    This fixture is useful for all tests that require the migrations to be executed. E.g. when
+    a view/dataprodcut/table is required."""
+    _create_databases(spark)
+    migrate()

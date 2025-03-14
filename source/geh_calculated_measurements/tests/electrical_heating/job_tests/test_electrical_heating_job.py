@@ -22,8 +22,8 @@ def _create_job_environment_variables() -> dict:
 
 def test_execute(
     spark: SparkSession,
-    seed_gold_table: Any,  # Used implicitly
-    create_calculated_measurements_table: Any,  # Used implicitly
+    gold_table_seeded: Any,  # Used implicitly
+    calculated_measurements_table_created: Any,  # Used implicitly
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
