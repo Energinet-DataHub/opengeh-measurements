@@ -6,10 +6,7 @@ import pytest
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import (
     CapacitySettlementArgs,
 )
-from tests import PROJECT_ROOT
 from tests.capacity_settlement.job_tests import create_job_environment_variables
-
-_CONTRACTS_PATH = f"{PROJECT_ROOT}/src/geh_calculated_measurements/capacity_settlement/contracts"
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_CALCULATION_MONTH = 1
