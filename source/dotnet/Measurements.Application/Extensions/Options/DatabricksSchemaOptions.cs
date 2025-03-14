@@ -4,6 +4,8 @@ namespace Energinet.DataHub.Measurements.Application.Extensions.Options;
 
 public class DatabricksSchemaOptions
 {
+    public const string SectionName = "DatabricksSchemaOptions";
+
     [Required(AllowEmptyStrings = false)]
     public string SchemaName { get; init; } = string.Empty;
 
