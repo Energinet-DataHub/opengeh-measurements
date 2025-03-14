@@ -1,8 +1,8 @@
 ### This file contains the fixtures that are used in the tests. ###
+import atexit
 import logging
 import os
 import shutil
-import atexit
 import sys
 import tempfile
 from typing import Generator
