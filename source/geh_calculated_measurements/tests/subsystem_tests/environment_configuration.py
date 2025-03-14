@@ -18,7 +18,6 @@ class EnvironmentConfiguration(ApplicationSettings):
     workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
 
-    cluster_id: str = Field(alias="CALCULATED_MEASUREMENTS_WAREHOUSE_ID")
     catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
 
     model_config = SettingsConfigDict(
