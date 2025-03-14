@@ -11,11 +11,12 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.measurements
 )
 from geh_calculated_measurements.common.domain import calculated_measurements_schema
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from tests import TESTS_ROOT
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/job_tests/test_files"
+def test_files_folder_path() -> str:
+    return (TESTS_ROOT / "capacity_settlement" / "job_tests" / "test_files").as_posix()
 
 
 @pytest.fixture(scope="session")

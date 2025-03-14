@@ -9,11 +9,12 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
     electrical_heating_v1,
 )
+from tests import TESTS_ROOT
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/job_tests/test_files"
+def test_files_folder_path() -> str:
+    return (TESTS_ROOT / "electrical_heating" / "job_tests" / "test_files").as_posix()
 
 
 @pytest.fixture(scope="session")
