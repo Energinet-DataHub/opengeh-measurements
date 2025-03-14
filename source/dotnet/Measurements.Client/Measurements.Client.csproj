@@ -46,6 +46,5 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
-      <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
     </ItemGroup>
 </Project>
