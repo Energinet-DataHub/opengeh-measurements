@@ -21,7 +21,6 @@ class TestNetConsumptionGroup6(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="NetConsumptionGroup6",
-                seed_data=False,
                 params=self.params,
             )
         return self.fixture
