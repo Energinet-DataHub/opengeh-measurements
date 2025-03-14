@@ -9,15 +9,11 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
     electrical_heating_v1,
 )
+from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
 @pytest.fixture(scope="session")
-def test_files_folder_path(tests_path: str) -> str:
-    return f"{tests_path}/job_tests/test_files"
-
-
-@pytest.fixture(scope="session")
-def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def gold_table_seeded(spark: SparkSession) -> None:
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -28,7 +24,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
     )
 
-    file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
     time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
     time_series_points.write.option("overwriteSchema", "true").saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
@@ -38,7 +34,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
 
 @pytest.fixture(scope="session")
-def create_calculated_measurements_table(spark: SparkSession, test_files_folder_path: str) -> None:
+def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -48,12 +44,3 @@ def create_calculated_measurements_table(spark: SparkSession, test_files_folder_
         schema=calculated_measurements_schema,
         table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )
-
-
-@pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path) -> dict:
-    return {
-        "CATALOG_NAME": "spark_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": test_files_folder_path,
-    }
