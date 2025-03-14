@@ -23,17 +23,8 @@ from geh_calculated_measurements.electrical_heating.domain import (
 from tests.testsession_configuration import TestSessionConfiguration
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables() -> dict:
-    return {
-        "CATALOG_NAME": "some_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": "some_path",
-    }
-
-
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environment_variables: dict) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
@@ -56,7 +47,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, job_environm
         child_metering_points_v1,
     )
 
-    with patch.dict("os.environ", job_environment_variables):
+    with patch.dict("os.environ"):
         with open(f"{scenario_path}/when/job_parameters.yml") as f:
             args = yaml.safe_load(f)
         with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):

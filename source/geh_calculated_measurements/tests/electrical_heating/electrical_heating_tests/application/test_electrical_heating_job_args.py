@@ -33,8 +33,7 @@ def sys_argv_from_contract(
     return ["dummy_script_name"] + contract_parameters
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables() -> dict:
+def _create_job_environment_variables() -> dict:
     return {
         "CATALOG_NAME": "some_catalog",
         "TIME_ZONE": "some_time_zone",
@@ -43,7 +42,6 @@ def job_environment_variables() -> dict:
 
 
 def test_when_parameters__parses_parameters_from_contract(
-    job_environment_variables: dict,
     sys_argv_from_contract: list[str],
 ) -> None:
     """
@@ -52,7 +50,7 @@ def test_when_parameters__parses_parameters_from_contract(
     """
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
-        with patch.dict("os.environ", job_environment_variables):
+        with patch.dict("os.environ", _create_job_environment_variables()):
             actual_args = ElectricalHeatingArgs()
 
     # Assert
