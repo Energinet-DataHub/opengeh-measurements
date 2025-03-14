@@ -1,7 +1,6 @@
 import random
 import uuid
 from datetime import datetime
-from decimal import Decimal
 
 import pytest
 from geh_common.domain.types import MeteringPointType
@@ -14,7 +13,7 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 gold_table_row = GoldTableRow(
     metering_point_id="170000030000000201",
     observation_time=datetime(2024, 11, 30, 23, 0, 0),
-    quantity=Decimal(random.uniform(0.1, 10.0)),  # Generate a random quantity between 0.1 and 10.0
+    quantity=random.uniform(0.1, 10.0),
     metering_point_type=MeteringPointType.CONSUMPTION,
 )
 

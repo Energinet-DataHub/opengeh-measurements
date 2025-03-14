@@ -1,7 +1,6 @@
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from decimal import Decimal
 
 from geh_common.databricks import DatabricksApiClient
 from geh_common.domain.types import MeteringPointType
@@ -15,7 +14,7 @@ class GoldTableRow:
     orchestration_type: str = "submitted"
     orchestration_instance_id: uuid.UUID = uuid.uuid4()
     observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0)
-    quantity: Decimal = Decimal(1.7)
+    quantity: float = 1.7
     quality: str = "measured"
     metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION
     transaction_id: uuid.UUID = uuid.uuid4()
@@ -34,7 +33,7 @@ class GoldTableSeeder:
         values = ",\n".join(
             [
                 f"('{row.metering_point_id}', '{row.orchestration_type}', '{str(row.orchestration_instance_id)}', "
-                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {str(row.quantity.quantize(Decimal(1.000)))}, '{row.quality}', "
+                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {format(row.quantity, '.3f')}, '{row.quality}', "
                 f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', GETDATE(), GETDATE(), GETDATE())"
                 for row in rows
             ]

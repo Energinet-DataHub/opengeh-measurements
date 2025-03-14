@@ -27,6 +27,7 @@ class TestCapacitySettlement(BaseJobTests):
                 metering_point_id=METERING_POINT_ID,
                 observation_time=FIRST_OBSERVATION_TIME + timedelta(hours=i),
                 metering_point_type=MeteringPointType.CONSUMPTION,
+                quantity=i,
             )
             for i in range(10)
         ]
