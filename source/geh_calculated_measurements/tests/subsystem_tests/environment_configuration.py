@@ -4,7 +4,7 @@ from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 class EnvironmentConfiguration(ApplicationSettings):
