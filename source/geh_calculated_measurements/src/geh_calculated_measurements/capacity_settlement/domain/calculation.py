@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 from dateutil.relativedelta import relativedelta
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
+from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
@@ -135,6 +136,7 @@ def _create_calculations(
     )
 
 
+@testing()
 def _transform_quarterly_time_series_to_hourly(
     time_series_points: DataFrame,
 ) -> DataFrame:
@@ -151,6 +153,7 @@ def _transform_quarterly_time_series_to_hourly(
     return time_series_points
 
 
+@testing()
 def _add_selection_period_columns(
     metering_point_periods: DataFrame,
     calculation_month: int,
@@ -193,6 +196,7 @@ def _add_selection_period_columns(
     return metering_point_periods
 
 
+@testing()
 def _ten_largest_quantities_in_selection_periods(
     time_series_points: DataFrame,
     metering_point_periods: DataFrame,
@@ -214,6 +218,7 @@ def _ten_largest_quantities_in_selection_periods(
     return time_series_points
 
 
+@testing()
 def _average_ten_largest_quantities_in_selection_periods(
     time_series_points: DataFrame, grouping: list[str]
 ) -> DataFrame:
@@ -223,6 +228,7 @@ def _average_ten_largest_quantities_in_selection_periods(
     return measurements
 
 
+@testing()
 def _explode_to_daily(
     df: DataFrame,
     calculation_month: int,
@@ -253,6 +259,7 @@ def _explode_to_daily(
     return df
 
 
+@testing()
 def _filter_date_within_child_period(time_series_points_exploded_to_daily: DataFrame) -> DataFrame:
     return time_series_points_exploded_to_daily.filter(
         (F.col(ContractColumnNames.date) >= F.col(ContractColumnNames.child_period_from_date))

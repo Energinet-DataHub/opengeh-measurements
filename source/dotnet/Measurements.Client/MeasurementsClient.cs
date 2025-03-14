@@ -1,7 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using System.Globalization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -16,18 +17,22 @@ public class MeasurementsClient : IMeasurementsClient
 
     public async Task<MeasurementDto?> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient
-            .GetAsync(
-                $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={query.Date:yyyy-MM-ddTHH:mm:ssZ}&EndDate={query.Date.AddDays(1):yyyy-MM-ddTHH:mm:ssZ}",
-                cancellationToken)
-            .ConfigureAwait(false);
+        var url = CreateUrl(query);
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         response.EnsureSuccessStatusCode();
 
-        var measurementDto = await response.Content
-            .ReadFromJsonAsync<MeasurementDto>(cancellationToken)
-            .ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        return new JsonSerializer().Deserialize<MeasurementDto>(content);
+    }
 
-        return measurementDto;
+    private static string CreateUrl(GetMeasurementsForDayQuery query)
+    {
+        return $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={FormatDate(query.Date)}&EndDate={FormatDate(query.Date.AddDays(1))}";
+    }
+
+    private static string FormatDate(DateTimeOffset date)
+    {
+        return date.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
     }
 }
