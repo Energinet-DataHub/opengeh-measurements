@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 import yaml
-from geh_common.testing.dataframes import AssertDataframesConfiguration, read_csv
+from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
@@ -20,7 +20,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     execute,
     time_series_points_v1,
 )
-from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.fixture(scope="module")
@@ -71,15 +70,4 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
             # Cache actual in order to prevent the assertion to potentially evaluate the same DataFrame multiple times
             TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=actual_df.cache()),
         ]
-    )
-
-
-@pytest.fixture(scope="session")
-def assert_dataframes_configuration(
-    test_session_configuration: TestSessionConfiguration,
-) -> AssertDataframesConfiguration:
-    return AssertDataframesConfiguration(
-        show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
-        show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
-        show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )

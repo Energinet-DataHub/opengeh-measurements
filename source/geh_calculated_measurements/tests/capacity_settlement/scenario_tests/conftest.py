@@ -5,7 +5,6 @@ from unittest.mock import patch
 import pytest
 import yaml
 from geh_common.testing.dataframes import (
-    AssertDataframesConfiguration,
     read_csv,
 )
 from geh_common.testing.scenario_testing import TestCase, TestCases
@@ -22,9 +21,6 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.measurements
     capacity_settlement_v1,
 )
 from tests.capacity_settlement.job_tests import create_job_environment_variables
-from tests.testsession_configuration import (
-    TestSessionConfiguration,
-)
 
 
 @pytest.fixture(scope="module")
@@ -78,15 +74,4 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
                 actual=calculation_output.ten_largest_quantities.df,
             ),
         ]
-    )
-
-
-@pytest.fixture(scope="session")
-def assert_dataframes_configuration(
-    test_session_configuration: TestSessionConfiguration,
-) -> AssertDataframesConfiguration:
-    return AssertDataframesConfiguration(
-        show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
-        show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
-        show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )

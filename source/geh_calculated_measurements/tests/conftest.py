@@ -5,7 +5,7 @@ from unittest import mock
 import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
-from geh_common.testing.dataframes import configure_testing
+from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from pyspark.sql import SparkSession
 
 from tests import TESTS_ROOT
@@ -88,4 +88,18 @@ def configure_testing_decorator(test_session_configuration: TestSessionConfigura
     configure_testing(
         is_testing=test_session_configuration.scenario_tests.testing_decorator_enabled,
         rows=test_session_configuration.scenario_tests.testing_decorator_max_rows,
+    )
+
+
+@pytest.fixture(scope="session")
+def assert_dataframes_configuration(
+    test_session_configuration: TestSessionConfiguration,
+) -> AssertDataframesConfiguration:
+    """This fixture is used for comparing data frames in scenario tests.
+
+    It's mainly specific to the scenario tests. The fixture is placed here to avoid code duplication."""
+    return AssertDataframesConfiguration(
+        show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
+        show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
+        show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )
