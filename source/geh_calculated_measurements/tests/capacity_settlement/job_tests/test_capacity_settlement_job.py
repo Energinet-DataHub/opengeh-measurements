@@ -21,8 +21,8 @@ def _get_job_parameters(orchestration_instance_id: str) -> list[str]:
 def test_execute(
     spark: SparkSession,
     job_environment_variables: dict,
-    seed_gold_table: Any,
-    create_calculated_measurements_table: Any,
+    gold_table_seeded: Any,
+    calculated_measurements_table_created: Any,
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
