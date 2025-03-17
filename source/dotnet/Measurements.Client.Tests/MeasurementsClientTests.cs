@@ -1,5 +1,7 @@
-﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using System.Net;
+using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
@@ -23,14 +25,13 @@ public class MeasurementsClientTests
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
+            new DateTimeOffset(2025, 1, 2, 23, 0, 0, TimeSpan.Zero));
 
         // Act
         var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(query.MeteringPointId, result.MeteringPointId);
         Assert.Equal(24, result.Points.Count);
         Assert.True(result.Points.All(p => p.Quality == Quality.Measured));
     }
@@ -48,7 +49,6 @@ public class MeasurementsClientTests
         var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
-        Assert.Equal(meteringPointId, actual.MeteringPointId);
         Assert.Empty(actual.Points);
     }
 }

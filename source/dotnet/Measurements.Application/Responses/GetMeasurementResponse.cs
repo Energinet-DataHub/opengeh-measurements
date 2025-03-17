@@ -8,38 +8,31 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetMeasurementResponse
 {
-    public string MeteringPointId { get; init; } = string.Empty;
-
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(string meteringPointId, List<Point> points)
+    private GetMeasurementResponse(List<Point> points)
     {
-        MeteringPointId = meteringPointId;
         Points = points;
     }
 
-    public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
+    public static GetMeasurementResponse Create(string meteringPointId, IEnumerable<MeasurementsResult> measurements)
     {
-        var meteringPointId = string.Empty;
-        var points = new List<Point>();
+        var points = measurements
+            .Select(measurement =>
+                new Point(
+                    measurement.ObservationTime,
+                    measurement.Quantity,
+                    ParseQuality(measurement.Quality),
+                    ParseUnit(measurement.Unit)))
+            .ToList();
 
-        foreach (var measurement in measurements)
-        {
-            meteringPointId = measurement.MeteringPointId;
-            points.Add(new Point(
-                measurement.ObservationTime,
-                measurement.Quantity,
-                ParseQuality(measurement.Quality),
-                ParseUnit(measurement.Unit)));
-        }
-
-        return meteringPointId == string.Empty || points.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new GetMeasurementResponse(meteringPointId, points);
+        return points.Count <= 0
+            ? throw new MeasurementsNotFoundDuringPeriodException()
+            : new GetMeasurementResponse(points);
     }
 
     private static Quality ParseQuality(string quality)

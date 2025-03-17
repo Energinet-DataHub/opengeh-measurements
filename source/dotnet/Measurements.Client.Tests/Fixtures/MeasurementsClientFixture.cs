@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using System.Globalization;
+using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
@@ -30,8 +31,8 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     public async Task InitializeAsync()
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
+        var rows = CreateRows();
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
@@ -63,6 +64,11 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.4", "'measured'" });
+        var obsTime = new DateTimeOffset(2025, 1, 2, 23, 0, 0, TimeSpan.Zero);
+        for (var i = 0; i <= 23; i++)
+        {
+            yield return new List<string> { "'1234567890'", "'kwh'", $"'{obsTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
+            obsTime = obsTime.AddHours(1);
+        }
     }
 }

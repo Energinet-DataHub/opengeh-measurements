@@ -21,7 +21,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
 
             return Ok(result);
         }
-        catch (MeasurementsNotFoundException e)
+        catch (MeasurementsNotFoundDuringPeriodException e)
         {
             return NotFound(e.Message);
         }

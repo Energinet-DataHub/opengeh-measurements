@@ -7,8 +7,6 @@ public class MeasurementsResult(ExpandoObject raw)
 {
     private readonly dynamic _raw = raw;
 
-    public string MeteringPointId => _raw.metering_point_id;
-
     public string Unit => _raw.unit;
 
     public Instant ObservationTime => Instant.FromDateTimeOffset(_raw.observation_time);

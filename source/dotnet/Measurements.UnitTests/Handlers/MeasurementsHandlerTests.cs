@@ -33,7 +33,6 @@ public class MeasurementsHandlerTests
         var actualPoint = actual.Points.First();
 
         // Assert
-        Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
         Assert.Equal(now, actualPoint.ObservationTime.ToDateTimeOffset());
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
@@ -54,13 +53,12 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetMeasurementAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetMeasurementAsync(request));
     }
 
     private static dynamic CreateRaw(DateTimeOffset now)
     {
         dynamic raw = new ExpandoObject();
-        raw.metering_point_id = "123456789";
         raw.unit = "kwh";
         raw.observation_time = now;
         raw.quantity = 42;

@@ -31,7 +31,7 @@ public class MeasurementsClient : IMeasurementsClient
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            return new MeasurementDto(query.MeteringPointId, []);
+            return new MeasurementDto([]);
         }
 
         var measurement = await response.Content

@@ -26,7 +26,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
-        Assert.Equal(expectedMeteringPointId, actual.MeteringPointId);
         Assert.Equal(24, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.ObservationTime.ToString() == startDate));
         Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));

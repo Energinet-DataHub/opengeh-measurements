@@ -20,10 +20,9 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = GetMeasurementResponse.Create("123456789", measurements);
 
         // Assert
-        Assert.Equal("123456789", actual.MeteringPointId);
         Assert.Equal(3, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Quantity == 42));
         Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
@@ -47,7 +46,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = GetMeasurementResponse.Create("123456789", measurements);
 
         // Assert
         Assert.Equal(expectedUnit, actual.Points.Single().Unit);
@@ -67,7 +66,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = GetMeasurementResponse.Create("123456789", measurements);
 
         // Assert
         Assert.Equal(expectedQuality, actual.Points.Single().Quality);
@@ -84,13 +83,12 @@ public class GetMeasurementResponseTests
 
         // Act
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create("123456789", measurements));
     }
 
     private static ExpandoObject CreateRaw(string unit = "kwh", string quality = "measured")
     {
         dynamic raw = new ExpandoObject();
-        raw.metering_point_id = "123456789";
         raw.unit = unit;
         raw.observation_time = DateTimeOffset.Now;
         raw.quantity = 42;
