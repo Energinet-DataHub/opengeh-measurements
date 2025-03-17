@@ -1,4 +1,7 @@
 ### This file contains the fixtures that are used in the tests. ###
+import shutil
+import sys
+import tempfile
 from typing import Generator
 from unittest import mock
 
@@ -59,12 +62,28 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 
 
 def _get_spark():
+    data_dir = tempfile.mkdtemp()
     conf = SparkConf().setAll(
         pairs=[
             (k, v)
             for k, v in {
+                # Delta Lake configuration
+                "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
+                "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+                "spark.sql.catalogImplementation": "hive",
+                "spark.sql.warehouse.dir": f"{data_dir}/spark-warehouse",
+                "spark.local.dir": f"{data_dir}/spark-tmp",
+                "javax.jdo.option.ConnectionURL": f"jdbc:derby:;databaseName={data_dir}/metastore;create=true",
+                "javax.jdo.option.ConnectionUserName": "APP",
+                "javax.jdo.option.ConnectionPassword": "mine",
+                # Disable schema verification
+                "hive.metastore.schema.verification": "false",
+                "hive.metastore.schema.verification.record.version": "false",
+                "datanucleus.autoCreateSchema": "true",
+                # Disable the UI
                 "spark.ui.showConsoleProgress": "false",
                 "spark.ui.enabled": "false",
+                # Optimize for small tests
                 "spark.ui.dagGraph.retainedRootRDDs": "1",
                 "spark.ui.retainedJobs": "1",
                 "spark.ui.retainedStages": "1",
@@ -74,20 +93,22 @@ def _get_spark():
                 "spark.worker.ui.retainedDrivers": "1",
                 "spark.databricks.delta.snapshotPartitions": "2",
                 "spark.sql.shuffle.partitions": "1",
-                "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
-                "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-                "spark.sql.catalogImplementation": "hive",
                 "spark.driver.memory": "2g",
+                "spark.executor.memory": "2g",
+                "spark.sql.streaming.schemaInference": "true",
+                "spark.rdd.compress": "false",
+                "spark.shuffle.compress": "false",
+                "spark.shuffle.spill.compress": "false",
                 "spark.sql.session.timeZone": "UTC",
-                "spark.driver.extraJavaOptions": "-Ddelta.log.cacheSize=3 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
+                "spark.driver.extraJavaOptions": f"-Ddelta.log.cacheSize=3 -Dderby.system.home={data_dir} -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
             }.items()
         ]
     )
     builder = configure_spark_with_delta_pip(SparkSession.Builder().config(conf=conf).enableHiveSupport())
-    return builder.master("local[1]").getOrCreate()
+    return builder.master("local[1]").getOrCreate(), data_dir
 
 
-_spark = _get_spark()
+_spark, data_dir = _get_spark()
 
 
 @pytest.fixture(scope="session")
@@ -97,6 +118,21 @@ def spark() -> Generator[SparkSession, None, None]:
     """
     yield _spark
     _spark.stop()
+    shutil.rmtree(data_dir)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def fix_print():
+    """
+    pytest-xdist disables stdout capturing by default, which means that print() statements
+    are not captured and displayed in the terminal.
+    That's because xdist cannot support -s for technical reasons wrt the process execution mechanism
+    https://github.com/pytest-dev/pytest-xdist/issues/354
+    """
+    original_print = print
+    with mock.patch("builtins.print") as mock_print:
+        mock_print.side_effect = lambda *args, **kwargs: original_print(*args, **{"file": sys.stderr, **kwargs})
+        yield mock_print
 
 
 @pytest.fixture(scope="session")
