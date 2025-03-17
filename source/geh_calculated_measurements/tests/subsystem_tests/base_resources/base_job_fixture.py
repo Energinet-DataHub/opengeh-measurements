@@ -24,11 +24,14 @@ class BaseJobFixture:
         self.job_name = job_name
         self.params = params
 
-    def _get_job_id(self) -> int:
-        return self.databricks_api_client.get_job_id(self.job_name)
+    def set_run_id(self, run_id: int) -> None:
+        self.run_id = run_id
+
+    def get_run_id(self) -> int | None:
+        return self.run_id
 
     def start_job(self, job_parameteres: dict[str, str]) -> int:
-        job_id = self._get_job_id()
+        job_id = self.databricks_api_client.get_job_id(self.job_name)
         params_list = []
         if job_parameteres:
             for key, value in job_parameteres.items():

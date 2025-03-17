@@ -8,8 +8,6 @@ from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 
 
 class BaseJobTests:
-    run_id: int | None = None
-
     @pytest.fixture(autouse=True, scope="class")
     @abstractmethod
     def setup_fixture():
@@ -26,21 +24,23 @@ class BaseJobTests:
     @pytest.mark.order(1)
     def test__when_job_is_started(self, setup_fixture: BaseJobFixture) -> None:
         # Act
-        self.run_id = setup_fixture.start_job(setup_fixture.params)
+        run_id = setup_fixture.start_job(setup_fixture.params)
+        setup_fixture.set_run_id(run_id)
 
         # Assert
-        assert self.run_id is not None
+        assert setup_fixture.get_run_id() is not None
 
     @pytest.mark.order(2)
     def test__then_job_is_completed(self, setup_fixture: BaseJobFixture) -> None:
         # Act
-        if self.run_id is None:
+        run_id = setup_fixture.get_run_id()
+        if run_id is None:
             raise ValueError("run_id is None, cannot proceed with job completion check.")
-        run_result_state = setup_fixture.wait_for_job_to_completion(self.run_id)
+        run_result_state = setup_fixture.wait_for_job_to_completion(run_id)
 
         # Assert
         assert run_result_state == RunResultState.SUCCESS, (
-            f"The Job with run id {self.run_id} did not complete successfully: {run_result_state.value}"
+            f"The Job with run id {run_id} did not complete successfully: {run_result_state.value}"
         )
 
     @pytest.mark.order
