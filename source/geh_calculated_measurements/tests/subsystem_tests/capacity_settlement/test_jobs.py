@@ -40,20 +40,15 @@ class TestCapacitySettlement(BaseJobTests):
         "calculation-year": CALCULATION_YEAR,
     }
 
-    def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        if self.fixture is None:
-            table_seeder = GoldTableSeeder(environment_configuration)
-            table_seeder.seed(self._get_gold_table_rows())
-            self.fixture = BaseJobFixture(
-                environment_configuration=environment_configuration,
-                job_name="CapacitySettlement",
-                params=self.params,
-            )
-        return self.fixture
-
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(
+    def job_fixture(
         self,
         environment_configuration: EnvironmentConfiguration,
     ) -> BaseJobFixture:
-        return self.get_or_create_fixture(environment_configuration)
+        table_seeder = GoldTableSeeder(environment_configuration)
+        table_seeder.seed(self._get_gold_table_rows())
+        return BaseJobFixture(
+            environment_configuration=environment_configuration,
+            job_name="CapacitySettlement",
+            params=self.params,
+        )
