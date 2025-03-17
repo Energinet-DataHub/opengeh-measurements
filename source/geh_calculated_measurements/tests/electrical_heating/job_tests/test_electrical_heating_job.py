@@ -1,14 +1,15 @@
+import os
+import sys
 import uuid
 from typing import Any
-from unittest.mock import patch
 
+import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
-from geh_calculated_measurements.electrical_heating.entry_point import execute
 from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
@@ -22,6 +23,7 @@ def _create_job_environment_variables() -> dict:
 
 def test_execute(
     spark: SparkSession,
+    monkeypatch: pytest.MonkeyPatch,
     gold_table_seeded: Any,  # Used implicitly
     calculated_measurements_table_created: Any,  # Used implicitly
 ) -> None:
@@ -30,12 +32,20 @@ def test_execute(
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
     # Act
-    with patch("sys.argv", sys_argv):
-        with patch.dict("os.environ", _create_job_environment_variables()):
-            execute()
+    monkeypatch.setattr(sys, "argv", sys_argv)
+    monkeypatch.setattr(
+        os,
+        "environ",
+        {
+            "CATALOG_NAME": "spark_catalog",
+            "TIME_ZONE": "Europe/Copenhagen",
+            "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
+            "MEASUREMENTS_CALCULATED_INTERNAL_DATABASE": "measurements_calculated_internal",
+        },
+    )
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0

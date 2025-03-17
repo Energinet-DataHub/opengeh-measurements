@@ -2,6 +2,7 @@ import uuid
 from typing import Any
 from unittest.mock import patch
 
+import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
@@ -21,8 +22,9 @@ def _get_job_parameters(orchestration_instance_id: str) -> list[str]:
 
 def test_execute(
     spark: SparkSession,
-    gold_table_seeded: Any,
-    calculated_measurements_table_created: Any,
+    monkeypatch: pytest.MonkeyPatch,
+    gold_table_seeded: Any,  # Used implicitly
+    calculated_measurements_table_created: Any,  # Used implicitly
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
@@ -34,13 +36,13 @@ def test_execute(
 
     # Assert
     actual_calculated_measurements = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     actual_calculations = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     actual_ten_largest_quantities = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual_calculated_measurements.count() > 0
     assert actual_calculations.count() > 0

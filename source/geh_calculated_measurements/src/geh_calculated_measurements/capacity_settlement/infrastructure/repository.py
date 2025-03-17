@@ -16,17 +16,17 @@ class Repository:
         self._catalog_name = catalog_name
 
     def _get_full_table_path(self, table_name: str) -> str:
-        database_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE
+        database_name = CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE
         if self._catalog_name:
             return f"{self._catalog_name}.{database_name}.{table_name}"
         return f"{database_name}.{table_name}"
 
     def write_calculations(self, data: Calculations) -> None:
         df = data.df
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME
+        table_name = CalculatedMeasurementsInternalDatabaseDefinition().CAPACITY_SETTLEMENT_CALCULATIONS_NAME
         df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(table_name))
 
     def write_ten_largest_quantities(self, data: TenLargestQuantities) -> None:
         df = data.df
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME
+        table_name = CalculatedMeasurementsInternalDatabaseDefinition().CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME
         df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(table_name))

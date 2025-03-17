@@ -41,7 +41,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
 
     # Construct a list of TestCase objects
     test_cases = []
-    schema = CalculatedMeasurementsDatabaseDefinition.measurements_calculated_database
+    schema = CalculatedMeasurementsDatabaseDefinition().measurements_calculated_database
     catalog = CatalogSettings().catalog_name
     for path_name in then_files:
         actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
