@@ -1,6 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
+
 class CalculatedMeasurementsInternalDatabaseDefinition(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 
