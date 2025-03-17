@@ -21,7 +21,7 @@ hourly_calculated_measurements_v1 = t.StructType(
         # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # 'electrical_heating' | 'capcity_settlement'
+        # 'electrical_heating' | 'capacity_settlement'
         t.StructField("metering_point_type", t.StringType(), not nullable),
         #
         # UTC datetime
