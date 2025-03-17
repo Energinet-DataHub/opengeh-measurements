@@ -7,7 +7,6 @@ from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
-from geh_calculated_measurements.electrical_heating.infrastructure import MeasurementsGoldDatabaseDefinition
 from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -25,42 +24,13 @@ class JobState:
     run_result_state: Optional[RunResultState] = field(default=None)
 
 
-def seed_data_query(catalog: str, schema: str, table: str = "measurements") -> str:
-    return f"""
-            INSERT INTO {catalog}.{schema}.{table} (
-                transaction_id, quantity, transaction_creation_datetime, created, modified, -- dynamic variables
-                metering_point_id, observation_time, quality, metering_point_type, orchestration_type -- static variables
-            )
-            SELECT
-                REPLACE(CAST(uuid() AS VARCHAR(50)), '-', '') AS transaction_id, 
-                CAST(RAND() * 1000000 AS DECIMAL(18, 3)) AS quantity, 
-                GETDATE() AS transaction_creation_datetime, 
-                GETDATE() AS created, -- created
-                GETDATE() AS modified, -- modified
-                '170000030000000201' AS metering_point_id, 
-                '2024-11-30T23:00:00Z' AS observation_time, 
-                'measured' AS quality, -- quality
-                'consumption' AS metering_point_type,
-                'submitted' AS orchestration_type
-            """
-
-
 class BaseJobFixture:
-    def __init__(
-        self, environment_configuration: EnvironmentConfiguration, job_name: str, seed_data: bool, params: dict
-    ):
+    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, params: dict):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
         )
-        if seed_data:
-            self.databricks_api_client.execute_statement(
-                warehouse_id=environment_configuration.warehouse_id,
-                statement=seed_data_query(
-                    catalog=environment_configuration.catalog_name,
-                    schema=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-                ),
-            )
+
         self.job_state = None
         self.calculation_input = None
         self.credentials = DefaultAzureCredential()

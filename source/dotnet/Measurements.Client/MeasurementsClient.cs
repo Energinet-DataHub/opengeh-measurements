@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
-using System.Net.Http.Json;
-using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 
@@ -9,6 +10,12 @@ namespace Energinet.DataHub.Measurements.Client;
 public class MeasurementsClient : IMeasurementsClient
 {
     private readonly HttpClient _httpClient;
+
+    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() },
+    };
 
     public MeasurementsClient(IHttpClientFactory httpClientFactory)
     {
@@ -22,11 +29,8 @@ public class MeasurementsClient : IMeasurementsClient
 
         response.EnsureSuccessStatusCode();
 
-        var measurementDto = await response.Content
-            .ReadFromJsonAsync<MeasurementDto>(cancellationToken)
-            .ConfigureAwait(false);
-
-        return measurementDto;
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JsonSerializer.Deserialize<MeasurementDto>(content, _jsonSerializerOptions);
     }
 
     private static string CreateUrl(GetMeasurementsForDayQuery query)

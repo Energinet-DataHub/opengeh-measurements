@@ -9,13 +9,21 @@ from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.entry_point import execute
+from tests.electrical_heating.job_tests import get_test_files_folder_path
+
+
+def _create_job_environment_variables() -> dict:
+    return {
+        "CATALOG_NAME": "spark_catalog",
+        "TIME_ZONE": "Europe/Copenhagen",
+        "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
+    }
 
 
 def test_execute(
     spark: SparkSession,
-    job_environment_variables: dict,
-    seed_gold_table: Any,
-    create_calculated_measurements_table: Any,
+    gold_table_seeded: Any,  # Used implicitly
+    calculated_measurements_table_created: Any,  # Used implicitly
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
@@ -23,7 +31,7 @@ def test_execute(
 
     # Act
     with patch("sys.argv", sys_argv):
-        with patch.dict("os.environ", job_environment_variables):
+        with patch.dict("os.environ", _create_job_environment_variables()):
             execute()
 
     # Assert
