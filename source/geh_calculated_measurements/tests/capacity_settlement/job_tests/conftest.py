@@ -16,20 +16,20 @@ from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
 @pytest.fixture(scope="session")
 def gold_table_seeded(spark: SparkSession) -> None:
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS)
 
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS,
         table_name=MeasurementsGoldDatabaseDefinition.MEASUREMENTS,
         schema=capacity_settlement_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
+        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}/{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
     )
 
-    file_name = f"{TEST_FILES_FOLDER_PATH}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}.csv"
+    file_name = f"{TEST_FILES_FOLDER_PATH}/{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}-{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}.csv"
     time_series_points = read_csv_path(spark, file_name, capacity_settlement_v1)
     time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}.{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
         format="delta",
         mode="overwrite",
     )
