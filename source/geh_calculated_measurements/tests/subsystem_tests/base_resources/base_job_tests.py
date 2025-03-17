@@ -33,11 +33,10 @@ class BaseJobTests:
     def test__then_job_is_completed(self, setup_fixture: BaseJobFixture) -> None:
         # Act
         run_result_state = setup_fixture.wait_for_job_to_completion(setup_fixture.job_state.run_id)
-        setup_fixture.set_run_result_state(run_result_state)
 
         # Assert
-        assert setup_fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The Job with run id {setup_fixture.job_state.run_id} did not complete successfully: {setup_fixture.job_state.run_result_state.value}"
+        assert run_result_state == RunResultState.SUCCESS, (
+            f"The Job with run id {setup_fixture.job_state.run_id} did not complete successfully: {run_result_state.value}"
         )
 
     @pytest.mark.order

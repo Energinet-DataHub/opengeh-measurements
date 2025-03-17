@@ -1,6 +1,3 @@
-from dataclasses import dataclass, field
-from typing import Optional
-
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
@@ -11,12 +8,6 @@ from geh_calculated_measurements.testing import LogQueryClientWrapper
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
-@dataclass
-class JobState:
-    run_id: int
-    run_result_state: Optional[RunResultState] = field(default=None)
-
-
 class BaseJobFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, params: dict):
         self.databricks_api_client = DatabricksApiClient(
@@ -24,7 +15,6 @@ class BaseJobFixture:
             environment_configuration.workspace_url,
         )
 
-        self.job_state = None
         self.credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
         self.secret_client = SecretClient(
@@ -34,25 +24,17 @@ class BaseJobFixture:
         self.job_name = job_name
         self.params = params
 
-    def create_job_state(self, run_id, run_result_state) -> None:
-        self.job_state = JobState(run_id, run_result_state)
-
-    def set_run_result_state(self, run_result_state) -> None:
-        self.job_state.run_result_state = run_result_state
-
-    def get_job_id(self) -> int:
+    def _get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id(self.job_name)
 
     def start_job(self, job_parameteres: dict[str, str]) -> int:
-        job_id = self.get_job_id()
+        job_id = self._get_job_id()
         params_list = []
         if job_parameteres:
             for key, value in job_parameteres.items():
                 params_list.append(f"--{key}={value}")
 
         run_id = self.databricks_api_client.start_job(job_id, params_list)
-
-        self.create_job_state(run_id=run_id, run_result_state=None)
 
         return run_id
 
