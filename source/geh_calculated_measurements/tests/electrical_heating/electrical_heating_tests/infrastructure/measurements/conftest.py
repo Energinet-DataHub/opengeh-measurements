@@ -16,15 +16,15 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 def measurements_gold_with_data(spark: SparkSession) -> None:
     """Create a test database and table for measurements_gold."""
     # Create the database
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
 
     # Create the table with the appropriate schema
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
+        database_name=MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD,
+        table_name=MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME,
         schema=electrical_heating_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        table_location=f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}/{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
     )
     test_data = spark.createDataFrame(
         [
@@ -39,7 +39,7 @@ def measurements_gold_with_data(spark: SparkSession) -> None:
     )
 
     test_data.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
     )
 
 
