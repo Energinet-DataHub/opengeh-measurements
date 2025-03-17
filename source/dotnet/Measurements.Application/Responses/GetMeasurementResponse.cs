@@ -10,45 +10,36 @@ public class GetMeasurementResponse
 {
     public string MeteringPointId { get; init; } = string.Empty;
 
-    public Unit Unit { get; init; }
-
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(string meteringPointId, Unit unit, List<Point> points)
+    private GetMeasurementResponse(string meteringPointId, List<Point> points)
     {
         MeteringPointId = meteringPointId;
-        Unit = unit;
         Points = points;
     }
 
     public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
     {
         var meteringPointId = string.Empty;
-        var unitRaw = string.Empty;
         var points = new List<Point>();
 
         foreach (var measurement in measurements)
         {
             meteringPointId = measurement.MeteringPointId;
-            unitRaw = measurement.Unit;
             points.Add(new Point(
                 measurement.ObservationTime,
                 measurement.Quantity,
-                ParseQuality(measurement.Quality)));
+                ParseQuality(measurement.Quality),
+                ParseUnit(measurement.Unit)));
         }
 
-        if (meteringPointId == string.Empty || points.Count <= 0)
-        {
-            throw new MeasurementsNotFoundException();
-        }
-
-        var unit = ParseUnit(unitRaw);
-
-        return new GetMeasurementResponse(meteringPointId, unit, points);
+        return meteringPointId == string.Empty || points.Count <= 0
+            ? throw new MeasurementsNotFoundException()
+            : new GetMeasurementResponse(meteringPointId, points);
     }
 
     private static Quality ParseQuality(string quality)

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
@@ -37,17 +36,19 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsNotFound()
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyListOfPoints()
     {
         // Arrange
+        const string meteringPointId = "1234567890";
         var query = new GetMeasurementsForDayQuery(
-            "1234567890",
+            meteringPointId,
             new DateTimeOffset(1900, 1, 2, 0, 0, 0, TimeSpan.Zero));
 
         // Act
-        var result = await Assert.ThrowsAsync<HttpRequestException>(() => MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None));
+        var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        Assert.Equal(meteringPointId, actual.MeteringPointId);
+        Assert.Empty(actual.Points);
     }
 }

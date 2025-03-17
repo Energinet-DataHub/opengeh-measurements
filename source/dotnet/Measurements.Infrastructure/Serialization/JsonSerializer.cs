@@ -9,7 +9,11 @@ public class JsonSerializer
     private readonly JsonSerializerOptions _options = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { NodaConverters.InstantConverter, new JsonStringEnumConverter() },
+        Converters =
+        {
+            NodaConverters.InstantConverter,
+            new JsonStringEnumConverter(),
+        },
     };
 
     public string Serialize<T>(T value)

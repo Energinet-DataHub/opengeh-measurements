@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
@@ -22,24 +24,29 @@ public class MeasurementsClient : IMeasurementsClient
         _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
-    public async Task<MeasurementDto?> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<MeasurementDto> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query);
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new MeasurementDto(query.MeteringPointId, []);
+        }
 
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JsonSerializer.Deserialize<MeasurementDto>(content, _jsonSerializerOptions);
+        var measurement = await response.Content
+            .ReadFromJsonAsync<MeasurementDto>(_jsonSerializerOptions, cancellationToken)
+            .ConfigureAwait(false);
+
+        return measurement ?? throw new InvalidOperationException("Could not deserialize response.");
     }
 
     private static string CreateUrl(GetMeasurementsForDayQuery query)
     {
-        return $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={FormatDate(query.Date)}&EndDate={FormatDate(query.Date.AddDays(1))}";
-    }
+        const string format = "yyyy-MM-ddTHH:mm:ssZ";
+        var startDate = query.Date.ToString(format, CultureInfo.InvariantCulture);
+        var endDate = query.Date.AddDays(1).ToString(format, CultureInfo.InvariantCulture);
 
-    private static string FormatDate(DateTimeOffset date)
-    {
-        return date.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+        return $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={startDate}&EndDate={endDate}";
     }
 }

@@ -24,9 +24,9 @@ public class GetMeasurementResponseTests
 
         // Assert
         Assert.Equal("123456789", actual.MeteringPointId);
-        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(3, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Quantity == 42));
+        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
@@ -50,7 +50,7 @@ public class GetMeasurementResponseTests
         var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
-        Assert.Equal(expectedUnit, actual.Unit);
+        Assert.Equal(expectedUnit, actual.Points.Single().Unit);
     }
 
     [Theory]
@@ -70,7 +70,7 @@ public class GetMeasurementResponseTests
         var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
-        Assert.Equal(expectedQuality, actual.Points.First().Quality);
+        Assert.Equal(expectedQuality, actual.Points.Single().Quality);
     }
 
     [Fact]
