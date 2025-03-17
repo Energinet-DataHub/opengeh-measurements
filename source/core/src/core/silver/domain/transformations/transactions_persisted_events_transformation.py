@@ -4,7 +4,7 @@ import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import to_protobuf
 
-from core.contracts.process_manager.brs021_forward_metered_data_notify_b1_column_names import (
+from core.contracts.process_manager.brs021_forward_metered_data_notify_v1_column_names import (
     Brs021ForwardMeteredDataNotifyV1ColumnNames,
     Brs021ForwardMeteredDataNotifyV1EventColumnNames,
 )

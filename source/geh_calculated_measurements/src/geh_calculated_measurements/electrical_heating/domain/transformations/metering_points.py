@@ -1,5 +1,6 @@
 from geh_common.domain.types import MeteringPointType, NetSettlementGroup
 from geh_common.pyspark.transformations import convert_from_utc
+from geh_common.testing.dataframes import testing
 from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as F
 
@@ -9,7 +10,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     EphemeralColumnNames,
 )
-from geh_calculated_measurements.testing import testing
 
 
 @testing()
