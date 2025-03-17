@@ -108,6 +108,9 @@ def _get_spark():
     return builder.master("local[1]").getOrCreate(), data_dir
 
 
+# pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
+# Therefore, we need to create a global variable to store the Spark session and data directory.
+# This is a workaround to avoid creating a new Spark session for each test.
 _spark, data_dir = _get_spark()
 
 
