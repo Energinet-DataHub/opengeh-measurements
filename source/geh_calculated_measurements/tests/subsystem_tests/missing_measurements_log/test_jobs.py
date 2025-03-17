@@ -7,9 +7,9 @@ from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
-class TestNetConsumptionGroup6(BaseJobTests):
+class TestMissingMeasurementsLog(BaseJobTests):
     """
-    Test class for net consumption for group 6.
+    Test class for missing measurements log.
     """
 
     fixture = None
@@ -20,7 +20,7 @@ class TestNetConsumptionGroup6(BaseJobTests):
         if self.fixture is None:
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
-                job_name="NetConsumptionGroup6",
+                job_name="MissingMeasurementsLog",
                 params=self.params,
             )
         return self.fixture
