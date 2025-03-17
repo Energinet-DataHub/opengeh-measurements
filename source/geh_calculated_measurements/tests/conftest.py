@@ -6,6 +6,7 @@ import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
@@ -57,25 +58,45 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
+def _get_spark():
+    conf = SparkConf().setAll(
+        pairs=[
+            (k, v)
+            for k, v in {
+                "spark.ui.showConsoleProgress": "false",
+                "spark.ui.enabled": "false",
+                "spark.ui.dagGraph.retainedRootRDDs": "1",
+                "spark.ui.retainedJobs": "1",
+                "spark.ui.retainedStages": "1",
+                "spark.ui.retainedTasks": "1",
+                "spark.sql.ui.retainedExecutions": "1",
+                "spark.worker.ui.retainedExecutors": "1",
+                "spark.worker.ui.retainedDrivers": "1",
+                "spark.databricks.delta.snapshotPartitions": "2",
+                "spark.sql.shuffle.partitions": "1",
+                "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
+                "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+                "spark.sql.catalogImplementation": "hive",
+                "spark.driver.memory": "2g",
+                "spark.sql.session.timeZone": "UTC",
+                "spark.driver.extraJavaOptions": "-Ddelta.log.cacheSize=3 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
+            }.items()
+        ]
+    )
+    builder = configure_spark_with_delta_pip(SparkSession.Builder().config(conf=conf).enableHiveSupport())
+    return builder.master("local[1]").getOrCreate()
+
+
+_spark = _get_spark()
+
+
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
-    session = (
-        SparkSession.builder.appName("geh_calculated_measurements")  # # type: ignore
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-        # Enable Hive support for persistence across test sessions
-        .config("spark.sql.catalogImplementation", "hive")
-        .enableHiveSupport()
-    )
-    session = configure_spark_with_delta_pip(session).getOrCreate()
-    yield session
-    session.stop()
+    yield _spark
+    _spark.stop()
 
 
 @pytest.fixture(scope="session")
