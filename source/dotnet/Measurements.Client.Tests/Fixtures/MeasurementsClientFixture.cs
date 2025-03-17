@@ -3,48 +3,43 @@ using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
+using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
 
-namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
+namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
-/// <summary>
-///     When we execute the tests on build agents we use the build output (assemblies).
-///     To avoid an 'System.IO.DirectoryNotFoundException' exception from WebApplicationFactory
-///     during creation, we must set the path to the 'content root' using an environment variable
-///     named 'ASPNETCORE_TEST_CONTENTROOT_[ASSEMBLY_NAME]'. Where Assembly Name is separated with
-///     '_' instead of '.', and in all caps. This is set inside the dotnet-postbuild-test.yml.
-/// </summary>
-public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public WebApiFixture()
+    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+
+    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
+
+    public HttpClient HttpClient { get; }
+
+    public MeasurementsClientFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
         DatabricksSchemaManager = new DatabricksSchemaManager(
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        HttpClient = CreateClient();
     }
-
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
-
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public async Task InitializeAsync()
     {
-        var columnDefinitions = CreateMeasurementsColumnDefinitions();
-        var rows = CreateRows();
-
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+        await DatabricksSchemaManager.CreateSchemaAsync();
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
     {
         await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
+        HttpClient.Dispose();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -56,7 +51,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
     }
 
-    private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
+    private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
         new()
         {
             { MeasurementsGoldConstants.MeteringPointIdColumnName, ("STRING", false) },
@@ -68,6 +63,6 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.4", "'measured'" });
     }
 }

@@ -1,10 +1,8 @@
-from pathlib import Path
-
 from geh_common.application.settings import ApplicationSettings
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent
+from tests import TESTS_ROOT
 
 
 class EnvironmentConfiguration(ApplicationSettings):
@@ -20,10 +18,9 @@ class EnvironmentConfiguration(ApplicationSettings):
     workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
 
-    cluster_id: str = Field(alias="CALCULATED_MEASUREMENTS_WAREHOUSE_ID")
     catalog_name: str = Field(alias="SHARED_CATALOG_NAME")
 
     model_config = SettingsConfigDict(
-        env_file=f"{PROJECT_ROOT}/.env",
+        env_file=f"{TESTS_ROOT}/.env",
         env_file_encoding="utf-8",
     )

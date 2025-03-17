@@ -1,4 +1,4 @@
-﻿namespace Energinet.DataHub.Measurements.Domain;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 public enum Unit
 {
@@ -10,5 +10,5 @@ public enum Unit
     Tonne = 4,
     kVArh = 5,
     MVAr = 6,
-#pragma warning restore SA1300
+#pragma warning disable SA1300
 }
