@@ -2,8 +2,8 @@ from geh_common.telemetry import use_span
 
 
 @use_span()
-def execute() -> None:
-    temp = 1 + 1
+def execute() -> int:
+    return 1 + 1
 
 
 # TODO Uncomment the following code snippet when repo logic is implemented.D
