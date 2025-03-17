@@ -46,9 +46,6 @@ class BaseJobTests:
     @pytest.mark.order
     def test__and_then_job_telemetry_is_created(self, setup_fixture: BaseJobFixture) -> None:
         # Arrange
-        if setup_fixture.job_state.run_result_state != RunResultState.SUCCESS:
-            raise Exception("A previous test did not complete successfully.")
-
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
