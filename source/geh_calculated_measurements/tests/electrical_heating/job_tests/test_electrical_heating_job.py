@@ -13,14 +13,6 @@ from geh_calculated_measurements.common.infrastructure import (
 from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
-def _create_job_environment_variables() -> dict:
-    return {
-        "CATALOG_NAME": "spark_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-        "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
-    }
-
-
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
