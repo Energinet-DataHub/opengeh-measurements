@@ -24,7 +24,7 @@ class Daily(DataFrameWrapper):
 @use_span()
 @testing()
 def calculate_daily(cenc: Cenc) -> Daily:
-    # Replace this dummy code
+    # TODO BJM: Replace this dummy code
     daily = cenc.df
 
     return Daily(daily)

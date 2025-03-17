@@ -26,9 +26,9 @@ class Cenc(DataFrameWrapper):
 @testing()
 def calculate_cenc() -> Cenc:
     """Return a data frame with schema `cenc_schema`."""
-    # Replace this dummy code
+    # TODO JVM: Replace this dummy code
     spark = initialize_spark()
-    data = [(1.0, "metering_point_id", 2021, 1)]
+    data = [("orchestration_instance_id", "metering_point_id", 1.0, 2021, 1)]
     df = spark.createDataFrame(data, schema=_cenc_schema)
 
     return Cenc(df)
