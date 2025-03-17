@@ -15,7 +15,7 @@ def test_contract_and_schema_are_equal(
     view_name = "hourly_calculated_measurements_v1"
     schema = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
     catalog = CatalogSettings().catalog_name
-    view_df = spark.sql(f"SELECT * FROM {catalog}.{schema}.{view_name}")
+    view_df = spark.sql(f"SELECT * FROM {catalog}.{schema}.{view_name} LIMIT 1")
 
     contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
 
