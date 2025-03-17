@@ -2,7 +2,6 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
-# todo: remove applicationsettings
 class CatalogSettings(BaseSettings):
     """Configuration class inheriting pydantic's BaseSettings to automatically load environmental variable.
 

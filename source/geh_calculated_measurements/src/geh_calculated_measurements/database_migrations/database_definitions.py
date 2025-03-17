@@ -13,5 +13,4 @@ class MeasurementsCalculatedInternalDatabaseDefinition(BaseSettings):
 
     measurements_calculated_internal_database: str = Field(init=False)
 
-    # MEASUREMENTS_NAME: str = Field(init=False)
     executed_migrations_table_name: str = Field(init=False)  # executed_migrations

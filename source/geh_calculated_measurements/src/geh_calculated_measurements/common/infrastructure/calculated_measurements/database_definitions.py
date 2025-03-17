@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -9,10 +11,9 @@ class CalculatedMeasurementsInternalDatabaseDefinition(BaseSettings):
     """
 
     MEASUREMENTS_CALCULATED_INTERNAL_DATABASE: str = Field(init=False)
-    MEASUREMENTS_NAME = "calculated_measurements"
-
-    CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME = "capacity_settlement_ten_largest_quantities"
-    CAPACITY_SETTLEMENT_CALCULATIONS_NAME = "capacity_settlement_calculations"
+    MEASUREMENTS_NAME: ClassVar[str] = "calculated_measurements"
+    CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME: ClassVar[str] = "capacity_settlement_ten_largest_quantities"
+    CAPACITY_SETTLEMENT_CALCULATIONS_NAME: ClassVar[str] = "capacity_settlement_calculations"
 
 
 class CalculatedMeasurementsDatabaseDefinition(BaseSettings):
