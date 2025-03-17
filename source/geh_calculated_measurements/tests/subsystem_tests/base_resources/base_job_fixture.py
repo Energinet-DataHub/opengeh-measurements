@@ -12,15 +12,8 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 
 @dataclass
-class CalculationInput:
-    params: dict
-    job_id: int
-
-
-@dataclass
 class JobState:
     run_id: int
-    calculation_input: CalculationInput
     run_result_state: Optional[RunResultState] = field(default=None)
 
 
@@ -32,7 +25,6 @@ class BaseJobFixture:
         )
 
         self.job_state = None
-        self.calculation_input = None
         self.credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
         self.secret_client = SecretClient(
@@ -42,12 +34,8 @@ class BaseJobFixture:
         self.job_name = job_name
         self.params = params
 
-    def create_job_state(self, run_id, run_result_state, calculation_input) -> None:
-        self.job_state = JobState(run_id, run_result_state, calculation_input)
-
-    def create_calculation_input(self) -> None:
-        job_id = self.get_job_id()
-        self.calculation_input = CalculationInput(self.params, job_id)
+    def create_job_state(self, run_id, run_result_state) -> None:
+        self.job_state = JobState(run_id, run_result_state)
 
     def set_run_result_state(self, run_result_state) -> None:
         self.job_state.run_result_state = run_result_state
@@ -55,7 +43,8 @@ class BaseJobFixture:
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id(self.job_name)
 
-    def start_job(self, job_id: str, job_parameteres: dict[str, str]) -> int:
+    def start_job(self, job_parameteres: dict[str, str]) -> int:
+        job_id = self.get_job_id()
         params_list = []
         if job_parameteres:
             for key, value in job_parameteres.items():

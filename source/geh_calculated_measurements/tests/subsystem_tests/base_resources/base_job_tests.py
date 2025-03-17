@@ -20,14 +20,6 @@ class BaseJobTests:
         pass
 
     @pytest.mark.order(1)
-    def test__given_job_input(self, setup_fixture) -> None:
-        # Act
-        setup_fixture.create_calculation_input()
-
-        # Assert
-        assert setup_fixture.calculation_input.job_id is not None
-
-    @pytest.mark.order(2)
     def test__when_job_is_started(self, setup_fixture) -> None:
         # Act
         run_id = setup_fixture.start_job(setup_fixture.calculation_input)
@@ -38,7 +30,7 @@ class BaseJobTests:
         # Assert
         assert setup_fixture.job_state.run_id is not None
 
-    @pytest.mark.order(3)
+    @pytest.mark.order(2)
     def test__then_job_is_completed(self, setup_fixture) -> None:
         # Act
         run_result_state = setup_fixture.wait_for_job_to_completion(setup_fixture.job_state.run_id)
@@ -49,7 +41,7 @@ class BaseJobTests:
             f"The Job {setup_fixture.calculation_input.job_id} did not complete successfully: {setup_fixture.job_state.run_result_state.value}"
         )
 
-    @pytest.mark.order(4)
+    @pytest.mark.order
     def test__and_then_job_telemetry_is_created(self, setup_fixture) -> None:
         # Arrange
         if setup_fixture.job_state.run_result_state != RunResultState.SUCCESS:
