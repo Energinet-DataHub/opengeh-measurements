@@ -35,12 +35,12 @@ def gold_table_seeded(spark: SparkSession) -> None:
 
 @pytest.fixture(scope="session")
 def calculated_measurements_table_created(spark: SparkSession) -> None:
-    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE)
 
     create_table(
         spark,
-        database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
+        database_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE,
         table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )

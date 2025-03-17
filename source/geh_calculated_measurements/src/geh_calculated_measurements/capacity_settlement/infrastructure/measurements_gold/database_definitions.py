@@ -14,5 +14,3 @@ class MeasurementsGoldDatabaseDefinition(BaseSettings):
     DATABASE_MEASUREMENTS_GOLDS: str = Field(init=False)
 
     MEASUREMENTS: str = "capacity_settlement_v1"
-
-    # DATABASE_NAME = "DATABASE_MEASUREMENTS_GOLDS : measurements_gold"
