@@ -49,7 +49,12 @@ class BaseJobFixture:
         if job_parameteres:
             for key, value in job_parameteres.items():
                 params_list.append(f"--{key}={value}")
-        return self.databricks_api_client.start_job(job_id, params_list)
+
+        run_id = self.databricks_api_client.start_job(job_id, params_list)
+
+        self.create_job_state(run_id=run_id, run_result_state=None)
+
+        return run_id
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
