@@ -30,6 +30,7 @@ def test_execute(
     orchestration_instance_id = str(uuid.uuid4())
 
     # Act
+    monkeypatch.setenv("MEASUREMENTS_CALCULATED_INTERNAL_DATABASE", "measurements_calculated_internal")
     with patch("sys.argv", _get_job_parameters(orchestration_instance_id)):
         with patch.dict("os.environ", create_job_environment_variables()):
             execute()
