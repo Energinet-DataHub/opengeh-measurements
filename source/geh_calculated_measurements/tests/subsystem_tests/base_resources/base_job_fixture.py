@@ -55,12 +55,12 @@ class BaseJobFixture:
     def get_job_id(self) -> int:
         return self.databricks_api_client.get_job_id(self.job_name)
 
-    def start_job(self, calculation_input: CalculationInput) -> int:
+    def start_job(self, job_id: str, job_parameteres: dict[str, str]) -> int:
         params_list = []
-        if calculation_input.params:
-            for key, value in calculation_input.params.items():
+        if job_parameteres:
+            for key, value in job_parameteres.items():
                 params_list.append(f"--{key}={value}")
-        return self.databricks_api_client.start_job(calculation_input.job_id, params_list)
+        return self.databricks_api_client.start_job(job_id, params_list)
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
