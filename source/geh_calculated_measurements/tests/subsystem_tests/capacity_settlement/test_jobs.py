@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from geh_common.domain.types import MeteringPointType
@@ -12,7 +12,7 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 METERING_POINT_ID = "170000040000000201"
 CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
-FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
 
 
 class TestCapacitySettlement(BaseJobTests):
