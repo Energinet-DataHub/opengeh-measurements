@@ -42,5 +42,5 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
         database_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE,
         table_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}/{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}",
     )
