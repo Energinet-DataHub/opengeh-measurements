@@ -4,47 +4,43 @@ on:
   workflow_call: {}
 
 jobs:
-  #
-  # Build dotnet projects
-  #
   dotnet_ci_build:
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-build-prerelease.yml@v14
     with:
       solution_file_path: source/dotnet/Measurements.sln
 
-  #
-  # Run unit tests
-  #
   unit_tests:
     strategy:
       fail-fast: false
       matrix:
         tests_filter_expression:
           - name: Unit Tests
-            path: \source\dotnet\Measurements.UnitTests\bin\Release\net9.0\Energinet.DataHub.Measurements.UnitTests.dll
+            path: \source\dotnet\Measurements.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.UnitTests.dll
           - name: WebApi Unit Tests
-            path: \source\dotnet\Measurements.WebApi.UnitTests\bin\Release\net9.0\Energinet.DataHub.Measurements.WebApi.UnitTests.dll
+            path: \source\dotnet\Measurements.WebApi.UnitTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.UnitTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
-      # Matrix parameters
       job_name: Unit Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.path }}
 
-  #
-  # Run integration tests
   integration_tests:
     strategy:
       fail-fast: false
       matrix:
         tests_filter_expression:
           - name: Integration Tests
-            path: \source\dotnet\Measurements.IntegrationTests\bin\Release\net9.0\Energinet.DataHub.Measurements.IntegrationTests.dll
+            path: \source\dotnet\Measurements.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.IntegrationTests.dll
           - name: WebApi Integration Tests
-            path: \source\dotnet\Measurements.WebApi.IntegrationTests\bin\Release\net9.0\Energinet.DataHub.Measurements.WebApi.IntegrationTests.dll
+            path: \source\dotnet\Measurements.WebApi.IntegrationTests\bin\Release\net8.0\Energinet.DataHub.Measurements.WebApi.IntegrationTests.dll
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-postbuild-test.yml@v14
     with:
       download_attempt_limit: 30
-      # Matrix parameters
       job_name: Integration Tests ${{ matrix.tests_filter_expression.name }}
       tests_dll_file_path: ${{ matrix.tests_filter_expression.path }}
+      environment: AzureAuth
+      run_integration_tests: true
+      azure_integrationtest_tenant_id: ${{ vars.integration_test_azure_tenant_id }}
+      azure_integrationtest_subscription_id: ${{ vars.integration_test_azure_subscription_id }}
+      azure_integrationtest_spn_id: ${{ vars.integration_test_azure_spn_id_oidc }}
+      azure_keyvault_url: ${{ vars.integration_test_azure_keyvault_url }}

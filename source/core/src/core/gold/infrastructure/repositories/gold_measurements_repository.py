@@ -2,55 +2,56 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
-import core.utility.shared_helpers as shared_helpers
+import core.gold.infrastructure.config.spark as spark_session
+import core.utility.delta_table_helper as delta_table_helper
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.infrastructure.config import GoldTableNames
+from core.settings import StorageAccountSettings
 from core.settings.gold_settings import GoldSettings
-from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
+from core.settings.streaming_settings import StreamingSettings
+from core.utility import shared_helpers
 
 
 class GoldMeasurementsRepository:
     def __init__(self) -> None:
         self.gold_container_name = GoldSettings().gold_container_name
         self.gold_database_name = GoldSettings().gold_database_name
+        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.table = f"{self.gold_database_name}.{GoldTableNames.gold_measurements}"
+        self.spark = spark_session.initialize_spark()
 
-    def start_write_stream(
+    def write_stream(
         self,
-        df_source_stream: DataFrame,
+        source_table: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
-        terminate_on_empty: bool = False,
-    ) -> None:
+    ) -> bool | None:
         query_name = "measurements_silver_to_gold"
-        datalake_storage_account = get_env_variable_or_throw(EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT)
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            datalake_storage_account, self.gold_container_name, GoldTableNames.gold_measurements
+            self.data_lake_settings, self.gold_container_name, GoldTableNames.gold_measurements
         )
-        df_write_stream = (
-            df_source_stream.writeStream.format("delta")
+
+        write_stream = (
+            source_table.writeStream.format("delta")
             .queryName(query_name)
             .option("checkpointLocation", checkpoint_location)
-            .foreachBatch(batch_operation)
         )
 
-        if terminate_on_empty:
-            df_write_stream.trigger(availableNow=True).start().awaitTermination()
-        else:
-            df_write_stream.start().awaitTermination()
+        if StreamingSettings().continuous_streaming_enabled is False:
+            write_stream = write_stream.trigger(availableNow=True)
+
+        return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
     def append_if_not_exists(self, gold_measurements: DataFrame) -> None:
         """Append to the table unless there are duplicates based on all columns except 'created'.
 
         :param gold_measurements: DataFrame containing the data to be appended.
         """
-        existing_data = gold_measurements.sparkSession.table(self.table)
-        new_data = gold_measurements.alias("new_data")
-
-        condition = [new_data[column] == existing_data[column] for column in self._merge_columns()]
-
-        filtered_data = new_data.join(existing_data.alias("existing_data"), condition, "left_anti")
-
-        filtered_data.write.format("delta").mode("append").saveAsTable(self.table)
+        delta_table_helper.append_if_not_exists(
+            self.spark,
+            gold_measurements,
+            self.table,
+            self._merge_columns(),
+        )
 
     def _merge_columns(self) -> list[str]:
         return [

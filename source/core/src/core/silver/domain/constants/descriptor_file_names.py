@@ -1,2 +1,2 @@
 class DescriptorFileNames:
-    submitted_transaction_persisted = "submitted_transaction_persisted.binpb"
+    brs021_forward_metered_data_notify_v1 = "brs021_forward_metered_data_notify_v1.binpb"

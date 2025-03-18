@@ -5,6 +5,7 @@ from geh_calculated_measurements.capacity_settlement.application.capacity_settle
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import CalculationOutput
 from geh_calculated_measurements.capacity_settlement.infrastructure import (
+    CapacitySettlementRepository,
     ElectricityMarketRepository,
     MeasurementsGoldRepository,
 )
@@ -31,7 +32,20 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.time_zone,
     )
 
+    # Create a repository to write the calculated measurements
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
+
     # Write the calculated measurements
     calculated_measurements = calculation_output.calculated_measurements
-    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements)
+
+    # Create a repository to write the calculations and ten largest quantities
+    capacity_settlement_repository = CapacitySettlementRepository(spark, args.catalog_name)
+
+    # Write the calculations
+    calculations = calculation_output.calculations
+    capacity_settlement_repository.write_calculations(calculations)
+
+    # Write the ten largest quantities
+    ten_largest_quantities = calculation_output.ten_largest_quantities
+    capacity_settlement_repository.write_ten_largest_quantities(ten_largest_quantities)

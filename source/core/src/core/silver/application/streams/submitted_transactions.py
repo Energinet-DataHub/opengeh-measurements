@@ -12,15 +12,16 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
     SubmittedTransactionsQuarantinedRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
     SilverMeasurementsRepository().write_stream(
-        submitted_transactions, 
-        OrchestrationTypeEnum.SUBMITTED, 
+        submitted_transactions,
+        OrchestrationTypeEnum.SUBMITTED,
         _batch_operation,
     )
 
@@ -40,11 +41,7 @@ def _handle_valid_submitted_transactions(submitted_transactions: DataFrame, batc
 
     (valid_measurements, invalid_measurements) = submitted_transactions_to_silver_validation.validate(measurements)
 
-    SilverMeasurementsRepository().append_if_not_exists(
-        valid_measurements, 
-        txn_version=batchId, 
-        txn_app_id="submitted_transactions_to_silver_v1",
-    )
+    SilverMeasurementsRepository().append_if_not_exists(valid_measurements)
 
     _handle_submitted_transactions_quarantined(invalid_measurements)
 

@@ -30,7 +30,7 @@ def seed_gold_table(spark: SparkSession, test_files_folder_path: str) -> None:
 
     file_name = f"{test_files_folder_path}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
     time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
-    time_series_points.write.saveAsTable(
+    time_series_points.write.option("overwriteSchema", "true").saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
         format="delta",
         mode="overwrite",

@@ -28,8 +28,4 @@ def stream_migrated_transactions_to_silver() -> None:
 def _batch_operation(batch_df: DataFrame, batch_id: int) -> None:
     spark = spark_session.initialize_spark()
     bronze_migrated_as_silver = migrations_transformation.create_by_migrated_transactions(spark, batch_df)
-    SilverMeasurementsRepository().append_if_not_exists(
-        silver_measurements=bronze_migrated_as_silver,
-        txn_version=batch_id,
-        txn_app_id="migrated_bronze_to_silver_v1",
-    )
+    SilverMeasurementsRepository().append_if_not_exists(silver_measurements=bronze_migrated_as_silver)

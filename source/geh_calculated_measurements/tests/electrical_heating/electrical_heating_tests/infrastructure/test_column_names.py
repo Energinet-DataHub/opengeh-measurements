@@ -2,7 +2,7 @@ import pytest
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, calculated_measurements_schema
 from geh_calculated_measurements.electrical_heating.domain import (
-    EphemiralColumnNames,
+    EphemeralColumnNames,
     child_metering_points_v1,
     consumption_metering_point_periods_v1,
     time_series_points_v1,
@@ -37,7 +37,7 @@ def test_structfield_names_in_contractcolumnnames() -> None:
 def test_columnnames_in_structfields_names() -> None:
     """
     All ColumnNames values should be in StructType field names.
-    Otherwise they must be removed, or moved to EphemiralColumnNames.
+    Otherwise they must be removed, or moved to EphemeralColumnNames.
     """
 
     # Get all attribute names from ColumnNames class
@@ -55,13 +55,13 @@ def test_columnnames_in_structfields_names() -> None:
 
     # Check that all ColumnNames values are in struct field names
     for name in column_names:
-        assert name in struct_field_names, f"EphemiralColumnNames value '{name}' not found in any StructType fields"
+        assert name in struct_field_names, f"EphemeralColumnNames value '{name}' not found in any StructType fields"
 
 
-def test_no_overlap_between_columnnames_and_ephemiralcolumnnames() -> None:
-    """Column names and ephemiral names should not overlap."""
+def test_no_overlap_between_columnnames_and_ephemeralcolumnnames() -> None:
+    """Column names and ephemeral names should not overlap."""
 
-    # Get all attribute names from ContractColumnNames and EphemiralColumnNames classes
+    # Get all attribute names from ContractColumnNames and EphemeralColumnNames classes
     column_names = [
         attr
         for attr in dir(ContractColumnNames)
@@ -69,26 +69,26 @@ def test_no_overlap_between_columnnames_and_ephemiralcolumnnames() -> None:
     ]
     calculated_names = [
         attr
-        for attr in dir(EphemiralColumnNames)
-        if not callable(getattr(EphemiralColumnNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemeralColumnNames)
+        if not callable(getattr(EphemeralColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check for overlap
     overlap = set(column_names) & set(calculated_names)
-    assert not overlap, f"Overlap found between ColumnNames and EphemiralColumnNames: {overlap}"
+    assert not overlap, f"Overlap found between ColumnNames and EphemeralColumnNames: {overlap}"
 
 
-def test_ephemiralcolumnnames_attributes_are_sorted() -> None:
-    """EphemiralColumnNames attributes should be sorted alphabetically."""
+def test_ephemeralcolumnnames_attributes_are_sorted() -> None:
+    """EphemeralColumnNames attributes should be sorted alphabetically."""
 
-    # Get all attribute names from EphemiralColumnNames class
-    ephemiral_column_names = [
+    # Get all attribute names from EphemeralColumnNames class
+    ephemeral_column_names = [
         attr
-        for attr in dir(EphemiralColumnNames)
-        if not callable(getattr(EphemiralColumnNames, attr)) and not attr.startswith("__")
+        for attr in dir(EphemeralColumnNames)
+        if not callable(getattr(EphemeralColumnNames, attr)) and not attr.startswith("__")
     ]
 
     # Check if the calculated names are sorted
-    assert ephemiral_column_names == sorted(ephemiral_column_names), (
-        "EphemiralColumnNames attributes are not sorted alphabetically"
+    assert ephemeral_column_names == sorted(ephemeral_column_names), (
+        "EphemeralColumnNames attributes are not sorted alphabetically"
     )

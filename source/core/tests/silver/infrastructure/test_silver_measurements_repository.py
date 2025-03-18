@@ -7,7 +7,6 @@ import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.settings.silver_settings import SilverSettings
-from core.settings.storage_account_settings import StorageAccountSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
@@ -19,10 +18,6 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
     # Arrange
     mocked_measurements = mock.Mock()
     mocked_batch_operation = mock.Mock()
-    expected_checkpoint_path = mock_checkpoint_path.return_value
-
-    expected_data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
-    expected_silver_container_name = SilverSettings().silver_container_name
 
     # Act
     SilverMeasurementsRepository().write_stream(
@@ -33,19 +28,12 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
 
     # Assert
     mocked_measurements.writeStream.outputMode.assert_called_once_with("append")
-    mocked_measurements.writeStream.outputMode().format().option.assert_called_once_with(
-        "checkpointLocation", expected_checkpoint_path
-    )
     mocked_measurements.writeStream.outputMode().format().option().trigger.assert_called_once()
     mocked_measurements.writeStream.outputMode().format().option().trigger().foreachBatch.assert_called_once_with(
         mocked_batch_operation
     )
     mocked_measurements.writeStream.outputMode().format().option().trigger().foreachBatch().start.assert_called_once()
     mocked_measurements.writeStream.outputMode().format().option().trigger().foreachBatch().start().awaitTermination.assert_called_once()
-
-    mock_checkpoint_path.assert_called_once_with(
-        expected_data_lake_settings, expected_silver_container_name, "submitted_transactions"
-    )
 
 
 def test__write_measurements__when_contionous_streaming_is_disabled__should_not_call_trigger() -> None:

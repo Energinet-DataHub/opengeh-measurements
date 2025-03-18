@@ -7,6 +7,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Application\Measurements.Application.csproj" />
+      <ProjectReference Include="..\Measurements.Domain\Measurements.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Energinet.DataHub.Core.Databricks.SqlStatementExecution" Version="12.0.2" />
     </ItemGroup>
 
 </Project>

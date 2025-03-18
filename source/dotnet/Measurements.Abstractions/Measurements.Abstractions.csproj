@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Energinet.DataHub.Measurements.Abstractions</AssemblyName>
+        <RootNamespace>Energinet.DataHub.Measurements.Abstractions</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>Energinet.DataHub.Measurements.Abstractions</PackageId>
+        <PackageVersion>1.0.0$(VersionSuffix)</PackageVersion>
+        <Title>DH3 Measurements Abstractions library</Title>
+        <Company>Energinet-DataHub</Company>
+        <Authors>Energinet-DataHub</Authors>
+        <PackageProjectUrl>https://github.com/Energinet-DataHub</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Energinet-DataHub/opengeh-measurements</RepositoryUrl>
+        <PackageReleaseNotes>
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/Documentation.md)
+        </PackageReleaseNotes>
+        <PackageDescription>
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/Documentation.md)
+        </PackageDescription>
+        <Description>Library containing abstractions used by Energinet DataHub Measurements and clients to communicate.</Description>
+        <PackageTags>energinet;datahub</PackageTags>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <!-- Disable warning on your public types/methods for not having added full documentation tags -->
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <!-- Enable Source Link (https://github.com/dotnet/sourcelink/blob/master/README.md) -->
+    <PropertyGroup>
+        <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
+
+</Project>

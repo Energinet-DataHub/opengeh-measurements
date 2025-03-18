@@ -3,6 +3,7 @@ from pyspark.sql import DataFrame
 from core.settings.kafka_authentication_settings import KafkaAuthenticationSettings  # todo: simplify import
 from core.settings.silver_settings import SilverSettings
 from core.settings.storage_account_settings import StorageAccountSettings
+from core.settings.streaming_settings import StreamingSettings
 from core.utility.shared_helpers import get_checkpoint_path
 
 
@@ -23,6 +24,14 @@ class ProcessManagerStream:
         )
         event_hub_instance = KafkaAuthenticationSettings().event_hub_instance
 
-        dataframe.writeStream.format("kafka").options(**self.kafka_options).option("topic", event_hub_instance).option(
-            "checkpointLocation", checkpoint_location
-        ).trigger(availableNow=True).start()
+        write_stream = (
+            dataframe.writeStream.format("kafka")
+            .options(**self.kafka_options)
+            .option("topic", event_hub_instance)
+            .option("checkpointLocation", checkpoint_location)
+        )
+
+        if StreamingSettings().continuous_streaming_enabled is False:
+            write_stream = write_stream.trigger(availableNow=True)
+
+        return write_stream.start().awaitTermination()

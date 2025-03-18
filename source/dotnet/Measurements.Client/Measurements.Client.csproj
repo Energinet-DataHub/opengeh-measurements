@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Energinet.DataHub.Measurements.Client</AssemblyName>
+        <RootNamespace>Energinet.DataHub.Measurements.Client</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
+        <PackageVersion>1.0.0$(VersionSuffix)</PackageVersion>
+        <Title>DH3 Measurements Client library</Title>
+        <Company>Energinet-DataHub</Company>
+        <Authors>Energinet-DataHub</Authors>
+        <PackageProjectUrl>https://github.com/Energinet-DataHub</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Energinet-DataHub/opengeh-measurements</RepositoryUrl>
+        <PackageReleaseNotes>
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/Documentation.md)
+        </PackageReleaseNotes>
+        <PackageDescription>
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/Documentation.md)
+        </PackageDescription>
+        <Description>Library containing a client to communicate with the Measurements in Energinet DataHub.</Description>
+        <PackageTags>energinet;datahub</PackageTags>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <!-- Disable warning on your public types/methods for not having added full documentation tags -->
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <!-- Enable Source Link (https://github.com/dotnet/sourcelink/blob/master/README.md) -->
+    <PropertyGroup>
+        <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
+    </ItemGroup>
+</Project>
