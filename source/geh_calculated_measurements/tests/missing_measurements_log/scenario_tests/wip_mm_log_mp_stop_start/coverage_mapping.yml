@@ -1,0 +1,27 @@
+notes: |
+  Gap scenario. The scenario includes both a 15M resolution and a 1H resolution MP with the characteristics below:
+
+                    |Feb. 25th          Feb. 26th           Feb. 27th           Feb. 28th           Feb. 29th           March. 1st
+                    |-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+  MP period 1:      |---------------------------------------|
+  MP period 2:                                                                                      |-------------------|
+  Measurement data: +++++++++++ +++++++++++++++++ ++++++++++++++++++++ ++++++++++++++++++ +++++++++++++++++++++++++++++ +++++++++ +++++++++++
+  Missing:                     |                 |                    |                  |                             |         |
+
+  Missing days:     |Feb. 25th          |Feb. 26th                                                  |Feb. 29th
+
+  We also check that only MPs in grid area supplied with job_parameters are included in result.
+
+cases_tested:
+  "Missing Measurements Log Tests":
+    - "Metering Point with 15M resolution"
+    - "Metering Point with 1H resolution"
+    - "Calculation period covers MP which stops and/or starts"
+
+  "Leap Year Tests":
+    - "Time series has quarter missing on feb. 29th"
+    - "Time series has hour missing on feb. 29th"
+
+  "Grid Area Logic":
+    - "Calculation covers a single Grid Area"
+

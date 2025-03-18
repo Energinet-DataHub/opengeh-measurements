@@ -1,0 +1,13 @@
+notes: |
+  Wintertime change.
+
+cases_tested:
+  "Missing Measurements Log Tests":
+    - "Metering Point with 15M resolution"
+    - "Metering Point with 1H resolution"
+
+  "Summer/Wintertime handling":
+    - "Calculation period covers wintertime change"
+
+  "Grid Area Logic":
+    - "Calculation covers all Grid Areas"
