@@ -15,10 +15,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters =
-        {
-            new JsonStringEnumConverter(),
-        },
+        Converters = { new JsonStringEnumConverter() },
     };
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
