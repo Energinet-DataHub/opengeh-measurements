@@ -13,9 +13,8 @@ from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.conftest import EnvironmentConfiguration
 
-pytest.mark.skip(reason="only run if performance test is needed")
 
-
+@pytest.mark.skip(reason="only run if performance test is needed")
 class TestElectricalHeatingPerformance(BaseJobTests):
     """
     Test with performance configuration using delta tables
@@ -55,13 +54,17 @@ class TestElectricalHeatingPerformance(BaseJobTests):
 
         # Patch read_consumption_metering_point_periods
         def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
-            table_name = f"{environment_configuration.schema_name}.{environment_configuration.consumption_points_table}"
+            table_name = (
+                f"{environment_configuration.schema_name}.{environment_configuration.consumption_metering_points_table}"
+            )
             df = self._spark.read.format("delta").table(table_name)
             return ConsumptionMeteringPointPeriods(df)
 
         # Patch read_child_metering_points
         def patched_read_child_metering_points(self) -> ChildMeteringPoints:
-            table_name = f"{environment_configuration.schema_name}.{environment_configuration.child_points_table}"
+            table_name = (
+                f"{environment_configuration.schema_name}.{environment_configuration.child_metering_points_table}"
+            )
             df = self._spark.read.format("delta").table(table_name)
             return ChildMeteringPoints(df)
 
