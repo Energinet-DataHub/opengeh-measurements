@@ -7,6 +7,7 @@ from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
 from src.core.bronze.domain.constants.column_names.bronze_migrated_transactions_column_names import (
     BronzeMigratedTransactionsColumnNames,
+    BronzeMigratedTransactionsValuesFieldNames,
 )
 
 
@@ -32,12 +33,25 @@ def create_by_migrated_transactions(spark: SparkSession, migrated_transactions: 
             SilverMeasurementsColumnNames.start_datetime
         ),
         F.col(BronzeMigratedTransactionsColumnNames.valid_to_date).alias(SilverMeasurementsColumnNames.end_datetime),
-        F.col(BronzeMigratedTransactionsColumnNames.values).alias(SilverMeasurementsColumnNames.points),
+        _reorganize_values_array_to_match_measurements().alias(SilverMeasurementsColumnNames.points),
         _get_is_cancelled().alias(SilverMeasurementsColumnNames.is_cancelled),
         _get_is_deleted().alias(SilverMeasurementsColumnNames.is_deleted),
         current_utc_time.alias(SilverMeasurementsColumnNames.created),
     )
     return measurements
+
+
+def _reorganize_values_array_to_match_measurements() -> Column:
+    return F.transform(
+        F.col(BronzeMigratedTransactionsColumnNames.values),
+        lambda x: F.struct(
+            x[BronzeMigratedTransactionsValuesFieldNames.position],
+            x[BronzeMigratedTransactionsValuesFieldNames.quantity]
+            .cast("Decimal(18,3)")
+            .alias(BronzeMigratedTransactionsValuesFieldNames.quantity),
+            x[BronzeMigratedTransactionsValuesFieldNames.quality],
+        ),
+    )
 
 
 def _get_is_cancelled() -> Column:

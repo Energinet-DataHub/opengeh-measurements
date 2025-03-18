@@ -24,7 +24,7 @@ class MigratedTransactionsBuilder:
         read_reason: str = "",
         valid_from_date: datetime = datetime(2025, 2, 8, 23, 0, 0),
         valid_to_date: datetime = datetime(2025, 2, 9, 23, 0, 0),
-        values: list[tuple[int, str, float]] = [(i, str("D01"), Decimal(i)) for i in range(24)],
+        values: list[tuple[int, str, float]] = [(i, "D01", Decimal(i)) for i in range(24)],
         created_in_migrations: datetime = datetime(2025, 2, 10, 13, 0, 0),
         created: datetime = datetime(2025, 2, 10, 14, 0, 0),
     ) -> "MigratedTransactionsBuilder":
