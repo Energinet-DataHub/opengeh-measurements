@@ -7,15 +7,6 @@ from geh_calculated_measurements.common.domain.column_names import ContractColum
 nullable = True
 
 
-class CalculatedMeasurements(DataFrameWrapper):
-    def __init__(self, df: DataFrame):
-        super().__init__(
-            df=df,
-            schema=calculated_measurements_schema,
-            ignore_nullability=True,
-        )
-
-
 calculated_measurements_schema = T.StructType(
     [
         #
@@ -37,7 +28,7 @@ calculated_measurements_schema = T.StructType(
         # Metering point ID
         T.StructField(ContractColumnNames.metering_point_id, T.StringType(), not nullable),
         #
-        # "electrical_heating" or "capacity_settlement"
+        # "electrical_heating" | "capacity_settlement" | "net_consumption"
         T.StructField(ContractColumnNames.metering_point_type, T.StringType(), not nullable),
         #
         # UTC time
@@ -50,3 +41,14 @@ calculated_measurements_schema = T.StructType(
         T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), not nullable),
     ]
 )
+
+
+class CalculatedMeasurements(DataFrameWrapper):
+    def __init__(self, df: DataFrame):
+        super().__init__(
+            df=df,
+            schema=calculated_measurements_schema,
+            ignore_nullability=True,
+        )
+
+    schema = calculated_measurements_schema
