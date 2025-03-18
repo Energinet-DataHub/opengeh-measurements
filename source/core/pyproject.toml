@@ -28,6 +28,8 @@ dev = [
     "pydantic>=2.10.6",
     "azure-identity>=1.20.0",
     "azure-eventhub>=5.14.0",
+    "pytest-bdd>=8.1.0",
+    "pytest-bdd-report>=1.0.1",
 ]
 
 [build-system]
