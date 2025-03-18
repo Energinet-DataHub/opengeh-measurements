@@ -18,4 +18,4 @@ missing_measurements_log_v1 = T.StructType(
         T.StructField("quality", T.StringType(), not nullable),
     ]
 )
-"""All observations/measurements that have been submitted by grid access providers. Only the active measurements are included."""
+"""All active measurements."""
