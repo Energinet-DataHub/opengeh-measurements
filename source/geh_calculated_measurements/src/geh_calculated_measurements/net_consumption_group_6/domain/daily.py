@@ -1,29 +1,17 @@
-import pyspark.sql.types as T
-from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
+from datetime import datetime
+from decimal import Decimal
+
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
-from pyspark.sql import DataFrame
 
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.common.infrastructure import initialize_spark
 from geh_calculated_measurements.net_consumption_group_6.domain.cenc import Cenc
 from geh_calculated_measurements.net_consumption_group_6.domain.model import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
-
-_daily_schema = T.StructType(
-    [
-        T.StructField("orchestration_instance_id", T.StringType(), False),
-        T.StructField("metering_point_id", T.StringType(), False),
-        T.StructField("quantity", T.DecimalType(18, 3), False),
-        T.StructField("observation_date", T.TimestampType(), False),
-    ]
-)
-
-
-class Daily(DataFrameWrapper):
-    def __init__(self, df: DataFrame):
-        super().__init__(df=df, schema=_daily_schema, ignore_nullability=True)
 
 
 @use_span()
@@ -33,8 +21,20 @@ def calculate_daily(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
-) -> Daily:
+) -> CalculatedMeasurements:
     # TODO BJM: Replace this dummy code
-    daily = cenc.df
-
-    return Daily(daily)
+    data = [
+        (
+            "net_consumption",
+            "00000000-0000-0000-0000-000000000001",
+            "ignored-transaction-id",
+            datetime(2024, 12, 31, 23, 0, 0),
+            "150000001500170200",
+            "net_consumption",
+            datetime(2024, 12, 31, 23, 0, 0),
+            Decimal("2.739"),
+        )
+    ]
+    spark = initialize_spark()
+    df = spark.createDataFrame(data=data, schema=CalculatedMeasurements.schema)
+    return CalculatedMeasurements(df)

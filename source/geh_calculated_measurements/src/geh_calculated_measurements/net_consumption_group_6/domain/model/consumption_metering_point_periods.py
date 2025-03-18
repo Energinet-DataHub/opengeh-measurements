@@ -5,20 +5,6 @@ from pyspark.sql import DataFrame
 nullable = True
 
 
-class ConsumptionMeteringPointPeriods(DataFrameWrapper):
-    """Represents the consumption metering point periods data structure."""
-
-    def __init__(self, df: DataFrame) -> None:
-        super().__init__(
-            df,
-            consumption_metering_point_periods_v1,
-            # We ignore_nullability because it has turned out to be too hard and even possibly
-            # introducing more errors than solving in order to stay in exact sync with the
-            # logically correct schema.
-            ignore_nullability=True,
-        )
-
-
 """
 Consumption (parent) metering points related to electrical heating.
 The data is periodized; the following transaction types are relevant for determining the periods:
@@ -47,7 +33,7 @@ Formatting is according to ADR-144 with the following constraints:
 - No column may use quoted values
 - All date/time values must include seconds
 """
-consumption_metering_point_periods_v1 = t.StructType(
+_consumption_metering_point_periods_v1 = t.StructType(
     [  # metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in
         #
         # GSRN number
@@ -85,3 +71,19 @@ consumption_metering_point_periods_v1 = t.StructType(
         t.StructField("move_in", t.BooleanType(), not nullable),
     ]
 )
+
+
+class ConsumptionMeteringPointPeriods(DataFrameWrapper):
+    """Represents the consumption metering point periods data structure."""
+
+    def __init__(self, df: DataFrame) -> None:
+        super().__init__(
+            df,
+            _consumption_metering_point_periods_v1,
+            # We ignore_nullability because it has turned out to be too hard and even possibly
+            # introducing more errors than solving in order to stay in exact sync with the
+            # logically correct schema.
+            ignore_nullability=True,
+        )
+
+    schema = _consumption_metering_point_periods_v1
