@@ -1,32 +1,63 @@
 import uuid
 
 import pytest
+from azure.monitor.query import LogsQueryStatus
+from databricks.sdk.service.jobs import RunResultState
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
-class TestNetConsumptionGroup6(BaseJobTests):
+class TestMissingMeasurementsLog:
     """
-    Test class for net consumption for group 6.
+    Verifies a job runs successfully to completion.
     """
-
-    fixture = None
-
-    def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        if self.fixture is None:
-            job_parameters = {"orchestration-instance-id": uuid.uuid4()}
-            self.fixture = BaseJobFixture(
-                environment_configuration=environment_configuration,
-                job_name="NetConsumptionGroup6",
-                job_parameters=job_parameters,
-            )
-        return self.fixture
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(
-        self,
-        environment_configuration: EnvironmentConfiguration,
-    ) -> BaseJobFixture:
-        return self.get_or_create_fixture(environment_configuration)
+    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+        TestMissingMeasurementsLog.fixture = BaseJobFixture(environment_configuration)
+
+    @pytest.mark.order(1)
+    def test__given_job_input(self) -> None:
+        # Act
+        self.fixture.job_state.input.job_id = self.fixture.get_job_id("NetConsumptionGroup6")
+        job_parameters = {
+            "orchestration-instance-id": str(uuid.uuid4()),
+        }
+        self.fixture.job_state.input.job_parameters = job_parameters
+
+        # Assert
+        assert self.fixture.job_state.input.job_id is not None
+
+    @pytest.mark.order(2)
+    def test__when_job_started(self) -> None:
+        # Act
+        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.input)
+
+        # Assert
+        assert self.fixture.job_state.run_id is not None
+
+    @pytest.mark.order(3)
+    def test__then_job_is_completed(self) -> None:
+        # Act
+        self.fixture.job_state.run_result_state = self.fixture.wait_for_job_completion(self.fixture.job_state.run_id)
+
+        # Assert
+        assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
+            f"The Job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+        )
+
+    @pytest.mark.order(4)
+    def test__and_then_job_logged(self) -> None:
+        # Arrange
+        query = f"""
+        AppTraces
+        | where Properties["Subsystem"] == 'measurements'
+        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.input.orchestration_instance_id}'
+        """
+
+        # Act
+        actual = self.fixture.wait_for_log_query_completion(query, self.fixture.job_state)
+
+        # Assert
+        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
