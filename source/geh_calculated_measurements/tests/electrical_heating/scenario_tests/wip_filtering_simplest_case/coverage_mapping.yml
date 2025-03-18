@@ -1,0 +1,17 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test that we only generate a result for daily values which are different from existing daily values for electrical heating MP.
+
+cases_tested:
+  "Electrical Heating Tests":
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to consumption metering point for the day"
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to consumption metering point for the day"
+    - "WHEN (total period consumption => period limit) THEN 0 should be added to consumption metering point for the day"
+    - "GIVEN period = 1 year WHEN there is no end-of-period THEN base period limit = 4000"
+    - "GIVEN there is no active consumption metering point OR there is no active child electrical heating metering point WHEN there is measurement data for the day THEN no energy is added to an electrical heating child metering point for the day"
+
+  "Results Filtering":
+    - "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should generate a result for that MP/day"
+
+  "Net Settlement Groups":
+    - "Electrical heating without net settlement group"

@@ -1,2 +1,4 @@
 metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;coupled_date;uncoupled_date;#comment
-140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2023-12-31T23:00:00Z;;Consumption should be added to this metering point
+140000000000170200;electrical_heating;calculated;PT1H;170000000000000200;2023-12-31T23:00:00Z;;Case 0
+140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2024-01-01T23:00:00Z;2024-03-30T22:00:00Z;Case 1: Consumption should be added to this metering point
+140000000000170202;net_consumption;calculated;PT1H;170000000000000201;2024-01-01T23:00:00Z;;Case 2: Ignored because it is not an electrical heating metering point
