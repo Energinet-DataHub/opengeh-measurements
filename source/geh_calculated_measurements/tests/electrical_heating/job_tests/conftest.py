@@ -13,7 +13,10 @@ from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
 @pytest.fixture(scope="session")
-def gold_table_seeded(spark: SparkSession) -> None:
+def gold_table_seeded(
+    spark: SparkSession,
+) -> None:
+    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_GOLD", "measurements_gold")
     create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
 
     create_table(
@@ -34,7 +37,10 @@ def gold_table_seeded(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def calculated_measurements_table_created(spark: SparkSession) -> None:
+def calculated_measurements_table_created(
+    spark: SparkSession,
+) -> None:
+    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL)
 
     create_table(
