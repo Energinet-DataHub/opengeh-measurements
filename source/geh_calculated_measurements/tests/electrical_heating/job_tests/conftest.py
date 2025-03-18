@@ -16,37 +16,41 @@ from tests.electrical_heating.job_tests import get_test_files_folder_path
 def gold_table_seeded(
     spark: SparkSession,
 ) -> None:
-    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_GOLD", "measurements_gold")
-    create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_GOLD", "measurements_gold")
+        create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
 
-    create_table(
-        spark,
-        database_name=MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD,
-        table_name=MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME,
-        schema=electrical_heating_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}/{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
-    )
+        create_table(
+            spark,
+            database_name=MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD,
+            table_name=MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME,
+            schema=electrical_heating_v1,
+            table_location=f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}/{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
+        )
 
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}-{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}.csv"
-    time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
-    time_series_points.write.option("overwriteSchema", "true").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
-        format="delta",
-        mode="overwrite",
-    )
+        file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}-{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}.csv"
+        time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
+        time_series_points.write.option("overwriteSchema", "true").saveAsTable(
+            f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
+            format="delta",
+            mode="overwrite",
+        )
 
 
 @pytest.fixture(scope="session")
 def calculated_measurements_table_created(
     spark: SparkSession,
 ) -> None:
-    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
-    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL)
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
+        create_database(
+            spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL
+        )
 
-    create_table(
-        spark,
-        database_name=CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
-        table_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}/{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}",
-    )
+        create_table(
+            spark,
+            database_name=CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
+            table_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME,
+            schema=calculated_measurements_schema,
+            table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}/{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}",
+        )
