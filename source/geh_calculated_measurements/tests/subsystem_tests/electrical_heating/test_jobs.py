@@ -25,7 +25,7 @@ class TestElectricalHeating(BaseJobTests):
 
     fixture = None
 
-    params = {"orchestration-instance-id": uuid.uuid4()}
+    job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
         if self.fixture is None:
@@ -35,7 +35,7 @@ class TestElectricalHeating(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="ElectricalHeating",
-                params=self.params,
+                job_parameters=self.job_parameters,
             )
         return self.fixture
 
