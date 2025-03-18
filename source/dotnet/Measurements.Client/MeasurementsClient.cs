@@ -5,7 +5,6 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
-using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -18,7 +17,6 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         PropertyNameCaseInsensitive = true,
         Converters =
         {
-            NodaConverters.InstantConverter,
             new JsonStringEnumConverter(),
         },
     };
