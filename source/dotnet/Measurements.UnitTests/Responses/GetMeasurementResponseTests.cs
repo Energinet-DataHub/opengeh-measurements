@@ -3,9 +3,11 @@ using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Responses;
 
+[UnitTest]
 public class GetMeasurementResponseTests
 {
     [Fact]

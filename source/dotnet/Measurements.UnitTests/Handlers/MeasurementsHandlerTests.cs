@@ -8,9 +8,11 @@ using Energinet.DataHub.Measurements.Infrastructure.Handlers;
 using Moq;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Handlers;
 
+[UnitTest]
 public class MeasurementsHandlerTests
 {
     [Theory]

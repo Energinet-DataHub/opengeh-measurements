@@ -4,9 +4,11 @@ using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 
+[IntegrationTest]
 public class MeasurementsControllerTests(WebApiFixture fixture)
     : IClassFixture<WebApiFixture>
 {

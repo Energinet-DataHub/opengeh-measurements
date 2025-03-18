@@ -22,7 +22,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         {
             NodaConverters.InstantConverter,
             new JsonStringEnumConverter(),
-            new MeasurementPointConverter(),
+            new MeasurementPointsConverter(),
         },
     };
 

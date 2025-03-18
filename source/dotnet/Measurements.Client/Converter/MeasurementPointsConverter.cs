@@ -4,7 +4,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 namespace Energinet.DataHub.Measurements.Client.Converter;
 
-public class MeasurementPointConverter : JsonConverter<IEnumerable<MeasurementPoint>>
+public class MeasurementPointsConverter : JsonConverter<IEnumerable<MeasurementPoint>>
 {
     public override IEnumerable<MeasurementPoint>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

@@ -2,9 +2,11 @@
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 using NodaTime;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
+[IntegrationTest]
 [Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementsClientTests
 {
