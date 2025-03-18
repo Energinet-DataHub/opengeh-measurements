@@ -2,7 +2,6 @@ import pyspark.sql.types as T
 
 nullable = True
 
-# Observation times where a metering point does have measurement (i.e. where it is not missing)
 missing_measurements_log_v1 = T.StructType(
     [
         #
@@ -19,3 +18,4 @@ missing_measurements_log_v1 = T.StructType(
         T.StructField("quality", T.StringType(), not nullable),
     ]
 )
+"""All observations/measurements that have been submitted by grid access providers. Only the active measurements are included."""
