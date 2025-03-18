@@ -4,41 +4,40 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+using Energinet.DataHub.Measurements.Client.Converter;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient : IMeasurementsClient
+public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() },
+        Converters =
+        {
+            NodaConverters.InstantConverter,
+            new JsonStringEnumConverter(),
+            new MeasurementPointConverter(),
+        },
     };
 
-    public MeasurementsClient(IHttpClientFactory httpClientFactory)
-    {
-        _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
-    }
-
-    public async Task<MeasurementDto> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query);
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return new MeasurementDto([]);
-        }
+        if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
-        var measurement = await response.Content
-            .ReadFromJsonAsync<MeasurementDto>(_jsonSerializerOptions, cancellationToken)
+        var measurementPoints = await response.Content
+            .ReadFromJsonAsync<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions, cancellationToken)
             .ConfigureAwait(false);
 
-        return measurement ?? throw new InvalidOperationException("Could not deserialize response.");
+        return measurementPoints ?? throw new InvalidOperationException("Could not deserialize response.");
     }
 
     private static string CreateUrl(GetMeasurementsForDayQuery query)

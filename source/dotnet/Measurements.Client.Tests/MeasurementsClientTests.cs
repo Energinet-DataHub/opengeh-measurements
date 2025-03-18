@@ -21,7 +21,7 @@ public class MeasurementsClientTests
     [Theory]
     [InlineData(2025, 1, 2)]
     [InlineData(2025, 6, 15)]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurementDto(
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints(
         int year, int month, int day)
     {
         // Arrange
@@ -30,16 +30,16 @@ public class MeasurementsClientTests
             new LocalDate(year, month, day));
 
         // Act
-        var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
+        var result = (await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(24, result.Points.Count);
-        Assert.True(result.Points.All(p => p.Quality == Quality.Measured));
+        Assert.Equal(24, result.Count);
+        Assert.True(result.All(p => p.Quality == Quality.Measured));
     }
 
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyListOfPoints()
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery(
@@ -50,6 +50,6 @@ public class MeasurementsClientTests
         var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
-        Assert.Empty(actual.Points);
+        Assert.Empty(actual);
     }
 }
