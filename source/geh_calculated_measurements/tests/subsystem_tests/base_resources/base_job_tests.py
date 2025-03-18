@@ -1,12 +1,21 @@
+import time
 from abc import abstractmethod
 
 import pytest
+from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.sql import StatementState
+from geh_common.databricks import DatabricksApiClient
+
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from geh_calculated_measurements.testing.utilities.log_query_client_wrapper import LogsQueryStatus
+from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 class BaseJobTests:
     @pytest.fixture(autouse=True, scope="class")
     @abstractmethod
-    def setup_fixture():
+    def setup_fixture() -> BaseJobFixture:
         """
         Abstract fixture method to be implemented by subclasses.
 
@@ -17,61 +26,82 @@ class BaseJobTests:
         """
         pass
 
-    # @pytest.mark.order(1)
-    # def test__given_job_input(self, setup_fixture) -> None:
-    #     # Act
-    #     setup_fixture.create_calculation_input()
+    @pytest.mark.order(1)
+    def test__given_job_input(self, setup_fixture) -> None:
+        # Act
+        setup_fixture.create_calculation_input()
 
-    #     # Assert
-    #     assert setup_fixture.calculation_input.job_id is not None
+        # Assert
+        assert setup_fixture.calculation_input.job_id is not None
 
-    # @pytest.mark.order(2)
-    # def test__when_job_is_started(self, setup_fixture) -> None:
-    #     # Act
-    #     run_id = setup_fixture.start_job(setup_fixture.calculation_input)
-    #     setup_fixture.create_job_state(
-    #         run_id=run_id, run_result_state=None, calculation_input=setup_fixture.calculation_input
-    #     )
+    @pytest.mark.order(2)
+    def test__when_job_is_started(self, setup_fixture) -> None:
+        # Act
+        run_id = setup_fixture.start_job(setup_fixture.calculation_input)
+        setup_fixture.create_job_state(
+            run_id=run_id, run_result_state=None, calculation_input=setup_fixture.calculation_input
+        )
 
-    #     # Assert
-    #     assert setup_fixture.job_state.run_id is not None
+        # Assert
+        assert setup_fixture.job_state.run_id is not None
 
-    # @pytest.mark.order(3)
-    # def test__then_job_is_completed(self, setup_fixture) -> None:
-    #     # Act
-    #     run_result_state = setup_fixture.wait_for_job_to_completion(setup_fixture.job_state.run_id)
-    #     setup_fixture.set_run_result_state(run_result_state)
+    @pytest.mark.order(3)
+    def test__then_job_is_completed(self, setup_fixture) -> None:
+        # Act
+        run_result_state = setup_fixture.wait_for_job_to_completion(setup_fixture.job_state.run_id)
+        setup_fixture.set_run_result_state(run_result_state)
 
-    #     # Assert
-    #     assert setup_fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-    #         f"The Job {setup_fixture.calculation_input.job_id} did not complete successfully: {setup_fixture.job_state.run_result_state.value}"
-    #     )
+        # Assert
+        assert setup_fixture.job_state.run_result_state == RunResultState.SUCCESS, (
+            f"The Job {setup_fixture.calculation_input.job_id} did not complete successfully: {setup_fixture.job_state.run_result_state.value}"
+        )
 
-    # @pytest.mark.order(4)
-    # def test__and_then_job_telemetry_is_created(self, setup_fixture) -> None:
-    #     # Arrange
-    #     if setup_fixture.job_state.run_result_state != RunResultState.SUCCESS:
-    #         raise Exception("A previous test did not complete successfully.")
+    @pytest.mark.order(4)
+    def test__and_then_job_telemetry_is_created(self, setup_fixture) -> None:
+        # Arrange
+        if setup_fixture.job_state.run_result_state != RunResultState.SUCCESS:
+            raise Exception("A previous test did not complete successfully.")
 
-    #     query = f"""
-    #     AppTraces
-    #     | where Properties["Subsystem"] == 'measurements'
-    #     | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.params.get("orchestration-instance-id")}'
-    #     """
+        query = f"""
+        AppTraces
+        | where Properties["Subsystem"] == 'measurements'
+        | where Properties["orchestration_instance_id"] == '{setup_fixture.calculation_input.params.get("orchestration-instance-id")}'
+        """
 
-    #     # Act
-    #     actual = setup_fixture.wait_for_log_query_completion(query)
+        # Act
+        actual = setup_fixture.wait_for_log_query_completion(query)
 
-    #     # Assert
-    #     assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+        # Assert
+        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
 
-    # @pytest.mark.order(5)
-    # def test__and_then_table_has_data0(self, setup_fixture, spark) -> None:
-    #     catalog = CatalogSettings().catalog_name
-    #     database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
-    #     table = "calculated_measurements"
+    @pytest.mark.order(5)
+    def test__and_then_data_is_written_to_delta(
+        self, environment_configuration: EnvironmentConfiguration, setup_fixture: BaseJobFixture
+    ) -> None:
+        # Arrange
+        databricks_api_client = DatabricksApiClient(
+            environment_configuration.databricks_token,
+            environment_configuration.workspace_url,
+        )
 
-    #     dataframe = spark.table(f"{catalog}.{database}.{table}").take(1)
-    #     count = len(dataframe)
+        catalog = environment_configuration.catalog_name
+        database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
+        table = "calculated_measurements"
+        statement = f"""
+            SELECT * FROM {catalog}.{database}.{table} LIMIT 1
+            """
 
-    #     assert count > 0, f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {count}"
+        # Act
+        response = databricks_api_client.execute_statement(
+            warehouse_id=environment_configuration.warehouse_id,
+            statement=statement,
+        )
+
+        while response.status.state in [StatementState.PENDING, StatementState.RUNNING]:
+            time.sleep(10)  # Wait 1 second before checking again
+
+        # Assert
+        row_count = response.result.row_count if response.result.row_count is not None else 0
+        assert row_count > 0, (
+            f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}"
+        )
