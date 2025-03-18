@@ -1,7 +1,7 @@
 "Missing Measurements Log Tests":
   "Metering Point with 15M resolution": true
   "Metering Point with 1H resolution": true
-  "Calculation period covers MP which stops and/or starts": false
+  "Calculation period covers MP which stops and/or starts": true
 
   "Period Edge Tests":
     "First hour of calculation period missing": true
@@ -10,15 +10,15 @@
     "Last quarter of calculation period missing": true
 
   "Leap Year Tests":
-    "Time series has quarter missing on feb. 29th": false
-    "Time series has hour missing on feb. 29th": false
+    "Time series has quarter missing on feb. 29th": true
+    "Time series has hour missing on feb. 29th": true
 
   "Summer/Wintertime handling":
     "Calculation period covers summertime change": true
     "Calculation period covers wintertime change": true
 
   "Grid Area Logic":
-    "Calculation covers a single Grid Area": false
+    "Calculation covers a single Grid Area": true
     "Calculation covers all Grid Areas": true
 
 
