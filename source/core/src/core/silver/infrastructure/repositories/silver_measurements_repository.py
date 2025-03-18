@@ -75,5 +75,4 @@ class SilverMeasurementsRepository:
             SilverMeasurementsColumnNames.end_datetime,
             SilverMeasurementsColumnNames.points,
             SilverMeasurementsColumnNames.is_cancelled,
-            SilverMeasurementsColumnNames.is_deleted,
         ]

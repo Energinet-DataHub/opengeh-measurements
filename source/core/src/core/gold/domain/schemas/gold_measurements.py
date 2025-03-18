@@ -25,6 +25,7 @@ gold_measurements_schema = StructType(
             TimestampType(),
             True,
         ),
+        StructField(GoldMeasurementsColumnNames.status, StringType(), True),
         StructField(GoldMeasurementsColumnNames.created, TimestampType(), True),
         StructField(GoldMeasurementsColumnNames.modified, TimestampType(), True),
     ]
