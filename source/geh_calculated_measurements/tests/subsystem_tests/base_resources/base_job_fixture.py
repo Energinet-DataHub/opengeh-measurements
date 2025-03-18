@@ -9,7 +9,7 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 
 class BaseJobFixture:
-    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, params: dict):
+    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict):
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
@@ -22,7 +22,7 @@ class BaseJobFixture:
             credential=self.credentials,
         )
         self.job_name = job_name
-        self.params = params
+        self.job_parameters = job_parameters
 
     def set_run_id(self, run_id: int) -> None:
         self.run_id = run_id
@@ -30,11 +30,11 @@ class BaseJobFixture:
     def get_run_id(self) -> int | None:
         return self.run_id
 
-    def start_job(self, job_parameteres: dict[str, str]) -> int:
+    def start_job(self) -> int:
         job_id = self.databricks_api_client.get_job_id(self.job_name)
         params_list = []
-        if job_parameteres:
-            for key, value in job_parameteres.items():
+        if self.job_parameters:
+            for key, value in self.job_parameters.items():
                 params_list.append(f"--{key}={value}")
 
         run_id = self.databricks_api_client.start_job(job_id, params_list)

@@ -24,7 +24,7 @@ class BaseJobTests:
     @pytest.mark.order(1)
     def test__when_job_is_started(self, setup_fixture: BaseJobFixture) -> None:
         # Act
-        run_id = setup_fixture.start_job(setup_fixture.params)
+        run_id = setup_fixture.start_job()
         setup_fixture.set_run_id(run_id)
 
         # Assert
@@ -49,7 +49,7 @@ class BaseJobTests:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{setup_fixture.params.get("orchestration-instance-id")}'
+        | where Properties["orchestration_instance_id"] == '{setup_fixture.job_parameters.get("orchestration-instance-id")}'
         """
 
         # Act
