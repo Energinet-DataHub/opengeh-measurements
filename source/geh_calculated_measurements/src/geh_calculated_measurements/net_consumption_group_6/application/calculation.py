@@ -8,4 +8,15 @@ from geh_calculated_measurements.net_consumption_group_6.application.net_consump
 
 @use_span()
 def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
-    pass
+    dummy()
+    dummy2()
+
+
+@use_span()
+def dummy() -> int:
+    return 1 + 1
+
+
+@use_span()
+def dummy2() -> int:
+    return 1 + 1
