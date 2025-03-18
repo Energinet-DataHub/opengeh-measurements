@@ -4,21 +4,6 @@ from pyspark.sql import DataFrame
 
 nullable = True
 
-
-class ChildMeteringPoints(DataFrameWrapper):
-    """Represents the child metering points data structure."""
-
-    def __init__(self, df: DataFrame) -> None:
-        super().__init__(
-            df,
-            child_metering_points_v1,
-            # We ignore_nullability because it has turned out to be too hard and even possibly
-            # introducing more errors than solving in order to stay in exact sync with the
-            # logically correct schema.
-            ignore_nullability=True,
-        )
-
-
 """
 Child metering points related to electrical heating.
 
@@ -34,7 +19,7 @@ CSV formatting is according to ADR-144 with the following constraints:
 - No column may use quoted values
 - All date/time values must include seconds
 """
-child_metering_points_v1 = t.StructType(
+_child_metering_points_v1 = t.StructType(
     [
         #
         # GSRN number
@@ -55,3 +40,19 @@ child_metering_points_v1 = t.StructType(
         t.StructField("uncoupled_date", t.TimestampType(), nullable),
     ]
 )
+
+
+class ChildMeteringPoints(DataFrameWrapper):
+    """Represents the child metering points data structure."""
+
+    def __init__(self, df: DataFrame) -> None:
+        super().__init__(
+            df,
+            _child_metering_points_v1,
+            # We ignore_nullability because it has turned out to be too hard and even possibly
+            # introducing more errors than solving in order to stay in exact sync with the
+            # logically correct schema.
+            ignore_nullability=True,
+        )
+
+    schema = _child_metering_points_v1
