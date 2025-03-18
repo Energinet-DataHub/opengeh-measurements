@@ -1,0 +1,14 @@
+# Time Series Silver Transformation
+
+When data goes from Bronze to Silver, we want to transform the valid data into the Silver schema. However, we might also need to add or change some of the values that we have. There might be some values that make sense in DataHub 2 however we use new values in DataHub 3.
+
+## Table `time_series`
+
+| Column Name               | Description                                                                                                                                                                                                                                        | Transformations                                      | Implemented |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|-------------|
+| orchestration_type        | When merging with submitted, we add "migration" as an enum here to avoid concurrent writes in silver. This is a new column that is added.                                                                                                          | Always set as "migration"                            | ✓           |
+| orchestration_instance_id | When mergint with submitted, we add a fully-zero UUID "00000000-0000-0000-0000-000000000000" as the value for all transactions.                                                                                                                    | Always set as "00000000-0000-0000-0000-000000000000" | ✓           |
+| points                    | Renamed values, but due to contract in measurements the internal struct has it's order changed to (position, quantity, quality) whereas migrations used (position, quality, quantity). Also, quantity changed to Decimal(18,3) from Decimal(18,6). | Change ordering, and type of quantity.               | ✓           |
+| is_cancelled              | Same check as in migrations, which is read_reason == "CAN" as a boolean column.                                                                                                                                                                    | Boolean read_reason == "CAN"                         | ✓           |
+| is_deleted                | Same check as in migrations, which is status == 9 as a boolean column.                                                                                                                                                                             | Boolean status == 9                                  | ✓           |
+  
