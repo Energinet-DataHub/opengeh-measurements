@@ -1,0 +1,31 @@
+metering_point_id;quantity;observation_time;metering_point_type;#comment
+060000000600170204;250;2023-10-31T23:00:00Z;supply_to_grid;Case 4 - period 1 (non-leap): Day 1
+070000000600170204;500;2023-10-31T23:00:00Z;consumption_from_grid;Case 4 - period 1 (non-leap): Day 1
+150000000600170204;250;2023-10-31T23:00:00Z;net_consumption;Case 4 - period 1 (non-leap): Day 1
+060000000600170204;300;2024-01-31T22:45:00Z;supply_to_grid;Case 4 - period 1 (non-leap): Day 62
+070000000600170204;600;2024-01-31T22:45:00Z;consumption_from_grid;Case 4 - period 1 (non-leap): Day 62
+150000000600170204;300;2024-01-31T22:45:00Z;net_consumption;Case 4 - period 1 (non-leap): Day 62
+060000000600170204;500;2024-01-31T23:00:00Z;supply_to_grid;Case 4 - period 2 (leap): Day 1
+070000000600170204;1000;2024-01-31T23:00:00Z;consumption_from_grid;Case 4 - period 2 (leap): Day 1
+150000000600170204;500;2024-01-31T23:00:00Z;net_consumption;Case 4 - period 2 (leap): Day 1
+060000000600170204;500;2024-06-30T21:45:00Z;supply_to_grid;Case 4 - period 2 (leap): Day 151
+070000000600170204;1000;2024-06-30T21:45:00Z;consumption_from_grid;Case 4 - period 2 (leap): Day 151
+150000000600170204;500;2024-06-30T21:45:00Z;net_consumption;Case 4 - period 2 (leap): Day 151
+060000000600170204;500;2024-06-30T22:00:00Z;supply_to_grid;Case 4 - period 3 (non-leap): Day 1
+070000000600170204;1000;2024-06-30T22:00:00Z;consumption_from_grid;Case 4 - period 3 (non-leap): Day 1
+150000000600170204;500;2024-06-30T22:00:00Z;net_consumption;Case 4 - period 3 (non-leap): Day 1
+060000000600170204;750;2025-01-15T22:45:00Z;supply_to_grid;Case 4 - period 3 (non-leap): Day 199
+070000000600170204;1500;2025-01-15T22:45:00Z;consumption_from_grid;Case 4 - period 3 (non-leap): Day 199
+150000000600170204;750;2025-01-15T22:45:00Z;net_consumption;Case 4 - period 3 (non-leap): Day 199
+060000000600170204;50;2025-01-15T23:00:00Z;supply_to_grid;Case 4 - period 4 (non-leap): Day 1
+070000000600170204;100;2025-01-15T23:00:00Z;consumption_from_grid;Case 4 - period 4 (non-leap): Day 1
+150000000600170204;50;2025-01-15T23:00:00Z;net_consumption;Case 4 - period 4 (non-leap): Day 1
+060000000600170204;50;2025-01-31T22:45:00Z;supply_to_grid;Case 4 - period 4 (non-leap): Day 16
+070000000600170204;100;2025-01-31T22:45:00Z;consumption_from_grid;Case 4 - period 4 (non-leap): Day 16
+150000000600170204;50;2025-01-31T22:45:00Z;net_consumption;Case 4 - period 4 (non-leap): Day 16
+060000000600170204;2500;2025-01-31T23:00:00Z;supply_to_grid;Case 4 - period 5 (Up to end): Day 1
+070000000600170204;5000;2025-01-31T23:00:00Z;consumption_from_grid;Case 4 - period 5 (Up to end): Day 1
+150000000600170204;2500;2025-01-31T23:00:00Z;net_consumption;Case 4 - period 5 (Up to end): Day 1
+060000000600170204;2500;2025-02-28T22:45:00Z;supply_to_grid;Case 4 - period 5 (Up to end): Day 28
+070000000600170204;5000;2025-02-28T22:45:00Z;consumption_from_grid;Case 4 - period 5 (Up to end): Day 28
+150000000600170204;2500;2025-02-28T22:45:00Z;net_consumption;Case 4 - period 5 (Up to end): Day 28

@@ -7,7 +7,7 @@ from core.settings.bronze_settings import BronzeSettings
 class BronzeRepository:
     def __init__(self, spark: SparkSession):
         self.spark = spark
-        self.bronze_database_name = BronzeSettings().bronze_database_name  # type: ignore
+        self.bronze_database_name = BronzeSettings().bronze_database_name
 
     def read_submitted_transactions(self) -> DataFrame:
         return (

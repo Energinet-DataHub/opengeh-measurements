@@ -299,6 +299,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "geh-common" },
+    { name = "pydantic" },
     { name = "pydantic-settings" },
 ]
 
@@ -318,7 +319,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.0.1" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.3.4" },
+    { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
 ]
 
@@ -518,8 +520,8 @@ wheels = [
 
 [[package]]
 name = "geh-common"
-version = "5.0.1"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?rev=geh_common_5.0.1#cc3c8240a334faaf06ac628c609f121fd527b8ad" }
+version = "5.3.4"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.3.4#af6bbcca431d1b4bbc3aea544c8fd15559024c50" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
@@ -529,6 +531,8 @@ dependencies = [
     { name = "databricks-sdk" },
     { name = "delta-spark" },
     { name = "dependency-injector" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
     { name = "pyspark" },
     { name = "pyyaml" },
 ]

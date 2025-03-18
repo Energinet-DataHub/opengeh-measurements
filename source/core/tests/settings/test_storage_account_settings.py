@@ -9,7 +9,7 @@ def test__submitted_transactions_stream_settings__continuous_streaming_should_be
     os.environ["DATALAKE_STORAGE_ACCOUNT"] = expected_datalake_storage_account
 
     # Act
-    actual = StorageAccountSettings()  # type: ignore
+    actual = StorageAccountSettings()
 
     # Assert
     assert actual.DATALAKE_STORAGE_ACCOUNT == expected_datalake_storage_account

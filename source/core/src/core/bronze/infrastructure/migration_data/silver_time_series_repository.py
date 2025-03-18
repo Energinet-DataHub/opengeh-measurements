@@ -16,7 +16,7 @@ class MigrationsSilverTimeSeriesRepository:
         spark: SparkSession,
     ) -> None:
         self.spark = spark
-        self.source_database = MigrationsSettings().silver_database_name  # type: ignore
+        self.source_database = MigrationsSettings().silver_database_name
         self.source_table_name = MigrationsTableNames.silver_time_series_table
         self.repo_creation_timestamp = datetime.now()
 

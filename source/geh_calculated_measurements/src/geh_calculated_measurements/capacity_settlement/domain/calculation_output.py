@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 
-from pyspark.sql import DataFrame
+from geh_calculated_measurements.capacity_settlement.domain import Calculations, TenLargestQuantities
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
 
 
 @dataclass
 class CalculationOutput:
     """Contains the output of a calculation."""
 
-    measurements: DataFrame
+    calculated_measurements: CalculatedMeasurements
 
-    calculations: DataFrame
+    calculations: Calculations
 
-    ten_largest_quantities: DataFrame
+    ten_largest_quantities: TenLargestQuantities

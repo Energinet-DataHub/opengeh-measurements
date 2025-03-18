@@ -1,7 +1,7 @@
 [project]
 name = "geh_calculated_measurements"
 version = "0.1.0"
-description = "A combined package for capacity settlement and electrical heating."
+description = "A combined package for capacity settlement, electrical heating and missing measurements log."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -9,7 +9,7 @@ dependencies = [
     "azure-monitor-opentelemetry==1.6.4",
     "configargparse==1.7.0",
     "delta-spark==3.2.0",
-    "geh_common @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.0.1",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.4.2#subdirectory=source/geh_common",
     "pydantic-settings>=2.7.1",
     "pyspark==3.5.1",
     "python-dateutil==2.8.2",
@@ -19,6 +19,9 @@ dependencies = [
 [project.scripts]
 execute_electrical_heating = "geh_calculated_measurements.electrical_heating.entry_point:execute"
 execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.entry_point:execute"
+execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute"
+execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
+
 migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
 
 [build-system]
@@ -40,7 +43,15 @@ dev = [
 
 [tool.pytest.ini_options]
 # -s ensures that print("<text>") is written to output.
-addopts = "--cov-report=term --cov-report=xml:coverage.xml --cov=geh_calculated_measurements -ra -vv -s"
+addopts = [
+    "--import-mode=importlib",
+    "--cov-report=term",
+    "--cov-report=xml:coverage.xml",
+    "--cov=geh_calculated_measurements",
+    "-ra",
+    "-vv",
+    "-s",
+]
 
 [tool.coverage.report]
 fail_under = 0
@@ -55,7 +66,8 @@ show-fixes = true
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = ["D", "D401", "E", "F", "I", "T201", "UP"]
+# See more here: https://docs.astral.sh/ruff/rules/
+select = ["D", "D401", "E", "F", "I", "T201", "UP", "PT"]
 ignore = [
     "D100",
     "D101",

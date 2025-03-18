@@ -6,7 +6,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings>=2.7.1",
-    "geh_common @ git+https://github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.0.1",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.3.4#subdirectory=source/geh_common",
+    "pydantic>=2.10.6",
 ]
 
 [project.scripts]

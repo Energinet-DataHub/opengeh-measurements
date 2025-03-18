@@ -9,7 +9,7 @@ def test__gold_settings__returns_expected():
     expected_gold_container_name = os.getenv("GOLD_CONTAINER_NAME")
 
     # Act
-    actual = GoldSettings()  # type: ignore
+    actual = GoldSettings()
 
     # Assert
     assert actual.gold_database_name == expected_gold_database_name

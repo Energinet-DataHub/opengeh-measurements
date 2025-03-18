@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ColumnNames
+from geh_calculated_measurements.common.domain import ContractColumnNames
 
 
 def filter_unchanged_electrical_heating(
@@ -14,17 +14,20 @@ def filter_unchanged_electrical_heating(
             electrical_heating_from_before.alias("previous"),
             (
                 (
-                    F.col(f"current.{ColumnNames.metering_point_id}")
-                    == F.col(f"previous.{ColumnNames.metering_point_id}")
+                    F.col(f"current.{ContractColumnNames.metering_point_id}")
+                    == F.col(f"previous.{ContractColumnNames.metering_point_id}")
                 )
-                & (F.col(f"current.{ColumnNames.date}") == F.col(f"previous.{ColumnNames.date}"))
-                & (F.col(f"current.{ColumnNames.quantity}") == F.col(f"previous.{ColumnNames.quantity}"))
+                & (F.col(f"current.{ContractColumnNames.date}") == F.col(f"previous.{ContractColumnNames.date}"))
+                & (
+                    F.col(f"current.{ContractColumnNames.quantity}")
+                    == F.col(f"previous.{ContractColumnNames.quantity}")
+                )
             ),
             "left_anti",
         )
         .select(
-            F.col(f"current.{ColumnNames.metering_point_id}"),
-            F.col(f"current.{ColumnNames.date}"),
-            F.col(f"current.{ColumnNames.quantity}"),
+            F.col(f"current.{ContractColumnNames.metering_point_id}"),
+            F.col(f"current.{ContractColumnNames.date}"),
+            F.col(f"current.{ContractColumnNames.quantity}"),
         )
     )

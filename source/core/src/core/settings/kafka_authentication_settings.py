@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -21,11 +22,11 @@ class KafkaAuthenticationSettings(BaseSettings):
         Generates a dictionary of Kafka options required to connect to the Event Hub using OAuthBearer authentication.
     """
 
-    event_hub_namespace: str
-    event_hub_instance: str
-    tenant_id: str
-    spn_app_id: str
-    spn_app_secret: str
+    event_hub_namespace: str = Field(init=False)
+    event_hub_instance: str = Field(init=False)
+    tenant_id: str = Field(init=False)
+    spn_app_id: str = Field(init=False)
+    spn_app_secret: str = Field(init=False)
 
     class Config:
         case_sensitive = False

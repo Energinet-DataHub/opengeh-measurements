@@ -26,14 +26,18 @@ jobs:
 
   cd_reusable:
     name: Continuous Deployment
-    uses: ./.github/workflows/reusable-cd.yml
+    needs: [changes]
+    if: ${{ needs.changes.outputs.dotnet != 'true' }}
+    uses: Energinet-DataHub/.github/.github/workflows/python-uv-cd.yml@v14
     with:
+      packages_directory: source
       subsystem_name: Measurements
       notification_email: 18ac1620.energinet.onmicrosoft.com@emea.teams.ms
       sender_email: ${{ vars.email_internal_sender }}
+      postfix_latest: true
+      dispatch_deployment_event: true
       environment_repository_path: ${{ vars.environment_repository_path }}
       dh3serviceaccount_appid: ${{ vars.dh3serviceaccount_appid }}
-      max_release_search_depth: 1000
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
@@ -48,11 +52,7 @@ jobs:
 
   dispatch_deployment_event:
     runs-on: ubuntu-latest
-    needs:
-      [
-        changes,
-        dotnet_promote_prerelease,
-      ]
+    needs: [changes, dotnet_promote_prerelease]
     if: ${{ always() && !cancelled() && !failure() && needs.changes.outputs.dotnet == 'true' }}
     steps:
       - run: echo "${{ toJSON(needs) }}"
@@ -78,11 +78,7 @@ jobs:
           client-payload: '{"dotnet_pr_number": "${{ steps.find_pull_request.outputs.pull_request_number }}"}'
 
   dispatch_failed:
-    needs:
-      [
-        dotnet_promote_prerelease,
-        dispatch_deployment_event,
-      ]
+    needs: [dotnet_promote_prerelease, dispatch_deployment_event]
     if: |
       always() &&
       contains(needs.*.result, 'failure')

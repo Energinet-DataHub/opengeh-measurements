@@ -2,7 +2,7 @@ from datetime import datetime
 from importlib.resources import files
 
 import pyspark.sql.functions as F
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.protobuf.functions import to_protobuf
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -13,14 +13,37 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
 from core.contracts.process_manager.decimal_value import DecimalValue
+from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
+from core.contracts.process_manager.enums.orchestration_type import OrchestrationType
+from core.contracts.process_manager.enums.quality import Quality
+from core.contracts.process_manager.enums.resolution import Resolution
+from core.contracts.process_manager.enums.unit import Unit
 from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
 class Point:
-    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = "Q_UNSPECIFIED") -> None:
+    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = Quality.Q_MEASURED.value) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = quality
+
+
+class PointsBuilder:
+    def __init__(self, spark: SparkSession) -> None:
+        self.spark = spark
+        self.data = []
+
+    def add_row(
+        self,
+        position: int = 1,
+        quantity=DecimalValue(1, 0),
+        quality: str = Quality.Q_MEASURED.value,
+    ) -> "PointsBuilder":
+        self.data.append(Point(position, quantity, quality))
+        return self
+
+    def build(self) -> list[Point]:
+        return self.data
 
 
 class Value:
@@ -28,16 +51,16 @@ class Value:
         self,
         version: int = 1,
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = "OT_UNSPECIFIED",
+        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = "MPT_UNSPECIFIED",
-        unit: str = "U_UNSPECIFIED",
-        resolution: str = "R_UNSPECIFIED",
+        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
+        unit: str = Unit.U_KWH.value,
+        resolution: str = Resolution.R_PT15M.value,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list = [Point()],
+        points: list | None = [Point()],
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id
@@ -54,7 +77,7 @@ class Value:
 
 
 class ValueBuilder:
-    def __init__(self, spark: SparkSession):
+    def __init__(self, spark: SparkSession) -> None:
         self.spark = spark
         self.data = []
 
@@ -62,13 +85,13 @@ class ValueBuilder:
         self,
         version: int = 1,
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = "OT_UNSPECIFIED",
+        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = "MPT_UNSPECIFIED",
-        unit: str = "U_UNSPECIFIED",
-        resolution: str = "R_UNSPECIFIED",
+        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
+        unit: str = Unit.U_KWH.value,
+        resolution: str = Resolution.R_PT15M.value,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
         points: list = [Point()],
@@ -114,6 +137,7 @@ class ValueBuilder:
                 ValueColumnNames.points,
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
+
         descriptor_path = str(
             files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
         )
@@ -131,7 +155,7 @@ class ValueBuilder:
 
 
 class SubmittedTransactionsBuilder:
-    def __init__(self, spark: SparkSession):
+    def __init__(self, spark: SparkSession) -> None:
         self.spark = spark
         self.data = []
 
@@ -152,5 +176,48 @@ class SubmittedTransactionsBuilder:
 
         return self
 
-    def build(self):
+    def build(self) -> DataFrame:
         return self.spark.createDataFrame(self.data, schema=submitted_transactions_schema)
+
+
+class UnpackedSubmittedTransactionsBuilder:
+    def __init__(self, spark: SparkSession) -> None:
+        self.spark = spark
+        self.data = []
+
+    def add_row(
+        self,
+        version: int = 1,
+        orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
+        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        metering_point_id: str = "503928175928475638",
+        transaction_id: str = "5a76d246-ceae-459f-9e9f",
+        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
+        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
+        unit: str = Unit.U_KWH.value,
+        resolution: str = Resolution.R_PT15M.value,
+        start_datetime: datetime = datetime_helper.random_datetime(),
+        end_datetime: datetime = datetime_helper.random_datetime(),
+        points: list | None = [Point()],
+    ) -> "UnpackedSubmittedTransactionsBuilder":
+        self.data.append(
+            Value(
+                version,
+                orchestration_instance_id,
+                orchestration_type,
+                metering_point_id,
+                transaction_id,
+                transaction_creation_datetime,
+                metering_point_type,
+                unit,
+                resolution,
+                start_datetime,
+                end_datetime,
+                points,
+            )
+        )
+
+        return self
+
+    def build(self) -> DataFrame:
+        return self.spark.createDataFrame(self.data, schema=bronze_submitted_transactions_value_schema)

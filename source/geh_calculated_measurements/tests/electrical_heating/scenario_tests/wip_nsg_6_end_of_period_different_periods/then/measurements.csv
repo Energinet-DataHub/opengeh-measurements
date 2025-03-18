@@ -1,0 +1,16 @@
+orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2023-10-31T23:00:00Z;253.814;Case 2: Period 1, 2023 Day 304 (Nov. 1st)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2023-11-01T23:00:00Z;28.155;Case 2: Period 1, 2023 Day 305
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-06-29T22:00:00Z;0;Case 2: Period 1, 2024 Day 182
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-06-30T22:00:00Z;41.97;Case 2: Period 2, Day 01 (July. 1st. 2024)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-07-01T22:00:00Z;51.017;Case 2: Period 2, Day 02
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-08-30T22:00:00Z;0;Case 2: Period 2, Day 61 (last day of August)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-08-31T22:00:00Z;1000;Case 2: Period 3 (Up to end), Day 1 Sept. 1st 2024
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-12-30T23:00:00Z;2000;Case 2: Period 3 (Up to end), Last day of 2024
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170202;2024-12-31T23:00:00Z;1000;Case 2: Period 3 (Up to end), First day of 2025 (limit hit)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-03-29T23:00:00Z;134.041;Case 3
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-03-30T23:00:00Z;68.669;Case 3 (day of summertime change)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-03-31T22:00:00Z;76.969;Case 3
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-10-25T22:00:00Z;65.91;Case 3
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-10-26T22:00:00Z;46.015;Case 3 (day of wintertime change) (Up to limit 391.604)
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000600170203;2024-10-27T23:00:00Z;0;Case 3

@@ -1,26 +1,31 @@
 {
   "name": "core",
-  "dockerComposeFile": [
-    "../../.docker/docker-compose.yml"
-  ],
-  "service": "core",
-  "remoteUser": "vscode",
-  "shutdownAction": "none",
-  "workspaceFolder": "/workspace/source/core",
-  "postStartCommand": "uv sync",
-  "containerEnv": {
-    "UV_CACHE_DIR": "/home/vscode/.cache/uv",
-    "MYPY_CACHE_DIR": "/home/vscode/.cache/mypy",
-    "RUFF_CACHE_DIR": "/home/vscode/.cache/ruff",
-    "PYTHONPYCACHEPREFIX": "/home/vscode/.cache/pycache"
+  "build": {
+    "context": "../..",
+    "dockerfile": "../Dockerfile",
+    "args": {
+      "UBUNTU_VERSION": "24.04",
+      "ASDF_VERSION": "0.16.2"
+    }
   },
+  "runArgs": [
+    "--name",
+    "core"
+  ],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace/source/core",
+  "remoteUser": "vscode",
+  "postCreateCommand": "~/scripts/post-create.sh ~",
+  "postStartCommand": "uv sync",
   "mounts": [
-    // Persist the command history across container restarts - useful for bash history
+    // We want to reuse asdf cache across containers
+    "source=asdf-cache,target=/home/vscode/.asdf,type=volume",
+    // Persist cache between sessions
+    "source=core-cache,target=/home/vscode/.cache,type=volume",
+    // Persist the bash/zsh history between sessions
     "source=core-bashhistory,target=/commandhistory,type=volume",
     // Mount the SSH keys for Git - allows you to clone private repositories via ssh
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-    // Mount the local system cache directory - speeds up the build process
-    "source=../.cache,target=/home/vscode/.cache,type=bind,consistency=cached"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
   ],
   "customizations": {
     "vscode": {
@@ -30,9 +35,26 @@
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "ms-python.python",
-        "ms-vscode-remote.remote-containers"
+        "ms-vscode-remote.remote-containers",
+        "janisdd.vscode-edit-csv",
+        "mechatroner.rainbow-csv",
+        "eamodio.gitlens"
       ],
       "settings": {
+        "csv-edit.readOption_hasHeader": "true",
+        "python.testing.pytestArgs": [
+          "tests",
+          "--no-cov"
+        ],
+        "python.analysis.include": [
+          "${workspaceFolder}/**"
+        ],
+        // Editor settings
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.rulers": [
+          120
+        ],
         "search.exclude": {
           "**/.git": true,
           "**/.cache": true,
@@ -42,46 +64,37 @@
         "git.openRepositoryInParentFolders": "always", // Open the repository in the parent folder
         "files.eol": "\n", // Use LF line endings
         "files.autoSave": "onFocusChange", // Automatically save files when focus changes
-        "editor.tabSize": 2,
-        "editor.rulers": [
-          120
-        ],
-        "editor.formatOnSave": true,
-        "ruff.lineLength": 120,
-        "python.terminal.activateEnvInCurrentTerminal": true,
-        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
-        "python.analysis.typeCheckingMode": "basic",
-        "python.testing.pytestArgs": [
-          "tests"
-        ],
-        "python.analysis.include": [
-          "/workspace/source/core/**/*"
-        ],
-        "python.venvPath": "/home/vscode/.venv",
-        "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true,
         "github.copilot.editor.enableAutoCompletions": true,
-        "python.languageServer": "Pylance", // Use Pylance as the language server
-        "python.analysis.languageServerMode": "full", // Use the full language server mode
-        "python.analysis.autoFormatStrings": true, // Automatically format strings
+        // Ruff Settings
+        "ruff.lineLength": 120,
+        "ruff.organizeImports": true,
         "[python]": {
+          "editor.formatOnSave": true,
           "editor.defaultFormatter": "charliermarsh.ruff",
           "editor.codeActionsOnSave": {
-            "source.fixAll.ruff": "always" // Run the Ruff formatter on save
+            "source.organizeImports": "explicit", // Organize imports on save
+            "source.fixAll": "explicit" // Run the Ruff formatter on save
           }
         },
-        "terminal.integrated.inheritEnv": true,
+        // Python settings
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.venvPath": "/home/vscode/.venv",
+        "python.languageServer": "Pylance", // Use Pylance as the language server        
+        "python.testing.pytestEnabled": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.languageServerMode": "full", // Use the full language server mode
+        "python.analysis.autoFormatStrings": true, // Automatically format strings
+        // Terminal settings
         "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.inheritEnv": true,
         "terminal.integrated.profiles.linux": {
-          "bash": {
-            "path": "bash",
-            "icon": "terminal-bash"
-          },
           "zsh": {
             "path": "zsh"
           },
-          "fish": {
-            "path": "fish"
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
           },
           "tmux": {
             "path": "tmux",

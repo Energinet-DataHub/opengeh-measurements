@@ -18,7 +18,6 @@ permissions:
   issues: read
   pull-requests: write
 
-
 jobs:
   #
   # License and Markdown Check
@@ -40,13 +39,11 @@ jobs:
   # Reusable CI
   #
   ci_reusable:
-    name: Continuous Integration
-    uses: ./.github/workflows/reusable-ci.yml
+    uses: Energinet-DataHub/.github/.github/workflows/python-uv-ci.yml@v14
     with:
       packages_directory: source
-      pytest_addopts: --ignore-glob 'tests/**/subsystem_tests/**'
-    secrets:
-      dh3serviceaccount_privatekey: ${{ secrets.dh3serviceaccount_privatekey }}
+      pytest_addopts: --ignore-glob 'tests/subsystem_tests/**'
+      create_subsystem_release: true
 
   #
   # Dotnet CI
@@ -57,11 +54,19 @@ jobs:
     uses: ./.github/workflows/ci-dotnet.yml
 
   #
+  # NuGet package publish
+  #
+  ci_packages:
+    needs: changes
+    if: ${{ needs.changes.outputs.nuget-packages == 'true' }}
+    uses: ./.github/workflows/measurements-client-bundle-publish.yml
+
+  #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
-    runs-on: ubuntu-24.04
-    needs: [ci_reusable, ci_dotnet]
+    runs-on: ubuntu-latest
+    needs: [ci_base, ci_reusable, ci_dotnet]
     if: |
       always()
     steps:

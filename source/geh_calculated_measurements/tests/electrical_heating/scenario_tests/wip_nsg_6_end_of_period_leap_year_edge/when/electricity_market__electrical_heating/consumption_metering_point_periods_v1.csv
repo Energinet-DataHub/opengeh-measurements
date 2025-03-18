@@ -1,0 +1,4 @@
+metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
+170000000000600204;true;6;2;2023-10-31T23:00:00Z;2024-06-30T22:00:00Z;Case 4: Two periods: Period 1 - 01.11.2023-01.31.2024 (92 non-leap days), Period 2 - 01.02.2023-30.06.2024 (151 leap days)
+170000000000600204;true;6;2;2024-06-30T22:00:00Z;2025-01-15T23:00:00Z;Case 4: One period: Period 3 - 01.07.2024-14.01.2025 (199 leap days)
+170000000000600204;true;6;2;2025-01-15T23:00:00Z;;Case 4: Two periods: Period 4 - 01.15.2024-01.31.2024 (16 leap days), Period 5 - 1.02.2024-... (up to end)

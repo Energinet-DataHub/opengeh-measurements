@@ -2,38 +2,37 @@ import uuid
 from typing import Any
 from unittest.mock import patch
 
-import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
-from geh_calculated_measurements.electrical_heating.application import execute_application
-from geh_calculated_measurements.electrical_heating.application.job_args.environment_variables import (
-    EnvironmentVariable,
-)
+from geh_calculated_measurements.electrical_heating.entry_point import execute
+from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
-@pytest.fixture(scope="session")
-def job_environment_variables(test_files_folder_path) -> dict:
+def _create_job_environment_variables() -> dict:
     return {
-        EnvironmentVariable.CATALOG_NAME.name: "spark_catalog",
-        EnvironmentVariable.TIME_ZONE.name: "Europe/Copenhagen",
-        EnvironmentVariable.ELECTRICITY_MARKET_DATA_PATH.name: test_files_folder_path,
+        "CATALOG_NAME": "spark_catalog",
+        "TIME_ZONE": "Europe/Copenhagen",
+        "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
     }
 
 
-@pytest.mark.skip(reason="Skipping this until write (results) functionality has been implemented")
-def test_execute_with_deps(spark: SparkSession, job_environment_variables: dict, seed_gold_table: Any) -> None:
+def test_execute(
+    spark: SparkSession,
+    gold_table_seeded: Any,  # Used implicitly
+    calculated_measurements_table_created: Any,  # Used implicitly
+) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
     # Act
     with patch("sys.argv", sys_argv):
-        with patch.dict("os.environ", job_environment_variables):
-            execute_application()
+        with patch.dict("os.environ", _create_job_environment_variables()):
+            execute()
 
     # Assert
     actual = spark.read.table(

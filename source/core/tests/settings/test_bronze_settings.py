@@ -9,7 +9,7 @@ def test__bronze_settings__returns_expected():
     expected_bronze_container_name = os.getenv("BRONZE_CONTAINER_NAME")
 
     # Act
-    actual = BronzeSettings()  # type: ignore
+    actual = BronzeSettings()
 
     # Assert
     assert actual.bronze_database_name == expected_bronze_database_name

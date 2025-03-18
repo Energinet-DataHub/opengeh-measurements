@@ -33,23 +33,11 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\UnitTests\UnitTests.csproj' \
+          '.\source\dotnet\Measurements.UnitTests\Measurements.UnitTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
-          --output '.\source\Measurements\UnitTests\bin\Release\net8.0'
-
-    # To ensure code coverage tooling is available in bin folder, we use publish on test assemblies
-    # See https://github.com/coverlet-coverage/coverlet/issues/521#issuecomment-522429394
-    - name: Publish Measurements IntegrationTests
-      shell: bash
-      run: |
-        dotnet publish \
-          '.\source\Measurements\IntegrationTests\IntegrationTests.csproj' \
-          --no-build \
-          --no-restore \
-          --configuration Release \
-          --output '.\source\Measurements\IntegrationTests\bin\Release\net8.0'
+          --output '.\source\dotnet\Measurements.UnitTests\bin\Release\net8.0'
 
     # To ensure code coverage tooling is available in bin folder, we use publish on test assemblies
     # See https://github.com/coverlet-coverage/coverlet/issues/521#issuecomment-522429394
@@ -57,11 +45,11 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\WebApi.UnitTests\WebApi.UnitTests.csproj' \
+          '.\source\dotnet\Measurements.WebApi.UnitTests\Measurements.WebApi.UnitTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
-          --output '.\source\Measurements\WebApi.UnitTests\bin\Release\net8.0'
+          --output '.\source\dotnet\WebApi.UnitTests\bin\Release\net8.0'
 
     # To ensure code coverage tooling is available in bin folder, we use publish on test assemblies
     # See https://github.com/coverlet-coverage/coverlet/issues/521#issuecomment-522429394
@@ -69,18 +57,30 @@ runs:
       shell: bash
       run: |
         dotnet publish \
-          '.\source\Measurements\WebApi.IntegrationTests\WebApi.IntegrationTests.csproj' \
+          '.\source\dotnet\Measurements.WebApi.IntegrationTests\Measurements.WebApi.IntegrationTests.csproj' \
           --no-build \
           --no-restore \
           --configuration Release \
-          --output '.\source\Measurements\WebApi.IntegrationTests\bin\Release\net8.0'
+          --output '.\source\dotnet\Measurements.WebApi.IntegrationTests\bin\Release\net8.0'
+
+    # To ensure code coverage tooling is available in bin folder, we use publish on test assemblies
+    # See https://github.com/coverlet-coverage/coverlet/issues/521#issuecomment-522429394
+    - name: Publish Measurements Client Tests
+      shell: bash
+      run: |
+        dotnet publish \
+          '.\source\dotnet\Measurements.Client.Tests\Measurements.Client.Tests.csproj' \
+          --no-build \
+          --no-restore \
+          --configuration Release \
+          --output '.\source\dotnet\Measurements.Client.Tests\bin\Release\net8.0'
 
     - name: Copy all directories and files in source/dotnet except the obj-directories
       shell: bash
       run: |
         # Create base directory
-        mkdir -p '${{ inputs.output_path }}/source/Measurements' ';'
-        # Copy everything from source/Measurements to the new directory
-        cp -a source/Measurements/. '${{ inputs.output_path }}/source/Measurements'
+        mkdir -p '${{ inputs.output_path }}/source/dotnet' ';'
+        # Copy everything from source/dotnet to the new directory
+        cp -a source/dotnet/. '${{ inputs.output_path }}/source/dotnet'
         # Remove obj-directories from artifact
         find ${{ inputs.output_path }}/ -type d -name 'obj' -exec rm -rf {} +

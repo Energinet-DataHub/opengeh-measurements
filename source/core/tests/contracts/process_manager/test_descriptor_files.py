@@ -38,10 +38,10 @@ def test__persist_submitted_transaction_protobuf() -> None:
     )
 
 
-def test__submitted_transaction_persisted_protobuf() -> None:
-    descriptor_file = "src/core/contracts/process_manager/assets/submitted_transaction_persisted.binpb"
+def test__brs021_forward_metered_data_notify_v1_protobuf() -> None:
+    descriptor_file = "src/core/contracts/process_manager/assets/brs021_forward_metered_data_notify_v1.binpb"
     proto_path = "src/core/contracts/process_manager"
-    proto_file = "SubmittedTransactionPersisted.proto"
+    proto_file = "Brs021ForwardMeteredDataNotifyV1.proto"
 
     assert compile_proto_to_descriptor(proto_file, descriptor_file, proto_path), (
         "Protobuf compilation does not match the descriptor file!"

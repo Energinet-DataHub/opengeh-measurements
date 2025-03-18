@@ -1,8 +1,5 @@
 import pytest
-from geh_common.testing.dataframes import (
-    AssertDataframesConfiguration,
-    assert_dataframes_and_schemas,
-)
+from geh_common.testing.dataframes.assert_dataframes import AssertDataframesConfiguration, assert_dataframes_and_schemas
 from geh_common.testing.scenario_testing import TestCases, get_then_names
 
 

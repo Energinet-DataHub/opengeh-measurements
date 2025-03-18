@@ -8,7 +8,7 @@ def test__catalog_settings__returns_expected():
     expected_catalog_name = os.getenv("CATALOG_NAME")
 
     # Act
-    actual = CatalogSettings()  # type: ignore
+    actual = CatalogSettings()
 
     # Assert
     assert actual.catalog_name == expected_catalog_name

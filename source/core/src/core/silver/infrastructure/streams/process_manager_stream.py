@@ -3,6 +3,7 @@ from pyspark.sql import DataFrame
 from core.settings.kafka_authentication_settings import KafkaAuthenticationSettings  # todo: simplify import
 from core.settings.silver_settings import SilverSettings
 from core.settings.storage_account_settings import StorageAccountSettings
+from core.settings.streaming_settings import StreamingSettings
 from core.utility.shared_helpers import get_checkpoint_path
 
 
@@ -10,9 +11,9 @@ class ProcessManagerStream:
     kafka_options: dict
 
     def __init__(self) -> None:
-        self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()  # type: ignore
-        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT  # type: ignore
-        self.silver_container_name = SilverSettings().silver_container_name  # type: ignore
+        self.kafka_options = KafkaAuthenticationSettings().create_kafka_options()
+        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
+        self.silver_container_name = SilverSettings().silver_container_name
 
     def write_stream(
         self,
@@ -21,8 +22,16 @@ class ProcessManagerStream:
         checkpoint_location = get_checkpoint_path(
             self.data_lake_settings, self.silver_container_name, "processed_transactions"
         )
-        event_hub_instance = KafkaAuthenticationSettings().event_hub_instance  # type: ignore
+        event_hub_instance = KafkaAuthenticationSettings().event_hub_instance
 
-        dataframe.writeStream.format("kafka").options(**self.kafka_options).option("topic", event_hub_instance).option(
-            "checkpointLocation", checkpoint_location
-        ).trigger(availableNow=True).start()
+        write_stream = (
+            dataframe.writeStream.format("kafka")
+            .options(**self.kafka_options)
+            .option("topic", event_hub_instance)
+            .option("checkpointLocation", checkpoint_location)
+        )
+
+        if StreamingSettings().continuous_streaming_enabled is False:
+            write_stream = write_stream.trigger(availableNow=True)
+
+        return write_stream.start().awaitTermination()

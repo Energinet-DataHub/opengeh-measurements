@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -11,8 +12,8 @@ class BronzeSettings(BaseSettings):
     bronze_database_name (str): The name of the Bronze database created in infrastructure.
     """
 
-    bronze_container_name: str
-    bronze_database_name: str
+    bronze_container_name: str = Field(init=False)
+    bronze_database_name: str = Field(init=False)
 
     class Config:
         case_sensitive = False
