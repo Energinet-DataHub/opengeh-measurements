@@ -46,7 +46,6 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
         create_database(
             spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL
         )
-
         create_table(
             spark,
             database_name=CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
