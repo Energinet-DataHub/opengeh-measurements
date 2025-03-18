@@ -20,7 +20,7 @@ def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
     catalog_name = CatalogSettings().catalog_name  # type: ignore
 
     return SparkSqlMigrationsConfiguration(
-        migration_schema_name=MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
+        migration_schema_name=MeasurementsCalculatedInternalDatabaseDefinition.DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
         migration_table_name=MeasurementsCalculatedInternalDatabaseDefinition.executed_migrations_table_name,
         migration_scripts_folder_path="geh_calculated_measurements.database_migrations.migration_scripts",
         substitution_variables=substitution_variables,

@@ -11,6 +11,6 @@ class MeasurementsCalculatedInternalDatabaseDefinition(BaseSettings):
     database_name (str): The name of the unity catalog created in infrastructure.
     """
 
-    measurements_calculated_internal_database: str = Field(init=False)
+    DATABASE_MEASUREMENTS_CALCULATED_INTERNAL: str = Field(init=False)
 
     executed_migrations_table_name: str = Field(init=False)  # executed_migrations

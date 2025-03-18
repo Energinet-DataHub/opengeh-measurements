@@ -16,7 +16,7 @@ class Repository:
         self._catalog_name = catalog_name
 
     def _get_full_table_path(self, table_name: str) -> str:
-        database_name = CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE
+        database_name = CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL
         if self._catalog_name:
             return f"{self._catalog_name}.{database_name}.{table_name}"
         return f"{database_name}.{table_name}"
