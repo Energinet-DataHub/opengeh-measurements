@@ -32,7 +32,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetMeasurementAsync(request);
-        var actualPoint = actual.Points.First();
+        var actualPoint = actual.Points.Single();
 
         // Assert
         Assert.Equal(now, actualPoint.ObservationTime.ToDateTimeOffset());

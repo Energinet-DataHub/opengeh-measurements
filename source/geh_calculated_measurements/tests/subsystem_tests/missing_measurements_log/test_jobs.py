@@ -14,14 +14,14 @@ class TestMissingMeasurementsLog(BaseJobTests):
 
     fixture = None
 
-    params = {"orchestration-instance-id": uuid.uuid4()}
+    job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
         if self.fixture is None:
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="MissingMeasurementsLog",
-                params=self.params,
+                job_parameters=self.job_parameters,
             )
         return self.fixture
 

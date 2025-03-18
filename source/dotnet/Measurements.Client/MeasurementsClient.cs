@@ -20,27 +20,9 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateUrl(
-            query.MeteringPointId,
-            query.Date.ToUtcString(),
-            query.Date.PlusDays(1).ToUtcString());
-
+        var url = CreateUrl(query);
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await HandleResponseAsync(response, cancellationToken);
-    }
-
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
-    {
-        var url = CreateUrl(query.MeteringPointId, query.FromDate.ToUtcString(), query.ToDate.ToUtcString());
-
-        var response = await _httpClient.GetAsync(url, cancellationToken);
-
-        return await HandleResponseAsync(response, cancellationToken);
-    }
-
-    private async Task<IEnumerable<MeasurementPoint>> HandleResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
-    {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -57,8 +39,11 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
-    private static string CreateUrl(string meteringPointId, string startDate, string endDate)
+    private static string CreateUrl(GetMeasurementsForDayQuery query)
     {
-        return $"/measurements?MeteringPointId={meteringPointId}&StartDate={startDate}&EndDate={endDate}";
+        var startDate = query.Date.ToUtcString();
+        var endDate = query.Date.PlusDays(1).ToUtcString();
+
+        return $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={startDate}&EndDate={endDate}";
     }
 }
