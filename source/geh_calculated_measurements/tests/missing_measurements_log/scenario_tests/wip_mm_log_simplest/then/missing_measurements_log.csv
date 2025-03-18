@@ -1,4 +1,3 @@
-orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000001500170200;2023-12-31 23:00:00;1000;Case 0 - Day 1: D15 quantity (1000) added
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000001500170200;2024-01-01 23:00:00;975;Case 0 - Day 2: Up to limit (4000-(1000+1000+25))=1975
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000001500170200;2024-12-30 23:00:00;0;Case 0 - Day 3: Limit hit
+orchestration_instance_id;metering_point_id;date;#comment
+00000000-0000-0000-0000-000000000001;170000000001500201;2024-01-14T23:00:00Z;Case 1
+00000000-0000-0000-0000-000000000001;170000000000000202;2024-01-14T23:00:00Z;Case 2

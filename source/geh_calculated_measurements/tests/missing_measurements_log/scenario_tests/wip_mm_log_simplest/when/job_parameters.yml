@@ -1,4 +1,4 @@
 orchestration-instance-id: 00000000-0000-0000-0000-000000000001
-calculation_period_start:
-calculation_period_end:
-grid_area_code:
+calculation_period_start: 2023-12-31T23:00:00Z
+calculation_period_end: 2024-01-31T23:00:00Z
+
