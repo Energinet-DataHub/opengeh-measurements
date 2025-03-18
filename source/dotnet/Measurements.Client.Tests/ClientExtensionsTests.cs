@@ -14,7 +14,7 @@ public class ClientExtensionsTests
         var services = new ServiceCollection();
         services.AddInMemoryConfiguration(new Dictionary<string, string?>()
         {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost:5001",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost:7202",
         });
 
         // Act

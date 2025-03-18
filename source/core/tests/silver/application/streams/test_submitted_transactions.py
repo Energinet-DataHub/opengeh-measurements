@@ -64,9 +64,7 @@ def test__submitted_transactions__should_save_in_silver_measurements(
 
 
 @mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository.append_if_not_exists")
-@mock.patch(
-    "core.silver.application.streams.submitted_transactions.measurements_transformation.create_by_unpacked_submitted_transactions"
-)
+@mock.patch("core.silver.application.streams.submitted_transactions.measurements_transformation.transform")
 @mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
 def test__handle_valid_submitted_transactions__calls_expected_methods(
     mock_initialize_spark, mock_create_by_unpacked, mock_append_if_not_exists

@@ -2,8 +2,8 @@
 
 public enum Quality
 {
-    Estimated,
-    Measured,
-    Calculated,
-    Missing,
+    Estimated = 0,
+    Measured = 1,
+    Calculated = 2,
+    Missing = 3,
 }

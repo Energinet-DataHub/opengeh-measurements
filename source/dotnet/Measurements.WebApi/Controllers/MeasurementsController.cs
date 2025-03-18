@@ -1,6 +1,7 @@
 ﻿using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
@@ -15,7 +16,9 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     {
         try
         {
-            var result = await measurementsHandler.GetMeasurementAsync(request);
+            var measurement = await measurementsHandler.GetMeasurementAsync(request);
+            var result = new JsonSerializer().Serialize(measurement);
+
             return Ok(result);
         }
         catch (MeasurementsNotFoundException e)

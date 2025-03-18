@@ -1,11 +1,11 @@
 from geh_common.domain.types import NetSettlementGroup
+from geh_common.testing.dataframes import testing
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DecimalType
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.electrical_heating.domain.ephemeral_column_names import EphemeralColumnNames
-from geh_calculated_measurements.testing import testing
 
 _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""

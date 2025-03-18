@@ -14,7 +14,7 @@ public static class MeasurementsExtensions
     {
         services
             .AddOptions<DatabricksSchemaOptions>()
-            .BindConfiguration(nameof(DatabricksSchemaOptions))
+            .BindConfiguration(DatabricksSchemaOptions.SectionName)
             .ValidateDataAnnotations();
 
         services.AddDatabricksSqlStatementExecution(configuration.GetSection(DatabricksSqlStatementOptions.DatabricksOptions));

@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Extensions;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using Xunit;
 
@@ -58,6 +58,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         response.EnsureSuccessStatusCode();
         var actualBody = await response.Content.ReadAsStringAsync();
-        return actualBody.DeserializeJson<GetMeasurementResponse>();
+        return new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
     }
 }

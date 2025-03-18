@@ -1,4 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Abstractions.Api.Dtos;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -11,6 +11,6 @@ public interface IMeasurementsClient
     /// <summary>
     /// Get measurement for a specific day.
     /// </summary>
-    /// <returns>Measurements for the specified day. Null if no measurements exists.</returns>
+    /// <returns>Measurements for the specified date.</returns>
     Task<MeasurementDto?> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default);
 }

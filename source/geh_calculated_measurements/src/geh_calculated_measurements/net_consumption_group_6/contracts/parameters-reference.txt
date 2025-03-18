@@ -1,0 +1,6 @@
+# This file contains all the parameters that the job consumers. Some are required and some or not.
+#
+# Empty lines and lines starting with '#' are ignores in the tests.
+
+# Required parameters
+--orchestration-instance-id={orchestration-instance-id}

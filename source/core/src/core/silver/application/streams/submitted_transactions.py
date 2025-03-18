@@ -37,7 +37,7 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
 
 def _handle_valid_submitted_transactions(submitted_transactions: DataFrame, batchId: int) -> None:
     spark = spark_session.initialize_spark()
-    measurements = measurements_transformation.create_by_unpacked_submitted_transactions(spark, submitted_transactions)
+    measurements = measurements_transformation.transform(spark, submitted_transactions)
 
     (valid_measurements, invalid_measurements) = submitted_transactions_to_silver_validation.validate(measurements)
 

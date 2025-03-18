@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from geh_common.domain.types.metering_point_type import MeteringPointType
+from geh_common.domain.types.orchestration_type import OrchestrationType
 
 import tests.helpers.datetime_helper as datetime_helper
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
@@ -13,7 +14,7 @@ class SilverMeasurementsBuilder:
 
     def add_row(
         self,
-        orchestration_type="migrations",
+        orchestration_type=OrchestrationType.SUBMITTED.value,
         orchestration_instance_id="60a518a2-7c7e-4aec-8332",
         metering_point_id="503928175928475638",
         transaction_id="5a76d246-ceae-459f-9e9f",

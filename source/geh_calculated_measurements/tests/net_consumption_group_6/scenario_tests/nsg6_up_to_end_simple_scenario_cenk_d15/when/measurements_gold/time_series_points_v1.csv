@@ -1,0 +1,4 @@
+metering_point_id;quantity;observation_time;metering_point_type;#commentT
+170000000001500200;2000;2024-01-31T23:00:00Z;consumption;
+060000001500170200;1000;2024-01-31T23:00:00Z;supply_to_grid;d06-d07 = 1000 / 365 = 2,739
+070000001500170200;2000;2024-01-31T23:00:00Z;consumption_from_grid;

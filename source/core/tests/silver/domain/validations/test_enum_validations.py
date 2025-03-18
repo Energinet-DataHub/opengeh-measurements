@@ -1,4 +1,8 @@
 import pytest
+from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
+from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
 import core.silver.domain.validations.enum_validations as enum_validations
@@ -9,15 +13,11 @@ from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
 from tests.helpers.builders.submitted_transactions_builder import PointsBuilder, UnpackedSubmittedTransactionsBuilder
 
-metering_point_type_enum_params = [
-    pytest.param(x.value, 1) for x in MeteringPointType if x.value != MeteringPointType.MPT_UNSPECIFIED.value
-]
-orchestration_type_enum_params = [
-    pytest.param(x.value, 1) for x in OrchestrationType if x.value != OrchestrationType.OT_UNSPECIFIED.value
-]
+metering_point_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonMeteringPointType]
+orchestration_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonOrchestrationType]
 quality_enum_params = [pytest.param(x.value, 1) for x in Quality if x.value != Quality.Q_UNSPECIFIED.value]
-unit_enum_params = [pytest.param(x.value, 1) for x in Unit if x.value != Unit.U_UNSPECIFIED.value]
-resolution_enum_params = [pytest.param(x.value, 1) for x in Resolution if x.value != Resolution.R_UNSPECIFIED.value]
+unit_enum_params = [pytest.param(x.value, 1) for x in GehCommonUnit]
+resolution_enum_params = [pytest.param(x.value, 1) for x in GehCommonResolution]
 
 
 @pytest.mark.parametrize(
