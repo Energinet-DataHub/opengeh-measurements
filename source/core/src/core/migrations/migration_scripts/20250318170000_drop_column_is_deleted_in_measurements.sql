@@ -1,4 +1,4 @@
-ALTER TABLE {silver_database}.{silver_measurements}
+ALTER TABLE {silver_database}.{silver_measurements_table}
 DROP COLUMNS (is_deleted) 
 GO 
 
