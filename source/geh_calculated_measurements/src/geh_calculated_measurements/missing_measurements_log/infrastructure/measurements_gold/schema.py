@@ -15,5 +15,7 @@ missing_measurements_log_v1 = T.StructType(
             T.TimestampType(),
             not nullable,
         ),
+        # "missing" | "estimated" | "measured" | "calculated"
+        T.StructField("quality", T.StringType(), not nullable),
     ]
 )
