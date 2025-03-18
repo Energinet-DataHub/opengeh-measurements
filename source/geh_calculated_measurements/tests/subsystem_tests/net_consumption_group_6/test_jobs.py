@@ -21,8 +21,9 @@ class TestMissingMeasurementsLog:
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.input.job_id = self.fixture.get_job_id("NetConsumptionGroup6")
+        self.fixture.job_state.input.orchestration_instance_id = uuid.uuid4()
         job_parameters = {
-            "orchestration-instance-id": str(uuid.uuid4()),
+            "orchestration-instance-id": self.fixture.job_state.input.orchestration_instance_id,
         }
         self.fixture.job_state.input.job_parameters = job_parameters
 
