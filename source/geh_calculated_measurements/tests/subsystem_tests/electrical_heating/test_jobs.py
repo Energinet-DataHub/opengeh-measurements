@@ -26,11 +26,11 @@ class TestElectricalHeating(BaseJobTests):
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
         table_seeder = GoldTableSeeder(environment_configuration)
         table_seeder.seed(gold_table_row)
-        params = {"orchestration-instance-id": uuid.uuid4()}
+        job_parameters = {"orchestration-instance-id": uuid.uuid4()}
         return BaseJobFixture(
             environment_configuration=environment_configuration,
             job_name="ElectricalHeating",
-            params=params,
+            job_parameters=job_parameters,
         )
 
     @pytest.fixture(autouse=True, scope="class")

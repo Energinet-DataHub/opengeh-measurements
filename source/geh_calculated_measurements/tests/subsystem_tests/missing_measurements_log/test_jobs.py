@@ -13,11 +13,11 @@ class TestMissingMeasurementsLog(BaseJobTests):
     """
 
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        params = {"orchestration-instance-id": uuid.uuid4()}
+        job_parameters = {"orchestration-instance-id": uuid.uuid4()}
         return BaseJobFixture(
             environment_configuration=environment_configuration,
             job_name="MissingMeasurementsLog",
-            params=params,
+            job_parameters=job_parameters,
         )
 
     @pytest.fixture(autouse=True, scope="class")
