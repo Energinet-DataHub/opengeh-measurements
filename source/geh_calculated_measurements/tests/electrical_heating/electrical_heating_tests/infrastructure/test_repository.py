@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 from decimal import Decimal
 
 from geh_common.testing.dataframes.assert_schemas import assert_schema

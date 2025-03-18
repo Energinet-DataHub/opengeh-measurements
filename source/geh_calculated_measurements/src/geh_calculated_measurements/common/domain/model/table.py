@@ -1,4 +1,4 @@
-﻿from abc import ABC
+from abc import ABC
 
 import pyspark.sql.types as T
 from pyspark.sql import DataFrame
