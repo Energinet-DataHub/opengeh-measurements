@@ -10,12 +10,11 @@ public static class LocalDateExtensions
 
     public static string ToUtcString(this LocalDate date)
     {
-        var utcDateTime = date
+        return date
             .AtMidnight()
             .InZoneLeniently(_danishZone)
-            .ToInstant();
-
-        return utcDateTime.ToString(Format, CultureInfo.InvariantCulture);
+            .ToInstant()
+            .ToString(Format, CultureInfo.InvariantCulture);
     }
 
     public static DateTimeOffset ToUtcDateTimeOffset(this LocalDate date)
