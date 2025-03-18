@@ -1,8 +1,8 @@
-# Time Series Silver Transformation
+# Migrated Transactions Bronze to Silver Transformation
 
-When data goes from Bronze to Silver, we want to transform the valid data into the Silver schema. However, we might also need to add or change some of the values that we have. There might be some values that make sense in DataHub 2 however we use new values in DataHub 3.
+When data goes from Bronze to Silver, we want to adapt our migrations data onto our measurements schema. This should be very similar, and most are just simple renamings, but the following columns had to have something changed.
 
-## Table `time_series`
+## Table of transformed columns
 
 | Column Name               | Description                                                                                                                                                                                                                                        | Transformations                                      | Implemented |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|-------------|
