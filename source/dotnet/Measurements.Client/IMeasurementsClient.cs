@@ -14,7 +14,7 @@ public interface IMeasurementsClient
     Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Get measurements for a specific period.
+    /// Get measurements for a specified period.
     /// </summary>
     Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default);
 }
