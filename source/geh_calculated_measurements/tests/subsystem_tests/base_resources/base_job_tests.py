@@ -98,7 +98,7 @@ class BaseJobTests:
         )
 
         while response.status.state in [StatementState.PENDING, StatementState.RUNNING]:
-            time.sleep(10)  # Wait 1 second before checking again
+            time.sleep(10)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0
