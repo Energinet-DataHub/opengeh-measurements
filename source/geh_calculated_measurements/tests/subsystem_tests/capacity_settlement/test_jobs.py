@@ -32,24 +32,19 @@ class TestCapacitySettlement(BaseJobTests):
             for i in range(10)
         ]
 
-    fixture = None
-
-    params = {
-        "orchestration-instance-id": str(uuid.uuid4()),
-        "calculation-month": CALCULATION_MONTH,
-        "calculation-year": CALCULATION_YEAR,
-    }
-
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        if self.fixture is None:
-            table_seeder = GoldTableSeeder(environment_configuration)
-            table_seeder.seed(self._get_gold_table_rows())
-            self.fixture = BaseJobFixture(
-                environment_configuration=environment_configuration,
-                job_name="CapacitySettlement",
-                params=self.params,
-            )
-        return self.fixture
+        table_seeder = GoldTableSeeder(environment_configuration)
+        table_seeder.seed(self._get_gold_table_rows())
+        params = {
+            "orchestration-instance-id": str(uuid.uuid4()),
+            "calculation-month": CALCULATION_MONTH,
+            "calculation-year": CALCULATION_YEAR,
+        }
+        return BaseJobFixture(
+            environment_configuration=environment_configuration,
+            job_name="CapacitySettlement",
+            params=params,
+        )
 
     @pytest.fixture(autouse=True, scope="class")
     def setup_fixture(

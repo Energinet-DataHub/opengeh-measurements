@@ -65,4 +65,6 @@ class BaseJobTests:
         actual = setup_fixture.wait_for_log_query_completion(query)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+        assert actual.status == LogsQueryStatus.SUCCESS, (
+            f"The query did not complete successfully: {actual.status}. Query: {query}"
+        )
