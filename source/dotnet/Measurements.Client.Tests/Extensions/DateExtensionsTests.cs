@@ -6,7 +6,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
 
 [UnitTest]
-public class LocalDateExtensionsTests
+public class DateExtensionsTests
 {
     [Theory]
     [InlineData(2025, 3, 30, "2025-03-29T23:00:00Z")]
