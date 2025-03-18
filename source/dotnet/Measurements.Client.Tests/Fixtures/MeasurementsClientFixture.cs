@@ -65,11 +65,11 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
     private static IEnumerable<IEnumerable<string>> CreateRows(DateOnly observationDate)
     {
-        var obsTime = observationDate.ToUtcDateTimeOffset();
+        var observationTime = observationDate.ToUtcDateTimeOffset();
         for (var i = 0; i <= 23; i++)
         {
-            yield return new List<string> { "'1234567890'", "'kwh'", $"'{obsTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
-            obsTime = obsTime.AddHours(1);
+            yield return new List<string> { "'1234567890'", "'kwh'", $"'{observationTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
+            observationTime = observationTime.AddHours(1);
         }
     }
 }
