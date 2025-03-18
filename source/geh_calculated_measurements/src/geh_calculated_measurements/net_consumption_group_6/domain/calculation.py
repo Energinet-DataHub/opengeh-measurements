@@ -17,6 +17,11 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
+    time_zone: str,
+    orchestration_instance_id: str,
+    calculation_day: int,
+    calculation_month: int,
+    calculation_year: int,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc()
     measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
