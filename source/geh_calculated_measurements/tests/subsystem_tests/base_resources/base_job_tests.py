@@ -9,8 +9,6 @@ from geh_calculated_measurements.testing.utilities.log_query_client_wrapper impo
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-
 
 class BaseJobTests:
     @pytest.fixture(autouse=True, scope="class")
