@@ -1,7 +1,6 @@
 ﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
-using NodaTime;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;

@@ -8,7 +8,6 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
