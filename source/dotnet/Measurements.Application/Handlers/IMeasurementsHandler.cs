@@ -1,4 +1,7 @@
-﻿namespace Energinet.DataHub.Measurements.Application.Handlers;
+﻿using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Application.Responses;
+
+namespace Energinet.DataHub.Measurements.Application.Handlers;
 
 /// <summary>
 /// Interface for handling measurements requests.
@@ -6,9 +9,8 @@
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Get measurement by id.
+    /// Get measurement matching request attributes.
     /// </summary>
-    /// <param name="measurementId">Id of measurement to fetch.</param>
-    /// <returns>Forty-two.</returns>
-    Task<int> GetMeasurementAsync(string measurementId);
+    /// <param name="getMeasurementRequest"></param>
+    Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest getMeasurementRequest);
 }
