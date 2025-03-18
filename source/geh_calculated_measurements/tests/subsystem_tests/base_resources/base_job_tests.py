@@ -1,9 +1,7 @@
-import time
 from abc import abstractmethod
 
 import pytest
 from databricks.sdk.service.jobs import RunResultState
-from databricks.sdk.service.sql import StatementState
 from geh_common.databricks import DatabricksApiClient
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
@@ -95,10 +93,8 @@ class BaseJobTests:
         response = databricks_api_client.execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
             statement=statement,
+            wait_for_response=True,
         )
-
-        while response.status.state in [StatementState.PENDING, StatementState.RUNNING]:
-            time.sleep(10)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0
