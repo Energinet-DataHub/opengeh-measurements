@@ -8,9 +8,9 @@ import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
+from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
-from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
@@ -21,8 +21,8 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
 
     # Act
     SilverMeasurementsRepository().write_stream(
-        mocked_measurements, 
-        OrchestrationTypeEnum.SUBMITTED, 
+        mocked_measurements,
+        OrchestrationTypeEnum.SUBMITTED,
         mocked_batch_operation,
     )
 
@@ -44,7 +44,7 @@ def test__write_measurements__when_contionous_streaming_is_disabled__should_not_
 
     # Act
     SilverMeasurementsRepository().write_stream(
-        mocked_measurements, 
+        mocked_measurements,
         OrchestrationTypeEnum.SUBMITTED,
         mocked_batch_operation,
     )
