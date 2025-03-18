@@ -14,20 +14,20 @@ from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 @pytest.fixture(scope="session")
 def gold_table_seeded(spark: SparkSession) -> None:
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
 
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
+        database_name=MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD,
+        table_name=MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME,
         schema=electrical_heating_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        table_location=f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}/{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
     )
 
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}-{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}.csv"
     time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
     time_series_points.write.option("overwriteSchema", "true").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}",
         format="delta",
         mode="overwrite",
     )
@@ -35,12 +35,12 @@ def gold_table_seeded(spark: SparkSession) -> None:
 
 @pytest.fixture(scope="session")
 def calculated_measurements_table_created(spark: SparkSession) -> None:
-    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE)
+    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL)
 
     create_table(
         spark,
-        database_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE,
+        database_name=CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
         table_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}/{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}/{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}",
     )

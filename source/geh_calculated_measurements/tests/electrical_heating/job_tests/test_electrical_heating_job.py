@@ -32,12 +32,12 @@ def test_execute(
             "CATALOG_NAME": "spark_catalog",
             "TIME_ZONE": "Europe/Copenhagen",
             "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
-            "MEASUREMENTS_CALCULATED_INTERNAL_DATABASE": "measurements_calculated_internal",
+            "DATABASE_MEASUREMENTS_CALCULATED_INTERNAL": "measurements_calculated_internal",
         },
     )
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}.{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}.{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
