@@ -19,5 +19,5 @@ def execute(
     time_series_points: TimeSeriesPoints,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc()
-    daily = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
-    return (cenc, daily)
+    measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
+    return (cenc, measurements)

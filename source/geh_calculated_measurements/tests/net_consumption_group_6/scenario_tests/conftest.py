@@ -41,7 +41,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     # Execute the logic
-    (cenc, measurements) = execute(
+    cenc, measurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
