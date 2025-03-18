@@ -101,7 +101,7 @@ def test__handle_invalid_submitted_transactions__calls_expected_methods(mock_app
 def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid, mock_handle_invalid) -> None:
     # Arrange
     batch_id = 1
-    
+
     mock_submitted_transactions = mock.Mock()
     mock_valid_transactions = mock.Mock()
     mock_invalid_transactions = mock.Mock()

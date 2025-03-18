@@ -25,7 +25,7 @@ class MigratedTransactionsRepository:
 
     def read_measurements_bronze_migrated_transactions_as_stream(self) -> DataFrame:
         return self.spark.readStream.table(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
-    
+
     def write_measurements_bronze_migrated(self, data: DataFrame) -> None:
         return (
             data.write.format("delta")
