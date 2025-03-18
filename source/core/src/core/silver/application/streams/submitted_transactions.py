@@ -31,11 +31,11 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
         submitted_transactions
     )
 
-    _handle_valid_submitted_transactions(valid_submitted_transactions, batchId)
+    _handle_valid_submitted_transactions(valid_submitted_transactions)
     _handle_invalid_submitted_transactions(invalid_submitted_transactions)
 
 
-def _handle_valid_submitted_transactions(submitted_transactions: DataFrame, batchId: int) -> None:
+def _handle_valid_submitted_transactions(submitted_transactions: DataFrame) -> None:
     spark = spark_session.initialize_spark()
     measurements = measurements_transformation.transform(spark, submitted_transactions)
 

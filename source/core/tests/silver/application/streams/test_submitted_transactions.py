@@ -75,7 +75,7 @@ def test__handle_valid_submitted_transactions__calls_expected_methods(
     mock_submitted_transactions = mock.Mock()
 
     # Act
-    sut._handle_valid_submitted_transactions(mock_submitted_transactions, 0)
+    sut._handle_valid_submitted_transactions(mock_submitted_transactions)
 
     # Assert
     mock_initialize_spark.assert_called_once()
@@ -112,7 +112,7 @@ def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid
 
     # Assert
     mock_unpack.assert_called_once_with(mock_submitted_transactions)
-    mock_handle_valid.assert_called_once_with(mock_valid_transactions, batch_id)
+    mock_handle_valid.assert_called_once_with(mock_valid_transactions)
     mock_handle_invalid.assert_called_once_with(mock_invalid_transactions)
 
 
