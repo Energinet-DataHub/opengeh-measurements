@@ -55,7 +55,9 @@ def _reorganize_values_array_to_match_measurements() -> Column:
 
 
 def _get_is_cancelled() -> Column:
-    return F.col(BronzeMigratedTransactionsColumnNames.read_reason) == ReadReasonEnum.CAN.value
+    return (F.col(BronzeMigratedTransactionsColumnNames.read_reason) == ReadReasonEnum.CAN.value) | (
+        F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value
+    )
 
 
 def _get_is_deleted() -> Column:
