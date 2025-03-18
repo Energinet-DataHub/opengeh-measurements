@@ -39,5 +39,8 @@
         <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
 
 </Project>

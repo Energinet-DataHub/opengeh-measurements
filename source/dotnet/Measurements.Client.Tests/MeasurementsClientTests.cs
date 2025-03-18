@@ -1,6 +1,7 @@
 ﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
+using NodaTime;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
@@ -28,7 +29,7 @@ public class MeasurementsClientTests
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateOnly(year, month, day));
+            new LocalDate(year, month, day));
 
         // Act
         var result = (await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
@@ -45,7 +46,7 @@ public class MeasurementsClientTests
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateOnly(1990, 1, 2));
+            new LocalDate(1990, 1, 2));
 
         // Act
         var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);

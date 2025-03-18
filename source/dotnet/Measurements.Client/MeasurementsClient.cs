@@ -42,7 +42,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     private static string CreateUrl(GetMeasurementsForDayQuery query)
     {
         var startDate = query.Date.ToUtcString();
-        var endDate = query.Date.AddDays(1).ToUtcString();
+        var endDate = query.Date.PlusDays(1).ToUtcString();
 
         return $"/measurements?MeteringPointId={query.MeteringPointId}&StartDate={startDate}&EndDate={endDate}";
     }

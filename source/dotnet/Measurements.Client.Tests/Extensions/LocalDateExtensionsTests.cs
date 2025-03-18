@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Energinet.DataHub.Measurements.Client.Extensions;
+using NodaTime;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
@@ -18,7 +19,7 @@ public class LocalDateExtensionsTests
         int year, int month, int day, string expected)
     {
         // Arrange
-        var date = new DateOnly(year, month, day);
+        var date = new LocalDate(year, month, day);
 
         // Act
         var result = date.ToUtcString();
@@ -38,7 +39,7 @@ public class LocalDateExtensionsTests
         int year, int month, int day, string expected)
     {
         // Arrange
-        var date = new DateOnly(year, month, day);
+        var date = new LocalDate(year, month, day);
 
         // Act
         var result = date.ToUtcDateTimeOffset();
