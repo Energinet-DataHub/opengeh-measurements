@@ -4,10 +4,12 @@ nullable = True
 
 metering_point_periods_v1 = t.StructType(
     [
-        #
+        # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
+        # The code of the grid area that the metering point belongs to
         t.StructField("grid_area_code", t.StringType(), not nullable),
+        #
         #
         t.StructField("resolution", t.StringType(), not nullable),
         #
@@ -19,6 +21,7 @@ metering_point_periods_v1 = t.StructType(
     ]
 )
 """
-Metering point periods for all metering points that grid access providers submit measurements for. This includes all metering points
-except those where subtype='calculated' or where type="D99".
+Periods for metering points with physical status "connected" or "disconnected". 
+Includes all metering point types except those where subtype="calculated" or where type="D99". 
+The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
 """
