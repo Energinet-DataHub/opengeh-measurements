@@ -1,12 +1,6 @@
-from decimal import Decimal
-
 import pyspark.sql.types as T
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
-from geh_common.telemetry import use_span
-from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
-
-from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 _cenc_schema = T.StructType(
     [
@@ -23,15 +17,4 @@ class Cenc(DataFrameWrapper):
     def __init__(self, df: DataFrame):
         super().__init__(df=df, schema=_cenc_schema, ignore_nullability=True)
 
-
-@use_span()
-@testing()
-def calculate_cenc() -> Cenc:
-    """Return a data frame with schema `cenc_schema`."""
-    # TODO JVM: Replace this dummy code
-    spark = initialize_spark()
-    # TODO JVM: Hardcoded data to match the first scenario test
-    data = [("00000000-0000-0000-0000-000000000001", "150000001500170200", Decimal("1000.000"), 2025, 1)]
-    df = spark.createDataFrame(data, schema=_cenc_schema)
-
-    return Cenc(df)
+    schema = _cenc_schema
