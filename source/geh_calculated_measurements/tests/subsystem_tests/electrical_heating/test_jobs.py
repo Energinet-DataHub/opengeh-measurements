@@ -23,15 +23,19 @@ class TestElectricalHeating(BaseJobTests):
     Test class for electrical heating.
     """
 
+    fixture = None
+
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        table_seeder = GoldTableSeeder(environment_configuration)
-        table_seeder.seed(gold_table_row)
-        job_parameters = {"orchestration-instance-id": uuid.uuid4()}
-        return BaseJobFixture(
-            environment_configuration=environment_configuration,
-            job_name="ElectricalHeating",
-            job_parameters=job_parameters,
-        )
+        if self.fixture is None:
+            table_seeder = GoldTableSeeder(environment_configuration)
+            table_seeder.seed(gold_table_row)
+            job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+            self.fixture = BaseJobFixture(
+                environment_configuration=environment_configuration,
+                job_name="ElectricalHeating",
+                job_parameters=job_parameters,
+            )
+        return self.fixture
 
     @pytest.fixture(autouse=True, scope="class")
     def setup_fixture(
