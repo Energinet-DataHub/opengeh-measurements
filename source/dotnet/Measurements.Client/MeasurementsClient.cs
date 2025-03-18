@@ -1,10 +1,8 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
-using Energinet.DataHub.Measurements.Client.Converter;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using NodaTime.Serialization.SystemTextJson;
@@ -22,7 +20,6 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         {
             NodaConverters.InstantConverter,
             new JsonStringEnumConverter(),
-            new MeasurementPointsConverter(),
         },
     };
 
@@ -33,11 +30,18 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
-        var measurementPoints = await response.Content
-            .ReadFromJsonAsync<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions, cancellationToken)
-            .ConfigureAwait(false);
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var measurementPoints = await DeserializeResponseStreamAsync(stream, cancellationToken);
 
-        return measurementPoints ?? throw new InvalidOperationException("Could not deserialize response.");
+        return measurementPoints;
+    }
+
+    private async Task<IEnumerable<MeasurementPoint>> DeserializeResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    {
+        var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+        var pointElement = jsonDocument.RootElement.GetProperty("Points");
+
+        return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
     private static string CreateUrl(GetMeasurementsForDayQuery query)
