@@ -14,7 +14,7 @@ class Table(ABC):
         self._df = df
 
     def __init_subclass__(cls) -> None:
-        """Test."""
+        """Doc."""
         schema = []
 
         d = {**cls.__class__.__dict__, **cls.__dict__}
