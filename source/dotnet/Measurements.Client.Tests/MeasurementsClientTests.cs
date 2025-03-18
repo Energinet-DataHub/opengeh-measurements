@@ -29,7 +29,7 @@ public class MeasurementsClientTests
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new LocalDate(year, month, day));
+            new DateOnly(year, month, day));
 
         // Act
         var result = (await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
@@ -46,7 +46,7 @@ public class MeasurementsClientTests
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new LocalDate(1990, 1, 2));
+            new DateOnly(1990, 1, 2));
 
         // Act
         var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);

@@ -34,8 +34,8 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 1, 2)));
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 6, 15)));
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new DateOnly(2025, 1, 2)));
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new DateOnly(2025, 6, 15)));
     }
 
     public new async Task DisposeAsync()
@@ -64,7 +64,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows(LocalDate observationDate)
+    private static IEnumerable<IEnumerable<string>> CreateRows(DateOnly observationDate)
     {
         var obsTime = observationDate.ToUtcDateTimeOffset();
         for (var i = 0; i <= 23; i++)

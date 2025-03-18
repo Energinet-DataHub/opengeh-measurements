@@ -19,7 +19,7 @@ public class LocalDateExtensionsTests
         int year, int month, int day, string expected)
     {
         // Arrange
-        var date = new LocalDate(year, month, day);
+        var date = new DateOnly(year, month, day);
 
         // Act
         var result = date.ToUtcString();
@@ -39,7 +39,7 @@ public class LocalDateExtensionsTests
         int year, int month, int day, string expected)
     {
         // Arrange
-        var date = new LocalDate(year, month, day);
+        var date = new DateOnly(year, month, day);
 
         // Act
         var result = date.ToUtcDateTimeOffset();
