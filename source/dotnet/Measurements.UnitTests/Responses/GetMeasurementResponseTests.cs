@@ -20,7 +20,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create("123456789", measurements);
+        var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
         Assert.Equal(3, actual.Points.Count);
@@ -46,10 +46,24 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create("123456789", measurements);
+        var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedUnit, actual.Points.Single().Unit);
+    }
+
+    [Fact]
+    public void Create_WhenUnitUnknown_ThenThrowsException()
+    {
+        // Arrange
+        var measurements = new List<MeasurementsResult>
+        {
+            new(CreateRaw(unit: "unknown")),
+        };
+
+        // Act
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
     [Theory]
@@ -66,7 +80,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create("123456789", measurements);
+        var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedQuality, actual.Points.Single().Quality);
@@ -78,12 +92,12 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(quality: "UnknownQuality")),
+            new(CreateRaw(quality: "unknown")),
         };
 
         // Act
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create("123456789", measurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
     private static ExpandoObject CreateRaw(string unit = "kwh", string quality = "measured")

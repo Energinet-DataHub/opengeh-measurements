@@ -1,6 +1,6 @@
 ﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Energinet.DataHub.Measurements.Client.Tests.Extensions;
+using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;

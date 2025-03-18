@@ -1,8 +1,7 @@
-﻿using System.Net;
-using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
@@ -11,7 +10,7 @@ public class MeasurementsClientTests
 {
     private MeasurementsClientFixture Fixture { get; }
 
-    private IMeasurementsClient MeasurementsClient { get; }
+    private MeasurementsClient MeasurementsClient { get; }
 
     public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
@@ -19,13 +18,16 @@ public class MeasurementsClientTests
         MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
     }
 
-    [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurementDto()
+    [Theory]
+    [InlineData(2025, 1, 2)]
+    [InlineData(2025, 6, 15)]
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurementDto(
+        int year, int month, int day)
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateTimeOffset(2025, 1, 2, 23, 0, 0, TimeSpan.Zero));
+            new LocalDate(year, month, day));
 
         // Act
         var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
@@ -40,10 +42,9 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyListOfPoints()
     {
         // Arrange
-        const string meteringPointId = "1234567890";
         var query = new GetMeasurementsForDayQuery(
-            meteringPointId,
-            new DateTimeOffset(1900, 1, 2, 0, 0, 0, TimeSpan.Zero));
+            "1234567890",
+            new LocalDate(1990, 1, 2));
 
         // Act
         var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);

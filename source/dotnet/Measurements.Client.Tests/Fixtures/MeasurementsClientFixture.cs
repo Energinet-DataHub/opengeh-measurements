@@ -3,10 +3,12 @@ using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
@@ -32,8 +34,8 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
-        var rows = CreateRows();
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 1, 2)));
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 6, 15)));
     }
 
     public new async Task DisposeAsync()
@@ -62,9 +64,9 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows()
+    private static IEnumerable<IEnumerable<string>> CreateRows(LocalDate observationDate)
     {
-        var obsTime = new DateTimeOffset(2025, 1, 2, 23, 0, 0, TimeSpan.Zero);
+        var obsTime = observationDate.ToUtcDateTimeOffset();
         for (var i = 0; i <= 23; i++)
         {
             yield return new List<string> { "'1234567890'", "'kwh'", $"'{obsTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
