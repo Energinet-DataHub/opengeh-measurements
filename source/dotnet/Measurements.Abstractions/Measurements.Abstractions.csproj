@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Abstractions</PackageId>
-        <PackageVersion>1.1.4$(VersionSuffix)</PackageVersion>
+        <PackageVersion>1.2.0$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Abstractions library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>
@@ -39,5 +39,8 @@
         <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
 
 </Project>
