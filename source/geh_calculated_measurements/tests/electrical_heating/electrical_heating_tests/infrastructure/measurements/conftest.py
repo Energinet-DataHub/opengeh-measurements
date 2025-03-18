@@ -15,6 +15,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 @pytest.fixture(autouse=True)
 def measurements_gold_with_data(spark: SparkSession) -> None:
     """Create a test database and table for measurements_gold."""
+    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_GOLD", "measurements_gold")
     # Create the database
     create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD)
 

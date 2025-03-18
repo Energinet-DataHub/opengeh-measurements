@@ -16,20 +16,21 @@ from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
 @pytest.fixture(scope="session")
 def gold_table_seeded(spark: SparkSession) -> None:
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS)
+    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_GOLDS", "measurements_gold")
+    create_database(spark, MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLDS)
 
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS,
-        table_name=MeasurementsGoldDatabaseDefinition.MEASUREMENTS,
+        database_name=MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLDS,
+        table_name=MeasurementsGoldDatabaseDefinition().MEASUREMENTS,
         schema=capacity_settlement_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}/{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
+        table_location=f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLDS}/{MeasurementsGoldDatabaseDefinition().MEASUREMENTS}",
     )
 
-    file_name = f"{TEST_FILES_FOLDER_PATH}/{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}-{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}.csv"
+    file_name = f"{TEST_FILES_FOLDER_PATH}/{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLDS}-{MeasurementsGoldDatabaseDefinition().MEASUREMENTS}.csv"
     time_series_points = read_csv_path(spark, file_name, capacity_settlement_v1)
     time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_MEASUREMENTS_GOLDS}.{MeasurementsGoldDatabaseDefinition.MEASUREMENTS}",
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLDS}.{MeasurementsGoldDatabaseDefinition().MEASUREMENTS}",
         format="delta",
         mode="overwrite",
     )
@@ -37,12 +38,13 @@ def gold_table_seeded(spark: SparkSession) -> None:
 
 @pytest.fixture(scope="session")
 def calculated_measurements_table_created(spark: SparkSession) -> None:
-    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE)
+    pytest.MonkeyPatch().setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
+    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL)
 
     create_table(
         spark,
-        database_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE,
+        database_name=CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL,
         table_name=CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME,
         schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_CALCULATED_INTERNAL_DATABASE}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
     )
