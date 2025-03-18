@@ -9,9 +9,11 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Persistence;
 
+[UnitTest]
 public class MeasurementsRepositoryTests
 {
     [Theory]
