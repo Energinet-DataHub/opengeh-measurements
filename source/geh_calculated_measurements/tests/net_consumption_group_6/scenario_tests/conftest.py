@@ -53,7 +53,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     )
 
     with patch.dict("os.environ", _JOB_ENVIRONMENT_VARIABLES):
-        with open(f"{scenario_path}/when/job_parameters.yml") as f:
+        with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
             args = yaml.safe_load(f)
         with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
             args = NetConsumptionGroup6Args()
@@ -65,6 +65,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints(child_metering_points),
         args.time_zone,
         args.orchestration_instance_id,
+        args.execution_start_datetime,
     )
 
     # Return test cases

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Tuple
 
 from geh_common.telemetry import use_span
@@ -19,6 +20,7 @@ def execute(
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
     orchestration_instance_id: str,
+    execution_start_datetime: datetime,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc(consumption_metering_point_periods, child_metering_points, time_series_points)
     measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
