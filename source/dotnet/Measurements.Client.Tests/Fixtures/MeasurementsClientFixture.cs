@@ -62,15 +62,15 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRows(LocalDate observationDate)
     {
-        var observationTime = observationDate.ToUtcDateTimeOffset();
         for (var i = 0; i <= 23; i++)
         {
-            yield return new List<string> { "'1234567890'", "'kwh'", $"'{observationTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
-            observationTime = observationTime.AddHours(1);
+            yield return new List<string> { "'1234567890'", "'kwh'", $"'{observationDate.ToUtcString()}'", $"{i}.4", "'measured'", "'2023-01-01T23:00:00Z'" };
+            observationDate = observationDate.PlusDays(1);
         }
     }
 }
