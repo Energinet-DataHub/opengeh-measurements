@@ -14,7 +14,11 @@ class TestMissingMeasurementsLog(BaseJobTests):
 
     fixture = None
 
-    job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+    job_parameters = {
+        "orchestration-instance-id": uuid.uuid4(),
+        "period_start_datetime": "2025-01-02T22:00:00Z",
+        "period_end_datetime": "2025-01-03T22:00:00Z",
+    }
 
     def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
         if self.fixture is None:
