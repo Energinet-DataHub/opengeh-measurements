@@ -48,7 +48,6 @@ class CoreFixture:
         )
 
         def stop_receive(client):
-            print("Stopping client after 1 minute")
             client.close()
 
         global found_orchestration_instance_id
@@ -72,6 +71,7 @@ class CoreFixture:
             timer = Timer(60, stop_receive, [client])
             timer.start()
             client.receive(on_event=on_event, max_wait_time=60)
+            timer.cancel()
 
         assert found_orchestration_instance_id is True
         credential.close()
