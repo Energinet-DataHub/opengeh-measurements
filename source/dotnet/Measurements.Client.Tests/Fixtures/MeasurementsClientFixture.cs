@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
@@ -34,8 +33,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 1, 2)));
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows(new LocalDate(2025, 6, 15)));
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
@@ -64,13 +62,34 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows(LocalDate observationDate)
+    private static List<IEnumerable<string>> CreateRows()
+    {
+        var dates = new[]
+        {
+            new LocalDate(2025, 1, 2),
+            new LocalDate(2025, 1, 3),
+            new LocalDate(2025, 1, 4),
+            new LocalDate(2025, 1, 5),
+            new LocalDate(2025, 1, 6),
+            new LocalDate(2025, 1, 7),
+            new LocalDate(2025, 1, 8),
+            new LocalDate(2025, 6, 15),
+        };
+
+        return [.. dates.SelectMany(CreateRow)];
+    }
+
+    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
     {
         var observationTime = observationDate.ToUtcDateTimeOffset();
-        for (var i = 0; i <= 23; i++)
+
+        return Enumerable.Range(0, 24).Select(i => new[]
         {
-            yield return new List<string> { "'1234567890'", "'kwh'", $"'{observationTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)}'", $"{i}.4", "'measured'" };
-            observationTime = observationTime.AddHours(1);
-        }
+            "'1234567890'",
+            "'kwh'",
+            $"'{observationTime.AddHours(i).ToFormattedString()}'",
+            $"{i}.4",
+            "'measured'",
+        });
     }
 }
