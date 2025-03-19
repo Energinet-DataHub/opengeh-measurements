@@ -59,8 +59,8 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
-        var from = new DateTimeOffset(2025, 1, 1, 23, 0, 0, TimeSpan.Zero);
-        var to = from.AddDays(4);
+        var from = new LocalDate(2025, 1, 2);
+        var to = new LocalDate(2025, 1, 6);
         var query = new GetMeasurementsForPeriodQuery("1234567890", from, to);
 
         // Act

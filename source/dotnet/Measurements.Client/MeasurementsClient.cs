@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -20,7 +21,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateUrl(query.MeteringPointId, query.Date.ToUtcString(), query.Date.PlusDays(1).ToUtcString());
+        var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
@@ -29,7 +30,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateUrl(query.MeteringPointId, query.FromDate.ToFormattedString(), query.ToDate.ToFormattedString());
+        var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
@@ -54,8 +55,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
-    private static string CreateUrl(string meteringPointId, string fromDate, string toDate)
+    private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
-        return $"/measurements?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
+        return $"/measurements?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 }

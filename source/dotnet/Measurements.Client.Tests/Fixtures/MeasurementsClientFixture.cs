@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
