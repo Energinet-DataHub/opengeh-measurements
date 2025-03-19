@@ -10,3 +10,7 @@ metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_
 150000001500170202;net_consumption;calculated;PT1H;170000000150000202;2024-12-31T23:00:00Z;;Case 2: nsg2, up to end, with D15, summer/wintertime
 060000001500170202;supply_to_grid;calculated;PT1H;170000000150000202;2024-12-31T23:00:00Z;;Case 2: nsg2, up to end, with D15, summer/wintertime
 070000001500170202;consumption_from_grid;calculated;PT1H;170000000150000202;2024-12-31T23:00:00Z;;Case 2: nsg2, up to end, with D15, summer/wintertime
+140000001500170203;electrical_heating;calculated;PT1H;170000000150000203;2024-12-31T23:00:00Z;;Case 3: nsg2, up to end, with D15, period < 1 year
+150000001500170203;net_consumption;calculated;PT1H;170000000150000203;2024-12-31T23:00:00Z;;Case 3: nsg2, up to end, with D15, period < 1 year
+060000001500170203;supply_to_grid;calculated;PT1H;170000000150000203;2024-12-31T23:00:00Z;;Case 3: nsg2, up to end, with D15, period < 1 year
+070000001500170203;consumption_from_grid;calculated;PT1H;170000000150000203;2024-12-31T23:00:00Z;;Case 3: nsg2, up to end, with D15, period < 1 year

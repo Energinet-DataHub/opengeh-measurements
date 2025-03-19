@@ -5,10 +5,12 @@ notes: |
 
 cases_tested:
   "Electrical Heating Tests":
-    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to consumption metering point for the day"
-    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to consumption metering point for the day"
-    - "WHEN (total period consumption => period limit) THEN 0 should be added to consumption metering point for the day"
-    - "GIVEN period = 1 year WHEN there is no end-of-period THEN base period limit = 4000"
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
+    - "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+
+  "Period length and base period limit":
+    - "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
 
   "Summer/Wintertime handling":
     - "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45"
