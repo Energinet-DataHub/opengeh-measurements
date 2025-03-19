@@ -6,7 +6,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
 
 [UnitTest]
-public class LocalDateExtensionsTests
+public class DateAndTimeExtensionsTests
 {
     [Theory]
     [InlineData(2025, 3, 30, "2025-03-29T23:00:00Z")]
@@ -22,10 +22,10 @@ public class LocalDateExtensionsTests
         var date = new LocalDate(year, month, day);
 
         // Act
-        var result = date.ToUtcString();
+        var actual = date.ToUtcString();
 
         // Assert
-        Assert.Equal(expected, result);
+        Assert.Equal(expected, actual);
     }
 
     [Theory]
@@ -42,9 +42,22 @@ public class LocalDateExtensionsTests
         var date = new LocalDate(year, month, day);
 
         // Act
-        var result = date.ToUtcDateTimeOffset();
+        var actual = date.ToUtcDateTimeOffset();
 
         // Assert
-        Assert.Equal(expected, result.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
+        Assert.Equal(expected, actual.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void ToFormattedString_WhenCalled_ReturnsFormattedString()
+    {
+        // Arrange
+        var date = new DateTimeOffset(2025, 3, 30, 0, 0, 0, TimeSpan.Zero);
+
+        // Act
+        var actual = date.ToFormattedString();
+
+        // Assert
+        Assert.Equal("2025-03-30T00:00:00Z", actual);
     }
 }
