@@ -18,6 +18,6 @@ current_measurements_schema = T.StructType(
     ]
 )
 """
-Schema for all current measurements. This is a generic contract used for multiple calculations
+Schema for all current measurements. This is a generic contract used for multiple types of calculation
 """
 
