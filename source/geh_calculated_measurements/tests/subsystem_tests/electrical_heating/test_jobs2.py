@@ -20,38 +20,44 @@ class TestElectricalHeating:
     @pytest.mark.order(1)
     def test__seed_gold_table(self) -> None:
         # Arrange
-        self.fixture.seed_gold_table(self.fixture.get_gold_table_rows())
+        TestElectricalHeating.fixture.seed_gold_table(TestElectricalHeating.fixture.get_gold_table_rows())
 
     @pytest.mark.order(2)
     def test__given_job_input(self) -> None:
         # Act
-        self.fixture.job_state.input.job_id = self.fixture.get_job_id("ElectricalHeating")
-        self.fixture.job_state.input.orchestration_instance_id = uuid.uuid4()
+        TestElectricalHeating.fixture.job_state.input.job_id = TestElectricalHeating.fixture.get_job_id(
+            "ElectricalHeating"
+        )
+        TestElectricalHeating.fixture.job_state.input.orchestration_instance_id = uuid.uuid4()
         job_parameters = {
-            "orchestration-instance-id": self.fixture.job_state.input.orchestration_instance_id,
+            "orchestration-instance-id": TestElectricalHeating.fixture.job_state.input.orchestration_instance_id,
         }
 
-        self.fixture.job_state.input.job_parameters = job_parameters
+        TestElectricalHeating.fixture.job_state.input.job_parameters = job_parameters
 
         # Assert
-        assert self.fixture.job_state.input.job_id is not None
+        assert TestElectricalHeating.fixture.job_state.input.job_id is not None
 
     @pytest.mark.order(3)
     def test__when_job_started(self) -> None:
         # Act
-        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.input)
+        TestElectricalHeating.fixture.job_state.run_id = TestElectricalHeating.fixture.start_job(
+            TestElectricalHeating.fixture.job_state.input
+        )
 
         # Assert
-        assert self.fixture.job_state.run_id is not None
+        assert TestElectricalHeating.fixture.job_state.run_id is not None
 
     @pytest.mark.order(4)
     def test__then_job_is_completed(self) -> None:
         # Act
-        self.fixture.job_state.run_result_state = self.fixture.wait_for_job_completion(self.fixture.job_state.run_id)
+        TestElectricalHeating.fixture.job_state.run_result_state = (
+            TestElectricalHeating.fixture.wait_for_job_completion(TestElectricalHeating.fixture.job_state.run_id)
+        )
 
         # Assert
-        assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+        assert TestElectricalHeating.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
+            f"The job {TestElectricalHeating.fixture.job_state.input.job_id} did not complete successfully: {TestElectricalHeating.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(5)
@@ -60,11 +66,13 @@ class TestElectricalHeating:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{self.fixture.job_state.input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{TestElectricalHeating.fixture.job_state.input.orchestration_instance_id}'
         """
 
         # Act
-        actual = self.fixture.wait_for_log_query_completion(query, self.fixture.job_state)
+        actual = TestElectricalHeating.fixture.wait_for_log_query_completion(
+            query, TestElectricalHeating.fixture.job_state
+        )
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}."

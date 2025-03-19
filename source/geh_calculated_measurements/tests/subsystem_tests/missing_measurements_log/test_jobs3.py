@@ -20,33 +20,37 @@ class TestMissingMeasurementsLog:
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
         # Act
-        self.fixture.job_state.input.job_id = self.fixture.get_job_id("MissingMeasurementsLog")
-        self.fixture.job_state.input.orchestration_instance_id = uuid.uuid4()
+        TestMissingMeasurementsLog.fixture.job_state.input.job_id = self.fixture.get_job_id("MissingMeasurementsLog")
+        TestMissingMeasurementsLog.fixture.job_state.input.orchestration_instance_id = uuid.uuid4()
         job_parameters = {
-            "orchestration-instance-id": self.fixture.job_state.input.orchestration_instance_id,
+            "orchestration-instance-id": TestMissingMeasurementsLog.fixture.job_state.input.orchestration_instance_id,
         }
 
-        self.fixture.job_state.input.job_parameters = job_parameters
+        TestMissingMeasurementsLog.fixture.job_state.input.job_parameters = job_parameters
 
         # Assert
-        assert self.fixture.job_state.input.job_id is not None
+        assert TestMissingMeasurementsLog.fixture.job_state.input.job_id is not None
 
     @pytest.mark.order(2)
     def test__when_job_started(self) -> None:
         # Act
-        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.input)
+        TestMissingMeasurementsLog.fixture.job_state.run_id = TestMissingMeasurementsLog.fixture.start_job(
+            TestMissingMeasurementsLog.fixture.job_state.input
+        )
 
         # Assert
-        assert self.fixture.job_state.run_id is not None
+        assert TestMissingMeasurementsLog.fixture.job_state.run_id is not None
 
     @pytest.mark.order(3)
     def test__then_job_is_completed(self) -> None:
         # Act
-        self.fixture.job_state.run_result_state = self.fixture.wait_for_job_completion(self.fixture.job_state.run_id)
+        self.fixture.job_state.run_result_state = TestMissingMeasurementsLog.fixture.wait_for_job_completion(
+            TestMissingMeasurementsLog.fixture.job_state.run_id
+        )
 
         # Assert
-        assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+        assert TestMissingMeasurementsLog.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
+            f"The job {TestMissingMeasurementsLog.fixture.job_state.input.job_id} did not complete successfully: {TestMissingMeasurementsLog.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(4)
@@ -55,11 +59,13 @@ class TestMissingMeasurementsLog:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{self.fixture.job_state.input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{TestMissingMeasurementsLog.fixture.job_state.input.orchestration_instance_id}'
         """
 
         # Act
-        actual = self.fixture.wait_for_log_query_completion(query, self.fixture.job_state)
+        actual = TestMissingMeasurementsLog.fixture.wait_for_log_query_completion(
+            query, TestMissingMeasurementsLog.fixture.job_state
+        )
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}."
