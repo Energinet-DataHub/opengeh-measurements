@@ -18,6 +18,9 @@ class Input:
     job_id: int
     job_parameters: dict
 
+    def __init__(self) -> None:
+        self.job_parameters = {}
+
 
 class JobState:
     run_id: int
