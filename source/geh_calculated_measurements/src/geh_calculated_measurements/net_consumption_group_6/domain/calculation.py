@@ -21,3 +21,13 @@ def execute(
     cenc = calculate_cenc()
     measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
     return (cenc, measurements)
+
+
+@use_span()
+def execute_tmp() -> None:
+    dummy2()
+
+
+@use_span()
+def dummy2() -> int:
+    return 1 + 1

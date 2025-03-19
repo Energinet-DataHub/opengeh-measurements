@@ -32,4 +32,4 @@ class LogQueryClientWrapper:
 
             time.sleep(poll_interval_seconds)
 
-        raise TimeoutError(f"Query did not complete within {timeout_seconds} seconds.")
+        raise TimeoutError(f"Query did not complete within {timeout_seconds} seconds. Query: {query}.")

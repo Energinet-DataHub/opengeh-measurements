@@ -69,6 +69,4 @@ class TestCapacitySettlement:
         actual = self.fixture.wait_for_log_query_completion(query, self.fixture.job_state)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, (
-            f"The query did not complete successfully: {actual.status}. Query: {query}"
-        )
+        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}."
