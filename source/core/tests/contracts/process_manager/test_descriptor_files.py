@@ -5,7 +5,7 @@ import pytest
 
 def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
     """Compiles a .proto file into a descriptor file with correct proto_path."""
-    temp_descriptor = "temp_descriptor.binpb"
+    temp_descriptor = "__temp_descriptor__.binpb"
 
     result = subprocess.run(
         [
