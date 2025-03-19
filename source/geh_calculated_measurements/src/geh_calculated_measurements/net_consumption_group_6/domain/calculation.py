@@ -22,6 +22,13 @@ def execute(
     orchestration_instance_id: str,
     execution_start_datetime: datetime,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
-    cenc = calculate_cenc(consumption_metering_point_periods, child_metering_points, time_series_points)
+    cenc = calculate_cenc(
+        consumption_metering_point_periods,
+        child_metering_points,
+        time_series_points,
+        time_zone,
+        orchestration_instance_id,
+        execution_start_datetime,
+    )
     measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
     return (cenc, measurements)
