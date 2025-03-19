@@ -22,7 +22,9 @@ class Input:
 class JobState:
     run_id: int
     run_result_state: RunResultState
-    input: Input = Input()
+
+    def __init__(self) -> None:
+        self.input = Input()
 
 
 METERING_POINT_ID = "170000040000000201"
