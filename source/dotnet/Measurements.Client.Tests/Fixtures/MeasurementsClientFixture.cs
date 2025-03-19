@@ -13,11 +13,11 @@ namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
 public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
-
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
-
     public HttpClient HttpClient { get; }
+
+    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public MeasurementsClientFixture()
     {
@@ -60,20 +60,21 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static List<IEnumerable<string>> CreateRows()
     {
         var dates = new[]
         {
-            new LocalDate(2025, 1, 2),
-            new LocalDate(2025, 1, 3),
-            new LocalDate(2025, 1, 4),
-            new LocalDate(2025, 1, 5),
-            new LocalDate(2025, 1, 6),
-            new LocalDate(2025, 1, 7),
-            new LocalDate(2025, 1, 8),
-            new LocalDate(2025, 6, 15),
+            new LocalDate(2023, 1, 2),
+            new LocalDate(2023, 1, 3),
+            new LocalDate(2023, 1, 4),
+            new LocalDate(2023, 1, 5),
+            new LocalDate(2023, 1, 6),
+            new LocalDate(2023, 1, 7),
+            new LocalDate(2023, 1, 8),
+            new LocalDate(2023, 6, 15),
         };
 
         return [.. dates.SelectMany(CreateRow)];
@@ -90,6 +91,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
+            "'2025-03-12T03:40:55Z'",
         });
     }
 }
