@@ -1,10 +1,14 @@
-﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using System.Collections;
+using System.Globalization;
+using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NodaTime;
+using NodaTime.Text;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
@@ -64,10 +68,30 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+        // var rows = new List<IEnumerable<string>>();
+        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T23:00:00Z'", $"{i}.0", "'measured'", "'2023-10-01T22:00:00Z'" }));
+        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'0987654321'", "'kwh'", "'2023-06-01T22:00:00Z'", $"{i}.0", "'estimated'", "'2023-10-01T22:00:00Z'" }));
+        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'0987654321'", "'kwh'", "'2023-06-01T22:00:00Z'", $"{i}.0", "'measured'", "'2023-12-01T22:00:00Z'" }));
+        // return rows;
+        var rows = new List<IEnumerable<string>>();
+        rows.AddRange(CreateRow(new LocalDate(2022, 1, 2)));
+        rows.AddRange(CreateRow(new LocalDate(2023, 6, 1)));
+        rows.AddRange(CreateRow(new LocalDate(2023, 6, 1)));
+        return rows;
+    }
+
+    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate date)
+    {
+        for (var i = 0; i <= 23; i++)
+        {
+            var formattedObservationDate = date.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            yield return new List<string> { "'1234567890'", "'kwh'", $"'{formattedObservationDate}'", $"{i}.4", "'measured'", "'2023-01-01T23:00:00Z'" };
+            date = date.Plus(Period.FromHours(1));
+        }
     }
 }
