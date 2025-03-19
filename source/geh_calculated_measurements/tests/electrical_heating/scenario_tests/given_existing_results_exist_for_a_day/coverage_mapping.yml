@@ -11,7 +11,10 @@ cases_tested:
     - "GIVEN there is no active consumption metering point OR there is no active child electrical heating metering point WHEN there is measurement data for the day THEN no energy is added to an electrical heating child metering point for the day"
 
   "Results Filtering":
-    - "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should generate a result for that MP/day"
+    - "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should NOT generate a result for that MP/day"
+
+  "Leap Year Tests":
+    - "GIVEN the period less than 1 year WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
 
   "Net Settlement Groups":
     - "Electrical heating without net settlement group"
