@@ -1,3 +1,3 @@
-metering_point_id;period_from_date;period_to_date;grid_area_code;resolution;#comment
-170000000000000205;2023-12-31T23:00:00Z;;005;PT1H;Case 5: Wintertime change.
-170000000001500206;2023-12-31T23:00:00Z;;006;PT15M;Case 6: Wintertime change.
+metering_point_id;grid_area_code;resolution;period_from_date;period_to_date;#comment
+170000000000000205;005;PT1H;2023-12-31T23:00:00Z;;Case 5: Wintertime change.
+170000000001500206;006;PT15M;2023-12-31T23:00:00Z;;Case 6: Wintertime change.
