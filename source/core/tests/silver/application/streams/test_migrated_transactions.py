@@ -19,13 +19,13 @@ def test__migrated_transactions__should_call_expected(
     mock_MigratedTransactionsRepository,
     mock_initialize_spark,
 ) -> None:
-    # Arrang
+    # Arrange
     mock_spark = mock.Mock()
     mock_initialize_spark.return_value = mock_spark
 
-    mock_submitted_transactions = mock.Mock()
-    mock_submitted_transactions.read_stream = mock.Mock()
-    mock_MigratedTransactionsRepository.return_value = mock_submitted_transactions
+    mock_migrated_transactions = mock.Mock()
+    mock_migrated_transactions.read_stream = mock.Mock()
+    mock_MigratedTransactionsRepository.return_value = mock_migrated_transactions
 
     mock_write_measurements = mock.Mock()
     mock_write_measurements.write_stream = mock.Mock()
@@ -39,7 +39,7 @@ def test__migrated_transactions__should_call_expected(
     mock_MigratedTransactionsRepository.assert_called_once_with(mock_spark)
     mock_SilverMeasurementsRepository.assert_called_once()
 
-    mock_submitted_transactions.read_stream.assert_called_once()
+    mock_migrated_transactions.read_stream.assert_called_once()
     mock_write_measurements.write_stream.assert_called_once()
 
 
