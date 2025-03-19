@@ -8,7 +8,7 @@ class _DescriptorFileNames:
 
 class DescriptorFilePaths:
     Brs021ForwardMeteredDataNotifyV1 = str(
-        files("core.contracts.process_manager.Brs021ForwardMeteredDataNotify").joinpath(
+        files("core.contracts.process_manager.Brs021ForwardMeteredDataNotifyV1").joinpath(
             _DescriptorFileNames.Brs021ForwardMeteredDataNotifyV1
         )
     )
