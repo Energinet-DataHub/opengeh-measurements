@@ -91,7 +91,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
-            $"'{observationTime.AddHours(i).ToFormattedString()}'",
+            $"'2025-01-02T03:40:55Z'",
         });
     }
 }
