@@ -47,7 +47,7 @@ class CoreFixture:
             credential=credential,
         )
 
-        def stop_receive(client):
+        def stop_receive(client: EventHubConsumerClient):
             client.close()
 
         global found_orchestration_instance_id
@@ -59,8 +59,8 @@ class CoreFixture:
             if event is None:
                 return
             body = event.body_as_str()
-            message = Brs021ForwardMeteredDataNotifyV1.Brs021ForwardMeteredDataNotifyV1()
             body = body.encode("utf-8")
+            message = Brs021ForwardMeteredDataNotifyV1.Brs021ForwardMeteredDataNotifyV1()
             message.ParseFromString(body)
 
             if message.orchestration_instance_id == orchestration_instance_id:
