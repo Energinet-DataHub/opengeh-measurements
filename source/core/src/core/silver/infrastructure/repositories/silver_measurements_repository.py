@@ -1,14 +1,13 @@
 from typing import Callable
 
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.shared_helpers as shared_helpers
-from core.bronze.infrastructure.settings import (
-    SubmittedTransactionsStreamSettings,
-)
 from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
+from core.settings.streaming_settings import StreamingSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
 from core.utility import delta_table_helper
@@ -28,11 +27,10 @@ class SilverMeasurementsRepository:
     def write_stream(
         self,
         measurements: DataFrame,
+        orchestration_type: GehCommonOrchestrationType,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
-        checkpoint_location = shared_helpers.get_checkpoint_path(
-            self.data_lake_settings, self.silver_container_name, "submitted_transactions"
-        )
+        checkpoint_location = self._get_streaming_checkpoint_path(orchestration_type)
 
         write_stream = (
             measurements.writeStream.outputMode("append")
@@ -40,8 +38,7 @@ class SilverMeasurementsRepository:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        stream_settings = SubmittedTransactionsStreamSettings()
-
+        stream_settings = StreamingSettings()
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
 
@@ -60,6 +57,14 @@ class SilverMeasurementsRepository:
             self.table,
             self._merge_columns(),
         )
+
+    def _get_streaming_checkpoint_path(self, orchestration_type: GehCommonOrchestrationType) -> str:
+        if orchestration_type == GehCommonOrchestrationType.SUBMITTED:
+            checkpoint_name = "submitted_transactions"
+        elif orchestration_type == GehCommonOrchestrationType.MIGRATION:
+            checkpoint_name = "migrated_transactions"
+
+        return shared_helpers.get_checkpoint_path(self.data_lake_settings, self.silver_container_name, checkpoint_name)
 
     def _merge_columns(self) -> list[str]:
         return [
