@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
+﻿using System.Globalization;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
@@ -8,7 +7,6 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NodaTime;
-using NodaTime.Text;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
@@ -38,11 +36,10 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         var columnDefinitions = CreateMeasurementsColumnDefinitions();
-        var rows = CreateRows();
 
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
@@ -71,27 +68,43 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows()
+    private static List<IEnumerable<string>> CreateRows()
     {
-        // var rows = new List<IEnumerable<string>>();
-        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T23:00:00Z'", $"{i}.0", "'measured'", "'2023-10-01T22:00:00Z'" }));
-        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'0987654321'", "'kwh'", "'2023-06-01T22:00:00Z'", $"{i}.0", "'estimated'", "'2023-10-01T22:00:00Z'" }));
-        // rows.AddRange(Enumerable.Range(1, 24).Select(i => new List<string> { "'0987654321'", "'kwh'", "'2023-06-01T22:00:00Z'", $"{i}.0", "'measured'", "'2023-12-01T22:00:00Z'" }));
-        // return rows;
-        var rows = new List<IEnumerable<string>>();
-        rows.AddRange(CreateRow(new LocalDate(2022, 1, 2)));
-        rows.AddRange(CreateRow(new LocalDate(2023, 6, 1)));
-        rows.AddRange(CreateRow(new LocalDate(2023, 6, 1)));
-        return rows;
+        var dates = new[]
+        {
+            new LocalDate(2022, 1, 2),
+            new LocalDate(2022, 1, 3),
+            new LocalDate(2022, 1, 4),
+            new LocalDate(2022, 1, 5),
+            new LocalDate(2022, 1, 5),
+            new LocalDate(2022, 1, 5),
+        };
+
+        return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate date)
+    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
     {
-        for (var i = 0; i <= 23; i++)
+        var observationDateTime = ToInstant(observationDate);
+
+        return Enumerable.Range(0, 24).Select(i => new[]
         {
-            var formattedObservationDate = date.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-            yield return new List<string> { "'1234567890'", "'kwh'", $"'{formattedObservationDate}'", $"{i}.4", "'measured'", "'2023-01-01T23:00:00Z'" };
-            date = date.Plus(Period.FromHours(1));
-        }
+            "'1234567890'",
+            "'kwh'",
+            $"'{ToString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"{i}.4",
+            "'measured'",
+            $"'{ToString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+        });
+    }
+
+    private static Instant ToInstant(LocalDate date)
+    {
+        return Instant.FromUtc(date.Year, date.Month, date.Day, 0, 0, 0);
+    }
+
+    private static string ToString(Instant date)
+    {
+        return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
     }
 }
