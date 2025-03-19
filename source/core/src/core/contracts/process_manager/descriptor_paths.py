@@ -8,12 +8,12 @@ class _DescriptorFileNames:
 
 class DescriptorFilePaths:
     Brs021ForwardMeteredDataNotifyV1 = str(
-        files("core.contracts.process_manager.Brs021ForwardMeteredDataNotify.v1").joinpath(
+        files("core.contracts.process_manager.Brs021ForwardMeteredDataNotify").joinpath(
             _DescriptorFileNames.Brs021ForwardMeteredDataNotifyV1
         )
     )
     PersistSubmittedTransaction = str(
-        files("core.contracts.process_manager.PersistSubmittedTransaction.v1").joinpath(
+        files("core.contracts.process_manager.PersistSubmittedTransaction").joinpath(
             _DescriptorFileNames.PersistSubmittedTransaction
         )
     )
