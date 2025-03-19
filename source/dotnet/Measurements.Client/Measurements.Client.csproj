@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
-        <PackageVersion>1.1.4$(VersionSuffix)</PackageVersion>
+        <PackageVersion>1.2.0$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Client library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>
@@ -47,4 +47,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NodaTime" Version="3.2.0" />
+    </ItemGroup>
+    
 </Project>
