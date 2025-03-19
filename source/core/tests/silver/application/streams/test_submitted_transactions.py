@@ -100,13 +100,15 @@ def test__handle_invalid_submitted_transactions__calls_expected_methods(mock_app
 @mock.patch("core.silver.application.streams.submitted_transactions.persist_submitted_transaction.unpack")
 def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid, mock_handle_invalid) -> None:
     # Arrange
+    batch_id = 1
+
     mock_submitted_transactions = mock.Mock()
     mock_valid_transactions = mock.Mock()
     mock_invalid_transactions = mock.Mock()
     mock_unpack.return_value = (mock_valid_transactions, mock_invalid_transactions)
 
     # Act
-    sut._batch_operation(mock_submitted_transactions, batchId=1)
+    sut._batch_operation(mock_submitted_transactions, batchId=batch_id)
 
     # Assert
     mock_unpack.assert_called_once_with(mock_submitted_transactions)

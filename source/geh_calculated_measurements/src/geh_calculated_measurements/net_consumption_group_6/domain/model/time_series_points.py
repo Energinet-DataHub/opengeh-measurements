@@ -5,27 +5,13 @@ from pyspark.sql import DataFrame
 nullable = True
 
 
-class TimeSeriesPoints(DataFrameWrapper):
-    """Represents the time series points data structure."""
-
-    def __init__(self, df: DataFrame) -> None:
-        super().__init__(
-            df,
-            time_series_points_v1,
-            # We ignore_nullability because it has turned out to be too hard and even possibly
-            # introducing more errors than solving in order to stay in exact sync with the
-            # logically correct schema.
-            ignore_nullability=True,
-        )
-
-
 # Time series points related to electrical heating.
 #
 # Points are included when:
 # - the unit is kWh
 # - the metering point type is one of those listed below
 # - the observation time is after 2021-01-01
-time_series_points_v1 = t.StructType(
+_time_series_points_v1 = t.StructType(
     [
         #
         # GSRN number
@@ -44,3 +30,19 @@ time_series_points_v1 = t.StructType(
         t.StructField("quantity", t.DecimalType(18, 3), not nullable),
     ]
 )
+
+
+class TimeSeriesPoints(DataFrameWrapper):
+    """Represents the time series points data structure."""
+
+    def __init__(self, df: DataFrame) -> None:
+        super().__init__(
+            df,
+            _time_series_points_v1,
+            # We ignore_nullability because it has turned out to be too hard and even possibly
+            # introducing more errors than solving in order to stay in exact sync with the
+            # logically correct schema.
+            ignore_nullability=True,
+        )
+
+    schema = _time_series_points_v1

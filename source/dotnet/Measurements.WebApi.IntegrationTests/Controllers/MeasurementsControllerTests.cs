@@ -4,9 +4,11 @@ using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 
+[IntegrationTest]
 public class MeasurementsControllerTests(WebApiFixture fixture)
     : IClassFixture<WebApiFixture>
 {
@@ -26,10 +28,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
-        Assert.Equal(expectedMeteringPointId, actual.MeteringPointId);
-        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(24, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.ObservationTime.ToString() == startDate));
+        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
