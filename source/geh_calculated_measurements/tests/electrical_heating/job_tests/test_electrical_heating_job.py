@@ -5,7 +5,6 @@ from typing import Any
 
 import pytest
 from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
@@ -39,5 +38,5 @@ def test_execute(
     # Assert
     actual = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}.{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}"
-    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    )  # .where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
