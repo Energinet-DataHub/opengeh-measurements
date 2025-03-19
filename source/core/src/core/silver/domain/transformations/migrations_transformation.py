@@ -1,4 +1,5 @@
 import pyspark.sql.functions as F
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import Column, DataFrame, SparkSession
 
 import core.utility.datetime_helper as datetime_helper
@@ -10,13 +11,15 @@ from core.silver.domain.constants.column_names.silver_measurements_column_names 
 from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
 
+MIGRATION_ORCHESTRATION_INSTANCE_ID = "00000000-0000-0000-0000-000000000000"
+
 
 def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFrame:
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = migrated_transactions.select(
-        F.lit("migration").alias(SilverMeasurementsColumnNames.orchestration_type),
-        F.lit("00000000-0000-0000-0000-000000000000").alias(SilverMeasurementsColumnNames.orchestration_instance_id),
+        F.lit(GehCommonOrchestrationType.MIGRATION.value).alias(SilverMeasurementsColumnNames.orchestration_type),
+        F.lit(MIGRATION_ORCHESTRATION_INSTANCE_ID).alias(SilverMeasurementsColumnNames.orchestration_instance_id),
         F.col(BronzeMigratedTransactionsColumnNames.metering_point_id).alias(
             SilverMeasurementsColumnNames.metering_point_id
         ),

@@ -16,7 +16,7 @@ def stream_migrated_transactions_to_silver() -> None:
     bronze_migrated_transactions_repository = MigratedTransactionsRepository(spark)
     silver_repository = SilverMeasurementsRepository()
 
-    bronze_migrated = bronze_migrated_transactions_repository.read_measurements_bronze_migrated_transactions_as_stream()
+    bronze_migrated = bronze_migrated_transactions_repository.read_stream()
 
     silver_repository.write_stream(
         measurements=bronze_migrated,
