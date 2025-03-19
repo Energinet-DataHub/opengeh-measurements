@@ -8,14 +8,14 @@ from tests.subsystem_tests.base_resources.subsystem_test_fixture import Subsyste
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
-class TestMissingMeasurementsLog:
+class TestNetConsumptionGroup6:
     """
     Verifies a job runs successfully to completion.
     """
 
     @pytest.fixture(autouse=True, scope="class")
     def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        TestMissingMeasurementsLog.fixture = SubsystemTestFixture(environment_configuration)
+        TestNetConsumptionGroup6.fixture = SubsystemTestFixture(environment_configuration)
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:
