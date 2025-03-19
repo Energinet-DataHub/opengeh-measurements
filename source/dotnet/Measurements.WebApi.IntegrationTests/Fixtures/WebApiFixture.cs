@@ -85,25 +85,20 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
     {
-        var observationDateTime = ToInstant(observationDate);
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
 
         return Enumerable.Range(0, 24).Select(i => new[]
         {
             "'1234567890'",
             "'kwh'",
-            $"'{ToString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
             "'measured'",
-            $"'{ToString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
         });
     }
 
-    private static Instant ToInstant(LocalDate date)
-    {
-        return Instant.FromUtc(date.Year, date.Month, date.Day, 0, 0, 0);
-    }
-
-    private static string ToString(Instant date)
+    private static string FormatString(Instant date)
     {
         return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
     }
