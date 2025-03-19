@@ -16,7 +16,7 @@ from core.contracts.process_manager.enums.orchestration_type import Orchestratio
 from core.contracts.process_manager.enums.quality import Quality
 from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
-from core.contracts.process_manager.PersistSubmittedTransaction.v1.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
