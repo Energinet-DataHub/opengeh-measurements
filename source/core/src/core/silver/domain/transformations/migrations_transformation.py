@@ -38,7 +38,6 @@ def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFram
         F.col(BronzeMigratedTransactionsColumnNames.valid_to_date).alias(SilverMeasurementsColumnNames.end_datetime),
         _reorganize_values_array_to_match_measurements().alias(SilverMeasurementsColumnNames.points),
         _get_is_cancelled().alias(SilverMeasurementsColumnNames.is_cancelled),
-        _get_is_deleted().alias(SilverMeasurementsColumnNames.is_deleted),
         current_utc_time.alias(SilverMeasurementsColumnNames.created),
     )
     return measurements
@@ -61,7 +60,3 @@ def _get_is_cancelled() -> Column:
     return (F.col(BronzeMigratedTransactionsColumnNames.read_reason) == ReadReasonEnum.CAN.value) | (
         F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value
     )
-
-
-def _get_is_deleted() -> Column:
-    return F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value

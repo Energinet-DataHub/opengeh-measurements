@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -12,6 +14,8 @@ class StreamingSettings(BaseSettings):
     """
 
     continuous_streaming_enabled: bool = Field(init=False)
+    maxFilesPerTrigger: Optional[int] = Field(default=None, init=False)
+    maxBytesPerTrigger: Optional[str] = Field(default=None, init=False)
 
     class Config:
         case_sensitive = False

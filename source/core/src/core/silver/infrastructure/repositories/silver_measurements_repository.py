@@ -41,6 +41,10 @@ class SilverMeasurementsRepository:
         stream_settings = StreamingSettings()
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
+        if stream_settings.maxFilesPerTrigger is not None:
+            write_stream = write_stream.option("maxFilesPerTrigger", stream_settings.maxFilesPerTrigger)
+        if stream_settings.maxBytesPerTrigger is not None:
+            write_stream = write_stream.option("maxBytesPerTrigger", stream_settings.maxBytesPerTrigger)
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
