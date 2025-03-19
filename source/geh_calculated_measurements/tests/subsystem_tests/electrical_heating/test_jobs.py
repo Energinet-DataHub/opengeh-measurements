@@ -17,12 +17,12 @@ class TestElectricalHeating:
     def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
         TestElectricalHeating.fixture = SubsystemTestFixture(environment_configuration)
 
-    @pytest.mark.order(0)
+    @pytest.mark.order(1)
     def test__seed_gold_table(self) -> None:
         # Arrange
         self.fixture.seed_gold_table(self.fixture.get_gold_table_rows())
 
-    @pytest.mark.order(1)
+    @pytest.mark.order(2)
     def test__given_job_input(self) -> None:
         # Act
         self.fixture.job_state.input.job_id = self.fixture.get_job_id("ElectricalHeating")
@@ -36,7 +36,7 @@ class TestElectricalHeating:
         # Assert
         assert self.fixture.job_state.input.job_id is not None
 
-    @pytest.mark.order(2)
+    @pytest.mark.order(3)
     def test__when_job_started(self) -> None:
         # Act
         self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.input)
@@ -44,7 +44,7 @@ class TestElectricalHeating:
         # Assert
         assert self.fixture.job_state.run_id is not None
 
-    @pytest.mark.order(3)
+    @pytest.mark.order(4)
     def test__then_job_is_completed(self) -> None:
         # Act
         self.fixture.job_state.run_result_state = self.fixture.wait_for_job_completion(self.fixture.job_state.run_id)
@@ -54,7 +54,7 @@ class TestElectricalHeating:
             f"The job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
-    @pytest.mark.order(4)
+    @pytest.mark.order(5)
     def test__and_then_job_logged(self) -> None:
         # Arrange
         query = f"""
