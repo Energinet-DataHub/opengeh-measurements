@@ -21,8 +21,8 @@ public class MeasurementsClientTests
     }
 
     [Theory]
-    [InlineData(2025, 1, 2)]
-    [InlineData(2025, 6, 15)]
+    [InlineData(2023, 1, 2)]
+    [InlineData(2023, 6, 15)]
     public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints(
         int year, int month, int day)
     {
@@ -59,8 +59,8 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
-        var from = new LocalDate(2025, 1, 2);
-        var to = new LocalDate(2025, 1, 6);
+        var from = new LocalDate(2023, 1, 2);
+        var to = new LocalDate(2023, 1, 6);
         var query = new GetMeasurementsForPeriodQuery("1234567890", from, to);
 
         // Act
