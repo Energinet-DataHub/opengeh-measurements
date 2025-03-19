@@ -1,6 +1,6 @@
 from azure.eventhub import EventData, EventHubConsumerClient, EventHubProducerClient, PartitionContext
 from azure.identity import DefaultAzureCredential
-from geh_common.testing.container_test.databricks_api_client import DatabricksApiClient
+from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings
 from tests.subsystem_tests.settings.kafka_settings import KafkaSettings

@@ -5,7 +5,7 @@ import pytest
 from pyspark.sql import SparkSession
 from pytest_bdd import given, scenarios, then, when
 
-from tests.bronze.conftest import Generator
+from tests.conftest import Generator
 from tests.helpers.builders.submitted_transactions_builder import ValueBuilder
 from tests.subsystem_tests.fixtures.core_fixture import CoreFixture
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings

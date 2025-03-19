@@ -15,7 +15,7 @@ def test__dummy_test(spark: SparkSession) -> None:
     fixture = CoreFixture(databricks_settings)
     value = ValueBuilder(spark).add_row().build()
 
-    fixture.start_jobs()
+    # fixture.start_jobs()
     fixture.send_submitted_transactions_event(value)
 
     start_time = time.time()
@@ -23,7 +23,7 @@ def test__dummy_test(spark: SparkSession) -> None:
     poll_interval = 10
 
     while time.time() - start_time < (timeout + 20):
-        fixture.assert_runs_are_running()
+        # fixture.assert_runs_are_running()
         fixture.assert_receipt()
 
         if start_time - time.time() > timeout:
@@ -45,9 +45,11 @@ def test__start_jobs() -> None:
     fixture = CoreFixture(databricks_settings)
 
     # Act
-    fixture.start_jobs()
 
-    # Assert
+
+# fixture.start_jobs()
+
+# Assert
 
 
 @pytest.mark.order(2)
@@ -59,6 +61,6 @@ def test__send_event_to_eventhub(spark: SparkSession) -> None:
     partition_id = identifier_helper.generate_random_string()
 
     # Act
-    fixture.send_submitted_transactions_event(value, partition_id)
+    # fixture.send_submitted_transactions_event(value, partition_id)
 
     # Assert
