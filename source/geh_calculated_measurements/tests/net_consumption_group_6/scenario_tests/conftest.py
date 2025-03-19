@@ -1,6 +1,4 @@
-import sys
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 import yaml
@@ -10,21 +8,12 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
-    NetConsumptionGroup6Args,
-)
 from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
 from geh_calculated_measurements.net_consumption_group_6.domain.model import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
-
-_JOB_ENVIRONMENT_VARIABLES = {
-    "CATALOG_NAME": "some_catalog",
-    "TIME_ZONE": "Europe/Copenhagen",
-    "ELECTRICITY_MARKET_DATA_PATH": "some_path",
-}
 
 
 @pytest.fixture(scope="module")
@@ -52,20 +41,17 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints.schema,
     )
 
-    with patch.dict("os.environ", _JOB_ENVIRONMENT_VARIABLES):
-        with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
-            args = yaml.safe_load(f)
-        with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
-            args = NetConsumptionGroup6Args()
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
     cenc, measurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
-        args.time_zone,
-        args.orchestration_instance_id,
-        args.execution_start_datetime,
+        "Europe/Copenhagen",
+        scenario_parameters["orchestration_instance_id"],
+        scenario_parameters["execution_start_datetime"],
     )
 
     # Return test cases
