@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 
 import pyspark.sql.types as T
@@ -35,6 +36,9 @@ def calculate_cenc(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
+    time_zone: str,
+    orchestration_instance_id: str,
+    execution_start_datetime: datetime,
 ) -> Cenc:
     """Return a data frame with schema `cenc_schema`."""
     # TODO JVM: Replace this dummy code
