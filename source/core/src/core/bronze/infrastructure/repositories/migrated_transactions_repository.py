@@ -20,8 +20,11 @@ class MigratedTransactionsRepository:
         self.bronze_database_name = BronzeSettings().bronze_database_name
         self.migrated_transactions_table_name = TableNames.bronze_migrated_transactions_table
 
-    def read_measurements_bronze_migrated_transactions(self) -> DataFrame:
+    def read(self) -> DataFrame:
         return self.spark.read.table(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
+
+    def read_stream(self) -> DataFrame:
+        return self.spark.readStream.table(f"{self.bronze_database_name}.{self.migrated_transactions_table_name}")
 
     def write_measurements_bronze_migrated(self, data: DataFrame) -> None:
         return (
@@ -33,7 +36,5 @@ class MigratedTransactionsRepository:
 
     def calculate_latest_created_timestamp_that_has_been_migrated(self) -> Optional[datetime]:
         return (
-            self.read_measurements_bronze_migrated_transactions()
-            .agg(F.max(F.col(BronzeMigratedTransactionsColumnNames.created_in_migrations)))
-            .collect()[0][0]
+            self.read().agg(F.max(F.col(BronzeMigratedTransactionsColumnNames.created_in_migrations))).collect()[0][0]
         )

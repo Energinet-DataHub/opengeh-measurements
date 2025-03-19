@@ -18,6 +18,7 @@ notify_transactions_persisted = "core.silver.entry_points:notify_transactions_pe
 ingest_submitted_transactions = "core.bronze.entry_points:ingest_submitted_transactions"
 stream_submitted_transactions_to_silver = "core.silver.entry_points:stream_submitted_transactions"
 migrate_time_series_from_migrations = "core.bronze.entry_points:migrate_time_series_from_migrations_to_measurements"
+stream_migrated_transactions_to_silver = "core.silver.entry_points:stream_migrated_transactions"
 
 [dependency-groups]
 dev = [
