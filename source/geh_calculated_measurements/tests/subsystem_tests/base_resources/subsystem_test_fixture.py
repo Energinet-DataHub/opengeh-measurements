@@ -31,7 +31,7 @@ CALCULATION_MONTH = 1
 FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
 
 
-class BaseJobFixture:
+class SubsystemTestFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration) -> None:
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,

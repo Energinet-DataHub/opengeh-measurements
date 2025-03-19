@@ -4,7 +4,7 @@ import pytest
 from azure.monitor.query import LogsQueryStatus
 from databricks.sdk.service.jobs import RunResultState
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
+from tests.subsystem_tests.base_resources.subsystem_test_fixture import SubsystemTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
@@ -15,7 +15,7 @@ class TestElectricalHeating:
 
     @pytest.fixture(autouse=True, scope="class")
     def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        TestElectricalHeating.fixture = BaseJobFixture(environment_configuration)
+        TestElectricalHeating.fixture = SubsystemTestFixture(environment_configuration)
 
     @pytest.mark.order(0)
     def test__seed_gold_table(self) -> None:
@@ -51,7 +51,7 @@ class TestElectricalHeating:
 
         # Assert
         assert self.fixture.job_state.run_result_state == RunResultState.SUCCESS, (
-            f"The Job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
+            f"The job {self.fixture.job_state.input.job_id} did not complete successfully: {self.fixture.job_state.run_result_state.value}"
         )
 
     @pytest.mark.order(4)
@@ -60,11 +60,13 @@ class TestElectricalHeating:
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration-instance-id"] == '{self.fixture.job_state.input.orchestration_instance_id}'
+        | where Properties["orchestration_instance_id"] == '{self.fixture.job_state.input.orchestration_instance_id}'
         """
 
         # Act
         actual = self.fixture.wait_for_log_query_completion(query, self.fixture.job_state)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+        assert actual.status == LogsQueryStatus.SUCCESS, (
+            f"The query did not complete successfully: {actual.status}. Query: {query}"
+        )
