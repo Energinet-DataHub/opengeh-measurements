@@ -65,9 +65,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints(child_metering_points),
         args.time_zone,
         args.orchestration_instance_id,
-        args.calculation_day,
-        args.calculation_month,
-        args.calculation_year,
     )
 
     # Return test cases

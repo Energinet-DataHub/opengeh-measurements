@@ -7,6 +7,11 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.infrastructure import initialize_spark
+from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+    ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
+    TimeSeriesPoints,
+)
 
 _cenc_schema = T.StructType(
     [
@@ -26,7 +31,11 @@ class Cenc(DataFrameWrapper):
 
 @use_span()
 @testing()
-def calculate_cenc() -> Cenc:
+def calculate_cenc(
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
+    time_series_points: TimeSeriesPoints,
+) -> Cenc:
     """Return a data frame with schema `cenc_schema`."""
     # TODO JVM: Replace this dummy code
     spark = initialize_spark()
