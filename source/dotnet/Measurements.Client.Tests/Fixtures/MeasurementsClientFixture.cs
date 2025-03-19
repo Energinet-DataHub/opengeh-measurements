@@ -13,11 +13,11 @@ namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
 public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
-
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
-
     public HttpClient HttpClient { get; }
+
+    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public MeasurementsClientFixture()
     {
@@ -91,7 +91,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
-            $"'2025-01-02T03:40:55Z'",
+            "'2025-01-02T03:40:55Z'",
         });
     }
 }
