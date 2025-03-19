@@ -1,5 +1,4 @@
 from datetime import datetime
-from importlib.resources import files
 
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame, SparkSession
@@ -10,14 +9,14 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
 )
-from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
-from core.contracts.process_manager.decimal_value import DecimalValue
+from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
 from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType
 from core.contracts.process_manager.enums.quality import Quality
 from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
+from core.contracts.process_manager.PersistSubmittedTransaction.v1.decimal_value import DecimalValue
 from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
@@ -138,16 +137,12 @@ class ValueBuilder:
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
 
-        descriptor_path = str(
-            files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
-        )
-
         df_value = df_value.withColumn(
             BronzeSubmittedTransactionsColumnNames.value,
             to_protobuf(
                 BronzeSubmittedTransactionsColumnNames.value,
                 "PersistSubmittedTransaction",
-                descFilePath=descriptor_path,
+                descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
             ),
         )
 

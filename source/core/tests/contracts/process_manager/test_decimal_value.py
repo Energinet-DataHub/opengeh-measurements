@@ -1,4 +1,4 @@
-from core.contracts.process_manager.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.v1.decimal_value import DecimalValue
 
 
 def test__from_decimal() -> None:
