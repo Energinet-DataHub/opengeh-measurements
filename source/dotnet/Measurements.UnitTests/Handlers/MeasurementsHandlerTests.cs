@@ -8,9 +8,11 @@ using Energinet.DataHub.Measurements.Infrastructure.Handlers;
 using Moq;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Handlers;
 
+[UnitTest]
 public class MeasurementsHandlerTests
 {
     [Theory]
@@ -30,13 +32,13 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetMeasurementAsync(request);
-        var actualPoint = actual.Points.First();
+        var actualPoint = actual.Points.Single();
 
         // Assert
-        Assert.Equal(request.MeteringPointId, actual.MeteringPointId);
-        Assert.Equal(Unit.kWh, actual.Unit);
+        Assert.Equal(now, actualPoint.ObservationTime.ToDateTimeOffset());
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
+        Assert.Equal(Unit.kWh, actualPoint.Unit);
     }
 
     [Fact]
@@ -53,13 +55,12 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetMeasurementAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetMeasurementAsync(request));
     }
 
     private static dynamic CreateRaw(DateTimeOffset now)
     {
         dynamic raw = new ExpandoObject();
-        raw.metering_point_id = "123456789";
         raw.unit = "kwh";
         raw.observation_time = now;
         raw.quantity = 42;
