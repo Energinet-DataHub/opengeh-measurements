@@ -72,20 +72,23 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            new LocalDate(2022, 1, 2),
-            new LocalDate(2022, 1, 3),
-            new LocalDate(2022, 1, 4),
-            new LocalDate(2022, 1, 5),
-            new LocalDate(2022, 1, 5),
-            new LocalDate(2022, 1, 5),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 2)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 2)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 2)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 2)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 3)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 4)),
         };
 
         return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
+    private static IEnumerable<IEnumerable<string>> CreateRow(Tuple<LocalDate, LocalDate> dates)
     {
+        var observationDate = dates.Item1;
+        var transactionCreationDate = dates.Item2;
         var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
+        var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
         return Enumerable.Range(0, 24).Select(i => new[]
         {
@@ -94,7 +97,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
             "'measured'",
-            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"'{FormatString(transactionCreationDateTime)}'",
         });
     }
 
