@@ -72,12 +72,12 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 2)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 2)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 2)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 2, 2)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 2, 3)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 2, 4)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 6)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 7)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 8)),
         };
 
         return [.. dates.SelectMany(CreateRow)];

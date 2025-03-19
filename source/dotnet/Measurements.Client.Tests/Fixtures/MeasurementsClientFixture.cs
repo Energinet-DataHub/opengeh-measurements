@@ -67,14 +67,14 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     {
         var dates = new[]
         {
-            new LocalDate(2025, 1, 2),
-            new LocalDate(2025, 1, 3),
-            new LocalDate(2025, 1, 4),
-            new LocalDate(2025, 1, 5),
-            new LocalDate(2025, 1, 6),
-            new LocalDate(2025, 1, 7),
-            new LocalDate(2025, 1, 8),
-            new LocalDate(2025, 6, 15),
+            new LocalDate(2023, 1, 2),
+            new LocalDate(2023, 1, 3),
+            new LocalDate(2023, 1, 4),
+            new LocalDate(2023, 1, 5),
+            new LocalDate(2023, 1, 6),
+            new LocalDate(2023, 1, 7),
+            new LocalDate(2023, 1, 8),
+            new LocalDate(2023, 6, 15),
         };
 
         return [.. dates.SelectMany(CreateRow)];
@@ -91,7 +91,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
-            "'2025-01-02T03:40:55Z'",
+            "'2025-03-12T03:40:55Z'",
         });
     }
 }
