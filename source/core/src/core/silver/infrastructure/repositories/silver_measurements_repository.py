@@ -1,5 +1,6 @@
 from typing import Callable
 
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
@@ -11,7 +12,6 @@ from core.bronze.infrastructure.settings import (
 from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
-from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 from core.silver.infrastructure.config import SilverTableNames
 from core.utility import delta_table_helper
 
@@ -27,24 +27,24 @@ class SilverMeasurementsRepository:
         spark = spark_session.initialize_spark()
         return spark.readStream.format("delta").option("ignoreDeletes", "true").table(self.table)
 
-    def get_streaming_checkpoint_path(self, orchestration_type: OrchestrationTypeEnum) -> str:
-        if orchestration_type == OrchestrationTypeEnum.SUBMITTED:
+    def get_streaming_checkpoint_path(self, orchestration_type: GehCommonOrchestrationType) -> str:
+        if orchestration_type == GehCommonOrchestrationType.SUBMITTED:
             checkpoint_name = "submitted_transactions"
-        elif orchestration_type == OrchestrationTypeEnum.MIGRATED:
+        elif orchestration_type == GehCommonOrchestrationType.MIGRATION:
             checkpoint_name = "migrated_transactions"
 
         return shared_helpers.get_checkpoint_path(self.data_lake_settings, self.silver_container_name, checkpoint_name)
 
-    def get_streaming_settings(self, orchestration_type: OrchestrationTypeEnum):
-        if orchestration_type == OrchestrationTypeEnum.SUBMITTED:
+    def get_streaming_settings(self, orchestration_type: GehCommonOrchestrationType):
+        if orchestration_type == GehCommonOrchestrationType.SUBMITTED:
             return SubmittedTransactionsStreamSettings()
-        elif orchestration_type == OrchestrationTypeEnum.MIGRATED:
+        elif orchestration_type == GehCommonOrchestrationType.MIGRATION:
             return MigratedTransactionsStreamSettings()
 
     def write_stream(
         self,
         measurements: DataFrame,
-        orchestration_type: OrchestrationTypeEnum,
+        orchestration_type: GehCommonOrchestrationType,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
         checkpoint_location = self.get_streaming_checkpoint_path(orchestration_type)

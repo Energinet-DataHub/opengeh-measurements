@@ -1,3 +1,4 @@
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.bronze.domain.transformations.submitted_transactions_quarantined_transformations as submitted_transactions_quarantined_transformations
@@ -12,7 +13,6 @@ from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_
     SubmittedTransactionsQuarantinedRepository,
 )
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.domain.constants.enums.orchestration_type_enum import OrchestrationTypeEnum
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
@@ -21,7 +21,7 @@ def stream_submitted_transactions() -> None:
     submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
     SilverMeasurementsRepository().write_stream(
         submitted_transactions,
-        OrchestrationTypeEnum.SUBMITTED,
+        GehCommonOrchestrationType.SUBMITTED,
         _batch_operation,
     )
 

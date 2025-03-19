@@ -72,12 +72,10 @@ def test__migrated_transactions__should_save_in_silver_measurements(
 
 
 @mock.patch("core.silver.application.streams.migrated_transactions.SilverMeasurementsRepository.append_if_not_exists")
-@mock.patch(
-    "core.silver.application.streams.migrated_transactions.migrations_transformation.create_by_migrated_transactions"
-)
+@mock.patch("core.silver.application.streams.migrated_transactions.migrations_transformation.transform")
 @mock.patch("core.silver.application.streams.migrated_transactions.spark_session.initialize_spark")
 def test__batch_operation__calls_expected_methods(
-    mock_initialize_spark, mock_create_by_migrated_transactions, mock_append_if_not_exists, spark
+    mock_initialize_spark, mock_transform, mock_append_if_not_exists, spark
 ) -> None:
     # Arrange
     mock_initialize_spark.return_value = spark
@@ -85,11 +83,11 @@ def test__batch_operation__calls_expected_methods(
 
     mock_migrated_transactions = mock.Mock()
     mock_transformed_transactions = mock.Mock()
-    mock_create_by_migrated_transactions.return_value = mock_transformed_transactions
+    mock_transform.return_value = mock_transformed_transactions
 
     # Act
     mit._batch_operation(mock_migrated_transactions, batch_id)
 
     # Assert
-    mock_create_by_migrated_transactions.assert_called_once_with(spark, mock_migrated_transactions)
+    mock_transform.assert_called_once_with(spark, mock_migrated_transactions)
     mock_append_if_not_exists.assert_called_once_with(silver_measurements=mock_transformed_transactions)

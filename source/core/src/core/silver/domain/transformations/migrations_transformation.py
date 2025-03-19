@@ -11,7 +11,7 @@ from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
 
 
-def create_by_migrated_transactions(spark: SparkSession, migrated_transactions: DataFrame) -> DataFrame:
+def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFrame:
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = migrated_transactions.select(
