@@ -1,8 +1,6 @@
 ### This file contains the fixtures that are used in the tests. ###
 from typing import Generator
-from unittest import mock
 
-import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
@@ -22,30 +20,6 @@ def env_args_fixture_logging() -> dict[str, str]:
         "CATALOG_NAME": "spark_catalog",
     }
     return env_args
-
-
-@pytest.fixture(scope="session")
-def script_args_fixture_logging() -> list[str]:
-    sys_argv = [
-        "program_name",
-        "--orchestration-instance-id",
-        "00000000-0000-0000-0000-000000000001",
-    ]
-    return sys_argv
-
-
-@pytest.fixture(scope="session", autouse=True)
-def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging) -> Generator[None, None, None]:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    with (
-        mock.patch("sys.argv", script_args_fixture_logging),
-        mock.patch.dict("os.environ", env_args_fixture_logging, clear=False),
-        mock.patch(
-            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
-        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
-    ):
-        logging_settings = config.LoggingSettings()
-        yield config.configure_logging(logging_settings=logging_settings, extras=None)
 
 
 @pytest.fixture(scope="module", autouse=True)
