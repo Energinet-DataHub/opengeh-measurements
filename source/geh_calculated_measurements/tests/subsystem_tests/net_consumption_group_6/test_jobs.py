@@ -26,3 +26,8 @@ class TestNetConsumptionGroup6(BaseJobTests):
     """
     Test class for net consumption for group 6.
     """
+
+    def test__and_then_data_is_written_to_delta(
+        self, environment_configuration: EnvironmentConfiguration, setup_fixture: BaseJobFixture
+    ) -> None:
+        pass
