@@ -3,7 +3,6 @@ from geh_common.domain.types.metering_point_resolution import MeteringPointResol
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
-from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from pyspark.sql import Column, DataFrame, SparkSession
 from pyspark.sql.types import DecimalType
 
@@ -15,6 +14,7 @@ from core.contracts.process_manager.enums.metering_point_type import MeteringPoi
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
 from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
 from core.contracts.process_manager.enums.unit import Unit as CoreUnit
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 
