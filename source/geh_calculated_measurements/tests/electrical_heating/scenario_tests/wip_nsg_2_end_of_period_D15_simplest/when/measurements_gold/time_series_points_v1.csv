@@ -976,3 +976,18 @@ metering_point_id;quantity;observation_time;metering_point_type;#comment
 060000001500170203;28.499;2024-10-28T22:00:00Z;supply_to_grid;Case 3 - day 6
 070000001500170203;6.817;2024-10-28T22:00:00Z;consumption_from_grid;Case 3 - day 6
 150000001500170203;0;2024-10-28T22:00:00Z;net_consumption;Case 3 - day 6
+060000001500170204;1;2024-03-31T01:00:00Z;supply_to_grid;Case 4 - summer time change
+070000001500170204;2;2024-03-31T01:00:00Z;consumption_from_grid;Case 4 - summer time change
+150000001500170204;1;2024-03-31T01:00:00Z;net_consumption;Case 4 - summer time change
+060000001500170204;2;2024-03-31T02:00:00Z;supply_to_grid;Case 4 - summer time change
+070000001500170204;1;2024-03-31T02:00:00Z;consumption_from_grid;Case 4 - summer time change
+150000001500170204;0;2024-03-31T02:00:00Z;net_consumption;Case 4 - summer time change
+060000001500170204;1;2024-10-27T00:00:00Z;supply_to_grid;Case 4 - winter time change
+070000001500170204;2;2024-10-27T00:00:00Z;consumption_from_grid;Case 4 - winter time change
+150000001500170204;1;2024-10-27T00:00:00Z;net_consumption;Case 4 - winter time change
+060000001500170204;2;2024-10-27T01:00:00Z;supply_to_grid;Case 4 - winter time change
+070000001500170204;1;2024-10-27T01:00:00Z;consumption_from_grid;Case 4 - winter time change
+150000001500170204;0;2024-10-27T01:00:00Z;net_consumption;Case 4 - winter time change
+060000001500170204;2000;2024-10-27T23:00:00Z;supply_to_grid;Case 4 - make sure we hit limit
+070000001500170204;4000;2024-10-27T23:00:00Z;consumption_from_grid;Case 4 - make sure we hit limit
+150000001500170204;2000;2024-10-27T23:00:00Z;net_consumption;Case 4 - make sure we hit limit
