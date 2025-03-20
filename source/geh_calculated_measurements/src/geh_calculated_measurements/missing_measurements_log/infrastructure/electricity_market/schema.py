@@ -1,23 +1,23 @@
-import pyspark.sql.types as t
+import pyspark.sql.types as T
 
 nullable = True
 
-metering_point_periods_v1 = t.StructType(
+metering_point_periods_v1 = T.StructType(
     [
         # GSRN number
-        t.StructField("metering_point_id", t.StringType(), not nullable),
+        T.StructField("metering_point_id", T.StringType(), not nullable),
         #
         # The code of the grid area that the metering point belongs to
-        t.StructField("grid_area_code", t.StringType(), not nullable),
+        T.StructField("grid_area_code", T.StringType(), not nullable),
         #
         # Metering point resolution: PT1H/PT15M
-        t.StructField("resolution", t.StringType(), not nullable),
+        T.StructField("resolution", T.StringType(), not nullable),
         #
         # UTC time
-        t.StructField("period_from_date", t.TimestampType(), not nullable),
+        T.StructField("period_from_date", T.TimestampType(), not nullable),
         #
         # UTC time
-        t.StructField("period_to_date", t.TimestampType(), nullable),
+        T.StructField("period_to_date", T.TimestampType(), nullable),
     ]
 )
 """
