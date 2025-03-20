@@ -26,3 +26,8 @@ class TestMissingMeasurementsLog(BaseJobTests):
     """
     Test class for missing measurements log.
     """
+
+    def test__and_then_data_is_written_to_delta(
+        self, environment_configuration: EnvironmentConfiguration, setup_fixture: BaseJobFixture
+    ) -> None:
+        pass
