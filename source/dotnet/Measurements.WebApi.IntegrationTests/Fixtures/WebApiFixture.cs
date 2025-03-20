@@ -1,10 +1,12 @@
-﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using System.Globalization;
+using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NodaTime;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
@@ -34,11 +36,10 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task InitializeAsync()
     {
         var columnDefinitions = CreateMeasurementsColumnDefinitions();
-        var rows = CreateRows();
 
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
@@ -64,10 +65,44 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows()
+    private static List<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.0", "'measured'" });
+        var dates = new[]
+        {
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 6)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 7)),
+            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 8)),
+        };
+
+        return [.. dates.SelectMany(CreateRow)];
+    }
+
+    private static IEnumerable<IEnumerable<string>> CreateRow(Tuple<LocalDate, LocalDate> dates)
+    {
+        var observationDate = dates.Item1;
+        var transactionCreationDate = dates.Item2;
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
+        var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
+
+        return Enumerable.Range(0, 24).Select(i => new[]
+        {
+            "'1234567890'",
+            "'kwh'",
+            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"{i}.4",
+            "'measured'",
+            $"'{FormatString(transactionCreationDateTime)}'",
+        });
+    }
+
+    private static string FormatString(Instant date)
+    {
+        return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
     }
 }

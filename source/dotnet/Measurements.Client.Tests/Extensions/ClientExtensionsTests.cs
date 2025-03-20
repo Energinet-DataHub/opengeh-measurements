@@ -1,10 +1,12 @@
 ﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Energinet.DataHub.Measurements.Client.Tests.Extensions;
+using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests;
+namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
 
+[UnitTest]
 public class ClientExtensionsTests
 {
     [Fact]

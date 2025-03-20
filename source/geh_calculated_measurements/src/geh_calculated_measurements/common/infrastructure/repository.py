@@ -23,5 +23,5 @@ class Repository:
 
     def write_calculated_measurements(self, data: CalculatedMeasurements) -> None:
         df = data.df
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME
+        table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
         df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(table_name))
