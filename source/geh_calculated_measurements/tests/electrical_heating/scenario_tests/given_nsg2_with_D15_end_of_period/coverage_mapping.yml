@@ -1,0 +1,48 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test variants of NSG2 (with net consumption) scenarios.
+
+  ## DESIGN CONSIDERATIONS
+  CASE 2
+                                                 |period change in april                 Today|
+                     Nov 2023_________|2024______|______________________________|2025_________
+  Parent start/end:       |----------------------|-----------------------------------------...
+  Periods:                |___________|__________|______________________________|__________
+  Days in period:         | 61 days   | 91 days  | 275 days                     | N/A
+  Measurement data:        ++         +++        +++                            ++
+
+  NSG2 type:
+  - D15/End:              |___________|__________|______________________________|
+  - D15/Up to End:                                                              |___________
+
+  CASE 3 (summer/winter time)
+                                     |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
+                          |2024______|____________________________________________|_______|2025
+  Parent start/end:                  |--------------------------------------------|
+  Days in period:                    | 213 days                                   |
+  Measurement data:                  +++                                        +++
+
+  CASE 4 (hit limit at winter time edge case)
+                                     |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
+                          |2024______|____________________________________________|_______|2025
+  Parent start/end:                  |--------------------------------------------|
+  Days in period:                    | 213 days                                   |
+  Measurement data:                   +                                          +
+
+
+
+cases_tested:
+  "Electrical Heating Tests":
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
+    - "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+
+  "Period length and base period limit":
+    - "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
+
+  "Net Settlement Groups":
+    - "Electrical heating with net settlement group 2 - WITH net consumption MP"
+
+  "Settlement Group Calculation Type":
+    - "END OF PERIOD calculation"
+    - "UP TO END of period calculation"

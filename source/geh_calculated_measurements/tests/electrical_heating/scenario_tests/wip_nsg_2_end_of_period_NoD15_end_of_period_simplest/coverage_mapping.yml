@@ -22,6 +22,15 @@ notes: |
   Days in period:                    | 213 days                                   |
   Measurement data:                  +++                                        +++
 
+  CASE 4 (hit limit at winter time edge case)
+                                     |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
+                          |2024______|____________________________________________|_______|2025
+  Parent start/end:                  |--------------------------------------------|
+  Days in period:                    | 213 days                                   |
+  Measurement data:                   +                                          +
+
+
+
 cases_tested:
   "Electrical Heating Tests":
     - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
@@ -32,7 +41,7 @@ cases_tested:
     - "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
 
   "Net Settlement Groups":
-    - "Electrical heating with net settlement group 2 - WITH net consumption MP"
+    - "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
 
   "Settlement Group Calculation Type":
     - "END OF PERIOD calculation"
