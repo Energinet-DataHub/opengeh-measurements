@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
@@ -44,6 +43,8 @@ def calculate_cenc(
     execution_start_datetime: datetime,
 ) -> Cenc:
     """Return a data frame with schema `cenc_schema`."""
+    # D06 = Supply to grid
+    # D07 = Consumption from grid
     spark = initialize_spark()
     filtered_time_series_points = time_series_points.df.filter(
         (F.col(ContractColumnNames.metering_point_type) == MeteringPointType.SUPPLY_TO_GRID.value)
@@ -89,16 +90,52 @@ def calculate_cenc(
         .agg(F.sum("quantity").alias("quantity"))
     )
     joined_ts_mp.show()
-    # result = (
-    #     joined_ts_mp.withColumn("settlement_year", F.year(F.col("settlement_month_timestamp")))
-    #     .withColumn("settlement_month", F.month(F.col("settlement_month_timestamp")))
-    #     .withColumn("orchestration_instance_id", F.lit(orchestration_instance_id))
-    #     .select("orchestration_instance_id", "metering_point_id", "quantity", "settlement_year", "settlement_month")
-    # )
-    # result.show()
+    # Find rows where consumption_from_grid and supply_to_grid have the same parent_metering_point_id and settlement_month_timestamp
+    consumption_and_supply = (
+        joined_ts_mp.filter(
+            (F.col("metering_point_type") == MeteringPointType.CONSUMPTION_FROM_GRID.value)
+            | (F.col("metering_point_type") == MeteringPointType.SUPPLY_TO_GRID.value)
+        )
+        .groupBy("parent_metering_point_id", "settlement_month_timestamp")
+        .pivot(
+            "metering_point_type",
+            [MeteringPointType.CONSUMPTION_FROM_GRID.value, MeteringPointType.SUPPLY_TO_GRID.value],
+        )
+        .agg(F.sum("quantity").alias("quantity"))
+    )
 
-    # TODO JVM: Hardcoded data to match the first scenario test
-    data = [("00000000-0000-0000-0000-000000000001", "150000001500170200", Decimal("1000.000"), 2025, 1)]
-    df = spark.createDataFrame(data, schema=_cenc_schema)
+    # Calculate the POS((quantity from consumption_from_grid – quantity from supply_to_grid); 0)
+    net_quantity = consumption_and_supply.withColumn(
+        "net_quantity",
+        F.when(
+            F.col(str(MeteringPointType.CONSUMPTION_FROM_GRID.value)).isNotNull()
+            & F.col(str(MeteringPointType.SUPPLY_TO_GRID.value)).isNotNull(),
+            F.greatest(
+                F.col(str(MeteringPointType.CONSUMPTION_FROM_GRID.value))
+                - F.col(str(MeteringPointType.SUPPLY_TO_GRID.value)),
+                F.lit(0),
+            ),
+        ).otherwise(F.lit(0)),
+    )
+    net_quantity.show()
 
-    return Cenc(df)
+    # Join net_quantity with net_consumption_metering_points on parent_metering_point_id and settlement_month_timestamp
+    final_result = (
+        net_consumption_metering_points.join(
+            net_quantity,
+            on=["parent_metering_point_id", "settlement_month_timestamp"],
+            how="left",
+        )
+        .withColumn("orchestration_instance_id", F.lit(orchestration_instance_id))
+        .select(
+            F.col("orchestration_instance_id"),
+            F.col("metering_point_id"),
+            F.col("net_quantity").alias("quantity").cast(T.DecimalType(18, 3)),
+            F.year(F.col("settlement_month_timestamp")).alias("settlement_year"),
+            F.month(F.col("settlement_month_timestamp")).alias("settlement_month"),
+        )
+    )
+
+    final_result.show()
+
+    return Cenc(final_result)
