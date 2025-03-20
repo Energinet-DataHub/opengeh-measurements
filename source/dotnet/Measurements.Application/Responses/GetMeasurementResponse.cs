@@ -8,47 +8,31 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetMeasurementResponse
 {
-    public string MeteringPointId { get; init; } = string.Empty;
-
-    public Unit Unit { get; init; }
-
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(string meteringPointId, Unit unit, List<Point> points)
+    private GetMeasurementResponse(List<Point> points)
     {
-        MeteringPointId = meteringPointId;
-        Unit = unit;
         Points = points;
     }
 
     public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
     {
-        var meteringPointId = string.Empty;
-        var unitRaw = string.Empty;
-        var points = new List<Point>();
+        var points = measurements
+            .Select(measurement =>
+                new Point(
+                    measurement.ObservationTime,
+                    measurement.Quantity,
+                    ParseQuality(measurement.Quality),
+                    ParseUnit(measurement.Unit)))
+            .ToList();
 
-        foreach (var measurement in measurements)
-        {
-            meteringPointId = measurement.MeteringPointId;
-            unitRaw = measurement.Unit;
-            points.Add(new Point(
-                measurement.ObservationTime,
-                measurement.Quantity,
-                ParseQuality(measurement.Quality)));
-        }
-
-        if (meteringPointId == string.Empty || points.Count <= 0)
-        {
-            throw new MeasurementsNotFoundException();
-        }
-
-        var unit = ParseUnit(unitRaw);
-
-        return new GetMeasurementResponse(meteringPointId, unit, points);
+        return points.Count <= 0
+            ? throw new MeasurementsNotFoundDuringPeriodException()
+            : new GetMeasurementResponse(points);
     }
 
     private static Quality ParseQuality(string quality)

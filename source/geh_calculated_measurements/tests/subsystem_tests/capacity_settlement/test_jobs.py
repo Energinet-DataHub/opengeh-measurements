@@ -34,7 +34,7 @@ class TestCapacitySettlement(BaseJobTests):
 
     fixture = None
 
-    params = {
+    job_parameters = {
         "orchestration-instance-id": str(uuid.uuid4()),
         "calculation-month": CALCULATION_MONTH,
         "calculation-year": CALCULATION_YEAR,
@@ -47,7 +47,7 @@ class TestCapacitySettlement(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="CapacitySettlement",
-                params=self.params,
+                job_parameters=self.job_parameters,
             )
         return self.fixture
 

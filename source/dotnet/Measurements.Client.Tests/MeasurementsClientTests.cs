@@ -1,16 +1,18 @@
-﻿using System.Net;
-using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
+using NodaTime;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.Tests;
 
+[IntegrationTest]
 [Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementsClientTests
 {
     private MeasurementsClientFixture Fixture { get; }
 
-    private IMeasurementsClient MeasurementsClient { get; }
+    private MeasurementsClient MeasurementsClient { get; }
 
     public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
@@ -18,36 +20,55 @@ public class MeasurementsClientTests
         MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
     }
 
-    [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurementDto()
+    [Theory]
+    [InlineData(2023, 1, 2)]
+    [InlineData(2023, 6, 15)]
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints(
+        int year, int month, int day)
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
+            new LocalDate(year, month, day));
 
         // Act
-        var result = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
+        var actual = (await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(query.MeteringPointId, result.MeteringPointId);
-        Assert.Equal(24, result.Points.Count);
-        Assert.True(result.Points.All(p => p.Quality == Quality.Measured));
+        Assert.NotNull(actual);
+        Assert.Equal(24, actual.Count);
+        Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsNotFound()
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery(
             "1234567890",
-            new DateTimeOffset(1900, 1, 2, 0, 0, 0, TimeSpan.Zero));
+            new LocalDate(1990, 1, 2));
 
         // Act
-        var result = await Assert.ThrowsAsync<HttpRequestException>(() => MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None));
+        var actual = await MeasurementsClient.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        Assert.Empty(actual);
+    }
+
+    [Fact]
+    public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
+    {
+        // Arrange
+        var from = new LocalDate(2023, 1, 2);
+        var to = new LocalDate(2023, 1, 6);
+        var query = new GetMeasurementsForPeriodQuery("1234567890", from, to);
+
+        // Act
+        var actual = (await MeasurementsClient.GetMeasurementsForPeriodAsync(query, CancellationToken.None)).ToList();
+
+        // Assert
+        Assert.NotNull(actual);
+        Assert.Equal(96, actual.Count);
+        Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 }

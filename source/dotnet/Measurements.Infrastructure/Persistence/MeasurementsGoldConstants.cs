@@ -8,4 +8,5 @@ public static class MeasurementsGoldConstants
     public const string ObservationTimeColumnName = "observation_time";
     public const string QuantityColumnName = "quantity";
     public const string QualityColumnName = "quality";
+    public const string TransactionCreationDatetimeColumnName = "transaction_creation_datetime";
 }

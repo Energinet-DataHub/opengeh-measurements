@@ -2,20 +2,22 @@
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
 public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
-
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
-
     public HttpClient HttpClient { get; }
+
+    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public MeasurementsClientFixture()
     {
@@ -29,7 +31,6 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
     public async Task InitializeAsync()
     {
-        await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
@@ -59,10 +60,38 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRows()
+    private static List<IEnumerable<string>> CreateRows()
     {
-        return Enumerable.Range(1, 24).Select(_ => new List<string> { "'1234567890'", "'kwh'", "'2022-01-01T00:00:00Z'", "1.4", "'measured'" });
+        var dates = new[]
+        {
+            new LocalDate(2023, 1, 2),
+            new LocalDate(2023, 1, 3),
+            new LocalDate(2023, 1, 4),
+            new LocalDate(2023, 1, 5),
+            new LocalDate(2023, 1, 6),
+            new LocalDate(2023, 1, 7),
+            new LocalDate(2023, 1, 8),
+            new LocalDate(2023, 6, 15),
+        };
+
+        return [.. dates.SelectMany(CreateRow)];
+    }
+
+    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
+    {
+        var observationTime = observationDate.ToUtcDateTimeOffset();
+
+        return Enumerable.Range(0, 24).Select(i => new[]
+        {
+            "'1234567890'",
+            "'kwh'",
+            $"'{observationTime.AddHours(i).ToFormattedString()}'",
+            $"{i}.4",
+            "'measured'",
+            "'2025-03-12T03:40:55Z'",
+        });
     }
 }
