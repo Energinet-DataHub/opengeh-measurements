@@ -135,6 +135,15 @@ def calculate_cenc(
             on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
             how="left",
         )
+        .withColumn(
+            "net_quantity",
+            F.when(
+                F.col("move_in") & F.col("has_electrical_heating"),
+                F.lit(estimated_consumption_with_move_in_and_electrical_heating_true),
+            )
+            .when(F.col("move_in"), F.lit(estimated_consumption_with_move_in_true))
+            .otherwise(F.col("net_quantity")),
+        )
         .withColumn(ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id))
         .select(
             F.col(ContractColumnNames.orchestration_instance_id),
