@@ -4,6 +4,13 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+from tests.subsystem_tests.fixtures.kafka_fixture import KafkaFixture
+
+
+@pytest.fixture
+def core_fixture() -> KafkaFixture:
+    return KafkaFixture()
+
 
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:

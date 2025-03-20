@@ -1,4 +1,4 @@
-Feature: Transmission of meter readings
+Feature: Transmission of measurements
 
 Scenario: Processing measurement transaction
   Given a valid measurement transaction
