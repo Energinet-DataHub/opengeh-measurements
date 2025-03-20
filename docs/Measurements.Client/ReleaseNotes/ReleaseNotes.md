@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 1.4.0
+
+- Updated measurement points to only contain latest values.
+
 ## Version 1.3.0
 
 - Added method to get measurements based on period.

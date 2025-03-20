@@ -6,12 +6,12 @@ from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
 from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
-from core.contracts.process_manager.decimal_value import DecimalValue
 from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType
 from core.contracts.process_manager.enums.quality import Quality
 from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 
 
 class Point:
