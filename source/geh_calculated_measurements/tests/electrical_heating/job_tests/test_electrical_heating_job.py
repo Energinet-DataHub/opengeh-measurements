@@ -36,6 +36,6 @@ def test_execute(
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}"
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
