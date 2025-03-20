@@ -43,7 +43,9 @@ class BaseJobTests:
             f"The Job with run id {run_id} did not complete successfully: {run_result_state.value}"
         )
 
-    @pytest.skip("This test is skipped due to issues with the telemetry data not being available in the logs.")
+    @pytest.mark.skip(
+        reason="This test is skipped due to issues with the telemetry data not being available in the logs."
+    )
     @pytest.mark.order(3)
     def test__and_then_job_telemetry_is_created(self, setup_fixture: BaseJobFixture) -> None:
         # Arrange
