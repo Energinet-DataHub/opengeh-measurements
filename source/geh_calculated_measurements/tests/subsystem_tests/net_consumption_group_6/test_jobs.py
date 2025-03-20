@@ -26,14 +26,3 @@ class TestNetConsumptionGroup6(BaseJobTests):
     """
     Test class for net consumption for group 6.
     """
-
-    # def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-    #     if self.fixture is None:
-    #         self.fixture = BaseJobFixture(
-    #             environment_configuration=environment_configuration,
-    #             job_name="NetConsumptionGroup6",
-    #             job_parameters=self.job_parameters,
-    #         )
-    #     return self.fixture
-
-    # self.get_or_create_fixture(environment_configuration)
