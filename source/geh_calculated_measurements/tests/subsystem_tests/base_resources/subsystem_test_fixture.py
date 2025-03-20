@@ -57,8 +57,6 @@ class SubsystemTestFixture:
         for key, value in input.job_parameters.items():
             params_list.append(f"--{key}={value}")
 
-        print(f"JOBID: {input}")
-
         return self.databricks_api_client.start_job(input.job_id, params_list)
 
     def wait_for_job_completion(self, run_id: int) -> RunResultState:
