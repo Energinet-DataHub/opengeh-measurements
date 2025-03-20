@@ -63,7 +63,7 @@ class BaseJobTests:
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""
-            SELECT * FROM {catalog}.{database}.{table} WHERE orchestration_instance_id = {setup_fixture.job_parameters.get("orchestration-instance-id")} LIMIT 1
+            SELECT * FROM {catalog}.{database}.{table} WHERE orchestration_instance_id = '{setup_fixture.job_parameters.get("orchestration-instance-id")}' LIMIT 1
             """
 
         # Act
