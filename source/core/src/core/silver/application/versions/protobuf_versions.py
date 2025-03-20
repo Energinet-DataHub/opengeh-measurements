@@ -1,5 +1,5 @@
 from core.silver.domain.protobuf.protobuf import PersistSubmittedTransaction
 
 
-class ProtobufManagement:
+class ProtobufVersions:
     protobuf_messages = [PersistSubmittedTransaction]
