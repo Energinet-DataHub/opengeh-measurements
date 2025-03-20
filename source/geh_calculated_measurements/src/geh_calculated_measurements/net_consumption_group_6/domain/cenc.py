@@ -70,6 +70,10 @@ def calculate_cenc(
             F.col(f"child.{ContractColumnNames.metering_point_type}").alias("metering_point_type"),
             F.col("settlement_month_timestamp"),
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}").alias("parent_metering_point_id"),
+            F.col(f"consumption.{ContractColumnNames.period_from_date}").alias("period_from_date"),
+            F.col(f"consumption.{ContractColumnNames.period_to_date}").alias("period_to_date"),
+            F.col(f"consumption.{ContractColumnNames.has_electrical_heating}").alias("has_electrical_heating"),
+            F.col("consumption.move_in").alias("move_in"),
         )
     )
     parent_and_child_metering_points_joined.show()
