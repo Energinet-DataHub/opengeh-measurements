@@ -13,7 +13,7 @@ class LogQueryClientWrapper:
         self,
         workspace_id: str,
         query: str,
-        timeout_seconds: int = 1000,
+        timeout_seconds: int = 300,
         poll_interval_seconds: int = 5,
         timespan_minutes: int = 15,
     ) -> LogsQueryResult:
@@ -32,4 +32,4 @@ class LogQueryClientWrapper:
 
             time.sleep(poll_interval_seconds)
 
-        raise TimeoutError(f"Query did not complete within {timeout_seconds} seconds.")
+        raise TimeoutError(f"Query did not complete within {timeout_seconds} seconds. Query: {query}.")
