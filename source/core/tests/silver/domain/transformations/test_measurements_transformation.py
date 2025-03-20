@@ -35,7 +35,7 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
 def test__create_by_submitted_transaction__should_return_correct_decimal_value(spark: SparkSession) -> None:
     # Arrange
     expected_decimal_value = Decimal(1.5)
-    point = Point(quantity=DecimalValue(units=1, nanos=500000))
+    point = Point(quantity=DecimalValue(units=1, nanos=500000000))
     submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=[point]).build()
 
     # Act
