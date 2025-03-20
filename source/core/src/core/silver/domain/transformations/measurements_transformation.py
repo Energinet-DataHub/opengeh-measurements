@@ -14,7 +14,6 @@ from core.contracts.process_manager.enums.metering_point_type import MeteringPoi
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
 from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
 from core.contracts.process_manager.enums.unit import Unit as CoreUnit
-from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 
@@ -48,7 +47,7 @@ def transform(spark: SparkSession, unpacked_submitted_transactions: DataFrame) -
             ValueColumnNames.points,
             lambda x: F.struct(
                 x.position.alias(SilverMeasurementsColumnNames.Points.position),
-                DecimalValue(x.quantity.units, x.quantity.nanos).to_decimal()
+                (x.quantity.units + (x.quantity.nanos / 1_000_000_000))
                 .cast(DecimalType(18, 3))
                 .alias(SilverMeasurementsColumnNames.Points.quantity),
                 x.quality.alias(SilverMeasurementsColumnNames.Points.quality),
