@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -13,4 +15,5 @@ class MeasurementsCalculatedInternalDatabaseDefinition(BaseSettings):
 
     DATABASE_MEASUREMENTS_CALCULATED_INTERNAL: str = Field(init=False)
 
-    executed_migrations_table_name: str = Field(init=False)  # executed_migrations
+    executed_migrations_table_name: ClassVar[str] = "executed_migrations"
+    MEASUREMENTS_NAME: ClassVar[str] = "measurements"

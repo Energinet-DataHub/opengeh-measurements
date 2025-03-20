@@ -11,10 +11,12 @@ def test_case(
     assert_dataframes_configuration: AssertDataframesConfiguration,
     name: str,
 ) -> None:
-    test_case = test_cases[name]
-
-    assert_dataframes_and_schemas(
-        actual=test_case.actual,
-        expected=test_case.expected,
-        configuration=assert_dataframes_configuration,
-    )
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED", "measurements_calculated")
+        test_case = test_cases[name]
+        assert_dataframes_and_schemas(
+            actual=test_case.actual,
+            expected=test_case.expected,
+            configuration=assert_dataframes_configuration,
+        )

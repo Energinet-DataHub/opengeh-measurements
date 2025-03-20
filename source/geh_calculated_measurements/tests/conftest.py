@@ -127,5 +127,8 @@ def migrations_executed(spark: SparkSession) -> None:
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
     a view/dataprodcut/table is required."""
-    _create_databases(spark)
-    migrate()
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED_INTERNAL", "measurements_calculated_internal")
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED", "measurements_calculated")
+        _create_databases(spark)
+        migrate()

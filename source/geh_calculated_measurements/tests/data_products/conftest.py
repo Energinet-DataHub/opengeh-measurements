@@ -20,38 +20,40 @@ def patch_environment(env_args_fixture_logging: dict[str, str]) -> None:
 
 @pytest.fixture(scope="module")
 def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
-    # Get the path to the scenario
-    scenario_path = str(Path(request.module.__file__).parent)
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED", "measurements_calculated")
+        # Get the path to the scenario
+        scenario_path = str(Path(request.module.__file__).parent)
 
-    # Populate the delta tables with the 'when' files
-    path_schema_tuples = [
-        (
-            "measurements_calculated_internal.calculated_measurements.csv",
-            calculated_measurements.calculated_measurements_schema,
-        )
-    ]
-    write_when_files_to_delta(
-        spark,
-        scenario_path,
-        path_schema_tuples,
-    )
-
-    # Receive a list of 'then' file names
-    then_files = get_then_names(scenario_path)
-
-    # Construct a list of TestCase objects
-    test_cases = []
-    schema = CalculatedMeasurementsDatabaseDefinition().measurements_calculated_database
-    catalog = CatalogSettings().catalog_name
-    for path_name in then_files:
-        actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
-
-        test_cases.append(
-            TestCase(
-                expected_csv_path=f"{scenario_path}/then/{path_name}.csv",
-                actual=actual,
+        # Populate the delta tables with the 'when' files
+        path_schema_tuples = [
+            (
+                "measurements_calculated_internal.calculated_measurements.csv",
+                calculated_measurements.calculated_measurements_schema,
             )
+        ]
+        write_when_files_to_delta(
+            spark,
+            scenario_path,
+            path_schema_tuples,
         )
 
-    # Return test cases
-    return TestCases(test_cases)
+        # Receive a list of 'then' file names
+        then_files = get_then_names(scenario_path)
+
+        # Construct a list of TestCase objects
+        test_cases = []
+        schema = CalculatedMeasurementsDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED
+        catalog = CatalogSettings().catalog_name
+        for path_name in then_files:
+            actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
+
+            test_cases.append(
+                TestCase(
+                    expected_csv_path=f"{scenario_path}/then/{path_name}.csv",
+                    actual=actual,
+                )
+            )
+
+        # Return test cases
+        return TestCases(test_cases)

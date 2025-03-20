@@ -22,4 +22,4 @@ class CalculatedMeasurementsDatabaseDefinition(BaseSettings):
     Used to define and validate settings for the unity catalog used by package.
     """
 
-    measurements_calculated_database: str = Field(init=False)
+    DATABASE_MEASUREMENTS_CALCULATED: str = Field(init=False)
