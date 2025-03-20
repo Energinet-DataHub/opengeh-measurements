@@ -15,3 +15,5 @@ class CalculatedMeasurementsDatabaseDefinition:
     """Database with data products for calculated measurements."""
 
     DATABASE_NAME = "measurements_calculated"
+
+    HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME = "hourly_calculated_measurements_v1"
