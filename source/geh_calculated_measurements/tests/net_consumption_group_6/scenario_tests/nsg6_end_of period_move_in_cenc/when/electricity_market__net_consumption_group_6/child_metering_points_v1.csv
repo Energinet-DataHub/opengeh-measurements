@@ -1,0 +1,4 @@
+metering_point_id;metering_type;parent_metering_point_id;coupled_date;uncoupled_date;#comment
+150000001500170200;net_consumption;170000000000000201;2022-12-31T23:00.00Z;NULL;
+060000001500170200;supply_to_grid;170000000000000201;2022-12-31T23:00.00Z;NULL;
+070000001500170200;consumption_from_grid;170000000000000201;2022-12-31T23:00.00Z;NULL;
