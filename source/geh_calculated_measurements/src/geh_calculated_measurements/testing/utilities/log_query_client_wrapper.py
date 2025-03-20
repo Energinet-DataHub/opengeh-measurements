@@ -13,7 +13,7 @@ class LogQueryClientWrapper:
         self,
         workspace_id: str,
         query: str,
-        timeout_seconds: int = 1000,
+        timeout_seconds: int = 300,
         poll_interval_seconds: int = 5,
         timespan_minutes: int = 15,
     ) -> LogsQueryResult:

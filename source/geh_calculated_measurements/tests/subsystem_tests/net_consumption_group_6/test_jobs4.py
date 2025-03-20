@@ -13,12 +13,9 @@ class TestNetConsumptionGroup6:
     Verifies a job runs successfully to completion.
     """
 
-    fixture: SubsystemTestFixture
-
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, request, environment_configuration: EnvironmentConfiguration) -> None:
-        self.fixture = SubsystemTestFixture(environment_configuration)
-        request.cls.fixture = self.fixture
+    @pytest.fixture(autouse=True, scope="session")
+    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+        TestNetConsumptionGroup6.fixture = SubsystemTestFixture(environment_configuration)
 
     @pytest.mark.order(1)
     def test__given_job_input(self) -> None:

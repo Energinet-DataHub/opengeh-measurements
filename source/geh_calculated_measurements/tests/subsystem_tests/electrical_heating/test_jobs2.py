@@ -13,12 +13,9 @@ class TestElectricalHeating:
     Verifies a job runs successfully to completion.
     """
 
-    fixture: SubsystemTestFixture
-
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, request, environment_configuration: EnvironmentConfiguration) -> None:
-        self.fixture = SubsystemTestFixture(environment_configuration)
-        request.cls.fixture = self.fixture
+    @pytest.fixture(autouse=True, scope="session")
+    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+        TestElectricalHeating.fixture = SubsystemTestFixture(environment_configuration)
 
     @pytest.mark.order(1)
     def test__seed_gold_table(self) -> None:
@@ -34,7 +31,7 @@ class TestElectricalHeating:
             "orchestration-instance-id": self.fixture.job_state.input.orchestration_instance_id,
         }
 
-        self.fixture.job_state.input.job_parameters = job_parameters
+        TestElectricalHeating.fixture.job_state.input.job_parameters = job_parameters
 
         # Assert
         assert self.fixture.job_state.input.job_id is not None
@@ -42,7 +39,9 @@ class TestElectricalHeating:
     @pytest.mark.order(3)
     def test__when_job_started(self) -> None:
         # Act
-        self.fixture.job_state.run_id = self.fixture.start_job(self.fixture.job_state.input)
+        TestElectricalHeating.fixture.job_state.run_id = self.fixture.start_job(
+            TestElectricalHeating.fixture.job_state.input
+        )
 
         # Assert
         assert self.fixture.job_state.run_id is not None

@@ -14,19 +14,16 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 
 class Input:
-    orchestration_instance_id: uuid.UUID
-    job_id: int
-    job_parameters: dict
-
     def __init__(self) -> None:
+        self.orchestration_instance_id: uuid.UUID
         self.job_parameters = {}
+        self.job_id: int
 
 
 class JobState:
-    run_id: int
-    run_result_state: RunResultState
-
     def __init__(self) -> None:
+        self.run_id: int
+        self.run_result_state: RunResultState
         self.input = Input()
 
 
@@ -59,6 +56,8 @@ class SubsystemTestFixture:
         params_list = []
         for key, value in input.job_parameters.items():
             params_list.append(f"--{key}={value}")
+
+        print(f"JOBID: {input}")
 
         return self.databricks_api_client.start_job(input.job_id, params_list)
 

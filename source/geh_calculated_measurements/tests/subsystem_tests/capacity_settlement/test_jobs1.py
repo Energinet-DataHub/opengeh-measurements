@@ -13,12 +13,9 @@ class TestCapacitySettlement:
     Verifies a job runs successfully to completion.
     """
 
-    fixture: SubsystemTestFixture
-
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, request, environment_configuration: EnvironmentConfiguration) -> None:
-        self.fixture = SubsystemTestFixture(environment_configuration)
-        request.cls.fixture = self.fixture
+    @pytest.fixture(autouse=True, scope="session")
+    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+        TestCapacitySettlement.fixture = SubsystemTestFixture(environment_configuration)
 
     @pytest.mark.order(1)
     def test__seed_gold_table(self) -> None:
