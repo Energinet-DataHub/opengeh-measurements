@@ -50,12 +50,52 @@ def calculate_cenc(
         | (F.col(ContractColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value)
     )
     filtered_time_series_points.show()
-    parent_and_child_metering_points_joined = child_metering_points.df.alias("child").join(
-        consumption_metering_point_periods.df.alias("consumption"),
-        F.col("child.parent_metering_point_id") == F.col("consumption.metering_point_id"),
-        "left",
+    current_year = datetime.now().year
+    parent_and_child_metering_points_joined = (
+        child_metering_points.df.alias("child")
+        .join(
+            consumption_metering_point_periods.df.alias("consumption"),
+            F.col(f"child.{ContractColumnNames.parent_metering_point_id}")
+            == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
+            "left",
+        )
+        .withColumn(
+            "settlement_month_timestamp",
+            F.to_timestamp(F.concat_ws("-", F.lit(current_year), F.col("settlement_month"), F.lit(1)), "yyyy-M-d"),
+        )
+        .drop("consumption." + ContractColumnNames.metering_point_id)
+    ).select(
+        F.col("child." + ContractColumnNames.metering_point_id),
+        F.col("child." + ContractColumnNames.metering_point_type),
+        F.col("settlement_month_timestamp"),
+        F.col("child." + ContractColumnNames.parent_metering_point_id),
     )
+
     parent_and_child_metering_points_joined.show()
+    net_consumption_metering_points = parent_and_child_metering_points_joined.filter(
+        F.col(ContractColumnNames.metering_point_type) == MeteringPointType.NET_CONSUMPTION.value
+    )
+    net_consumption_metering_points.show()
+    joined_ts_mp = (
+        parent_and_child_metering_points_joined.join(
+            filtered_time_series_points, on=["metering_point_id", "metering_point_type"], how="left"
+        )
+        .filter(
+            F.col("observation_time").between(
+                F.add_months(F.col("settlement_month_timestamp"), -12), F.col("settlement_month_timestamp")
+            )
+        )
+        .groupBy("metering_point_id", "metering_point_type", "settlement_month_timestamp", "parent_metering_point_id")
+        .agg(F.sum("quantity").alias("quantity"))
+    )
+    joined_ts_mp.show()
+    # result = (
+    #     joined_ts_mp.withColumn("settlement_year", F.year(F.col("settlement_month_timestamp")))
+    #     .withColumn("settlement_month", F.month(F.col("settlement_month_timestamp")))
+    #     .withColumn("orchestration_instance_id", F.lit(orchestration_instance_id))
+    #     .select("orchestration_instance_id", "metering_point_id", "quantity", "settlement_year", "settlement_month")
+    # )
+    # result.show()
 
     # TODO JVM: Hardcoded data to match the first scenario test
     data = [("00000000-0000-0000-0000-000000000001", "150000001500170200", Decimal("1000.000"), 2025, 1)]
