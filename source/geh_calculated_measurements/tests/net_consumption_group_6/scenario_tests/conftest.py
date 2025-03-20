@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pyspark.sql.types as T
 import pytest
 from geh_common.testing.dataframes import (
     read_csv,
@@ -40,11 +41,23 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints.schema,
     )
 
+    internal_daily = read_csv(
+        spark,
+        f"{scenario_path}/when/internal/daily_internal.csv",
+        T.StructType(
+            [
+                T.StructField("metering_point_id", T.StringType(), nullable=False),
+                T.StructField("last_run", T.TimestampType(), nullable=True),
+            ]
+        ),
+    )
+
     # Execute the logic
     cenc, measurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
+        internal_daily,
     )
 
     # Return test cases
