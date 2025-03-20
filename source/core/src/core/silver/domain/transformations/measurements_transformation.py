@@ -3,6 +3,7 @@ from geh_common.domain.types.metering_point_resolution import MeteringPointResol
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from pyspark.sql import Column, DataFrame, SparkSession
 from pyspark.sql.types import DecimalType
 
@@ -47,7 +48,7 @@ def transform(spark: SparkSession, unpacked_submitted_transactions: DataFrame) -
             ValueColumnNames.points,
             lambda x: F.struct(
                 x.position.alias(SilverMeasurementsColumnNames.Points.position),
-                (x.quantity.units + (x.quantity.nanos / 1000000.0))
+                DecimalValue(x.quantity.units, x.quantity.nanos).to_decimal()
                 .cast(DecimalType(18, 3))
                 .alias(SilverMeasurementsColumnNames.Points.quantity),
                 x.quality.alias(SilverMeasurementsColumnNames.Points.quality),
