@@ -1,3 +1,4 @@
+import pytest
 from geh_common.testing.dataframes import AssertDataframesConfiguration, assert_contract
 from pyspark.sql import SparkSession
 
@@ -12,14 +13,16 @@ def test_contract_and_schema_are_equal(
     assert_dataframes_configuration: AssertDataframesConfiguration,
     spark: SparkSession,
 ) -> None:
-    # Arrange
-    view_name = "hourly_calculated_measurements_v1"
-    database = CalculatedMeasurementsDatabaseDefinition.DATABASE_MEASUREMENTS_CALCULATED
-    catalog = CatalogSettings().catalog_name
-    contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
+    with pytest.MonkeyPatch.context() as ctx:
+        ctx.setenv("DATABASE_MEASUREMENTS_CALCULATED", "measurements_calculated")
+        # Arrange
+        view_name = "hourly_calculated_measurements_v1"
+        database = CalculatedMeasurementsDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED
+        catalog = CatalogSettings().catalog_name
+        contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
 
-    # Act
-    view_df = spark.table(f"{catalog}.{database}.{view_name}").limit(1)
+        # Act
+        view_df = spark.table(f"{catalog}.{database}.{view_name}").limit(1)
 
-    # Assert
-    assert_contract(actual_schema=view_df.schema, contract=contract_schema)
+        # Assert
+        assert_contract(actual_schema=view_df.schema, contract=contract_schema)
