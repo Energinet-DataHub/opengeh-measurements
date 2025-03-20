@@ -10,7 +10,7 @@ metering_point_periods_v1 = t.StructType(
         # The code of the grid area that the metering point belongs to
         t.StructField("grid_area_code", t.StringType(), not nullable),
         #
-        #
+        # Metering point resolution: PT1H/PT15M
         t.StructField("resolution", t.StringType(), not nullable),
         #
         # UTC time
@@ -22,6 +22,6 @@ metering_point_periods_v1 = t.StructType(
 )
 """
 Periods for metering points with physical status "connected" or "disconnected". 
-Includes all metering point types except those where subtype="calculated" or where type="D99". 
+Includes all metering point types except those where subtype="calculated" or where type is "internal_use" (D99). 
 The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
 """
