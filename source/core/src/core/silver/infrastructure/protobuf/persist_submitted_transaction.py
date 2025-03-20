@@ -1,5 +1,3 @@
-from importlib.resources import files
-
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.protobuf.functions import from_protobuf
@@ -8,24 +6,24 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     BronzeSubmittedTransactionsColumnNames,
     ValueColumnNames,
 )
-from core.bronze.domain.constants.descriptor_file_names import DescriptorFileNames
+from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
 
 alias_name = "measurement_values"
 
 
 def unpack(submitted_transactions) -> tuple[DataFrame, DataFrame]:
     """Return a tuple with the unpacked submitted transactions and the invalid ones."""
-    descriptor_path = str(
-        files("core.contracts.process_manager.assets").joinpath(DescriptorFileNames.persist_submitted_transaction)
-    )
     message_name = "PersistSubmittedTransaction"
 
     options = {"mode": "PERMISSIVE", "recursive.fields.max.depth": "3", "emit.default.values": "true"}
 
     unpacked = submitted_transactions.select(
-        from_protobuf(submitted_transactions.value, message_name, descFilePath=descriptor_path, options=options).alias(
-            alias_name
-        ),
+        from_protobuf(
+            submitted_transactions.value,
+            message_name,
+            descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
+            options=options,
+        ).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,
         BronzeSubmittedTransactionsColumnNames.partition,
         BronzeSubmittedTransactionsColumnNames.offset,

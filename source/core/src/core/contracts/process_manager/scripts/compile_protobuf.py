@@ -4,6 +4,8 @@
 
 import subprocess
 
+process_manager_path = "src/core/contracts/process_manager"
+
 
 def compile_protobuf(proto_file, descriptor_file, proto_path):
     result = subprocess.run(
@@ -22,21 +24,14 @@ def compile_protobuf(proto_file, descriptor_file, proto_path):
         raise RuntimeError(f"protoc compilation failed: {result.stderr}")
 
 
-def compile_brs_021_forward_metered_data_notify_v1() -> None:
-    descriptor_file = "src/core/contracts/process_manager/assets/brs021_forward_metered_data_notify_v1.binpb"
-    proto_path = "src/core/contracts/process_manager"
-    proto_file = "Brs021ForwardMeteredDataNotifyV1.proto"
+def compile_protobuf_file(protobuf_file_name) -> None:
+    descriptor_file = f"{process_manager_path}/{protobuf_file_name}/{protobuf_file_name}.binpb"
+    proto_file = f"{protobuf_file_name}.proto"
+    proto_path = f"{process_manager_path}/{protobuf_file_name}"
 
     compile_protobuf(proto_file, descriptor_file, proto_path)
 
 
-def compile_persist_submitted_transaction() -> None:
-    descriptor_file = "src/core/contracts/process_manager/assets/persist_submitted_transaction.binpb"
-    proto_path = "src/core/contracts/process_manager"
-    proto_file = "PersistSubmittedTransaction.proto"
-
-    compile_protobuf(proto_file, descriptor_file, proto_path)
-
-
-compile_brs_021_forward_metered_data_notify_v1()
-compile_persist_submitted_transaction()
+compile_protobuf_file("Brs021ForwardMeteredDataNotifyV1")
+compile_protobuf_file("PersistSubmittedTransaction")
+compile_protobuf_file("VersionMessage")
