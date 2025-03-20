@@ -5,10 +5,12 @@ from typing import Any
 
 import pytest
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
+from geh_calculated_measurements.electrical_heating.entry_point import execute
 from tests.electrical_heating.job_tests import get_test_files_folder_path
 
 
@@ -22,7 +24,6 @@ def test_execute(
     orchestration_instance_id = str(uuid.uuid4())
     sys_argv = ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id]
 
-    # Act
     monkeypatch.setattr(sys, "argv", sys_argv)
     monkeypatch.setattr(
         os,
@@ -32,11 +33,15 @@ def test_execute(
             "TIME_ZONE": "Europe/Copenhagen",
             "ELECTRICITY_MARKET_DATA_PATH": get_test_files_folder_path(),
             "DATABASE_MEASUREMENTS_CALCULATED_INTERNAL": "measurements_calculated_internal",
+            "DATABASE_MEASUREMENTS_GOLD": "measurements_gold",
+            "applicationinsights_connection_string": "connection_string",
         },
     )
+    # Act
+    execute()
 
     # Assert
     actual = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition().DATABASE_MEASUREMENTS_CALCULATED_INTERNAL}.{CalculatedMeasurementsInternalDatabaseDefinition().MEASUREMENTS_NAME}"
-    )  # .where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
