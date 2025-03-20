@@ -8,6 +8,7 @@
     "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000": true
     "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)": true
     "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)": true
+    "Settlement Month IS NOT January (NSG6 only)": true
 
   "Summer/Wintertime handling":
     "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45": true
@@ -20,6 +21,7 @@
     "Electrical heating without net settlement group": true
     "Electrical heating with net settlement group 2 - WITH net consumption MP": true
     "Electrical heating with net settlement group 2 - WITHOUT net consumption MP": true
+    "Electrical heating with net settlement group 6": true
 
   "Settlement Group Calculation Type":
     "UP TO END of period calculation": true
