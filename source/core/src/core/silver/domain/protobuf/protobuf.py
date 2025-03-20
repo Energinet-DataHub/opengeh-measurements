@@ -13,7 +13,7 @@ class Protobuf(ABC):
         pass
 
     @abstractmethod
-    def transform(self) -> None:
+    def handle_valid_protobuf(self) -> None:
         pass
 
     @abstractmethod
@@ -25,7 +25,7 @@ class PersistSubmittedTransaction(Protobuf):
     def version(self) -> str:
         return "1"
 
-    def transform(self, submitted_transactions: DataFrame) -> None:
+    def handle_valid_protobuf(self, submitted_transactions: DataFrame) -> None:
         submitted_transactions_handler.handle_valid_submitted_transactions(submitted_transactions)
 
     def unpack(self, submitted_transactions: DataFrame) -> tuple[DataFrame, DataFrame]:

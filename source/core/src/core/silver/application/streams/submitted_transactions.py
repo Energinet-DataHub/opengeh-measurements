@@ -26,7 +26,7 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
         protobuf_message = protobuf_message()
         transactions = submitted_transactions.filter(f"version = {protobuf_message.version}")
         (valid_submitted_transactions, invalid_submitted_transactions) = protobuf_message.unpack(transactions)
-        protobuf_message.unpack(valid_submitted_transactions)
+        protobuf_message.handle_valid_protobuf(valid_submitted_transactions)
         submitted_transactions_handler.persist_invalid_submitted_transactions(invalid_submitted_transactions)
 
     submitted_transactions_handler.handle_unknown_submitted_transaction(submitted_transactions)
