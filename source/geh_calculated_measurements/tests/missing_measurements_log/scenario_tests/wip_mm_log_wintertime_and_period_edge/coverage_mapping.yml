@@ -3,8 +3,8 @@ notes: |
 
 cases_tested:
   "Missing Measurements Log Tests":
-    - "GIVEN a metering Point with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
-    - "GIVEN a metering Point with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result"
+    - "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
+    - "GIVEN an MP with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result"
 
   "Summer/Wintertime handling":
     - "Calculation period covers wintertime change"

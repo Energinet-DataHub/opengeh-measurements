@@ -1,9 +1,10 @@
 "Missing Measurements Log Tests":
-  "GIVEN a metering Point with 15M resolution WHEN there is measurement missing for a quarter THEN the day of the quarter should be in the result": true
-  "GIVEN a metering Point with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result": true
-  "GIVEN a metering Point with 15M resolution WHEN there is a measurement for a quarter with quality 'missing' THEN the day with that measurement should be in the result": true
-  "GIVEN a metering Point with 1H resolution WHEN there is measurement for an hour with quality 'missing' THEN the day with that measurement should be in the result": true
+  "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day of the quarter should be in the result": true
+  "GIVEN an MP with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result": true
+  "GIVEN an MP with 15M resolution WHEN there is a measurement for a quarter with quality 'missing' THEN the day with that measurement should be in the result": true
+  "GIVEN an MP with 1H resolution WHEN there is measurement for an hour with quality 'missing' THEN the day with that measurement should be in the result": true
   "Calculation period covers MP which stops and/or starts": true
+  "MP changes resolution": true
 
   "Period Edge Tests":
     "First hour of calculation period missing": true

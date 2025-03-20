@@ -1,24 +1,33 @@
 notes: |
+  CASE 7 AND 8
+
   Gap scenario. The scenario includes both a 15M resolution and a 1H resolution MP with the characteristics below:
 
-                    |Feb. 25th          Feb. 26th           Feb. 27th           Feb. 28th           Feb. 29th           March. 1st
-                    |-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
-  MP period 1:      |---------------------------------------|
-  MP period 2:                                                                                      |-------------------|
-  Measurement data: +++++++++++ +++++++++++++++++ ++++++++++++++++++++ ++++++++++++++++++ +++++++++++++++++++++++++++++ +++++++++ +++++++++++
-  Missing:                     |                 |                    |                  |                             |         |
+                        |Feb. 25th          Feb. 26th           Feb. 27th           Feb. 28th           Feb. 29th           March. 1st
+                        |-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+  MP 7 period 1         |---------------------------------------|
+  MP 8 period 2                                                                                           |-------------------|
+  Measurement data:     +++++++++++ +++++++++++++++++ ++++++++++++++++++++ ++++++++++++++++++ +++++++++++++++++++++++++++++ +++++++++ +++++++++++
+  Missing:                         |                 |                    |                  |                             |         |
+  Missing days:         |Feb. 25th          |Feb. 26th                                                  |Feb. 29th
 
-  Missing days:     |Feb. 25th          |Feb. 26th                                                  |Feb. 29th
+  CASE 11
+  MP 11 Period 1 (1h):  |---------------------------------------|
+  MP 12 Period 2 (15M):                                         |-------------------|
+  Measurement data:                                             +++++ +++++++++++++++
+  Missing:                                                           |
+  Missing days:         |Feb. 25th          |Feb. 26th          |Feb. 27th
 
-  We also check that only MPs in grid area supplied with job_parameters are included in result.
+  CASE 9/10: We also check that only MPs in grid area supplied with job_parameters are included in result.
 
 cases_tested:
   "Missing Measurements Log Tests":
-    - "GIVEN a metering Point with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
-    - "GIVEN a metering Point with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result"
-    - "GIVEN a metering Point with 15M resolution WHEN there is a measurement for a quarter with quality 'missing' THEN the day with that measurement should be in the result"
-    - "GIVEN a metering Point with 1H resolution WHEN there is measurement for an hour with quality 'missing' THEN the day with that measurement should be in the result"
+    - "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
+    - "GIVEN an MP with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result"
+    - "GIVEN an MP with 15M resolution WHEN there is a measurement for a quarter with quality 'missing' THEN the day with that measurement should be in the result"
+    - "GIVEN an MP with 1H resolution WHEN there is measurement for an hour with quality 'missing' THEN the day with that measurement should be in the result"
     - "Calculation period covers MP which stops and/or starts"
+    - "MP changes resolution"
 
   "Leap Year Tests":
     - "Time series has quarter missing on feb. 29th"
