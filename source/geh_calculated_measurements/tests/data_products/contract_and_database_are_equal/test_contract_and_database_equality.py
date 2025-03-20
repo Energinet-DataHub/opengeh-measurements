@@ -14,7 +14,7 @@ def test_contract_and_schema_are_equal(
 ) -> None:
     # Arrange
     view_name = "hourly_calculated_measurements_v1"
-    database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
+    database = CalculatedMeasurementsDatabaseDefinition.DATABASE_MEASUREMENTS_CALCULATED
     catalog = CatalogSettings().catalog_name
     contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
 
