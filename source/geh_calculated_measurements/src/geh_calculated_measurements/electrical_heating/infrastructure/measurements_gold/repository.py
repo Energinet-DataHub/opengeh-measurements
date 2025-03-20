@@ -16,7 +16,7 @@ class Repository:
         self._catalog_name = catalog_name
 
     def read_time_series_points(self) -> TimeSeriesPoints:
-        table_name = f"{self._catalog_name}.{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        table_name = f"{self._catalog_name}.{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
 
         df = self._spark.read.format("delta").table(table_name)
 

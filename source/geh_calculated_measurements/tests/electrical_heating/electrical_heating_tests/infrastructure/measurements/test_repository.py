@@ -13,7 +13,7 @@ def test__when_missing_expected_column_raises_exception(
 ) -> None:
     # Arrange
     df = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
     )
     df = df.drop(F.col("quantity"))
 
@@ -22,7 +22,7 @@ def test__when_missing_expected_column_raises_exception(
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
-            f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+            f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
         )
     )
 
@@ -39,7 +39,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 ) -> None:
     # Arrange
     df_original = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
     )
     col_original = df_original.columns
     df = df_original.withColumn("extra_col", F.lit("extra_value"))
@@ -49,7 +49,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
-            f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+            f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
         )
     )
 
@@ -65,7 +65,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
 ) -> None:
     # Arrange
     df = measurements_gold_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
     )
     df = df.select(
         F.col("metering_point_id"),
@@ -79,7 +79,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
-            f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+            f"{MeasurementsGoldDatabaseDefinition().DATABASE_MEASUREMENTS_GOLD}.{MeasurementsGoldDatabaseDefinition().TIME_SERIES_POINTS_NAME}"
         )
     )
 
