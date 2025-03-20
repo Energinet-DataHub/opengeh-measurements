@@ -10,12 +10,12 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
 from core.bronze.infrastructure.repositories.submitted_transactions_quarantined_repository import (
     SubmittedTransactionsQuarantinedRepository,
 )
-from core.silver.application.versions.version_management import ProtobufManagement
+from core.silver.application.versions.protobuf_versions import ProtobufVersions
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def handle_unknown_submitted_transaction(submitted_transactions: DataFrame) -> None:
-    collected_versions = [protobuf_message.version for protobuf_message in ProtobufManagement().protobuf_messages]
+    collected_versions = [protobuf_message.version for protobuf_message in ProtobufVersions().protobuf_messages]
     unknown_protobuf_messages = submitted_transactions.filter(f"version not in {collected_versions}")
     persist_invalid_submitted_transactions(unknown_protobuf_messages)
 
