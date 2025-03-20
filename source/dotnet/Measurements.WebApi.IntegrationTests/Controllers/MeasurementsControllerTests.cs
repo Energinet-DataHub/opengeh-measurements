@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 using Xunit.Categories;
 
@@ -47,6 +48,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
+        Assert.Equal();
         Assert.Equal(24, actual.Points.Count);
     }
 
@@ -67,7 +69,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     }
 
     [Fact]
-    public async Task GetAsync_WhenMeasurementHasInvalidQuality_ThenThrowsException()
+    public async Task GetAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
