@@ -10,6 +10,8 @@ from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
+job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+
 gold_table_row = GoldTableRow(
     metering_point_id="170000030000000201",
     observation_time=datetime(2024, 11, 30, 23, 0, 0),
@@ -18,30 +20,20 @@ gold_table_row = GoldTableRow(
 )
 
 
+@pytest.fixture(scope="session")
+def job_fixture(
+    environment_configuration: EnvironmentConfiguration,
+) -> BaseJobFixture:
+    table_seeder = GoldTableSeeder(environment_configuration)
+    table_seeder.seed(gold_table_row)
+    return BaseJobFixture(
+        environment_configuration=environment_configuration,
+        job_name="ElectricalHeating",
+        job_parameters=job_parameters,
+    )
+
+
 class TestElectricalHeating(BaseJobTests):
     """
     Test class for electrical heating.
     """
-
-    fixture = None
-
-    job_parameters = {"orchestration-instance-id": uuid.uuid4()}
-
-    def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        if self.fixture is None:
-            table_seeder = GoldTableSeeder(environment_configuration)
-            table_seeder.seed(gold_table_row)
-
-            self.fixture = BaseJobFixture(
-                environment_configuration=environment_configuration,
-                job_name="ElectricalHeating",
-                job_parameters=self.job_parameters,
-            )
-        return self.fixture
-
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(
-        self,
-        environment_configuration: EnvironmentConfiguration,
-    ) -> BaseJobFixture:
-        return self.get_or_create_fixture(environment_configuration)
