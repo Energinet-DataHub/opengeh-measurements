@@ -1,4 +1,4 @@
 orchestration-instance-id: 00000000-0000-0000-0000-000000000001
-calculation_period_start: 2024-10-25T22:00:00Z
-calculation_period_end: 2024-10-28T23:00:00Z
+period-start-datetime: 2024-10-25T22:00:00Z
+period-end-datetime: 2024-10-28T23:00:00Z
 

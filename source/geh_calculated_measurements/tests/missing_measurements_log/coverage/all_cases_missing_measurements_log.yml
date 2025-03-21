@@ -1,7 +1,10 @@
 "Missing Measurements Log Tests":
-  "Metering Point with 15M resolution": true
-  "Metering Point with 1H resolution": true
+  "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day of the quarter should be in the result": true
+  "GIVEN an MP with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result": true
+  "GIVEN an MP with 15M resolution WHEN there is a measurement for a quarter with quality 'missing' THEN the day with that measurement should be in the result": true
+  "GIVEN an MP with 1H resolution WHEN there is measurement for an hour with quality 'missing' THEN the day with that measurement should be in the result": true
   "Calculation period covers MP which stops and/or starts": true
+  "MP changes resolution": true
 
   "Period Edge Tests":
     "First hour of calculation period missing": true
@@ -18,8 +21,10 @@
     "Calculation period covers wintertime change": true
 
   "Grid Area Logic":
-    "Calculation covers a single Grid Area": true
-    "Calculation covers all Grid Areas": true
+    "GIVEN job parameters include a SINGLE grid area THEN only missing measurements from MPs in that grid area should be in the result": true
+    "GIVEN job parameters include MULTIPLE grid areas THEN only missing measurements from MPs in those grid areas should be in the result": true
+    "GIVEN NO grid area job parameters are included THEN missing measurements from all MPs should be in the result": true
+
 
 
 

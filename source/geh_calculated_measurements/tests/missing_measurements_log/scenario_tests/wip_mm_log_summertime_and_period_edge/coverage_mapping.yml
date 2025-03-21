@@ -3,8 +3,8 @@ notes: |
 
 cases_tested:
   "Missing Measurements Log Tests":
-    - "Metering Point with 15M resolution"
-    - "Metering Point with 1H resolution"
+    - "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
+    - "GIVEN an MP with 1H resolution WHEN there is measurement missing for an hour THEN the day with the missing hour should be in the result"
 
   "Period Edge Tests":
     - "First hour of calculation period missing"
@@ -16,4 +16,4 @@ cases_tested:
     "Calculation period covers wintertime change"
 
   "Grid Area Logic":
-    - "Calculation covers all Grid Areas"
+    - "GIVEN NO grid area job parameters are included THEN missing measurements from all MPs should be in the result"
