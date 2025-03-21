@@ -16,7 +16,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
     execute,
-    time_series_points_v1,
 )
 
 _JOB_ENVIRONMENT_VARIABLES = {
@@ -37,7 +36,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     time_series_points = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
-        time_series_points_v1,
+        TimeSeriesPoints.schema,
     )
     consumption_metering_point_periods = read_csv(
         spark,

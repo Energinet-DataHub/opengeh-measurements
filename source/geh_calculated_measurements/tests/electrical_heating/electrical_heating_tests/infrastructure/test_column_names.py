@@ -5,7 +5,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     EphemeralColumnNames,
-    time_series_points_v1,
+    TimeSeriesPoints,
 )
 
 # Imports for all other StructTypes in the infrastructure directory
@@ -13,7 +13,7 @@ ALL_CONTRACT_STRUCT_TYPES = [
     ChildMeteringPoints.schema,
     ConsumptionMeteringPointPeriods.schema,
     CalculatedMeasurements.schema,
-    time_series_points_v1,
+    TimeSeriesPoints.schema,
 ]
 
 
