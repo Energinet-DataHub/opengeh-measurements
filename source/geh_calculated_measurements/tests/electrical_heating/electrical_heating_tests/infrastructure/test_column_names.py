@@ -3,15 +3,15 @@ import pytest
 from geh_calculated_measurements.common.domain import CalculatedMeasurements, ContractColumnNames
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
+    ConsumptionMeteringPointPeriods,
     EphemeralColumnNames,
-    consumption_metering_point_periods_v1,
     time_series_points_v1,
 )
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_CONTRACT_STRUCT_TYPES = [
     ChildMeteringPoints.schema,
-    consumption_metering_point_periods_v1,
+    ConsumptionMeteringPointPeriods.schema,
     CalculatedMeasurements.schema,
     time_series_points_v1,
 ]

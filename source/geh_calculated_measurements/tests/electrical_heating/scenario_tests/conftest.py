@@ -15,7 +15,6 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
-    consumption_metering_point_periods_v1,
     execute,
     time_series_points_v1,
 )
@@ -43,7 +42,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     consumption_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__electrical_heating/consumption_metering_point_periods_v1.csv",
-        consumption_metering_point_periods_v1,
+        ConsumptionMeteringPointPeriods.schema,
     )
     child_metering_point_periods = read_csv(
         spark,
