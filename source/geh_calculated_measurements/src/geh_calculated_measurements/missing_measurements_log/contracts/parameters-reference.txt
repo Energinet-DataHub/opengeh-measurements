@@ -8,4 +8,4 @@
 --period-end-datetime=2022-06-01T22:00:00Z
 
 # Optional parameters
---grid-area-codes=[804,805] 
+--grid-area-codes=[804,805]
