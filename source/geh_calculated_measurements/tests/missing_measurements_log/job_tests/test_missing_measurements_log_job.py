@@ -16,7 +16,7 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
     return [
         "dummy_script_name",
         "--orchestration-instance-id",
-        str(uuid.uuid4()),
+        str(orchestration_instance_id),
         "--period-start-datetime",
         "2025-01-02T22:00:00Z",
         "--period-end-datetime",
