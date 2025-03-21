@@ -30,8 +30,11 @@ def execute(
         execution_start_datetime,
     )
     measurements = calculate_daily(
+        time_series_points=time_series_points,
+        execution_start_datetime=execution_start_datetime,
         cenc=cenc,
-        internal_daily=internal_daily,
         time_zone=time_zone,
+        orchestration_instance_id=orchestration_instance_id,
     )
+
     return (cenc, measurements)
