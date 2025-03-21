@@ -17,6 +17,8 @@ def with_version(protobuf_message: DataFrame) -> DataFrame:
         ),
     )
 
-    protobuf_message = protobuf_message.select("*", F.col("version_message.version").alias("version"))
+    protobuf_message = protobuf_message.select("*", F.col("version_message.version").alias("version")).drop(
+        "version_message"
+    )
 
     return protobuf_message

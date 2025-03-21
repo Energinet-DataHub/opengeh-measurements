@@ -2,10 +2,11 @@ from geh_common.domain.types.orchestration_type import OrchestrationType as GehC
 from pyspark.sql import DataFrame
 
 import core.bronze.application.submitted_transactions.submitted_transactions_handler as submitted_transactions_handler
+import core.silver.application.measurements.measurements_handler as measurements_handler
 import core.silver.infrastructure.config.spark_session as spark_session
 import core.silver.infrastructure.protobuf.version_message as version_message
 from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
-from core.silver.application.versions.protobuf_versions import ProtobufVersions
+from core.silver.application.protobuf.protobuf_versions import ProtobufVersions
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
@@ -26,7 +27,7 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
         protobuf_message = protobuf_message()
         transactions = submitted_transactions.filter(f"version = {protobuf_message.version}")
         (valid_submitted_transactions, invalid_submitted_transactions) = protobuf_message.unpack(transactions)
-        protobuf_message.handle_valid_protobuf(valid_submitted_transactions)
+        measurements_handler.handle(valid_submitted_transactions, protobuf_message)
         submitted_transactions_handler.persist_invalid_submitted_transactions(invalid_submitted_transactions)
 
     submitted_transactions_handler.handle_unknown_submitted_transaction(submitted_transactions)
