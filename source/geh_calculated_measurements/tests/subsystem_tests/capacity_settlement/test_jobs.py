@@ -14,8 +14,6 @@ CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
 FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
 
-fixture = None
-
 job_parameters = {
     "orchestration-instance-id": str(uuid.uuid4()),
     "calculation-month": CALCULATION_MONTH,
@@ -36,7 +34,7 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
 
 
 @pytest.fixture(scope="session")
-def setup_fixture(
+def job_fixture(
     environment_configuration: EnvironmentConfiguration,
 ) -> BaseJobFixture:
     table_seeder = GoldTableSeeder(environment_configuration)

@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS {catalog_name}.{calculated_measurements_database}.hourly_calculated_measurements_v1
+GO
+
 CREATE OR REPLACE VIEW {catalog_name}.{calculated_measurements_database}.hourly_calculated_measurements_v1 AS
 WITH _input AS (
   SELECT 
@@ -39,5 +42,8 @@ SELECT
   CASE WHEN _hours.hour = to_utc_timestamp(FROM_UTC_TIMESTAMP(_hours.date, 'Europe/Copenhagen'), 'Europe/Copenhagen')
     THEN _hours.quantity
     ELSE 0
-  END AS quantity
+  END AS quantity,
+  "calculated" as quantity_quality,
+  "kWh" as quantity_unit,
+  "PT1H" as resolution
 FROM _hours

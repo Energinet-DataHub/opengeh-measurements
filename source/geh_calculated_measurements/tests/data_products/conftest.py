@@ -6,7 +6,7 @@ from geh_common.testing.dataframes import write_when_files_to_delta
 from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_names
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain.model import calculated_measurements
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 
@@ -27,7 +27,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     path_schema_tuples = [
         (
             "measurements_calculated_internal.calculated_measurements.csv",
-            calculated_measurements.calculated_measurements_schema,
+            CalculatedMeasurements.schema,
         )
     ]
     write_when_files_to_delta(

@@ -29,5 +29,17 @@ hourly_calculated_measurements_v1 = t.StructType(
         #
         # The calculated quantity
         t.StructField("quantity", t.DecimalType(18, 3), not nullable),
+        #
+        # The unit of the calculated quantity
+        # "kWh"
+        t.StructField("quantity_unit", t.StringType(), not nullable),
+        #
+        # The quality of the calculated quantity
+        # "calculated"
+        t.StructField("quantity_quality", t.StringType(), not nullable),
+        #
+        # The resolution of the calculated quantity
+        # "PT1H"
+        t.StructField("resolution", t.StringType(), not nullable),
     ]
 )

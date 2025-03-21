@@ -13,7 +13,7 @@ def test_contract_and_schema_are_equal(
     spark: SparkSession,
 ) -> None:
     # Arrange
-    view_name = "hourly_calculated_measurements_v1"
+    view_name = CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME
     database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
     catalog = CatalogSettings().catalog_name
     contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
