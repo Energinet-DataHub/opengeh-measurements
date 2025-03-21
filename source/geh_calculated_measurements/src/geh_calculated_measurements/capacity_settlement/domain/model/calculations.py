@@ -11,24 +11,23 @@ class Calculations(DataFrameWrapper):
     def __init__(self, df: DataFrame):
         super().__init__(
             df=df,
-            schema=calculations_schema,
+            schema=Calculations.schema,
             ignore_nullability=True,
         )
 
-
-calculations_schema = T.StructType(
-    [
-        #
-        # ID of the orchestration that initiated the calculation job
-        T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
-        #
-        # Calculation year
-        T.StructField("calculation_year", T.IntegerType(), not nullable),
-        #
-        # Calculation month
-        T.StructField("calculation_month", T.IntegerType(), not nullable),
-        #
-        # Execution time of the calculation
-        T.StructField("execution_time", T.TimestampType(), not nullable),
-    ]
-)
+    schema = T.StructType(
+        [
+            #
+            # ID of the orchestration that initiated the calculation job
+            T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
+            #
+            # Calculation year
+            T.StructField("calculation_year", T.IntegerType(), not nullable),
+            #
+            # Calculation month
+            T.StructField("calculation_month", T.IntegerType(), not nullable),
+            #
+            # Execution time of the calculation
+            T.StructField("execution_time", T.TimestampType(), not nullable),
+        ]
+    )
