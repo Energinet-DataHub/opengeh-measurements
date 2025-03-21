@@ -32,6 +32,67 @@ class Cenc(DataFrameWrapper):
         super().__init__(df=df, schema=_cenc_schema, ignore_nullability=True)
 
 
+@use_span()
+@testing()
+def calculate_cenc(
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
+    time_series_points: TimeSeriesPoints,
+    time_zone: str,
+    orchestration_instance_id: str,
+    execution_start_datetime: datetime,
+) -> Cenc:
+    """Calculate net energy consumption (CENC) for metering points.
+
+    Returns a DataFrame with schema `cenc_schema`.
+    """
+    # Constants for estimated consumption
+    ESTIMATED_CONSUMPTION_MOVE_IN = 1800
+    ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
+
+    # Filter and join the data
+    filtered_time_series = _filter_relevant_time_series_points(time_series_points)
+    parent_child_joined = _join_parent_child_with_consumption(
+        child_metering_points, consumption_metering_point_periods, execution_start_datetime
+    )
+
+    # Extract net consumption points
+    net_consumption_points = _get_net_consumption_metering_points(parent_child_joined)
+
+    # Process time series data
+    joined_ts = _join_and_aggregate_time_series(parent_child_joined, filtered_time_series)
+    consumption_supply = _calculate_consumption_supply(joined_ts)
+    net_quantity = _calculate_net_quantity(consumption_supply)
+
+    # Prepare final result with estimated values for move-in cases
+    final_result = (
+        net_consumption_points.join(
+            net_quantity,
+            on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
+            how="left",
+        )
+        .withColumn(
+            "net_quantity",
+            F.when(
+                F.col("move_in") & F.col("has_electrical_heating"),
+                F.lit(ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING),
+            )
+            .when(F.col("move_in"), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
+            .otherwise(F.col("net_quantity")),
+        )
+        .withColumn(ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id))
+        .select(
+            F.col(ContractColumnNames.orchestration_instance_id),
+            F.col(ContractColumnNames.metering_point_id),
+            F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
+            F.year(F.col("settlement_month_timestamp")).alias("settlement_year"),
+            F.month(F.col("settlement_month_timestamp")).alias("settlement_month"),
+        )
+    )
+
+    return Cenc(final_result)
+
+
 def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) -> DataFrame:
     """Filter time series points to include only supply and consumption types."""
     return time_series_points.df.filter(
@@ -149,64 +210,3 @@ def _calculate_net_quantity(consumption_supply_df: DataFrame) -> DataFrame:
             F.lit(0),
         ),
     )
-
-
-@use_span()
-@testing()
-def calculate_cenc(
-    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
-    child_metering_points: ChildMeteringPoints,
-    time_series_points: TimeSeriesPoints,
-    time_zone: str,
-    orchestration_instance_id: str,
-    execution_start_datetime: datetime,
-) -> Cenc:
-    """Calculate net energy consumption (CENC) for metering points.
-
-    Returns a DataFrame with schema `cenc_schema`.
-    """
-    # Constants for estimated consumption
-    ESTIMATED_CONSUMPTION_MOVE_IN = 1800
-    ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
-
-    # Filter and join the data
-    filtered_time_series = _filter_relevant_time_series_points(time_series_points)
-    parent_child_joined = _join_parent_child_with_consumption(
-        child_metering_points, consumption_metering_point_periods, execution_start_datetime
-    )
-
-    # Extract net consumption points
-    net_consumption_points = _get_net_consumption_metering_points(parent_child_joined)
-
-    # Process time series data
-    joined_ts = _join_and_aggregate_time_series(parent_child_joined, filtered_time_series)
-    consumption_supply = _calculate_consumption_supply(joined_ts)
-    net_quantity = _calculate_net_quantity(consumption_supply)
-
-    # Prepare final result with estimated values for move-in cases
-    final_result = (
-        net_consumption_points.join(
-            net_quantity,
-            on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
-            how="left",
-        )
-        .withColumn(
-            "net_quantity",
-            F.when(
-                F.col("move_in") & F.col("has_electrical_heating"),
-                F.lit(ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING),
-            )
-            .when(F.col("move_in"), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
-            .otherwise(F.col("net_quantity")),
-        )
-        .withColumn(ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id))
-        .select(
-            F.col(ContractColumnNames.orchestration_instance_id),
-            F.col(ContractColumnNames.metering_point_id),
-            F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
-            F.year(F.col("settlement_month_timestamp")).alias("settlement_year"),
-            F.month(F.col("settlement_month_timestamp")).alias("settlement_month"),
-        )
-    )
-
-    return Cenc(final_result)
