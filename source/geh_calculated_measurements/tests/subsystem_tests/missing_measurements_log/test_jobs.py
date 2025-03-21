@@ -6,7 +6,11 @@ from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
-job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+job_parameters = {
+    "orchestration-instance-id": uuid.uuid4(),
+    "period-start-datetime": "2025-01-01T23:00:00",
+    "period-end-datetime": "2025-01-10T23:00:00",
+}
 
 
 @pytest.fixture(scope="session")
