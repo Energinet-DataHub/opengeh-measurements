@@ -9,7 +9,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
     capacity_settlement_v1,
 )
-from geh_calculated_measurements.common.domain import calculated_measurements_schema
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
@@ -42,7 +42,7 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_table(
         spark,
         database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
-        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME,
+        schema=CalculatedMeasurements.schema,
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
     )

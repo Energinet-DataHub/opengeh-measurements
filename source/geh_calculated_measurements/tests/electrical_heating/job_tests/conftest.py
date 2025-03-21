@@ -3,7 +3,7 @@ from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import calculated_measurements_schema
+from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.electrical_heating.infrastructure import (
     MeasurementsGoldDatabaseDefinition,
@@ -40,7 +40,7 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_table(
         spark,
         database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
-        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME,
-        schema=calculated_measurements_schema,
-        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_NAME}",
+        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME,
+        schema=CalculatedMeasurements.schema,
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
     )
