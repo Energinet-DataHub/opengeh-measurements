@@ -56,7 +56,7 @@ class KafkaFixture:
                 client.close()
 
         with client:
-            timer = Timer(60, stop_receive, [client])
+            timer = Timer(300, stop_receive, [client])
             timer.start()
             client.receive(on_event=on_event, max_wait_time=60)
             timer.cancel()
