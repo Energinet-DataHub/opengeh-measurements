@@ -3,7 +3,6 @@ from datetime import datetime
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from geh_common.domain.types import MeteringPointType
-from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
