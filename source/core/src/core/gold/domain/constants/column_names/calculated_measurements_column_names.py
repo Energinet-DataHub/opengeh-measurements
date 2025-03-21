@@ -1,0 +1,12 @@
+class CalculatedMeasurementsColumnNames:
+    metering_point_id = "metering_point_id"
+    metering_point_type = "metering_point_type"
+    observation_time = "observation_time"
+    orchestration_instance_id = "orchestration_instance_id"
+    orchestration_type = "orchestration_type"
+    quantity = "quantity"
+    quantity_quality = "quantity_quality"
+    quantity_unit = "quantity_unit"
+    resolution = "resolution"
+    transaction_creation_datetime = "transaction_creation_datetime"
+    transaction_id = "transaction_id"

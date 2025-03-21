@@ -30,6 +30,7 @@ def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession
         # Assert
         silver_repo_mock.read_stream.assert_called_once()
         gold_repo_mock.write_stream.assert_called_once_with(
+            "measurements_silver_to_gold",
             silver_repo_mock.read_stream.return_value,
             sut._batch_operation,
         )
