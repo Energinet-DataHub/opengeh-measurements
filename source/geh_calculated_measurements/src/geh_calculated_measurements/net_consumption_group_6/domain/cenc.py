@@ -7,6 +7,7 @@ from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
+from pyspark.sql.window import Window
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.net_consumption_group_6.domain.model import (
@@ -51,7 +52,6 @@ def calculate_cenc(
             MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
         )
     )
-    filtered_time_series_points.show()
     current_year = datetime.now().year
     parent_and_child_metering_points_joined = (
         child_metering_points.df.alias("child")
@@ -76,12 +76,22 @@ def calculate_cenc(
             F.col("consumption.move_in").alias("move_in"),
         )
     )
-    parent_and_child_metering_points_joined.show()
 
-    net_consumption_metering_points = parent_and_child_metering_points_joined.filter(
-        F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value
+    net_consumption_metering_points = (
+        parent_and_child_metering_points_joined.filter(
+            F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value
+        )
+        .withColumn(
+            "row_number",
+            F.row_number().over(
+                Window.partitionBy("metering_point_id", "parent_metering_point_id").orderBy(
+                    F.col("period_from_date").desc()
+                )
+            ),
+        )
+        .filter(F.col("row_number") == 1)
+        .drop("row_number")
     )
-    net_consumption_metering_points.show()
 
     joined_ts_mp = (
         parent_and_child_metering_points_joined.join(
@@ -102,7 +112,6 @@ def calculate_cenc(
         )
         .agg(F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity))
     )
-    joined_ts_mp.show()
 
     consumption_and_supply = (
         joined_ts_mp.filter(
@@ -117,7 +126,6 @@ def calculate_cenc(
         )
         .agg(F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity))
     )
-    consumption_and_supply.show()
 
     net_quantity = consumption_and_supply.withColumn(
         "net_quantity",
@@ -127,7 +135,6 @@ def calculate_cenc(
             F.lit(0),
         ),
     )
-    net_quantity.show()
 
     final_result = (
         net_consumption_metering_points.join(
@@ -153,6 +160,5 @@ def calculate_cenc(
             F.month(F.col("settlement_month_timestamp")).alias("settlement_month"),
         )
     )
-    final_result.show()
 
     return Cenc(final_result)
