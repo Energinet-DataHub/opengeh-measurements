@@ -46,14 +46,14 @@ def calculate_cenc(
 
     Returns a DataFrame with schema `cenc_schema`.
     """
-    # Constants for estimated consumption
+    # Constants for estimated consumption for move_in cases
     ESTIMATED_CONSUMPTION_MOVE_IN = 1800
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
 
     # Filter and join the data
     filtered_time_series = _filter_relevant_time_series_points(time_series_points)
     parent_child_joined = _join_parent_child_with_consumption(
-        child_metering_points, consumption_metering_point_periods, execution_start_datetime
+        child_metering_points, consumption_metering_point_periods, execution_start_datetime, time_zone
     )
 
     # Extract net consumption points
@@ -94,7 +94,7 @@ def calculate_cenc(
 
 
 def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) -> DataFrame:
-    """Filter time series points to include only supply and consumption types."""
+    """Filter time series points to include only supply_to_grid and consumption_from_grid."""
     return time_series_points.df.filter(
         F.col(ContractColumnNames.metering_point_type).isin(
             MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
@@ -106,10 +106,9 @@ def _join_parent_child_with_consumption(
     child_metering_points: ChildMeteringPoints,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     execution_start_datetime: datetime,
+    time_zone: str,
 ) -> DataFrame:
-    """Join child metering points with consumption data and add settlement month."""
-    current_year = execution_start_datetime.year
-
+    """Join child metering points with consumption metering point periods and add settlement month."""
     return (
         child_metering_points.df.alias("child")
         .join(
@@ -118,19 +117,31 @@ def _join_parent_child_with_consumption(
             == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
             "left",
         )
+        .withColumn("utc_local_time", F.from_utc_timestamp(F.lit(execution_start_datetime), time_zone))
         .withColumn(
             "settlement_month_timestamp",
-            F.to_timestamp(F.concat_ws("-", F.lit(current_year), F.col("settlement_month"), F.lit(1)), "yyyy-M-d"),
+            F.to_timestamp(
+                F.concat_ws(
+                    "-",
+                    F.when(
+                        F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
+                        F.year(F.col("utc_local_time")),
+                    ).otherwise(F.year(F.col("utc_local_time")) - 1),
+                    F.col(ContractColumnNames.settlement_month),
+                    F.lit(1),
+                ),
+                "yyyy-M-d",
+            ),
         )
         .select(
-            F.col(f"child.{ContractColumnNames.metering_point_id}").alias("metering_point_id"),
-            F.col(f"child.{ContractColumnNames.metering_point_type}").alias("metering_point_type"),
+            F.col(f"child.{ContractColumnNames.metering_point_id}"),
+            F.col(f"child.{ContractColumnNames.metering_point_type}"),
             F.col("settlement_month_timestamp"),
-            F.col(f"child.{ContractColumnNames.parent_metering_point_id}").alias("parent_metering_point_id"),
-            F.col(f"consumption.{ContractColumnNames.period_from_date}").alias("period_from_date"),
-            F.col(f"consumption.{ContractColumnNames.period_to_date}").alias("period_to_date"),
-            F.col(f"consumption.{ContractColumnNames.has_electrical_heating}").alias("has_electrical_heating"),
-            F.col("consumption.move_in").alias("move_in"),
+            F.col(f"child.{ContractColumnNames.parent_metering_point_id}"),
+            F.col(f"consumption.{ContractColumnNames.period_from_date}"),
+            F.col(f"consumption.{ContractColumnNames.period_to_date}"),
+            F.col(f"consumption.{ContractColumnNames.has_electrical_heating}"),
+            F.col("consumption.move_in"),
         )
     )
 
