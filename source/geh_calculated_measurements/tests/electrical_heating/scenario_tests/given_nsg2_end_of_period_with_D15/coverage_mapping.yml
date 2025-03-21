@@ -39,6 +39,8 @@ cases_tested:
 
   "Period length and base period limit":
     - "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
+    - "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
+    - "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
 
   "Summer/Wintertime handling":
     - "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45"
