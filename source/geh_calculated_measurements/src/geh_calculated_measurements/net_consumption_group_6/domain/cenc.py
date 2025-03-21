@@ -32,28 +32,24 @@ class Cenc(DataFrameWrapper):
         super().__init__(df=df, schema=_cenc_schema, ignore_nullability=True)
 
 
-@use_span()
-@testing()
-def calculate_cenc(
-    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
-    child_metering_points: ChildMeteringPoints,
-    time_series_points: TimeSeriesPoints,
-    time_zone: str,
-    orchestration_instance_id: str,
-    execution_start_datetime: datetime,
-) -> Cenc:
-    """Return a data frame with schema `cenc_schema`."""
-    # D06 = Supply to grid
-    # D07 = Consumption from grid
-    estimated_consumption_with_move_in_true = 1800
-    estimated_consumption_with_move_in_and_electrical_heating_true = 5600
-    filtered_time_series_points = time_series_points.df.filter(
+def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) -> DataFrame:
+    """Filter time series points to include only supply and consumption types."""
+    return time_series_points.df.filter(
         F.col(ContractColumnNames.metering_point_type).isin(
             MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
         )
     )
-    current_year = datetime.now().year
-    parent_and_child_metering_points_joined = (
+
+
+def _join_parent_child_with_consumption(
+    child_metering_points: ChildMeteringPoints,
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    execution_start_datetime: datetime,
+) -> DataFrame:
+    """Join child metering points with consumption data and add settlement month."""
+    current_year = execution_start_datetime.year
+
+    return (
         child_metering_points.df.alias("child")
         .join(
             consumption_metering_point_periods.df.alias("consumption"),
@@ -77,25 +73,29 @@ def calculate_cenc(
         )
     )
 
-    net_consumption_metering_points = (
-        parent_and_child_metering_points_joined.filter(
-            F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value
-        )
-        .withColumn(
-            "row_number",
-            F.row_number().over(
-                Window.partitionBy("metering_point_id", "parent_metering_point_id").orderBy(
-                    F.col("period_from_date").desc()
-                )
-            ),
-        )
+
+def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFrame:
+    """Extract net consumption metering points with most recent period for each point."""
+    # Filter first to reduce data before window operation
+    filtered_df = parent_child_df.filter(F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value)
+
+    # Use more efficient window function
+    window_spec = Window.partitionBy("metering_point_id", "parent_metering_point_id").orderBy(
+        F.col("period_from_date").desc()
+    )
+
+    return (
+        filtered_df.withColumn("row_number", F.row_number().over(window_spec))
         .filter(F.col("row_number") == 1)
         .drop("row_number")
     )
 
-    joined_ts_mp = (
-        parent_and_child_metering_points_joined.join(
-            filtered_time_series_points,
+
+def _join_and_aggregate_time_series(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
+    """Join time series with metering points and aggregate quantities."""
+    return (
+        parent_child_df.join(
+            time_series_df,
             on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
             how="left",
         )
@@ -113,21 +113,35 @@ def calculate_cenc(
         .agg(F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity))
     )
 
-    consumption_and_supply = (
-        joined_ts_mp.filter(
-            F.col(ContractColumnNames.metering_point_type).isin(
-                MeteringPointType.CONSUMPTION_FROM_GRID.value, MeteringPointType.SUPPLY_TO_GRID.value
-            )
-        )
+
+def _calculate_consumption_supply(joined_ts_df: DataFrame) -> DataFrame:
+    """Calculate consumption and supply without using pivot."""
+    cons_type = MeteringPointType.CONSUMPTION_FROM_GRID.value
+    supply_type = MeteringPointType.SUPPLY_TO_GRID.value
+
+    # Filter and get consumption values
+    consumption_df = (
+        joined_ts_df.filter(F.col(ContractColumnNames.metering_point_type) == cons_type)
         .groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp")
-        .pivot(
-            ContractColumnNames.metering_point_type,
-            [MeteringPointType.CONSUMPTION_FROM_GRID.value, MeteringPointType.SUPPLY_TO_GRID.value],
-        )
-        .agg(F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity))
+        .agg(F.sum(ContractColumnNames.quantity).alias(cons_type))
     )
 
-    net_quantity = consumption_and_supply.withColumn(
+    # Filter and get supply values
+    supply_df = (
+        joined_ts_df.filter(F.col(ContractColumnNames.metering_point_type) == supply_type)
+        .groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp")
+        .agg(F.sum(ContractColumnNames.quantity).alias(supply_type))
+    )
+
+    # Join the two datasets
+    return consumption_df.join(
+        supply_df, on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"], how="full_outer"
+    )
+
+
+def _calculate_net_quantity(consumption_supply_df: DataFrame) -> DataFrame:
+    """Calculate net quantity as maximum of (consumption - supply) or 0."""
+    return consumption_supply_df.withColumn(
         "net_quantity",
         F.greatest(
             F.coalesce(F.col(str(MeteringPointType.CONSUMPTION_FROM_GRID.value)), F.lit(0))
@@ -136,8 +150,42 @@ def calculate_cenc(
         ),
     )
 
+
+@use_span()
+@testing()
+def calculate_cenc(
+    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    child_metering_points: ChildMeteringPoints,
+    time_series_points: TimeSeriesPoints,
+    time_zone: str,
+    orchestration_instance_id: str,
+    execution_start_datetime: datetime,
+) -> Cenc:
+    """Calculate net energy consumption (CENC) for metering points.
+
+    Returns a DataFrame with schema `cenc_schema`.
+    """
+    # Constants for estimated consumption
+    ESTIMATED_CONSUMPTION_MOVE_IN = 1800
+    ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
+
+    # Filter and join the data
+    filtered_time_series = _filter_relevant_time_series_points(time_series_points)
+    parent_child_joined = _join_parent_child_with_consumption(
+        child_metering_points, consumption_metering_point_periods, execution_start_datetime
+    )
+
+    # Extract net consumption points
+    net_consumption_points = _get_net_consumption_metering_points(parent_child_joined)
+
+    # Process time series data
+    joined_ts = _join_and_aggregate_time_series(parent_child_joined, filtered_time_series)
+    consumption_supply = _calculate_consumption_supply(joined_ts)
+    net_quantity = _calculate_net_quantity(consumption_supply)
+
+    # Prepare final result with estimated values for move-in cases
     final_result = (
-        net_consumption_metering_points.join(
+        net_consumption_points.join(
             net_quantity,
             on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
             how="left",
@@ -146,9 +194,9 @@ def calculate_cenc(
             "net_quantity",
             F.when(
                 F.col("move_in") & F.col("has_electrical_heating"),
-                F.lit(estimated_consumption_with_move_in_and_electrical_heating_true),
+                F.lit(ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING),
             )
-            .when(F.col("move_in"), F.lit(estimated_consumption_with_move_in_true))
+            .when(F.col("move_in"), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
             .otherwise(F.col("net_quantity")),
         )
         .withColumn(ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id))
