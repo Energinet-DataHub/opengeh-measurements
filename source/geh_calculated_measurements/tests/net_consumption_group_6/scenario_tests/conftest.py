@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.testing.dataframes import (
     read_csv,
 )
@@ -40,11 +41,17 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints.schema,
     )
 
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
+
     # Execute the logic
     cenc, measurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
+        "Europe/Copenhagen",
+        scenario_parameters["orchestration_instance_id"],
+        scenario_parameters["execution_start_datetime"],
     )
 
     # Return test cases

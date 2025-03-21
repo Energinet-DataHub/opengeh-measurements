@@ -23,10 +23,12 @@ class Repository:
 
     def write_calculations(self, data: Calculations) -> None:
         df = data.df
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_NAME
+        table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_TABLE_NAME
         df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(table_name))
 
     def write_ten_largest_quantities(self, data: TenLargestQuantities) -> None:
         df = data.df
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_NAME
+        table_name = (
+            CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_TABLE_NAME
+        )
         df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(table_name))
