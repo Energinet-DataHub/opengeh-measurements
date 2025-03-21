@@ -23,7 +23,7 @@ class ChildMeteringPoints(DataFrameWrapper):
 
     Periods are included when
     - the metering point is of type
-      'supply_to_grid' 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
+      'supply_to_grid' | 'consumption_from_grid' | 'electrical_heating' | 'net_consumption'
     - the metering point is coupled to a parent metering point
       Note: The same child metering point cannot be re-coupled after being uncoupled
     - the child metering point physical status is connected or disconnected.
