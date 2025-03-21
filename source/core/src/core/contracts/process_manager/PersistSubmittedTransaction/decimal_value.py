@@ -20,6 +20,5 @@ class DecimalValue:
         nanos = int((value - units) * DecimalValue.NanoFactor)
         return DecimalValue(units, nanos)
 
-    @staticmethod
     def to_decimal(self):
         return self.units + self.nanos / DecimalValue.NanoFactor
