@@ -10,6 +10,8 @@ from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
+job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+
 gold_table_row = GoldTableRow(
     metering_point_id="170000030000000201",
     observation_time=datetime(2024, 11, 30, 23, 0, 0),
@@ -17,13 +19,9 @@ gold_table_row = GoldTableRow(
     metering_point_type=MeteringPointType.CONSUMPTION,
 )
 
-fixture = None
-
-job_parameters = {"orchestration-instance-id": uuid.uuid4()}
-
 
 @pytest.fixture(scope="session")
-def setup_fixture(
+def job_fixture(
     environment_configuration: EnvironmentConfiguration,
 ) -> BaseJobFixture:
     table_seeder = GoldTableSeeder(environment_configuration)
