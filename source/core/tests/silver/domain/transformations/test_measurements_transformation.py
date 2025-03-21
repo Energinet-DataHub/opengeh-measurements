@@ -7,7 +7,7 @@ from geh_common.domain.types.orchestration_type import OrchestrationType as GehC
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
-import core.silver.domain.transformations.measurements_transformation as sut
+import core.silver.domain.transformations.persist_submitted_transaction_transformation as sut
 from core.contracts.process_manager.enums.metering_point_type import MeteringPointType as CoreMeteringPointType
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
 from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
