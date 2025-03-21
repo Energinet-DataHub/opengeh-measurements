@@ -38,7 +38,6 @@ silver_measurements_schema = StructType(
             True,
         ),
         StructField(SilverMeasurementsColumnNames.is_cancelled, BooleanType(), True),
-        StructField(SilverMeasurementsColumnNames.is_deleted, BooleanType(), True),
         StructField(SilverMeasurementsColumnNames.created, TimestampType(), True),
     ]
 )
