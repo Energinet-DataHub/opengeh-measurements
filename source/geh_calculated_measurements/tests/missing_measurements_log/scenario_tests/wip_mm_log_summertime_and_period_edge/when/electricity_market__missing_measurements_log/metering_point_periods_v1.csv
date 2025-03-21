@@ -1,0 +1,3 @@
+metering_point_id;grid_area_code;resolution;period_from_date;period_to_date;#comment
+170000000000000203;003;PT1H;2023-12-31T23:00:00Z;;Case 3: 1st quarter in period missing. Summertime change.
+170000000001500204;004;PT15M;2023-12-31T23:00:00Z;;Case 4: 1st quarter in period missing. Summertime change.
