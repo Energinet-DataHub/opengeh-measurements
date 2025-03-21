@@ -4,7 +4,6 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    child_metering_points_v1,
     consumption_metering_point_periods_v1,
 )
 
@@ -29,5 +28,5 @@ class Repository:
 
     def read_child_metering_points(self) -> ChildMeteringPoints:
         file_path = f"{self._electricity_market_data_path}/{self._child_metering_points_file_name}"
-        df = read_csv_path(spark=self._spark, path=file_path, schema=child_metering_points_v1)
+        df = read_csv_path(spark=self._spark, path=file_path, schema=ChildMeteringPoints.schema)
         return ChildMeteringPoints(df)
