@@ -1,4 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000001500202;true;2;1;2023-10-31T23:00:00Z;2024-03-31T22:00:00Z;Case 2: Two periods: 11-2023, 12-2024 (61 days) and 01-2024, 02-2024,03-2024 (91 days)
-170000000001500202;true;2;1;2024-03-31T22:00:00Z;;Case 2: Two periods: 01-2024 - rest of 2024 (275 days) and 01-2025 to calc. date (up to end calculation)
-170000000001500203;true;2;1;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3: period_from_date is one day before summertime change, period_to_date is one day after wintertime change (213 days total).

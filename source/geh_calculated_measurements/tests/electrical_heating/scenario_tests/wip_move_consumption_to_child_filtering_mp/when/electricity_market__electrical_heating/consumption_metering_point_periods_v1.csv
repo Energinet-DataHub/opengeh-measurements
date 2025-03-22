@@ -1,3 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000201;true;;1;2024-02-01T23:00:00Z;;Generates output because there is consumption data and an electrical heating child metering point
-170000000000000202;true;;1;2024-02-01T23:00:00Z;2024-03-01T23:00:00Z;Generates no output data because there is no consumption data

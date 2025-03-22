@@ -1,4 +1,0 @@
-orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-03-29T23:00:00Z;24;
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-03-30T23:00:00Z;23;Summertime change March 31st
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-03-31T22:00:00Z;24;

@@ -1,0 +1,9 @@
+orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170200;2024-01-03T23:00:00Z;1;Case 0: We only write values for jan. 4th to child mp, because value for jan. 3rd is the same as exsting value
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-02-01T23:00:00Z;999.123;Case 1: The sole date for Case 1 where there is both a active consumption metering point and a coupled child metering point and consumption data
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-02T23:00:00Z;10;Case 3: New value for Jan 3rd written to child mp.
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-03T23:00:00Z;1;Case 3: Value for jan. 4th to child mp
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-04T23:00:00Z;0;Case 3: New value for Jan 5th written to child mp.
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-05T23:00:00Z;5;Case 3: New value for Jan 6th written to child mp.
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170204;2024-01-01T23:00:00Z;12.787;Case 4: Limit is 32.786. Quantity for Jan. 1std is the same (20), so no new rows are added. But value for Jan. 2nd is now 12.787 (up to limit) which is different from previous value of 20.
+electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170204;2024-01-02T23:00:00Z;0;Case 4

@@ -1,9 +1,0 @@
-metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;coupled_date;uncoupled_date;#comment
-140000000600170201;electrical_heating;calculated;PT1H;170000000060000201;2024-12-31T23:00:00Z;;Case 1: nsg6 - simple
-150000000600170201;net_consumption;calculated;PT1H;170000000060000201;2024-12-31T23:00:00Z;;Case 1: nsg6 - simple
-060000000600170201;supply_to_grid;calculated;PT1H;170000000060000201;2024-12-31T23:00:00Z;;Case 1: nsg6 - simple
-070000000600170201;consumption_from_grid;calculated;PT1H;170000000060000201;2024-12-31T23:00:00Z;;Case 1: nsg6 - simple
-140000000600170202;electrical_heating;calculated;PT1H;170000000060000202;2024-12-31T23:00:00Z;;Case 2: nsg6, summer/wintertime, settlement month Feb.
-150000000600170202;net_consumption;calculated;PT1H;170000000060000202;2024-12-31T23:00:00Z;;Case 2: nsg6, summer/wintertime, settlement month Feb.
-060000000600170202;supply_to_grid;calculated;PT1H;170000000060000202;2024-12-31T23:00:00Z;;Case 2: nsg6, summer/wintertime, settlement month Feb.
-070000000600170202;consumption_from_grid;calculated;PT1H;170000000060000202;2024-12-31T23:00:00Z;;Case 2: nsg6, summer/wintertime, settlement month Feb.

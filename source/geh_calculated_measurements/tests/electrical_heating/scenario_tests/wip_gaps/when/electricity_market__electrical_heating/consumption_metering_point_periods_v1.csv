@@ -1,4 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000201;true;;1;2023-12-31T23:00:00Z;2024-02-29T23:00:00Z;Case 1: Period 1 (Jan-Feb). Limit: 60/366*4000 = 655.738
-170000000000000201;true;;1;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 1: Period 2 (May-Jul). Limit: 92/366*4000 = 1005.464
-170000000000000201;true;;1;2024-10-31T23:00:00Z;;Case 1: Period 3 (Nov-Dec). Limit: 61/366*4000 = 666.667

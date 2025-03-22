@@ -24,7 +24,7 @@ def get_joined_metering_point_periods_in_local_time(
     metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
     metering_point_periods = _close_open_ended_periods(metering_point_periods)
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
-    metering_point_periods = _split_period_by_settlement_month(metering_point_periods)
+    metering_point_periods = _split_period_by_settlement_year(metering_point_periods)
     metering_point_periods = _remove_net_settlement_group_2_up2end_without_netconsumption(metering_point_periods)
 
     return metering_point_periods
@@ -220,7 +220,8 @@ def _find_parent_child_overlap_period(
     ).where(F.col(EphemeralColumnNames.overlap_period_start_lt) < F.col(EphemeralColumnNames.overlap_period_end_lt))
 
 
-def _split_period_by_settlement_month(
+@testing()
+def _split_period_by_settlement_year(
     parent_and_child_metering_point_and_periods: DataFrame,
 ) -> DataFrame:
     settlement_year_date = "settlement_year_date"
@@ -288,8 +289,11 @@ def _remove_net_settlement_group_2_up2end_without_netconsumption(
 ) -> DataFrame:
     return parent_and_child_metering_point_and_periods.where(
         ~(
-            (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
-            & (F.col(EphemeralColumnNames.net_consumption_metering_point_id).isNull())
+            (
+                F.col(ContractColumnNames.net_settlement_group).isNotNull()
+                & (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
+            )
+            & F.col(EphemeralColumnNames.net_consumption_metering_point_id).isNull()
             # When current date is in the settlement year, then we're in a up-to-end period
             & _is_in_settlement_year(F.current_date(), F.col(EphemeralColumnNames.settlement_month_datetime))
         )

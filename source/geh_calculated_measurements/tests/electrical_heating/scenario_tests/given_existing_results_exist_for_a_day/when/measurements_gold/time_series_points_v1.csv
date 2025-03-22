@@ -1,0 +1,29 @@
+metering_point_id;quantity;observation_time;metering_point_type;#comment
+170000000000000200;1;2024-01-03T12:00:00Z;consumption;Case 0: Parent mp. Jan. 3rd
+140000000000170200;1;2024-01-02T23:00:00Z;electrical_heating;Case 0: Written to child mp by previous calculation for Jan. 3rd.
+170000000000000200;1;2024-01-04T12:00:00Z;consumption;Case 0: Parent mp. Jan. 4th
+170000000000000201;123.456;2024-02-01T22:00:00Z;consumption;Case 1: Ignore because it is prior to any (electrical heating) period of the consumption metering point
+170000000000000201;0.123;2024-02-01T23:00:00Z;consumption;Case 1: Will be aggregated with the next measurement - even though there is not data for the whole day
+170000000000000201;999.000;2024-02-01T23:15:00Z;consumption;Case 1
+170000000000000201;888.888;2024-04-02T06:00:00Z;consumption;Case 1: Ignored because the child metering point is decoupled at this time
+170000000000000203;10;2024-01-02T23:00:00Z;consumption;Case 3: Parent mp. Jan. 3rd. This value has been updated since last EH calculation (was 1 before).
+140000000000170203;1;2024-01-02T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 3rd.
+170000000000000203;1;2024-01-03T23:00:00Z;consumption;Case 3: Parent mp. Jan. 4th
+170000000000000203;0;2024-01-04T23:00:00Z;consumption;Case 3: Parent mp. Jan. 5th. This value has been updated since last EH calculation (was 5 before).
+140000000000170203;5;2024-01-04T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 5th.
+170000000000000203;5;2024-01-05T23:00:00Z;consumption;Case 3: Parent mp. Jan. 6th. This value has been updated since last EH calculation (was 0 before).
+140000000000170203;0;2024-01-05T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 5th.
+170000000000000204;20;2023-12-31T23:00:00Z;consumption;Case 4: Parent mp. Jan. 1st
+140000000000170204;20;2023-12-31T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 1st.
+170000000000000204;20;2024-01-01T23:00:00Z;consumption;Case 4: Parent mp. Jan. 2nd
+140000000000170204;20;2024-01-01T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 2nd.
+170000000000000204;20;2024-01-02T23:00:00Z;consumption;Case 4: Parent mp. Jan. 3rd
+140000000000170204;20;2024-01-02T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 3rd.
+170000000000000204;20;2024-01-03T23:00:00Z;consumption;Case 4: Parent mp. Jan. 4th
+140000000000170204;20;2024-01-03T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 4th.
+170000000000000204;20;2024-01-04T23:00:00Z;consumption;Case 4: Parent mp. Jan. 5th
+140000000000170204;20;2024-01-04T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 5th.
+170000000000000204;20;2024-01-05T23:00:00Z;consumption;Case 4: Parent mp. Jan. 6th
+140000000000170204;20;2024-01-05T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 6th.
+170000000000000204;20;2024-01-06T23:00:00Z;consumption;Case 4: Parent mp. Jan. 7th
+140000000000170204;20;2024-01-06T23:00:00Z;electrical_heating;Case 4: Written to child mp by previous calculation for Jan. 7th.
