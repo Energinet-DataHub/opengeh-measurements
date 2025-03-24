@@ -72,21 +72,19 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 6)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 7)),
-            new Tuple<LocalDate, LocalDate>(new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 8)),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured"),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured"),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured"),
+            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality"),
         };
 
         return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow(Tuple<LocalDate, LocalDate> dates)
+    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality) values)
     {
-        var observationDate = dates.Item1;
-        var transactionCreationDate = dates.Item2;
+        var observationDate = values.ObservationTime;
+        var transactionCreationDate = values.TransactionCreationDate;
         var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
@@ -96,7 +94,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             "'kwh'",
             $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
-            "'measured'",
+            $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
         });
     }
