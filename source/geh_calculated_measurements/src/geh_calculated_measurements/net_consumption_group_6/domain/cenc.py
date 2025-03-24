@@ -28,7 +28,7 @@ def calculate_cenc(
     orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
 ) -> Cenc:
-    """Calculate _calculated annual estimated net consumption_ (CENC) for metering points."""
+    """Calculate _calculated annual estimated net consumption_ (CENC) for metering points.."""
     # Constants for estimated consumption for move_in cases
     ESTIMATED_CONSUMPTION_MOVE_IN = 1800
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
