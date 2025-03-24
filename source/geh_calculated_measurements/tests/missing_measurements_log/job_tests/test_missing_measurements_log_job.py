@@ -5,14 +5,6 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
 
 
-def _create_job_environment_variables() -> dict[str, str]:
-    return {
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
-        "CATALOG_NAME": "spark_catalog",
-        "TIME_ZONE": "Europe/Copenhagen",
-    }
-
-
 def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
     return [
         "dummy_script_name",
@@ -27,12 +19,13 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
 
 def test_execute(
     spark: SparkSession,
+    dummy_env_args: dict[str, str],
     monkeypatch,
 ) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()
     monkeypatch.setattr("sys.argv", _create_job_arguments(orchestration_instance_id))
-    monkeypatch.setattr("os.environ", _create_job_environment_variables())
+    monkeypatch.setattr("os.environ", dummy_env_args)
 
     # Act
     execute()
