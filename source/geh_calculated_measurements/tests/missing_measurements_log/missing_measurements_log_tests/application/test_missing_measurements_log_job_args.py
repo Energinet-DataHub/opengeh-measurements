@@ -37,9 +37,15 @@ def sys_argv_from_contract(
     return ["dummy_script_name"] + contract_parameters
 
 
+def _create_job_environment_variables() -> dict:
+    return {
+        "CATALOG_NAME": "some_catalog",
+        "TIME_ZONE": "some_time_zone",
+    }
+
+
 def test_when_parameters__parses_parameters_from_contract(
     sys_argv_from_contract: list[str],
-    dummy_env_args: dict[str, str],
 ) -> None:
     """
     This test ensures that the job accepts
@@ -47,7 +53,7 @@ def test_when_parameters__parses_parameters_from_contract(
     """
     # Arrange
     with patch("sys.argv", sys_argv_from_contract):
-        with patch.dict("os.environ", dummy_env_args):
+        with patch.dict("os.environ", _create_job_environment_variables()):
             actual_args = MissingMeasurementsLogArgs()
 
     # Assert
