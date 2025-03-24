@@ -74,10 +74,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         {
             (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured"),
             (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured"),
-            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured"),
-            (new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 6), "measured"),
-            (new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 7), "measured"),
-            (new LocalDate(2022, 1, 5), new LocalDate(2022, 1, 8), "measured"),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured"),
             (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality"),
         };
 

@@ -39,8 +39,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-05T00:00:00Z";
-        const string endDate = "2022-01-06T00:00:00Z";
+        const string startDate = "2022-01-03T00:00:00Z"; // On this date, the fixture inserts multiple measurements with the same observation time
+        const string endDate = "2022-01-04T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -48,7 +48,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
-        Assert.Equal();
         Assert.Equal(24, actual.Points.Count);
     }
 
