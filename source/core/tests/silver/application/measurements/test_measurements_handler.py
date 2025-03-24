@@ -6,13 +6,12 @@ import core.silver.application.measurements.measurements_handler as sut
 def test__handle__calls_expected() -> None:
     with (
         patch(
-            "core.silver.application.measurements.measurements_handler.submitted_transactions_to_silver_validation"
+            f"{sut.__name__}.submitted_transactions_to_silver_validation",
         ) as mock_submitted_transactions_to_silver_validation,
-        patch(
-            "core.silver.application.measurements.measurements_handler.SilverMeasurementsRepository"
-        ) as mock_silver_measurements_repository,
-        patch(
-            "core.silver.application.measurements.measurements_handler._persist_submitted_transactions_quarantined"
+        patch.object(sut, sut.SilverMeasurementsRepository.__name__) as mock_silver_measurements_repository,
+        patch.object(
+            sut,
+            sut._persist_submitted_transactions_quarantined.__name__,
         ) as mock_persist_submitted_transactions_quarantined,
     ):
         # Arrange
@@ -40,10 +39,10 @@ def test__handle__calls_expected() -> None:
 def test__persist_submitted_tranactions_quarantined__calls_expected() -> None:
     with (
         patch(
-            "core.silver.application.measurements.measurements_handler.submitted_transactions_quarantined_transformations"
+            f"{sut.__name__}.submitted_transactions_quarantined_transformations"
         ) as mock_submitted_transactions_quarantined_transformations,
-        patch(
-            "core.silver.application.measurements.measurements_handler.SubmittedTransactionsQuarantinedRepository"
+        patch.object(
+            sut, sut.SubmittedTransactionsQuarantinedRepository.__name__
         ) as mock_submitted_transactions_quarantined_repository,
     ):
         # Arrange

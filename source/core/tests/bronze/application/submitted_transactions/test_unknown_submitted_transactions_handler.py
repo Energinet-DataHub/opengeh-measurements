@@ -8,11 +8,12 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 
 def test__handle__calls_expected() -> None:
     with (
-        patch(
-            "core.bronze.application.submitted_transactions.unknown_submitted_transactions_handler.ProtobufVersions"
+        patch.object(
+            sut,
+            sut.ProtobufVersions.__name__,
         ) as mock_protobuf_versions,
-        patch(
-            "core.bronze.application.submitted_transactions.unknown_submitted_transactions_handler.InvalidSubmittedTransactionsRepository"
+        patch.object(
+            sut, sut.InvalidSubmittedTransactionsRepository.__name__
         ) as mock_invalid_submitted_transactions_repository,
     ):
         # Arrange
@@ -29,8 +30,9 @@ def test__handle__calls_expected() -> None:
 
 
 def test__handle__filters_submitted_transactions_by_version() -> None:
-    with patch(
-        "core.bronze.application.submitted_transactions.unknown_submitted_transactions_handler.ProtobufVersions"
+    with patch.object(
+        sut,
+        sut.ProtobufVersions.__name__,
     ) as mock_protobuf_versions:
         # Arrange
         submitted_transactions = Mock()
