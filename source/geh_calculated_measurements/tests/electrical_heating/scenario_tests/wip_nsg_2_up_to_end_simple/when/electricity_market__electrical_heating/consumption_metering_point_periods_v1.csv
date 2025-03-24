@@ -1,4 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000200;true;2;1;2024-12-31T23:00:00Z;;Case 0: nsg2 - no end date - without D15 (should not generate result)
-170000000150000201;true;2;1;2024-12-31T23:00:00Z;;Case 1: nsg2 - no end date - with D15
-170000000150000202;true;2;1;2024-12-31T23:00:00Z;;Case 2: nsg2, up to end, with D15, summer/wintertime
