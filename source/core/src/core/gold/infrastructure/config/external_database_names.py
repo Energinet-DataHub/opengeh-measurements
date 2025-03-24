@@ -1,0 +1,2 @@
+class ExternalDatabaseNames:
+    calculated = "calculated"

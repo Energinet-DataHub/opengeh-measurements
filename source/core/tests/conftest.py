@@ -9,6 +9,9 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
 import core.utility.shared_helpers as shared_helpers
+from core.gold.infrastructure.config.external_database_names import ExternalDatabaseNames
+from core.gold.infrastructure.config.external_view_names import ExternalViewNames
+
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
 import tests.helpers.schema_helper as schema_helper
 from core.migrations import migrations_runner

@@ -6,9 +6,6 @@ import core.gold.application.streams.calculated_measurements_stream as sut
 from core.gold.infrastructure.repositories.calculated_measurements_repository import CalculatedMeasurementsRepository
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 
-_calculated_schema_name = "measurements_calculated"
-_calculated_view_name = "hourly_calculated_measurements_v1"
-
 
 def test__stream_measurements_calculated_to_gold__calls_expected(spark: SparkSession):
     # Arrange
@@ -48,26 +45,3 @@ def test__pipeline_measurements_calculated_to_gold__calls_append_to_gold_measure
         # Assert
         transform_mock.assert_called_once_with(calculated_measurements_mock)
         gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
-
-
-# measurements_calculated and view is missing, should we create fixture? Or is mocking another subsystem enough with above?
-# @patch("core.gold.infrastructure.config.spark.initialize_spark")
-# def test__stream_measurements_calculated_to_gold__append_to_gold_measurements(
-#     mock_spark_session, spark: SparkSession, migrations_executed, mock_checkpoint_path
-# ) -> None:
-#     # Arrange
-#     mock_spark_session.return_value = spark
-#
-#     metering_point_id = identifier_helper.create_random_metering_point_id()
-#     calculated_measurements = CalculatedMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
-#     table_helper.append_to_table(calculated_measurements, _calculated_schema_name, _calculated_view_name)
-#
-#     # Act
-#     sut.stream_measurements_calculated_to_gold()
-#
-#     # Arrange
-#     gold_measurements = spark.table(f"{_calculated_schema_name}.{_calculated_view_name}").where(
-#         f"metering_point_id = '{metering_point_id}'"
-#     )
-#     assert gold_measurements.count() == 24
-#
