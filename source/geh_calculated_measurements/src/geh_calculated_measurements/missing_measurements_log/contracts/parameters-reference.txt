@@ -4,3 +4,8 @@
 
 # Required parameters
 --orchestration-instance-id={orchestration-instance-id}
+--period-start-datetime=2022-05-31T22:00:00Z
+--period-end-datetime=2022-06-01T22:00:00Z
+
+# Optional parameters
+--grid-area-codes=[804,805]

@@ -1,0 +1,28 @@
+"Electrical Heating Tests":
+  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day": true
+  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day": true
+  "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day": true
+  "GIVEN there is no active consumption MP OR there is no active electrical heating MP WHEN there is measurement data for the day THEN no energy is added to an electrical heating MP for the day": true
+
+  "Period length and base period limit":
+    "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000": true
+    "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)": true
+    "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)": true
+    "Settlement Month IS NOT January (NSG6 only)": true
+
+  "Summer/Wintertime handling":
+    "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45": true
+    "GIVEN it is the day of winter daylight savings change THEN we should aggregate daily consumption for 25 hours AND last quarter of the day is UTC 22.45": true
+
+  "Results Filtering":
+    "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should NOT generate a result for that MP/day": true
+
+  "Net Settlement Groups":
+    "Electrical heating without net settlement group": true
+    "Electrical heating with net settlement group 2 - WITH net consumption MP": true
+    "Electrical heating with net settlement group 2 - WITHOUT net consumption MP": true
+    "Electrical heating with net settlement group 6": true
+
+  "Settlement Group Calculation Type":
+    "UP TO END of period calculation": true
+    "END OF PERIOD calculation": true
