@@ -29,6 +29,11 @@ dev = [
     "pytest>=8.3.4",
     "ruff>=0.9.1",
     "pydantic>=2.10.6",
+    "azure-identity>=1.20.0",
+    "azure-eventhub>=5.14.0",
+    "pytest-bdd>=8.1.0",
+    "pytest-bdd-report>=1.0.1",
+    "protobuf>=6.30.1",
 ]
 
 [build-system]
