@@ -10,5 +10,6 @@ class GoldMeasurementsColumnNames:
     resolution = "resolution"
     transaction_id = "transaction_id"
     transaction_creation_datetime = "transaction_creation_datetime"
+    is_cancelled = "is_cancelled"
     created = "created"
     modified = "modified"
