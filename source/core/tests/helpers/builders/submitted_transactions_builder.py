@@ -163,12 +163,11 @@ class SubmittedTransactionsBuilder:
         offset=None,
         timestamp=None,
         timestampType=None,
-        version=None,
     ) -> "SubmittedTransactionsBuilder":
         if value is None:
             value = ValueBuilder(self.spark).build()
 
-        self.data.append((key, value, topic, partition, offset, timestamp, timestampType, version))
+        self.data.append((key, value, topic, partition, offset, timestamp, timestampType))
 
         return self
 
