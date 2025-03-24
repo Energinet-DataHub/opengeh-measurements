@@ -1,6 +1,6 @@
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType, OrchestrationType
-from geh_common.pyspark.transformations import convert_to_utc
+from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import Column
@@ -45,7 +45,7 @@ def calculate_daily(
 ) -> CalculatedMeasurements:
     cenc_added_col = cenc.df.select(  # adding needed columns
         "*",
-        F.lit(OrchestrationType.NET_CONSUMPTION_GROUP_6.value).alias(ContractColumnNames.orchestration_type),
+        F.lit(OrchestrationType.NET_CONSUMPTION.value).alias(ContractColumnNames.orchestration_type),
         F.lit(MeteringPointType.NET_CONSUMPTION.value).alias(ContractColumnNames.metering_point_type),
         F.lit(execution_start_datetime).alias("transaction_creation_datetime").cast(T.TimestampType()),
         F.current_timestamp().alias("now"),
@@ -58,6 +58,9 @@ def calculate_daily(
     cenc_added_col.show()
 
     time_series_points_df = time_series_points.df
+
+    cenc_added_col = convert_from_utc(cenc_added_col, time_zone)
+    time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
 
     print("Schema of time_series_points_df:")
     time_series_points_df.printSchema()
@@ -93,7 +96,7 @@ def calculate_daily(
         )
         .select(
             "cenc.*",
-            F.col("ts.date").alias("last_run"),
+            F.col("ts.latest_observation_date").alias("last_run"),
         )
     )
 
@@ -103,18 +106,29 @@ def calculate_daily(
     df = cenc_w_last_run.select(
         "*",
         F.explode(F.sequence(F.date_add(F.col("last_run"), 1), F.col("now"), F.expr("INTERVAL 1 DAY"))).alias("date"),
-    ).drop(F.col("last_run"))
+    )
+
+    result_df = df.select(
+        F.col("orchestration_type"),
+        F.col("orchestration_instance_id"),
+        F.lit("to be added").alias("transaction_id"),
+        F.col("transaction_creation_datetime"),
+        F.col("metering_point_id"),
+        F.col("metering_point_type"),
+        F.col("date"),
+        F.col("quantity"),
+    )
 
     print("result df:")
-    df.show()
+    result_df.show()
 
-    result_df = convert_to_utc(df, time_zone)
+    result_df = convert_to_utc(result_df, time_zone)
 
     calculated_measurements = calculated_measurements_factory.create(
         measurements=result_df,
         orchestration_instance_id=orchestration_instance_id,
-        orchestration_type=OrchestrationType.NET_CONSUMPTION_GROUP_6.value,
-        metering_point_type=MeteringPointType.NET_CONSUMPTION.value,
+        orchestration_type=OrchestrationType.NET_CONSUMPTION,
+        metering_point_type=MeteringPointType.NET_CONSUMPTION,
         time_zone=time_zone,
     )
 

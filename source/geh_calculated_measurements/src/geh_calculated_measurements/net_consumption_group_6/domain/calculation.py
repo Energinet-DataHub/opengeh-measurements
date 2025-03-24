@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Tuple
 
 from geh_common.telemetry import use_span
-from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.capacity_settlement.domain import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
@@ -20,7 +19,6 @@ def execute(
     time_zone: str,
     orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
-    internal_daily: DataFrame,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc(
         consumption_metering_point_periods,
