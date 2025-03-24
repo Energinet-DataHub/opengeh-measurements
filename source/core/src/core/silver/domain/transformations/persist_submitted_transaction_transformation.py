@@ -47,7 +47,7 @@ def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
             ValueColumnNames.points,
             lambda x: F.struct(
                 x.position.alias(SilverMeasurementsColumnNames.Points.position),
-                (x.quantity.units + (x.quantity.nanos / 1000000.0))
+                (x.quantity.units + (x.quantity.nanos / 1_000_000_000))
                 .cast(DecimalType(18, 3))
                 .alias(SilverMeasurementsColumnNames.Points.quantity),
                 x.quality.alias(SilverMeasurementsColumnNames.Points.quality),
