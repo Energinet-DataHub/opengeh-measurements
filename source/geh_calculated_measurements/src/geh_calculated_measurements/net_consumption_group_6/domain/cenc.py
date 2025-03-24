@@ -42,15 +42,15 @@ def calculate_cenc(
     parent_child_joined = _add_timestamp_from_settlement_month(parent_child_joined, execution_start_datetime, time_zone)
 
     # Extract net consumption points
-    net_consumption_points = _get_net_consumption_metering_points(parent_child_joined)
+    net_consumption_metering_points = _get_net_consumption_metering_points(parent_child_joined)
 
     # Process time series data
     metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series)
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
     # Prepare final result with estimated values for move-in cases
-    final_result = (
-        net_consumption_points.join(
+    result = (
+        net_consumption_metering_points.join(
             net_quantity,
             on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
             how="left",
@@ -74,7 +74,7 @@ def calculate_cenc(
         )
     )
 
-    return Cenc(final_result)
+    return Cenc(result)
 
 
 def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) -> DataFrame:
