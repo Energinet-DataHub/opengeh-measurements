@@ -14,7 +14,6 @@ from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.conftest import EnvironmentConfiguration
 
 
-@pytest.mark.skip(reason="only run if performance test is needed")
 class TestElectricalHeatingPerformance(BaseJobTests):
     """
     Test with performance configuration using delta tables
@@ -28,12 +27,12 @@ class TestElectricalHeatingPerformance(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="ElectricalHeating",
-                params=self.params,
+                job_parameters=self.params,
             )
         return self.fixture
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
+    def job_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
         """Set up the fixture for the test class."""
         return self.get_or_create_fixture(environment_configuration)
 
