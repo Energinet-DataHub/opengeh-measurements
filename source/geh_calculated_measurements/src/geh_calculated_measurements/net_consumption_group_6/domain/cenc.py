@@ -156,9 +156,9 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
     """Extract net consumption metering points with most recent period for each point."""
     filtered_df = parent_child_df.filter(F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value)
 
-    window_spec = Window.partitionBy("metering_point_id", "parent_metering_point_id").orderBy(
-        F.col("period_from_date").desc()
-    )
+    window_spec = Window.partitionBy(
+        ContractColumnNames.metering_point_id, ContractColumnNames.parent_metering_point_id
+    ).orderBy(F.col(ContractColumnNames.period_from_date).desc())
 
     return (
         filtered_df.withColumn("row_number", F.row_number().over(window_spec))
