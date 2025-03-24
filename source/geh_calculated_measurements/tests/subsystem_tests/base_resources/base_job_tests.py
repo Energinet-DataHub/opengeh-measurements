@@ -1,6 +1,5 @@
 import pytest
 from databricks.sdk.service.jobs import RunResultState
-from geh_common.databricks import DatabricksApiClient
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.testing.utilities.log_query_client_wrapper import LogsQueryStatus
@@ -31,9 +30,6 @@ class BaseJobTests:
             f"The Job with run id {run_id} did not complete successfully: {run_result_state.value}"
         )
 
-    @pytest.mark.skip(
-        reason="This test is skipped due to issues with the telemetry data not being available in the logs."
-    )
     @pytest.mark.order(3)
     def test__and_then_job_telemetry_is_created(self, job_fixture: BaseJobFixture) -> None:
         # Arrange
@@ -47,18 +43,15 @@ class BaseJobTests:
         actual = job_fixture.wait_for_log_query_completion(query)
 
         # Assert
-        assert actual.status == LogsQueryStatus.SUCCESS, f"The query did not complete successfully: {actual.status}"
+        assert actual.status == LogsQueryStatus.SUCCESS, (
+            f"The query did not complete successfully: {actual.status}. Query: {query}"
+        )
 
     @pytest.mark.order(4)
     def test__and_then_data_is_written_to_delta(
         self, environment_configuration: EnvironmentConfiguration, job_fixture: BaseJobFixture
     ) -> None:
         # Arrange
-        databricks_api_client = DatabricksApiClient(
-            environment_configuration.databricks_token,
-            environment_configuration.workspace_url,
-        )
-
         catalog = environment_configuration.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
@@ -67,7 +60,7 @@ class BaseJobTests:
             """
 
         # Act
-        response = databricks_api_client.execute_statement(
+        response = job_fixture.databricks_api_client.execute_statement(
             warehouse_id=environment_configuration.warehouse_id,
             statement=statement,
             wait_for_response=True,
@@ -76,5 +69,5 @@ class BaseJobTests:
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0
         assert row_count > 0, (
-            f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}"
+            f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}."
         )
