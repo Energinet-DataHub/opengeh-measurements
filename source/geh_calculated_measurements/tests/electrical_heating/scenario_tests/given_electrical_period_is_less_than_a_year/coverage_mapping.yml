@@ -1,0 +1,66 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test scenarios where limit is not 4000 due to period being less than a year.
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1
+                      ________|2024__________|2025___
+  Consumption start/end:       |------------------...
+  Measurement data:         +   +              +
+  Periods:                |___|______________|____...
+
+  CASE 2 - gap across two years
+                      ________|2024__________________
+  Consumption start/end:  |--------------|
+  Measurement data:         +   +
+  Periods:                |___|__________|
+
+  CASE 3 - period of 1 day
+                      ________|2024__________________
+  Consumption start/end:         ||
+  Measurement data:              +
+  Periods:                       ||
+
+  CASE 4
+                      __|2024_______________
+  Consumption start/end:       |---------...
+  Measurement data:    +++++++++++++++++++++
+  Periods:                     |____________
+
+  CASE 5 - gap in same year
+                      |2024        |2025
+  Parent start/end:   |------|  |--------|
+  Child 1 start/end:  |------|
+  Child 2 start/end:            |--------|
+  Measurement data:     +  +  +  +  +  +  +
+  Added to child:       *  *     *  *  *
+
+  CASE 6 - non-matching parent/child periods
+  This is really an invalid state, but it can happen i production, so we include a test for it.
+
+  Parent start/end:   |-------------------...
+  Child start/end:    |---------|
+  Measurement data:   +++++++++++++++++++++++
+  Added to child:     ***********
+
+  CASE 7 - no child MP
+  This is really an invalid state, but it can happen i production, so we include a test for it.
+  Parent start/end:   |-------------------...
+  Child start/end:    nothing
+  Measurement data:    ++
+  Added to child:     nothing
+
+cases_tested:
+  "Electrical Heating Tests":
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
+    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
+    - "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+
+  "Period length and base period limit":
+    - "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
+    - "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
+    - "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
+
+  "Net Settlement Groups":
+    - "Electrical heating without net settlement group"

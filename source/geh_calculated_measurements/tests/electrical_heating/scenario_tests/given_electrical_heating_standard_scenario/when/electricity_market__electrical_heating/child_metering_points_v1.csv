@@ -1,0 +1,7 @@
+metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;coupled_date;uncoupled_date;#comment
+140000000000170200;electrical_heating;calculated;PT1H;170000000000000200;2023-12-31T23:00:00Z;;Case 0
+140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2023-12-31T23:00:00Z;;Case 1
+140000000000170202;electrical_heating;calculated;PT1H;170000000000000202;2023-12-31T23:00:00Z;;Case 2
+140000000000170203;electrical_heating;calculated;PT1H;170000000000000203;2023-12-31T23:00:00Z;;Case 3
+140000000000170204;electrical_heating;calculated;PT1H;170000000000000204;2023-12-31T23:00:00Z;;Case 4
+140000000000170205;electrical_heating;calculated;PT1H;170000000000000205;2023-12-31T23:00:00Z;;Case 5
