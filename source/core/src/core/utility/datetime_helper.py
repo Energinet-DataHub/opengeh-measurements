@@ -1,6 +1,5 @@
 import pyspark.sql.functions as F
-from pyspark.sql import Column
-from pyspark.sql.session import SparkSession
+from pyspark.sql import Column, SparkSession
 
 
 def get_current_utc_timestamp(spark: SparkSession) -> Column:
