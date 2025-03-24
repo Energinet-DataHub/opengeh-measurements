@@ -1,3 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000201;true;;1;2023-12-31T23:00:00Z;2024-01-03T23:00:00Z;Previously period_to_date was null here. Now there is a new period: Limit = 3/366*4000 = 32.786
-170000000000000201;true;;1;2024-01-03T23:00:00Z;;Limit for the rest of the year: 363/366*4000 = 3967.213

@@ -1,5 +1,0 @@
-metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;coupled_date;uncoupled_date;#comment
-140000001500170204;electrical_heating;calculated;PT1H;170000000001500204;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3
-060000001500170204;supply_to_grid;calculated;PT1H;170000000001500204;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3
-070000001500170204;consumption_from_grid;calculated;PT1H;170000000001500204;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3
-150000001500170204;net_consumption;calculated;PT1H;170000000001500204;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3
