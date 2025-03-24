@@ -1,4 +1,3 @@
-import os
 from unittest import mock
 
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
