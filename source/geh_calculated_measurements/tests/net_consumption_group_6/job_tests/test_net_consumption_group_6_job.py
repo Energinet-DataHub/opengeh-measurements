@@ -6,6 +6,7 @@ import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
 from tests.net_consumption_group_6.job_tests import create_job_environment_variables
@@ -36,5 +37,5 @@ def test_execute(
     # Assert
     actual_calculated_measurements = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
-    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    ).where(F.col(ContractColumnNames.orchestration_instance_id) == orchestration_instance_id)
     assert actual_calculated_measurements.count() > 0
