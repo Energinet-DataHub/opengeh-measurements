@@ -81,10 +81,10 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate Item1, LocalDate Item2, string Item3) values)
+    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality) values)
     {
-        var observationDate = values.Item1;
-        var transactionCreationDate = values.Item2;
+        var observationDate = values.ObservationTime;
+        var transactionCreationDate = values.TransactionCreationDate;
         var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
@@ -94,7 +94,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             "'kwh'",
             $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
-            $"'{values.Item3}'",
+            $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
         });
     }
