@@ -15,11 +15,20 @@ from geh_calculated_measurements.common.domain import (
 from geh_calculated_measurements.net_consumption_group_6.domain.cenc import Cenc
 
 
-def days_in_year(year: Column) -> Column:
+def days_in_year(year: Column, month: Column) -> Column:
     # Create date for January 1st of the given year (for Column input)
-    start_date = F.to_date(F.concat(year.cast(T.StringType()), F.lit("-01-01")))
+    start_date = F.to_date(
+        F.concat(
+            year.cast(T.StringType()),
+            F.lit("-"),
+            month.cast(T.StringType()),
+            F.lit("-01"),
+        )
+    )
     # Create date for January 1st of the next year
-    end_date = F.to_date(F.concat((year + 1).cast(T.StringType()), F.lit("-01-01")))
+    end_date = F.to_date(
+        F.concat((year + 1).cast(T.StringType()), F.lit("-"), month.cast(T.StringType()), F.lit("-01"))
+    )
 
     # Calculate the difference in days
     return F.datediff(end_date, start_date)
@@ -48,25 +57,27 @@ def calculate_daily(
     print("added columns:")
     cenc_added_col.show()
 
-    time_series_points = time_series_points.df
+    time_series_points_df = time_series_points.df
+
+    print("Schema of time_series_points_df:")
+    time_series_points_df.printSchema()
 
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
         F.col("orchestration_type"),
-        F.col("transaction_id"),
         F.col("transaction_creation_datetime"),
         F.col("orchestration_instance_id"),
         F.col("metering_point_id"),
         F.col("metering_point_type"),
-        (F.col("quantity") / days_in_year(F.year(F.col("settlement_year"))).cast(T.DecimalType(18, 3)))
-        .alias("quantity")
-        .cast(T.DecimalType(18, 3)),
+        (F.col("quantity") / days_in_year(F.col("settlement_year"), F.col("settlement_month")))
+        .cast(T.DecimalType(18, 3))
+        .alias("quantity"),
         F.col("now"),
     )
 
     latest_measurements_date = (
-        time_series_points.when(F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value)
+        time_series_points_df.where(F.col("metering_point_type") == MeteringPointType.NET_CONSUMPTION.value)
         .groupBy("metering_point_id")
-        .agg(F.max("date").alias("latest_observation_date"))
+        .agg(F.max("observation_time").alias("latest_observation_date"))
     )
 
     print("df after selecting needed columns:")
