@@ -26,7 +26,7 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
     submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row().build()
 
     # Act
-    actual = sut.transform(spark, submitted_transactions)
+    actual = sut.transform(submitted_transactions)
 
     # Assert
     assert_schemas.assert_schema(actual.schema, silver_measurements_schema, ignore_nullability=True)
@@ -39,7 +39,7 @@ def test__create_by_submitted_transaction__should_return_correct_decimal_value(s
     submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=[point]).build()
 
     # Act
-    actual = sut.transform(spark, submitted_transaction)
+    actual = sut.transform(submitted_transaction)
 
     # Assert
     assert actual.collect()[0].points[0].quantity == expected_decimal_value
@@ -56,7 +56,7 @@ def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> Non
     submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(value=value).build()
 
     # Act
-    actual = sut.transform(spark, submitted_transactions)
+    actual = sut.transform(submitted_transactions)
 
     # Assert
     assert actual.collect()[0].orchestration_type == GehCommonOrchestrationType.SUBMITTED.value
