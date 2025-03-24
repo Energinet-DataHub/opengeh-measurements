@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame
 
 
 class Protobuf(ABC):
-    @paroperty
+    @property
     @abstractmethod
     def version(self) -> str:
         pass
