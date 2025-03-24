@@ -3,7 +3,6 @@ using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
-using Microsoft.AspNetCore.Http;
 using Xunit;
 using Xunit.Categories;
 
