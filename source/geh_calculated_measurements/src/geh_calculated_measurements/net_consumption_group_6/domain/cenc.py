@@ -37,7 +37,9 @@ def calculate_cenc(
 
     # Filter and join the data
     filtered_time_series = _filter_relevant_time_series_points(time_series_points)
-    parent_child_joined = _join_parent_child_with_consumption(child_metering_points, consumption_metering_point_periods)
+    parent_child_joined = _join_parent_child_with_consumption(
+        child_metering_points, consumption_metering_point_periods, execution_start_datetime
+    )
 
     # Add timestamp from settlement month
     parent_child_joined = _add_timestamp_from_settlement_month(parent_child_joined, execution_start_datetime, time_zone)
@@ -46,9 +48,8 @@ def calculate_cenc(
     net_consumption_points = _get_net_consumption_metering_points(parent_child_joined)
 
     # Process time series data
-    joined_ts = _join_and_aggregate_time_series(parent_child_joined, filtered_time_series)
-    consumption_supply = _calculate_consumption_supply(joined_ts)
-    net_quantity = _calculate_net_quantity(consumption_supply)
+    metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series)
+    net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
     # Prepare final result with estimated values for move-in cases
     final_result = (
@@ -91,6 +92,7 @@ def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) ->
 def _join_parent_child_with_consumption(
     child_metering_points: ChildMeteringPoints,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
+    execution_start_datetime: datetime,
 ) -> DataFrame:
     """Join child metering points with consumption metering point periods."""
     return (
@@ -100,6 +102,13 @@ def _join_parent_child_with_consumption(
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}")
             == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
             "left",
+        )
+        .filter(
+            (F.lit(execution_start_datetime) >= F.col(f"consumption.{ContractColumnNames.period_from_date}"))
+            & (
+                F.col(f"consumption.{ContractColumnNames.period_to_date}").isNull()
+                | (F.lit(execution_start_datetime) < F.col(f"consumption.{ContractColumnNames.period_to_date}"))
+            )
         )
         .select(
             F.col(f"child.{ContractColumnNames.metering_point_id}"),
@@ -158,53 +167,35 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
     )
 
 
-def _join_and_aggregate_time_series(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
-    """Join time series with metering points and sum quantities."""
-    return (
-        parent_child_df.join(
-            time_series_df,
-            on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
-            how="left",
-        )
-        .filter(
-            F.col(ContractColumnNames.observation_time).between(
-                F.add_months(F.col("settlement_month_timestamp"), -12), F.col("settlement_month_timestamp")
-            )
-        )
-        .groupBy(
-            ContractColumnNames.metering_point_id,
-            ContractColumnNames.metering_point_type,
-            "settlement_month_timestamp",
-            ContractColumnNames.parent_metering_point_id,
-        )
-        .agg(F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity))
-    )
-
-
-def _calculate_consumption_supply(joined_ts_df: DataFrame) -> DataFrame:
-    """Sum the quantities for consumption from grid and supply to grid."""
+def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
+    """Join metering point with time series and sum quantity for consumption_from_grid and supply_to_grid."""
     consumption_from_grid = MeteringPointType.CONSUMPTION_FROM_GRID.value
     supply_to_grid = MeteringPointType.SUPPLY_TO_GRID.value
 
-    # Filter consumption from grid and sums the quantities
-    consumption_from_grid_df = (
-        joined_ts_df.filter(F.col(ContractColumnNames.metering_point_type) == consumption_from_grid)
-        .groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp")
-        .agg(F.sum(ContractColumnNames.quantity).alias(consumption_from_grid))
+    # Join and filter in one step
+    joined_df = parent_child_df.join(
+        time_series_df,
+        on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
+        how="left",
+    ).filter(
+        F.col(ContractColumnNames.observation_time).between(
+            F.add_months(F.col("settlement_month_timestamp"), -12), F.col("settlement_month_timestamp")
+        )
     )
 
-    # Filter supply to grid and sums the quantities
-    supply_to_grid_df = (
-        joined_ts_df.filter(F.col(ContractColumnNames.metering_point_type) == supply_to_grid)
-        .groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp")
-        .agg(F.sum(ContractColumnNames.quantity).alias(supply_to_grid))
-    )
-
-    # Join consumption_from_grid_df and supply_to_grid_df
-    return consumption_from_grid_df.join(
-        supply_to_grid_df,
-        on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
-        how="full_outer",
+    # Calculate consumption and supply directly in one groupBy operation
+    return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp").agg(
+        F.sum(
+            F.when(
+                F.col(ContractColumnNames.metering_point_type) == consumption_from_grid,
+                F.col(ContractColumnNames.quantity),
+            ).otherwise(0)
+        ).alias(consumption_from_grid),
+        F.sum(
+            F.when(
+                F.col(ContractColumnNames.metering_point_type) == supply_to_grid, F.col(ContractColumnNames.quantity)
+            ).otherwise(0)
+        ).alias(supply_to_grid),
     )
 
 
