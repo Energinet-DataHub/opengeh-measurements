@@ -132,17 +132,13 @@ def _add_timestamp_from_settlement_month(
         )
         .withColumn(
             "settlement_month_timestamp",
-            F.to_timestamp(
-                F.concat_ws(
-                    "-",
-                    F.when(
-                        F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
-                        F.year(F.col("utc_local_time")),
-                    ).otherwise(F.year(F.col("utc_local_time")) - 1),
-                    F.col(ContractColumnNames.settlement_month),
-                    F.lit(1),
-                ),
-                "yyyy-M-d",
+            F.make_date(
+                F.when(
+                    F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
+                    F.year(F.col("utc_local_time")),
+                ).otherwise(F.year(F.col("utc_local_time")) - 1),
+                F.col(ContractColumnNames.settlement_month),
+                F.lit(1),
             ),
         )
         .drop("utc_local_time")
