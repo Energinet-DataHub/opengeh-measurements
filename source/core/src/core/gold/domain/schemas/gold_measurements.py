@@ -1,5 +1,4 @@
 from pyspark.sql.types import (
-    BooleanType,
     DecimalType,
     StringType,
     StructField,
@@ -26,7 +25,6 @@ gold_measurements_schema = StructType(
             TimestampType(),
             True,
         ),
-        StructField(GoldMeasurementsColumnNames.is_cancelled, BooleanType(), True),
         StructField(GoldMeasurementsColumnNames.created, TimestampType(), True),
         StructField(GoldMeasurementsColumnNames.modified, TimestampType(), True),
     ]

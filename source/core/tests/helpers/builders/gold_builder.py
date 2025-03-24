@@ -23,7 +23,6 @@ class GoldMeasurementsBuilder:
         resolution: str = "PT1H",
         transaction_id="",
         transaction_creation_datetime=datetime.now(),
-        is_cancelled=False,
         created=None,
         modified=None,
     ):
@@ -40,7 +39,6 @@ class GoldMeasurementsBuilder:
                 resolution,
                 transaction_id,
                 transaction_creation_datetime,
-                is_cancelled,
                 created or datetime.now(),
                 modified or datetime.now(),
             )

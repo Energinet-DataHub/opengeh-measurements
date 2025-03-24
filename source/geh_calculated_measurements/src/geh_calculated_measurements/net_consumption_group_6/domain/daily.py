@@ -1,7 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
 
-from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 
@@ -23,15 +22,15 @@ def calculate_daily(
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
 ) -> CalculatedMeasurements:
-    # TODO JMK: Replace this dummy code
+    # TODO BJM: Replace this dummy code
     data = [
         (
-            OrchestrationType.NET_CONSUMPTION.value,
-            str(cenc.df.collect()[0].orchestration_instance_id),
+            "net_consumption",
+            "00000000-0000-0000-0000-000000000001",
             "ignored-transaction-id",
             datetime(2024, 12, 31, 23, 0, 0),
             "150000001500170200",
-            MeteringPointType.NET_CONSUMPTION.value,
+            "net_consumption",
             datetime(2024, 12, 31, 23, 0, 0),
             Decimal("2.739"),
         )

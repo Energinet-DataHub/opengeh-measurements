@@ -11,6 +11,7 @@ class SubmittedTransactionsQuarantinedColumnNames:
     end_datetime = "end_datetime"
     points = "points"
     is_cancelled = "is_cancelled"
+    is_deleted = "is_deleted"
     created = "created"
     validate_orchestration_type_enum = "validate_orchestration_type_enum"
     validate_quality_enum = "validate_quality_enum"

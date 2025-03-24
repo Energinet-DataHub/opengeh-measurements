@@ -26,6 +26,7 @@ class SilverMeasurementsBuilder:
         end_datetime=datetime_helper.get_datetime(year=2020, month=2),
         points=None,
         is_cancelled=False,
+        is_deleted=False,
         created=datetime_helper.get_datetime(year=2020, month=1, day=1),
     ):
         if points is None:
@@ -44,6 +45,7 @@ class SilverMeasurementsBuilder:
                 end_datetime,
                 points,
                 is_cancelled,
+                is_deleted,
                 created,
             )
         )

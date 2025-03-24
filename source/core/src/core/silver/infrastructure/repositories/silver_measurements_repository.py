@@ -39,7 +39,8 @@ class SilverMeasurementsRepository:
         )
 
         stream_settings = StreamingSettings()
-        write_stream = stream_settings.apply_streaming_settings(write_stream)
+        if stream_settings.continuous_streaming_enabled is False:
+            write_stream = write_stream.trigger(availableNow=True)
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
@@ -79,4 +80,5 @@ class SilverMeasurementsRepository:
             SilverMeasurementsColumnNames.end_datetime,
             SilverMeasurementsColumnNames.points,
             SilverMeasurementsColumnNames.is_cancelled,
+            SilverMeasurementsColumnNames.is_deleted,
         ]

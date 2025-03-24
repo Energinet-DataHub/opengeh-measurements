@@ -31,6 +31,7 @@ def transform_calculated_measurements(df: DataFrame) -> DataFrame:
         F.col(BronzeCalculatedMeasurementsColNames.end_datetime).alias(SilverMeasurementsColumnNames.end_datetime),
         F.col(BronzeCalculatedMeasurementsColNames.points).alias(SilverMeasurementsColumnNames.points),
         F.lit(False).alias(SilverMeasurementsColumnNames.is_cancelled),
+        F.lit(False).alias(SilverMeasurementsColumnNames.is_deleted),
         F.to_utc_timestamp(F.current_timestamp(), "UTC").alias(SilverMeasurementsColumnNames.created),
     ]
 

@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 
 import pyspark.sql.functions as F
@@ -25,7 +24,7 @@ def calculate_cenc(
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
     time_zone: str,
-    orchestration_instance_id: uuid.UUID,
+    orchestration_instance_id: str,
     execution_start_datetime: datetime,
 ) -> Cenc:
     """Calculate _calculated annual estimated net consumption_ (CENC) for metering points."""
