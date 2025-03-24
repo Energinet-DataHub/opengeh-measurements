@@ -1,6 +1,5 @@
-import datetime
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pytest
 from geh_common.domain.types.quantity_quality import QuantityQuality
