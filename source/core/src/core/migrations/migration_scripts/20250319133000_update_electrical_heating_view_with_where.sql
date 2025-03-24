@@ -11,7 +11,6 @@ WITH RankedRows AS (
     AND quantity IS NOT NULL
     AND observation_time IS NOT NULL
     AND metering_point_type IS NOT NULL
-    AND is_cancelled IS NOT NULL 
     AND NOT is_cancelled
 )
 SELECT metering_point_id, quantity, observation_time, metering_point_type

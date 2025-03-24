@@ -12,7 +12,6 @@ WITH RankedRows AS (
     AND observation_time IS NOT NULL
     AND metering_point_type IS NOT NULL
     AND metering_point_type IN ('consumption', 'capacity_settlement')
-    AND is_cancelled IS NOT NULL 
     AND NOT is_cancelled
 )
 SELECT metering_point_id, quantity, observation_time, metering_point_type
