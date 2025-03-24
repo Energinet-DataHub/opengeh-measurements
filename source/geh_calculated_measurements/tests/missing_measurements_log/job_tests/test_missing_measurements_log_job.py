@@ -7,6 +7,7 @@ from geh_calculated_measurements.missing_measurements_log.entry_point import exe
 
 def _create_job_environment_variables() -> dict[str, str]:
     return {
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
         "CATALOG_NAME": "spark_catalog",
         "TIME_ZONE": "Europe/Copenhagen",
     }

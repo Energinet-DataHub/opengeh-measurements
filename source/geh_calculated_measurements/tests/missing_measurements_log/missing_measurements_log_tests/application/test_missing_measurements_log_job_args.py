@@ -39,7 +39,6 @@ def sys_argv_from_contract(
 
 def _create_job_environment_variables() -> dict:
     return {
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
         "CATALOG_NAME": "some_catalog",
         "TIME_ZONE": "some_time_zone",
     }
