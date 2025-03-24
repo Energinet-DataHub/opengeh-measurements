@@ -46,13 +46,14 @@ def calculate_cenc(
 
     # Process time series data
     metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series)
+
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
     # Prepare final result with estimated values for move-in cases
     result = (
         net_consumption_metering_points.join(
             net_quantity,
-            on=[ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp"],
+            on=[ContractColumnNames.parent_metering_point_id, "settlement_date"],
             how="left",
         )
         .withColumn(
@@ -69,8 +70,8 @@ def calculate_cenc(
             F.col(ContractColumnNames.orchestration_instance_id),
             F.col(ContractColumnNames.metering_point_id),
             F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
-            F.year(F.col("settlement_month_timestamp")).alias("settlement_year"),
-            F.month(F.col("settlement_month_timestamp")).alias("settlement_month"),
+            F.year(F.col("settlement_date")).alias("settlement_year"),
+            F.month(F.col("settlement_date")).alias("settlement_month"),
         )
     )
 
@@ -131,7 +132,7 @@ def _add_timestamp_from_settlement_month(
             "utc_local_time", F.from_utc_timestamp(F.lit(execution_start_datetime), time_zone)
         )
         .withColumn(
-            "settlement_month_timestamp",
+            "settlement_date",
             F.make_date(
                 F.when(
                     F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
@@ -172,12 +173,12 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
         how="left",
     ).filter(
         F.col(ContractColumnNames.observation_time).between(
-            F.add_months(F.col("settlement_month_timestamp"), -12), F.col("settlement_month_timestamp")
+            F.add_months(F.col("settlement_date"), -12), F.col("settlement_date")
         )
     )
 
     # Calculate consumption and supply directly in one groupBy operation
-    return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_month_timestamp").agg(
+    return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
         F.sum(
             F.when(
                 F.col(ContractColumnNames.metering_point_type) == consumption_from_grid,
