@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from typing import Tuple
 
@@ -17,7 +18,7 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
-    orchestration_instance_id: str,
+    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
     internal_daily: DataFrame,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
