@@ -1,2 +1,0 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000001500204;true;2;1;2024-03-29T23:00:00Z;2024-10-28T23:00:00Z;Case 3: period_from_date is one day before summertime change, period_to_date is one day after wintertime change (213 days total).
