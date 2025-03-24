@@ -27,10 +27,7 @@ def calculate_cenc(
     orchestration_instance_id: str,
     execution_start_datetime: datetime,
 ) -> Cenc:
-    """Calculate net energy consumption (CENC) for metering points.
-
-    Returns a DataFrame with schema `cenc_schema`.
-    """
+    """Calculate _calculated annual estimated net consumption_ (CENC) for metering points."""
     # Constants for estimated consumption for move_in cases
     ESTIMATED_CONSUMPTION_MOVE_IN = 1800
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
