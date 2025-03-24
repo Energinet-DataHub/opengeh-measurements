@@ -3,9 +3,11 @@ using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Responses;
 
+[UnitTest]
 public class GetMeasurementResponseTests
 {
     [Fact]
@@ -23,10 +25,9 @@ public class GetMeasurementResponseTests
         var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
-        Assert.Equal("123456789", actual.MeteringPointId);
-        Assert.Equal(Unit.kWh, actual.Unit);
         Assert.Equal(3, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Quantity == 42));
+        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
@@ -50,7 +51,21 @@ public class GetMeasurementResponseTests
         var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
-        Assert.Equal(expectedUnit, actual.Unit);
+        Assert.Equal(expectedUnit, actual.Points.Single().Unit);
+    }
+
+    [Fact]
+    public void Create_WhenUnitUnknown_ThenThrowsException()
+    {
+        // Arrange
+        var measurements = new List<MeasurementsResult>
+        {
+            new(CreateRaw(unit: "unknown")),
+        };
+
+        // Act
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
     [Theory]
@@ -70,7 +85,7 @@ public class GetMeasurementResponseTests
         var actual = GetMeasurementResponse.Create(measurements);
 
         // Assert
-        Assert.Equal(expectedQuality, actual.Points.First().Quality);
+        Assert.Equal(expectedQuality, actual.Points.Single().Quality);
     }
 
     [Fact]
@@ -79,7 +94,7 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(quality: "UnknownQuality")),
+            new(CreateRaw(quality: "unknown")),
         };
 
         // Act
@@ -90,7 +105,6 @@ public class GetMeasurementResponseTests
     private static ExpandoObject CreateRaw(string unit = "kwh", string quality = "measured")
     {
         dynamic raw = new ExpandoObject();
-        raw.metering_point_id = "123456789";
         raw.unit = unit;
         raw.observation_time = DateTimeOffset.Now;
         raw.quantity = 42;

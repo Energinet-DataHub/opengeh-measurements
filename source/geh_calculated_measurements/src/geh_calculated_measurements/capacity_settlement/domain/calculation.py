@@ -24,8 +24,10 @@ from geh_calculated_measurements.common.domain import (
 from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
-# This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
+@testing(selector=lambda x: x.calculations)
+@testing(selector=lambda x: x.calculated_measurements)
+@testing(selector=lambda x: x.ten_largest_quantities)
 def execute(
     time_series_points: TimeSeriesPoints,
     metering_point_periods: MeteringPointPeriods,

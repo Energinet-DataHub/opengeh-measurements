@@ -14,7 +14,7 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     {
         var foundMeasurements = await measurementsRepository
             .GetMeasurementsAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
-            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+            .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetMeasurementResponse.Create(foundMeasurements);
     }

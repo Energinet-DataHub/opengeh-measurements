@@ -15,10 +15,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
-    child_metering_points_v1,
-    consumption_metering_point_periods_v1,
     execute,
-    time_series_points_v1,
 )
 
 _JOB_ENVIRONMENT_VARIABLES = {
@@ -39,17 +36,17 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     time_series_points = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
-        time_series_points_v1,
+        TimeSeriesPoints.schema,
     )
     consumption_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__electrical_heating/consumption_metering_point_periods_v1.csv",
-        consumption_metering_point_periods_v1,
+        ConsumptionMeteringPointPeriods.schema,
     )
     child_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__electrical_heating/child_metering_points_v1.csv",
-        child_metering_points_v1,
+        ChildMeteringPoints.schema,
     )
 
     with patch.dict("os.environ", _JOB_ENVIRONMENT_VARIABLES):

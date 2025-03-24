@@ -38,7 +38,8 @@
         "ms-vscode-remote.remote-containers",
         "janisdd.vscode-edit-csv",
         "mechatroner.rainbow-csv",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github"
       ],
       "settings": {
         "csv-edit.readOption_hasHeader": "true",
