@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from typing import Tuple
 
@@ -19,7 +20,7 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
-    orchestration_instance_id: str,
+    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc(
@@ -30,5 +31,7 @@ def execute(
         orchestration_instance_id,
         execution_start_datetime,
     )
+
     measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
-    return (cenc, measurements)
+
+    return cenc, measurements
