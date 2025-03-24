@@ -19,6 +19,23 @@ gold_table_row = GoldTableRow(
     metering_point_type=MeteringPointType.CONSUMPTION,
 )
 
+fixture = None
+
+job_parameters = {"orchestration-instance-id": uuid.uuid4()}
+
+
+@pytest.fixture(scope="session")
+def setup_fixture(
+    environment_configuration: EnvironmentConfiguration,
+) -> BaseJobFixture:
+    table_seeder = GoldTableSeeder(environment_configuration)
+    table_seeder.seed(gold_table_row)
+    return BaseJobFixture(
+        environment_configuration=environment_configuration,
+        job_name="ElectricalHeating",
+        job_parameters=job_parameters,
+    )
+
 
 @pytest.fixture(scope="session")
 def job_fixture(
