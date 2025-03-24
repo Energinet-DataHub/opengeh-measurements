@@ -6,6 +6,7 @@ from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import Column, DataFrame
 from pyspark.sql.types import DecimalType
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
@@ -18,7 +19,8 @@ from core.silver.domain.constants.column_names.silver_measurements_column_names 
 
 
 def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
-    current_utc_time = datetime_helper.get_current_utc_timestamp()
+    spark = spark_session.initialize_spark()
+    current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = unpacked_submitted_transactions.select(
         _align_orchestration_type().alias(SilverMeasurementsColumnNames.orchestration_type),
