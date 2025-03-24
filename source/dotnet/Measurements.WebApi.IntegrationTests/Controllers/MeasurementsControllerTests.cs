@@ -55,7 +55,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
-        const string startDate = "2021-01-02T00:00:00Z";
+        const string startDate = "2021-01-02T00:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
         const string endDate = "2021-01-03T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
