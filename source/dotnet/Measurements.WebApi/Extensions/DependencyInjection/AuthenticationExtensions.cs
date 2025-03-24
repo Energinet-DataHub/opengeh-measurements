@@ -1,4 +1,6 @@
-﻿namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 
 public static class AuthenticationExtensions
 {
@@ -8,13 +10,16 @@ public static class AuthenticationExtensions
         var audience = configuration["AzureAd:ResourceId"];
         var authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
 
-        services.AddAuthentication()
-            .AddJwtBearer(x =>
+        services.AddAuthentication().AddJwtBearer("Bearer", options =>
+        {
+            options.Authority = authority;
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                x.Audience = audience;
-                x.Authority = authority;
-            });
-
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidAudience = audience,
+            };
+        });
         return services;
     }
 }

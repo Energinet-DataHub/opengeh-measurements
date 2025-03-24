@@ -2,12 +2,14 @@
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Route("measurements")]
+[Authorize]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
