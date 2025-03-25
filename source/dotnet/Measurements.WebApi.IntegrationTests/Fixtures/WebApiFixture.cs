@@ -1,9 +1,12 @@
 ﻿using System.Globalization;
+using System.Net.Http.Headers;
+using Azure.Core;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NodaTime;
@@ -48,6 +51,14 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         await DatabricksSchemaManager.DropSchemaAsync();
     }
 
+    public AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
+    {
+        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
+            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
+
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
@@ -55,6 +66,9 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
+
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", AuthenticationOptionsForTests.ApplicationIdUri);
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", AuthenticationOptionsForTests.Issuer);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>

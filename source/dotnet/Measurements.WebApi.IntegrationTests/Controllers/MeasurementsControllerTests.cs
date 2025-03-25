@@ -9,10 +9,15 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 
 [IntegrationTest]
-public class MeasurementsControllerTests(WebApiFixture fixture)
-    : IClassFixture<WebApiFixture>
+public class MeasurementsControllerTests : IClassFixture<WebApiFixture>
 {
-    private readonly HttpClient _client = fixture.CreateClient();
+    private readonly HttpClient _client;
+
+    public MeasurementsControllerTests(WebApiFixture fixture)
+    {
+        _client = fixture.CreateClient();
+        _client.DefaultRequestHeaders.Authorization = fixture.CreateAuthorizationHeader();
+    }
 
     [Fact]
     public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()

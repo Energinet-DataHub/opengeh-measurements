@@ -1,4 +1,7 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Protocols.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using AuthenticationOptions = Energinet.DataHub.Measurements.Application.Extensions.Options.AuthenticationOptions;
 
 namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 
@@ -6,20 +9,35 @@ public static class AuthenticationExtensions
 {
     public static IServiceCollection AddAuthenticationForWebApp(this IServiceCollection services, IConfiguration configuration)
     {
-        var tenantId = configuration["AzureAd:TenantId"];
-        var audience = configuration["AzureAd:ResourceId"];
-        var authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+        var authenticationOptions = configuration
+            .GetRequiredSection(AuthenticationOptions.SectionName)
+            .Get<AuthenticationOptions>();
 
-        services.AddAuthentication().AddJwtBearer("Bearer", options =>
+        GuardAuthenticationOptions(authenticationOptions);
+
+        services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            options.Authority = authority;
+            options.Authority = authenticationOptions!.Issuer;
+            options.Audience = authenticationOptions.ApplicationIdUri;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = true,
                 ValidateIssuer = true,
-                ValidAudience = audience,
             };
         });
         return services;
+    }
+
+    private static void GuardAuthenticationOptions(AuthenticationOptions? authenticationOptions)
+    {
+        if (string.IsNullOrWhiteSpace(authenticationOptions?.ApplicationIdUri))
+        {
+            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.ApplicationIdUri)}'.");
+        }
+
+        if (string.IsNullOrWhiteSpace(authenticationOptions.Issuer))
+        {
+            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.Issuer)}'.");
+        }
     }
 }
