@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/source/core"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "@Volt"
+
+  - package-ecosystem: "nuget"
+    directory: "/source/dotnet"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "@Volt"
+
+  - package-ecosystem: "pip"
+    directory: "/source/geh_calculated_measurements"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "@Mandalorian"
