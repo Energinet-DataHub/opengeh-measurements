@@ -15,7 +15,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     private readonly HttpClient _client = fixture.CreateClient();
 
     [Fact]
-    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement()
+    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -48,6 +48,25 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Assert
         Assert.Equal(24, actual.Points.Count);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsOnlyNonCancelledObservations()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-01-02T00:00:00Z";  // On this date, the fixture inserts both cancelled and non-cancelled measurements with the same observation time
+        const string endDate = "2022-01-03T00:00:00Z";
+        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+
+        // Act
+        var actualResponse = await _client.GetAsync(url);
+        var actual = await ParseResponseAsync(actualResponse);
+
+        // Assert
+        Assert.Equal(24, actual.Points.Count);
+        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
+        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
     }
 
     [Fact]
