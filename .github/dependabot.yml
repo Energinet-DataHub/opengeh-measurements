@@ -1,21 +1,39 @@
 version: 2
 updates:
+  # Security, daily
   - package-ecosystem: uv
     directory: /source/core
     schedule:
-      interval: weekly
+      interval: daily
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
-      - awha86
-      - Gizmooa
-      - HenrikSommer
-      - jonasdmoeller
-      - prtandrup
-      - ShaBloze
-      - x-platformcoder
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
     commit-message:
-      prefix: "Volt/Chore: "
+      prefix: "Volt/Security/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
 
   - package-ecosystem: nuget
     directory: /source/dotnet
@@ -24,15 +42,32 @@ updates:
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
-      - awha86
-      - Gizmooa
-      - HenrikSommer
-      - jonasdmoeller
+      - awha86"
+      - Gizmooa"
+      - HenrikSommer"
+      - jonasdmoeller"
       - prtandrup
       - ShaBloze
       - x-platformcoder
     commit-message:
       prefix: "Volt/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
 
   - package-ecosystem: uv
     directory: /source/geh_calculated_measurements
@@ -47,3 +82,20 @@ updates:
       - johevemi
     commit-message:
       prefix: "Mandalorian/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
