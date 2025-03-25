@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: uv
     directory: /source/core
     schedule:
-      interval: daily
+      interval: weekly
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
