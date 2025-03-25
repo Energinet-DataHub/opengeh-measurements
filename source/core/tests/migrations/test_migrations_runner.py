@@ -50,8 +50,8 @@ def test__stop_job_runs__calls_expected(mocker: MockerFixture):
 
 def test__start_jobs__calls_expected(mocker: MockerFixture):
     # Arrange
-    mock_databricks_settings = mocker.patch.object(sut, sut.DatabricksSettings.__name__)
-    mock_databricks_api_client = mocker.patch.object(sut, sut.DatabricksApiClient.__name__)
+    mock_databricks_settings = mocker.patch(f"{sut.__name__}.DatabricksSettings")
+    mock_databricks_api_client = mocker.patch(f"{sut.__name__}.DatabricksApiClient")
     mock_settings_instance = mock_databricks_settings.return_value
     mock_settings_instance.databricks_jobs = "job1,job2"
     mock_client_instance = mock_databricks_api_client.return_value
