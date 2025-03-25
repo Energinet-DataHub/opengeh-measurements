@@ -12,6 +12,7 @@ When data goes from Bronze to Silver, we want to adapt our migrations data onto 
 | is_cancelled              | Same check as in migrations, which is read_reason == "CAN" as a boolean column.                                                                                                                                                                    | Boolean read_reason == "CAN"                         | ✓           |
 | is_deleted                | Same check as in migrations, which is status == 9 as a boolean column.                                                                                                                                                                             | Boolean status == 9                                  | ✓           |
 | metering_point_type       | Mapping metering point type values used in Migrations to the values used in Measurements.                                                                                                                                                          | See [metering point type mapping](#metering-point-type-mapping)                 | ✓           |
+| unit                      | Mapping unit values used in Migrations to the values used in Measurements.                                                                                                                                                                         | See [unit mapping](#unit-mapping)                    | ✓           |
 
 ### Metering Point Type mapping
 
@@ -42,3 +43,13 @@ When data goes from Bronze to Silver, we want to adapt our migrations data onto 
 | D21              | collective_net_production      |
 | D22              | collective_net_consumption     |
 | D99              | internal_use                   |
+
+### Unit mapping
+
+| Migrations value | Measurements value |
+|------------------|--------------------|
+| KVARH            | KVARH              |
+| KW               | KW                 |
+| KWH              | KWH                |
+| MWH              | MHW                |
+| T                | TONNE              |
