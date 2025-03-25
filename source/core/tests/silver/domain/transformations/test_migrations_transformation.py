@@ -46,7 +46,7 @@ def test__transform__should_not_contain_dh2_metering_point_types(spark: SparkSes
     migrated_transactions = migrated_transactions.build()
 
     # Act
-    actual = mit.transform(spark, migrated_transactions)
+    actual = mit.transform(migrated_transactions)
 
     # Assert
     remaining_dh2_mpts = actual.filter(col(SilverMeasurementsColumnNames.metering_point_type).isin(dh2_mpts)).collect()
