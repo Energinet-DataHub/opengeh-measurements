@@ -42,5 +42,8 @@ updates:
       timezone: Europe/Copenhagen
     assignees:
       - "BjarkeMeier"
+      - "energinet-ajw"
+      - "JesperGomes"
+      - "johevemi"
     commit-message:
       prefix: "Mandalorian/Chore: "
