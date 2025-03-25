@@ -9,8 +9,8 @@ import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.contracts.capacity_settlement.v1.capacity_settlement_v1 import capacity_settlement_v1
-from core.contracts.electrical_heating.v1.electrical_heating_v1 import electrical_heating_v1
 from core.contracts.current_v1 import current_v1
+from core.contracts.electrical_heating.v1.electrical_heating_v1 import electrical_heating_v1
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
@@ -229,11 +229,11 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
     # Assert
     assert actual.count() == 2
 
+
 ### Current vuew tests
 
-def test__current_view_v1__should_have_expected_schema(
-    spark: SparkSession, migrations_executed: None
-) -> None:
+
+def test__current_view_v1__should_have_expected_schema(spark: SparkSession, migrations_executed: None) -> None:
     # Arrange
     gold_settings = GoldSettings()
 
@@ -290,7 +290,8 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
 
 
 @pytest.mark.parametrize(
-    "metering_point_id", "metering_point_type, observation_time, quantity, quality",
+    "metering_point_id",
+    "metering_point_type, observation_time, quantity, quality",
     [
         (None, "some_type", datetime.now(), Decimal(100), "some_quality"),
         ("some_mp_id", None, datetime.now(), Decimal(100), "some_quality"),
@@ -299,7 +300,7 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
         ("some_mp_id", "some_type", datetime.now(), Decimal(100), None),
     ],
 )
-def test__electrical_heating_view_v1__when_given_column_is_null__should_not_be_returned_by_view(
+def test__current_view_v1__when_given_column_is_null__should_not_be_returned_by_view(
     metering_point_type: str,
     observation_time: datetime,
     quantity: Decimal,
@@ -332,4 +333,3 @@ def test__electrical_heating_view_v1__when_given_column_is_null__should_not_be_r
 
     # Assert
     assert actual.count() == 0
-
