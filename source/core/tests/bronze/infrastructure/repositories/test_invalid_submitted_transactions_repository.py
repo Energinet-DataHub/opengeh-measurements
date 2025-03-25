@@ -6,14 +6,14 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
     InvalidSubmittedTransactionsRepository,
 )
 from core.settings.bronze_settings import BronzeSettings
-from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder
+from tests.helpers.builders.invalid_submitted_transactions_builder import InvalidSubmittedTransactionsBuilder
 
 
 def test__append__should_append_to_table(spark: SparkSession, migrations_executed) -> None:
     # Arrange
     topic = identifier_helper.generate_random_string()
     database_name = BronzeSettings().bronze_database_name  # type: ignore
-    invalid_submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(topic=topic).build()
+    invalid_submitted_transactions = InvalidSubmittedTransactionsBuilder(spark).add_row(topic=topic).build()
 
     # Act
     InvalidSubmittedTransactionsRepository().append(invalid_submitted_transactions)

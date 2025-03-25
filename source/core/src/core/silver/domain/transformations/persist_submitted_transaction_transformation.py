@@ -3,9 +3,10 @@ from geh_common.domain.types.metering_point_resolution import MeteringPointResol
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
-from pyspark.sql import Column, DataFrame, SparkSession
+from pyspark.sql import Column, DataFrame
 from pyspark.sql.types import DecimalType
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
@@ -17,7 +18,8 @@ from core.contracts.process_manager.enums.unit import Unit as CoreUnit
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 
-def transform(spark: SparkSession, unpacked_submitted_transactions: DataFrame) -> DataFrame:
+def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
+    spark = spark_session.initialize_spark()
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = unpacked_submitted_transactions.select(
