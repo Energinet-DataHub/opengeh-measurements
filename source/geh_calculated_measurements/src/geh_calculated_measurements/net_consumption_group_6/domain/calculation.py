@@ -5,13 +5,14 @@ from typing import Tuple
 from geh_common.telemetry import use_span
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc import Cenc, calculate_cenc
-from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.net_consumption_group_6.domain import (
+    Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc import calculate_cenc
+from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
 
 
 @use_span()
