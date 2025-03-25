@@ -63,59 +63,6 @@ def test__submitted_transactions__should_save_in_silver_measurements(
     assert silver_table.count() == 1
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository.append_if_not_exists")
-@mock.patch("core.silver.application.streams.submitted_transactions.measurements_transformation.transform")
-@mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
-def test__handle_valid_submitted_transactions__calls_expected_methods(
-    mock_initialize_spark, mock_create_by_unpacked, mock_append_if_not_exists
-) -> None:
-    # Arrange
-    mock_spark = mock.Mock()
-    mock_initialize_spark.return_value = mock_spark
-    mock_submitted_transactions = mock.Mock()
-
-    # Act
-    sut._handle_valid_submitted_transactions(mock_submitted_transactions)
-
-    # Assert
-    mock_initialize_spark.assert_called_once()
-    mock_create_by_unpacked.assert_called_once_with(mock_spark, mock_submitted_transactions)
-    mock_append_if_not_exists.assert_called_once()
-
-
-@mock.patch("core.silver.application.streams.submitted_transactions.InvalidSubmittedTransactionsRepository.append")
-def test__handle_invalid_submitted_transactions__calls_expected_methods(mock_append_invalid) -> None:
-    # Arrange
-    mock_invalid_submitted_transactions = mock.Mock()
-
-    # Act
-    sut._handle_invalid_submitted_transactions(mock_invalid_submitted_transactions)
-
-    # Assert
-    mock_append_invalid.assert_called_once_with(mock_invalid_submitted_transactions)
-
-
-@mock.patch("core.silver.application.streams.submitted_transactions._handle_invalid_submitted_transactions")
-@mock.patch("core.silver.application.streams.submitted_transactions._handle_valid_submitted_transactions")
-@mock.patch("core.silver.application.streams.submitted_transactions.persist_submitted_transaction.unpack")
-def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid, mock_handle_invalid) -> None:
-    # Arrange
-    batch_id = 1
-
-    mock_submitted_transactions = mock.Mock()
-    mock_valid_transactions = mock.Mock()
-    mock_invalid_transactions = mock.Mock()
-    mock_unpack.return_value = (mock_valid_transactions, mock_invalid_transactions)
-
-    # Act
-    sut._batch_operation(mock_submitted_transactions, batchId=batch_id)
-
-    # Assert
-    mock_unpack.assert_called_once_with(mock_submitted_transactions)
-    mock_handle_valid.assert_called_once_with(mock_valid_transactions)
-    mock_handle_invalid.assert_called_once_with(mock_invalid_transactions)
-
-
 def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_submitted_transactions_quarantined(
     mock_checkpoint_path, spark: SparkSession, migrations_executed
 ) -> None:

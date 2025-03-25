@@ -16,7 +16,7 @@ def test__transform__should_return_expected_schema(spark: SparkSession) -> None:
     migrated_transactions = MigratedTransactionsBuilder(spark).add_row().build()
 
     # Act
-    actual = mit.transform(spark, migrated_transactions)
+    actual = mit.transform(migrated_transactions)
 
     # Assert
     assert_schemas.assert_schema(actual.schema, silver_measurements_schema, ignore_nullability=True)
@@ -30,7 +30,7 @@ def test__transform__should_return_correct_decimal_value(spark: SparkSession) ->
     )
 
     # Act
-    actual = mit.transform(spark, migrated_transactions)
+    actual = mit.transform(migrated_transactions)
 
     # Assert
     assert actual.collect()[0].points[0].quantity == expected_decimal_value
@@ -46,7 +46,7 @@ def test__transform__should_not_contain_dh2_metering_point_types(spark: SparkSes
     migrated_transactions = migrated_transactions.build()
 
     # Act
-    actual = mit.transform(spark, migrated_transactions)
+    actual = mit.transform(migrated_transactions)
 
     # Assert
     remaining_dh2_mpts = actual.filter(col(SilverMeasurementsColumnNames.metering_point_type).isin(dh2_mpts)).collect()
