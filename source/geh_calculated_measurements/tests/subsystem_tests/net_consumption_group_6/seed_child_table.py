@@ -17,7 +17,7 @@ class ChildTableRow:
 
 class ChildTableSeeder:
     def __init__(self, environment_configuration: EnvironmentConfiguration) -> None:
-        self.fully_qualified_table_name = f"{environment_configuration.catalog_name}.measurements_gold.measurements"
+        self.fully_qualified_table_name = f"{environment_configuration.catalog_name}.electricity_market_measurements_input.net_consumption_group_6_child_metering_point_periods_v1"
         self.databricks_api_client = DatabricksApiClient(
             environment_configuration.databricks_token,
             environment_configuration.workspace_url,
