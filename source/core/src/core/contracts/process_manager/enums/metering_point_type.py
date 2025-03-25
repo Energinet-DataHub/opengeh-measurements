@@ -2,6 +2,7 @@ from enum import Enum
 from pyspark.sql import Column
 from pyspark.sql.functions import col, lit, when
 
+
 class MeteringPointType(Enum):
     MPT_UNSPECIFIED = "MPT_UNSPECIFIED"
     MPT_ANALYSIS = "MPT_ANALYSIS"
