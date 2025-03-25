@@ -6,7 +6,7 @@ import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.silver_settings import SilverSettings
-from core.silver.application.streams import migrated_transactions as mit
+from core.silver.application.streams import migrated_transactions as sut
 from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
@@ -32,7 +32,7 @@ def test__migrated_transactions__should_call_expected(
     mock_SilverMeasurementsRepository.return_value = mock_write_measurements
 
     # Act
-    mit.stream_migrated_transactions_to_silver()
+    sut.stream_migrated_transactions_to_silver()
 
     # Assert
     mock_initialize_spark.assert_called_once()
@@ -62,7 +62,7 @@ def test__migrated_transactions__should_save_in_silver_measurements(
     )
 
     # Act
-    mit.stream_migrated_transactions_to_silver()
+    sut.stream_migrated_transactions_to_silver()
 
     # Assert
     silver_table = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
@@ -86,8 +86,8 @@ def test__batch_operation__calls_expected_methods(
     mock_transform.return_value = mock_transformed_transactions
 
     # Act
-    mit._batch_operation(mock_migrated_transactions, batch_id)
+    sut._batch_operation(mock_migrated_transactions, batch_id)
 
     # Assert
-    mock_transform.assert_called_once_with(spark, mock_migrated_transactions)
+    mock_transform.assert_called_once_with(mock_migrated_transactions)
     mock_append_if_not_exists.assert_called_once_with(silver_measurements=mock_transformed_transactions)
