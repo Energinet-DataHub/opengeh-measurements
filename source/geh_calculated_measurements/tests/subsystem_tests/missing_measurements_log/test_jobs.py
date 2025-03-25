@@ -14,12 +14,15 @@ from tests.subsystem_tests.missing_measurements_log.seed_metering_point_periods 
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 METERING_POINT_ID = "170000060000000201"
-FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+DEFAULT_PERIOD_START = datetime(2025, 1, 1, 23, 0, 0)
+DEFAULT_PERIOD_END = datetime(2025, 1, 2, 23, 0, 0)
+FIRST_OBSERVATION_TIME = DEFAULT_PERIOD_START
+LAST_OBSERVATION_TIME = FIRST_OBSERVATION_TIME - timedelta(hours=23)
 
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
-    "period-start-datetime": "2025-01-01T23:00:00",
-    "period-end-datetime": "2025-01-02T23:00:00",
+    "period-start-datetime": DEFAULT_PERIOD_START.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "period-end-datetime": DEFAULT_PERIOD_END.strftime("%Y-%m-%dT%H:%M:%SZ"),
 }
 
 
@@ -43,10 +46,12 @@ def seed_test_data() -> None:
     # metering point periods
     metering_point_periods_row = MeteringPointPeriodsRow(
         metering_point_id=METERING_POINT_ID,
-        grid_area_code="DK1",
+        grid_area_code="804",
+        period_from_date=DEFAULT_PERIOD_START,
+        period_to_date=DEFAULT_PERIOD_END,
     )
     metering_point_periods_table_seeder = MeteringPointPeriodsTableSeeder(EnvironmentConfiguration())
-    metering_point_periods_table_seeder.seed()
+    metering_point_periods_table_seeder.seed(metering_point_periods_row)
 
 
 @pytest.fixture(scope="session")

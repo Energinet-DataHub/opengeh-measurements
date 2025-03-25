@@ -12,9 +12,9 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 class MeteringPointPeriodsRow:
     metering_point_id: str
     grid_area_code: str
-    resolution: MeteringPointResolution
     period_from_date: datetime
     period_to_date: Optional[datetime]
+    resolution: MeteringPointResolution = MeteringPointResolution.HOUR
 
 
 class MeteringPointPeriodsTableSeeder:
