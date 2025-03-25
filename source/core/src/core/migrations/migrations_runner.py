@@ -12,7 +12,6 @@ from core.settings.databricks_settings import DatabricksSettings
 
 
 def migrate() -> None:
-    print("TEST 1")
     spark_config = _configure_spark_sql_migrations()
 
     _stop_job_runs()
