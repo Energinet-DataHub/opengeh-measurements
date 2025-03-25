@@ -1,6 +1,7 @@
 from unittest import mock
 
 from pyspark.sql import SparkSession
+from pytest_mock import MockerFixture
 
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
@@ -13,21 +14,11 @@ from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder, ValueBuilder
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
-@mock.patch("core.silver.application.streams.submitted_transactions.BronzeRepository")
-@mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository")
-def test__submitted_transactions__should_call_expected(
-    mock_SilverMeasurementsRepository,
-    mock_BronzeRepository,
-    mock_initialize_spark,
-) -> None:
+def test__submitted_transactions__should_call_expected(mocker: MockerFixture) -> None:
     # Arrange
-    mock_spark = mock.Mock()
-    mock_initialize_spark.return_value = mock_spark
-    mock_submitted_transactions = mock.Mock()
-    mock_BronzeRepository.return_value = mock_submitted_transactions
-    mock_write_measurements = mock.Mock()
-    mock_SilverMeasurementsRepository.return_value = mock_write_measurements
+    mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark")
+    mock_BronzeRepository = mocker.patch(f"{sut.__name__}.BronzeRepository")
+    mock_SilverMeasurementsRepository = mocker.patch(f"{sut.__name__}.SilverMeasurementsRepository")
 
     # Act
     sut.stream_submitted_transactions()
@@ -39,7 +30,9 @@ def test__submitted_transactions__should_call_expected(
 
 
 def test__submitted_transactions__should_save_in_silver_measurements(
-    mock_checkpoint_path, spark: SparkSession, migrations_executed
+    mock_checkpoint_path,
+    spark: SparkSession,
+    migrations_executed,
 ) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
@@ -63,30 +56,32 @@ def test__submitted_transactions__should_save_in_silver_measurements(
     assert silver_table.count() == 1
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository.append_if_not_exists")
-@mock.patch("core.silver.application.streams.submitted_transactions.measurements_transformation.transform")
-@mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
-def test__handle_valid_submitted_transactions__calls_expected_methods(
-    mock_initialize_spark, mock_create_by_unpacked, mock_append_if_not_exists
-) -> None:
+def test__handle_valid_submitted_transactions__calls_expected_methods(mocker: MockerFixture) -> None:
     # Arrange
     mock_spark = mock.Mock()
-    mock_initialize_spark.return_value = mock_spark
     mock_submitted_transactions = mock.Mock()
+
+    mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=mock_spark)
+    mock_transform = mocker.patch(f"{sut.__name__}.measurements_transformation.transform")
+    mock_append_if_not_exists = mocker.patch(f"{sut.__name__}.SilverMeasurementsRepository.append_if_not_exists")
+    mocker.patch(
+        f"{sut.__name__}.submitted_transactions_to_silver_validation.validate", return_value=(mock.Mock(), mock.Mock())
+    )
+    mocker.patch(f"{sut.__name__}._handle_submitted_transactions_quarantined")
 
     # Act
     sut._handle_valid_submitted_transactions(mock_submitted_transactions)
 
     # Assert
     mock_initialize_spark.assert_called_once()
-    mock_create_by_unpacked.assert_called_once_with(mock_spark, mock_submitted_transactions)
+    mock_transform.assert_called_once_with(mock_spark, mock_submitted_transactions)
     mock_append_if_not_exists.assert_called_once()
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions.InvalidSubmittedTransactionsRepository.append")
-def test__handle_invalid_submitted_transactions__calls_expected_methods(mock_append_invalid) -> None:
+def test__handle_invalid_submitted_transactions__calls_expected_methods(mocker: MockerFixture) -> None:
     # Arrange
     mock_invalid_submitted_transactions = mock.Mock()
+    mock_append_invalid = mocker.patch(f"{sut.__name__}.InvalidSubmittedTransactionsRepository.append")
 
     # Act
     sut._handle_invalid_submitted_transactions(mock_invalid_submitted_transactions)
@@ -95,17 +90,20 @@ def test__handle_invalid_submitted_transactions__calls_expected_methods(mock_app
     mock_append_invalid.assert_called_once_with(mock_invalid_submitted_transactions)
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions._handle_invalid_submitted_transactions")
-@mock.patch("core.silver.application.streams.submitted_transactions._handle_valid_submitted_transactions")
-@mock.patch("core.silver.application.streams.submitted_transactions.persist_submitted_transaction.unpack")
-def test__batch_operation__calls_expected_methods(mock_unpack, mock_handle_valid, mock_handle_invalid) -> None:
+def test__batch_operation__calls_expected_methods(mocker: MockerFixture) -> None:
     # Arrange
     batch_id = 1
 
     mock_submitted_transactions = mock.Mock()
     mock_valid_transactions = mock.Mock()
     mock_invalid_transactions = mock.Mock()
-    mock_unpack.return_value = (mock_valid_transactions, mock_invalid_transactions)
+
+    mock_unpack = mocker.patch(
+        f"{sut.__name__}.persist_submitted_transaction.unpack",
+        return_value=(mock_valid_transactions, mock_invalid_transactions),
+    )
+    mock_handle_valid = mocker.patch(f"{sut.__name__}._handle_valid_submitted_transactions")
+    mock_handle_invalid = mocker.patch(f"{sut.__name__}._handle_invalid_submitted_transactions")
 
     # Act
     sut._batch_operation(mock_submitted_transactions, batchId=batch_id)

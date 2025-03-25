@@ -1,6 +1,7 @@
 from unittest import mock
 
 from pyspark.sql import SparkSession
+from pytest_mock import MockerFixture
 
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
@@ -11,25 +12,24 @@ from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
-@mock.patch("core.silver.application.streams.migrated_transactions.spark_session.initialize_spark")
-@mock.patch("core.silver.application.streams.migrated_transactions.MigratedTransactionsRepository")
-@mock.patch("core.silver.application.streams.migrated_transactions.SilverMeasurementsRepository")
 def test__migrated_transactions__should_call_expected(
-    mock_SilverMeasurementsRepository,
-    mock_MigratedTransactionsRepository,
-    mock_initialize_spark,
+    mocker: MockerFixture,
 ) -> None:
     # Arrange
     mock_spark = mock.Mock()
-    mock_initialize_spark.return_value = mock_spark
+    mock_initialize_spark = mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=mock_spark)
 
     mock_migrated_transactions = mock.Mock()
     mock_migrated_transactions.read_stream = mock.Mock()
-    mock_MigratedTransactionsRepository.return_value = mock_migrated_transactions
+    mock_MigratedTransactionsRepository = mocker.patch(
+        f"{mit.__name__}.MigratedTransactionsRepository", return_value=mock_migrated_transactions
+    )
 
     mock_write_measurements = mock.Mock()
     mock_write_measurements.write_stream = mock.Mock()
-    mock_SilverMeasurementsRepository.return_value = mock_write_measurements
+    mock_SilverMeasurementsRepository = mocker.patch(
+        f"{mit.__name__}.SilverMeasurementsRepository", return_value=mock_write_measurements
+    )
 
     # Act
     mit.stream_migrated_transactions_to_silver()
@@ -43,12 +43,11 @@ def test__migrated_transactions__should_call_expected(
     mock_write_measurements.write_stream.assert_called_once()
 
 
-@mock.patch("core.silver.application.streams.migrated_transactions.spark_session.initialize_spark")
 def test__migrated_transactions__should_save_in_silver_measurements(
-    mock_initialize_spark, mock_checkpoint_path, spark: SparkSession, migrations_executed
+    mock_checkpoint_path, spark: SparkSession, migrations_executed, mocker: MockerFixture
 ) -> None:
     # Arrange
-    mock_initialize_spark.return_value = spark
+    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
     bronze_settings = BronzeSettings()
     silver_settings = SilverSettings()
 
@@ -71,19 +70,16 @@ def test__migrated_transactions__should_save_in_silver_measurements(
     assert silver_table.count() == 1
 
 
-@mock.patch("core.silver.application.streams.migrated_transactions.SilverMeasurementsRepository.append_if_not_exists")
-@mock.patch("core.silver.application.streams.migrated_transactions.migrations_transformation.transform")
-@mock.patch("core.silver.application.streams.migrated_transactions.spark_session.initialize_spark")
-def test__batch_operation__calls_expected_methods(
-    mock_initialize_spark, mock_transform, mock_append_if_not_exists, spark
-) -> None:
+def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) -> None:
     # Arrange
-    mock_initialize_spark.return_value = spark
     batch_id = 1
-
     mock_migrated_transactions = mock.Mock()
     mock_transformed_transactions = mock.Mock()
-    mock_transform.return_value = mock_transformed_transactions
+    mock_transform = mocker.patch(
+        f"{mit.__name__}.migrations_transformation.transform", return_value=mock_transformed_transactions
+    )
+    mock_append_if_not_exists = mocker.patch(f"{mit.__name__}.SilverMeasurementsRepository.append_if_not_exists")
+    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
 
     # Act
     mit._batch_operation(mock_migrated_transactions, batch_id)
