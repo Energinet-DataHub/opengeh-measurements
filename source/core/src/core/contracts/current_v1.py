@@ -9,7 +9,7 @@ current_v1 = t.StructType(
         t.StructField("metering_point_id", t.StringType(), nullable),
         t.StructField("observation_time", t.TimestampType(), nullable),
         t.StructField("quantity", t.DecimalType(18, 3), nullable),
-        t.StructField("quality", t.DecimalType(18, 3), nullable),
+        t.StructField("quality", t.StringType(), nullable),
         t.StructField("metering_point_type", t.StringType(), nullable),
     ]
 )
