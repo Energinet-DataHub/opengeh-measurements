@@ -62,6 +62,7 @@ def seed_test_data(environment_configuration: EnvironmentConfiguration) -> None:
     gold_table_rows = _get_gold_table_rows()
     table_seeder.seed(gold_table_rows)
 
+
 @pytest.fixture(scope="session")
 def job_fixture(
     environment_configuration: EnvironmentConfiguration,
@@ -72,6 +73,7 @@ def job_fixture(
         job_name="MissingMeasurementsLog",
         job_parameters=job_parameters,
     )
+
 
 class TestMissingMeasurementsLog(BaseJobTests):
     """
