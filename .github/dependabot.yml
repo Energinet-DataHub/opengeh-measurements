@@ -23,17 +23,17 @@ updates:
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
       version-updates:
         applies-to: version-updates
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
 
   - package-ecosystem: nuget
     directory: /source/dotnet
@@ -57,17 +57,17 @@ updates:
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
       version-updates:
         applies-to: version-updates
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
 
   - package-ecosystem: uv
     directory: /source/geh_calculated_measurements
@@ -88,14 +88,14 @@ updates:
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
       version-updates:
         applies-to: version-updates
         patterns:
           - "*"
         update-types:
-          - minor
-          - patch
-          - major
+          - "minor"
+          - "patch"
+          - "major"
