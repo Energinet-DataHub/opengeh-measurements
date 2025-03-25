@@ -9,6 +9,7 @@ from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 from pytest_mock import MockerFixture
 
+import core.gold.infrastructure.config.spark as gold_spark
 import core.utility.shared_helpers as shared_helpers
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
 import tests.helpers.schema_helper as schema_helper
@@ -23,7 +24,7 @@ def pytest_runtest_setup() -> None:
 
 
 @pytest.fixture(scope="session")
-def spark(tests_path: str) -> Generator[SparkSession, None, None]:
+def spark(tests_path: str, session_mocker: MockerFixture) -> Generator[SparkSession, None, None]:
     warehouse_location = f"{tests_path}/__spark-warehouse__"
 
     session = configure_spark_with_delta_pip(
@@ -64,6 +65,7 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
     ).getOrCreate()
 
     schema_helper.create_schemas(session)
+    session_mocker.patch(f"{gold_spark.__name__}.initialize_spark", return_value=session)
 
     yield session
 

@@ -1,7 +1,6 @@
 from pytest_mock import MockerFixture
 
 import core.migrations.migrations_runner as sut
-from core.migrations.migrations_runner import _start_jobs, _stop_job_runs
 
 
 def test__migrate__calls_expected(mocker: MockerFixture):
@@ -37,7 +36,7 @@ def test__stop_job_runs__calls_expected(mocker: MockerFixture):
     mock_client_instance = mock_databricks_api_client.return_value
 
     # Act
-    _stop_job_runs()
+    sut._stop_job_runs()
 
     # Assert
     mock_databricks_api_client.assert_called_once_with(
@@ -58,7 +57,7 @@ def test__start_jobs__calls_expected(mocker: MockerFixture):
     mock_client_instance = mock_databricks_api_client.return_value
 
     # Act
-    _start_jobs()
+    sut._start_jobs()
 
     # Assert
     mock_databricks_api_client.assert_called_once_with(

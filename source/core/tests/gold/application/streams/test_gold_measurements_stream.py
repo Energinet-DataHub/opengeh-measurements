@@ -15,7 +15,7 @@ from core.silver.infrastructure.repositories.silver_measurements_repository impo
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
-def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession, mocker: MockFixture):
+def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
     silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
@@ -34,9 +34,7 @@ def test__stream_measurements_silver_to_gold__calls_expected(spark: SparkSession
     )
 
 
-def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(
-    spark: SparkSession, mocker: MockFixture
-):
+def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     transform_mock = Mock()
