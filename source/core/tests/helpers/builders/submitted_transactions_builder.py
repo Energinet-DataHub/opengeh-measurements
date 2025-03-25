@@ -48,7 +48,7 @@ class PointsBuilder:
 class Value:
     def __init__(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
@@ -82,7 +82,7 @@ class ValueBuilder:
 
     def add_row(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
@@ -182,7 +182,7 @@ class UnpackedSubmittedTransactionsBuilder:
 
     def add_row(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",

@@ -1,20 +1,23 @@
 import pyspark.sql.functions as F
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
-from pyspark.sql import Column, DataFrame, SparkSession
+from pyspark.sql import Column, DataFrame
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_migrated_transactions_column_names import (
     BronzeMigratedTransactionsColumnNames,
     BronzeMigratedTransactionsValuesFieldNames,
 )
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
+from core.silver.domain.constants.enums.metering_point_type_dh2_enum import convert_dh2_mpt_to_dh3
 from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
 
 MIGRATION_ORCHESTRATION_INSTANCE_ID = "00000000-0000-0000-0000-000000000000"
 
 
-def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFrame:
+def transform(migrated_transactions: DataFrame) -> DataFrame:
+    spark = spark_session.initialize_spark()
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = migrated_transactions.select(
@@ -27,7 +30,7 @@ def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFram
         F.col(BronzeMigratedTransactionsColumnNames.transaction_insert_date).alias(
             SilverMeasurementsColumnNames.transaction_creation_datetime
         ),
-        F.col(BronzeMigratedTransactionsColumnNames.type_of_mp).alias(
+        convert_dh2_mpt_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.type_of_mp)).alias(
             SilverMeasurementsColumnNames.metering_point_type
         ),
         F.col(BronzeMigratedTransactionsColumnNames.unit).alias(SilverMeasurementsColumnNames.unit),
