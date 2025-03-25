@@ -7,6 +7,7 @@ from core.bronze.domain.constants.column_names.bronze_migrated_transactions_colu
     BronzeMigratedTransactionsColumnNames,
     BronzeMigratedTransactionsValuesFieldNames,
 )
+from core.contracts.process_manager.enums.metering_point_type import convert_dh2_mpt_to_dh3
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
@@ -27,7 +28,7 @@ def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFram
         F.col(BronzeMigratedTransactionsColumnNames.transaction_insert_date).alias(
             SilverMeasurementsColumnNames.transaction_creation_datetime
         ),
-        F.col(BronzeMigratedTransactionsColumnNames.type_of_mp).alias(
+        convert_dh2_mpt_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.type_of_mp)).alias(
             SilverMeasurementsColumnNames.metering_point_type
         ),
         F.col(BronzeMigratedTransactionsColumnNames.unit).alias(SilverMeasurementsColumnNames.unit),
@@ -60,3 +61,5 @@ def _get_is_cancelled() -> Column:
     return (F.col(BronzeMigratedTransactionsColumnNames.read_reason) == ReadReasonEnum.CAN.value) | (
         F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value
     )
+
+
