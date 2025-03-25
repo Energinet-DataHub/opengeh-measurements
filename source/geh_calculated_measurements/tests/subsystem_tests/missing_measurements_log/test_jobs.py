@@ -7,6 +7,10 @@ from geh_common.domain.types.quantity_quality import QuantityQuality
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from tests.subsystem_tests.missing_measurements_log.seed_metering_point_periods import (
+    MeteringPointPeriodsRow,
+    MeteringPointPeriodsTableSeeder,
+)
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 METERING_POINT_ID = "170000060000000201"
@@ -30,13 +34,26 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
     ]
 
 
+def seed_test_data() -> None:
+    # measurements
+    table_seeder = GoldTableSeeder(EnvironmentConfiguration())
+    gold_table_rows = _get_gold_table_rows()
+    table_seeder.seed(gold_table_rows)
+
+    # metering point periods
+    metering_point_periods_row = MeteringPointPeriodsRow(
+        metering_point_id=METERING_POINT_ID,
+        grid_area_code="DK1",
+    )
+    metering_point_periods_table_seeder = MeteringPointPeriodsTableSeeder(EnvironmentConfiguration())
+    metering_point_periods_table_seeder.seed()
+
+
 @pytest.fixture(scope="session")
 def job_fixture(
     environment_configuration: EnvironmentConfiguration,
 ) -> BaseJobFixture:
-    table_seeder = GoldTableSeeder(environment_configuration)
-    gold_table_rows = _get_gold_table_rows()
-    table_seeder.seed(gold_table_rows)
+    seed_test_data()
     return BaseJobFixture(
         environment_configuration=environment_configuration,
         job_name="MissingMeasurementsLog",
