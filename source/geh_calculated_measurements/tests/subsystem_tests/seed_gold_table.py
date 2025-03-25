@@ -34,7 +34,7 @@ class GoldTableSeeder:
             [
                 f"('{row.metering_point_id}', '{row.orchestration_type}', '{str(row.orchestration_instance_id)}', "
                 f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {format(row.quantity, '.3f')}, '{row.quality}', "
-                f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', false, GETDATE(), GETDATE(), GETDATE())"
+                f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', GETDATE(), false, GETDATE(), GETDATE())"
                 for row in rows
             ]
         )
