@@ -8,10 +8,7 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 
 def test__handle__calls_expected() -> None:
     with (
-        patch.object(
-            sut,
-            sut.protobuf_versions.__name__,
-        ) as mock_protobuf_versions,
+        patch(f"{sut.__name__}.protobuf_versions.get_versions") as mock_protobuf_versions,
         patch.object(
             sut, sut.InvalidSubmittedTransactionsRepository.__name__
         ) as mock_invalid_submitted_transactions_repository,
@@ -23,20 +20,17 @@ def test__handle__calls_expected() -> None:
         sut.handle(submitted_transactions)
 
         # Assert
-        mock_protobuf_versions().get_versions.assert_called_once()
+        mock_protobuf_versions.assert_called_once()
         mock_invalid_submitted_transactions_repository().append.assert_called_once_with(
             submitted_transactions.filter.return_value
         )
 
 
 def test__handle__filters_submitted_transactions_by_version() -> None:
-    with patch.object(
-        sut,
-        sut.protobuf_versions.__name__,
-    ) as mock_protobuf_versions:
+    with patch(f"{sut.__name__}.protobuf_versions.get_versions") as mock_protobuf_versions:
         # Arrange
         submitted_transactions = Mock()
-        mock_protobuf_versions().get_versions.return_value = ["1", "2", "3"]
+        mock_protobuf_versions.return_value = ["1", "2", "3"]
 
         # Act
         sut.handle(submitted_transactions)
