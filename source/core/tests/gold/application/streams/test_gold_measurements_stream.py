@@ -53,13 +53,10 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
         gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
 
 
-@patch("core.gold.infrastructure.config.spark.initialize_spark")
 def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
-    mock_spark_session, spark: SparkSession, migrations_executed, mock_checkpoint_path
+    spark: SparkSession, migrations_executed, mock_checkpoint_path
 ) -> None:
     # Arrange
-    mock_spark_session.return_value = spark
-
     metering_point_id = identifier_helper.create_random_metering_point_id()
     silver_measurements = SilverMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
     table_helper.append_to_table(

@@ -7,6 +7,7 @@ import geh_common.telemetry.logging_configuration as config
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
+from pytest_mock import MockerFixture
 
 import core.utility.shared_helpers as shared_helpers
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
@@ -70,13 +71,14 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 @pytest.fixture(scope="session")
-@patch("core.migrations.migrations_runner.DatabricksApiClient")
-@patch("core.migrations.migrations_runner.DatabricksSettings")
-def migrations_executed(databricks_settings, spark: SparkSession) -> None:
+def migrations_executed(databricks_settings, spark: SparkSession, mocker: MockerFixture) -> None:
     """
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
     """
+    mocker.patch.object(migrations_runner, migrations_runner.DatabricksApiClient.__name__)
+    mocker.patch.object(migrations_runner, migrations_runner.DatabricksSettings.__name__)
+
     migrations_runner.migrate()
 
 

@@ -1,17 +1,25 @@
-from unittest.mock import patch
+from pytest_mock import MockerFixture
 
-from core.migrations.migrations_runner import _start_jobs, _stop_job_runs, migrate
+import core.migrations.migrations_runner as sut
+from core.migrations.migrations_runner import _start_jobs, _stop_job_runs
 
 
-@patch("core.migrations.migrations_runner._configure_spark_sql_migrations")
-@patch("core.migrations.migrations_runner._start_jobs")
-@patch("core.migrations.migrations_runner._stop_job_runs")
-@patch("core.migrations.migrations_runner.migration_pipeline.migrate")
-def test__migrate__calls_expected(
-    mock_migrate_pipeline, mock_stop_job_runs, mock_start_jobs, mock_configure_spark_sql_migrations
-):
+def test__migrate__calls_expected(mocker: MockerFixture):
+    mock_configure_spark_sql_migrations = mocker.patch.object(
+        sut,
+        sut._configure_spark_sql_migrations.__name__,
+    )
+    mock_stop_job_runs = mocker.patch(
+        f"{sut.__name__}._stop_job_runs",
+    )
+    mock_migrate_pipeline = mocker.patch.object(
+        sut.migration_pipeline,
+        sut.migration_pipeline.migrate.__name__,
+    )
+    mock_start_jobs = mocker.patch(f"{sut.__name__}._start_jobs")
+
     # Act
-    migrate()
+    sut.migrate()
 
     # Assert
     mock_configure_spark_sql_migrations.assert_called_once()
@@ -20,10 +28,10 @@ def test__migrate__calls_expected(
     mock_start_jobs.assert_called_once()
 
 
-@patch("core.migrations.migrations_runner.DatabricksApiClient")
-@patch("core.migrations.migrations_runner.DatabricksSettings")
-def test__stop_job_runs__calls_expected(mock_databricks_settings, mock_databricks_api_client):
+def test__stop_job_runs__calls_expected(mocker: MockerFixture):
     # Arrange
+    mock_databricks_settings = mocker.patch(f"{sut.__name__}.DatabricksSettings")
+    mock_databricks_api_client = mocker.patch(f"{sut.__name__}.DatabricksApiClient")
     mock_settings_instance = mock_databricks_settings.return_value
     mock_settings_instance.databricks_jobs = "job1,job2"
     mock_client_instance = mock_databricks_api_client.return_value
@@ -41,10 +49,10 @@ def test__stop_job_runs__calls_expected(mock_databricks_settings, mock_databrick
     assert mock_client_instance.cancel_job_run.call_count == 2
 
 
-@patch("core.migrations.migrations_runner.DatabricksApiClient")
-@patch("core.migrations.migrations_runner.DatabricksSettings")
-def test__start_jobs__calls_expected(mock_databricks_settings, mock_databricks_api_client):
+def test__start_jobs__calls_expected(mocker: MockerFixture):
     # Arrange
+    mock_databricks_settings = mocker.patch.object(sut, sut.DatabricksSettings.__name__)
+    mock_databricks_api_client = mocker.patch.object(sut, sut.DatabricksApiClient.__name__)
     mock_settings_instance = mock_databricks_settings.return_value
     mock_settings_instance.databricks_jobs = "job1,job2"
     mock_client_instance = mock_databricks_api_client.return_value
