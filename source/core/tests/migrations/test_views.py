@@ -292,11 +292,10 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
 @pytest.mark.parametrize(
     "metering_point_type, observation_time, quantity, quality",
     [
-        (None, "some_type", datetime.now(), Decimal(100), "some_quality"),
-        ("some_mp_id", None, datetime.now(), Decimal(100), "some_quality"),
-        ("some_mp_id", "some_type", None, Decimal(100), "some_quality"),
-        ("some_mp_id", "some_type", datetime.now(), None, "some_quality"),
-        ("some_mp_id", "some_type", datetime.now(), Decimal(100), None),
+        (None, datetime.now(), Decimal(100), "some_quality"),
+        ("some_type", None, Decimal(100), "some_quality"),
+        ("some_type", datetime.now(), None, "some_quality"),
+        ("some_type", datetime.now(), Decimal(100), None),
     ],
 )
 def test__current_view_v1__when_given_column_is_null__should_not_be_returned_by_view(
