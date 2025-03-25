@@ -326,7 +326,7 @@ def test__current_view_v1__when_given_column_is_null__should_not_be_returned_by_
 
     # Act
     actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.current_v1}").where(
-        f"metering_point_id = {metering_point_id}"
+        f"metering_point_id = '{metering_point_id}'"
     )
 
     # Assert
