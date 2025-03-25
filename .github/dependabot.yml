@@ -7,9 +7,15 @@ updates:
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
-      - "@Volt"
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
     commit-message:
-      prefix: "[Volt]"
+      prefix: "Volt/Chore: "
 
   - package-ecosystem: nuget
     directory: /source/dotnet
@@ -18,9 +24,15 @@ updates:
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
-      - "@Volt"
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
     commit-message:
-      prefix: "[Volt]"
+      prefix: "Volt/Chore: "
 
   - package-ecosystem: uv
     directory: /source/geh_calculated_measurements
@@ -29,6 +41,6 @@ updates:
       time: 08:00
       timezone: Europe/Copenhagen
     assignees:
-      - "@Mandalorian"
+      - "BjarkeMeier"
     commit-message:
-      prefix: "[Mandalorian]"
+      prefix: "Mandalorian/Chore: "
