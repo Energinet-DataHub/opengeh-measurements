@@ -17,4 +17,4 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
 
     # Read data frames
     metering_point_periods = electricity_market_repository.read_metering_point_periods()
-    execute()
+    execute(metering_point_periods)
