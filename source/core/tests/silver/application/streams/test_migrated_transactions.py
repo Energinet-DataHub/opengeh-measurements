@@ -17,18 +17,18 @@ def test__migrated_transactions__should_call_expected(
 ) -> None:
     # Arrange
     mock_spark = mock.Mock()
-    mock_initialize_spark = mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=mock_spark)
+    mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=mock_spark)
 
     mock_migrated_transactions = mock.Mock()
     mock_migrated_transactions.read_stream = mock.Mock()
     mock_MigratedTransactionsRepository = mocker.patch(
-        f"{mit.__name__}.MigratedTransactionsRepository", return_value=mock_migrated_transactions
+        f"{sut.__name__}.MigratedTransactionsRepository", return_value=mock_migrated_transactions
     )
 
     mock_write_measurements = mock.Mock()
     mock_write_measurements.write_stream = mock.Mock()
     mock_SilverMeasurementsRepository = mocker.patch(
-        f"{mit.__name__}.SilverMeasurementsRepository", return_value=mock_write_measurements
+        f"{sut.__name__}.SilverMeasurementsRepository", return_value=mock_write_measurements
     )
 
     # Act
@@ -47,7 +47,7 @@ def test__migrated_transactions__should_save_in_silver_measurements(
     mock_checkpoint_path, spark: SparkSession, migrations_executed, mocker: MockerFixture
 ) -> None:
     # Arrange
-    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
+    mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
     bronze_settings = BronzeSettings()
     silver_settings = SilverSettings()
 
@@ -76,10 +76,10 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     mock_migrated_transactions = mock.Mock()
     mock_transformed_transactions = mock.Mock()
     mock_transform = mocker.patch(
-        f"{mit.__name__}.migrations_transformation.transform", return_value=mock_transformed_transactions
+        f"{sut.__name__}.migrations_transformation.transform", return_value=mock_transformed_transactions
     )
-    mock_append_if_not_exists = mocker.patch(f"{mit.__name__}.SilverMeasurementsRepository.append_if_not_exists")
-    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
+    mock_append_if_not_exists = mocker.patch(f"{sut.__name__}.SilverMeasurementsRepository.append_if_not_exists")
+    mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
 
     # Act
     sut._batch_operation(mock_migrated_transactions, batch_id)
