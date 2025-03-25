@@ -1,8 +1,8 @@
 # yamllint disable rule:quoted-strings
 version: 2
 updates:
-  - package-ecosystem: uv
-    directory: /source/core
+  - package-ecosystem: "uv"
+    directory: "/source/core"
     schedule:
       interval: "weekly"
       time: "08:00"
@@ -35,8 +35,8 @@ updates:
           - "patch"
           - "major"
 
-  - package-ecosystem: nuget
-    directory: /source/dotnet
+  - package-ecosystem: "nuget"
+    directory: "/source/dotnet"
     schedule:
       interval: "weekly"
       time: "08:00"
@@ -69,8 +69,8 @@ updates:
           - "patch"
           - "major"
 
-  - package-ecosystem: uv
-    directory: /source/geh_calculated_measurements
+  - package-ecosystem: "uv"
+    directory: "/source/geh_calculated_measurements"
     schedule:
       interval: "weekly"
       time: "08:00"
