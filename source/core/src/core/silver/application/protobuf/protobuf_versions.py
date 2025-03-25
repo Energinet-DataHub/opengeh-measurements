@@ -9,7 +9,7 @@ class ProtobufVersions:
     def get_versions(self) -> list[str]:
         collected_versions = []
 
-        for protobuf_message in ProtobufVersions().protobuf_messages:
+        for protobuf_message in self.protobuf_messages:
             version = protobuf_message().version
             collected_versions.append(version)
 

@@ -14,11 +14,14 @@ from tests.helpers.builders.silver_measurements_builder import SilverMeasurement
 
 
 def test__read_submitted_transactions__calls_expected() -> None:
+    # Arrange
     mock_spark = Mock()
     expected_table = f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}"
 
+    # Act
     _ = SubmittedTransactionsRepository(mock_spark).read_submitted_transactions()
 
+    # Assert
     mock_spark.readStream.format.assert_called_once_with("delta")
     mock_spark.readStream.format().option.assert_called_once_with("ignoreDeletes", "true")
     mock_spark.readStream.format().option().table.assert_called_once_with(expected_table)
@@ -28,6 +31,7 @@ def test__read_submitted_transactions__calls_expected() -> None:
 
 
 def test__read_submitted_transaction__returns_expected(spark: SparkSession, migrations_executed) -> None:
+    # Arrange
     orchestration_instance_id = identifier_helper.generate_random_string()
     silver_measurements = (
         SilverMeasurementsBuilder(spark)

@@ -10,8 +10,8 @@ from core.silver.application.protobuf.protobuf_versions import ProtobufVersions
 
 
 def handle(submitted_transactions: DataFrame) -> None:
-    collected_versions = ProtobufVersions().get_versions()
+    collected_versions = ",".join(ProtobufVersions().get_versions())
     unknown_protobuf_messages = submitted_transactions.filter(
-        f"{ValueColumnNames.version} not in ({','.join(collected_versions)})"
+        f"{ValueColumnNames.version} not in ({collected_versions})"
     )
     InvalidSubmittedTransactionsRepository().append(unknown_protobuf_messages)

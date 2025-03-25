@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from pyspark.sql import DataFrame
 
 
-class Protobuf(ABC):
+class ProtoDeserializerBase(ABC):
     @property
     @abstractmethod
     def version(self) -> str:
