@@ -230,7 +230,7 @@ def test__capacity_settlement_v1__when_metering_point_type_is_not_valid_ones__sh
     assert actual.count() == 2
 
 
-### Current vuew tests
+### Current view tests
 
 
 def test__current_view_v1__should_have_expected_schema(spark: SparkSession, migrations_executed: None) -> None:
