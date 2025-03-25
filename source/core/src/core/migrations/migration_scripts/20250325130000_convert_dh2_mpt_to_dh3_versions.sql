@@ -29,7 +29,7 @@ SET metering_point_type = CASE
     END
 GO
 
-UPDATE {gold_database}.{gold_measurements_table}
+UPDATE {gold_database}.{gold_measurements}
 SET metering_point_type = CASE
         WHEN metering_point_type == 'E17' THEN 'consumption'
         WHEN metering_point_type == 'E18' THEN 'production'

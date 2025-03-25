@@ -1,9 +1,9 @@
 from enum import Enum
 
 from geh_common.domain.types.metering_point_type import MeteringPointType as MeteringPointTypeDH3
-
 from pyspark.sql import Column
 from pyspark.sql.functions import col, lit, when
+
 
 class MeteringPointTypeDH2(Enum):
     D01 = "D01"
@@ -32,12 +32,13 @@ class MeteringPointTypeDH2(Enum):
     E18 = "E18"
     E20 = "E20"
 
+
 def convert_dh2_mpt_to_dh3(col_name: str | Column) -> Column:
     if type(col_name) is str:
         col_name = col(col_name)
 
     return (
-         when(col_name == MeteringPointTypeDH2.E17, lit(MeteringPointTypeDH3.CONSUMPTION))
+        when(col_name == MeteringPointTypeDH2.E17, lit(MeteringPointTypeDH3.CONSUMPTION))
         .when(col_name == MeteringPointTypeDH2.E18, lit(MeteringPointTypeDH3.PRODUCTION))
         .when(col_name == MeteringPointTypeDH2.E20, lit(MeteringPointTypeDH3.EXCHANGE))
         .when(col_name == MeteringPointTypeDH2.D01, lit(MeteringPointTypeDH3.VE_PRODUCTION))
