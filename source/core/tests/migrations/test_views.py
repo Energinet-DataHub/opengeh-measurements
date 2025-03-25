@@ -290,8 +290,7 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
 
 
 @pytest.mark.parametrize(
-    "metering_point_id",
-    "metering_point_type, observation_time, quantity, quality",
+    "metering_point_id, metering_point_type, observation_time, quantity, quality",
     [
         (None, "some_type", datetime.now(), Decimal(100), "some_quality"),
         ("some_mp_id", None, datetime.now(), Decimal(100), "some_quality"),
