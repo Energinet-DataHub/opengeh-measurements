@@ -10,7 +10,7 @@ def test__handle__calls_expected() -> None:
     with (
         patch.object(
             sut,
-            sut.ProtobufVersions.__name__,
+            sut.protobuf_versions.__name__,
         ) as mock_protobuf_versions,
         patch.object(
             sut, sut.InvalidSubmittedTransactionsRepository.__name__
@@ -32,7 +32,7 @@ def test__handle__calls_expected() -> None:
 def test__handle__filters_submitted_transactions_by_version() -> None:
     with patch.object(
         sut,
-        sut.ProtobufVersions.__name__,
+        sut.protobuf_versions.__name__,
     ) as mock_protobuf_versions:
         # Arrange
         submitted_transactions = Mock()
