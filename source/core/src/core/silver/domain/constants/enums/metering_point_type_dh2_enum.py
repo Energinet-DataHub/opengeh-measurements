@@ -37,7 +37,7 @@ def convert_dh2_mpt_to_dh3(col_name: str | Column) -> Column:
         col_name = col(col_name)
 
     return (
-        when(col_name == MeteringPointTypeDH2.E17, lit(MeteringPointTypeDH3.CONSUMPTION))
+         when(col_name == MeteringPointTypeDH2.E17, lit(MeteringPointTypeDH3.CONSUMPTION))
         .when(col_name == MeteringPointTypeDH2.E18, lit(MeteringPointTypeDH3.PRODUCTION))
         .when(col_name == MeteringPointTypeDH2.E20, lit(MeteringPointTypeDH3.EXCHANGE))
         .when(col_name == MeteringPointTypeDH2.D01, lit(MeteringPointTypeDH3.VE_PRODUCTION))
@@ -61,5 +61,5 @@ def convert_dh2_mpt_to_dh3(col_name: str | Column) -> Column:
         .when(col_name == MeteringPointTypeDH2.D20, lit(MeteringPointTypeDH3.EXCHANGE_REACTIVE_ENERGY))
         .when(col_name == MeteringPointTypeDH2.D21, lit(MeteringPointTypeDH3.COLLECTIVE_NET_PRODUCTION))
         .when(col_name == MeteringPointTypeDH2.D22, lit(MeteringPointTypeDH3.COLLECTIVE_NET_PRODUCTION))
-        .when(col_name == MeteringPointTypeDH2.D99, lit(MeteringPointTypeDH3.INTERNAL_USE)) # MISSING!
+        # .when(col_name == MeteringPointTypeDH2.D99, lit(MeteringPointTypeDH3.INTERNAL_USE)) # MISSING!
     )
