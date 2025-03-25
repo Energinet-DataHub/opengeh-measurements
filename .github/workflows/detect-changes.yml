@@ -11,6 +11,8 @@ on:
         value: ${{ jobs.changes.outputs.dotnet }}
       packages:
         value: ${{ jobs.changes.outputs.packages }}
+      python_packages:
+        value: ${{ jobs.changes.outputs.python-packages }}
 
 jobs:
   changes:
@@ -19,6 +21,7 @@ jobs:
     outputs:
       dotnet: ${{ steps.filter.outputs.dotnet }}
       nuget-packages: ${{ steps.filter.outputs.nuget-packages }}
+      python-packages: ${{ steps.filter.outputs.python-packages }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,3 +42,6 @@ jobs:
               - 'source/dotnet/Measurements.Client*/**'
               - 'source/dotnet/Measurements.Abstractions*/**'
               - '.github/workflows/measurements-client-bundle-publish.yml'
+            python-packages:
+              - 'source/core/**'
+              - 'source/geh_calculated_measurements/**'
