@@ -7,7 +7,7 @@ class BaseJobTests:
     @pytest.mark.order(1)
     def test__1(self, job_fixture: BaseJobFixture) -> None:
         # Act
-        print("HELO")
+        pass
 
         # Assert
         # assert job_fixture.get_run_id() is not None
