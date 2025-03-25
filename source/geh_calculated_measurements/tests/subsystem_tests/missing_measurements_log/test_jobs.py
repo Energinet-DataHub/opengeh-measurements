@@ -17,7 +17,7 @@ _DEFAULT_PERIOD_START = datetime(2025, 1, 1, 23, 0, 0)
 _DEFAULT_PERIOD_END = datetime(2025, 1, 2, 23, 0, 0)
 _FIRST_OBSERVATION_TIME = _DEFAULT_PERIOD_START
 
-METERING_POINT_PERIODS_STATEMENT = f"""
+_METERING_POINT_PERIODS_STATEMENT = f"""
         INSERT INTO electricity_market_measurements_input.missing_measurements_log_metering_point_periods_v1 (
             metering_point_id,
             grid_area_code,
@@ -54,7 +54,7 @@ def seed_test_data(environment_configuration: EnvironmentConfiguration) -> None:
         environment_configuration.workspace_url,
     )
     databricks_api_client.execute_statement(
-        warehouse_id=environment_configuration.warehouse_id, statement=METERING_POINT_PERIODS_STATEMENT
+        warehouse_id=environment_configuration.warehouse_id, statement=_METERING_POINT_PERIODS_STATEMENT
     )
 
     # measurements
