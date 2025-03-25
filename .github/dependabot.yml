@@ -4,31 +4,31 @@ updates:
     directory: /source/core
     schedule:
       interval: weekly
-      time: '08:00'
-      timezone: 'Europe/Copenhagen'
+      time: 08:00
+      timezone: Europe/Copenhagen
     assignees:
-      - '@Volt'
+      - "@Volt"
     commit-message:
-      prefix: '[Volt]'
+      prefix: "[Volt]"
 
   - package-ecosystem: nuget
     directory: /source/dotnet
     schedule:
       interval: weekly
-      time: '08:00'
-      timezone: 'Europe/Copenhagen'
+      time: 08:00
+      timezone: Europe/Copenhagen
     assignees:
-      - '@Volt'
+      - "@Volt"
     commit-message:
-      prefix: '[Volt]'
+      prefix: "[Volt]"
 
   - package-ecosystem: uv
     directory: /source/geh_calculated_measurements
     schedule:
       interval: weekly
-      time: '08:00'
-      timezone: 'Europe/Copenhagen'
+      time: 08:00
+      timezone: Europe/Copenhagen
     assignees:
-      - '@Mandalorian'
+      - "@Mandalorian"
     commit-message:
-      prefix: '[Mandalorian]'
+      prefix: "[Mandalorian]"
