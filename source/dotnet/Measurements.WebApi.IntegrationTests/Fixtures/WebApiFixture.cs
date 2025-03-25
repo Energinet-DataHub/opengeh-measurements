@@ -66,22 +66,24 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
         };
 
     private static List<IEnumerable<string>> CreateRows()
     {
         var dates = new[]
         {
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured"),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured"),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured"),
-            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality"),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "calculated", true),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", false),
         };
 
         return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality) values)
+    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
@@ -96,6 +98,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             $"{i}.4",
             $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
+            values.IsCancelled ? "true" : "false",
         });
     }
 
