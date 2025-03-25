@@ -10,14 +10,12 @@ namespace Energinet.DataHub.Measurements.Client.Tests;
 [Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementsClientTests
 {
-    private MeasurementsClientFixture Fixture { get; }
-
     private MeasurementsClient MeasurementsClient { get; }
 
     public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
-        Fixture = fixture;
-        MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(Fixture.HttpClient));
+        fixture.HttpClient.DefaultRequestHeaders.Authorization = fixture.CreateAuthorizationHeader();
+        MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(fixture.HttpClient));
     }
 
     [Theory]
