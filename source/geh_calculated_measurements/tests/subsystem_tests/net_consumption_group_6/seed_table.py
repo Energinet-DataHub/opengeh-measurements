@@ -2,28 +2,29 @@ from datetime import datetime
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 
+database = "electricity_market_measurements_input"
+parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
+child_table = "net_consumption_group_6_child_metering_point_periods_v1"
 
-def _delete_parent_seeded_data(
-    fully_qualified_table_name: str,
+parent_metering_point_id = "170000000000000201"
+child_metering_point_id = "150000001500170200"
+
+
+def _delete_seeded_data(
     job_fixture: BaseJobFixture,
-    parent_metering_point_id,
 ) -> None:
+    # PARENT
     statement = f"""
-        DELETE FROM {fully_qualified_table_name} 
+        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} 
         WHERE metering_point_id = '{parent_metering_point_id}'
     """
     job_fixture.databricks_api_client.execute_statement(
         warehouse_id=job_fixture.environment_configuration.warehouse_id, statement=statement
     )
 
-
-def _delete_child_seeded_data(
-    fully_qualified_table_name: str,
-    job_fixture: BaseJobFixture,
-    parent_metering_point_id,
-) -> None:
+    # CHILD
     statement = f"""
-        DELETE FROM {fully_qualified_table_name} 
+        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} 
         WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """
     job_fixture.databricks_api_client.execute_statement(
@@ -31,13 +32,12 @@ def _delete_child_seeded_data(
     )
 
 
-def _seed_parent_table(
-    fully_qualified_table_name: str,
+def _seed_table(
     job_fixture: BaseJobFixture,
-    parent_metering_point_id,
 ) -> None:
+    # PARENT
     statement = f"""
-    INSERT INTO {fully_qualified_table_name} (
+    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -58,15 +58,9 @@ def _seed_parent_table(
         warehouse_id=job_fixture.environment_configuration.warehouse_id, statement=statement
     )
 
-
-def _seed_child_table(
-    fully_qualified_table_name: str,
-    job_fixture: BaseJobFixture,
-    parent_metering_point_id,
-    child_metering_point_id,
-) -> None:
+    # CHILD
     statement = f"""
-    INSERT INTO {fully_qualified_table_name} (
+    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} (
         metering_point_id,
         metering_type,
         parent_metering_point_id,
