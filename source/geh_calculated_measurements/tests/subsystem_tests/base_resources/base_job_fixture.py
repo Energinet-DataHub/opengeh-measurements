@@ -23,6 +23,7 @@ class BaseJobFixture:
         )
         self.job_name = job_name
         self.job_parameters = job_parameters
+        self.environment_configuration = environment_configuration
 
     def set_run_id(self, run_id: int) -> None:
         self.run_id = run_id
