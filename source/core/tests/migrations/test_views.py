@@ -281,7 +281,7 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
 
     # Act
     actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.current_v1}").where(
-        f"metering_point_id = {metering_point_id}"
+        f"metering_point_id = '{metering_point_id}'"
     )
 
     # Assert
