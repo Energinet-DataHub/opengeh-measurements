@@ -23,7 +23,7 @@ _METERING_POINT_PERIODS_STATEMENT = f"""
             grid_area_code,
             resolution,
             period_from_date,
-            period_to_date,
+            period_to_date
         )
         VALUES
         "('{_METERING_POINT_ID}','{_DEFAULT_GRID_AREA_CODE}','{MeteringPointResolution.HOUR.value}','{_DEFAULT_PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}','{_DEFAULT_PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}')"
