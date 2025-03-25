@@ -11,7 +11,7 @@ class MeteringPointPeriods(DataFrameWrapper):
     def __init__(self, df: DataFrame) -> None:
         super().__init__(
             df,
-            schema=ConsumptionMeteringPointPeriods.schema,
+            schema=MeteringPointPeriods.schema,
             # We ignore_nullability because it has turned out to be too hard and even possibly
             # introducing more errors than solving in order to stay in exact sync with the
             # logically correct schema.
