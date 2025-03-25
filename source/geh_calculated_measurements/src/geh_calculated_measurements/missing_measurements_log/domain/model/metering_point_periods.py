@@ -6,7 +6,11 @@ nullable = True
 
 
 class MeteringPointPeriods(DataFrameWrapper):
-    """Represents the consumption metering point periods data structure."""
+    """Represents periods for metering points with physical status "connected" or "disconnected".
+
+    Includes all metering point types except those where subtype="calculated" or where type is "internal_use" (D99).
+    The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
+    """
 
     def __init__(self, df: DataFrame) -> None:
         super().__init__(
@@ -36,8 +40,3 @@ class MeteringPointPeriods(DataFrameWrapper):
             T.StructField("period_to_date", T.TimestampType(), nullable),
         ]
     )
-    """
-    Periods for metering points with physical status "connected" or "disconnected". 
-    Includes all metering point types except those where subtype="calculated" or where type is "internal_use" (D99). 
-    The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
-    """

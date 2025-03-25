@@ -1,13 +1,8 @@
 from geh_common.telemetry import use_span
 
+from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
+
 
 @use_span()
-def execute() -> None:
-    dummy()
-
-
-# Dummy function that activates logging to Azure.
-# Remove this function when the real implementation is added.
-@use_span()
-def dummy() -> int:
-    return 1 + 1
+def execute(metering_point_periods: MeteringPointPeriods) -> None:
+    metering_point_periods.df.show(n=20)  # TODO: Remove this line and do the actual calculation
