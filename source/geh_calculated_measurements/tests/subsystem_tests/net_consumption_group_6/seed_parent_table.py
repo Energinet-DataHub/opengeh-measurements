@@ -27,7 +27,6 @@ class ParentTableSeeder:
         self.warehouse_id = environment_configuration.warehouse_id
 
     def _get_statement(self, rows: list[ParentTableRow]) -> str:
-        print("ROWS:", rows)
         values = ",\n".join(
             [
                 f"('{row.metering_point_id}',{row.has_electrical_heating},{row.settlement_month},"
@@ -42,7 +41,6 @@ class ParentTableSeeder:
                 for row in rows
             ]
         )
-        print("VALUES:", values)
         return f"""
             INSERT INTO {self.fully_qualified_table_name} (
                 metering_point_id,

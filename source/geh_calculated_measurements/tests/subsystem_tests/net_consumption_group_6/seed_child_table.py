@@ -27,27 +27,18 @@ class ChildTableSeeder:
     def _get_statement(self, rows: list[ChildTableRow]) -> str:
         values = ",\n".join(
             [
-                f"('{row.metering_point_id}', '{row.orchestration_type}', '{str(row.orchestration_instance_id)}', "
-                f"'{row.observation_time.strftime('%Y-%m-%d %H:%M:%S')}', {format(row.quantity, '.3f')}, '{row.quality}', "
-                f"'{row.metering_point_type.value}', 'kWh', 'PT1H', '{str(row.transaction_id)}', GETDATE(), GETDATE(), GETDATE())"
+                f"('{row.metering_point_id}', '{row.metering_type}', '{str(row.parent_metering_point_id)}', "
+                f"'{row.coupled_date.strftime('%Y-%m-%d %H:%M:%S')}', '{row.uncoupled_date.strftime('%Y-%m-%d %H:%M:%S')}')"
                 for row in rows
             ]
         )
         return f"""
             INSERT INTO {self.fully_qualified_table_name} (
                 metering_point_id,
-                orchestration_type,
-                orchestration_instance_id,
-                observation_time,
-                quantity,
-                quality,
-                metering_point_type,
-                unit, 
-                resolution,
-                transaction_id,
-                transaction_creation_datetime,
-                created,
-                modified
+                metering_type,
+                parent_metering_point_id,
+                coupled_date,
+                uncoupled_date
             )
             VALUES
             {values}
