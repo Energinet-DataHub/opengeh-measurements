@@ -65,4 +65,5 @@ def convert_dh2_mpt_to_dh3(col_name: str | Column) -> Column:
         .when(col_name == MeteringPointTypeDH2.D21.value, lit(MeteringPointTypeDH3.COLLECTIVE_NET_PRODUCTION.value))
         .when(col_name == MeteringPointTypeDH2.D22.value, lit(MeteringPointTypeDH3.COLLECTIVE_NET_PRODUCTION.value))
         # .when(col_name == MeteringPointTypeDH2.D99, lit(MeteringPointTypeDH3.INTERNAL_USE)) # MISSING!
+        .otherwise(col_name)
     )
