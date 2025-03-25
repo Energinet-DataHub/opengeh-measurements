@@ -1,19 +1,20 @@
+# yamllint disable rule:quoted-strings
 version: 2
 updates:
   - package-ecosystem: uv
     directory: /source/core
     schedule:
-      interval: weekly
-      time: 08:00
-      timezone: Europe/Copenhagen
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
     assignees:
-      - awha86
-      - Gizmooa
-      - HenrikSommer
-      - jonasdmoeller
-      - prtandrup
-      - ShaBloze
-      - x-platformcoder
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
     commit-message:
       prefix: "Volt/Chore: "
     groups:
@@ -37,17 +38,17 @@ updates:
   - package-ecosystem: nuget
     directory: /source/dotnet
     schedule:
-      interval: weekly
-      time: 08:00
-      timezone: Europe/Copenhagen
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
     assignees:
-      - awha86
-      - Gizmooa
-      - HenrikSommer
-      - jonasdmoeller
-      - prtandrup
-      - ShaBloze
-      - x-platformcoder
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
     commit-message:
       prefix: "Volt/Chore: "
     groups:
@@ -71,14 +72,14 @@ updates:
   - package-ecosystem: uv
     directory: /source/geh_calculated_measurements
     schedule:
-      interval: weekly
-      time: 08:00
-      timezone: Europe/Copenhagen
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
     assignees:
-      - BjarkeMeier
-      - energinet-ajw
-      - JesperGomes
-      - johevemi
+      - "BjarkeMeier"
+      - "energinet-ajw"
+      - "JesperGomes"
+      - "johevemi"
     commit-message:
       prefix: "Mandalorian/Chore: "
     groups:
