@@ -61,6 +61,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
         };
 
     private static List<IEnumerable<string>> CreateRows()
@@ -92,6 +93,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             $"{i}.4",
             "'measured'",
             "'2025-03-12T03:40:55Z'",
+            "false",
         });
     }
 }
