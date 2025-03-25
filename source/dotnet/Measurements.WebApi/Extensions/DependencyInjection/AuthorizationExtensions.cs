@@ -9,7 +9,7 @@ public static class AuthorizationExtensions
         services.AddAuthorizationBuilder()
             .AddPolicy("AllowAnonymous", policy =>
             {
-                policy.RequireAssertion(context => true);
+                policy.RequireAssertion(_ => true);
             })
             .SetFallbackPolicy(new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
