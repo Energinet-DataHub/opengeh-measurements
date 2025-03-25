@@ -71,13 +71,13 @@ def spark(tests_path: str) -> Generator[SparkSession, None, None]:
 
 
 @pytest.fixture(scope="session")
-def migrations_executed(databricks_settings, spark: SparkSession, mocker: MockerFixture) -> None:
+def migrations_executed(spark: SparkSession, session_mocker: MockerFixture) -> None:
     """
     This is actually the main part of all our tests.
     The reason for being a fixture is that we want to run it only once per session.
     """
-    mocker.patch.object(migrations_runner, migrations_runner.DatabricksApiClient.__name__)
-    mocker.patch.object(migrations_runner, migrations_runner.DatabricksSettings.__name__)
+    session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksApiClient.__name__)
+    session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksSettings.__name__)
 
     migrations_runner.migrate()
 
