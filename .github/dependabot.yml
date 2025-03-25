@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/source/core"
     schedule:
       interval: "weekly"
@@ -14,7 +14,7 @@ updates:
     assignees:
       - "@Volt"
 
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/source/geh_calculated_measurements"
     schedule:
       interval: "weekly"
