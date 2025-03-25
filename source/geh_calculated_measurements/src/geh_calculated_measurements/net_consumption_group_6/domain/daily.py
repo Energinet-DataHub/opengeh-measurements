@@ -34,6 +34,12 @@ def days_in_year(year: Column, month: Column) -> Column:
     return F.datediff(end_date, start_date)
 
 
+from geh_calculated_measurements.net_consumption_group_6.domain import (
+    Cenc,
+    TimeSeriesPoints,
+)
+
+
 @use_span()
 @testing()
 def calculate_daily(

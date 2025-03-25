@@ -10,10 +10,14 @@ from geh_calculated_measurements.net_consumption_group_6.domain import execute
 
 @use_span()
 def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
+    # Create repositories to obtain data frames
+    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    measurements_gold_repository = MeasurementsGoldRepository(spark, args.catalog_name)
+
     # Read data frames
-    time_series_points = None
-    consumption_metering_point_periods = None
-    child_metering_point_periods = None
+    time_series_points = measurements_gold_repository.read_time_series_points()
+    consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
+    child_metering_point_periods = electricity_market_repository.read_child_metering_points()
 
     _, calculated_measurements = execute(
         time_series_points,
