@@ -45,7 +45,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     calculation_output: CalculationOutput = execute(
         TimeSeriesPoints(time_series_points),
         MeteringPointPeriods(metering_point_periods),
-        scenario_parameters["orchestration_instance_id"],
         scenario_parameters["calculation_month"],
         scenario_parameters["calculation_year"],
         "Europe/Copenhagen",
@@ -55,12 +54,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     return TestCases(
         [
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/calculations.csv",
-                actual=calculation_output.calculations.df,
-            ),
-            TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.calculated_measurements.df,
+                actual=calculation_output.calculated_measurements_daily,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/ten_largest_quantities.csv",
