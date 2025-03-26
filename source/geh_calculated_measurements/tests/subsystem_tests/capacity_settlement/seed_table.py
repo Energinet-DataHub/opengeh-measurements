@@ -15,19 +15,19 @@ def seed_table(
         [
             f"""(
                 '{170000060000000201}',
-                '{"summited"}',
+                'summited',
                 '{uuid.uuid4()}',
                 '{datetime(2025, 1, 1, 23, 0, 0)}',
                 '{format(random.uniform(0.1, 10.0), ".3f")}',
                 '{QuantityQuality.MEASURED.value}',
                 '{MeteringPointType.CONSUMPTION.value}',
-                "kWh",
-                "PT1H",
+                'kWh',
+                'PT1H',
                 '{uuid.uuid4()}',
-                '{"GETDATE()"}',
-                '{"GETDATE()"},
-                '{"GETDATE()"}',
-                {False},
+                GETDATE(),
+                GETDATE(),
+                GETDATE(),
+                {False}
             )
             """
             for i in range(10)
