@@ -1,7 +1,0 @@
-orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_type;metering_point_id;date;quantity;#comment
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2023-12-31T23:00:00Z;3999.999;Jan. 1st
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-01-01T23:00:00Z;0.001;Jan. 2nd
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170201;2024-01-02T23:00:00Z;0;Jan. 3rd
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170202;2024-01-04T23:00:00Z;4000;Jan. 5th
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-04T23:00:00Z;4000;Jan. 5th
-electrical_heating;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];electrical_heating;140000000000170203;2024-01-05T23:00:00Z;0;Jan. 6th
