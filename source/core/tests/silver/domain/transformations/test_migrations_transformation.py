@@ -55,7 +55,7 @@ def test__transform__should_not_contain_dh2_metering_point_types(spark: SparkSes
     assert remaining_dh2_mpts == []
 
 
-def test__transform__should_not_contain_dh2_metering_point_types(spark: SparkSession) -> None:
+def test__transform__should_not_contain_dh2_unit_values(spark: SparkSession) -> None:
     # Arrange
     dh2_units = [e.value for e in UnitEnumDH2 if e.value not in [g.value for g in GehCommonUnit]]
 
