@@ -5,7 +5,7 @@ from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 
 from geh_calculated_measurements.common.infrastructure import initialize_spark
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,

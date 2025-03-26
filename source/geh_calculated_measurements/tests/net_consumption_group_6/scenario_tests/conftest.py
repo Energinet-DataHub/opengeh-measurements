@@ -8,12 +8,12 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
+from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
 
 
 @pytest.fixture(scope="module")
