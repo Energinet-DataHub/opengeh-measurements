@@ -6,7 +6,6 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import Column
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.capacity_settlement.domain import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import (
     CalculatedMeasurements,
     ContractColumnNames,
