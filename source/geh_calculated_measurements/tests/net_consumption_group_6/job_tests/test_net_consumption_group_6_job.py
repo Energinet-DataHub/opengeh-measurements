@@ -15,6 +15,7 @@ from tests import create_job_environment_variables
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
+    dummy_logging: None,  # Used implicitly
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())

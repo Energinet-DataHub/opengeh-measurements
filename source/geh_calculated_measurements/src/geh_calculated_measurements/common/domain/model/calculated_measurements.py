@@ -18,6 +18,20 @@ class CalculatedMeasurements(DataFrameWrapper):
     schema = T.StructType(
         [
             #
+            # "electrical_heating" or "capacity_settlement"
+            T.StructField(ContractColumnNames.orchestration_type, T.StringType(), not nullable),
+            #
+            # ID of the orchestration that initiated the calculation job
+            T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
+            #
+            # Transaction ID. Created by the calculation job.
+            # The ID refers to a continous set of measurements for a specific combination of orchestration_id and metering_point_id.
+            # There are no time gaps for a given transaction id. Gaps introduces a new transaction ID after the gap.
+            T.StructField(ContractColumnNames.transaction_id, T.StringType(), not nullable),
+            #
+            # A DateTime value indicating when the transaction was created
+            # by the calculation job.
+            T.StructField(ContractColumnNames.transaction_creation_datetime, T.TimestampType(), not nullable),  #
             # Metering point ID
             T.StructField(ContractColumnNames.metering_point_id, T.StringType(), not nullable),
             #

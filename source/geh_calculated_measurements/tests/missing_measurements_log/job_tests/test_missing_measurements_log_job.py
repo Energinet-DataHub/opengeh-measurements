@@ -22,6 +22,7 @@ def test_execute(
     dummy_env_args: dict[str, str],
     monkeypatch,
     metering_point_periods_table_created: None,
+    dummy_logging: None,  # Used implicitly
 ) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()
