@@ -10,9 +10,7 @@ from geh_calculated_measurements.missing_measurements_log.domain import Metering
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
     MeteringPointPeriodsDatabaseDefinition,
 )
-from geh_calculated_measurements.missing_measurements_log.infrastructure.repository import (
-    Repository as MeteringPointPeriodsRepository,
-)
+from geh_calculated_measurements.missing_measurements_log.infrastructure.repository import Repository
 
 TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}"
 
@@ -34,13 +32,13 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 
 @pytest.fixture(scope="module")
-def repository(spark: SparkSession) -> MeteringPointPeriodsRepository:
-    return MeteringPointPeriodsRepository(spark, catalog_name="spark_catalog")
+def repository(spark: SparkSession) -> Repository:
+    return Repository(spark, catalog_name="spark_catalog")
 
 
 def test__when_missing_expected_column_raises_exception(
     valid_dataframe: DataFrame,
-    repository: MeteringPointPeriodsRepository,
+    repository: Repository,
 ) -> None:
     # Arrange
     invalid_dataframe = valid_dataframe.drop(F.col("metering_point_id"))
@@ -58,7 +56,7 @@ def test__when_missing_expected_column_raises_exception(
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
-    repository: MeteringPointPeriodsRepository,
+    repository: Repository,
 ) -> None:
     # Arrange
     valid_dataframe_with_extra_col = valid_dataframe.withColumn("extra_col", F.lit("extra_value"))
@@ -75,7 +73,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 
 def test__when_source_contains_wrong_data_type_raises_exception(
     valid_dataframe: DataFrame,
-    repository: MeteringPointPeriodsRepository,
+    repository: Repository,
 ) -> None:
     # Arrange
     invalid_dataframe = valid_dataframe.withColumn(
