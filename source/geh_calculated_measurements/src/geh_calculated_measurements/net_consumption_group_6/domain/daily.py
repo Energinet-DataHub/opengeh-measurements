@@ -12,7 +12,10 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     calculated_measurements_factory,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc import Cenc
+from geh_calculated_measurements.net_consumption_group_6.domain import (
+    Cenc,
+    TimeSeriesPoints,
+)
 
 
 def days_in_year(year: Column, month: Column) -> Column:
@@ -34,12 +37,6 @@ def days_in_year(year: Column, month: Column) -> Column:
     return F.datediff(end_date, start_date)
 
 
-from geh_calculated_measurements.net_consumption_group_6.domain import (
-    Cenc,
-    TimeSeriesPoints,
-)
-
-
 @use_span()
 @testing()
 def calculate_daily(
@@ -54,22 +51,12 @@ def calculate_daily(
         F.lit(OrchestrationType.NET_CONSUMPTION.value).alias(ContractColumnNames.orchestration_type),
         F.lit(MeteringPointType.NET_CONSUMPTION.value).alias(ContractColumnNames.metering_point_type),
         F.lit(execution_start_datetime).alias("transaction_creation_datetime").cast(T.TimestampType()),
-        F.current_timestamp().alias("now"),
     )
-
-    print("Schema of df:")
-    cenc_added_col.printSchema()
-
-    print("added columns:")
-    cenc_added_col.show()
 
     time_series_points_df = time_series_points.df
 
     cenc_added_col = convert_from_utc(cenc_added_col, time_zone)
     time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
-
-    print("Schema of time_series_points_df:")
-    time_series_points_df.printSchema()
 
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
         F.col("orchestration_type"),
@@ -80,7 +67,6 @@ def calculate_daily(
         (F.col("quantity") / days_in_year(F.col("settlement_year"), F.col("settlement_month")))
         .cast(T.DecimalType(18, 3))
         .alias("quantity"),
-        F.col("now"),
     )
 
     latest_measurements_date = (
@@ -88,9 +74,6 @@ def calculate_daily(
         .groupBy("metering_point_id")
         .agg(F.max("observation_time").alias("latest_observation_date"))
     )
-
-    print("df after selecting needed columns:")
-    latest_measurements_date.show()
 
     # merging the with internal
     cenc_w_last_run = (
@@ -106,12 +89,13 @@ def calculate_daily(
         )
     )
 
-    print("df after joining with internal_daily:")
-    cenc_w_last_run.show()
-
     df = cenc_w_last_run.select(
         "*",
-        F.explode(F.sequence(F.date_add(F.col("last_run"), 1), F.col("now"), F.expr("INTERVAL 1 DAY"))).alias("date"),
+        F.explode(
+            F.sequence(
+                F.date_add(F.col("last_run"), 1), F.col("transaction_creation_datetime"), F.expr("INTERVAL 1 DAY")
+            )
+        ).alias("date"),
     )
 
     result_df = df.select(
@@ -124,9 +108,6 @@ def calculate_daily(
         F.col("date"),
         F.col("quantity"),
     )
-
-    print("result df:")
-    result_df.show()
 
     result_df = convert_to_utc(result_df, time_zone)
 

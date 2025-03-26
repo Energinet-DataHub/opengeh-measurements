@@ -1,4 +1,2 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000201;true;2;1;2023-12-31T23:00:00Z;;
-170000000000000202;true;2;1;2023-12-31T23:00:00Z;;
-170000000000000203;true;2;1;2023-12-31T23:00:00Z;;
+metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in
+170000000000000201;false;1;2022-12-31T23:00:00Z;;false

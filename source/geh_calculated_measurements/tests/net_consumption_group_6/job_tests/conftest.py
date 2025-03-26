@@ -5,14 +5,14 @@ from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.net_consumption_group_6.infrastucture. import (
+from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
     MeasurementsGoldDatabaseDefinition,
     electrical_heating_v1,
 )
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(autouse=True)
 def gold_table_seeded(spark: SparkSession) -> None:
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
@@ -33,7 +33,7 @@ def gold_table_seeded(spark: SparkSession) -> None:
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(autouse=True)
 def calculated_measurements_table_created(spark: SparkSession) -> None:
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
@@ -44,3 +44,15 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
         schema=CalculatedMeasurements.schema,
         table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
     )
+
+
+def test_calculated_measurements_table_creation(
+    spark: SparkSession, calculated_measurements_table_created: None
+) -> None:
+    """
+    Test that the calculated_measurements_table_created fixture creates the expected table.
+    """
+    # Check if table exists
+    tables = spark.sql(f"SHOW TABLES IN {CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}").collect()
+    table_names = [t.tableName for t in tables]
+    assert CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME in table_names
