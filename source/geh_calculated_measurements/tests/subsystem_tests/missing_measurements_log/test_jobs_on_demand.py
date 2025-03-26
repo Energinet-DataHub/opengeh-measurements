@@ -14,6 +14,7 @@ job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
     "period-start-datetime": "2025-01-01T23:00:00",
     "period-end-datetime": "2025-01-02T23:00:00",
+    "grid-area-codes": "[301]",
 }
 
 
