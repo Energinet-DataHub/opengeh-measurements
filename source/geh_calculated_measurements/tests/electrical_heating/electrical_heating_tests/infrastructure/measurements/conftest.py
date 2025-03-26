@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone
 from decimal import Decimal
 
 import pytest
@@ -28,12 +29,42 @@ def measurements_gold_with_data(spark: SparkSession) -> None:
     )
     test_data = spark.createDataFrame(
         [
-            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("10.500")),
-            ("123456789012345", "consumption", datetime.datetime(2022, 1, 1, 1, 0, 0), Decimal("12.750")),
-            ("223456789012345", "electrical_heating", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("25.000")),
-            ("323456789012345", "supply_to_grid", datetime.datetime(2022, 1, 1, 0, 0, 0), Decimal("5.250")),
-            ("423456789012345", "consumption_from_grid", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("8.125")),
-            ("523456789012345", "net_consumption", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("15.000")),
+            (
+                "123456789012345",
+                "consumption",
+                datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                Decimal("10.500"),
+            ),
+            (
+                "123456789012345",
+                "consumption",
+                datetime.datetime(2022, 1, 1, 1, 0, 0, tzinfo=timezone.utc),
+                Decimal("12.750"),
+            ),
+            (
+                "223456789012345",
+                "electrical_heating",
+                datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                Decimal("25.000"),
+            ),
+            (
+                "323456789012345",
+                "supply_to_grid",
+                datetime.datetime(2022, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                Decimal("5.250"),
+            ),
+            (
+                "423456789012345",
+                "consumption_from_grid",
+                datetime.datetime(2022, 1, 2, 0, 0, 0, tzinfo=timezone.utc),
+                Decimal("8.125"),
+            ),
+            (
+                "523456789012345",
+                "net_consumption",
+                datetime.datetime(2022, 1, 2, 0, 0, 0, tzinfo=timezone.utc),
+                Decimal("15.000"),
+            ),
         ],
         schema=electrical_heating_v1,
     )
