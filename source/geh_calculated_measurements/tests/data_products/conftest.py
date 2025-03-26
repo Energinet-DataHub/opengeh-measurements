@@ -1,5 +1,7 @@
 ### This file contains the fixtures that are used in the tests. ###
+import os
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from geh_common.testing.dataframes import write_when_files_to_delta
@@ -8,14 +10,23 @@ from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
+from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 
 
 @pytest.fixture(scope="module")
-def patch_environment(env_args_fixture_logging: dict[str, str]) -> None:
-    from unittest import mock
+def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, None, None]:
+    """Executes all migrations.
 
-    mock.patch.dict("os.environ", env_args_fixture_logging, clear=False)
+    This fixture is useful for all tests that require the migrations to be executed. E.g. when
+    a view/dataprodcut/table is required."""
+    dbs = ["measurements_calculated", "measurements_calculated_internal"]
+    for db in dbs:
+        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+    migrate()
+    yield
+    for db in dbs:
+        spark.sql(f"DROP DATABASE IF EXISTS {db} CASCADE")
 
 
 @pytest.fixture(scope="module")
@@ -42,7 +53,10 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     # Construct a list of TestCase objects
     test_cases = []
     schema = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
-    catalog = CatalogSettings().catalog_name
+    with pytest.MonkeyPatch.context() as m:
+        m.setattr(os, "environ", {"CATALOG_NAME": "spark_catalog"})
+        catalog = CatalogSettings().catalog_name
+
     for path_name in then_files:
         actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
 
