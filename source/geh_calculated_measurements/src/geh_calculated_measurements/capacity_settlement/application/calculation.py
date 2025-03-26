@@ -22,7 +22,7 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
 )
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository, initialize_spark
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
 
 
 @use_span()
@@ -45,6 +45,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
     )
 
     calculations = _create_calculations(
+        spark,
         args.orchestration_instance_id,
         args.calculation_month,
         args.calculation_year,
@@ -78,6 +79,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
 
 
 def _create_calculations(
+    spark: SparkSession,
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
@@ -91,7 +93,6 @@ def _create_calculations(
             T.StructField("execution_time", T.TimestampType(), False),
         ]
     )
-    spark = initialize_spark()
     return Calculations(
         spark.createDataFrame(
             [
