@@ -17,7 +17,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain.calculation impo
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_logging) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `geh_common`."""
 
     # Get the path to the scenario
