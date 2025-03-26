@@ -160,9 +160,9 @@ def _align_metering_point_type() -> Column:
             == CoreMeteringPointType.MPT_OTHER_PRODUCTION.value,
             GehCommonMeteringPointType.OTHER_PRODUCTION.value,
         )
-        # TODO: Contact Mosaic, and make them send MPT_EFFECT_PAYMENT as MPT_CAPACITY_SETTLEMENT
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_EFFECT_PAYMENT.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type)
+            == CoreMeteringPointType.MPT_CAPACITY_SETTLEMENT.value,
             GehCommonMeteringPointType.CAPACITY_SETTLEMENT.value,
         )
         .when(
