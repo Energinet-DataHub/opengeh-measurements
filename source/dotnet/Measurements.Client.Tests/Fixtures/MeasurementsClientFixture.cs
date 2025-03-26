@@ -30,6 +30,7 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
         HttpClient = CreateClient();
+        HttpClient.DefaultRequestHeaders.Authorization = CreateAuthorizationHeader();
     }
 
     public async Task InitializeAsync()
@@ -46,14 +47,6 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
         HttpClient.Dispose();
     }
 
-    public AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
-    {
-        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
-            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
-
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
@@ -64,6 +57,14 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
         builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", AuthenticationOptionsForTests.ApplicationIdUri);
         builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", AuthenticationOptionsForTests.Issuer);
+    }
+
+    private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
+    {
+        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
+            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
+
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>

@@ -14,7 +14,6 @@ public class MeasurementsClientTests
 
     public MeasurementsClientTests(MeasurementsClientFixture fixture)
     {
-        fixture.HttpClient.DefaultRequestHeaders.Authorization = fixture.CreateAuthorizationHeader();
         MeasurementsClient = new MeasurementsClient(new FakeHttpClientFactory(fixture.HttpClient));
     }
 

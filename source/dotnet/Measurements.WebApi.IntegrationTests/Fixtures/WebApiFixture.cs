@@ -23,6 +23,8 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    public HttpClient Client { get; }
+
     public WebApiFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -30,6 +32,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        Client = CreateClient();
+        Client.DefaultRequestHeaders.Authorization = CreateAuthorizationHeader();
     }
 
     public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
@@ -51,14 +55,6 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         await DatabricksSchemaManager.DropSchemaAsync();
     }
 
-    public AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
-    {
-        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
-            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
-
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
@@ -69,6 +65,14 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
         builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", AuthenticationOptionsForTests.ApplicationIdUri);
         builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", AuthenticationOptionsForTests.Issuer);
+    }
+
+    private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
+    {
+        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
+            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
+
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
