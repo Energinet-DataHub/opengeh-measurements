@@ -1,6 +1,6 @@
-from .electricity_market.repository import Repository as ElectricityMarketRepository
+from .repository import Repository as Repository
 
 __all__ = [
     # Electricity market repository, types, and database definitions
-    "ElectricityMarketRepository",
+    "Repository",
 ]
