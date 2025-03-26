@@ -6,12 +6,10 @@ import pytest
 from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
 
-from geh_calculated_measurements.missing_measurements_log.infrastructure import ElectricityMarketRepository
-from geh_calculated_measurements.missing_measurements_log.infrastructure.electricity_market.database_definitions import (
+from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
+from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsRepository
+from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
     MeteringPointPeriodsDatabaseDefinition,
-)
-from geh_calculated_measurements.missing_measurements_log.infrastructure.electricity_market.schema import (
-    metering_point_periods_v1,
 )
 
 TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}"
@@ -29,18 +27,18 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
                 datetime(2022, 1, 1, 1),
             ),
         ],
-        schema=metering_point_periods_v1,
+        schema=MeteringPointPeriods.schema,
     )
 
 
 @pytest.fixture(scope="module")
-def repository(spark: SparkSession) -> ElectricityMarketRepository:
-    return ElectricityMarketRepository(spark, catalog_name="spark_catalog")
+def repository(spark: SparkSession) -> MeteringPointPeriodsRepository:
+    return MeteringPointPeriodsRepository(spark, catalog_name="spark_catalog")
 
 
 def test__when_missing_expected_column_raises_exception(
     valid_dataframe: DataFrame,
-    repository: ElectricityMarketRepository,
+    repository: MeteringPointPeriodsRepository,
 ) -> None:
     # Arrange
     invalid_dataframe = valid_dataframe.drop(F.col("metering_point_id"))
@@ -58,7 +56,7 @@ def test__when_missing_expected_column_raises_exception(
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
-    repository: ElectricityMarketRepository,
+    repository: MeteringPointPeriodsRepository,
 ) -> None:
     # Arrange
     valid_dataframe_with_extra_col = valid_dataframe.withColumn("extra_col", F.lit("extra_value"))
@@ -75,7 +73,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 
 def test__when_source_contains_wrong_data_type_raises_exception(
     valid_dataframe: DataFrame,
-    repository: ElectricityMarketRepository,
+    repository: MeteringPointPeriodsRepository,
 ) -> None:
     # Arrange
     invalid_dataframe = valid_dataframe.withColumn(
