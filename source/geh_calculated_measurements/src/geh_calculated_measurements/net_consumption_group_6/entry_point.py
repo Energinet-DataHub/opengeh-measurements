@@ -12,6 +12,7 @@ from geh_calculated_measurements.net_consumption_group_6.application.net_consump
 def execute() -> None:
     net_consumption_group_6_args = NetConsumptionGroup6Args()  # Retrieve calculation oriented settings / job arguments
     logging_settings = LoggingSettings(subsystem="measurements", cloud_role_name="dbr-net-consumption-group-6")
+    print(f"Logging settings: {logging_settings}")
     configure_logging(logging_settings=logging_settings)
     orchestrate_business_logic(net_consumption_group_6_args, logging_settings=logging_settings)
 
