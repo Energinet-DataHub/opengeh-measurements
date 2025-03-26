@@ -20,7 +20,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.measurements
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_logging) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `testcommon.etl`."""
 
     # Get the path to the scenario
