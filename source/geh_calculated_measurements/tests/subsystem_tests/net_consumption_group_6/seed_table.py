@@ -71,6 +71,4 @@ def seed_table(
     """)
 
     for statement in statements:
-        job_fixture.databricks_api_client.execute_statement(
-            warehouse_id=job_fixture.environment_configuration.warehouse_id, statement=statement
-        )
+        job_fixture.execute_statement(statement)
