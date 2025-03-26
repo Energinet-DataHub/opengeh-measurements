@@ -1,6 +1,4 @@
-import sys
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 import yaml
@@ -10,7 +8,6 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import CapacitySettlementArgs
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import CalculationOutput
@@ -20,7 +17,6 @@ from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_
 from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
     capacity_settlement_v1,
 )
-from tests.capacity_settlement.job_tests import create_job_environment_variables
 
 
 @pytest.fixture(scope="module")
@@ -42,20 +38,17 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         metering_point_periods_v1,
     )
 
-    with patch.dict("os.environ", create_job_environment_variables()):
-        with open(f"{scenario_path}/when/job_parameters.yml") as f:
-            args = yaml.safe_load(f)
-        with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
-            args = CapacitySettlementArgs()
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
     calculation_output: CalculationOutput = execute(
         TimeSeriesPoints(time_series_points),
         MeteringPointPeriods(metering_point_periods),
-        args.orchestration_instance_id,
-        args.calculation_month,
-        args.calculation_year,
-        args.time_zone,
+        scenario_parameters["orchestration_instance_id"],
+        scenario_parameters["calculation_month"],
+        scenario_parameters["calculation_year"],
+        "Europe/Copenhagen",
     )
 
     # Return test cases

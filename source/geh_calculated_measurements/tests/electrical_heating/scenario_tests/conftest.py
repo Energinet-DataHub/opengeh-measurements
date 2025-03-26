@@ -1,6 +1,4 @@
-import sys
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 import yaml
@@ -10,19 +8,12 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements, ContractColumnNames
-from geh_calculated_measurements.electrical_heating.application import ElectricalHeatingArgs
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
     execute,
 )
-
-_JOB_ENVIRONMENT_VARIABLES = {
-    "CATALOG_NAME": "some_catalog",
-    "TIME_ZONE": "Europe/Copenhagen",
-    "ELECTRICITY_MARKET_DATA_PATH": "some_path",
-}
 
 
 @pytest.fixture(scope="module")
@@ -49,19 +40,16 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ChildMeteringPoints.schema,
     )
 
-    with patch.dict("os.environ", _JOB_ENVIRONMENT_VARIABLES):
-        with open(f"{scenario_path}/when/job_parameters.yml") as f:
-            args = yaml.safe_load(f)
-        with patch.object(sys, "argv", ["program"] + [f"--{k}={v}" for k, v in args.items()]):
-            args = ElectricalHeatingArgs()
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
     actual: CalculatedMeasurements = execute(
         TimeSeriesPoints(time_series_points),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
-        args.time_zone,
-        args.orchestration_instance_id,
+        "Europe/Copenhagen",
+        scenario_parameters["orchestration_instance_id"],
     )
 
     # Sort to make the tests deterministic
