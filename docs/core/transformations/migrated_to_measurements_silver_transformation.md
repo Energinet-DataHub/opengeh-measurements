@@ -48,8 +48,8 @@ When data goes from Bronze to Silver, we want to adapt the data from the Migrati
 
 | Migrations subsystem | Measurements subsystem |
 |----------------------|------------------------|
-| KVARH                | KVARH                  |
-| KW                   | KW                     |
-| KWH                  | KWH                    |
-| MWH                  | MHW                    |
-| T                    | TONNE                  |
+| KVARH                | kVArh                  |
+| KW                   | kW                     |
+| KWH                  | kWh                    |
+| MWH                  | MWh                    |
+| T                    | Tonne                  |
