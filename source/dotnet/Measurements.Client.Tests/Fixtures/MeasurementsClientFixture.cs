@@ -16,6 +16,10 @@ namespace Energinet.DataHub.Measurements.Client.Tests.Fixtures;
 
 public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private const string ApplicationIdUri = "https://management.azure.com";
+    private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
+    private const string CatalogName = "hive_metastore";
+
     public HttpClient HttpClient { get; }
 
     private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
@@ -53,13 +57,12 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
-        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
-
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", AuthenticationOptionsForTests.ApplicationIdUri);
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", AuthenticationOptionsForTests.Issuer);
+        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", CatalogName);
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", Issuer);
     }
 
-    private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = AuthenticationOptionsForTests.ApplicationIdUri)
+    private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = ApplicationIdUri)
     {
         var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
             new TokenRequestContext([applicationIdUri]), CancellationToken.None);
