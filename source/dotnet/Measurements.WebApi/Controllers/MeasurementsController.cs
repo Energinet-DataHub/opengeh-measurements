@@ -26,4 +26,18 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
             return NotFound(e.Message);
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    {
+        try
+        {
+            return await Task.FromResult<IActionResult>(
+                BadRequest($"MeteringPointId: {request.MeteringPointId}, year: {request.Year}, month: {request.Month}"));
+        }
+        catch (MeasurementsNotFoundDuringPeriodException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

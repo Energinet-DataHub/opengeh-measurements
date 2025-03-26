@@ -19,7 +19,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(
+        GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
@@ -28,13 +29,20 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(
+        GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
+    }
+
+    public Task<IEnumerable<MeasurementPoint>> GetAggregatedMeasurementsForMonth(
+        GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task<IEnumerable<MeasurementPoint>> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)

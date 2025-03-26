@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
@@ -101,9 +102,33 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAggregatedAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateUrl(expectedMeteringPointId, yearMonth);
+
+        // Act
+        var actualResponse = await _client.GetAsync(url);
+        // var actual = await ParseResponseAsync(actualResponse);
+
+        // Assert
+        Assert.True(actualResponse.StatusCode == HttpStatusCode.OK);
+        // Assert.Equal(31, actual.Points.Count);
+        // Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
+        // Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));*/
+    }
+
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
     {
         return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
+    }
+
+    private static string CreateUrl(string expectedMeteringPointId, YearMonth yearMonth)
+    {
+        return $"measurements?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private async Task<GetMeasurementResponse> ParseResponseAsync(HttpResponseMessage response)

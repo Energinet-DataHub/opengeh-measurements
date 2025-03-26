@@ -17,4 +17,9 @@ public interface IMeasurementsClient
     /// Get measurements for a specified period.
     /// </summary>
     Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get aggregated measurements for a specified month.
+    /// </summary>
+    Task<IEnumerable<MeasurementPoint>> GetAggregatedMeasurementsForMonth(GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default);
 }
