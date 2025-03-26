@@ -1,51 +1,29 @@
 ### This file contains the fixtures that are used in the tests. ###
+import os
 from typing import Generator
-from unittest import mock
 
-import geh_common.telemetry.logging_configuration as config
+import geh_common.telemetry.logging_configuration
 import pytest
 from delta import configure_spark_with_delta_pip
+from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.database_migrations.migrations_runner import migrate
-from tests import TESTS_ROOT
+from tests import TESTS_ROOT, create_job_environment_variables
 from tests.testsession_configuration import TestSessionConfiguration
 
 
-@pytest.fixture(scope="session")
-def env_args_fixture_logging() -> dict[str, str]:
-    env_args = {
-        "CLOUD_ROLE_NAME": "test_role",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "connection_string",
-        "SUBSYSTEM": "test_subsystem",
-        "CATALOG_NAME": "spark_catalog",
-    }
-    return env_args
-
-
-@pytest.fixture(scope="session")
-def script_args_fixture_logging() -> list[str]:
-    sys_argv = [
-        "program_name",
-        "--orchestration-instance-id",
-        "00000000-0000-0000-0000-000000000001",
-    ]
-    return sys_argv
-
-
-@pytest.fixture(scope="session", autouse=True)
-def configure_dummy_logging(env_args_fixture_logging, script_args_fixture_logging) -> Generator[None, None, None]:
+@pytest.fixture(scope="module")
+def dummy_logging() -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
-    with (
-        mock.patch("sys.argv", script_args_fixture_logging),
-        mock.patch.dict("os.environ", env_args_fixture_logging, clear=False),
-        mock.patch(
-            "geh_common.telemetry.logging_configuration.configure_azure_monitor"
-        ),  # Patching call to configure_azure_monitor in order to not actually connect to app. insights.
-    ):
-        logging_settings = config.LoggingSettings()
-        yield config.configure_logging(logging_settings=logging_settings, extras=None)
+    env_args = create_job_environment_variables()
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(os, "environ", env_args)
+        mp.setattr(geh_common.telemetry.logging_configuration, "configure_azure_monitor", lambda *args, **kwargs: None)
+        mp.setattr(geh_common.telemetry.logging_configuration, "get_is_instrumented", lambda *args, **kwargs: False)
+        settings = LoggingSettings(cloud_role_name="test_role", subsystem="test_subsystem")
+        configure_logging(logging_settings=settings)
+        yield
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -119,13 +97,3 @@ def _create_databases(spark: SparkSession) -> None:
     # """
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
     spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
-
-
-@pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession) -> None:
-    """Executes all migrations.
-
-    This fixture is useful for all tests that require the migrations to be executed. E.g. when
-    a view/dataprodcut/table is required."""
-    _create_databases(spark)
-    migrate()

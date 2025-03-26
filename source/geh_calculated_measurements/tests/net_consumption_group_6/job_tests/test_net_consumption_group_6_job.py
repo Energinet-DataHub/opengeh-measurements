@@ -9,16 +9,7 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
-from tests.net_consumption_group_6.job_tests import create_job_environment_variables
-
-
-def _create_job_parameters(orchestration_instance_id: str) -> list[str]:
-    return [
-        "dummy_script_name",
-        f"--orchestration-instance-id={orchestration_instance_id}",
-        "--calculation-year=2026",
-        "--calculation-month=1",
-    ]
+from tests import create_job_environment_variables
 
 
 def test_execute(
@@ -27,8 +18,13 @@ def test_execute(
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
-
-    monkeypatch.setattr(sys, "argv", _create_job_parameters(orchestration_instance_id))
+    sys_args = [
+        "dummy_script_name",
+        f"--orchestration-instance-id={orchestration_instance_id}",
+        "--calculation-year=2026",
+        "--calculation-month=1",
+    ]
+    monkeypatch.setattr(sys, "argv", sys_args)
     monkeypatch.setattr(os, "environ", create_job_environment_variables())
 
     # Act
