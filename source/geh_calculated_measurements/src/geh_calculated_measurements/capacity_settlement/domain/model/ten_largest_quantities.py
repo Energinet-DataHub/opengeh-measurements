@@ -17,9 +17,9 @@ class TenLargestQuantities(DataFrameWrapper):
 
     schema = T.StructType(
         [
-            #
-            # ID of the orchestration that initiated the calculation job
-            T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
+            # #
+            # # ID of the orchestration that initiated the calculation job
+            # T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
             #
             # Metering point ID
             T.StructField(ContractColumnNames.metering_point_id, T.StringType(), not nullable),
