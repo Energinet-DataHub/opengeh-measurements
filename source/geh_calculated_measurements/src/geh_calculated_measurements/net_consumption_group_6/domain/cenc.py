@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 from decimal import Decimal
 
@@ -21,14 +20,13 @@ def calculate_cenc(
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
     time_zone: str,
-    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
 ) -> Cenc:
     """Return a data frame with schema `cenc_schema`."""
     # TODO JVM: Replace this dummy code
     spark = initialize_spark()
     # TODO JVM: Hardcoded data to match the first scenario test
-    data = [(str(orchestration_instance_id), "150000001500170200", Decimal("1000.000"), 2025, 1)]
+    data = [("150000001500170200", Decimal("1000.000"), 2025, 1)]
     df = spark.createDataFrame(data, schema=Cenc.schema)
 
     return Cenc(df)

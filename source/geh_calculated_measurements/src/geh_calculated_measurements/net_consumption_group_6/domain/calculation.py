@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 from typing import Tuple
 
@@ -20,7 +19,6 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
-    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
 ) -> Tuple[Cenc, CalculatedMeasurements]:
     cenc = calculate_cenc(
@@ -28,7 +26,6 @@ def execute(
         child_metering_points,
         time_series_points,
         time_zone,
-        orchestration_instance_id,
         execution_start_datetime,
     )
 
