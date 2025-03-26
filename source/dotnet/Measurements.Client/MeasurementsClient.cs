@@ -65,6 +65,6 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
-        return $"/measurements?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
+        return $"/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 }

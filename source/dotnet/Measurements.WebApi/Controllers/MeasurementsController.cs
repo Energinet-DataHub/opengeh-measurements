@@ -12,7 +12,8 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetMeasurementAsync([FromQuery] GetMeasurementRequest request)
+    [Route("forPeriod")]
+    public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
         try
         {
@@ -28,6 +29,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     }
 
     [HttpGet]
+    [Route("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
     {
         try

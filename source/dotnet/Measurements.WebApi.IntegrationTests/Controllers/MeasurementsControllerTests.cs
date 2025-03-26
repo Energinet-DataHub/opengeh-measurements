@@ -123,12 +123,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
     {
-        return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
+        return $"measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
     private static string CreateUrl(string expectedMeteringPointId, YearMonth yearMonth)
     {
-        return $"measurements?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
+        return $"measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private async Task<GetMeasurementResponse> ParseResponseAsync(HttpResponseMessage response)
