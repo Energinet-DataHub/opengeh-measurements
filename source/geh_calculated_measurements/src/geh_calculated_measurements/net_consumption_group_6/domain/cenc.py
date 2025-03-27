@@ -25,7 +25,6 @@ def calculate_cenc(
     child_metering_points: ChildMeteringPoints,
     time_series_points: TimeSeriesPoints,
     time_zone: str,
-    orchestration_instance_id: uuid.UUID,
     execution_start_datetime: datetime,
 ) -> Cenc:
     """Calculate _calculated annual estimated net consumption_ (CENC) for metering points.."""

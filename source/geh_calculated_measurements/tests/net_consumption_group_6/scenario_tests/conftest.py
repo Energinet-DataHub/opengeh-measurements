@@ -50,7 +50,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
         "Europe/Copenhagen",
-        scenario_parameters["orchestration_instance_id"],
         scenario_parameters["execution_start_datetime"],
     )
 
