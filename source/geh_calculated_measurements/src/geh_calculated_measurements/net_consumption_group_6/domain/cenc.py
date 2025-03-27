@@ -58,17 +58,17 @@ def calculate_cenc(
         .withColumn(
             "net_quantity",
             F.when(
-                F.col("move_in") & F.col("has_electrical_heating"),
+                F.col(ContractColumnNames.move_in) & F.col("has_electrical_heating"),
                 F.lit(ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING),
             )
-            .when(F.col("move_in"), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
+            .when(F.col(ContractColumnNames.move_in), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
             .otherwise(F.col("net_quantity")),
         )
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
             F.year(F.col("settlement_date")).alias("settlement_year"),
-            F.month(F.col("settlement_date")).alias("settlement_month"),
+            F.month(F.col("settlement_date")).alias(ContractColumnNames.settlement_month),
         )
     )
 
