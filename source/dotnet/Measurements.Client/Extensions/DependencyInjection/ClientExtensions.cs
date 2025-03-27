@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -39,8 +37,12 @@ public static class ClientExtensions
     private static IServiceCollection AddAuthorizedHttpClient(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddSingleton(provider => new AuthorizedHttpClientFactory(
+            .AddSingleton<IAuthorizedHttpClientFactory>(provider => new AuthorizedHttpClientFactory(
                 provider.GetRequiredService<IHttpClientFactory>(),
-                () => (string?)provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Headers["Authorization"] ?? string.Empty));
+                () =>
+                {
+                    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    return (string?)httpContextAccessor.HttpContext?.Request.Headers.Authorization ?? string.Empty;
+                }));
     }
 }

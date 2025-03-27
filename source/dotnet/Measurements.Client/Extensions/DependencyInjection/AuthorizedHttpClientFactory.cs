@@ -6,13 +6,12 @@
 /// </summary>
 public class AuthorizedHttpClientFactory(
     IHttpClientFactory httpClientFactory,
-    Func<string> authorizationHeaderProvider)
+    Func<string> authorizationHeaderProvider) : IAuthorizedHttpClientFactory
 {
-    public HttpClient CreateClient(Uri baseUrl)
+    public HttpClient CreateClient()
     {
-        var client = httpClientFactory.CreateClient();
+        var client = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
         SetAuthorizationHeader(client);
-        client.BaseAddress = baseUrl;
         return client;
     }
 
