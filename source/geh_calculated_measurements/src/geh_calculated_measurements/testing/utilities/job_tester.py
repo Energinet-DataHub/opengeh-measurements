@@ -1,11 +1,14 @@
 import abc
+import time
+from datetime import timedelta
 
 import pytest
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
-from databricks.sdk.service.jobs import Run, RunResultState
-from geh_common.databricks.databricks_api_client import DatabricksApiClient
+from databricks.sdk import WorkspaceClient
+from databricks.sdk.service.jobs import BaseJob, Run, RunResultState
+from databricks.sdk.service.sql import StatementResponse, StatementState
 
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
@@ -20,12 +23,10 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 class JobTestFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict = {}):
         self.config = environment_configuration
+        self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
         self.job_name = job_name
         self.job_parameters = job_parameters
-        self.run_id = None
-
-        # Configure databricks resources
-        self.databricks_api_client = DatabricksApiClient(self.config.databricks_token, self.config.workspace_url)
+        self.run_id: int | None = None
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
@@ -34,24 +35,48 @@ class JobTestFixture:
             vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/", credential=credentials
         )
 
-    def start_job(self) -> int:
-        job_id = self.databricks_api_client.get_job_id(self.job_name)
-        params_list = []
-        if self.job_parameters:
-            for key, value in self.job_parameters.items():
-                params_list.append(f"--{key}={value}")
+    def _get_job_by_name(self, job_name: str) -> BaseJob:
+        jobs = list(self.ws.jobs.list(name=job_name))
+        if len(jobs) == 0:
+            raise ValueError(f"No job found with name {job_name}.")
+        if len(jobs) > 1:
+            raise ValueError(f"Multiple jobs found with name {job_name}.")
+        return jobs[0]
 
-        self.run_id = self.databricks_api_client.start_job(job_id, params_list)
+    def start_job(self) -> BaseJob:
+        base_job = self._get_job_by_name(self.job_name)
+        params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
+        self.job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
+        return base_job
 
-        return self.run_id
-
-    def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
-        return self.databricks_api_client.wait_for_job_completion(run_id)
+    def wait_for_job_to_completion(self, timeout: int = 15) -> RunResultState | None:
+        run = self.job.result(timeout=timedelta(minutes=timeout))
+        return run.state.result_state
 
     def run_job_and_wait(self) -> Run:
-        job_id = self.databricks_api_client.get_job_id(self.job_name)
+        base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_params=params)
+        return self.ws.jobs.run_now_and_wait(job_id=base_job.job_id, python_params=params)
+
+    def execute_statement(
+        self, statement: str, timeout_minutes: int = 15, poll_interval_seconds: int = 5
+    ) -> StatementResponse:
+        response = self.ws.statement_execution.execute_statement(
+            warehouse_id=self.config.warehouse_id, statement=statement
+        )
+
+        # Wait for the statement to complete
+        start_time = time.time()
+        elapsed_time = 0
+        while elapsed_time < timeout_minutes * 60:
+            response = self.ws.statement_execution.get_statement(response.statement_id)
+            if response.status.state not in [StatementState.RUNNING, StatementState.PENDING, StatementState.SUCCEEDED]:
+                raise ValueError(f"Statement execution failed with state {response.status.state}.")
+            if response.status.state == StatementState.SUCCEEDED:
+                return response
+            elapsed_time = time.time() - start_time
+            print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
+            time.sleep(poll_interval_seconds)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
@@ -77,14 +102,15 @@ class JobTester(metaclass=abc.ABCMeta):
         return super().__init_subclass__()
 
     @pytest.mark.order(1)
-    def test__job_runs_successfully(self) -> None:
-        # Act
-        run = self.fixture.run_job_and_wait()
+    def test__job_can_start(self) -> None:
+        self.fixture.start_job()
+        assert self.fixture.job is not None, "The job was not started successfully."
 
-        # Assert
-        assert run.state.result_state == RunResultState.SUCCESS, (
-            f"The Job with run id {run.run_id} did not complete successfully: {run.state.result_state.value}"
-        )
+    @pytest.mark.order(2)
+    def test__and_then_job_completes_successfully(self) -> None:
+        result = self.fixture.wait_for_job_to_completion()
+        assert result is not None, "The job did not return a RunResultState."
+        assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
     @pytest.mark.order(2)
     def test__and_then_job_telemetry_is_created(self) -> None:
@@ -117,11 +143,7 @@ class JobTester(metaclass=abc.ABCMeta):
         """
 
         # Act
-        response = self.fixture.databricks_api_client.execute_statement(
-            warehouse_id=self.fixture.config.warehouse_id,
-            statement=statement,
-            wait_for_response=True,
-        )
+        response = self.fixture.execute_statement(statement=statement)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0

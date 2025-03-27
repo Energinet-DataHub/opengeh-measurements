@@ -4,8 +4,8 @@ from unittest import mock
 
 import pytest
 from azure.monitor.query import LogsQueryResult, LogsQueryStatus
-from databricks.sdk.service.jobs import Run, RunResultState, RunState
-from databricks.sdk.service.sql import ResultData, StatementResponse
+from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.sql import ResultData, StatementResponse, StatementState, StatementStatus
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
@@ -39,15 +39,14 @@ def mock_init(self, *args, **kwargs):
     self.job_parameters = job_parameters
     self.run_id = 1
 
-    self.databricks_api_client = mock.Mock()
-    self.databricks_api_client.get_job_id.return_value = 1
-    self.databricks_api_client.start_job.return_value = 1
-    self.databricks_api_client.client.jobs.run_now_and_wait.return_value = Run(
-        state=RunState(result_state=RunResultState.SUCCESS)
+    self.ws = mock.Mock()
+    self.ws.jobs.list.return_value = [mock.Mock()]
+    self.ws.statement_execution.get_statement.return_value = StatementResponse(
+        result=ResultData(row_count=1), status=StatementStatus(state=StatementState.SUCCEEDED)
     )
-    self.databricks_api_client.wait_for_job_completion.return_value = RunResultState.SUCCESS
-    self.databricks_api_client.execute_statement.return_value = StatementResponse()
-    self.databricks_api_client.execute_statement.return_value.result = ResultData(row_count=1)
+
+    self.job = mock.Mock()
+    self.job.result.return_value = mock.Mock(state=mock.Mock(result_state=RunResultState.SUCCESS))
 
     self.secret_client = mock.Mock()
     self.azure_logs_query_client = mock.Mock()
@@ -67,6 +66,7 @@ class TestRunnerWithCorrectImplementation(JobTester):
             mp.setattr(JobTestFixture, "start_job", lambda *args, **kwargs: 1)
             mp.setattr(JobTestFixture, "wait_for_job_to_completion", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "wait_for_log_query_completion", lambda *args, **kwargs: None)
+
             return JobTestFixture(
                 environment_configuration=EnvironmentConfiguration(),
                 job_name="CapacitySettlement",
@@ -76,8 +76,6 @@ class TestRunnerWithCorrectImplementation(JobTester):
     @pytest.mark.order(999)
     def test_function_calls(self):
         self.fixture.azure_logs_query_client.wait_for_condition.called_once()
-        self.fixture.databricks_api_client.execute_statement.called_once()
-        self.fixture.databricks_api_client.client.jobs.run_now_and_wait.called_once()
 
 
 def test_when_fixture_not_property__then_raise_exception():
