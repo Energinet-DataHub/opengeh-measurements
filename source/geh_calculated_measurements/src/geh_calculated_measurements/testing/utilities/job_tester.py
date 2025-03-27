@@ -22,19 +22,16 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 class JobTestFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict = {}):
-        self.environment_configuration = environment_configuration
-        self.ws = WorkspaceClient(
-            host=self.environment_configuration.workspace_url, token=self.environment_configuration.databricks_token
-        )
+        self.config = environment_configuration
+        self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
         self.job_name = job_name
         self.job_parameters = job_parameters
-        self.job: Wait[Run] = None
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(credentials)
         self.secret_client = SecretClient(
-            vault_url=f"https://{self.environment_configuration.shared_keyvault_name}.vault.azure.net/",
+            vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/",
             credential=credentials,
         )
 
@@ -49,8 +46,8 @@ class JobTestFixture:
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        self.job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
-        return self.job
+        job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
+        return job
 
     def wait_for_job_completion(self, job: Wait[Run], timeout: int = 15) -> RunResultState | None:
         run = job.result(timeout=timedelta(minutes=timeout))
@@ -65,7 +62,7 @@ class JobTestFixture:
         self, statement: str, timeout_minutes: int = 15, poll_interval_seconds: int = 5
     ) -> StatementResponse:
         response = self.ws.statement_execution.execute_statement(
-            warehouse_id=self.environment_configuration.warehouse_id, statement=statement
+            warehouse_id=self.config.warehouse_id, statement=statement
         )
 
         # Wait for the statement to complete
@@ -89,11 +86,20 @@ class JobTestFixture:
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
 
 
+class _State:
+    def __init__(self):
+        job: Wait[Run] | None = None  # noqa
+
+
 class JobTester(abc.ABC):
     @pytest.fixture(scope="class")
     @abc.abstractmethod
     def fixture(self) -> JobTestFixture:
         raise NotImplementedError("The fixture method must be implemented.")
+
+    @pytest.fixture(scope="class")
+    def state(self):
+        return _State()
 
     @pytest.mark.order(0)
     def test__fixture_is_correctly_made(self, fixture: JobTestFixture):
@@ -101,13 +107,13 @@ class JobTester(abc.ABC):
         assert isinstance(fixture, JobTestFixture), "The fixture is not of the correct type."
 
     @pytest.mark.order(1)
-    def test__job_can_start(self, fixture):
-        self.job = fixture.start_job()
-        assert self.job is not None, "The job was not started successfully."
+    def test__job_can_start(self, fixture: JobTestFixture, state: _State):
+        state.job = fixture.start_job()
+        assert state.job is not None, "The job was not started successfully."
 
     @pytest.mark.order(2)
-    def test__and_then_job_completes_successfully(self, fixture: JobTestFixture):
-        result = fixture.wait_for_job_completion(self.job)
+    def test__and_then_job_completes_successfully(self, fixture: JobTestFixture, state: _State):
+        result = fixture.wait_for_job_completion(state.job)
         assert result is not None, "The job did not return a RunResultState."
         assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
@@ -131,7 +137,7 @@ class JobTester(abc.ABC):
     @pytest.mark.order(3)
     def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
         # Arrange
-        catalog = fixture.environment_configuration.catalog_name
+        catalog = fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""
