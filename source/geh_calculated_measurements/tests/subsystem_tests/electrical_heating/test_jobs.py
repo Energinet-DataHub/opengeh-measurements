@@ -2,11 +2,9 @@ import random
 import uuid
 from datetime import datetime
 
-import pytest
 from geh_common.domain.types import MeteringPointType
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
+from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
@@ -20,20 +18,18 @@ gold_table_row = GoldTableRow(
 )
 
 
-@pytest.fixture(scope="session")
-def job_fixture(
-    environment_configuration: EnvironmentConfiguration,
-) -> BaseJobFixture:
-    table_seeder = GoldTableSeeder(environment_configuration)
-    table_seeder.seed(gold_table_row)
-    return BaseJobFixture(
-        environment_configuration=environment_configuration,
-        job_name="ElectricalHeating",
-        job_parameters=job_parameters,
-    )
-
-
-class TestElectricalHeating(BaseJobTests):
+class TestElectricalHeating(JobTester):
     """
     Test class for electrical heating.
     """
+
+    @property
+    def fixture(self):
+        config = EnvironmentConfiguration()
+        table_seeder = GoldTableSeeder(config)
+        table_seeder.seed(gold_table_row)
+        return JobTestFixture(
+            environment_configuration=config,
+            job_name="ElectricalHeating",
+            job_parameters=job_parameters,
+        )
