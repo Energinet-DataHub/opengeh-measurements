@@ -49,10 +49,8 @@ class JobTestFixture:
         self.job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
         return self.job
 
-    def wait_for_job_completion(self, timeout: int = 15) -> RunResultState | None:
-        if self.job is None:
-            raise ValueError("The job has not been started")
-        run = self.job.result(timeout=timedelta(minutes=timeout))
+    def wait_for_job_completion(self, job: Wait[Run], timeout: int = 15) -> RunResultState | None:
+        run = job.result(timeout=timedelta(minutes=timeout))
         return run.state.result_state
 
     def run_job_and_wait(self) -> Run:
@@ -101,12 +99,12 @@ class JobTester(abc.ABC):
 
     @pytest.mark.order(1)
     def test__job_can_start(self, fixture):
-        job = fixture.start_job()
-        assert job is not None, "The job was not started successfully."
+        self.job = fixture.start_job()
+        assert self.job is not None, "The job was not started successfully."
 
     @pytest.mark.order(2)
     def test__and_then_job_completes_successfully(self, fixture: JobTestFixture):
-        result = fixture.wait_for_job_completion()
+        result = fixture.wait_for_job_completion(self.job)
         assert result is not None, "The job did not return a RunResultState."
         assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
