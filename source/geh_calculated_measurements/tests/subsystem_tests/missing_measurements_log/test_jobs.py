@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from geh_common.domain.types.quantity_quality import QuantityQuality
 
-from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
+from geh_calculated_measurements.missing_measurements_log.infrastructure.repository import (
     MeteringPointPeriodsDatabaseDefinition,
 )
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
