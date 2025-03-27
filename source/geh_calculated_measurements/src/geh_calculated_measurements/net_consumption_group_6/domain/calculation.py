@@ -32,9 +32,9 @@ def execute(
 
     measurements = calculate_daily(
         time_series_points=time_series_points,
-        execution_start_datetime=execution_start_datetime,
         cenc=cenc,
         time_zone=time_zone,
+        execution_start_datetime=execution_start_datetime,
     )
 
     return cenc, measurements

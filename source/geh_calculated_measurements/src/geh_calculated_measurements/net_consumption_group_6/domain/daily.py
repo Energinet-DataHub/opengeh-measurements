@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
@@ -37,18 +39,21 @@ def days_in_year(year: Column, month: Column) -> Column:
 @use_span()
 @testing()
 def calculate_daily(
-    cenc: Cenc,
     time_series_points: TimeSeriesPoints,
+    cenc: Cenc,
     time_zone: str,
+    execution_start_datetime: datetime,
 ) -> DataFrame:
     cenc_added_col = cenc.df.select(  # adding needed columns
         "*",
         F.lit(MeteringPointType.NET_CONSUMPTION.value).alias(ContractColumnNames.metering_point_type),
+        F.lit(execution_start_datetime).alias("transaction_creation_datetime"),
     )
 
     time_series_points_df = time_series_points.df
 
     cenc_added_col = convert_from_utc(cenc_added_col, time_zone)
+
     time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
 
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
@@ -57,6 +62,7 @@ def calculate_daily(
         (F.col("quantity") / days_in_year(F.col("settlement_year"), F.col("settlement_month")))
         .cast(T.DecimalType(18, 3))
         .alias("quantity"),
+        F.col("transaction_creation_datetime"),
     )
 
     latest_measurements_date = (
@@ -89,10 +95,6 @@ def calculate_daily(
     )
 
     result_df = df.select(
-        F.col("orchestration_type"),
-        F.col("orchestration_instance_id"),
-        F.lit("to be added").alias("transaction_id"),
-        F.col("transaction_creation_datetime"),
         F.col("metering_point_id"),
         F.col("metering_point_type"),
         F.col("date"),
