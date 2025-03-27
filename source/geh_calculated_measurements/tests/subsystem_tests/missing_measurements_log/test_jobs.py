@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from geh_common.domain.types.quantity_quality import QuantityQuality
 
@@ -8,7 +8,7 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 METERING_POINT_ID = "170000060000000201"
-FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
 
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
