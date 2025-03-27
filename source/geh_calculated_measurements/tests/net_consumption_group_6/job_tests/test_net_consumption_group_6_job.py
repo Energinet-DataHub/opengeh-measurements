@@ -9,27 +9,21 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
-from tests.net_consumption_group_6.job_tests import create_job_environment_variables
+from tests import create_job_environment_variables
+from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-def _create_job_parameters(orchestration_instance_id: str) -> list[str]:
-    return [
+def test_execute(spark: SparkSession, monkeypatch: pytest.MonkeyPatch, dummy_logging) -> None:
+    # Arrange
+    orchestration_instance_id = str(uuid.uuid4())
+    sys_args = [
         "dummy_script_name",
         f"--orchestration-instance-id={orchestration_instance_id}",
         "--calculation-year=2026",
         "--calculation-month=1",
     ]
-
-
-def test_execute(
-    spark: SparkSession,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    # Arrange
-    orchestration_instance_id = str(uuid.uuid4())
-
-    monkeypatch.setattr(sys, "argv", _create_job_parameters(orchestration_instance_id))
-    monkeypatch.setattr(os, "environ", create_job_environment_variables())
+    monkeypatch.setattr(sys, "argv", sys_args)
+    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
     # Act
     execute()
