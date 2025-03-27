@@ -1,46 +1,37 @@
 import uuid
-from datetime import datetime
+from typing import Any, Generator
 
 import pytest
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.net_consumption_group_6.seed_child_table import ChildTableRow, ChildTableSeeder
-from tests.subsystem_tests.net_consumption_group_6.seed_parent_table import ParentTableRow, ParentTableSeeder
+from tests.subsystem_tests.net_consumption_group_6.seed_table import delete_seeded_data, seed_table
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
-
-parent_table_row = ParentTableRow(
-    metering_point_id="170000000000000201",
-    has_electrical_heating=False,
-    settlement_month=1,
-    period_from_date=datetime(2022, 12, 31, 23, 0, 0),
-    period_to_date=datetime(2023, 12, 31, 23, 0, 0),
-    move_in=False,
-)
-child_table_row = ChildTableRow(
-    metering_point_id="150000001500170200",
-    metering_type="net_consumption",
-    parent_metering_point_id="170000000000000201",
-    coupled_date=datetime(2022, 12, 31, 23, 0, 0),
-    uncoupled_date=datetime(2023, 12, 31, 23, 0, 0),
-)
 
 
 @pytest.fixture(scope="session")
 def job_fixture(
     environment_configuration: EnvironmentConfiguration,
-) -> BaseJobFixture:
-    parent_table_seeder = ParentTableSeeder(environment_configuration)
-    parent_table_seeder.seed(parent_table_row)
-    child_table_seeder = ChildTableSeeder(environment_configuration)
-    child_table_seeder.seed(child_table_row)
-    return BaseJobFixture(
+) -> Generator[BaseJobFixture, Any, None]:
+    # Construct fixture
+    base_job_fixture = BaseJobFixture(
         environment_configuration=environment_configuration,
         job_name="NetConsumptionGroup6",
         job_parameters=job_parameters,
     )
+
+    # Remove previously inserted seeded data
+    delete_seeded_data(base_job_fixture)
+
+    # Insert seeded data
+    seed_table(base_job_fixture)
+
+    yield base_job_fixture
+
+    # Remove previously inserted seeded data
+    delete_seeded_data(base_job_fixture)
 
 
 class TestNetConsumptionGroup6(BaseJobTests):
