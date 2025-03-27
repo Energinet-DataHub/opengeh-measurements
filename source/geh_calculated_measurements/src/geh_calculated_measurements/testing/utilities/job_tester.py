@@ -86,38 +86,24 @@ class JobTestFixture:
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
 
 
-class _State:
-    def __init__(self):
-        job: Wait[Run] | None = None  # noqa
-
-
 class JobTester(abc.ABC):
     @pytest.fixture(scope="class")
     @abc.abstractmethod
     def fixture(self) -> JobTestFixture:
         raise NotImplementedError("The fixture method must be implemented.")
 
-    @pytest.fixture(scope="class")
-    def state(self):
-        return _State()
-
-    @pytest.mark.order(0)
+    @pytest.mark.order(1)
     def test__fixture_is_correctly_made(self, fixture: JobTestFixture):
         assert fixture is not None, "The fixture was not created successfully."
         assert isinstance(fixture, JobTestFixture), "The fixture is not of the correct type."
 
-    @pytest.mark.order(1)
-    def test__job_can_start(self, fixture: JobTestFixture, state: _State):
-        state.job = fixture.start_job()
-        assert state.job is not None, "The job was not started successfully."
-
     @pytest.mark.order(2)
-    def test__and_then_job_completes_successfully(self, fixture: JobTestFixture, state: _State):
-        result = fixture.wait_for_job_completion(state.job)
-        assert result is not None, "The job did not return a RunResultState."
-        assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
+    def test__job_completes_successfully(self, fixture: JobTestFixture):
+        result = fixture.run_job_and_wait()
+        assert result.state.result_state is not None, "The job did not return a RunResultState."
+        assert result.state.result_state == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
-    @pytest.mark.order(2)
+    @pytest.mark.order(3)
     def test__and_then_job_telemetry_is_created(self, fixture: JobTestFixture):
         # Arrange
         query = f"""
@@ -134,7 +120,7 @@ class JobTester(abc.ABC):
             f"The query did not complete successfully: {actual.status}. Query: {query}"
         )
 
-    @pytest.mark.order(3)
+    @pytest.mark.order(4)
     def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
         # Arrange
         catalog = fixture.config.catalog_name
