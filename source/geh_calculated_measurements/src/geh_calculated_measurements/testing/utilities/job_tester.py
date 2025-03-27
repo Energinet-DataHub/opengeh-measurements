@@ -18,9 +18,7 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 
 class JobTestFixture:
-    def __init__(
-        self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict
-    ) -> None:
+    def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict = {}):
         self.config = environment_configuration
         self.job_name = job_name
         self.job_parameters = job_parameters
@@ -52,7 +50,8 @@ class JobTestFixture:
 
     def run_job_and_wait(self) -> Run:
         job_id = self.databricks_api_client.get_job_id(self.job_name)
-        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_named_params=self.job_parameters)
+        params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
+        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_params=params)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
