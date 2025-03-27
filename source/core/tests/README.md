@@ -24,6 +24,6 @@ we do a deploymenet and if it fails, the deployment pipeline is blocked.
 The subsystem tests are simple in its form, but it requires that all the streaming jobs are running in the environment.
 
 The subsystem tests can be run locally towards dev002/003 - remember to deploy to the environment first to ensure that
-code changes are deployed to the environment. 
+code changes are deployed to the environment.
 
 See [`Running Subsystem Tests Locally`](./subsystem_tests/README.md)
