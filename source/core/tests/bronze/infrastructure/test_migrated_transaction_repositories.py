@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from unittest.mock import patch
 
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import rand
+from pytest_mock import MockFixture
 
 from core.bronze.domain.schemas.migrated_transactions import migrated_transactions_schema
 from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
@@ -24,24 +24,24 @@ def test__read__should_return_the_correct_dataframe(spark: SparkSession, migrati
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_none_when_empty(
-    spark: SparkSession, migrations_executed: None
+    spark: SparkSession, migrations_executed: None, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
 
     migrated_data = MigratedTransactionsBuilder(spark)
     migrated_data = migrated_data.build()
+    mocker.patch.object(repo, repo.read.__name__, return_value=migrated_data)
 
-    with patch.object(repo, "read", return_value=migrated_data):
-        # Act
-        migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+    # Act
+    migrated_transactions = repo.calculate_latest_created_timestamp_that_has_been_migrated()
 
-        # Assert
-        assert migrated_transactions is None
+    # Assert
+    assert migrated_transactions is None
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_correct_datetime(
-    spark: SparkSession, migrations_executed: None
+    spark: SparkSession, migrations_executed: None, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
@@ -55,9 +55,10 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
     migrated_data.add_row(created_in_migrations=timestamp_to_find)  # Add the one we care about.
     migrated_data = migrated_data.build()
 
-    with patch.object(repo, "read", return_value=migrated_data.orderBy(rand())):
-        # Act
-        result_max_created = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+    mocker.patch.object(repo, repo.read.__name__, return_value=migrated_data.orderBy(rand()))
 
-        # Assert
-        assert result_max_created == timestamp_to_find
+    # Act
+    result_max_created = repo.calculate_latest_created_timestamp_that_has_been_migrated()
+
+    # Assert
+    assert result_max_created == timestamp_to_find
