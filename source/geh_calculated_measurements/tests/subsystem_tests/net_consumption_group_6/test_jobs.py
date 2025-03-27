@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 
+import pytest
+
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_child_table import ChildTableRow, ChildTableSeeder
@@ -26,7 +28,7 @@ child_table_row = ChildTableRow(
 
 
 class TestNetConsumptionGroup6(JobTester):
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
         parent_table_seeder = ParentTableSeeder(config)

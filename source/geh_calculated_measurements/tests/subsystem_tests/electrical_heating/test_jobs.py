@@ -2,6 +2,7 @@ import random
 import uuid
 from datetime import datetime, timezone
 
+import pytest
 from geh_common.domain.types import MeteringPointType
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
@@ -23,7 +24,7 @@ class TestElectricalHeating(JobTester):
     Test class for electrical heating.
     """
 
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
         table_seeder = GoldTableSeeder(config)

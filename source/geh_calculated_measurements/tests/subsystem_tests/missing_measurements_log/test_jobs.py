@@ -33,7 +33,7 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
 
 
 class TestMissingMeasurementsLog(JobTester):
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         with pytest.MonkeyPatch.context() as m:
             m.setattr(

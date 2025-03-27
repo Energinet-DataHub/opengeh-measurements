@@ -19,7 +19,7 @@ class TestElectricalHeating(JobTester):
     Test class for electrical heating.
     """
 
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
         with pytest.MonkeyPatch.context() as monkeypatch:

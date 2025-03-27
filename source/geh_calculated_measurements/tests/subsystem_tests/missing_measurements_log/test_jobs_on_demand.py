@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime
 
+import pytest
+
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -16,7 +18,7 @@ job_parameters = {
 
 
 class TestMissingMeasurementsLog(JobTester):
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
         return JobTestFixture(

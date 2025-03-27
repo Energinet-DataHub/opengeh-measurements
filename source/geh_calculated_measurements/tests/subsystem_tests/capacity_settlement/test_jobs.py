@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
+import pytest
 from geh_common.domain.types import MeteringPointType
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
@@ -32,7 +33,7 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
 
 
 class TestCapacitySettlement(JobTester):
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
         table_seeder = GoldTableSeeder(config)
