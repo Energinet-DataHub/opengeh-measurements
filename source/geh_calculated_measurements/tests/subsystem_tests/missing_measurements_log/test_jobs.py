@@ -1,8 +1,12 @@
 import uuid
 from datetime import datetime, timedelta, timezone
 
+import pytest
 from geh_common.domain.types.quantity_quality import QuantityQuality
 
+from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
+    MeteringPointPeriodsDatabaseDefinition,
+)
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
@@ -31,12 +35,18 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
 class TestMissingMeasurementsLog(JobTester):
     @property
     def fixture(self):
-        config = EnvironmentConfiguration()
-        table_seeder = GoldTableSeeder(config)
-        gold_table_rows = _get_gold_table_rows()
-        table_seeder.seed(gold_table_rows)
-        return JobTestFixture(
-            environment_configuration=config,
-            job_name="MissingMeasurementsLog",
-            job_parameters=job_parameters,
-        )
+        with pytest.MonkeyPatch.context() as m:
+            m.setattr(
+                MeteringPointPeriodsDatabaseDefinition,
+                "METERING_POINT_PERIODS",
+                "missing_measurements_log_metering_point_periods_v1",
+            )
+            config = EnvironmentConfiguration()
+            table_seeder = GoldTableSeeder(config)
+            gold_table_rows = _get_gold_table_rows()
+            table_seeder.seed(gold_table_rows)
+            return JobTestFixture(
+                environment_configuration=config,
+                job_name="MissingMeasurementsLog",
+                job_parameters=job_parameters,
+            )
