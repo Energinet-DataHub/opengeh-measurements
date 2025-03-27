@@ -34,7 +34,7 @@ class TestElectricalHeating(JobTester):
 
     @pytest.fixture(autouse=True, scope="class")
     def patch_repositories(self, fixture: JobTestFixture) -> None:
-        environment_configuration = fixture.environment_configuration
+        environment_configuration = fixture.config
         monkeypatch = pytest.MonkeyPatch()
         # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
         monkeypatch.setattr(

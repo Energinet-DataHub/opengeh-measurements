@@ -18,6 +18,6 @@ def seed_table(job_fixture: JobTestFixture) -> None:
         )
         for i in range(1)
     ]
-    statement = seed_gold_table.get_statement(job_fixture.environment_configuration.catalog_name, gold_table_rows)
+    statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
 
     job_fixture.execute_statement(statement)

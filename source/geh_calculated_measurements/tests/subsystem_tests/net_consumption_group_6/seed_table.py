@@ -14,12 +14,12 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
-        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{database}.{parent_table} 
         WHERE metering_point_id = '{parent_metering_point_id}'
     """)
     # CHILD
     statements.append(f"""
-        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{database}.{child_table} 
         WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """)
 
@@ -31,7 +31,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{database}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -50,7 +50,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
     """)
     # CHILD
     statements.append(f"""
-    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
         metering_point_id,
         metering_type,
         parent_metering_point_id,
