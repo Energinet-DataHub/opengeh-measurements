@@ -52,7 +52,7 @@ class JobTestFixture:
 
     def run_job_and_wait(self) -> Run:
         job_id = self.databricks_api_client.get_job_id(self.job_name)
-        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_params=self.job_parameters)
+        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_named_params=self.job_parameters)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
