@@ -30,7 +30,7 @@ def get_statement(catalog_name: str, rows: list[GoldTableRow]) -> str:
                 '{row.orchestration_type}',
                 '{str(row.orchestration_instance_id)}',
                 '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}',
-                {format(row.quantity, ".3f")},
+                '{format(row.quantity, ".3f")}',
                 '{row.quality}',
                 '{row.metering_point_type.value}',
                 'kWh',
