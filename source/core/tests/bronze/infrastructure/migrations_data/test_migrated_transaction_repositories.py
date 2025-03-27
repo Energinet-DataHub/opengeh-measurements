@@ -1,7 +1,7 @@
 import datetime
-from unittest.mock import patch
 
 from pyspark.sql import SparkSession
+from pytest_mock import MockFixture
 
 from core.bronze.infrastructure.migration_data.silver_time_series_repository import (
     MigrationsSilverTimeSeriesRepository,
@@ -9,7 +9,7 @@ from core.bronze.infrastructure.migration_data.silver_time_series_repository imp
 
 
 def test__create_chunks_of_partitions_for_data_with_a_single_partition_col__creates_balanced_partitions(
-    spark: SparkSession,
+    spark: SparkSession, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigrationsSilverTimeSeriesRepository(spark)
@@ -26,11 +26,10 @@ def test__create_chunks_of_partitions_for_data_with_a_single_partition_col__crea
     # Create a DataFrame from the list of dates
     df = spark.createDataFrame([(date,) for date in dates], ["date"])
 
-    with patch.object(repo, "read_migrations_silver_time_series", return_value=df):
-        # Act
-        chunks = repo.create_chunks_of_partitions_for_data_with_a_single_partition_col(
-            partition_col="date", num_chunks=3
-        )
+    mocker.patch.object(repo, repo.read_migrations_silver_time_series.__name__, return_value=df)
+
+    # Act
+    chunks = repo.create_chunks_of_partitions_for_data_with_a_single_partition_col(partition_col="date", num_chunks=3)
 
     # Assert
     assert len(chunks) == 3
@@ -40,7 +39,7 @@ def test__create_chunks_of_partitions_for_data_with_a_single_partition_col__crea
 
 
 def test__create_chunks_of_partitions_for_data_with_a_single_partition_col__creates_no_empty_chunks(
-    spark: SparkSession,
+    spark: SparkSession, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigrationsSilverTimeSeriesRepository(spark)
@@ -52,11 +51,12 @@ def test__create_chunks_of_partitions_for_data_with_a_single_partition_col__crea
     # Create a DataFrame from the list of dates
     df = spark.createDataFrame([(date,) for date in dates], ["date"])
 
-    with patch.object(repo, "read_migrations_silver_time_series", return_value=df):
-        # Act
-        chunks = repo.create_chunks_of_partitions_for_data_with_a_single_partition_col(
-            partition_col="date", num_chunks=len(dates) * 100
-        )
+    mocker.patch.object(repo, repo.read_migrations_silver_time_series.__name__, return_value=df)
+
+    # Act
+    chunks = repo.create_chunks_of_partitions_for_data_with_a_single_partition_col(
+        partition_col="date", num_chunks=len(dates) * 100
+    )
 
     # Assert
     assert len(chunks) == len(dates)
