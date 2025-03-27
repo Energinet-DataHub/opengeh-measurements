@@ -16,28 +16,30 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 from geh_calculated_measurements.capacity_settlement.infrastructure import (
     CapacitySettlementRepository,
     ElectricityMarketRepository,
-    MeasurementsGoldRepository,
 )
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
 )
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
+from geh_calculated_measurements.common.infrastructure import (
+    CalculatedMeasurementsRepository,
+    CurrentMeasurementsRepository,
+)
 
 
 @use_span()
 def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
     # Create repositories to obtain data frames
-    measurements_gold_repository = MeasurementsGoldRepository(spark, args.catalog_name)
+    current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
 
     # Read data frames
-    time_series_points = measurements_gold_repository.read_time_series_points()
+    current_measurements = current_measurements_repository.read_current_measurements()
     metering_point_periods = electricity_market_repository.read_metering_point_periods()
 
     # Execute the domain logic
     calculation_output: CalculationOutput = execute(
-        time_series_points,
+        current_measurements,
         metering_point_periods,
         args.calculation_month,
         args.calculation_year,

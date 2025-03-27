@@ -14,9 +14,7 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_market.schema import (
     metering_point_periods_v1,
 )
-from geh_calculated_measurements.capacity_settlement.infrastructure.measurements_gold.schema import (
-    capacity_settlement_v1,
-)
+from geh_calculated_measurements.common.domain import CurrentMeasurements
 
 
 @pytest.fixture(scope="module")
@@ -30,7 +28,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     time_series_points = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
-        capacity_settlement_v1,
+        CurrentMeasurements.schema,
     )
     metering_point_periods = read_csv(
         spark,
