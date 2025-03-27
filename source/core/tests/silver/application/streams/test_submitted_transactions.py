@@ -1,6 +1,5 @@
-from unittest import mock
-
 from pyspark.sql import SparkSession
+from pytest_mock import MockerFixture
 
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
@@ -13,21 +12,11 @@ from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder, ValueBuilder
 
 
-@mock.patch("core.silver.application.streams.submitted_transactions.spark_session.initialize_spark")
-@mock.patch("core.silver.application.streams.submitted_transactions.BronzeRepository")
-@mock.patch("core.silver.application.streams.submitted_transactions.SilverMeasurementsRepository")
-def test__submitted_transactions__should_call_expected(
-    mock_SilverMeasurementsRepository,
-    mock_BronzeRepository,
-    mock_initialize_spark,
-) -> None:
+def test__submitted_transactions__should_call_expected(mocker: MockerFixture) -> None:
     # Arrange
-    mock_spark = mock.Mock()
-    mock_initialize_spark.return_value = mock_spark
-    mock_submitted_transactions = mock.Mock()
-    mock_BronzeRepository.return_value = mock_submitted_transactions
-    mock_write_measurements = mock.Mock()
-    mock_SilverMeasurementsRepository.return_value = mock_write_measurements
+    mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark")
+    mock_BronzeRepository = mocker.patch(f"{sut.__name__}.BronzeRepository")
+    mock_SilverMeasurementsRepository = mocker.patch(f"{sut.__name__}.SilverMeasurementsRepository")
 
     # Act
     sut.stream_submitted_transactions()
@@ -39,7 +28,9 @@ def test__submitted_transactions__should_call_expected(
 
 
 def test__submitted_transactions__should_save_in_silver_measurements(
-    mock_checkpoint_path, spark: SparkSession, migrations_executed
+    mock_checkpoint_path,
+    spark: SparkSession,
+    migrations_executed,
 ) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
