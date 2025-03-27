@@ -19,7 +19,7 @@ def test__read_submitted_transactions__calls_expected() -> None:
     expected_table = f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}"
 
     # Act
-    _ = SubmittedTransactionsRepository(mock_spark).read_submitted_transactions()
+    _ = SubmittedTransactionsRepository(mock_spark).read()
 
     # Assert
     mock_spark.readStream.format.assert_called_once_with("delta")
@@ -55,7 +55,7 @@ def test__read_submitted_transaction__returns_expected(spark: SparkSession, migr
     # Act
     (
         SubmittedTransactionsRepository(spark)
-        .read_submitted_transactions()
+        .read()
         .writeStream.format("delta")
         .outputMode("append")
         .trigger(availableNow=True)

@@ -14,7 +14,7 @@ def test__notify__should_call_expected(
 
     mock_submitted_transactions_repository = mock.Mock()
     mocked_submitted_transactions_repository_read_submitted_transactions = mocker.patch(
-        f"{sut.__name__}.SubmittedTransactionsRepository.read_submitted_transactions",
+        f"{sut.__name__}.SubmittedTransactionsRepository.read",
         return_value=mock_submitted_transactions_repository,
     )
 
