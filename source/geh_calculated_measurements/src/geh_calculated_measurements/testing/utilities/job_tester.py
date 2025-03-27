@@ -73,7 +73,7 @@ class JobTester(abc.ABC):
         )
         fixture = cls.fixture.fget(cls)
         assert isinstance(fixture, JobTestFixture), (
-            f"The fixture property must return an instance of Fixture. Got: {type(fixture)}"
+            f"The fixture property must return an instance of JobTestFixture. Got: {type(fixture)}"
         )
         return super().__init_subclass__()
 
