@@ -1,9 +1,5 @@
 ﻿namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 
-/// <summary>
-/// Factory to create an <see cref="T:System.Net.Http.HttpClient" />, which will re-apply the authorization header
-/// from the current HTTP context.
-/// </summary>
 public class AuthorizedHttpClientFactory(
     IHttpClientFactory httpClientFactory,
     Func<string> authorizationHeaderProvider) : IAuthorizedHttpClientFactory
@@ -17,12 +13,12 @@ public class AuthorizedHttpClientFactory(
 
     private void SetAuthorizationHeader(HttpClient httpClient)
     {
-        var str = authorizationHeaderProvider();
-        if (string.IsNullOrEmpty(str))
+        var authorizationHeader = authorizationHeaderProvider();
+        if (string.IsNullOrEmpty(authorizationHeader))
         {
             return;
         }
 
-        httpClient.DefaultRequestHeaders.Add("Authorization", str);
+        httpClient.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
     }
 }
