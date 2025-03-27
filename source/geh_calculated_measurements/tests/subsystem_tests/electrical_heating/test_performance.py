@@ -2,7 +2,10 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.electrical_heating.domain import ChildMeteringPoints, ConsumptionMeteringPointPeriods
+from geh_calculated_measurements.electrical_heating.domain.model.child_metering_points import ChildMeteringPoints
+from geh_calculated_measurements.electrical_heating.domain.model.consumption_metering_point_periods import (
+    ConsumptionMeteringPointPeriods,
+)
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
     Repository as ElectricityMarketRepository,
 )
@@ -22,41 +25,49 @@ class TestElectricalHeating(JobTester):
     @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
-        with pytest.MonkeyPatch.context() as monkeypatch:
-            # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
-            monkeypatch.setattr(
-                MeasurementsGoldDatabaseDefinition,
-                "DATABASE_NAME",
-                config.schema_name,
-            )
-            monkeypatch.setattr(
-                MeasurementsGoldDatabaseDefinition,
-                "TIME_SERIES_POINTS_NAME",
-                config.time_series_points_table,
-            )
 
-            # Patch read_consumption_metering_point_periods
-            def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
-                table_name = f"{config.schema_name}.{config.consumption_metering_points_table}"
-                df = self._spark.read.format("delta").table(table_name)
-                return ConsumptionMeteringPointPeriods(df)
+        return JobTestFixture(
+            environment_configuration=config,
+            job_name="ElectricalHeating",
+            job_parameters={"orchestration-instance-id": uuid.uuid4()},
+        )
 
-            # Patch read_child_metering_points
-            def patched_read_child_metering_points(self) -> ChildMeteringPoints:
-                table_name = f"{config.schema_name}.{config.child_metering_points_table}"
-                df = self._spark.read.format("delta").table(table_name)
-                return ChildMeteringPoints(df)
+    @pytest.fixture(autouse=True, scope="class")
+    def patch_repositories(self, environment_configuration: EnvironmentConfiguration) -> None:
+        monkeypatch = pytest.MonkeyPatch()
+        # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
+        monkeypatch.setattr(
+            MeasurementsGoldDatabaseDefinition,
+            "DATABASE_NAME",
+            environment_configuration.schema_name,
+        )
+        monkeypatch.setattr(
+            MeasurementsGoldDatabaseDefinition,
+            "TIME_SERIES_POINTS_NAME",
+            environment_configuration.time_series_points_table,
+        )
 
-            monkeypatch.setattr(
-                ElectricityMarketRepository,
-                "read_consumption_metering_point_periods",
-                patched_read_consumption_metering_point_periods,
+        # Patch read_consumption_metering_point_periods
+        def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
+            table_name = (
+                f"{environment_configuration.schema_name}.{environment_configuration.consumption_metering_points_table}"
             )
-            monkeypatch.setattr(
-                ElectricityMarketRepository, "read_child_metering_points", patched_read_child_metering_points
+            df = self._spark.read.format("delta").table(table_name)
+            return ConsumptionMeteringPointPeriods(df)
+
+        # Patch read_child_metering_points
+        def patched_read_child_metering_points(self) -> ChildMeteringPoints:
+            table_name = (
+                f"{environment_configuration.schema_name}.{environment_configuration.child_metering_points_table}"
             )
-            return JobTestFixture(
-                environment_configuration=config,
-                job_name="ElectricalHeating",
-                job_parameters={"orchestration-instance-id": uuid.uuid4()},
-            )
+            df = self._spark.read.format("delta").table(table_name)
+            return ChildMeteringPoints(df)
+
+        monkeypatch.setattr(
+            ElectricityMarketRepository,
+            "read_consumption_metering_point_periods",
+            patched_read_consumption_metering_point_periods,
+        )
+        monkeypatch.setattr(
+            ElectricityMarketRepository, "read_child_metering_points", patched_read_child_metering_points
+        )

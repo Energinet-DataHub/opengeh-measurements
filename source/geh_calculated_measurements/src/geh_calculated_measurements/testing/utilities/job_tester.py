@@ -22,8 +22,10 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 class JobTestFixture:
     def __init__(self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict = {}):
-        self.config = environment_configuration
-        self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
+        self.environment_configuration = environment_configuration
+        self.ws = WorkspaceClient(
+            host=self.environment_configuration.workspace_url, token=self.environment_configuration.databricks_token
+        )
         self.job_name = job_name
         self.job_parameters = job_parameters
         self.job: Wait[Run] = None
@@ -32,7 +34,8 @@ class JobTestFixture:
         credentials = DefaultAzureCredential()
         self.azure_logs_query_client = LogQueryClientWrapper(credentials)
         self.secret_client = SecretClient(
-            vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/", credential=credentials
+            vault_url=f"https://{self.environment_configuration.shared_keyvault_name}.vault.azure.net/",
+            credential=credentials,
         )
 
     def _get_job_by_name(self, job_name: str) -> BaseJob:
@@ -62,7 +65,7 @@ class JobTestFixture:
         self, statement: str, timeout_minutes: int = 15, poll_interval_seconds: int = 5
     ) -> StatementResponse:
         response = self.ws.statement_execution.execute_statement(
-            warehouse_id=self.config.warehouse_id, statement=statement
+            warehouse_id=self.environment_configuration.warehouse_id, statement=statement
         )
 
         # Wait for the statement to complete
@@ -128,7 +131,7 @@ class JobTester(abc.ABC):
     @pytest.mark.order(3)
     def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
         # Arrange
-        catalog = fixture.config.catalog_name
+        catalog = fixture.environment_configuration.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""

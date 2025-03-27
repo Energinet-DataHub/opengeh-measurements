@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+
 database = "electricity_market_measurements_input"
 parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
 child_table = "net_consumption_group_6_child_metering_point_v1"
@@ -9,7 +11,7 @@ child_metering_point_id = "150000001500170200"
 
 
 def delete_seeded_data(
-    job_fixture,
+    job_fixture: JobTestFixture,
 ) -> None:
     statements = []
     # PARENT
@@ -28,7 +30,7 @@ def delete_seeded_data(
 
 
 def seed_table(
-    job_fixture,
+    job_fixture: JobTestFixture,
 ) -> None:
     statements = []
     # PARENT
