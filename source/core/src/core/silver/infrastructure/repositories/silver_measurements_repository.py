@@ -22,7 +22,12 @@ class SilverMeasurementsRepository:
 
     def read_stream(self) -> DataFrame:
         spark = spark_session.initialize_spark()
-        return spark.readStream.format("delta").option("ignoreDeletes", "true").table(self.table)
+        return (
+            spark.readStream.format("delta")
+            .option("ignoreDeletes", "true")
+            .option("skipChangeCommit", "true")
+            .table(self.table)
+        )
 
     def write_stream(
         self,
