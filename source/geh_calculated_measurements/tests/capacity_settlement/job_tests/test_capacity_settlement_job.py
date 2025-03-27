@@ -28,7 +28,6 @@ def test_execute(
         ],
     )
     monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
-    monkeypatch.setenv("APPLICATIONINSIGHTS_CONNECTION_STRING", "some_connection_string")
 
     # Act
     execute()
