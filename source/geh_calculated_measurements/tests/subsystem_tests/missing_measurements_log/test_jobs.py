@@ -1,11 +1,9 @@
 import uuid
 from datetime import datetime, timedelta
 
-import pytest
 from geh_common.domain.types.quantity_quality import QuantityQuality
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
+from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
@@ -30,31 +28,15 @@ def _get_gold_table_rows() -> list[GoldTableRow]:
     ]
 
 
-@pytest.fixture(scope="session")
-def job_fixture(
-    environment_configuration: EnvironmentConfiguration,
-) -> BaseJobFixture:
-    table_seeder = GoldTableSeeder(environment_configuration)
-    gold_table_rows = _get_gold_table_rows()
-    table_seeder.seed(gold_table_rows)
-    return BaseJobFixture(
-        environment_configuration=environment_configuration,
-        job_name="MissingMeasurementsLog",
-        job_parameters=job_parameters,
-    )
-
-
-class TestMissingMeasurementsLog(BaseJobTests):
-    """
-    Test class for missing measurements log.
-    """
-
-    @pytest.mark.skip(reason="Skipped due to issues with the telemetry data not available in the logs.")
-    def test__and_then_job_telemetry_is_created(self, job_fixture: BaseJobFixture) -> None:
-        pass
-
-    @pytest.mark.skip(reason="This test is temporary skipped because the storing implementation is not yet made.")
-    def test__and_then_data_is_written_to_delta(
-        self, environment_configuration: EnvironmentConfiguration, job_fixture: BaseJobFixture
-    ) -> None:
-        pass
+class TestMissingMeasurementsLog(JobTester):
+    @property
+    def fixture(self):
+        config = EnvironmentConfiguration()
+        table_seeder = GoldTableSeeder(config)
+        gold_table_rows = _get_gold_table_rows()
+        table_seeder.seed(gold_table_rows)
+        return JobTestFixture(
+            environment_configuration=config,
+            job_name="MissingMeasurementsLog",
+            job_parameters=job_parameters,
+        )

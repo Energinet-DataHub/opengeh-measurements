@@ -59,9 +59,7 @@ class TestRunnerWithCorrectImplementation(JobTester):
         with pytest.MonkeyPatch.context() as mp:
             mp.setattr(os, "environ", dummy_env)
             mp.setattr(JobTestFixture, "__init__", mock_init)
-            mp.setattr(JobTestFixture, "set_run_id", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "start_job", lambda *args, **kwargs: 1)
-            mp.setattr(JobTestFixture, "get_run_id", lambda *args, **kwargs: 1)
             mp.setattr(JobTestFixture, "wait_for_job_to_completion", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "wait_for_log_query_completion", lambda *args, **kwargs: None)
             return JobTestFixture(
@@ -73,7 +71,6 @@ class TestRunnerWithCorrectImplementation(JobTester):
     @pytest.mark.order(999)
     def test_function_calls(self):
         self.fixture.azure_logs_query_client.wait_for_condition.called_once()
-        self.fixture.databricks_api_client.get_job_id.called_once()
         self.fixture.databricks_api_client.start_job.called_once()
         self.fixture.databricks_api_client.wait_for_job_completion.called_once()
         self.fixture.databricks_api_client.execute_statement.called_once()
@@ -88,7 +85,7 @@ def test_when_fixture_not_property__then_raise_exception():
 
 
 def test_when_no_fixture__then_raise_exception():
-    with pytest.raises(AssertionError, match="The fixture property must return an instance of JobTestFixture."):
+    with pytest.raises(AssertionError, match="The subclass must implement the fixture property."):
 
         class TestRunnerWithoutFixture(JobTester):
             pass

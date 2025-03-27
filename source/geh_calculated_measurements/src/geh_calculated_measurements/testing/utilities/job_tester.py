@@ -22,25 +22,19 @@ class JobTestFixture:
         self, environment_configuration: EnvironmentConfiguration, job_name: str, job_parameters: dict
     ) -> None:
         self.config = environment_configuration
-        self.databricks_api_client = DatabricksApiClient(
-            environment_configuration.databricks_token,
-            environment_configuration.workspace_url,
-        )
-
-        self.credentials = DefaultAzureCredential()
-        self.azure_logs_query_client = LogQueryClientWrapper(self.credentials)
-        self.secret_client = SecretClient(
-            vault_url=f"https://{environment_configuration.shared_keyvault_name}.vault.azure.net/",
-            credential=self.credentials,
-        )
         self.job_name = job_name
         self.job_parameters = job_parameters
+        self.run_id = None
 
-    def set_run_id(self, run_id: int) -> None:
-        self.run_id = run_id
+        # Configure databricks resources
+        self.databricks_api_client = DatabricksApiClient(self.config.databricks_token, self.config.workspace_url)
 
-    def get_run_id(self) -> int | None:
-        return self.run_id
+        # Configure Azure resources
+        credentials = DefaultAzureCredential()
+        self.azure_logs_query_client = LogQueryClientWrapper(credentials)
+        self.secret_client = SecretClient(
+            vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/", credential=credentials
+        )
 
     def start_job(self) -> int:
         job_id = self.databricks_api_client.get_job_id(self.job_name)
@@ -49,9 +43,9 @@ class JobTestFixture:
             for key, value in self.job_parameters.items():
                 params_list.append(f"--{key}={value}")
 
-        run_id = self.databricks_api_client.start_job(job_id, params_list)
+        self.run_id = self.databricks_api_client.start_job(job_id, params_list)
 
-        return run_id
+        return self.run_id
 
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
@@ -67,6 +61,7 @@ class JobTestFixture:
 class JobTester(metaclass=abc.ABCMeta):
     def __init_subclass__(cls):
         """Check that the subclass has implemented the fixture property."""
+        assert hasattr(cls, "fixture"), "The subclass must implement the fixture property."
         assert isinstance(cls.fixture, property), (
             f"The fixture property must be of type property. Got: {type(cls.fixture)}"
         )
@@ -76,35 +71,25 @@ class JobTester(metaclass=abc.ABCMeta):
         )
         return super().__init_subclass__()
 
-    @property
-    @abc.abstractmethod
-    def fixture(self) -> JobTestFixture:
-        pass
-
     @pytest.mark.order(1)
     def test__when_job_is_started(self) -> None:
-        # Arrange
-        run_id = self.fixture.start_job()
-
-        # Act
-        self.fixture.set_run_id(run_id)
+        # Arrange and Act
+        self.fixture.start_job()
 
         # Assert
-        assert self.fixture.get_run_id() is not None
+        assert self.fixture.run_id is not None, "The run_id must not be None after starting the job."
 
     @pytest.mark.order(2)
     def test__then_job_is_completed(self) -> None:
         # Arrange
-        run_id = self.fixture.get_run_id()
-        if run_id is None:
-            raise ValueError("run_id is None, cannot proceed with job completion check.")
+        assert self.fixture.run_id is not None, "run_id must not be None."
 
         # Act
-        run_result_state = self.fixture.wait_for_job_to_completion(run_id)
+        run_result_state = self.fixture.wait_for_job_to_completion(self.fixture.run_id)
 
         # Assert
         assert run_result_state == RunResultState.SUCCESS, (
-            f"The Job with run id {run_id} did not complete successfully: {run_result_state.value}"
+            f"The Job with run id {self.fixture.run_id} did not complete successfully: {run_result_state.value}"
         )
 
     @pytest.mark.order(3)
