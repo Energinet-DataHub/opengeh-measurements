@@ -27,5 +27,10 @@ public class ClientExtensionsTests
             .BuildServiceProvider()
             .GetRequiredService<IMeasurementsClient>();
         Assert.IsType<MeasurementsClient>(actual);
+
+        var actual2 = services
+            .BuildServiceProvider()
+            .GetRequiredService<AuthorizedHttpClientFactory>();
+        Assert.IsType<AuthorizedHttpClientFactory>(actual2);
     }
 }

@@ -9,9 +9,9 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
+public class MeasurementsClient(AuthorizedHttpClientFactory authorizedHttpClientFactory) : IMeasurementsClient
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
+    private readonly HttpClient _httpClient = authorizedHttpClientFactory.CreateClient(new Uri(MeasurementsHttpClientNames.MeasurementsApi));
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
