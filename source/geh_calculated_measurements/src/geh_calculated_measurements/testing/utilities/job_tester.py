@@ -26,7 +26,7 @@ class JobTestFixture:
         self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
         self.job_name = job_name
         self.job_parameters = job_parameters
-        self.run_id: int | None = None
+        self.job: Wait[Run] = None
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
@@ -46,10 +46,13 @@ class JobTestFixture:
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        return self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
+        self.job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
+        return self.job
 
-    def wait_for_job_to_completion(self, job: Wait[Run], timeout: int = 15) -> RunResultState | None:
-        run = job.result(timeout=timedelta(minutes=timeout))
+    def wait_for_job_completion(self, timeout: int = 15) -> RunResultState | None:
+        if self.job is None:
+            raise ValueError("The job has not been started")
+        run = self.job.result(timeout=timedelta(minutes=timeout))
         return run.state.result_state
 
     def run_job_and_wait(self) -> Run:
@@ -85,43 +88,39 @@ class JobTestFixture:
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
 
 
-class JobTester(metaclass=abc.ABCMeta):
-    fixture: JobTestFixture
+class JobTester(abc.ABC):
+    @pytest.fixture(scope="class")
+    @abc.abstractmethod
+    def fixture(self) -> JobTestFixture:
+        raise NotImplementedError("The fixture method must be implemented.")
 
-    def __init_subclass__(cls):
-        """Check that the subclass has implemented the fixture property."""
-        assert hasattr(cls, "fixture"), "The subclass must implement the fixture property."
-        assert isinstance(cls.fixture, property), (
-            f"The fixture property must be of type property. Got: {type(cls.fixture)}"
-        )
-        fixture = cls.fixture.fget(cls)
-        assert isinstance(fixture, JobTestFixture), (
-            f"The fixture property must return an instance of JobTestFixture. Got: {type(fixture)}"
-        )
-        return super().__init_subclass__()
+    @pytest.mark.order(0)
+    def test__fixture_is_correctly_made(self, fixture: JobTestFixture):
+        assert fixture is not None, "The fixture was not created successfully."
+        assert isinstance(fixture, JobTestFixture), "The fixture is not of the correct type."
 
     @pytest.mark.order(1)
-    def test__job_can_start(self) -> None:
-        self.job = self.fixture.start_job()
-        assert self.job is not None, "The job was not started successfully."
+    def test__job_can_start(self, fixture):
+        job = fixture.start_job()
+        assert job is not None, "The job was not started successfully."
 
     @pytest.mark.order(2)
-    def test__and_then_job_completes_successfully(self) -> None:
-        result = self.fixture.wait_for_job_to_completion(self.job)
+    def test__and_then_job_completes_successfully(self, fixture: JobTestFixture):
+        result = fixture.wait_for_job_completion()
         assert result is not None, "The job did not return a RunResultState."
         assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
     @pytest.mark.order(2)
-    def test__and_then_job_telemetry_is_created(self) -> None:
+    def test__and_then_job_telemetry_is_created(self, fixture: JobTestFixture):
         # Arrange
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{self.fixture.job_parameters.get("orchestration-instance-id")}'
+        | where Properties["orchestration_instance_id"] == '{fixture.job_parameters.get("orchestration-instance-id")}'
         """
 
         # Act
-        actual = self.fixture.wait_for_log_query_completion(query)
+        actual = fixture.wait_for_log_query_completion(query)
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, (
@@ -129,20 +128,20 @@ class JobTester(metaclass=abc.ABCMeta):
         )
 
     @pytest.mark.order(3)
-    def test__and_then_data_is_written_to_delta(self) -> None:
+    def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
         # Arrange
-        catalog = self.fixture.config.catalog_name
+        catalog = fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 
-            WHERE orchestration_instance_id = '{self.fixture.job_parameters.get("orchestration-instance-id")}' 
+            WHERE orchestration_instance_id = '{fixture.job_parameters.get("orchestration-instance-id")}' 
             LIMIT 1
         """
 
         # Act
-        response = self.fixture.execute_statement(statement=statement)
+        response = fixture.execute_statement(statement=statement)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0

@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 from azure.monitor.query import LogsQueryResult, LogsQueryStatus
-from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.jobs import Run, RunResultState, RunState, Wait
 from databricks.sdk.service.sql import ResultData, StatementResponse, StatementState, StatementStatus
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
@@ -41,63 +41,30 @@ def mock_init(self, *args, **kwargs):
 
     self.ws = mock.Mock()
     self.ws.jobs.list.return_value = [mock.Mock()]
+    self.ws.jobs.run_now.return_value = Wait(
+        lambda *args, **kwargs: Run(state=RunState(result_state=RunResultState.SUCCESS))
+    )
     self.ws.statement_execution.get_statement.return_value = StatementResponse(
         result=ResultData(row_count=1), status=StatementStatus(state=StatementState.SUCCEEDED)
     )
-
-    self.job = mock.Mock()
-    self.job.result.return_value = mock.Mock(state=mock.Mock(result_state=RunResultState.SUCCESS))
 
     self.secret_client = mock.Mock()
     self.azure_logs_query_client = mock.Mock()
     self.azure_logs_query_client.wait_for_condition.return_value = LogsQueryResult(status=LogsQueryStatus.SUCCESS)
 
 
-class DummyClass:
-    pass
-
-
 class TestRunnerWithCorrectImplementation(JobTester):
-    @property
+    @pytest.fixture(scope="class")
     def fixture(self):
         with pytest.MonkeyPatch.context() as mp:
             mp.setattr(os, "environ", dummy_env)
             mp.setattr(JobTestFixture, "__init__", mock_init)
             mp.setattr(JobTestFixture, "start_job", lambda *args, **kwargs: 1)
-            mp.setattr(JobTestFixture, "wait_for_job_to_completion", lambda *args, **kwargs: None)
+            mp.setattr(JobTestFixture, "wait_for_job_completion", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "wait_for_log_query_completion", lambda *args, **kwargs: None)
-
+            config = EnvironmentConfiguration()
             return JobTestFixture(
-                environment_configuration=EnvironmentConfiguration(),
+                environment_configuration=config,
                 job_name="CapacitySettlement",
                 job_parameters=job_parameters,
             )
-
-    @pytest.mark.order(999)
-    def test_function_calls(self):
-        self.fixture.azure_logs_query_client.wait_for_condition.called_once()
-
-
-def test_when_fixture_not_property__then_raise_exception():
-    with pytest.raises(AssertionError, match="The fixture property must be of type property."):
-
-        class TestRunnerWithFixtureNotProperty(JobTester):
-            def fixture(self):
-                pass
-
-
-def test_when_no_fixture__then_raise_exception():
-    with pytest.raises(AssertionError, match="The subclass must implement the fixture property."):
-
-        class TestRunnerWithoutFixture(JobTester):
-            pass
-
-
-@pytest.mark.parametrize("fixture", [1, "string", 1.0, [], {}, DummyClass()])
-def test_when_fixture_not_return_JobTestFixture__then_raise_exception(fixture):
-    with pytest.raises(AssertionError, match="The fixture property must return an instance of JobTestFixture."):
-
-        class TestRunnerWithFixtureNotJobTestFixture(JobTester):
-            @property
-            def fixture(self):
-                return fixture
