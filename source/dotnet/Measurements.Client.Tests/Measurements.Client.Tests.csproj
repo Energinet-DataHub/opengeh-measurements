@@ -35,7 +35,6 @@
     <ItemGroup>
       <EmbeddedResource Include="Assets\MeasurementsForMultipleDays.json" />
       <EmbeddedResource Include="Assets\MeasurementsForDayExcludingHistory.json" />
-      <None Remove="Assets\MeasurementForDayIncludingHistorical.json" />
     </ItemGroup>
 
 </Project>
