@@ -59,6 +59,8 @@ class JobTestFixture:
 
 
 class JobTester(metaclass=abc.ABCMeta):
+    fixture: JobTestFixture
+
     def __init_subclass__(cls):
         """Check that the subclass has implemented the fixture property."""
         assert hasattr(cls, "fixture"), "The subclass must implement the fixture property."
@@ -72,27 +74,19 @@ class JobTester(metaclass=abc.ABCMeta):
         return super().__init_subclass__()
 
     @pytest.mark.order(1)
-    def test__when_job_is_started(self) -> None:
-        # Arrange and Act
-        self.fixture.start_job()
-
-        # Assert
-        assert self.fixture.run_id is not None, "The run_id must not be None after starting the job."
-
-    @pytest.mark.order(2)
-    def test__then_job_is_completed(self) -> None:
+    def test__job_runs_successfully(self) -> None:
         # Arrange
-        assert self.fixture.run_id is not None, "run_id must not be None."
+        job_id = self.fixture.databricks_api_client.get_job_id(self.fixture.job_name)
 
         # Act
-        run_result_state = self.fixture.wait_for_job_to_completion(self.fixture.run_id)
+        run = self.fixture.databricks_api_client.client.jobs.run_now_and_wait(job_id)
 
         # Assert
-        assert run_result_state == RunResultState.SUCCESS, (
-            f"The Job with run id {self.fixture.run_id} did not complete successfully: {run_result_state.value}"
+        assert run.state.result_state == RunResultState.SUCCESS, (
+            f"The Job with run id {run.run_id} did not complete successfully: {run.state.result_state.value}"
         )
 
-    @pytest.mark.order(3)
+    @pytest.mark.order(2)
     def test__and_then_job_telemetry_is_created(self) -> None:
         # Arrange
         query = f"""
@@ -109,15 +103,18 @@ class JobTester(metaclass=abc.ABCMeta):
             f"The query did not complete successfully: {actual.status}. Query: {query}"
         )
 
-    @pytest.mark.order(4)
+    @pytest.mark.order(3)
     def test__and_then_data_is_written_to_delta(self) -> None:
         # Arrange
         catalog = self.fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""
-            SELECT * FROM {catalog}.{database}.{table} WHERE orchestration_instance_id = '{self.fixture.job_parameters.get("orchestration-instance-id")}' LIMIT 1
-            """
+            SELECT * 
+            FROM {catalog}.{database}.{table} 
+            WHERE orchestration_instance_id = '{self.fixture.job_parameters.get("orchestration-instance-id")}' 
+            LIMIT 1
+        """
 
         # Act
         response = self.fixture.databricks_api_client.execute_statement(
