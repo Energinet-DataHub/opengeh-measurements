@@ -7,7 +7,7 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.service.jobs import BaseJob, Run, RunResultState
+from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
 
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
@@ -43,14 +43,13 @@ class JobTestFixture:
             raise ValueError(f"Multiple jobs found with name {job_name}.")
         return jobs[0]
 
-    def start_job(self) -> BaseJob:
+    def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        self.job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
-        return base_job
+        return self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
 
-    def wait_for_job_to_completion(self, timeout: int = 15) -> RunResultState | None:
-        run = self.job.result(timeout=timedelta(minutes=timeout))
+    def wait_for_job_to_completion(self, job: Wait[Run], timeout: int = 15) -> RunResultState | None:
+        run = job.result(timeout=timedelta(minutes=timeout))
         return run.state.result_state
 
     def run_job_and_wait(self) -> Run:
@@ -103,12 +102,12 @@ class JobTester(metaclass=abc.ABCMeta):
 
     @pytest.mark.order(1)
     def test__job_can_start(self) -> None:
-        self.fixture.start_job()
-        assert self.fixture.job is not None, "The job was not started successfully."
+        self.job = self.fixture.start_job()
+        assert self.job is not None, "The job was not started successfully."
 
     @pytest.mark.order(2)
     def test__and_then_job_completes_successfully(self) -> None:
-        result = self.fixture.wait_for_job_to_completion()
+        result = self.fixture.wait_for_job_to_completion(self.job)
         assert result is not None, "The job did not return a RunResultState."
         assert result == RunResultState.SUCCESS, f"The job did not complete successfully: {result}"
 
