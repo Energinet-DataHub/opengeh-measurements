@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.11"
 
 [[package]]
@@ -321,8 +320,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.4.9" },
-    { name = "pydantic", specifier = "==2.10.6" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.5.0" },
+    { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
 ]
 
@@ -523,8 +522,8 @@ wheels = [
 
 [[package]]
 name = "geh-common"
-version = "5.4.9"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.4.9#c4e99eb6bc0660240ee249b342d467bb6539e443" }
+version = "5.5.0"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.5.0#5df9a9aafeab52f1539b1fb1c531a77c90ba0723" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
