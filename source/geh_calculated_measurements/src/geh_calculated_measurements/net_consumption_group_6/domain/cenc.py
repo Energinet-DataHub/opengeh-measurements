@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 
 import pyspark.sql.functions as F
@@ -65,9 +64,7 @@ def calculate_cenc(
             .when(F.col("move_in"), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
             .otherwise(F.col("net_quantity")),
         )
-        .withColumn(ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id))
         .select(
-            F.col(ContractColumnNames.orchestration_instance_id),
             F.col(ContractColumnNames.metering_point_id),
             F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
             F.year(F.col("settlement_date")).alias("settlement_year"),
