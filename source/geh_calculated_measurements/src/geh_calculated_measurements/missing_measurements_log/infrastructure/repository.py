@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
-from geh_calculated_measurements.missing_measurements_log.infrastructure.electricity_market.database_definitions import (
+from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
     MeteringPointPeriodsDatabaseDefinition,
 )
 
