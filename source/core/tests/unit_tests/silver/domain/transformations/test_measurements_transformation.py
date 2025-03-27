@@ -18,7 +18,7 @@ from tests.helpers.builders.submitted_transactions_value_builder import (
     SubmittedTransactionsValueBuilder,
     Value,
 )
-from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
+from tests.helpers.schemas.silver_measurements_schema import silver_measurements_schema
 
 
 def test__create_by_submitted_transactions__should_return_expected_schema(spark: SparkSession) -> None:

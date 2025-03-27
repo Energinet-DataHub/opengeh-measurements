@@ -8,7 +8,7 @@ import core.silver.domain.transformations.migrations_transformation as mit
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.domain.constants.enums.metering_point_type_dh2_enum import MeteringPointTypeDH2
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
-from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
+from tests.helpers.schemas.silver_measurements_schema import silver_measurements_schema
 
 
 def test__transform__should_return_expected_schema(spark: SparkSession) -> None:

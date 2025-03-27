@@ -13,7 +13,7 @@ from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
-from tests.silver.schemas.silver_measurements_schema import silver_measurements_schema
+from tests.helpers.schemas.silver_measurements_schema import silver_measurements_schema
 
 
 def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrations_executed: None) -> None:

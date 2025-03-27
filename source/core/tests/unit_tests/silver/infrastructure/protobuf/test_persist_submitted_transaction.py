@@ -7,7 +7,7 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     ValueColumnNames,
 )
 from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder
-from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
+from tests.helpers.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
 def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
