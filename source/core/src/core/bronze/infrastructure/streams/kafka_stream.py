@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 
+import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.bronze.infrastructure.settings import (
     SubmittedTransactionsStreamSettings,
@@ -7,7 +8,6 @@ from core.bronze.infrastructure.settings import (
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.kafka_authentication_settings import KafkaAuthenticationSettings
 from core.settings.storage_account_settings import StorageAccountSettings
-from core.utility.shared_helpers import get_checkpoint_path
 
 
 class KafkaStream:
@@ -20,7 +20,7 @@ class KafkaStream:
         self.bronze_container_name = BronzeSettings().bronze_container_name
 
     def submit_transactions(self, spark: SparkSession) -> None:
-        checkpoint_location = get_checkpoint_path(
+        checkpoint_location = shared_helpers.get_checkpoint_path(
             self.data_lake_settings, self.bronze_container_name, "submitted_transactions"
         )
         write_stream = (

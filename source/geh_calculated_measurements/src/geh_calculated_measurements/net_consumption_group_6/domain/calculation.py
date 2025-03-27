@@ -5,13 +5,14 @@ from typing import Tuple
 from geh_common.telemetry import use_span
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc import Cenc, calculate_cenc
-from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.net_consumption_group_6.domain import (
+    Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc import calculate_cenc
+from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
 
 
 @use_span()
@@ -31,7 +32,12 @@ def execute(
         orchestration_instance_id,
         execution_start_datetime,
     )
+    measurements = calculate_daily(
+        time_series_points=time_series_points,
+        execution_start_datetime=execution_start_datetime,
+        cenc=cenc,
+        time_zone=time_zone,
+        orchestration_instance_id=orchestration_instance_id,
+    )
 
-    measurements = calculate_daily(cenc, consumption_metering_point_periods, child_metering_points, time_series_points)
-
-    return cenc, measurements
+    return (cenc, measurements)
