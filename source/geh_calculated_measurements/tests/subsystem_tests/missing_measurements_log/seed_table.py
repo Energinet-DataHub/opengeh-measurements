@@ -16,7 +16,7 @@ def seed_table(
         GoldTableRow(
             metering_point_id=170000060000000201,
             observation_time=datetime(2025, 1, 1, 23, 0, 0) + timedelta(hours=i),
-            quantity=format(random.uniform(0.1, 10.0), ".3f"),
+            quantity=random.uniform(0.1, 10.0),
         )
         for i in range(24)
     ]
