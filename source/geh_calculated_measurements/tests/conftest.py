@@ -26,7 +26,7 @@ def dummy_logging() -> Generator[None, None, None]:
         yield
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="module")
 def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     Clear the cache after each test module to avoid memory issues.
