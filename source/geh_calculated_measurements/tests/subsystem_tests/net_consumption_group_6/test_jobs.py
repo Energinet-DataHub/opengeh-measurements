@@ -1,12 +1,10 @@
 import uuid
-from datetime import datetime, timezone
+from typing import timezone
 
 import pytest
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.net_consumption_group_6.seed_child_table import ChildTableRow, ChildTableSeeder
-from tests.subsystem_tests.net_consumption_group_6.seed_parent_table import ParentTableRow, ParentTableSeeder
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 

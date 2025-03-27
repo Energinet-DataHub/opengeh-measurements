@@ -56,15 +56,13 @@ class BaseJobTests:
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
         statement = f"""
-            SELECT * FROM {catalog}.{database}.{table} WHERE orchestration_instance_id = '{job_fixture.job_parameters.get("orchestration-instance-id")}' LIMIT 1
-            """
+            SELECT * FROM {catalog}.{database}.{table} 
+            WHERE orchestration_instance_id = '{job_fixture.job_parameters.get("orchestration-instance-id")}' 
+            LIMIT 1
+        """
 
         # Act
-        response = job_fixture.databricks_api_client.execute_statement(
-            warehouse_id=environment_configuration.warehouse_id,
-            statement=statement,
-            wait_for_response=True,
-        )
+        response = job_fixture.execute_statement(statement)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0

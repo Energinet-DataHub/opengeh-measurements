@@ -1,13 +1,10 @@
-import random
 import uuid
 from datetime import datetime, timezone
 
 import pytest
-from geh_common.domain.types import MeteringPointType
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
