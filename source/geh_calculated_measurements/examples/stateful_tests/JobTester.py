@@ -34,9 +34,9 @@ class JobTester(abc.ABC):
         """Reset the state dictionary for each subclass.
 
         This method is called when a subclass is created. It resets the state
-        dictionary for each subclass.Without this method, the state dictionary
-        would be shared between all subclasses of JobTester, which in turn
-        lead to flaky tests.
+        dictionary for each subclass. Without this method, the state dictionary
+        would be shared between all subclasses of JobTester, which could lead
+        to unexpected behavior in pytest.
 
         Try to avoid using class variables in tests, as they can lead to
         flaky tests.

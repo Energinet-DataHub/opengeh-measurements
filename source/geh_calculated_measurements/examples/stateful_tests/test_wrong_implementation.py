@@ -5,7 +5,7 @@ from examples.stateful_tests.JobTester import JobTester, JobTestFixture
 
 @pytest.mark.xfail(reason="These tests are flaky as they manipulate the same object. Uncomment to see what happens.")
 class TestRunnerWithCorrectImplementation(JobTester):
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def fixture(self):
         return JobTestFixture("test_wrong")
 
