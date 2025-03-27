@@ -64,10 +64,9 @@ class JobTestFixture:
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
 
 
-class JobTester(abc.ABC):
+class JobTester(metaclass=abc.ABCMeta):
     def __init_subclass__(cls):
         """Check that the subclass has implemented the fixture property."""
-        assert hasattr(cls, "fixture"), "The subclass must implement the fixture property."
         assert isinstance(cls.fixture, property), (
             f"The fixture property must be of type property. Got: {type(cls.fixture)}"
         )

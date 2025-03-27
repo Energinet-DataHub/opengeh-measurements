@@ -92,19 +92,19 @@ class TestRunnerWithCorrectImplementation(JobTester):
             )
 
 
-def test_when_no_fixture__then_raise_exception():
-    with pytest.raises(AssertionError, match="The subclass must implement the fixture property."):
-
-        class TestRunnerWithoutFixture(JobTester):
-            pass
-
-
 def test_when_fixture_not_property__then_raise_exception():
     with pytest.raises(AssertionError, match="The fixture property must be of type property."):
 
         class TestRunnerWithFixtureNotProperty(JobTester):
             def fixture(self):
                 pass
+
+
+def test_when_no_fixture__then_raise_exception():
+    with pytest.raises(AssertionError, match="The fixture property must return an instance of JobTestFixture."):
+
+        class TestRunnerWithoutFixture(JobTester):
+            pass
 
 
 @pytest.mark.parametrize("fixture", [1, "string", 1.0, [], {}, DummyClass()])
