@@ -25,7 +25,7 @@ class SilverMeasurementsRepository:
         return (
             spark.readStream.format("delta")
             .option("ignoreDeletes", "true")
-            .option("skipChangeCommit", "true")
+            .option("skipChangeCommits", "true")
             .table(self.table)
         )
 
