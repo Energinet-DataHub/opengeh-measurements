@@ -53,6 +53,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
     )
 
+    # Write the calculated measurements
     calculated_measurements_hourly = calculated_measurements_factory.create(
         calculation_output.calculated_measurements_daily,
         args.orchestration_instance_id,
@@ -60,24 +61,18 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         MeteringPointType.CAPACITY_SETTLEMENT,
         args.time_zone,
     )
-
-    # Create a repository to write the calculated measurements
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
-
-    # Write the calculated measurements
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
 
-    # Create a repository to write the calculations and ten largest quantities
-    capacity_settlement_repository = CapacitySettlementRepository(spark, args.catalog_name)
-
-    # Write the calculations
-    capacity_settlement_repository.write_calculations(calculations.df)
-
     # Write the ten largest quantities
+    capacity_settlement_repository = CapacitySettlementRepository(spark, args.catalog_name)
     ten_largest_quantities = calculation_output.ten_largest_quantities.df.withColumn(
         ContractColumnNames.orchestration_instance_id, F.lit(str(args.orchestration_instance_id))
     )
     capacity_settlement_repository.write_ten_largest_quantities(ten_largest_quantities)
+
+    # Write the calculations
+    capacity_settlement_repository.write_calculations(calculations.df)
 
 
 def _create_calculations(

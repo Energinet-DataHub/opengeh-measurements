@@ -13,7 +13,11 @@ from tests import create_job_environment_variables
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-def test_execute(spark: SparkSession, monkeypatch: pytest.MonkeyPatch, dummy_logging) -> None:
+def test_execute(
+    spark: SparkSession,
+    monkeypatch: pytest.MonkeyPatch,
+    dummy_logging: None,  # Used implicitly
+) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     sys_args = [
