@@ -27,7 +27,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     # Read input data
     time_series_points = read_csv(
         spark,
-        f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
+        f"{scenario_path}/when/measurements_gold/current_measurements_v1.csv",
         CurrentMeasurements.schema,
     )
     metering_point_periods = read_csv(
