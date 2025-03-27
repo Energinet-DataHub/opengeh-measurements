@@ -10,9 +10,7 @@ parent_metering_point_id = "170000000000000201"
 child_metering_point_id = "150000001500170200"
 
 
-def delete_seeded_data(
-    job_fixture: JobTestFixture,
-) -> None:
+def delete_seeded_data(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
@@ -29,9 +27,7 @@ def delete_seeded_data(
         job_fixture.execute_statement(statement)
 
 
-def seed_table(
-    job_fixture: JobTestFixture,
-) -> None:
+def seed_table(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""

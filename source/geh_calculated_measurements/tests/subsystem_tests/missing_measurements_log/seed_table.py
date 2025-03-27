@@ -1,17 +1,15 @@
 import random
 from datetime import datetime, timedelta
 
+from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobFixture
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 database = "measurements_gold"
 table = "measurements"
 
 
-def seed_table(
-    job_fixture: BaseJobFixture,
-) -> None:
+def seed_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
             metering_point_id=170000060000000201,

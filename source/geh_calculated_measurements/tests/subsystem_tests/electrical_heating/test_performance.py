@@ -13,7 +13,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure.measurements_
     MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
-from tests.subsystem_tests.conftest import EnvironmentConfiguration
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 @pytest.mark.skip(reason="only run if performance test is needed")
@@ -33,7 +33,8 @@ class TestElectricalHeating(JobTester):
         )
 
     @pytest.fixture(autouse=True, scope="class")
-    def patch_repositories(self, environment_configuration: EnvironmentConfiguration) -> None:
+    def patch_repositories(self, fixture: JobTestFixture) -> None:
+        environment_configuration = fixture.environment_configuration
         monkeypatch = pytest.MonkeyPatch()
         # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
         monkeypatch.setattr(
