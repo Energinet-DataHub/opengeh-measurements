@@ -69,7 +69,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         test_cases_list.append(
             TestCase(
                 expected_csv_path=str(measurements_csv_path),
-                actual=measurements.df,
+                actual=measurements,
             ),
         )
     return TestCases(test_cases_list)
