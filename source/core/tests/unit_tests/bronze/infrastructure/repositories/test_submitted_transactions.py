@@ -5,14 +5,14 @@ from core.bronze.infrastructure.repositories.submitted_transactions_repository i
 from core.settings.bronze_settings import BronzeSettings
 
 
-def test__read_submitted_transactions__should_read_from_submitted_transactions_table_v2() -> None:
+def test__read__should_read_from_submitted_transactions_table_v2() -> None:
     # Arrange
     mock_spark = Mock()
     sut = SubmittedTransactionsRepository(mock_spark)
     bronze_database_name = BronzeSettings().bronze_database_name
 
     # Act
-    sut.read_calculated_measurements()
+    sut.read()
 
     # Assert
     mock_spark.readStream.format.assert_called_once_with("delta")
