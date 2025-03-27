@@ -5,10 +5,8 @@ import tests.helpers.environment_variables_helpers as environment_variables_help
 from core.silver.infrastructure.streams.process_manager_stream import ProcessManagerStream
 
 
-@mock.patch("core.silver.infrastructure.streams.process_manager_stream.get_checkpoint_path")
-def test__write_stream__calls_expected_methods(mock_get_checkpoint_path):
+def test__write_stream__calls_expected_methods(mock_checkpoint_path):
     # Arrange
-    mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
     environment_variables_helpers.set_kafka_authentication_settings()
     environment_variables_helpers.set_storage_account_settings()
     process_manager_stream = ProcessManagerStream()
@@ -26,11 +24,9 @@ def test__write_stream__calls_expected_methods(mock_get_checkpoint_path):
     dataframe_mock.writeStream.format().options().option().option().trigger().start.assert_called_once()
 
 
-@mock.patch("core.silver.infrastructure.streams.process_manager_stream.get_checkpoint_path")
-def test__write_stream__when_continous_streaming_is_disabled__should_not_call_trigger(mock_get_checkpoint_path):
+def test__write_stream__when_continous_streaming_is_disabled__should_not_call_trigger(mock_checkpoint_path):
     # Arrange
     os.environ["CONTINUOUS_STREAMING_ENABLED"] = "true"
-    mock_get_checkpoint_path.return_value = "/tmp/checkpoints/start_write_stream_test"
     environment_variables_helpers.set_kafka_authentication_settings()
     environment_variables_helpers.set_storage_account_settings()
     process_manager_stream = ProcessManagerStream()
