@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 from azure.monitor.query import LogsQueryResult, LogsQueryStatus
-from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.jobs import Run, RunResultState, RunState
 from databricks.sdk.service.sql import ResultData, StatementResponse
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
@@ -35,15 +35,20 @@ dummy_env = {
 
 def mock_init(self, *args, **kwargs):
     self.config = EnvironmentConfiguration()
-    self.databricks_api_client = mock.Mock()
-    self.databricks_api_client.get_job_id.return_value = 1
-    self.databricks_api_client.start_job.return_value = 1
-    self.databricks_api_client.wait_for_job_completion.return_value = RunResultState.SUCCESS
-    self.databricks_api_client.execute_statement.return_value = StatementResponse()
-    self.databricks_api_client.execute_statement.return_value.result = ResultData(row_count=1)
     self.job_name = "CapacitySettlement"
     self.job_parameters = job_parameters
     self.run_id = 1
+
+    self.databricks_api_client = mock.Mock()
+    self.databricks_api_client.get_job_id.return_value = 1
+    self.databricks_api_client.start_job.return_value = 1
+    self.databricks_api_client.client.jobs.run_now_and_wait.return_value = Run(
+        state=RunState(result_state=RunResultState.SUCCESS)
+    )
+    self.databricks_api_client.wait_for_job_completion.return_value = RunResultState.SUCCESS
+    self.databricks_api_client.execute_statement.return_value = StatementResponse()
+    self.databricks_api_client.execute_statement.return_value.result = ResultData(row_count=1)
+
     self.secret_client = mock.Mock()
     self.azure_logs_query_client = mock.Mock()
     self.azure_logs_query_client.wait_for_condition.return_value = LogsQueryResult(status=LogsQueryStatus.SUCCESS)
@@ -71,9 +76,8 @@ class TestRunnerWithCorrectImplementation(JobTester):
     @pytest.mark.order(999)
     def test_function_calls(self):
         self.fixture.azure_logs_query_client.wait_for_condition.called_once()
-        self.fixture.databricks_api_client.start_job.called_once()
-        self.fixture.databricks_api_client.wait_for_job_completion.called_once()
         self.fixture.databricks_api_client.execute_statement.called_once()
+        self.fixture.databricks_api_client.client.jobs.run_now_and_wait.called_once()
 
 
 def test_when_fixture_not_property__then_raise_exception():

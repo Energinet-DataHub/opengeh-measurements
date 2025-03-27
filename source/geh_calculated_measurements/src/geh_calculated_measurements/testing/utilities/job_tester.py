@@ -4,7 +4,7 @@ import pytest
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
-from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.jobs import Run, RunResultState
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
@@ -50,6 +50,10 @@ class JobTestFixture:
     def wait_for_job_to_completion(self, run_id: int) -> RunResultState:
         return self.databricks_api_client.wait_for_job_completion(run_id)
 
+    def run_job_and_wait(self) -> Run:
+        job_id = self.databricks_api_client.get_job_id(self.job_name)
+        return self.databricks_api_client.client.jobs.run_now_and_wait(job_id, python_params=self.job_parameters)
+
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
         if workspace_id is None:
@@ -75,11 +79,8 @@ class JobTester(metaclass=abc.ABCMeta):
 
     @pytest.mark.order(1)
     def test__job_runs_successfully(self) -> None:
-        # Arrange
-        job_id = self.fixture.databricks_api_client.get_job_id(self.fixture.job_name)
-
         # Act
-        run = self.fixture.databricks_api_client.client.jobs.run_now_and_wait(job_id)
+        run = self.fixture.run_job_and_wait()
 
         # Assert
         assert run.state.result_state == RunResultState.SUCCESS, (
