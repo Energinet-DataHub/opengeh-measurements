@@ -9,11 +9,9 @@ from pyspark.sql.functions import col, lit, when
 class UnitEnumDH2(Enum):
     KWH = "KWH"
     MWH = "MWH"
-    MVARH = "MVARH"
     KVARH = "KVARH"
     KW = "KW"
     T = "T"
-    K3 = "K3"
 
 
 def convert_dh2_unit_to_dh3(col_name: str | Column) -> Column:
