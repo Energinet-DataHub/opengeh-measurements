@@ -1,12 +1,11 @@
-from unittest.mock import patch
+from pytest_mock import MockFixture
 
 from core.utility.environment_variable_helper import EnvironmentVariable, get_env_variable_or_throw
 
 
-@patch("os.getenv")
-def test__get_env_variable_or_throw_found__should_return_expected(mock_getenv):
+def test__get_env_variable_or_throw_found__should_return_expected(mocker: MockFixture):
     # Arrange
-    mock_getenv.return_value = "testvalue"
+    mock_getenv = mocker.patch("os.getenv", return_value="testvalue")
     variable = EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT
 
     # Act
@@ -17,10 +16,9 @@ def test__get_env_variable_or_throw_found__should_return_expected(mock_getenv):
     mock_getenv.assert_called_once_with(variable.name)
 
 
-@patch("os.getenv")
-def test__get_env_variable_or_throw_not_found__should_throw_exception(mock_getenv):
+def test__get_env_variable_or_throw_not_found__should_throw_exception(mocker: MockFixture):
     # Arrange
-    mock_getenv.return_value = None
+    mock_getenv = mocker.patch("os.getenv", return_value=None)
     variable = EnvironmentVariable.DATALAKE_STORAGE_ACCOUNT
 
     # Act & Assert

@@ -24,8 +24,9 @@ def test__read_submitted_transactions__calls_expected() -> None:
     # Assert
     mock_spark.readStream.format.assert_called_once_with("delta")
     mock_spark.readStream.format().option.assert_called_once_with("ignoreDeletes", "true")
-    mock_spark.readStream.format().option().table.assert_called_once_with(expected_table)
-    mock_spark.readStream.format().option().table().filter.assert_called_once_with(
+    mock_spark.readStream.format().option().option.assert_called_once_with("skipChangeCommits", "true")
+    mock_spark.readStream.format().option().option().table.assert_called_once_with(expected_table)
+    mock_spark.readStream.format().option().option().table().filter.assert_called_once_with(
         f"{SilverMeasurementsColumnNames.orchestration_type} = '{GehCommonOrchestrationType.SUBMITTED.value}'"
     )
 

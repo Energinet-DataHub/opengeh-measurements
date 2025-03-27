@@ -21,6 +21,7 @@ def test_execute(
     spark: SparkSession,
     dummy_env_args: dict[str, str],
     monkeypatch,
+    input_tables_created: None,
 ) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()
