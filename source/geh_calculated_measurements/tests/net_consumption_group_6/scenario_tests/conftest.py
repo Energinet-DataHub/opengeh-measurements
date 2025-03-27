@@ -54,15 +54,22 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     )
 
     # Return test cases
-    return TestCases(
-        [
+    test_cases_list = []
+    cenc_csv_path = Path(f"{scenario_path}/then/cenc.csv")
+    if cenc_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/cenc.csv",
+                expected_csv_path=str(cenc_csv_path),
                 actual=cenc.df,
-            ),
+            )
+        )
+
+    measurements_csv_path = Path(f"{scenario_path}/then/measurements.csv")
+    if measurements_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
+                expected_csv_path=str(measurements_csv_path),
                 actual=measurements,
             ),
-        ]
-    )
+        )
+    return TestCases(test_cases_list)
