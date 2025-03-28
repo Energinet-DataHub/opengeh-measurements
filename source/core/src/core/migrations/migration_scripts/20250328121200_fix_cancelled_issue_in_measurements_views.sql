@@ -37,6 +37,7 @@ WITH RankedRows AS (
         quantity,
         observation_time,
         metering_point_type,
+        is_cancelled,
         ROW_NUMBER() OVER (PARTITION BY metering_point_id, observation_time ORDER BY transaction_creation_datetime DESC) AS row_num
     FROM {gold_database}.{gold_measurements}
     WHERE metering_point_id IS NOT NULL
@@ -63,6 +64,7 @@ WITH RankedRows AS (
         quantity,
         observation_time,
         metering_point_type,
+        is_cancelled,
         ROW_NUMBER() OVER (PARTITION BY metering_point_id, observation_time ORDER BY transaction_creation_datetime DESC) AS row_num
     FROM {gold_database}.{gold_measurements}
     WHERE metering_point_id IS NOT NULL
