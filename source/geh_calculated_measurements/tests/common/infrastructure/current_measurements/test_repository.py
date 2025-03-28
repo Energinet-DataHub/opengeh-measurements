@@ -14,14 +14,16 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
 )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsRepository:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}")
     return CurrentMeasurementsRepository(
         spark=spark,
         catalog_name=spark.catalog.currentCatalog(),
     )
 
 
+@pytest.fixture(scope="module")
 def valid_df(spark: SparkSession) -> DataFrame:
     return spark.createDataFrame(
         [("123456789012345678", "consumption", Decimal("1.123"), "measured", datetime.datetime(2023, 1, 1, 0, 0, 0))],

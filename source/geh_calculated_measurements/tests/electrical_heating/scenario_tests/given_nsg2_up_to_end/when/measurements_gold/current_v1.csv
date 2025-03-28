@@ -1,4 +1,4 @@
-metering_point_id;quantity;qualtity;observation_time;metering_point_type;#comment
+metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000200;1;measured;2025-01-02T23:00:00Z;consumption;Case 0: nsg2 - no end date - without D15 (should not generate result)
 170000000150000201;100;measured;2025-01-02T23:00:00Z;consumption;Case 1: nsg2 - no end date - with D15 - it should not use this quantity, but quantity from D15 instead
 070000000000170200;1;estimated;2025-01-02T23:00:00Z;consumption_from_grid;Case 0: nsg2 - no end date - without D15 (should not generate result)
