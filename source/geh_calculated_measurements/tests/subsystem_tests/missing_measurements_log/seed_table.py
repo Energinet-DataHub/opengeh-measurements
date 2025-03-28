@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 
+from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
@@ -36,8 +37,8 @@ def gold_table_statement(catalog_name: str) -> str:
 
 
 def seed_table(
-    job_fixture: BaseJobFixture,
+    job_fixture: JobTestFixture,
 ) -> None:
-    catalog_name = job_fixture.environment_configuration.catalog_name
+    catalog_name = job_fixture.config.catalog_name
     job_fixture.execute_statement(gold_table_statement(catalog_name))
     job_fixture.execute_statement(get_metering_point_periods_statement(catalog_name))
