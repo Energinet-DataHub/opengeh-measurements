@@ -2,6 +2,7 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
 from databricks.sdk.service.jobs import RunResultState
+from databricks.sdk.service.sql import StatementResponse
 from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 from geh_calculated_measurements.testing import LogQueryClientWrapper
@@ -52,8 +53,8 @@ class BaseJobFixture:
 
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
 
-    def execute_statement(self, statement: str, wait_for_response: bool = True):
-        self.databricks_api_client.execute_statement(
+    def execute_statement(self, statement: str, wait_for_response: bool = True) -> StatementResponse:
+        return self.databricks_api_client.execute_statement(
             warehouse_id=self.environment_configuration.warehouse_id,
             statement=statement,
             wait_for_response=wait_for_response,
