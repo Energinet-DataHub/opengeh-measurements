@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
-using Energinet.DataHub.Measurements.Client.Tests.Assets;
+using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
 using NodaTime;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests;
+namespace Energinet.DataHub.Measurements.Client.UnitTests;
 
 [UnitTest]
 public class MeasurementsClientTests

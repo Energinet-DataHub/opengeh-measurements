@@ -32,7 +32,7 @@ public static class ApplicationFactory
         // => Authentication/authorization
         builder.Services
             .AddAuthenticationForWebApp(builder.Configuration)
-            .AddPermissionAuthorizationForWebApp();
+            .AddAuthorizationForWebApp();
 
         return builder.Build();
     }

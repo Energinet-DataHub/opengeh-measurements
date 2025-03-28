@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 2.0.0
+
+- The built-in HttpClient will forward request header authentication to API.
+
 ## Version 1.4.0
 
 - Updated measurement points to only contain latest values.

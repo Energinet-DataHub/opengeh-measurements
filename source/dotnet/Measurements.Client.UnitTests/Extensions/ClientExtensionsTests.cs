@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
+namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
 
 [UnitTest]
 public class ClientExtensionsTests
