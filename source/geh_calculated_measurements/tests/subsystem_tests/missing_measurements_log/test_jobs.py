@@ -6,9 +6,9 @@ import pytest
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.missing_measurements_log.seed_table import seed_table
+from tests.subsystem_tests.missing_measurements_log.seed_table import PERIOD_START, seed_table
 
-period_start = seed_table.PERIOD_START
+period_start = PERIOD_START
 period_end = period_start + timedelta(days=2)
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
