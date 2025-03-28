@@ -9,7 +9,6 @@ from tests.subsystem_tests.net_consumption_group_6.seed_table import delete_seed
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 
-@pytest.mark.skip(reason="Test is not implemented")
 class TestNetConsumptionGroup6(JobTester):
     @pytest.fixture(scope="class")
     def fixture(self):
