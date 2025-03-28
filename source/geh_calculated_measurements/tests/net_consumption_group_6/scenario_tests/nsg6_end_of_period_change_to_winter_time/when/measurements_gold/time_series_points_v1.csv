@@ -8,3 +8,4 @@ metering_point_id;metering_point_type;observation_time;quantity;#commentT
 170000000001500200;consumption;2025-10-10T22:00:00Z;800;
 060000001500170200;supply_to_grid;2025-10-10T22:00:00Z;400;
 070000001500170200;consumption_from_grid;2025-10-10T22:00:00Z;800;
+150000001500170200;net_consumption;2025-10-29T23:00:00Z;3;
