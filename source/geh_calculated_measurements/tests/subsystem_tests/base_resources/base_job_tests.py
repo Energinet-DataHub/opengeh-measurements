@@ -65,7 +65,7 @@ class BaseJobTests:
         response = job_fixture.execute_statement(statement)
 
         # Assert
-        row_count = response.result.row_count if response.result.row_count is not None else 0
+        row_count = getattr(response.result, "row_count", 0)
         assert row_count > 0, (
             f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}."
         )
