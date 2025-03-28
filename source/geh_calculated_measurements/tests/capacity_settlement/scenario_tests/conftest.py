@@ -8,7 +8,7 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods, TimeSeriesPoints
+from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods
 from geh_calculated_measurements.capacity_settlement.domain.calculation import execute
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import CalculationOutput
 from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_market.schema import (
@@ -41,7 +41,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     # Execute the logic
     calculation_output: CalculationOutput = execute(
-        TimeSeriesPoints(time_series_points),
+        CurrentMeasurements(time_series_points),
         MeteringPointPeriods(metering_point_periods),
         scenario_parameters["calculation_month"],
         scenario_parameters["calculation_year"],
