@@ -10,10 +10,10 @@ from pyspark.sql import types as T
 
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
+    CurrentMeasurements,
 )
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
-    TimeSeriesPoints,
 )
 
 
@@ -39,7 +39,7 @@ def days_in_year(year: Column, month: Column) -> Column:
 @use_span()
 @testing()
 def calculate_daily(
-    time_series_points: TimeSeriesPoints,
+    current_measurements: CurrentMeasurements,
     cenc: Cenc,
     time_zone: str,
     execution_start_datetime: datetime,
@@ -50,7 +50,7 @@ def calculate_daily(
         F.lit(execution_start_datetime).alias("transaction_creation_datetime"),
     )
 
-    time_series_points_df = time_series_points.df
+    time_series_points_df = current_measurements.df
 
     cenc_added_col = convert_from_utc(cenc_added_col, time_zone)
 

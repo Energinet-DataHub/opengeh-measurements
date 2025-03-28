@@ -1,0 +1,19 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#commentT
+170000000001500200;consumption;2024-01-31T23:00:00Z;2000;measured;Use row 17 to row 19 to calculate end of period due to move_in 2025-02-01
+170000000001500200;consumption;2024-01-02T00:00:00Z;100;measured;
+170000000001500200;consumption;2024-01-02T00:15:00Z;200;measured;
+170000000001500200;consumption;2024-01-02T00:30:00Z;400;measured;
+170000000001500200;consumption;2024-01-02T00:45:00Z;800;measured;
+170000000001500200;consumption;2025-01-25T23:00:00Z;5000;measured;End of period 2025-02-01 : d07- d06- = 4000/ 31 = 129,032
+070000001500170200;consumption_from_grid;2024-01-31T23:00:00Z;2000;estimated;
+070000001500170200;consumption_from_grid;2024-01-02T00:00:00Z;100;estimated;
+070000001500170200;consumption_from_grid;2024-01-02T00:15:00Z;200;estimated;
+070000001500170200;consumption_from_grid;2024-01-02T00:30:00Z;400;estimated;
+070000001500170200;consumption_from_grid;2024-01-02T00:45:00Z;800;estimated;
+070000001500170200;consumption_from_grid;2025-01-25T23:00:00Z;5000;estimated;
+060000001500170200;supply_to_grid;2024-01-31T23:00:00Z;1000;measured;
+060000001500170200;supply_to_grid;2024-01-02T00:00:00Z;50;measured;
+060000001500170200;supply_to_grid;2024-01-02T00:15:00Z;100;measured;
+060000001500170200;supply_to_grid;2024-01-02T00:30:00Z;300;measured;
+060000001500170200;supply_to_grid;2024-01-02T00:45:00Z;400;measured;
+060000001500170200;supply_to_grid;2025-01-25T23:00:00Z;1000;measured;
