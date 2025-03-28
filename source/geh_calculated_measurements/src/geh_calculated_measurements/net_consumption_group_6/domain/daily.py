@@ -101,9 +101,6 @@ def calculate_daily(
         F.col("quantity"),
     )
 
-    print("result_df")
-    result_df.show()
-
     result_df = convert_to_utc(result_df, time_zone)
 
     return result_df
