@@ -23,6 +23,7 @@ class BaseJobFixture:
         )
         self.job_name = job_name
         self.job_parameters = job_parameters
+        self.environment_configuration = environment_configuration
 
     def set_run_id(self, run_id: int) -> None:
         self.run_id = run_id
@@ -50,3 +51,10 @@ class BaseJobFixture:
             raise ValueError("The Azure log analytics workspace ID cannot be empty.")
 
         return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
+
+    def execute_statement(self, statement: str, wait_for_response: bool = True):
+        self.databricks_api_client.execute_statement(
+            warehouse_id=self.environment_configuration.warehouse_id,
+            statement=statement,
+            wait_for_response=wait_for_response,
+        )

@@ -1,16 +1,11 @@
 import uuid
-from datetime import datetime, timedelta
 
 import pytest
-from geh_common.domain.types.quantity_quality import QuantityQuality
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
-
-METERING_POINT_ID = "170000060000000201"
-FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+from tests.subsystem_tests.missing_measurements_log.seed_table import seed_table
 
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
@@ -19,29 +14,19 @@ job_parameters = {
 }
 
 
-def _get_gold_table_rows() -> list[GoldTableRow]:
-    return [
-        GoldTableRow(
-            metering_point_id=METERING_POINT_ID,
-            observation_time=FIRST_OBSERVATION_TIME + timedelta(hours=i),
-            quality=QuantityQuality.MEASURED.value,
-        )
-        for i in range(24)
-    ]
-
-
 @pytest.fixture(scope="session")
 def job_fixture(
     environment_configuration: EnvironmentConfiguration,
 ) -> BaseJobFixture:
-    table_seeder = GoldTableSeeder(environment_configuration)
-    gold_table_rows = _get_gold_table_rows()
-    table_seeder.seed(gold_table_rows)
-    return BaseJobFixture(
+    base_job_fixture = BaseJobFixture(
         environment_configuration=environment_configuration,
         job_name="MissingMeasurementsLog",
         job_parameters=job_parameters,
     )
+
+    seed_table(base_job_fixture)
+
+    return base_job_fixture
 
 
 class TestMissingMeasurementsLog(BaseJobTests):
