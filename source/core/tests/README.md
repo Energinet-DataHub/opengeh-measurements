@@ -2,6 +2,12 @@
 
 The tests container contains 3 different types of tests which will be described here.
 
+| **Aspect**        | Unit Tests               | Integration Tests         | Subsystem Tests               |
+|-------------------|--------------------------|---------------------------|-------------------------------|
+| **Scope**         | Single unit              | Component interactions    | Full environment              |
+| **Mocks**         | All dependencies         | External systems only     | None (live resources)         |
+| **Trigger**       | CI                       | CI                        | CD - Post-deployment (dev001) |
+
 ## Unit Tests
 
 Unit tests are simple tests that ensure that the smallest parts of the application, such as individual functions or
