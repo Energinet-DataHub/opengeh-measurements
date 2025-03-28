@@ -1,4 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Client.Authentication;
+﻿using System.Net.Http.Headers;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,14 +21,16 @@ public static class ClientExtensions
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
+        services.AddHttpContextAccessor();
         services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
         {
-            var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.BaseAddress);
-        });
+            var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+            httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
 
-        services.AddHttpContextAccessor();
-        services.AddAuthorizedHttpClient();
+            var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+            var token = httpContextAccessor.HttpContext?.Request.Headers.Authorization ?? string.Empty;
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        });
 
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
