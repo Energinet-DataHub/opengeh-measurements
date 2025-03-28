@@ -1,9 +1,9 @@
-﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+﻿using Energinet.DataHub.Measurements.Client.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Moq;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests.Extensions.DependencyInjection;
+namespace Energinet.DataHub.Measurements.Client.Tests.Authentication;
 
 [UnitTest]
 public class AuthorizedHttpClientFactoryTests

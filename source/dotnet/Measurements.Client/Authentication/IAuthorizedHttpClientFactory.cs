@@ -1,4 +1,4 @@
-﻿namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+﻿namespace Energinet.DataHub.Measurements.Client.Authentication;
 
 /// <summary>
 /// Factory to create an <see cref="T:System.Net.Http.HttpClient" />, which will re-apply the authorization header

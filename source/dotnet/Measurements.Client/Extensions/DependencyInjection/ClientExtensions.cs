@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Client.Extensions.Options;
+﻿using Energinet.DataHub.Measurements.Client.Authentication;
+using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,6 @@
-﻿namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+
+namespace Energinet.DataHub.Measurements.Client.Authentication;
 
 public class AuthorizedHttpClientFactory(
     IHttpClientFactory httpClientFactory,

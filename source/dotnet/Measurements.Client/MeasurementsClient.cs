@@ -3,8 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions;
-using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
