@@ -3,11 +3,10 @@ from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.common.domain import CalculatedMeasurements, CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
-    electrical_heating_v1,
 )
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
@@ -19,15 +18,15 @@ def gold_table_seeded(spark: SparkSession) -> None:
     create_table(
         spark,
         database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
-        schema=electrical_heating_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
+        schema=CurrentMeasurements.schema,
+        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
 
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}.csv"
-    time_series_points = read_csv_path(spark, file_name, electrical_heating_v1)
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
+    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
     time_series_points.write.option("overwriteSchema", "true").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
         format="delta",
         mode="overwrite",
     )
