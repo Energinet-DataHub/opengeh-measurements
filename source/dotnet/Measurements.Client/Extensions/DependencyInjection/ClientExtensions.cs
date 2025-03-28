@@ -34,16 +34,4 @@ public static class ClientExtensions
 
         return services;
     }
-
-    private static IServiceCollection AddAuthorizedHttpClient(this IServiceCollection serviceCollection)
-    {
-        return serviceCollection
-            .AddSingleton<IAuthorizedHttpClientFactory>(provider => new AuthorizedHttpClientFactory(
-                provider.GetRequiredService<IHttpClientFactory>(),
-                () =>
-                {
-                    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                    return (string?)httpContextAccessor.HttpContext?.Request.Headers.Authorization ?? string.Empty;
-                }));
-    }
 }
