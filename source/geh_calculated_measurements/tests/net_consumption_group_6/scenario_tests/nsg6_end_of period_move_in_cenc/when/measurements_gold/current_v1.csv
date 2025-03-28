@@ -17,4 +17,3 @@ metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
 060000001500170200;supply_to_grid;2024-01-02T00:45:00Z;400;measured;
 170000000001500200;consumption;2025-01-25T23:00:00Z;5000;measured;End of period 2025-02-01 : d07- d06- = 4000/ 31 = 129,032
 060000001500170200;supply_to_grid;2025-01-25T23:00:00Z;1000;measured;
-;;;;;
