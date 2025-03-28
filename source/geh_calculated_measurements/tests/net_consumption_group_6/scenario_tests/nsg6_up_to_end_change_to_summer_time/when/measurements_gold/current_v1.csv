@@ -1,0 +1,7 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#commentT
+170000000001500200;consumption;2024-03-31T23:00:00Z;2000;measured;
+170000000001500200;consumption;2025-03-10T23:00:00Z;2000;measured;Row 5 to 7 should not be included in this test
+070000001500170200;consumption_from_grid;2024-03-31T23:00:00Z;2000;estimated;
+070000001500170200;consumption_from_grid;2025-03-10T23:00:00Z;4000;estimated;
+060000001500170200;supply_to_grid;2024-03-31T23:00:00Z;1000;measured;d06-d07 = 1000 / 365 = 2,739
+060000001500170200;supply_to_grid;2025-03-10T23:00:00Z;1000;measured;d06-d07 = 1000 / 365 = 8,219
