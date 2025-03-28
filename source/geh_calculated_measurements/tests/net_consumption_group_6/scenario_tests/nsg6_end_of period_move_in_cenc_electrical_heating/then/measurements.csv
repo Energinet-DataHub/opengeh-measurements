@@ -1,0 +1,2 @@
+metering_point_id;metering_point_type;date;quantity;#comment 
+150000001500170200;net_consumption;2025-01-31T23:00:00Z;15.342;move_in and electrical heating - use standard for customer with electrical heating value 5600/year (365) = 15.342

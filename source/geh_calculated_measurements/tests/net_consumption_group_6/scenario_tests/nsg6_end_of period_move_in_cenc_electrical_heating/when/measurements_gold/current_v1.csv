@@ -17,3 +17,4 @@ metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
 060000001500170200;supply_to_grid;2024-01-02T00:30:00Z;300;measured;
 060000001500170200;supply_to_grid;2024-01-02T00:45:00Z;400;measured;
 060000001500170200;supply_to_grid;2025-01-25T23:00:00Z;1000;measured;
+150000001500170200;net_consumption;2025-01-30T23:00:00Z;3;calculated;
