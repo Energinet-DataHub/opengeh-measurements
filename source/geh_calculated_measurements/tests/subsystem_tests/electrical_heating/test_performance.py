@@ -2,43 +2,39 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.electrical_heating.domain import ChildMeteringPoints, ConsumptionMeteringPointPeriods
+from geh_calculated_measurements.electrical_heating.domain.model.child_metering_points import ChildMeteringPoints
+from geh_calculated_measurements.electrical_heating.domain.model.consumption_metering_point_periods import (
+    ConsumptionMeteringPointPeriods,
+)
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
     Repository as ElectricityMarketRepository,
 )
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
-from tests.subsystem_tests.conftest import EnvironmentConfiguration
+from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 @pytest.mark.skip(reason="only run if performance test is needed")
-class TestElectricalHeatingPerformance(BaseJobTests):
+class TestElectricalHeating(JobTester):
     """
-    Test with performance configuration using delta tables
+    Test class for electrical heating.
     """
 
-    params = {"orchestration-instance-id": uuid.uuid4()}
-    fixture = None
+    @pytest.fixture(scope="class")
+    def fixture(self):
+        config = EnvironmentConfiguration()
 
-    def get_or_create_fixture(self, environment_configuration: EnvironmentConfiguration) -> BaseJobFixture:
-        if self.fixture is None:
-            self.fixture = BaseJobFixture(
-                environment_configuration=environment_configuration,
-                job_name="ElectricalHeating",
-                params=self.params,
-            )
-        return self.fixture
+        return JobTestFixture(
+            environment_configuration=config,
+            job_name="ElectricalHeating",
+            job_parameters={"orchestration-instance-id": uuid.uuid4()},
+        )
 
     @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        """Set up the fixture for the test class."""
-        return self.get_or_create_fixture(environment_configuration)
-
-    @pytest.fixture(autouse=True, scope="class")
-    def patch_repositories(self, environment_configuration: EnvironmentConfiguration) -> None:
+    def patch_repositories(self, fixture: JobTestFixture) -> None:
+        environment_configuration = fixture.config
         monkeypatch = pytest.MonkeyPatch()
         # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
         monkeypatch.setattr(
