@@ -38,19 +38,30 @@ def mock_init(self, *args, **kwargs):
     self.job_name = "CapacitySettlement"
     self.job_parameters = job_parameters
     self.run_id = 1
+    self.azure_log_analytics_workspace_id = "dummy_workspace_id"
 
     self.ws = mock.Mock()
     self.ws.jobs.list.return_value = [mock.Mock()]
     self.ws.jobs.run_now.return_value = Wait(
         lambda *args, **kwargs: Run(state=RunState(result_state=RunResultState.SUCCESS))
     )
+    self.ws.jobs.run_now_and_wait.return_value = Run(state=RunState(result_state=RunResultState.SUCCESS))
     self.ws.statement_execution.get_statement.return_value = StatementResponse(
         result=ResultData(row_count=1), status=StatementStatus(state=StatementState.SUCCEEDED)
     )
 
     self.secret_client = mock.Mock()
     self.azure_logs_query_client = mock.Mock()
+
+    class MockTables:
+        rows = [1, 2, 3, 4, 5]
+
+    class MockResponse:
+        status = LogsQueryStatus.SUCCESS
+        tables = [MockTables(), MockTables()]
+
     self.azure_logs_query_client.wait_for_condition.return_value = LogsQueryResult(status=LogsQueryStatus.SUCCESS)
+    self.azure_logs_query_client.query_workspace.return_value = MockResponse()
 
 
 class TestRunnerWithCorrectImplementation(JobTester):
