@@ -6,7 +6,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
     MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.domain import ChildMeteringPoints, ConsumptionMeteringPointPeriods
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
+from geh_calculated_measurements.electrical_heating.infrastructure.repository import (
     Repository as ElectricityMarketRepository,
 )
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
