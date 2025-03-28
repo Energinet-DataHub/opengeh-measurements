@@ -8,16 +8,16 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     TimeSeriesPoints,
 )
+from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_logging) -> TestCases:
     """Fixture used for scenario tests. Learn more in package `geh_common`."""
 
     # Get the path to the scenario
@@ -50,20 +50,26 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
         "Europe/Copenhagen",
-        scenario_parameters["orchestration_instance_id"],
         scenario_parameters["execution_start_datetime"],
     )
 
     # Return test cases
-    return TestCases(
-        [
+    test_cases_list = []
+    cenc_csv_path = Path(f"{scenario_path}/then/cenc.csv")
+    if cenc_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/cenc.csv",
+                expected_csv_path=str(cenc_csv_path),
                 actual=cenc.df,
-            ),
+            )
+        )
+
+    measurements_csv_path = Path(f"{scenario_path}/then/measurements.csv")
+    if measurements_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=measurements.df,
+                expected_csv_path=str(measurements_csv_path),
+                actual=measurements,
             ),
-        ]
-    )
+        )
+    return TestCases(test_cases_list)

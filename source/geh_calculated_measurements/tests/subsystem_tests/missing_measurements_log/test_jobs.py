@@ -1,15 +1,12 @@
 import uuid
-from datetime import datetime, timedelta
 
 import pytest
-from geh_common.databricks import DatabricksApiClient
-from geh_common.domain.types import MeteringPointResolution
-from geh_common.domain.types.quantity_quality import QuantityQuality
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
+from tests.subsystem_tests.missing_measurements_log.seed_table import seed_table
+
 
 _METERING_POINT_ID = "170000060000000201"
 _DEFAULT_GRID_AREA_CODE = "804"
@@ -67,12 +64,15 @@ def seed_test_data(environment_configuration: EnvironmentConfiguration) -> None:
 def job_fixture(
     environment_configuration: EnvironmentConfiguration,
 ) -> BaseJobFixture:
-    seed_test_data(environment_configuration)
-    return BaseJobFixture(
+    base_job_fixture = BaseJobFixture(
         environment_configuration=environment_configuration,
         job_name="MissingMeasurementsLog",
         job_parameters=job_parameters,
     )
+
+    seed_table(base_job_fixture)
+
+    return base_job_fixture
 
 
 class TestMissingMeasurementsLog(BaseJobTests):
