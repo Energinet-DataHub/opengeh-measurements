@@ -1,8 +1,13 @@
+import datetime
+from decimal import Decimal
+
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 import pytest
 from pyspark.sql import SparkSession
+from pyspark.sql.dataframe import DataFrame
 
+from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
@@ -17,17 +22,22 @@ def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsR
     )
 
 
+def valid_df(spark: SparkSession) -> DataFrame:
+    return spark.createDataFrame(
+        [("123456789012345678", "consumption", Decimal("1.123"), "measured", datetime.datetime(2023, 1, 1, 0, 0, 0))],
+        CurrentMeasurements.schema,
+    )
+
+
 def test__when_missing_expected_column_raises_exception(
     current_measurements_repository: CurrentMeasurementsRepository,
+    valid_df: DataFrame,
 ) -> None:
     # Arrange
-    df = current_measurements_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-    )
-    df = df.drop(F.col("quantity"))
+    invalid_df = valid_df.drop(F.col("quantity"))
 
     (
-        df.write.format("delta")
+        invalid_df.write.format("delta")
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
@@ -35,7 +45,7 @@ def test__when_missing_expected_column_raises_exception(
         )
     )
 
-    # Assert
+    # Act & Assert
     with pytest.raises(
         Exception,
         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\].*",
@@ -45,16 +55,13 @@ def test__when_missing_expected_column_raises_exception(
 
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     current_measurements_repository: CurrentMeasurementsRepository,
+    valid_df: DataFrame,
 ) -> None:
     # Arrange
-    df_original = current_measurements_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-    )
-    col_original = df_original.columns
-    df = df_original.withColumn("extra_col", F.lit("extra_value"))
+    valid_df_with_extra_col = valid_df.withColumn("extra_col", F.lit("extra_value"))
 
     (
-        df.write.format("delta")
+        valid_df_with_extra_col.write.format("delta")
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
@@ -66,25 +73,17 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     col_with_extra = current_measurements_repository.read_current_measurements().df.columns
 
     # Assert
-    assert col_with_extra == col_original
+    assert col_with_extra == valid_df.columns
 
 
 def test__when_source_contains_wrong_data_type_raises_exception(
     current_measurements_repository: CurrentMeasurementsRepository,
+    valid_df: DataFrame,
 ) -> None:
     # Arrange
-    df = current_measurements_repository._spark.read.table(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-    )
-    df = df.select(
-        F.col("metering_point_id"),
-        F.col("metering_point_type"),
-        F.col("observation_time"),
-        F.col("quantity").cast(T.StringType()),  # <- Change the data type from DecimalType to StringType
-    )
-
+    invalid_df = valid_df.withColumn("metering_point_id", F.col("metering_point_id").cast(T.IntegerType()))
     (
-        df.write.format("delta")
+        invalid_df.write.format("delta")
         .mode("overwrite")
         .option("overwriteSchema", "true")
         .saveAsTable(
@@ -92,7 +91,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
         )
     )
 
-    # Assert
+    # Act & Assert
     with pytest.raises(
         AssertionError,
         match=r"Schema mismatch",
