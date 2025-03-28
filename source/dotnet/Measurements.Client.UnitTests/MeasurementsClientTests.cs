@@ -1,14 +1,13 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
-using Energinet.DataHub.Measurements.Client.Authentication;
-using Energinet.DataHub.Measurements.Client.Tests.Assets;
+using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
 using NodaTime;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests;
+namespace Energinet.DataHub.Measurements.Client.UnitTests;
 
 [UnitTest]
 public class MeasurementsClientTests
@@ -75,11 +74,11 @@ public class MeasurementsClientTests
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 
-    private static Mock<IAuthorizedHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
+    private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
     {
-        var httpClientFactoryMock = new Mock<IAuthorizedHttpClientFactory>();
+        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
         httpClientFactoryMock
-            .Setup(x => x.CreateClient())
+            .Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
         return httpClientFactoryMock;
     }
