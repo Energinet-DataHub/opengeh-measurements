@@ -20,7 +20,7 @@ def get_metering_point_periods_statement(catalog_name: str) -> str:
             period_to_date
         )
         VALUES
-        "('{_METERING_POINT_ID}','804','PT1H','{PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}','{PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}')"
+        ('{_METERING_POINT_ID}','804','PT1H','{PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}','{PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}')
     """
 
 
