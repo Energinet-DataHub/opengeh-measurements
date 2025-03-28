@@ -14,9 +14,9 @@ from geh_calculated_measurements.capacity_settlement.domain.calculation_output i
 )
 from geh_calculated_measurements.capacity_settlement.domain.ephemeral_column_names import EphemeralColumnNames
 from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
-from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
+    CurrentMeasurements,
 )
 
 
@@ -25,7 +25,7 @@ from geh_calculated_measurements.common.domain import (
 @testing(selector=lambda x: x.calculated_measurements)
 @testing(selector=lambda x: x.ten_largest_quantities)
 def execute(
-    time_series_points: TimeSeriesPoints,
+    current_measurements: CurrentMeasurements,
     metering_point_periods: MeteringPointPeriods,
     calculation_month: int,
     calculation_year: int,
@@ -38,7 +38,7 @@ def execute(
         time_zone=time_zone,
     )
 
-    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points.df)
+    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(current_measurements.df)
 
     grouping = [
         ContractColumnNames.metering_point_id,
