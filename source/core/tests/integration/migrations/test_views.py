@@ -27,6 +27,51 @@ def test__electrical_heating_view_v1__should_have_expected_schema(
     assert_schemas.assert_schema(actual=actual_electrical_heating.schema, expected=electrical_heating_v1)
 
 
+def test__electrical_heating_view_v1__should_return_nothing_if_no_active_measurements_exists(
+    spark: SparkSession, migrations_executed: None
+) -> None:
+    # Arrange
+    gold_settings = GoldSettings()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    observation_time = datetime_helper.get_datetime()
+
+    gold_measurements = (
+        GoldMeasurementsBuilder(spark)
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=1),
+            observation_time=observation_time,
+            quantity=Decimal(100),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=2),
+            observation_time=observation_time,
+            quantity=Decimal(200),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
+            observation_time=observation_time,
+            quantity=Decimal(300),
+            is_cancelled=True,
+        )
+        .build()
+    )
+
+    table_helper.append_to_table(gold_measurements, gold_settings.gold_database_name, GoldTableNames.gold_measurements)
+
+    # Act
+    actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.electrical_heating_v1}").where(
+        f"metering_point_id = {metering_point_id}"
+    )
+
+    # Assert
+    assert actual.count() == 0
+
+
 def test__electrical_heating_view_v1__should_return_active_measurement_only(
     spark: SparkSession, migrations_executed: None
 ) -> None:
@@ -153,6 +198,51 @@ def test__capacity_settlement_v1__should_have_expected_schema(spark: SparkSessio
     assert_schemas.assert_schema(actual=actual_capacity_settlement_v1.schema, expected=capacity_settlement_v1)
 
 
+def test__capacity_settlement_v1__should_return_nothing_if_no_active_measurements_exists(
+    spark: SparkSession, migrations_executed: None
+) -> None:
+    # Arrange
+    gold_settings = GoldSettings()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    observation_time = datetime_helper.get_datetime()
+
+    gold_measurements = (
+        GoldMeasurementsBuilder(spark)
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=1),
+            observation_time=observation_time,
+            quantity=Decimal(100),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=2),
+            observation_time=observation_time,
+            quantity=Decimal(200),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
+            observation_time=observation_time,
+            quantity=Decimal(300),
+            is_cancelled=True,
+        )
+        .build()
+    )
+
+    table_helper.append_to_table(gold_measurements, gold_settings.gold_database_name, GoldTableNames.gold_measurements)
+
+    # Act
+    actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.capacity_settlement_v1}").where(
+        f"metering_point_id = {metering_point_id}"
+    )
+
+    # Assert
+    assert actual.count() == 0
+
+
 def test__capacity_settlement_v1__should_return_active_measurement_only(
     spark: SparkSession, migrations_executed: None
 ) -> None:
@@ -239,14 +329,59 @@ def test__current_view_v1__should_have_expected_schema(spark: SparkSession, migr
     assert_schemas.assert_schema(actual=actual_current.schema, expected=current_v1)
 
 
-def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
+def test__current_view_v1__should_return_nothing_if_no_active_measurements_exists(
     spark: SparkSession, migrations_executed: None
 ) -> None:
     # Arrange
     gold_settings = GoldSettings()
     metering_point_id = identifier_helper.create_random_metering_point_id()
     observation_time = datetime_helper.get_datetime()
-    expected_quantity = Decimal(200)
+
+    gold_measurements = (
+        GoldMeasurementsBuilder(spark)
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=1),
+            observation_time=observation_time,
+            quantity=Decimal(100),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=2),
+            observation_time=observation_time,
+            quantity=Decimal(200),
+            is_cancelled=False,
+        )
+        .add_row(
+            metering_point_id=metering_point_id,
+            transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
+            observation_time=observation_time,
+            quantity=Decimal(300),
+            is_cancelled=True,
+        )
+        .build()
+    )
+
+    table_helper.append_to_table(gold_measurements, gold_settings.gold_database_name, GoldTableNames.gold_measurements)
+
+    # Act
+    actual = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.current_v1}").where(
+        f"metering_point_id = '{metering_point_id}'"
+    )
+
+    # Assert
+    assert actual.count() == 0
+
+
+def test__current_view_v1__should_return_active_non_cancelled_measurement(
+    spark: SparkSession, migrations_executed: None
+) -> None:
+    # Arrange
+    gold_settings = GoldSettings()
+    metering_point_id = identifier_helper.crea1te_random_metering_point_id()
+    observation_time = datetime_helper.get_datetime()
+    expected_quantity = Decimal(300)
 
     gold_measurements = (
         GoldMeasurementsBuilder(spark)
@@ -262,14 +397,14 @@ def test__current_view_v1__should_return_active_non_cancelled_measurement_only(
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=2),
             observation_time=observation_time,
             quantity=expected_quantity,
-            is_cancelled=False,
+            is_cancelled=True,
         )
         .add_row(
             metering_point_id=metering_point_id,
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
             observation_time=observation_time,
             quantity=Decimal(300),
-            is_cancelled=True,
+            is_cancelled=False,
         )
         .build()
     )
