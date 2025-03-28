@@ -991,4 +991,3 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000001500170204;1;measured;2024-10-27T00:00:00Z;supply_to_grid;Case 4 - winter time change
 060000001500170204;2;measured;2024-10-27T01:00:00Z;supply_to_grid;Case 4 - winter time change
 060000001500170204;2000;measured;2024-10-27T23:00:00Z;supply_to_grid;Case 4 - make sure we hit limit
-;;;;;
