@@ -374,12 +374,10 @@ def test__current_view_v1__should_return_nothing_if_no_active_measurements_exist
     assert actual.count() == 0
 
 
-def test__current_view_v1__should_return_active_non_cancelled_measurement(
-    spark: SparkSession, migrations_executed: None
-) -> None:
+def test__current_v1__should_return_active_measurement_only(spark: SparkSession, migrations_executed: None) -> None:
     # Arrange
     gold_settings = GoldSettings()
-    metering_point_id = identifier_helper.crea1te_random_metering_point_id()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
     observation_time = datetime_helper.get_datetime()
     expected_quantity = Decimal(300)
 
