@@ -1,4 +1,5 @@
 import uuid
+from datetime import timedelta
 
 import pytest
 
@@ -7,57 +8,13 @@ from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.missing_measurements_log.seed_table import seed_table
 
-
-_METERING_POINT_ID = "170000060000000201"
-_DEFAULT_GRID_AREA_CODE = "804"
-_DEFAULT_PERIOD_START = datetime(2025, 1, 1, 23, 0, 0)
-_DEFAULT_PERIOD_END = datetime(2025, 1, 2, 23, 0, 0)
-_FIRST_OBSERVATION_TIME = _DEFAULT_PERIOD_START
-
-_METERING_POINT_PERIODS_STATEMENT = f"""
-        INSERT INTO electricity_market_measurements_input.missing_measurements_log_metering_point_periods_v1 (
-            metering_point_id,
-            grid_area_code,
-            resolution,
-            period_from_date,
-            period_to_date
-        )
-        VALUES
-        "('{_METERING_POINT_ID}','{_DEFAULT_GRID_AREA_CODE}','{MeteringPointResolution.HOUR.value}','{_DEFAULT_PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}','{_DEFAULT_PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}')"
-    """
-
-
+period_start = seed_table.PERIOD_START
+period_end = period_start + timedelta(days=2)
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
-    "period-start-datetime": _DEFAULT_PERIOD_START.strftime("%Y-%m-%dT%H:%M:%SZ"),
-    "period-end-datetime": _DEFAULT_PERIOD_END.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "period-start-datetime": period_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "period-end-datetime": period_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
 }
-
-
-def _get_gold_table_rows() -> list[GoldTableRow]:
-    return [
-        GoldTableRow(
-            metering_point_id=_METERING_POINT_ID,
-            observation_time=_FIRST_OBSERVATION_TIME + timedelta(hours=i),
-            quality=QuantityQuality.MEASURED.value,
-        )
-        for i in range(24)
-    ]
-
-
-def seed_test_data(environment_configuration: EnvironmentConfiguration) -> None:
-    databricks_api_client = DatabricksApiClient(
-        environment_configuration.databricks_token,
-        environment_configuration.workspace_url,
-    )
-    databricks_api_client.execute_statement(
-        warehouse_id=environment_configuration.warehouse_id, statement=_METERING_POINT_PERIODS_STATEMENT
-    )
-
-    # measurements
-    table_seeder = GoldTableSeeder(EnvironmentConfiguration())
-    gold_table_rows = _get_gold_table_rows()
-    table_seeder.seed(gold_table_rows)
 
 
 @pytest.fixture(scope="session")
