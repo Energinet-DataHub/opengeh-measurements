@@ -5,17 +5,13 @@ from datetime import timedelta
 import pytest
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from azure.monitor.query import LogsQueryPartialResult, LogsQueryResult
+from azure.monitor.query import LogsQueryClient, LogsQueryPartialResult, LogsQueryResult, LogsQueryStatus
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
 
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
-)
-from geh_calculated_measurements.testing.utilities.log_query_client_wrapper import (
-    LogQueryClientWrapper,
-    LogsQueryStatus,
 )
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -29,11 +25,14 @@ class JobTestFixture:
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
-        self.azure_logs_query_client = LogQueryClientWrapper(credentials)
-        self.secret_client = SecretClient(
+        secret_client = SecretClient(
             vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/",
             credential=credentials,
         )
+        self.azure_logs_query_client = LogsQueryClient(credentials)
+        azure_log_analytics_workspace_id = secret_client.get_secret("log-shared-workspace-id").value
+        assert azure_log_analytics_workspace_id is not None, "The Azure log analytics workspace ID cannot be empty."
+        self.azure_log_analytics_workspace_id = azure_log_analytics_workspace_id
 
     def _get_job_by_name(self, job_name: str) -> BaseJob:
         jobs = list(self.ws.jobs.list(name=job_name))
@@ -79,11 +78,15 @@ class JobTestFixture:
             time.sleep(poll_interval_seconds)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
-        workspace_id = self.secret_client.get_secret("log-shared-workspace-id").value
-        if workspace_id is None:
-            raise ValueError("The Azure log analytics workspace ID cannot be empty.")
-
-        return self.azure_logs_query_client.wait_for_condition(workspace_id, query)
+        response = self.azure_logs_query_client.query_workspace(
+            self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
+        )
+        if response.status == LogsQueryStatus.SUCCESS and len(response.tables) > 0 and len(response.tables[0].rows) > 0:
+            return response
+        else:
+            error = response.partial_error
+            if error is not None:
+                raise ValueError(f"Query failed with error: {error}")
 
 
 class JobTester(abc.ABC):
