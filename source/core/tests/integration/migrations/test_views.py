@@ -401,7 +401,7 @@ def test__current_v1__should_return_active_measurement_only(spark: SparkSession,
             metering_point_id=metering_point_id,
             transaction_creation_datetime=datetime_helper.get_datetime(year=2021, month=1, day=3),
             observation_time=observation_time,
-            quantity=Decimal(300),
+            quantity=expected_quantity,
             is_cancelled=False,
         )
         .build()
