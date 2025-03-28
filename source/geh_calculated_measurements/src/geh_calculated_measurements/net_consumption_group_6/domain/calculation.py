@@ -31,7 +31,7 @@ def execute(
     )
 
     measurements = calculate_daily(
-        time_series_points=current_measurements,
+        current_measurements=current_measurements,
         cenc=cenc,
         time_zone=time_zone,
         execution_start_datetime=execution_start_datetime,
