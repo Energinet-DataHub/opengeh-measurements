@@ -1,16 +1,19 @@
 import uuid
+from datetime import timedelta
 
 import pytest
 
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.missing_measurements_log.seed_table import seed_table
+from tests.subsystem_tests.missing_measurements_log.seed_table import PERIOD_START, seed_table
 
+period_start = PERIOD_START
+period_end = period_start + timedelta(days=2)
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
-    "period-start-datetime": "2025-01-01T23:00:00",
-    "period-end-datetime": "2025-01-02T23:00:00",
+    "period-start-datetime": period_start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "period-end-datetime": period_end.strftime("%Y-%m-%dT%H:%M:%SZ"),
 }
 
 
