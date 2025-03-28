@@ -5,10 +5,10 @@ import pytest
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.electrical_heating.infrastructure import (
+from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
-    MeasurementsGoldRepository,
-    electrical_heating_v1,
 )
 
 
@@ -22,9 +22,9 @@ def measurements_gold_with_data(spark: SparkSession) -> None:
     create_table(
         spark,
         database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME,
-        schema=electrical_heating_v1,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}",
+        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
+        schema=CurrentMeasurements.schema,
+        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
     test_data = spark.createDataFrame(
         [
@@ -35,11 +35,11 @@ def measurements_gold_with_data(spark: SparkSession) -> None:
             ("423456789012345", "consumption_from_grid", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("8.125")),
             ("523456789012345", "net_consumption", datetime.datetime(2022, 1, 2, 0, 0, 0), Decimal("15.000")),
         ],
-        schema=electrical_heating_v1,
+        schema=CurrentMeasurements.schema,
     )
 
     test_data.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME}"
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
     )
 
 
@@ -49,8 +49,8 @@ def default_catalog(spark: SparkSession) -> str:
 
 
 @pytest.fixture(scope="session")
-def measurements_gold_repository(spark: SparkSession, default_catalog: str) -> MeasurementsGoldRepository:
-    return MeasurementsGoldRepository(
+def measurements_gold_repository(spark: SparkSession, default_catalog: str) -> CurrentMeasurementsRepository:
+    return CurrentMeasurementsRepository(
         spark,
         default_catalog,
     )

@@ -2,12 +2,12 @@ import uuid
 
 import pytest
 
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
 from geh_calculated_measurements.electrical_heating.domain import ChildMeteringPoints, ConsumptionMeteringPointPeriods
 from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
     Repository as ElectricityMarketRepository,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
 )
 from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
 from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
@@ -28,14 +28,9 @@ class TestElectricalHeatingPerformance(BaseJobTests):
             self.fixture = BaseJobFixture(
                 environment_configuration=environment_configuration,
                 job_name="ElectricalHeating",
-                params=self.params,
+                job_parameters=self.params,
             )
         return self.fixture
-
-    @pytest.fixture(autouse=True, scope="class")
-    def setup_fixture(self, environment_configuration: EnvironmentConfiguration) -> None:
-        """Set up the fixture for the test class."""
-        return self.get_or_create_fixture(environment_configuration)
 
     @pytest.fixture(autouse=True, scope="class")
     def patch_repositories(self, environment_configuration: EnvironmentConfiguration) -> None:
@@ -48,7 +43,7 @@ class TestElectricalHeatingPerformance(BaseJobTests):
         )
         monkeypatch.setattr(
             MeasurementsGoldDatabaseDefinition,
-            "TIME_SERIES_POINTS_NAME",
+            "CURRENT_MEASUREMENTS",
             environment_configuration.time_series_points_table,
         )
 
