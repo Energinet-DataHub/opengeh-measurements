@@ -1,8 +1,10 @@
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
+from core.receipts.infrastructure.config.table_names import ReceiptTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
+from core.settings.core_internal_settings import CoreInternalSettings
 from core.silver.infrastructure.config import SilverTableNames
 
 
@@ -10,6 +12,7 @@ def substitutions() -> dict[str, str]:
     bronze_settings = BronzeSettings()
     silver_settings = SilverSettings()
     gold_settings = GoldSettings()
+    core_internal_settings = CoreInternalSettings() 
 
     return {
         "{bronze_database}": bronze_settings.bronze_database_name,
@@ -24,4 +27,6 @@ def substitutions() -> dict[str, str]:
         "{gold_electrical_heating_v1}": GoldViewNames.electrical_heating_v1,
         "{gold_capacity_settlement_v1}": GoldViewNames.capacity_settlement_v1,
         "{gold_current_v1}": GoldViewNames.current_v1,
+        "{core_internal_database}": core_internal_settings.core_internal_database_name,  
+        "{process_manager_receipts}": ReceiptTableNames.process_manager_receipts
     }
