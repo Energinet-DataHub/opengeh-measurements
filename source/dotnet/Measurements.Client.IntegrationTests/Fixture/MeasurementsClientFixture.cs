@@ -18,10 +18,6 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
     public const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     public const string CatalogName = "hive_metastore";
 
-    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
-
-    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
-
     public MeasurementsClientFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -30,6 +26,10 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
     }
+
+    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public async Task InitializeAsync()
     {

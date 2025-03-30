@@ -15,8 +15,6 @@ namespace Energinet.DataHub.Measurements.Client.IntegrationTests;
 [Collection(nameof(MeasurementsClientCollection))]
 public class MeasurementClientTests
 {
-    public ServiceProvider ServiceProvider { get; }
-
     public MeasurementClientTests()
     {
         var services = new ServiceCollection();
@@ -26,14 +24,16 @@ public class MeasurementClientTests
         ServiceProvider = services.BuildServiceProvider();
     }
 
+    private ServiceProvider ServiceProvider { get; }
+
     [Fact]
     public async Task GetMeasurementsForDayAsync_WhenCalled_ReturnsValidMeasurement()
     {
-        // Act
+        // Arrange
         var measurementClient = ServiceProvider.GetRequiredService<IMeasurementsClient>();
         var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(2023, 1, 2));
 
-        // Arrange
+        // Act
         var measurements = await measurementClient.GetMeasurementsForDayAsync(query);
 
         // Assert
