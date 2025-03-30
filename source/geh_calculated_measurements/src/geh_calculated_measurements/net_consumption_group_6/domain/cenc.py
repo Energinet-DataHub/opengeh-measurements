@@ -8,12 +8,11 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
 from pyspark.sql.window import Window
 
-from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
 )
 
 
@@ -22,7 +21,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
 def calculate_cenc(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
-    time_series_points: TimeSeriesPoints,
+    current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> Cenc:
@@ -32,7 +31,7 @@ def calculate_cenc(
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING = 5600
 
     # Filter and join the data
-    filtered_time_series = _filter_relevant_time_series_points(time_series_points)
+    filtered_time_series = _filter_relevant_time_series_points(current_measurements)
     parent_child_joined = _join_parent_child_with_consumption(
         child_metering_points, consumption_metering_point_periods, execution_start_datetime
     )
@@ -75,7 +74,7 @@ def calculate_cenc(
     return Cenc(result)
 
 
-def _filter_relevant_time_series_points(time_series_points: TimeSeriesPoints) -> DataFrame:
+def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:
     """Filter time series points to include only supply_to_grid and consumption_from_grid."""
     return time_series_points.df.filter(
         F.col(ContractColumnNames.metering_point_type).isin(
