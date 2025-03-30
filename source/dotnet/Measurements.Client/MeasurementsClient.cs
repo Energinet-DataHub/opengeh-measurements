@@ -4,13 +4,14 @@ using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
+using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient(IHttpClientFactory authorizedHttpClientFactory) : IMeasurementsClient
+public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
 {
-    private readonly HttpClient _httpClient = authorizedHttpClientFactory.CreateClient();
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
