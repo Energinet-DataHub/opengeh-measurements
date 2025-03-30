@@ -16,12 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="integrationtest.local.settings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="integrationtest.local.settings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
