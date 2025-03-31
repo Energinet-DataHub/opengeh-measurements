@@ -10,6 +10,7 @@ class ContractColumnNames:
     metering_point_id = "metering_point_id"
     metering_point_sub_type = "metering_point_sub_type"
     metering_point_type = "metering_point_type"
+    move_in = "move_in"
     net_settlement_group = "net_settlement_group"
     observation_time = "observation_time"
     orchestration_instance_id = "orchestration_instance_id"
