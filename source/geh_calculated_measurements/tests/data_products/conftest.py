@@ -1,4 +1,3 @@
-### This file contains the fixtures that are used in the tests. ###
 import os
 from pathlib import Path
 from typing import Generator
