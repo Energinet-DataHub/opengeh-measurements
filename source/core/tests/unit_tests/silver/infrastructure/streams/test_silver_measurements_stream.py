@@ -3,7 +3,7 @@ from unittest import mock
 
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.streams.silver_measurements_stream import SilverMeasurementsStream
 
 
 def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: mock.MagicMock | mock.AsyncMock) -> None:
@@ -12,7 +12,7 @@ def test__write_stream__called__with_correct_arguments(mock_checkpoint_path: moc
     mocked_batch_operation = mock.Mock()
 
     # Act
-    SilverMeasurementsRepository().write_stream(
+    SilverMeasurementsStream().write_stream(
         mocked_measurements,
         GehCommonOrchestrationType.SUBMITTED,
         mocked_batch_operation,
@@ -35,7 +35,7 @@ def test__write_measurements__when_contionous_streaming_is_disabled__should_not_
     mocked_batch_operation = mock.Mock()
 
     # Act
-    SilverMeasurementsRepository().write_stream(
+    SilverMeasurementsStream().write_stream(
         mocked_measurements,
         GehCommonOrchestrationType.SUBMITTED,
         mocked_batch_operation,

@@ -21,7 +21,7 @@ def test__migrated_transactions__should_call_expected(
     mock_write_measurements = mock.Mock()
     mock_write_measurements.write_stream = mock.Mock()
     mock_SilverMeasurementsRepository = mocker.patch(
-        f"{sut.__name__}.SilverMeasurementsRepository", return_value=mock_write_measurements
+        f"{sut.__name__}.SilverMeasurementsStream", return_value=mock_write_measurements
     )
 
     # Act
