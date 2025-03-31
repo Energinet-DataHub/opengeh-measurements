@@ -33,6 +33,7 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="module")
 def repository(spark: SparkSession) -> Repository:
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}")
     return Repository(spark, catalog_name="spark_catalog")
 
 
