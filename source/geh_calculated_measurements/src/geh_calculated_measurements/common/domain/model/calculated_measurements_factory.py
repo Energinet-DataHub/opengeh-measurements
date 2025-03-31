@@ -34,7 +34,7 @@ def create(
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
     time_zone: str,
-    transaction_creation_datetime: datetime,
+    transaction_creation_datetime: datetime = datetime.now(),
 ) -> CalculatedMeasurements:
     assert_schema(measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True)
 

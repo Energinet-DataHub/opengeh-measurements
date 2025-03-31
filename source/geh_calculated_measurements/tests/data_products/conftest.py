@@ -13,7 +13,7 @@ from geh_calculated_measurements.database_migrations.migrations_runner import mi
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, None, None]:
     """Executes all migrations.
 
