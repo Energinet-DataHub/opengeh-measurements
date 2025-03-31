@@ -9,13 +9,13 @@ import core.silver.infrastructure.protobuf.version_message as version_message
 from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repository import (
     InvalidSubmittedTransactionsRepository,
 )
-from core.bronze.infrastructure.streams.bronze_repository import BronzeRepository
+from core.bronze.infrastructure.repositories.submitted_transactions_repository import SubmittedTransactionsRepository
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
-    submitted_transactions = BronzeRepository(spark).read_submitted_transactions()
+    submitted_transactions = SubmittedTransactionsRepository(spark).read()
     SilverMeasurementsRepository().write_stream(
         submitted_transactions,
         GehCommonOrchestrationType.SUBMITTED,

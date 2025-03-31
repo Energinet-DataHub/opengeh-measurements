@@ -11,7 +11,7 @@ class SubmittedTransactionsRepository:
         self.spark = spark
         self.silver_database_name = SilverSettings().silver_database_name
 
-    def read_submitted_transactions(self) -> DataFrame:
+    def read(self) -> DataFrame:
         return (
             self.spark.readStream.format("delta")
             .option("ignoreDeletes", "true")
