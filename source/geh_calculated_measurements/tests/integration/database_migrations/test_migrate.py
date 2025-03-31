@@ -3,14 +3,14 @@ from geh_calculated_measurements.testing.utilities.create_azure_log_query_runner
     LogsQueryStatus,
     create_azure_log_query_runner,
 )
-from tests import ensure_databases_created
+from tests import ensure_calculated_measurements_databases_exist
 
 
 def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
     # Arrange
     azure_query_runnner = create_azure_log_query_runner(monkeypatch)
     timeout_minutes = 15
-    ensure_databases_created(spark)
+    ensure_calculated_measurements_databases_exist(spark)
 
     # Act
     expected_log_messages = [

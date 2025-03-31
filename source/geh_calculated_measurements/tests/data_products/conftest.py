@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import ensure_databases_created
+from tests import ensure_calculated_measurements_databases_exist
 
 
 @pytest.fixture(scope="session")
@@ -22,7 +22,7 @@ def migrations_executed(spark: SparkSession, dummy_logging):
 
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
-    ensure_databases_created(spark)
+    ensure_calculated_measurements_databases_exist(spark)
 
     migrate()
 

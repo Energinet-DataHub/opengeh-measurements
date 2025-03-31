@@ -18,24 +18,12 @@ def create_job_environment_variables(eletricity_market_path: str = "some_path") 
     }
 
 
-def ensure_databases_created(spark: SparkSession) -> None:
+def ensure_calculated_measurements_databases_exist(spark: SparkSession) -> None:
     """Databases are created in dh3infrastructure using terraform
     So we need to create them in test environment"""
-    print("##############################################################################")
     dbs = [
         MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
         CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
     ]
-    print(dbs)
     for db in dbs:
         spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
-
-    catalog = "spark_catalog"
-    schemas = spark.sql(f"SHOW SCHEMAS IN {catalog}").collect()
-    for schema_row in schemas:
-        schema_name = schema_row["namespace"]
-        print(f"Schema: {schema_name}")
-
-        tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema_name}").collect()
-        for table_row in tables:
-            print(f"  Table/View: {table_row['tableName']}")
