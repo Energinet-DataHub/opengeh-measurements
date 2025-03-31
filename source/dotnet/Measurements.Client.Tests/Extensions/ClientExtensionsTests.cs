@@ -1,6 +1,6 @@
 ﻿using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Energinet.DataHub.Measurements.Client.Tests.Fixtures;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Categories;
 
@@ -14,10 +14,7 @@ public class ClientExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddInMemoryConfiguration(new Dictionary<string, string?>()
-        {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost:7202",
-        });
+        AddInMemoryConfiguration(services);
 
         // Act
         services.AddMeasurementsClient();
@@ -27,5 +24,17 @@ public class ClientExtensionsTests
             .BuildServiceProvider()
             .GetRequiredService<IMeasurementsClient>();
         Assert.IsType<MeasurementsClient>(actual);
+    }
+
+    private static void AddInMemoryConfiguration(IServiceCollection services)
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost:7202",
+            })
+            .Build();
+
+        services.AddScoped<IConfiguration>(_ => configuration);
     }
 }

@@ -17,7 +17,7 @@ from core.contracts.process_manager.enums.quality import Quality
 from core.contracts.process_manager.enums.resolution import Resolution
 from core.contracts.process_manager.enums.unit import Unit
 from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
-from tests.silver.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
+from tests.helpers.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
 class Point:
@@ -48,7 +48,7 @@ class PointsBuilder:
 class Value:
     def __init__(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
@@ -82,7 +82,7 @@ class ValueBuilder:
 
     def add_row(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
@@ -182,7 +182,7 @@ class UnpackedSubmittedTransactionsBuilder:
 
     def add_row(
         self,
-        version: int = 1,
+        version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",

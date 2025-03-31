@@ -1,0 +1,101 @@
+# yamllint disable rule:quoted-strings
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/source/core"
+    schedule:
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
+    assignees:
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
+    commit-message:
+      prefix: "Volt/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
+
+  - package-ecosystem: "nuget"
+    directory: "/source/dotnet"
+    schedule:
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
+    assignees:
+      - "awha86"
+      - "Gizmooa"
+      - "HenrikSommer"
+      - "jonasdmoeller"
+      - "prtandrup"
+      - "ShaBloze"
+      - "x-platformcoder"
+    commit-message:
+      prefix: "Volt/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
+
+  - package-ecosystem: "uv"
+    directory: "/source/geh_calculated_measurements"
+    schedule:
+      interval: "weekly"
+      time: "08:00"
+      timezone: "Europe/Copenhagen"
+    assignees:
+      - "BjarkeMeier"
+      - "energinet-ajw"
+      - "JesperGomes"
+      - "johevemi"
+    commit-message:
+      prefix: "Mandalorian/Chore: "
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"

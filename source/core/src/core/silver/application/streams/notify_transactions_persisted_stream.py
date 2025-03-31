@@ -6,6 +6,6 @@ from core.silver.infrastructure.streams.process_manager_stream import ProcessMan
 
 def notify() -> None:
     spark = spark_session.initialize_spark()
-    submitted_transactions = SubmittedTransactionsRepository(spark).read_submitted_transactions()
+    submitted_transactions = SubmittedTransactionsRepository(spark).read()
     events = transactions_persisted_events_transformation.transform(submitted_transactions)
     ProcessManagerStream().write_stream(events)
