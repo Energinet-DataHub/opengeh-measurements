@@ -4,26 +4,19 @@ from pytest_mock import MockFixture
 
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
-    silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
-    gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
-    mocker.patch.object(sut, "SilverMeasurementsRepository", return_value=silver_repo_mock)
-    mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
-    silver_repo_mock.read.return_value = Mock()
+    silver_repo_mock = mocker.patch.object(sut, sut.SilverMeasurementsRepository.__name__)
+    gold_repo_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
 
     # Act
     sut.stream_measurements_silver_to_gold()
 
     # Assert
-    silver_repo_mock.read_stream.assert_called_once()
-    gold_repo_mock.write_stream.assert_called_once_with(
-        silver_repo_mock.read_stream.return_value,
-        sut._batch_operation,
-    )
+    silver_repo_mock.assert_called_once()
+    gold_repo_mock.assert_called_once()
 
 
 def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):

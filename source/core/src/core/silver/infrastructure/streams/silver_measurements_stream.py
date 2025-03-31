@@ -7,13 +7,10 @@ import core.utility.shared_helpers as shared_helpers
 from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
 from core.settings.streaming_settings import StreamingSettings
-from core.silver.infrastructure.config import SilverTableNames
 
 
 class SilverMeasurementsStream:
     def __init__(self) -> None:
-        database_name = SilverSettings().silver_database_name
-        self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.silver_container_name = SilverSettings().silver_container_name
 

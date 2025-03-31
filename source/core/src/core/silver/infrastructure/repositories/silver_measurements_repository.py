@@ -1,7 +1,6 @@
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
-from core.settings import StorageAccountSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
@@ -12,8 +11,6 @@ class SilverMeasurementsRepository:
     def __init__(self) -> None:
         database_name = SilverSettings().silver_database_name
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
-        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
-        self.silver_container_name = SilverSettings().silver_container_name
 
     def read(self) -> DataFrame:
         spark = spark_session.initialize_spark()
