@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Generator
 
 import pytest
 from geh_common.testing.dataframes import write_when_files_to_delta
@@ -15,7 +14,7 @@ from tests import ensure_databases_created
 
 
 @pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, None, None]:
+def migrations_executed(spark: SparkSession, dummy_logging):
     """Executes all migrations.
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
@@ -26,13 +25,14 @@ def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, N
     ensure_databases_created(spark)
 
     migrate()
-    yield
-    for db in dbs:
-        spark.sql(f"DROP DATABASE IF EXISTS {db} CASCADE")
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(
+    spark: SparkSession,
+    request: pytest.FixtureRequest,
+    migrations_executed: None,  # Used implicitly
+) -> TestCases:
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 
@@ -58,15 +58,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     with pytest.MonkeyPatch.context() as m:
         m.setattr(os, "environ", {"CATALOG_NAME": "spark_catalog"})
         catalog = CatalogSettings().catalog_name
-
-    schemas = spark.sql(f"SHOW SCHEMAS IN {catalog}").collect()
-    for schema_row in schemas:
-        schema_name = schema_row["namespace"]
-        print(f"Schema: {schema_name}")
-
-        tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema_name}").collect()
-        for table_row in tables:
-            print(f"  Table/View: {table_row['tableName']}")
 
     for path_name in then_files:
         actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
