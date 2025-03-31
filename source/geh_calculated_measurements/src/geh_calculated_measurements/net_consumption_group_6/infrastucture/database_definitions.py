@@ -1,7 +1,7 @@
 class ElectricityMarketMeasurementsInputDatabaseDefinition:
     """This class defines names for the database and tables related to electricity market measurements.
-    The database and tables are all defined in Terraform and should be equivalent here for reference.
 
+    The database and tables are all defined in Terraform and should be equivalent here for reference.
     """
 
     DATABASE_NAME = "electricity_market_measurements_input"
