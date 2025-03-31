@@ -298,6 +298,7 @@ name = "core"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "dependency-injector" },
     { name = "geh-common" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -321,6 +322,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "dependency-injector", specifier = ">=4.45.0" },
     { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.5.0" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
