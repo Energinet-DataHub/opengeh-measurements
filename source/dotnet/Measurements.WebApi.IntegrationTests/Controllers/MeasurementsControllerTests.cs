@@ -15,7 +15,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     private readonly HttpClient _client = fixture.CreateClient();
 
     [Fact]
-    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurement()
+    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -38,8 +38,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-05T00:00:00Z";
-        const string endDate = "2022-01-06T00:00:00Z";
+        const string startDate = "2022-01-03T00:00:00Z"; // On this date, the fixture inserts multiple measurements with the same observation time
+        const string endDate = "2022-01-04T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -51,11 +51,30 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     }
 
     [Fact]
+    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsOnlyNonCancelledObservations()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-01-02T00:00:00Z";  // On this date, the fixture inserts both cancelled and non-cancelled measurements with the same observation time
+        const string endDate = "2022-01-03T00:00:00Z";
+        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+
+        // Act
+        var actualResponse = await _client.GetAsync(url);
+        var actual = await ParseResponseAsync(actualResponse);
+
+        // Assert
+        Assert.Equal(24, actual.Points.Count);
+        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
+        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
+    }
+
+    [Fact]
     public async Task GetAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
-        const string startDate = "2021-01-02T00:00:00Z";
+        const string startDate = "2021-01-02T00:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
         const string endDate = "2021-01-03T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
@@ -64,6 +83,22 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-02-01T00:00:00Z";
+        const string endDate = "2022-02-02T00:00:00Z";
+        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+
+        // Act
+        var actual = await _client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
     }
 
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)

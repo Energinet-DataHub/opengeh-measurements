@@ -15,11 +15,8 @@ public class MeasurementsRepository(
 {
     public async IAsyncEnumerable<MeasurementsResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to)
     {
-        var statement =
-            new GetMeasurementsQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
-
-        var rows = databricksSqlWarehouseQueryExecutor
-            .ExecuteStatementAsync(statement, Format.ApacheArrow);
+        var statement = new GetMeasurementsQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
+        var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)
             yield return new MeasurementsResult(row);

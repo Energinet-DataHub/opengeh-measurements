@@ -1,0 +1,11 @@
+metering_point_type;metering_point_id;date;quantity;#comment
+electrical_heating;140000000600170201;2025-01-02T23:00:00Z;1;Case 1: nsg6 - simple
+electrical_heating;140000000600170202;2025-03-28T23:00:00Z;24;Case 2
+electrical_heating;140000000600170202;2025-03-29T23:00:00Z;23;Case 2: Summertime change March 31st
+electrical_heating;140000000600170202;2025-03-30T22:00:00Z;24;Case 2
+electrical_heating;140000000600170202;2025-10-24T22:00:00Z;24;Case 2
+electrical_heating;140000000600170202;2025-10-25T22:00:00Z;25;Case 2: Wintertime change October 27th
+electrical_heating;140000000600170202;2025-10-26T23:00:00Z;24;Case 2
+electrical_heating;140000000600170203;2025-03-15T23:00:00Z;2000;Case 3
+electrical_heating;140000000600170203;2025-03-16T23:00:00Z;1353.425;Case 3: Limit (3353.425) hit
+electrical_heating;140000000600170203;2025-03-17T23:00:00Z;0;Case 3

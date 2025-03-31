@@ -1,45 +1,36 @@
-from datetime import UTC, datetime
-from uuid import UUID
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
-from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import DecimalType, IntegerType, StringType, StructField, StructType, TimestampType
+from pyspark.sql.types import DecimalType
 
-from geh_calculated_measurements.capacity_settlement.domain import Calculations, TenLargestQuantities
+from geh_calculated_measurements.capacity_settlement.domain import TenLargestQuantities
 from geh_calculated_measurements.capacity_settlement.domain.calculation_output import (
     CalculationOutput,
 )
 from geh_calculated_measurements.capacity_settlement.domain.ephemeral_column_names import EphemeralColumnNames
 from geh_calculated_measurements.capacity_settlement.domain.model.metering_point_periods import MeteringPointPeriods
-from geh_calculated_measurements.capacity_settlement.domain.model.time_series_points import TimeSeriesPoints
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
-    calculated_measurements_factory,
+    CurrentMeasurements,
 )
-from geh_calculated_measurements.common.infrastructure import initialize_spark
 
 
-# This is also the function that will be tested using the `testcommon.etl` framework.
 @use_span()
+@testing(selector=lambda x: x.calculations)
+@testing(selector=lambda x: x.calculated_measurements)
+@testing(selector=lambda x: x.ten_largest_quantities)
 def execute(
-    time_series_points: TimeSeriesPoints,
+    current_measurements: CurrentMeasurements,
     metering_point_periods: MeteringPointPeriods,
-    orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
     time_zone: str,
 ) -> CalculationOutput:
-    calculations = _create_calculations(
-        orchestration_instance_id,
-        calculation_month,
-        calculation_year,
-    )
-
     metering_point_periods_with_selection_period = _add_selection_period_columns(
         metering_point_periods.df,
         calculation_month=calculation_month,
@@ -47,7 +38,7 @@ def execute(
         time_zone=time_zone,
     )
 
-    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(time_series_points.df)
+    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(current_measurements.df)
 
     grouping = [
         ContractColumnNames.metering_point_id,
@@ -67,7 +58,7 @@ def execute(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.quantity).cast(DecimalType(18, 3)),
             F.col(ContractColumnNames.observation_time),
-        ).withColumn(ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id)))
+        )
     )
 
     time_series_points_average_ten_largest_quantities = _average_ten_largest_quantities_in_selection_periods(
@@ -89,51 +80,12 @@ def execute(
         F.col(ContractColumnNames.quantity).cast(DecimalType(18, 3)),
     )
 
-    calculated_measurments = calculated_measurements_factory.create(
-        measurements,
-        orchestration_instance_id,
-        OrchestrationType.CAPACITY_SETTLEMENT,
-        MeteringPointType.CAPACITY_SETTLEMENT,
-        time_zone,
-    )
-
     calculation_output = CalculationOutput(
-        calculated_measurements=calculated_measurments,
-        calculations=calculations,
+        calculated_measurements_daily=measurements,
         ten_largest_quantities=ten_largest_quantities,
     )
 
     return calculation_output
-
-
-def _create_calculations(
-    orchestration_instance_id: UUID,
-    calculation_month: int,
-    calculation_year: int,
-) -> Calculations:
-    execution_time = datetime.now(UTC).replace(microsecond=0)
-    schema = StructType(
-        [
-            StructField("orchestration_instance_id", StringType(), False),
-            StructField("calculation_year", IntegerType(), False),
-            StructField("calculation_month", IntegerType(), False),
-            StructField("execution_time", TimestampType(), False),
-        ]
-    )
-    spark = initialize_spark()
-    return Calculations(
-        spark.createDataFrame(
-            [
-                (
-                    str(orchestration_instance_id),
-                    calculation_year,
-                    calculation_month,
-                    execution_time,
-                )
-            ],
-            schema=schema,
-        )
-    )
 
 
 @testing()

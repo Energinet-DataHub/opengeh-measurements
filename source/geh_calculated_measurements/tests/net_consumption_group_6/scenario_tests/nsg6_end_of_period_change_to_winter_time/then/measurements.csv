@@ -1,0 +1,2 @@
+metering_point_id;metering_point_type;date;quantity;#comment
+150000001500170200;net_consumption;2025-10-30T23:00:00Z;4.932;Cenc new customer without electrical heating = 1800/365 = 4.932

@@ -13,14 +13,17 @@ class LogQueryClientWrapper:
         self,
         workspace_id: str,
         query: str,
-        timeout_seconds: int = 1000,
         poll_interval_seconds: int = 5,
         timespan_minutes: int = 15,
     ) -> LogsQueryResult:
-        """Wait for a condition to be met by polling a query on an Azure Log Analytics workspace. Only returns when the query is successful and returns at least one row."""
-        start_time = time.time()
+        """Execute an Azure Log Analytics query and wait for the result.
 
-        while time.time() - start_time < timeout_seconds:
+        Only returns when the query is successful and returns at least one row.
+        """
+        start_time = time.time()
+        elapsed_time = 0
+
+        while elapsed_time < timespan_minutes * 60:
             try:
                 result = self.logs_query_client.query_workspace(
                     workspace_id, query, timespan=timedelta(timespan_minutes)
@@ -29,7 +32,8 @@ class LogQueryClientWrapper:
                     return result
             except Exception:
                 pass
-
+            elapsed_time = time.time() - start_time
+            print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
 
-        raise TimeoutError(f"Query did not complete within {timeout_seconds} seconds.")
+        raise TimeoutError(f"Query did not complete within {timespan_minutes * 60} seconds:\n{query}")
