@@ -36,7 +36,9 @@ def create(
     time_zone: str,
     transaction_creation_datetime: datetime = datetime.now(),
 ) -> CalculatedMeasurements:
-    assert_schema(measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True)
+    assert_schema(
+        measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True, ignore_column_order=True
+    )
 
     df = (
         # Explode the date column to create a row for each hour in the day
