@@ -12,12 +12,12 @@ from geh_calculated_measurements.electrical_heating.infrastructure.electricity_m
 from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
 @pytest.mark.skip(reason="only run if performance test is needed")
-class TestElectricalHeating(JobTester):
+class TestElectricalHeating(JobTest):
     """
     Test class for electrical heating.
     """

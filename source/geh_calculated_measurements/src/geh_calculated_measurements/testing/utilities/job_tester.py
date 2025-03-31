@@ -89,7 +89,7 @@ class JobTestFixture:
                 raise ValueError(f"Query failed with error: {error}")
 
 
-class JobTester(abc.ABC):
+class JobTest(abc.ABC):
     @pytest.fixture(scope="class")
     @abc.abstractmethod
     def fixture(self) -> JobTestFixture:

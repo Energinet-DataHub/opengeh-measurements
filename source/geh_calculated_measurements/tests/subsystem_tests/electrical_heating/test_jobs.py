@@ -2,14 +2,14 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.electrical_heating.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 
-class TestElectricalHeating(JobTester):
+class TestElectricalHeating(JobTest):
     """
     Test class for electrical heating.
     """

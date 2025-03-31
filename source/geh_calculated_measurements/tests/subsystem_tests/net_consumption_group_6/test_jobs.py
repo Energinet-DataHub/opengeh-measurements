@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import delete_seeded_data, seed_table
 
@@ -10,7 +10,7 @@ job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 
 @pytest.mark.skip(reason="Test is not implemented")
-class TestNetConsumptionGroup6(JobTester):
+class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()

@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTester, JobTestFixture
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000060000000201"
@@ -17,7 +17,7 @@ job_parameters = {
 }
 
 
-class TestMissingMeasurementsLogOnDemand(JobTester):
+class TestMissingMeasurementsLogOnDemand(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
         config = EnvironmentConfiguration()
