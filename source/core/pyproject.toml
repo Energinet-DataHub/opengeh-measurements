@@ -8,6 +8,7 @@ dependencies = [
     "pydantic-settings>=2.7.1",
     "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.5.0#subdirectory=source/geh_common",
     "pydantic>=2.10.6",
+    "dependency-injector>=4.45.0",
 ]
 
 [project.scripts]
