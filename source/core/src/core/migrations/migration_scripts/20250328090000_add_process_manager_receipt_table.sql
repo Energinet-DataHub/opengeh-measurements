@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS {core_internal_database}.{process_manager_receipts}
 (
     orchestration_instance_id STRING,
-    created TIMESTAMP,
+    created TIMESTAMP
 )
 USING DELTA
 TBLPROPERTIES (
