@@ -2,9 +2,9 @@ from pyspark.sql import SparkSession
 
 from core.migrations import MigrationDatabaseNames
 from core.settings.bronze_settings import BronzeSettings
+from core.settings.core_internal_settings import CoreInternalSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
-from core.settings.core_internal_settings import CoreInternalSettings
 
 
 def create_schemas(spark: SparkSession) -> None:
