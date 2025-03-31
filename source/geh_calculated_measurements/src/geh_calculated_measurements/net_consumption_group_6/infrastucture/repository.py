@@ -5,7 +5,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.electrical_market.database_definitions import (
+from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 
