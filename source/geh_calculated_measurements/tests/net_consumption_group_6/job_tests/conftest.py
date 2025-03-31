@@ -61,7 +61,7 @@ def electricity_market_calculated_measurements_create_and_seed_tables(spark: Spa
     consumption_metering_point_periods = read_csv_path(
         spark, parent_file_name, net_consumption_group_6_consumption_metering_point_periods_v1
     )
-    consumption_metering_point_periods.write.option("overwriteSchema", "true").saveAsTable(
+    consumption_metering_point_periods.write.saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
         format="delta",
         mode="overwrite",
@@ -69,7 +69,7 @@ def electricity_market_calculated_measurements_create_and_seed_tables(spark: Spa
 
     child_file_name = f"{get_test_files_folder_path()}/child_metering_points_v1.csv"
     child_metering_points = read_csv_path(spark, child_file_name, net_consumption_group_6_child_metering_point_v1)
-    child_metering_points.write.option("overwriteSchema", "true").saveAsTable(
+    child_metering_points.write.saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
         format="delta",
         mode="overwrite",
