@@ -5,11 +5,11 @@ from typing import Any
 
 import pytest
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
 from tests import create_job_environment_variables
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
@@ -29,12 +29,7 @@ def test_execute(
     execute()
 
     # Assert
-    parent_calculated_measurements = spark.read.table(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
-    )
-    assert parent_calculated_measurements.count() > 0
-
-    child_calculated_measurements = spark.read.table(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
-    )
-    assert child_calculated_measurements.count() > 0
+    actual_calculated_measurements = spark.read.table(
+        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
+    ).where(F.col(ContractColumnNames.orchestration_instance_id) == orchestration_instance_id)
+    assert actual_calculated_measurements.count() > 0
