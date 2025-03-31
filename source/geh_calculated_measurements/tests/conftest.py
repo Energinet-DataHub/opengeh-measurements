@@ -1,16 +1,15 @@
 ### This file contains the fixtures that are used in the tests. ###
+import os
 import shutil
 import sys
-import tempfile
-import os
 from typing import Generator
+from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from delta import configure_spark_with_delta_pip
 from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
-from pyspark import SparkConf
+from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
 from tests import TESTS_ROOT, create_job_environment_variables
@@ -39,57 +38,10 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
-def _get_spark():
-    data_dir = tempfile.mkdtemp()
-    conf = SparkConf().setAll(
-        pairs=[
-            (k, v)
-            for k, v in {
-                # Delta Lake configuration
-                "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
-                "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-                "spark.sql.catalogImplementation": "hive",
-                "spark.sql.warehouse.dir": f"{data_dir}/spark-warehouse",
-                "spark.local.dir": f"{data_dir}/spark-tmp",
-                "javax.jdo.option.ConnectionURL": f"jdbc:derby:;databaseName={data_dir}/metastore;create=true",
-                "javax.jdo.option.ConnectionUserName": "APP",
-                "javax.jdo.option.ConnectionPassword": "mine",
-                # Disable schema verification
-                "hive.metastore.schema.verification": "false",
-                "hive.metastore.schema.verification.record.version": "false",
-                "datanucleus.autoCreateSchema": "true",
-                # Disable the UI
-                "spark.ui.showConsoleProgress": "false",
-                "spark.ui.enabled": "false",
-                # Optimize for small tests
-                "spark.ui.dagGraph.retainedRootRDDs": "1",
-                "spark.ui.retainedJobs": "1",
-                "spark.ui.retainedStages": "1",
-                "spark.ui.retainedTasks": "1",
-                "spark.sql.ui.retainedExecutions": "1",
-                "spark.worker.ui.retainedExecutors": "1",
-                "spark.worker.ui.retainedDrivers": "1",
-                "spark.databricks.delta.snapshotPartitions": "2",
-                "spark.sql.shuffle.partitions": "1",
-                "spark.driver.memory": "2g",
-                "spark.executor.memory": "2g",
-                "spark.sql.streaming.schemaInference": "true",
-                "spark.rdd.compress": "false",
-                "spark.shuffle.compress": "false",
-                "spark.shuffle.spill.compress": "false",
-                "spark.sql.session.timeZone": "UTC",
-                "spark.driver.extraJavaOptions": f"-Ddelta.log.cacheSize=3 -Dderby.system.home={data_dir} -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
-            }.items()
-        ]
-    )
-    builder = configure_spark_with_delta_pip(SparkSession.Builder().config(conf=conf).enableHiveSupport())
-    return builder.master("local[1]").getOrCreate(), data_dir
-
-
 # pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
 # Therefore, we need to create a global variable to store the Spark session and data directory.
 # This is a workaround to avoid creating a new Spark session for each test.
-_spark, data_dir = _get_spark()
+_spark, data_dir = get_spark_test_session()
 
 
 @pytest.fixture(scope="session")
