@@ -11,6 +11,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
+from tests import ensure_databases_created
 
 
 @pytest.fixture(scope="session")
@@ -19,9 +20,11 @@ def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, N
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
     a view/dataprodcut/table is required."""
-    dbs = ["measurements_calculated", "measurements_calculated_internal"]
-    for db in dbs:
-        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+
+    # Databases are created in dh3infrastructure using terraform
+    # So we need to create them in test environment
+    ensure_databases_created(spark)
+
     migrate()
     yield
     for db in dbs:
@@ -55,6 +58,15 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     with pytest.MonkeyPatch.context() as m:
         m.setattr(os, "environ", {"CATALOG_NAME": "spark_catalog"})
         catalog = CatalogSettings().catalog_name
+
+    schemas = spark.sql(f"SHOW SCHEMAS IN {catalog}").collect()
+    for schema_row in schemas:
+        schema_name = schema_row["namespace"]
+        print(f"Schema: {schema_name}")
+
+        tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema_name}").collect()
+        for table_row in tables:
+            print(f"  Table/View: {table_row['tableName']}")
 
     for path_name in then_files:
         actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")

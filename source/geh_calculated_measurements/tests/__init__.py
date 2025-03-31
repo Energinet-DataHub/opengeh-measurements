@@ -1,5 +1,10 @@
 from pathlib import Path
 
+from pyspark.sql import SparkSession
+
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
+from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+
 PROJECT_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = PROJECT_ROOT / "tests"
 
@@ -11,3 +16,14 @@ def create_job_environment_variables(eletricity_market_path: str = "some_path") 
         "ELECTRICITY_MARKET_DATA_PATH": eletricity_market_path,
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "some_connection_string",
     }
+
+
+def ensure_databases_created(spark: SparkSession) -> None:
+    """Databases are created in dh3infrastructure using terraform
+    So we need to create them in test environment"""
+    dbs = [
+        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
+        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+    ]
+    for db in dbs:
+        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
