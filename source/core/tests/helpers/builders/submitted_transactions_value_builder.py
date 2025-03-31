@@ -3,7 +3,7 @@ from datetime import datetime
 from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
-from tests.silver.schemas.bronze_submitted_transactions_value_schema import (
+from tests.helpers.schemas.bronze_submitted_transactions_value_schema import (
     bronze_submitted_transactions_value_schema,
 )
 

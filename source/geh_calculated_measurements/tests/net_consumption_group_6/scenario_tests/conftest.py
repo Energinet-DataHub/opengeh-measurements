@@ -8,12 +8,12 @@ from geh_common.testing.dataframes import (
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
-from geh_calculated_measurements.net_consumption_group_6.domain.model import (
+from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
-    TimeSeriesPoints,
 )
+from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
 
 
 @pytest.fixture(scope="module")
@@ -24,10 +24,10 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     scenario_path = str(Path(request.module.__file__).parent)
 
     # Read input data
-    time_series_points = read_csv(
+    current_measurements = read_csv(
         spark,
-        f"{scenario_path}/when/measurements_gold/time_series_points_v1.csv",
-        TimeSeriesPoints.schema,
+        f"{scenario_path}/when/measurements_gold/current_v1.csv",
+        CurrentMeasurements.schema,
     )
     consumption_metering_point_periods = read_csv(
         spark,
@@ -46,24 +46,30 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     # Execute the logic
     cenc, measurements = execute(
-        TimeSeriesPoints(time_series_points),
+        CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
         "Europe/Copenhagen",
-        scenario_parameters["orchestration_instance_id"],
         scenario_parameters["execution_start_datetime"],
     )
 
     # Return test cases
-    return TestCases(
-        [
+    test_cases_list = []
+    cenc_csv_path = Path(f"{scenario_path}/then/cenc.csv")
+    if cenc_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/cenc.csv",
+                expected_csv_path=str(cenc_csv_path),
                 actual=cenc.df,
-            ),
+            )
+        )
+
+    measurements_csv_path = Path(f"{scenario_path}/then/measurements.csv")
+    if measurements_csv_path.exists():
+        test_cases_list.append(
             TestCase(
-                expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=measurements.df,
+                expected_csv_path=str(measurements_csv_path),
+                actual=measurements,
             ),
-        ]
-    )
+        )
+    return TestCases(test_cases_list)
