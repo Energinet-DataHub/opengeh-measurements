@@ -9,3 +9,4 @@ def pytest_runtest_setup() -> None:
     os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
+    os.environ["CORE_INTERNAL_DATABASE_NAME"] = "measurements_core_internal"
