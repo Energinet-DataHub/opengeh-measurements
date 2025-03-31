@@ -59,7 +59,7 @@ class TestWhenValidInput:
         # Arrange
         expected_columns = [
             ContractColumnNames.metering_point_id,
-            ContractColumnNames.date,
+            ContractColumnNames.observation_time,
             ContractColumnNames.quantity,
             ContractColumnNames.orchestration_instance_id,
             ContractColumnNames.orchestration_type,

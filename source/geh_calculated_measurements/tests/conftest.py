@@ -87,13 +87,3 @@ def assert_dataframes_configuration(
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )
-
-
-def _create_databases(spark: SparkSession) -> None:
-    # """
-    # Create Unity Catalog databases as they are not created by migration scripts.
-    # They are created by infrastructure (in the real environments)
-    # In tests they are created in the single available default catalog.
-    # """
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
