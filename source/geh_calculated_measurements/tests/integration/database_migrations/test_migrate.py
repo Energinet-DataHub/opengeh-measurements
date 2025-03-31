@@ -34,7 +34,3 @@ def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
         assert query_result.tables[0].rows, (
             f"No logs were found for the given query:\n{query}\n---\n{query_result.tables}"
         )
-
-    # Cleanup
-    for db in dbs:
-        spark.sql(f"DROP DATABASE IF EXISTS {db} CASCADE")
