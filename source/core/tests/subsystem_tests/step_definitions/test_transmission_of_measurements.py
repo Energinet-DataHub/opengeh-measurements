@@ -3,6 +3,7 @@ from pytest_bdd import given, scenarios, then, when
 
 import tests.helpers.identifier_helper as identifier_helper
 from tests.helpers.builders.submitted_transactions_builder import ValueBuilder
+from tests.subsystem_tests.fixtures.gold_layer_fixture import GoldLayerFixture
 from tests.subsystem_tests.fixtures.kafka_fixture import KafkaFixture
 
 scenarios("../features/transmission_of_measurements.feature")
@@ -16,16 +17,27 @@ class TestData:
 
 @given("a valid measurement transaction", target_fixture="test_data")
 def _(spark: SparkSession) -> TestData:
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    orchestration_instance_id = identifier_helper.create_pseudo_random_metering_point_id()
+    value = (
+        ValueBuilder(spark)
+        .add_row(
+            orchestration_instance_id=orchestration_instance_id,
+        )
+        .build()
+    )
     return TestData(orchestration_instance_id, value)
 
 
 @when("the measurement transaction is enqueued in the Event Hub")
-def _(core_fixture: KafkaFixture, test_data: TestData) -> None:
-    core_fixture.send_submitted_transactions_event(test_data.value)
+def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
+    kafka_fixture.send_submitted_transactions_event(test_data.value)
+
+
+@then("the measurement transaction is available in the Gold Layer")
+def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
+    gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id)
 
 
 @then("an acknowledgement is sent to the Event Hub")
-def _(core_fixture: KafkaFixture, test_data: TestData) -> None:
-    core_fixture.assert_receipt(test_data.orchestration_instance_id)
+def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
+    kafka_fixture.assert_receipt(test_data.orchestration_instance_id)
