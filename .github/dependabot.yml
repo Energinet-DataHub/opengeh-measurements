@@ -7,7 +7,7 @@ updates:
       interval: "weekly"
       time: "08:00"
       timezone: "Europe/Copenhagen"
-    versioning-strategy: increase
+    versioning-strategy: "increase"
     assignees:
       - "awha86"
       - "Gizmooa"
@@ -42,7 +42,7 @@ updates:
       interval: "weekly"
       time: "08:00"
       timezone: "Europe/Copenhagen"
-    versioning-strategy: increase
+    versioning-strategy: "increase"
     assignees:
       - "awha86"
       - "Gizmooa"
@@ -77,7 +77,7 @@ updates:
       interval: "weekly"
       time: "08:00"
       timezone: "Europe/Copenhagen"
-    versioning-strategy: increase
+    versioning-strategy: "increase"
     assignees:
       - "BjarkeMeier"
       - "energinet-ajw"
