@@ -8,6 +8,13 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
+from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
+    ElectricityMarketMeasurementsInputDatabaseDefinition,
+)
+from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema import (
+    net_consumption_group_6_child_metering_point_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
@@ -42,6 +49,30 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
         table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME,
         schema=CalculatedMeasurements.schema,
         table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
+    )
+
+
+@pytest.fixture(autouse=True)
+def electricity_market_calculated_measurements_create_and_seed_tables(spark: SparkSession) -> None:
+    create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
+
+    # Create and seed parent/child tables
+    parent_file_name = f"{get_test_files_folder_path()}/consumption_metering_point_periods_v1.csv"
+    consumption_metering_point_periods = read_csv_path(
+        spark, parent_file_name, net_consumption_group_6_consumption_metering_point_periods_v1
+    )
+    consumption_metering_point_periods.write.option("overwriteSchema", "true").saveAsTable(
+        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
+        format="delta",
+        mode="overwrite",
+    )
+
+    child_file_name = f"{get_test_files_folder_path()}/child_metering_points_v1.csv"
+    child_metering_points = read_csv_path(spark, child_file_name, net_consumption_group_6_child_metering_point_v1)
+    child_metering_points.write.option("overwriteSchema", "true").saveAsTable(
+        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+        format="delta",
+        mode="overwrite",
     )
 
 

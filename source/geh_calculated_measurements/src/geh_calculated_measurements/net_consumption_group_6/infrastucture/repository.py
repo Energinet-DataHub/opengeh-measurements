@@ -28,7 +28,7 @@ class Repository:
         assert_contract(df.schema, ConsumptionMeteringPointPeriods.schema)
         return ConsumptionMeteringPointPeriods(df)
 
-    def read_net_consumption_group_6_child_metering_point_periods(self) -> ChildMeteringPoints:
+    def read_net_consumption_group_6_child_metering_points(self) -> ChildMeteringPoints:
         table_name = f"{self._catalog_name}.{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
 
         df = self._spark.read.format("delta").table(table_name)

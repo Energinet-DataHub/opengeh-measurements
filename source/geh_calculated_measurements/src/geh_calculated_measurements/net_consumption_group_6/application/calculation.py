@@ -27,9 +27,9 @@ def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
     consumption_metering_point_periods = (
-        electricity_market_repository.read_net_consumption_group_6_child_metering_point_periods()
+        electricity_market_repository.read_net_consumption_group_6_consumption_metering_point_periods()
     )
-    child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_point_periods()
+    child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
     _, calculated_measurements_daily = execute(
         current_measurements,
