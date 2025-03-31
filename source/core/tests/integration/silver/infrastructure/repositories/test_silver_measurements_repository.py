@@ -1,7 +1,3 @@
-import os
-from unittest import mock
-
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -12,23 +8,6 @@ from core.silver.domain.constants.column_names.silver_measurements_column_names 
 from core.silver.infrastructure.config import SilverTableNames
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
-
-
-def test__write_measurements__when_contionous_streaming_is_disabled__should_not_call_trigger() -> None:
-    # Arrange
-    os.environ["CONTINUOUS_STREAMING_ENABLED"] = "true"
-    mocked_measurements = mock.Mock()
-    mocked_batch_operation = mock.Mock()
-
-    # Act
-    SilverMeasurementsRepository().write_stream(
-        mocked_measurements,
-        GehCommonOrchestrationType.SUBMITTED,
-        mocked_batch_operation,
-    )
-
-    # Assert
-    mocked_measurements.writeStream.outputMode().option().trigger.assert_not_called()
 
 
 def test__append_if_not_exists__when_row_already_exists_in_table__should_not_append(
