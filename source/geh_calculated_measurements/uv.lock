@@ -473,8 +473,8 @@ dev = [
 
 [[package]]
 name = "geh-common"
-version = "5.4.2"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=achter%2Fcovernator#4f5106c28da5a2f258783c0092bfa1056da6eea7" }
+version = "5.5.0"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=achter%2Fcovernator#0779bf689ad2b68bbc7bf28d995fb49e0955a628" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
