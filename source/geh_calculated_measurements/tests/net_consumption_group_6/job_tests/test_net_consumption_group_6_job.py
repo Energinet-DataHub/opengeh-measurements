@@ -29,12 +29,12 @@ def test_execute(
     execute()
 
     # Assert
-    actual_calculated_measurements = spark.read.table(
+    parent_calculated_measurements = spark.read.table(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
     )
-    assert actual_calculated_measurements.count() > 0
+    assert parent_calculated_measurements.count() > 0
 
-    actual_calculated_measurements = spark.read.table(
+    child_calculated_measurements = spark.read.table(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
     )
-    assert actual_calculated_measurements.count() > 0
+    assert child_calculated_measurements.count() > 0
