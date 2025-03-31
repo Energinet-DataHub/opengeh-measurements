@@ -34,7 +34,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         OrchestrationType.ELECTRICAL_HEATING,
         MeteringPointType.ELECTRICAL_HEATING,
         "Europe/Copenhagen",
-        datetime.fromisoformat("2025-03-31T12:34:56Z"),
+        datetime.fromisoformat("2025-03-31T12:34:56+00:00"),
     )
 
     # Return test cases
