@@ -12,6 +12,7 @@ from core.silver.domain.constants.column_names.silver_measurements_column_names 
 from core.silver.domain.constants.enums.metering_point_type_dh2_enum import convert_dh2_mpt_to_dh3
 from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
+from core.silver.domain.constants.enums.unit_dh2_enum import convert_dh2_unit_to_dh3
 
 MIGRATION_ORCHESTRATION_INSTANCE_ID = "00000000-0000-0000-0000-000000000000"
 
@@ -33,7 +34,9 @@ def transform(migrated_transactions: DataFrame) -> DataFrame:
         convert_dh2_mpt_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.type_of_mp)).alias(
             SilverMeasurementsColumnNames.metering_point_type
         ),
-        F.col(BronzeMigratedTransactionsColumnNames.unit).alias(SilverMeasurementsColumnNames.unit),
+        convert_dh2_unit_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.unit)).alias(
+            SilverMeasurementsColumnNames.unit
+        ),
         F.col(BronzeMigratedTransactionsColumnNames.resolution).alias(SilverMeasurementsColumnNames.resolution),
         F.col(BronzeMigratedTransactionsColumnNames.valid_from_date).alias(
             SilverMeasurementsColumnNames.start_datetime

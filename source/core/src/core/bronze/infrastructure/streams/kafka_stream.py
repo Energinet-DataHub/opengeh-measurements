@@ -2,12 +2,10 @@ from pyspark.sql import SparkSession
 
 import core.utility.shared_helpers as shared_helpers
 from core.bronze.infrastructure.config import BronzeTableNames
-from core.bronze.infrastructure.settings import (
-    SubmittedTransactionsStreamSettings,
-)
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.kafka_authentication_settings import KafkaAuthenticationSettings
 from core.settings.storage_account_settings import StorageAccountSettings
+from core.settings.streaming_settings import StreamingSettings
 
 
 class KafkaStream:
@@ -31,7 +29,7 @@ class KafkaStream:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        stream_settings = SubmittedTransactionsStreamSettings()
+        stream_settings = StreamingSettings()
 
         if stream_settings.continuous_streaming_enabled is False:
             write_stream = write_stream.trigger(availableNow=True)
