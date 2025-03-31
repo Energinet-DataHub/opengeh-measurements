@@ -9,12 +9,13 @@ from core.bronze.infrastructure.repositories.migrated_transactions_repository im
 from core.silver.infrastructure.repositories.silver_measurements_repository import (
     SilverMeasurementsRepository,
 )
+from core.silver.infrastructure.streams.silver_measurements_stream import SilverMeasurementsStream
 
 
 def stream_migrated_transactions_to_silver() -> None:
     spark = spark_session.initialize_spark()
     bronze_migrated_transactions_repository = MigratedTransactionsRepository(spark)
-    silver_repository = SilverMeasurementsRepository()
+    silver_repository = SilverMeasurementsStream()
 
     bronze_migrated = bronze_migrated_transactions_repository.read_stream()
 

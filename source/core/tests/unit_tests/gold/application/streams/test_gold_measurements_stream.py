@@ -13,7 +13,7 @@ def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     mocker.patch.object(sut, "SilverMeasurementsRepository", return_value=silver_repo_mock)
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
-    silver_repo_mock.read_stream.return_value = Mock()
+    silver_repo_mock.read.return_value = Mock()
 
     # Act
     sut.stream_measurements_silver_to_gold()

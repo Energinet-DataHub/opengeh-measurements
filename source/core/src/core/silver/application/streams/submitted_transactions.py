@@ -10,13 +10,13 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
     InvalidSubmittedTransactionsRepository,
 )
 from core.bronze.infrastructure.repositories.submitted_transactions_repository import SubmittedTransactionsRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.streams.silver_measurements_stream import SilverMeasurementsStream
 
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = SubmittedTransactionsRepository(spark).read()
-    SilverMeasurementsRepository().write_stream(
+    SilverMeasurementsStream().write_stream(
         submitted_transactions,
         GehCommonOrchestrationType.SUBMITTED,
         _batch_operation,
