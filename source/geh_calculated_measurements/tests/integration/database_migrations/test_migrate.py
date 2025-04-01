@@ -1,26 +1,16 @@
-from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
-    CalculatedMeasurementsDatabaseDefinition,
-)
-from geh_calculated_measurements.database_migrations.database_definitions import (
-    MeasurementsCalculatedInternalDatabaseDefinition,
-)
 from geh_calculated_measurements.database_migrations.entry_point import migrate
 from geh_calculated_measurements.testing.utilities.create_azure_log_query_runner import (
     LogsQueryStatus,
     create_azure_log_query_runner,
 )
+from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
 
 
 def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
     # Arrange
     azure_query_runnner = create_azure_log_query_runner(monkeypatch)
     timeout_minutes = 15
-    dbs = [
-        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
-        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
-    ]
-    for db in dbs:
-        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+    ensure_calculated_measurements_databases_exist(spark)
 
     # Act
     expected_log_messages = [
@@ -46,5 +36,4 @@ def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
         )
 
     # Cleanup
-    for db in dbs:
-        spark.sql(f"DROP DATABASE IF EXISTS {db} CASCADE")
+    drop_calculated_measurements_databases(spark)
