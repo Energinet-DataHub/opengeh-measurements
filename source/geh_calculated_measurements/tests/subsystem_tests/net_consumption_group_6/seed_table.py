@@ -52,7 +52,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
     statements.append(f"""
     INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
         metering_point_id,
-        metering_type,
+        metering_point_type,
         parent_metering_point_id,
         coupled_date,
         uncoupled_date
