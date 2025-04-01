@@ -3,7 +3,6 @@ from pyspark.sql import DataFrame
 import core.gold.infrastructure.config.spark as spark_session
 from core.gold.infrastructure.config.external_database_names import ExternalDatabaseNames
 from core.gold.infrastructure.config.external_view_names import ExternalViewNames
-from core.settings import StorageAccountSettings
 
 
 class CalculatedMeasurementsRepository:
