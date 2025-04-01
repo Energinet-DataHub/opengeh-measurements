@@ -1,4 +1,3 @@
-import os
 
 import pytest
 from geh_common.testing.dataframes import AssertDataframesConfiguration, assert_dataframes_and_schemas
