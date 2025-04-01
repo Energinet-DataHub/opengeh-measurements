@@ -1,8 +1,10 @@
+import os
 import uuid
 
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
+from tests import create_job_environment_variables
 
 
 def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
@@ -27,7 +29,7 @@ def test_execute(
     # Arrange
     orchestration_instance_id = uuid.uuid4()
     monkeypatch.setattr("sys.argv", _create_job_arguments(orchestration_instance_id))
-    monkeypatch.setattr("os.environ", dummy_env_args)
+    monkeypatch.setattr(os, "environ", create_job_environment_variables())
 
     # Act
     execute()
