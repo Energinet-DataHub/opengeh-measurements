@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from geh_common.testing.dataframes import write_when_files_to_delta
@@ -13,8 +14,8 @@ from geh_calculated_measurements.database_migrations.settings.catalog_settings i
 from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
 
 
-@pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession, dummy_logging):
+@pytest.fixture(scope="module")
+def migrations_executed(spark: SparkSession, dummy_logging: None) -> Generator[None, None, None]:
     """Executes all migrations.
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when

@@ -13,7 +13,7 @@ from tests import TESTS_ROOT, create_job_environment_variables
 from tests.testsession_configuration import TestSessionConfiguration
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def dummy_logging() -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
     env_args = create_job_environment_variables()
