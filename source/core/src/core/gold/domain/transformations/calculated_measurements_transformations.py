@@ -28,6 +28,7 @@ def transform_calculated_to_gold(df: DataFrame) -> DataFrame:
         F.col(CalculatedMeasurementsColumnNames.transaction_creation_datetime).alias(
             GoldMeasurementsColumnNames.transaction_creation_datetime
         ),
+        F.lit(False).alias(GoldMeasurementsColumnNames.is_cancelled),
         F.current_timestamp().alias(GoldMeasurementsColumnNames.created),
         F.current_timestamp().alias(GoldMeasurementsColumnNames.modified),
     )
