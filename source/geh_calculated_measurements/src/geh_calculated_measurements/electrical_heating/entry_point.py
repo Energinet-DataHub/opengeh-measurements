@@ -13,8 +13,7 @@ from geh_calculated_measurements.electrical_heating.application.electrical_heati
 
 def execute() -> None:
     electrical_heating_args = ElectricalHeatingArgs()  # Retrieve calculation oriented settings / job arguments
-    logging_settings = LoggingSettings(subsystem="measurements", cloud_role_name="dbr-electrical-heating")
-    configure_logging(logging_settings=logging_settings)
+    logging_settings = configure_logging(subsystem="measurements", cloud_role_name="dbr-electrical-heating")
     orchestrate_business_logic(job_arguments=electrical_heating_args, logging_settings=logging_settings)
 
 
