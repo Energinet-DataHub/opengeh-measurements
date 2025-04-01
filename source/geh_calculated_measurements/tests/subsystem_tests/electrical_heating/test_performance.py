@@ -34,41 +34,38 @@ class TestElectricalHeating(JobTest):
 
     @pytest.fixture(autouse=True, scope="class")
     def patch_repositories(self, fixture: JobTestFixture) -> None:
-        environment_configuration = fixture.config
-        monkeypatch = pytest.MonkeyPatch()
-        # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
-        monkeypatch.setattr(
-            MeasurementsGoldDatabaseDefinition,
-            "DATABASE_NAME",
-            environment_configuration.schema_name,
-        )
-        monkeypatch.setattr(
-            MeasurementsGoldDatabaseDefinition,
-            "CURRENT_MEASUREMENTS",
-            environment_configuration.time_series_points_table,
-        )
-
-        # Patch read_consumption_metering_point_periods
-        def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
-            table_name = (
-                f"{environment_configuration.schema_name}.{environment_configuration.consumption_metering_points_table}"
+        with pytest.MonkeyPatch.context() as monkeypatch:
+            # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
+            monkeypatch.setattr(
+                MeasurementsGoldDatabaseDefinition,
+                "DATABASE_NAME",
+                fixture.config.schema_name,
             )
-            df = self._spark.read.format("delta").table(table_name)
-            return ConsumptionMeteringPointPeriods(df)
-
-        # Patch read_child_metering_points
-        def patched_read_child_metering_points(self) -> ChildMeteringPoints:
-            table_name = (
-                f"{environment_configuration.schema_name}.{environment_configuration.child_metering_points_table}"
+            monkeypatch.setattr(
+                MeasurementsGoldDatabaseDefinition,
+                "CURRENT_MEASUREMENTS",
+                fixture.config.time_series_points_table,
             )
-            df = self._spark.read.format("delta").table(table_name)
-            return ChildMeteringPoints(df)
 
-        monkeypatch.setattr(
-            ElectricityMarketRepository,
-            "read_consumption_metering_point_periods",
-            patched_read_consumption_metering_point_periods,
-        )
-        monkeypatch.setattr(
-            ElectricityMarketRepository, "read_child_metering_points", patched_read_child_metering_points
-        )
+            # Patch read_consumption_metering_point_periods
+            def patched_read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
+                table_name = f"{fixture.config.schema_name}.{fixture.config.consumption_metering_points_table}"
+                df = self._spark.read.format("delta").table(table_name)
+                return ConsumptionMeteringPointPeriods(df)
+
+            # Patch read_child_metering_points
+            def patched_read_child_metering_points(self) -> ChildMeteringPoints:
+                table_name = f"{fixture.config.schema_name}.{fixture.config.child_metering_points_table}"
+                df = self._spark.read.format("delta").table(table_name)
+                return ChildMeteringPoints(df)
+
+            monkeypatch.setattr(
+                ElectricityMarketRepository,
+                "read_consumption_metering_point_periods",
+                patched_read_consumption_metering_point_periods,
+            )
+            monkeypatch.setattr(
+                ElectricityMarketRepository,
+                "read_child_metering_points",
+                patched_read_child_metering_points,
+            )
