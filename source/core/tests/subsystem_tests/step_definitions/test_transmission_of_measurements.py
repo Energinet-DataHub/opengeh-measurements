@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pytest_bdd import given, scenarios, then, when
+from pytest_bdd import given, scenarios, then
 
 import tests.helpers.identifier_helper as identifier_helper
 from tests.helpers.builders.submitted_transactions_builder import ValueBuilder
@@ -15,8 +15,8 @@ class TestData:
         self.value = value
 
 
-@given("a valid measurement transaction", target_fixture="test_data")
-def _(spark: SparkSession) -> TestData:
+@given("a valid measurement transaction is enqueued in the Event Hub", target_fixture="test_data")
+def _(spark: SparkSession, kafka_fixture: KafkaFixture) -> TestData:
     orchestration_instance_id = identifier_helper.create_pseudo_random_metering_point_id()
     value = (
         ValueBuilder(spark)
@@ -25,12 +25,9 @@ def _(spark: SparkSession) -> TestData:
         )
         .build()
     )
-    return TestData(orchestration_instance_id, value)
-
-
-@when("the measurement transaction is enqueued in the Event Hub")
-def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
+    test_data = TestData(orchestration_instance_id, value)
     kafka_fixture.send_submitted_transactions_event(test_data.value)
+    return test_data
 
 
 @then("the measurement transaction is available in the Gold Layer")
