@@ -1,8 +1,6 @@
 from typing import Generator
-from unittest import mock
 from unittest.mock import patch
 
-import geh_common.telemetry.logging_configuration as config
 import pytest
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
