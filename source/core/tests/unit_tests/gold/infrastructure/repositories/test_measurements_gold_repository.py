@@ -3,6 +3,8 @@ from unittest import mock
 
 from pytest_mock import MockFixture
 
+from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
+from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 
 
@@ -15,8 +17,8 @@ def test__start_write_stream__calls_expected(
     mocker.patch("core.gold.infrastructure.config.spark.initialize_spark")
     # Act
     GoldMeasurementsRepository().write_stream(
-        "measurements",
-        "measurements_silver_to_gold",
+        CheckpointNames.SILVER_TO_GOLD.value,
+        QueryNames.SILVER_TO_GOLD.value,
         mocked_measurements,
         mocked_batch_operation,
     )
@@ -43,7 +45,10 @@ def test__start_write_stream__when_contionous_streaming_is_disabled__should_not_
     mocker.patch("core.gold.infrastructure.config.spark.initialize_spark")
     # Act
     GoldMeasurementsRepository().write_stream(
-        "measurements", "measurements_silver_to_gold", mocked_measurements, mocked_batch_operation
+        CheckpointNames.SILVER_TO_GOLD.value,
+        QueryNames.SILVER_TO_GOLD.value,
+        mocked_measurements,
+        mocked_batch_operation,
     )
 
     # Assert

@@ -1,5 +1,7 @@
 from unittest import mock
 
+from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
+from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 
 
@@ -10,8 +12,8 @@ def test__start_write_stream__calls_expected(mock_checkpoint_path: mock.MagicMoc
     with mock.patch("core.gold.infrastructure.config.spark.initialize_spark"):
         # Act
         GoldMeasurementsRepository().write_stream(
-            "measurements",
-            "measurements_calculated_to_gold",
+            CheckpointNames.CALCULATED_TO_GOLD.value,
+            QueryNames.CALCULATED_TO_GOLD.value,
             mocked_measurements,
             mocked_batch_operation,
         )

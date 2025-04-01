@@ -1,6 +1,8 @@
 from pyspark.sql.dataframe import DataFrame
 
 import core.gold.domain.transformations.calculated_measurements_transformations as transformations
+from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
+from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.calculated_measurements_repository import CalculatedMeasurementsRepository
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 
@@ -8,7 +10,10 @@ from core.gold.infrastructure.repositories.gold_measurements_repository import G
 def stream_measurements_calculated_to_gold() -> None:
     calculated_measurements = CalculatedMeasurementsRepository().read_stream()
     GoldMeasurementsRepository().write_stream(
-        "measurements_calculated", "measurements_calculated_to_gold", calculated_measurements, _batch_operation
+        CheckpointNames.CALCULATED_TO_GOLD.value,
+        QueryNames.CALCULATED_TO_GOLD.value,
+        calculated_measurements,
+        _batch_operation,
     )
 
 
