@@ -1,6 +1,5 @@
 from typing import Callable
 
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.utility.shared_helpers as shared_helpers

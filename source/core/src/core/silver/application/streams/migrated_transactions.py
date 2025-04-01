@@ -1,4 +1,3 @@
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.bronze.application.config.spark_session as spark_session
@@ -19,9 +18,8 @@ def stream_migrated_transactions_to_silver() -> None:
 
     bronze_migrated = bronze_migrated_transactions_repository.read_stream()
 
-    silver_repository.write_stream(
+    silver_repository.stream_migrated_transactions(
         measurements=bronze_migrated,
-        orchestration_type=GehCommonOrchestrationType.MIGRATION,
         batch_operation=_batch_operation,
     )
 
