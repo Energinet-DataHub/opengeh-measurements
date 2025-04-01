@@ -40,7 +40,5 @@ class TestNetConsumptionGroup6(BaseJobTests):
     """
 
     @pytest.mark.skip(reason="Skipped due to issues with the telemetry data not available in the logs.")
-    def test__and_then_data_is_written_to_delta(
-        self, environment_configuration: EnvironmentConfiguration, job_fixture: BaseJobFixture
-    ) -> None:
+    def test__and_then_job_telemetry_is_created(self, job_fixture: BaseJobFixture) -> None:
         pass
