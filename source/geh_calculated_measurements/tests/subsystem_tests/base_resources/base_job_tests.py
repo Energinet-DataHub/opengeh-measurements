@@ -64,6 +64,9 @@ class BaseJobTests:
         # Act
         response = job_fixture.execute_statement(statement)
 
+        print("reponse:", response)
+        print("reponse result:", response.result)
+
         # Assert
         row_count = getattr(response.result, "row_count", 0)
         assert row_count > 0, (
