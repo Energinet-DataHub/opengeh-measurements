@@ -44,5 +44,5 @@ def test_when_parameters__parses_parameters_from_contract(monkeypatch) -> None:
     assert actual_args.time_zone == _EXPECTED_TIME_ZONE
     assert actual_args.catalog_name == _EXPECTED_CATALOG_NAME
     assert actual_args.grid_area_codes == _EXPECTED_GRID_AREA_CODES
-    assert actual_args.period_end_datetime == _EXPECTED_PERIOD_START_DATETIME
-    assert actual_args.period_start_datetime == _EXPECTED_PERIOD_END_DATETIME
+    assert actual_args.period_start_datetime == _EXPECTED_PERIOD_START_DATETIME
+    assert actual_args.period_end_datetime == _EXPECTED_PERIOD_END_DATETIME
