@@ -27,8 +27,8 @@ public class GetAggregatedMeasurementsResponse
                     measurement.MinObservationTime,
                     measurement.MaxObservationTime,
                     measurement.Quantity,
-                    QualityParser.ParseQuality(measurement.Quality),
-                    UnitParser.ParseUnit(measurement.Unit)))
+                    measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)),
+                    measurement.PointCount))
             .ToList();
 
         return measurementAggregations.Count <= 0

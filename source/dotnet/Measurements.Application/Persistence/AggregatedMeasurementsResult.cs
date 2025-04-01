@@ -11,9 +11,9 @@ public class AggregatedMeasurementsResult(ExpandoObject raw)
 
     public Instant MaxObservationTime => Instant.FromDateTimeOffset(_raw.max_observation_time);
 
-    public decimal Quantity => _raw.quantity;
+    public decimal Quantity => _raw.aggregated_quantity;
 
-    public string Quality => _raw.quality;
+    public object[] Qualities => _raw.qualities; // TODO: maybe need to be object[]
 
-    public string Unit => _raw.unit;
+    public long PointCount => _raw.point_count;
 }
