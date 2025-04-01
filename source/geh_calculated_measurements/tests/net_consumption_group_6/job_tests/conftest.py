@@ -1,3 +1,5 @@
+from typing import Any, Generator
+
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -52,7 +54,9 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
     )
 
 
-def electricity_market_calculated_measurements_create_and_seed_tables(spark: SparkSession) -> None:
+def electricity_market_calculated_measurements_create_and_seed_tables(
+    spark: SparkSession,
+) -> Generator[None, Any, None]:
     create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
 
     # Create and seed parent/child tables
@@ -73,6 +77,11 @@ def electricity_market_calculated_measurements_create_and_seed_tables(spark: Spa
         format="delta",
         mode="overwrite",
     )
+
+    yield
+
+    spark.sql(f"DROP TABLE IF EXISTS {child_file_name}")
+    spark.sql(f"DROP TABLE IF EXISTS {parent_file_name}")
 
 
 def test_calculated_measurements_table_creation(

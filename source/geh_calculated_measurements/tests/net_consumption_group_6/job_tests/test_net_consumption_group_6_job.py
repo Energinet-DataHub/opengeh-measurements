@@ -20,7 +20,6 @@ def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
     dummy_logging: None,  # Used implicitly
-    # electricity_market_calculated_measurements_create_and_seed_tables: Any,  # Used implicitly
 ) -> None:
     # Arrange
     electricity_market_calculated_measurements_create_and_seed_tables(spark)
