@@ -5,6 +5,7 @@
         <RootNamespace>Energinet.DataHub.Measurements.Client.IntegrationTests</RootNamespace>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,6 +25,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Client\Measurements.Client.csproj" />
       <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
+      <ProjectReference Include="..\Measurements.WebApi\Measurements.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

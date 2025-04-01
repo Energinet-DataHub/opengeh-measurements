@@ -3,20 +3,25 @@ using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.Extensions;
+using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
+using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 
-public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public const string ApplicationIdUri = "https://management.azure.com";
-    public const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
-    public const string CatalogName = "hive_metastore";
+    private const string ApplicationIdUri = "https://management.azure.com";
+    private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
+    private const string CatalogName = "hive_metastore";
 
     public MeasurementsClientFixture()
     {
@@ -25,9 +30,12 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        ServiceProvider = BuildServiceProvider();
     }
 
-    private DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+    public ServiceProvider ServiceProvider { get; }
+
+    private DatabricksSchemaManager DatabricksSchemaManager { get; }
 
     private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
@@ -40,7 +48,6 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
 
     public new async Task DisposeAsync()
     {
-        await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
     }
 
@@ -81,5 +88,24 @@ public class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncL
             "'2025-03-12T03:40:55Z'",
             "false",
         });
+    }
+
+    private ServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
+
+        // var serverAddress = Server.BaseAddress.ToString();
+        var serverAddress = "https://localhost";
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = serverAddress,
+            })
+            .Build();
+
+        services.AddScoped<IConfiguration>(_ => configuration);
+        services.AddMeasurementsClient();
+
+        return services.BuildServiceProvider();
     }
 }
