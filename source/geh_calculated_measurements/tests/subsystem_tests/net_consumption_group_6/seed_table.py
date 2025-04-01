@@ -1,26 +1,26 @@
 from datetime import datetime
 
+from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+
 # TODO BJM: Use values from production code
 database = "electricity_market_measurements_input"
 parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
-child_table = "net_consumption_group_6_child_metering_point_v1"
+child_table = "net_consumption_group_6_child_metering_point_periods_v1"
 
 parent_metering_point_id = "170000000000000201"
 child_metering_point_id = "150000001500170200"
 
 
-def delete_seeded_data(
-    job_fixture,
-) -> None:
+def delete_seeded_data(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
-        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{database}.{parent_table} 
         WHERE metering_point_id = '{parent_metering_point_id}'
     """)
     # CHILD
     statements.append(f"""
-        DELETE FROM {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{database}.{child_table} 
         WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """)
 
@@ -28,13 +28,11 @@ def delete_seeded_data(
         job_fixture.execute_statement(statement)
 
 
-def seed_table(
-    job_fixture,
-) -> None:
+def seed_table(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{parent_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{database}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -53,7 +51,7 @@ def seed_table(
     """)
     # CHILD
     statements.append(f"""
-    INSERT INTO {job_fixture.environment_configuration.catalog_name}.{database}.{child_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
         metering_point_id,
         metering_type,
         parent_metering_point_id,
