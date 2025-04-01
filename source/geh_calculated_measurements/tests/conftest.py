@@ -5,7 +5,7 @@ from typing import Generator
 import geh_common.telemetry.logging_configuration
 import pytest
 from delta import configure_spark_with_delta_pip
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
+from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from pyspark.sql import SparkSession
 
@@ -21,8 +21,7 @@ def dummy_logging() -> Generator[None, None, None]:
         mp.setattr(os, "environ", env_args)
         mp.setattr(geh_common.telemetry.logging_configuration, "configure_azure_monitor", lambda *args, **kwargs: None)
         mp.setattr(geh_common.telemetry.logging_configuration, "get_is_instrumented", lambda *args, **kwargs: False)
-        settings = LoggingSettings(cloud_role_name="test_role", subsystem="test_subsystem")
-        configure_logging(logging_settings=settings)
+        configure_logging(cloud_role_name="test_role", subsystem="test_subsystem")
         yield
 
 
@@ -87,13 +86,3 @@ def assert_dataframes_configuration(
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
     )
-
-
-def _create_databases(spark: SparkSession) -> None:
-    # """
-    # Create Unity Catalog databases as they are not created by migration scripts.
-    # They are created by infrastructure (in the real environments)
-    # In tests they are created in the single available default catalog.
-    # """
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated")
-    spark.sql("CREATE DATABASE IF NOT EXISTS measurements_calculated_internal")
