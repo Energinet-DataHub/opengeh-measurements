@@ -69,3 +69,4 @@ class TestElectricalHeating(JobTest):
                 "read_child_metering_points",
                 patched_read_child_metering_points,
             )
+            yield
