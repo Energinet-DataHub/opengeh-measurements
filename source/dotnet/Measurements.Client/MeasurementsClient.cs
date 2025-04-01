@@ -26,7 +26,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(
@@ -36,26 +36,30 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public Task<IEnumerable<MeasurementPoint>> GetAggregatedMeasurementsForMonth(
+    public async Task<IEnumerable<MeasurementAggregation>> GetAggregatedMeasurementsForMonth(
         GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var url = CreateUrl(query.MeteringPointId, query.YearMonth);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPoint>> ParseMeasurementsResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var measurementPoints = await DeserializeResponseStreamAsync(stream, cancellationToken);
+        var measurementPoints = await DeserializeMeasurementsResponseStreamAsync(stream, cancellationToken);
 
         return measurementPoints;
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> DeserializeResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPoint>> DeserializeMeasurementsResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("Points");
@@ -63,8 +67,31 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
+    private async Task<IEnumerable<MeasurementAggregation>> ParseMeasurementAggregationResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    {
+        if (response.StatusCode == HttpStatusCode.NotFound) return [];
+
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var measurementPoints = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
+
+        return measurementPoints;
+    }
+
+    private async Task<IEnumerable<MeasurementAggregation>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    {
+        var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+        var pointElement = jsonDocument.RootElement.GetProperty("Points");
+
+        return pointElement.Deserialize<IEnumerable<MeasurementAggregation>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+    }
+
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
         return $"/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
+    }
+
+    private static string CreateUrl(string meteringPointId, YearMonth yearMonth)
+    {
+        return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 }
