@@ -7,6 +7,8 @@ using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Azure;
@@ -17,11 +19,12 @@ using Xunit;
 
 namespace Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 
-public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class MeasurementsClientFixture : IAsyncLifetime
 {
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
+    private const string MeasurementsApiUrl = "https://localhost:5001";
 
     public MeasurementsClientFixture()
     {
@@ -30,10 +33,17 @@ public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, 
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        MeasurementsApiApp = BuildMeasurementsApiApp();
         ServiceProvider = BuildServiceProvider();
     }
 
+    public static string TestMeteringPointId => "1234567890";
+
+    public static LocalDate TestDate => new(2023, 1, 2);
+
     public ServiceProvider ServiceProvider { get; }
+
+    private WebApplication MeasurementsApiApp { get; }
 
     private DatabricksSchemaManager DatabricksSchemaManager { get; }
 
@@ -43,23 +53,48 @@ public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, 
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRow(new LocalDate(2023, 1, 2)));
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRow());
+        await MeasurementsApiApp.StartAsync();
     }
 
-    public new async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
         await DatabricksSchemaManager.DropSchemaAsync();
+        await MeasurementsApiApp.StopAsync();
     }
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    private WebApplication BuildMeasurementsApiApp()
     {
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
-        builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
-        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
-        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", CatalogName);
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", Issuer);
+        var builder = ApplicationFactory.CreateBuilder(null!);
+        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl,
+            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken,
+            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
+            [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
+            [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
+            [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
+            [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}"] = Issuer,
+        });
+        builder.WebHost.UseUrls(MeasurementsApiUrl);
+
+        return builder.Build();
+    }
+
+    private static ServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = MeasurementsApiUrl,
+            })
+            .Build();
+
+        services.AddScoped<IConfiguration>(_ => configuration);
+        services.AddMeasurementsClient();
+
+        return services.BuildServiceProvider();
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
@@ -74,13 +109,13 @@ public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, 
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
         };
 
-    private static IEnumerable<IEnumerable<string>> CreateRow(LocalDate observationDate)
+    private static IEnumerable<IEnumerable<string>> CreateRow()
     {
-        var observationTime = observationDate.ToUtcDateTimeOffset();
+        var observationTime = TestDate.ToUtcDateTimeOffset();
 
         return Enumerable.Range(0, 24).Select(i => new[]
         {
-            "'1234567890'",
+            $"'{TestMeteringPointId}'",
             "'kwh'",
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
@@ -88,24 +123,5 @@ public sealed class MeasurementsClientFixture : WebApplicationFactory<Program>, 
             "'2025-03-12T03:40:55Z'",
             "false",
         });
-    }
-
-    private ServiceProvider BuildServiceProvider()
-    {
-        var services = new ServiceCollection();
-
-        // var serverAddress = Server.BaseAddress.ToString();
-        var serverAddress = "https://localhost";
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = serverAddress,
-            })
-            .Build();
-
-        services.AddScoped<IConfiguration>(_ => configuration);
-        services.AddMeasurementsClient();
-
-        return services.BuildServiceProvider();
     }
 }
