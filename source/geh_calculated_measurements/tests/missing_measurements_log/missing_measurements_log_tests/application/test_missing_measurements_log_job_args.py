@@ -13,6 +13,8 @@ _CONTRACTS_PATH = (PROJECT_ROOT / "src" / "geh_calculated_measurements" / CONTAI
 _EXPECTED_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 _EXPECTED_TIME_ZONE = "Europe/Copenhagen"
 _EXPECTED_CATALOG_NAME = "spark_catalog"
+_EXPECTED_PERIOD_START_DATETIME = "2022-05-31T22:00:00Z"
+_EXPECTED_PERIOD_END_DATETIME = "2022-06-01T22:00:00Z"
 _EXPECTED_GRID_AREA_CODES = ["804", "805"]
 
 
@@ -41,3 +43,5 @@ def test_when_parameters__parses_parameters_from_contract(monkeypatch) -> None:
     assert actual_args.time_zone == _EXPECTED_TIME_ZONE
     assert actual_args.catalog_name == _EXPECTED_CATALOG_NAME
     assert actual_args.grid_area_codes == _EXPECTED_GRID_AREA_CODES
+    assert actual_args.period_end_datetime == _EXPECTED_PERIOD_START_DATETIME
+    assert actual_args.period_start_datetime == _EXPECTED_PERIOD_END_DATETIME
