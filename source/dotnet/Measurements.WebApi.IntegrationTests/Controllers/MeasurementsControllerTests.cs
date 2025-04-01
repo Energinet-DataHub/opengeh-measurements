@@ -51,7 +51,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     }
 
     [Fact]
-    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsNoObservations()
+    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -61,10 +61,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Act
         var actualResponse = await _client.GetAsync(url);
-        var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
-        Assert.Empty(actual.Points);
+        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
     [Fact]
