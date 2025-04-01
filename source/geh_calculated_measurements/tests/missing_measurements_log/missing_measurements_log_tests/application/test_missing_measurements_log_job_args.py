@@ -1,7 +1,7 @@
 import os
 import sys
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geh_calculated_measurements.missing_measurements_log.application.missing_measurements_log_args import (
     MissingMeasurementsLogArgs,
@@ -14,8 +14,8 @@ _CONTRACTS_PATH = (PROJECT_ROOT / "src" / "geh_calculated_measurements" / CONTAI
 _EXPECTED_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 _EXPECTED_TIME_ZONE = "Europe/Copenhagen"
 _EXPECTED_CATALOG_NAME = "spark_catalog"
-_EXPECTED_PERIOD_START_DATETIME = datetime(2022, 5, 31, 22, 0, 0)
-_EXPECTED_PERIOD_END_DATETIME = datetime(2022, 6, 1, 22, 0, 0)
+_EXPECTED_PERIOD_START_DATETIME = datetime(2022, 5, 31, 22, 0, 0, tzinfo=timezone.utc)
+_EXPECTED_PERIOD_END_DATETIME = datetime(2022, 6, 1, 22, 0, 0, tzinfo=timezone.utc)
 _EXPECTED_GRID_AREA_CODES = ["804", "805"]
 
 
