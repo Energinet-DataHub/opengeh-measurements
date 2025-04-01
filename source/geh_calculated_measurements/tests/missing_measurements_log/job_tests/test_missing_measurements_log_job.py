@@ -21,7 +21,6 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
 
 def test_execute(
     spark: SparkSession,
-    dummy_env_args: dict[str, str],
     monkeypatch,
     dummy_logging: None,  # Used implicitly
     input_tables_created: None,
