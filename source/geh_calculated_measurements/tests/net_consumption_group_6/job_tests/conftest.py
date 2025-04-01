@@ -52,7 +52,6 @@ def calculated_measurements_table_created(spark: SparkSession) -> None:
     )
 
 
-@pytest.fixture(autouse=True)
 def electricity_market_calculated_measurements_create_and_seed_tables(spark: SparkSession) -> None:
     create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
 
