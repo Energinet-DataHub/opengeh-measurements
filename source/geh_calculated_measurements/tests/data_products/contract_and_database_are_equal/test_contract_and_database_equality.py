@@ -1,23 +1,16 @@
-import os
-
-import pytest
-from geh_common.testing.dataframes import AssertDataframesConfiguration, assert_contract
+from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.contracts.data_products import hourly_calculated_measurements_v1
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import create_job_environment_variables
 
 
 def test_contract_and_schema_are_equal(
-    migrations_executed: None,
-    assert_dataframes_configuration: AssertDataframesConfiguration,
+    migrations_executed: None,  # Used implicitly
     spark: SparkSession,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # Arrange
-    monkeypatch.setattr(os, "environ", create_job_environment_variables())
     view_name = CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME
     database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
     catalog = CatalogSettings().catalog_name

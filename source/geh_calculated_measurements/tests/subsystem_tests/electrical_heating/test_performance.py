@@ -2,15 +2,15 @@ import uuid
 
 import pytest
 
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
 from geh_calculated_measurements.electrical_heating.domain.model.child_metering_points import ChildMeteringPoints
 from geh_calculated_measurements.electrical_heating.domain.model.consumption_metering_point_periods import (
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market.repository import (
+from geh_calculated_measurements.electrical_heating.infrastructure.repository import (
     Repository as ElectricityMarketRepository,
-)
-from geh_calculated_measurements.electrical_heating.infrastructure.measurements_gold.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
 )
 from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
@@ -29,7 +29,7 @@ class TestElectricalHeating(JobTest):
         return JobTestFixture(
             environment_configuration=config,
             job_name="ElectricalHeating",
-            job_parameters={"orchestration-instance-id": uuid.uuid4()},
+            job_job_parametereters={"orchestration-instance-id": uuid.uuid4()},
         )
 
     @pytest.fixture(autouse=True, scope="class")
@@ -44,7 +44,7 @@ class TestElectricalHeating(JobTest):
         )
         monkeypatch.setattr(
             MeasurementsGoldDatabaseDefinition,
-            "TIME_SERIES_POINTS_NAME",
+            "CURRENT_MEASUREMENTS",
             environment_configuration.time_series_points_table,
         )
 
