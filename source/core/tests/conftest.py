@@ -22,7 +22,14 @@ def pytest_runtest_setup() -> None:
 
 @pytest.fixture(scope="session")
 def spark(session_mocker: MockerFixture) -> Generator[SparkSession, None, None]:
-    session, _ = get_spark_test_session()
+    extra_packages = [
+        "org.apache.spark:spark-protobuf_2.12:3.5.4",
+        "org.apache.hadoop:hadoop-azure:3.3.2",
+        "org.apache.hadoop:hadoop-common:3.3.2",
+        "io.delta:delta-spark_2.12:3.1.0",
+        "io.delta:delta-core_2.12:2.3.0",
+    ]
+    session, _ = get_spark_test_session(extra_packages=extra_packages)
     schema_helper.create_schemas(session)
     session_mocker.patch(f"{gold_spark.__name__}.initialize_spark", return_value=session)
 
