@@ -1,20 +1,24 @@
 import pyspark.sql.functions as F
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
-from pyspark.sql import Column, DataFrame, SparkSession
+from pyspark.sql import Column, DataFrame
 
+import core.silver.infrastructure.config.spark_session as spark_session
 import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_migrated_transactions_column_names import (
     BronzeMigratedTransactionsColumnNames,
     BronzeMigratedTransactionsValuesFieldNames,
 )
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
+from core.silver.domain.constants.enums.metering_point_type_dh2_enum import convert_dh2_mpt_to_dh3
 from core.silver.domain.constants.enums.read_reason_enum import ReadReasonEnum
 from core.silver.domain.constants.enums.status_enum import StatusEnum
+from core.silver.domain.constants.enums.unit_dh2_enum import convert_dh2_unit_to_dh3
 
 MIGRATION_ORCHESTRATION_INSTANCE_ID = "00000000-0000-0000-0000-000000000000"
 
 
-def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFrame:
+def transform(migrated_transactions: DataFrame) -> DataFrame:
+    spark = spark_session.initialize_spark()
     current_utc_time = datetime_helper.get_current_utc_timestamp(spark)
 
     measurements = migrated_transactions.select(
@@ -27,10 +31,12 @@ def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFram
         F.col(BronzeMigratedTransactionsColumnNames.transaction_insert_date).alias(
             SilverMeasurementsColumnNames.transaction_creation_datetime
         ),
-        F.col(BronzeMigratedTransactionsColumnNames.type_of_mp).alias(
+        convert_dh2_mpt_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.type_of_mp)).alias(
             SilverMeasurementsColumnNames.metering_point_type
         ),
-        F.col(BronzeMigratedTransactionsColumnNames.unit).alias(SilverMeasurementsColumnNames.unit),
+        convert_dh2_unit_to_dh3(F.col(BronzeMigratedTransactionsColumnNames.unit)).alias(
+            SilverMeasurementsColumnNames.unit
+        ),
         F.col(BronzeMigratedTransactionsColumnNames.resolution).alias(SilverMeasurementsColumnNames.resolution),
         F.col(BronzeMigratedTransactionsColumnNames.valid_from_date).alias(
             SilverMeasurementsColumnNames.start_datetime
@@ -38,7 +44,6 @@ def transform(spark: SparkSession, migrated_transactions: DataFrame) -> DataFram
         F.col(BronzeMigratedTransactionsColumnNames.valid_to_date).alias(SilverMeasurementsColumnNames.end_datetime),
         _reorganize_values_array_to_match_measurements().alias(SilverMeasurementsColumnNames.points),
         _get_is_cancelled().alias(SilverMeasurementsColumnNames.is_cancelled),
-        _get_is_deleted().alias(SilverMeasurementsColumnNames.is_deleted),
         current_utc_time.alias(SilverMeasurementsColumnNames.created),
     )
     return measurements
@@ -61,7 +66,3 @@ def _get_is_cancelled() -> Column:
     return (F.col(BronzeMigratedTransactionsColumnNames.read_reason) == ReadReasonEnum.CAN.value) | (
         F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value
     )
-
-
-def _get_is_deleted() -> Column:
-    return F.col(BronzeMigratedTransactionsColumnNames.status) == StatusEnum.Deleted.value

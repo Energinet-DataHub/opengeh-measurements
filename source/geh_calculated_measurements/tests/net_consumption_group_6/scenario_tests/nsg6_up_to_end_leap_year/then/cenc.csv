@@ -1,2 +1,3 @@
-orchestration_instance_id;metering_point_id;quantity;settlement_year;settlement_month
-00000000-0000-0000-0000-000000000001;150000001500170200;1000;2025;1
+metering_point_id;quantity;settlement_year;settlement_month
+150000001500170200;1000;2024;1
+150000001500170201;3000;2023;3

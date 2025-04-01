@@ -8,13 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
-        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="7.2.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.13" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageReference Include="xunit.categories" Version="2.0.8" />
+        <PackageReference Include="coverlet.collector" Version="6.0.4"/>
+        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="7.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.14" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
+        <PackageReference Include="xunit.categories" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -24,13 +24,17 @@
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
       <ProjectReference Include="..\Measurements.Client\Measurements.Client.csproj" />
-      <ProjectReference Include="..\Measurements.WebApi\Measurements.WebApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <None Update="integrationtest.local.settings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\MeasurementsForMultipleDays.json" />
+      <EmbeddedResource Include="Assets\MeasurementsForDayExcludingHistory.json" />
     </ItemGroup>
 
 </Project>

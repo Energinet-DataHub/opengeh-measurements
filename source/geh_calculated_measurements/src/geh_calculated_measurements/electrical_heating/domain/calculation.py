@@ -1,29 +1,26 @@
-from uuid import UUID
-
 import pyspark.sql.functions as F
-from geh_common.domain.types import MeteringPointType, OrchestrationType
+from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_to_utc
 from geh_common.telemetry import use_span
+from pyspark.sql import DataFrame
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
-from geh_calculated_measurements.common.domain import CalculatedMeasurements, calculated_measurements_factory
+from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     EphemeralColumnNames,
-    TimeSeriesPoints,
 )
 from geh_calculated_measurements.electrical_heating.domain.transformations.common import calculate_hourly_quantity
 
 
 @use_span()
 def execute(
-    time_series_points: TimeSeriesPoints,
+    current_measurements: CurrentMeasurements,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
-    orchestration_instance_id: UUID,
-) -> CalculatedMeasurements:
+) -> DataFrame:
     """Calculate the electrical heating for the given time series points and metering point periods.
 
     Returns the calculated electrical heating in UTC where the new value has changed.
@@ -35,7 +32,7 @@ def execute(
 
     # It's important that time series are aggregated hourly before converting to local time.
     # The reason is that when moving from DST to standard time, the same hour is duplicated in local time.
-    time_series_points_hourly = calculate_hourly_quantity(time_series_points.df)
+    time_series_points_hourly = calculate_hourly_quantity(current_measurements.df)
 
     # Add observation time in local time
     time_series_points_hourly = time_series_points_hourly.select(
@@ -52,7 +49,7 @@ def execute(
 
     # Get old electrical heating in local time
     old_electrical_heating = trans.get_daily_energy_in_local_time(
-        time_series_points.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
+        current_measurements.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
     )
 
     # Filter out unchanged electrical heating
@@ -62,12 +59,4 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    calculated_measurements = calculated_measurements_factory.create(
-        measurements=changed_electrical_heating_in_utc,
-        orchestration_instance_id=orchestration_instance_id,
-        orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
-        metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
-        time_zone=time_zone,
-    )
-
-    return calculated_measurements
+    return changed_electrical_heating_in_utc
