@@ -14,13 +14,13 @@ class SilverMeasurementsStream:
         self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
         self.silver_container_name = SilverSettings().silver_container_name
 
-    def write_stream(
-        self,
-        measurements: DataFrame,
-        orchestration_type: GehCommonOrchestrationType,
-        batch_operation: Callable[["DataFrame", int], None],
+    def stream_submitted_transactions(
+        self, measurements: DataFrame, batch_operation: Callable[["DataFrame", int], None]
     ) -> bool | None:
-        checkpoint_location = self._get_streaming_checkpoint_path(orchestration_type)
+        checkpoint_name = "submitted_transactions"
+        checkpoint_location = shared_helpers.get_checkpoint_path(
+            self.data_lake_settings, self.silver_container_name, checkpoint_name
+        )
 
         write_stream = (
             measurements.writeStream.outputMode("append")
@@ -33,10 +33,21 @@ class SilverMeasurementsStream:
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
 
-    def _get_streaming_checkpoint_path(self, orchestration_type: GehCommonOrchestrationType) -> str:
-        if orchestration_type == GehCommonOrchestrationType.SUBMITTED:
-            checkpoint_name = "submitted_transactions"
-        elif orchestration_type == GehCommonOrchestrationType.MIGRATION:
-            checkpoint_name = "migrated_transactions"
+    def stream_migrated_transactions(
+        self, measurements: DataFrame, batch_operation: Callable[["DataFrame", int], None]
+    ) -> bool | None:
+        checkpoint_name = "migrated_transactions"
+        checkpoint_location = shared_helpers.get_checkpoint_path(
+            self.data_lake_settings, self.silver_container_name, checkpoint_name
+        )
 
-        return shared_helpers.get_checkpoint_path(self.data_lake_settings, self.silver_container_name, checkpoint_name)
+        write_stream = (
+            measurements.writeStream.outputMode("append")
+            .format("delta")
+            .option("checkpointLocation", checkpoint_location)
+        )
+
+        stream_settings = StreamingSettings()
+        write_stream = stream_settings.apply_streaming_settings(write_stream)
+
+        return write_stream.foreachBatch(batch_operation).start().awaitTermination()
