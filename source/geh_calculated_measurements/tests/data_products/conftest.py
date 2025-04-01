@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import ensure_calculated_measurements_databases_exist
+from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
 
 
 @pytest.fixture(scope="session")
@@ -25,6 +25,9 @@ def migrations_executed(spark: SparkSession, dummy_logging):
     ensure_calculated_measurements_databases_exist(spark)
 
     migrate()
+    yield
+
+    drop_calculated_measurements_databases(spark)
 
 
 @pytest.fixture(scope="module")

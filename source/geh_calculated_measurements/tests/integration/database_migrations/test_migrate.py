@@ -3,7 +3,7 @@ from geh_calculated_measurements.testing.utilities.create_azure_log_query_runner
     LogsQueryStatus,
     create_azure_log_query_runner,
 )
-from tests import ensure_calculated_measurements_databases_exist
+from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
 
 
 def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
@@ -34,3 +34,6 @@ def test__when_running_migrate__then_log_is_produced(spark, monkeypatch):
         assert query_result.tables[0].rows, (
             f"No logs were found for the given query:\n{query}\n---\n{query_result.tables}"
         )
+
+    # Cleanup
+    drop_calculated_measurements_databases(spark)
