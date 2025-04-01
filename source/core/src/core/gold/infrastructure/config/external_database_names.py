@@ -1,2 +1,2 @@
 class ExternalDatabaseNames:
-    calculated = "calculated"
+    calculated = "measurements_calculated"
