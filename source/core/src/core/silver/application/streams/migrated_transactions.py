@@ -1,4 +1,3 @@
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.bronze.application.config.spark_session as spark_session
@@ -9,18 +8,14 @@ from core.bronze.infrastructure.repositories.migrated_transactions_repository im
 from core.silver.infrastructure.repositories.silver_measurements_repository import (
     SilverMeasurementsRepository,
 )
+from core.silver.infrastructure.streams.silver_measurements_stream import SilverMeasurementsStream
 
 
 def stream_migrated_transactions_to_silver() -> None:
     spark = spark_session.initialize_spark()
-    bronze_migrated_transactions_repository = MigratedTransactionsRepository(spark)
-    silver_repository = SilverMeasurementsRepository()
-
-    bronze_migrated = bronze_migrated_transactions_repository.read_stream()
-
-    silver_repository.write_stream(
+    bronze_migrated = MigratedTransactionsRepository(spark).read_stream()
+    SilverMeasurementsStream().stream_migrated_transactions(
         measurements=bronze_migrated,
-        orchestration_type=GehCommonOrchestrationType.MIGRATION,
         batch_operation=_batch_operation,
     )
 
