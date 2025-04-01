@@ -10,16 +10,15 @@ def test__start_write_stream__calls_expected(mock_checkpoint_path: mock.MagicMoc
     with mock.patch("core.gold.infrastructure.config.spark.initialize_spark"):
         # Act
         GoldMeasurementsRepository().write_stream(
-            "ext_measurements_calculated_to_gold",
+            "measurements",
+            "measurements_calculated_to_gold",
             mocked_measurements,
             mocked_batch_operation,
         )
 
         # Assert
         mocked_measurements.writeStream.format.assert_called_once_with("delta")
-        mocked_measurements.writeStream.format().queryName.assert_called_once_with(
-            "ext_measurements_calculated_to_gold"
-        )
+        mocked_measurements.writeStream.format().queryName.assert_called_once_with("measurements_calculated_to_gold")
         mocked_measurements.writeStream.format().queryName().option().trigger.assert_called_once_with(availableNow=True)
         mocked_measurements.writeStream.format().queryName().option().trigger().foreachBatch.assert_called_once_with(
             mocked_batch_operation

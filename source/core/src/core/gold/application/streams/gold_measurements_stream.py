@@ -7,7 +7,9 @@ from core.silver.infrastructure.repositories.silver_measurements_repository impo
 
 def stream_measurements_silver_to_gold() -> None:
     silver_measurements = SilverMeasurementsRepository().read_stream()
-    GoldMeasurementsRepository().write_stream("measurements_silver_to_gold", silver_measurements, _batch_operation)
+    GoldMeasurementsRepository().write_stream(
+        "measurements", "measurements_silver_to_gold", silver_measurements, _batch_operation
+    )
 
 
 def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:

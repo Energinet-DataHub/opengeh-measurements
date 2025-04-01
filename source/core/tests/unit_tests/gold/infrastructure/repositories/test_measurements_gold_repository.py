@@ -15,6 +15,7 @@ def test__start_write_stream__calls_expected(
     mocker.patch("core.gold.infrastructure.config.spark.initialize_spark")
     # Act
     GoldMeasurementsRepository().write_stream(
+        "measurements",
         "measurements_silver_to_gold",
         mocked_measurements,
         mocked_batch_operation,
@@ -42,7 +43,7 @@ def test__start_write_stream__when_contionous_streaming_is_disabled__should_not_
     mocker.patch("core.gold.infrastructure.config.spark.initialize_spark")
     # Act
     GoldMeasurementsRepository().write_stream(
-        "measurements_silver_to_gold", mocked_measurements, mocked_batch_operation
+        "measurements", "measurements_silver_to_gold", mocked_measurements, mocked_batch_operation
     )
 
     # Assert

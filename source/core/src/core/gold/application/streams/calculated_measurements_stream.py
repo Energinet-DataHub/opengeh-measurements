@@ -8,7 +8,7 @@ from core.gold.infrastructure.repositories.gold_measurements_repository import G
 def stream_measurements_calculated_to_gold() -> None:
     calculated_measurements = CalculatedMeasurementsRepository().read_stream()
     GoldMeasurementsRepository().write_stream(
-        "ext_measurements_calculated_to_gold", calculated_measurements, _batch_operation
+        "measurements_calculated", "measurements_calculated_to_gold", calculated_measurements, _batch_operation
     )
 
 

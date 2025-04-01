@@ -23,7 +23,8 @@ def test__stream_measurements_calculated_to_gold__calls_expected(spark: SparkSes
         # Assert
         calculated_repo_mock.read_stream.assert_called_once()
         gold_repo_mock.write_stream.assert_called_once_with(
-            "ext_measurements_calculated_to_gold",
+            "measurements_calculated",
+            "measurements_calculated_to_gold",
             calculated_repo_mock.read_stream.return_value,
             sut._batch_operation,
         )

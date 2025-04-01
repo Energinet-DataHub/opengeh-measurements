@@ -22,12 +22,13 @@ class GoldMeasurementsRepository:
 
     def write_stream(
         self,
+        checkpoint_name: str,
         query_name: str,
         source_table: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            self.data_lake_settings, self.gold_container_name, GoldTableNames.gold_measurements
+            self.data_lake_settings, self.gold_container_name, checkpoint_name
         )
 
         write_stream = (
