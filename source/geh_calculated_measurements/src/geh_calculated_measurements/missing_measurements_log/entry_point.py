@@ -15,8 +15,7 @@ def execute() -> None:
     missing_measurements_log_args = (
         MissingMeasurementsLogArgs()
     )  # Retrieve calculation oriented settings / job arguments
-    logging_settings = LoggingSettings(subsystem="measurements", cloud_role_name="dbr-missing-measurements-log")
-    configure_logging(logging_settings=logging_settings)
+    logging_settings = configure_logging(subsystem="measurements", cloud_role_name="dbr-missing-measurements-log")
     orchestrate_business_logic(job_arguments=missing_measurements_log_args, logging_settings=logging_settings)
 
 
