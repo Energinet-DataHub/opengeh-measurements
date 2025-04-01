@@ -29,9 +29,6 @@ class KafkaStream:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        stream_settings = StreamingSettings()
-
-        if stream_settings.continuous_streaming_enabled is False:
-            write_stream = write_stream.trigger(availableNow=True)
+        write_stream = StreamingSettings().apply_streaming_settings(write_stream)
 
         write_stream.toTable(f"{self.bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_table}")

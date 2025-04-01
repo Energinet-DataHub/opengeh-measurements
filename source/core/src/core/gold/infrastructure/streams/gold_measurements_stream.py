@@ -30,7 +30,6 @@ class GoldMeasurementsStream:
             .option("checkpointLocation", checkpoint_location)
         )
 
-        if StreamingSettings().continuous_streaming_enabled is False:
-            write_stream = write_stream.trigger(availableNow=True)
+        write_stream = StreamingSettings().apply_streaming_settings(write_stream)
 
         return write_stream.foreachBatch(batch_operation).start().awaitTermination()
