@@ -13,6 +13,7 @@ from tests import TESTS_ROOT, create_job_environment_variables
 from tests.testsession_configuration import TestSessionConfiguration
 
 
+# TODO BJM: Should we remove this?
 @pytest.fixture(scope="module")
 def dummy_logging() -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""

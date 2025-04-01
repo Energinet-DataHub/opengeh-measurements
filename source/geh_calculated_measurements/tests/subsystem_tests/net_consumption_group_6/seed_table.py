@@ -1,5 +1,6 @@
 from datetime import datetime
 
+# TODO BJM: Use values from production code
 database = "electricity_market_measurements_input"
 parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
 child_table = "net_consumption_group_6_child_metering_point_v1"
