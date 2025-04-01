@@ -8,10 +8,9 @@ from core.settings import StorageAccountSettings
 
 class CalculatedMeasurementsRepository:
     def __init__(self) -> None:
-        self.calculated_schema_name = ExternalDatabaseNames.calculated
-        self.calculated_view_name = ExternalViewNames.hourly_calcualted_measurements_v1
-        self.data_lake_settings = StorageAccountSettings().DATALAKE_STORAGE_ACCOUNT
-        self.view = f"{self.calculated_schema_name}.{self.calculated_view_name}"
+        calculated_schema_name = ExternalDatabaseNames.calculated
+        calculated_view_name = ExternalViewNames.hourly_calcualted_measurements_v1
+        self.view = f"{calculated_schema_name}.{calculated_view_name}"
         self.spark = spark_session.initialize_spark()
 
     def read_stream(self) -> DataFrame:
