@@ -26,39 +26,12 @@ public class GetMeasurementResponse
                 new Point(
                     measurement.ObservationTime,
                     measurement.Quantity,
-                    ParseQuality(measurement.Quality),
-                    ParseUnit(measurement.Unit)))
+                    QualityParser.ParseQuality(measurement.Quality),
+                    UnitParser.ParseUnit(measurement.Unit)))
             .ToList();
 
         return points.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()
             : new GetMeasurementResponse(points);
-    }
-
-    private static Quality ParseQuality(string quality)
-    {
-        return quality.ToLower() switch
-        {
-            "missing" => Quality.Missing,
-            "estimated" => Quality.Estimated,
-            "measured" => Quality.Measured,
-            "calculated" => Quality.Calculated,
-            _ => throw new ArgumentOutOfRangeException(nameof(quality)),
-        };
-    }
-
-    private static Unit ParseUnit(string unit)
-    {
-        return unit.ToLower() switch
-        {
-            "kwh" => Unit.kWh,
-            "kw" => Unit.kW,
-            "mw" => Unit.MW,
-            "mwh" => Unit.MWh,
-            "tonne" => Unit.Tonne,
-            "kvarh" => Unit.kVArh,
-            "mvar" => Unit.MVAr,
-            _ => throw new ArgumentOutOfRangeException(nameof(unit)),
-        };
     }
 }

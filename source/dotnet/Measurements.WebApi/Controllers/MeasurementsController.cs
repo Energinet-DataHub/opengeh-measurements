@@ -34,8 +34,10 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     {
         try
         {
-            return await Task.FromResult<IActionResult>(
-                BadRequest($"MeteringPointId: {request.MeteringPointId}, year: {request.Year}, month: {request.Month}"));
+            var aggregatedMeasurements = await measurementsHandler.GetAggregatedMeasurementsAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedMeasurements);
+
+            return Ok(result);
         }
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
