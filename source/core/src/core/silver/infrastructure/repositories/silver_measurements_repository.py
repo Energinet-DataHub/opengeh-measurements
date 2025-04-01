@@ -1,3 +1,4 @@
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
@@ -11,14 +12,25 @@ class SilverMeasurementsRepository:
     def __init__(self) -> None:
         database_name = SilverSettings().silver_database_name
         self.table = f"{database_name}.{SilverTableNames.silver_measurements}"
+        self.spark = spark_session.initialize_spark()
 
     def read(self) -> DataFrame:
-        spark = spark_session.initialize_spark()
         return (
-            spark.readStream.format("delta")
+            self.spark.readStream.format("delta")
             .option("ignoreDeletes", "true")
             .option("skipChangeCommits", "true")
             .table(self.table)
+        )
+
+    def read_submitted(self) -> DataFrame:
+        return (
+            self.spark.readStream.format("delta")
+            .option("ignoreDeletes", "true")
+            .option("skipChangeCommits", "true")
+            .table(self.table)
+            .filter(
+                f"{SilverMeasurementsColumnNames.orchestration_type} = '{GehCommonOrchestrationType.SUBMITTED.value}'"
+            )
         )
 
     def append_if_not_exists(self, silver_measurements: DataFrame) -> None:

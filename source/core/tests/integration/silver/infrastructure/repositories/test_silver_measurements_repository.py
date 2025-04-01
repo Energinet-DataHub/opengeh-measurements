@@ -1,3 +1,4 @@
+from geh_common.domain.types.orchestration_type import OrchestrationType
 from pyspark.sql import SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -132,3 +133,41 @@ def test__append_if_not_exists__when_data_exists_but_no_duplicates__should_appen
         f"orchestration_instance_id = '{orchestration_instance_id}'"
     )
     assert actual.count() == 2
+
+
+def test__read_submitted_transaction__returns_expected(spark: SparkSession, migrations_executed) -> None:
+    # Arrange
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    silver_measurements = (
+        SilverMeasurementsBuilder(spark)
+        .add_row(
+            orchestration_instance_id=orchestration_instance_id, orchestration_type=OrchestrationType.SUBMITTED.value
+        )
+        .build()
+    )
+
+    table_helper.append_to_table(
+        silver_measurements, SilverSettings().silver_database_name, SilverTableNames.silver_measurements
+    )
+
+    def assert_batch(batch_df, _):
+        global assertion_count
+        actual = batch_df.where(
+            f"{SilverMeasurementsColumnNames.orchestration_instance_id} = '{orchestration_instance_id}'"
+        )
+        assertion_count = actual.count()
+
+    # Act
+    (
+        SilverMeasurementsRepository()
+        .read()
+        .writeStream.format("delta")
+        .outputMode("append")
+        .trigger(availableNow=True)
+        .foreachBatch(assert_batch)
+        .start()
+        .awaitTermination()
+    )
+
+    # Assert
+    assert assertion_count == 1
