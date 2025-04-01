@@ -78,11 +78,6 @@ def electricity_market_calculated_measurements_create_and_seed_tables(
         mode="overwrite",
     )
 
-    yield
-
-    spark.sql(f"DROP TABLE IF EXISTS {child_file_name}")
-    spark.sql(f"DROP TABLE IF EXISTS {parent_file_name}")
-
 
 def test_calculated_measurements_table_creation(
     spark: SparkSession, calculated_measurements_table_created: None
