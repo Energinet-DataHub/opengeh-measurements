@@ -2,7 +2,16 @@ import pytest
 from pyspark.sql import SparkSession
 from pytest_mock import MockerFixture
 
+import tests.helpers.environment_variables_helpers as environment_variables_helpers
+import tests.helpers.schema_helper as schema_helper
 from core.migrations import migrations_runner
+
+
+def pytest_runtest_setup() -> None:
+    """
+    This function is called before each test function is executed.
+    """
+    environment_variables_helpers.set_test_environment_variables()
 
 
 @pytest.fixture(scope="session")
@@ -13,5 +22,7 @@ def migrations_executed(spark: SparkSession, session_mocker: MockerFixture) -> N
     """
     session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksApiClient.__name__)
     session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksSettings.__name__)
+
+    schema_helper.create_schemas(spark)
 
     migrations_runner.migrate()
