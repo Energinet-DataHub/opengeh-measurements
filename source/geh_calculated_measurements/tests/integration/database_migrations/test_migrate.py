@@ -15,7 +15,9 @@ def test__when_running_migrate__then_log_is_produced(spark: SparkSession, monkey
     azure_query_runnner = create_azure_log_query_runner(monkeypatch)
     timeout_minutes = 15
     ensure_calculated_measurements_databases_exist(spark)
-    monkeypatch.setattr(migrations_runner, "_migrate", lambda: None)  # Mock this function to avoid actual migration
+    monkeypatch.setattr(
+        migrations_runner, "_migrate", lambda name, subs: None
+    )  # Mock this function to avoid actual migration
 
     # Act
     expected_log_messages = [
