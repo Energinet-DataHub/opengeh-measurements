@@ -1,20 +1,21 @@
-from unittest.mock import Mock
-
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from pytest_mock import MockerFixture
 
+import core.silver.infrastructure.repositories.silver_measurements_repository as sut
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
-from core.silver.infrastructure.repositories.submitted_transactions_repository import SubmittedTransactionsRepository
+from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
-def test__read_submitted_transactions__calls_expected() -> None:
+def test__read_submitted_transactions__calls_expected(mocker: MockerFixture) -> None:
     # Arrange
-    mock_spark = Mock()
+    mock_spark = mocker.Mock()
+    mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=mock_spark)
     expected_table = f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}"
 
     # Act
-    _ = SubmittedTransactionsRepository(mock_spark).read()
+    _ = SilverMeasurementsRepository().read_submitted()
 
     # Assert
     mock_spark.readStream.format.assert_called_once_with("delta")
