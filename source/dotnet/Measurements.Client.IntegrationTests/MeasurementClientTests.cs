@@ -22,6 +22,7 @@ public class MeasurementClientTests
     public async Task GetMeasurementsForDayAsync_WhenCalled_ReturnsValidMeasurement()
     {
         // Arrange
+        // TODO: Move to fixture
         var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(2023, 1, 2));
 
         var measurementsClient = Fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
