@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from pyspark.sql import SparkSession
 
@@ -9,12 +7,11 @@ from geh_calculated_measurements.testing.utilities.create_azure_log_query_runner
     LogsQueryStatus,
     create_azure_log_query_runner,
 )
-from tests import SPARK_CATALOG_NAME, ensure_calculated_measurements_databases_exist
+from tests import ensure_calculated_measurements_databases_exist
 
 
 def test__when_running_migrate__then_log_is_produced(spark: SparkSession, monkeypatch: pytest.MonkeyPatch):
     # Arrange
-    monkeypatch.setattr(os, "environ", {"CATALOG_NAME": SPARK_CATALOG_NAME})
     azure_query_runnner = create_azure_log_query_runner(monkeypatch)
     timeout_minutes = 15
     ensure_calculated_measurements_databases_exist(spark)
