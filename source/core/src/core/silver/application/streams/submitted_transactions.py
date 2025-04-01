@@ -1,4 +1,3 @@
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.bronze.application.submitted_transactions.unknown_submitted_transactions_handler as unknown_submitted_transactions_handler
@@ -10,15 +9,14 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
     InvalidSubmittedTransactionsRepository,
 )
 from core.bronze.infrastructure.repositories.submitted_transactions_repository import SubmittedTransactionsRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+from core.silver.infrastructure.streams.silver_measurements_stream import SilverMeasurementsStream
 
 
 def stream_submitted_transactions() -> None:
     spark = spark_session.initialize_spark()
     submitted_transactions = SubmittedTransactionsRepository(spark).read()
-    SilverMeasurementsRepository().write_stream(
+    SilverMeasurementsStream().stream_submitted_transactions(
         submitted_transactions,
-        GehCommonOrchestrationType.SUBMITTED,
         _batch_operation,
     )
 
