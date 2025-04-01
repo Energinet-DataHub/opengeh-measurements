@@ -19,7 +19,7 @@ def test__migrated_transactions__should_call_expected(
     )
 
     mock_write_measurements = mock.Mock()
-    mock_write_measurements.write_stream = mock.Mock()
+    mock_write_measurements.stream_migrated_transactions = mock.Mock()
     mock_SilverMeasurementsRepository = mocker.patch(
         f"{sut.__name__}.SilverMeasurementsStream", return_value=mock_write_measurements
     )
@@ -33,7 +33,7 @@ def test__migrated_transactions__should_call_expected(
     mock_SilverMeasurementsRepository.assert_called_once()
 
     mock_migrated_transactions.read_stream.assert_called_once()
-    mock_write_measurements.write_stream.assert_called_once()
+    mock_write_measurements.stream_migrated_transactions.assert_called_once()
 
 
 def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) -> None:
