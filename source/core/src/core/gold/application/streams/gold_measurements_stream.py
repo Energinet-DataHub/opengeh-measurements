@@ -2,12 +2,13 @@ from pyspark.sql.dataframe import DataFrame
 
 import core.gold.domain.transformations.gold_measurements_transformations as transformations
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_measurements_silver_to_gold() -> None:
-    silver_measurements = SilverMeasurementsRepository().read_stream()
-    GoldMeasurementsRepository().write_stream(silver_measurements, _batch_operation)
+    silver_measurements = SilverMeasurementsRepository().read()
+    GoldMeasurementsStream().write_stream(silver_measurements, _batch_operation)
 
 
 def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
