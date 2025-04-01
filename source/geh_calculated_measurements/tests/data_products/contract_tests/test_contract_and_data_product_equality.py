@@ -1,3 +1,4 @@
+import pytest
 from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import SparkSession
 
@@ -6,15 +7,28 @@ from geh_calculated_measurements.contracts.data_products import hourly_calculate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
 
 
-def test_contract_and_schema_are_equal(
+@pytest.mark.parametrize(
+    ("view_name", "contract_schema"),
+    [
+        (
+            CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME,
+            hourly_calculated_measurements_v1.hourly_calculated_measurements_v1,
+        ),
+        (
+            CalculatedMeasurementsDatabaseDefinition.MISSING_MEASUREMENTS_LOG_VIEW_NAME,
+            ,
+        ),
+    ],
+)
+def test_contract_and_schema_are_equal_parametrized(
     migrations_executed: None,  # Used implicitly
     spark: SparkSession,
+    view_name: str,
+    contract_schema,
 ) -> None:
     # Arrange
-    view_name = CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME
     database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
     catalog = CatalogSettings().catalog_name
-    contract_schema = hourly_calculated_measurements_v1.hourly_calculated_measurements_v1
 
     # Act
     view_df = spark.table(f"{catalog}.{database}.{view_name}").limit(1)
