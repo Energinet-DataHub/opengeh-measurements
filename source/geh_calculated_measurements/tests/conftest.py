@@ -7,7 +7,6 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from delta import configure_spark_with_delta_pip
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
