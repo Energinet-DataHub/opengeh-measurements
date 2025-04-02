@@ -2,11 +2,6 @@
 
 This directory contains contracts.
 
-## Data products
-
-The contracts are written as data products in the form of a Python file that contains the Structured Data of the
-contract.
-
 ## Protobuf
 
 In this folder we have protobuf files and the `assets` folder contains the descriptor files.
