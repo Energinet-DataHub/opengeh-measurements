@@ -1,6 +1,6 @@
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
-from core.receipts.infrastructure.config.table_names import ReceiptTableNames
+from core.receipts.infrastructure.config.table_names import CoreInternalTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.core_internal_settings import CoreInternalSettings
 from core.settings.gold_settings import GoldSettings
@@ -28,5 +28,5 @@ def substitutions() -> dict[str, str]:
         "{gold_capacity_settlement_v1}": GoldViewNames.capacity_settlement_v1,
         "{gold_current_v1}": GoldViewNames.current_v1,
         "{core_internal_database}": core_internal_settings.core_internal_database_name,
-        "{process_manager_receipts}": ReceiptTableNames.process_manager_receipts,
+        "{process_manager_receipts}": CoreInternalTableNames.process_manager_receipts,
     }
