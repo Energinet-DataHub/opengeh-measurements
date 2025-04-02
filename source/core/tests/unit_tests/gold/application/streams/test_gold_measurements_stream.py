@@ -29,7 +29,7 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
     mocker.patch.object(sut.transformations, "transform_silver_to_gold", transform_mock)
     mocker.patch.object(sut, "ReceiptsRepository", return_value=receipts_repo_mock)
-    mocker.patch.object(sut.transformations, "transform_to_receipts", transform_receipts_mock)
+    mocker.patch.object(sut.receipt_transformations, "transform", transform_receipts_mock)
     silver_measurements_mock = Mock()
 
     # Act
