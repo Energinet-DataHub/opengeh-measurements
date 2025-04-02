@@ -1,10 +1,12 @@
 import uuid
+from datetime import datetime
 from uuid import UUID
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
+from geh_common.testing.dataframes import assert_schema
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import StringType
+from pyspark.sql import types as T
 
 from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.common.domain.model.calculated_measurements import (
@@ -17,19 +19,78 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
+calculated_measurements_daily_schema = T.StructType(
+    [
+        T.StructField("metering_point_id", T.StringType(), False),
+        T.StructField("date", T.TimestampType(), False),
+        T.StructField("quantity", T.DecimalType(18, 3), False),
+    ]
+)
+
+
 def create(
     measurements: DataFrame,
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
     time_zone: str,
+    transaction_creation_datetime: datetime = datetime.now(),
 ) -> CalculatedMeasurements:
-    df = measurements.withColumns(
+    assert_schema(
+        measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True, ignore_column_order=True
+    )
+
+    df = (
+        # Explode the date column to create a row for each hour in the day
+        measurements.withColumn(
+            ContractColumnNames.observation_time,
+            F.explode(
+                F.sequence(
+                    F.col(ContractColumnNames.date),
+                    F.to_utc_timestamp(
+                        F.date_add(F.from_utc_timestamp(F.col(ContractColumnNames.date), time_zone), 1)
+                        - F.expr("INTERVAL 1 SECOND"),
+                        time_zone,
+                    ),
+                    F.expr("INTERVAL 1 HOUR"),
+                )
+            ),
+        )
+        # Set the quantity to 0 for all the new hour rows created by the explode
+        .withColumn(
+            ContractColumnNames.quantity,
+            F.when(
+                F.col(ContractColumnNames.observation_time) == F.col(ContractColumnNames.date),
+                F.col(ContractColumnNames.quantity),
+            ).otherwise(F.lit(0)),
+        )
+    )
+
+    # Add additional columns to the DataFrame
+    return deprecated_create(
+        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
+    )
+
+
+def deprecated_create(
+    measurements: DataFrame,
+    orchestration_instance_id: UUID,
+    orchestration_type: OrchestrationType,
+    metering_point_type: MeteringPointType,
+    time_zone: str,
+    transaction_creation_datetime: datetime,
+) -> CalculatedMeasurements:
+    # TODO BJM: Update unit tests in test_calculated_measurements_factory.py and remove this temp workaround
+    df = measurements
+    if ContractColumnNames.observation_time not in measurements.columns:
+        df = df.withColumn(ContractColumnNames.observation_time, F.col(ContractColumnNames.date))
+
+    df = df.withColumns(
         {
             ContractColumnNames.orchestration_instance_id: F.lit(str(orchestration_instance_id)),
             ContractColumnNames.orchestration_type: F.lit(orchestration_type.value),
             ContractColumnNames.metering_point_type: F.lit(metering_point_type.value),
-            ContractColumnNames.transaction_creation_datetime: F.current_timestamp(),
+            ContractColumnNames.transaction_creation_datetime: F.lit(transaction_creation_datetime),
             ContractColumnNames.transaction_id: _add_transaction_id(orchestration_instance_id, time_zone),
         }
     )
@@ -60,6 +121,6 @@ def _add_transaction_id(orchestration_instance_id: UUID, time_zone: str) -> Colu
         transaction_group,
     )
 
-    transaction_id_uuid = F.udf(lambda x: str(uuid.uuid5(UUID_NAMESPACE, x)), StringType())(transaction_id_str)
+    transaction_id_uuid = F.udf(lambda x: str(uuid.uuid5(UUID_NAMESPACE, x)), T.StringType())(transaction_id_str)
 
     return transaction_id_uuid.alias(ContractColumnNames.transaction_id)
