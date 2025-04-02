@@ -11,14 +11,14 @@ from core.gold.infrastructure.repositories.gold_measurements_repository import G
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
     silver_repo_mock = mocker.patch.object(sut, sut.SilverMeasurementsRepository.__name__)
-    gold_repo_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
+    gold_stream_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
 
     # Act
     sut.stream_measurements_silver_to_gold()
 
     # Assert
     silver_repo_mock.read_stream.assert_called_once()
-    gold_repo_mock.write_stream.assert_called_once_with(
+    gold_stream_mock.write_stream.assert_called_once_with(
         CheckpointNames.SILVER_TO_GOLD.value,
         QueryNames.SILVER_TO_GOLD.value,
         silver_repo_mock.read_stream.return_value,

@@ -5,15 +5,16 @@ from pyspark.sql import SparkSession
 import core.gold.application.streams.calculated_measurements_stream as sut
 from core.gold.infrastructure.repositories.calculated_measurements_repository import CalculatedMeasurementsRepository
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 
 
 def test__stream_measurements_calculated_to_gold__calls_expected(spark: SparkSession):
     # Arrange
     calculated_repo_mock = Mock(spec=CalculatedMeasurementsRepository)
-    gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
+    gold_stream_mock = Mock(spec=GoldMeasurementsStream)
     with (
         patch.object(sut, "CalculatedMeasurementsRepository", return_value=calculated_repo_mock),
-        patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock),
+        patch.object(sut, "GoldMeasurementsStream", return_value=gold_stream_mock),
     ):
         calculated_repo_mock.read_stream.return_value = Mock()
 
@@ -22,7 +23,7 @@ def test__stream_measurements_calculated_to_gold__calls_expected(spark: SparkSes
 
         # Assert
         calculated_repo_mock.read_stream.assert_called_once()
-        gold_repo_mock.write_stream.assert_called_once_with(
+        gold_stream_mock.write_stream.assert_called_once_with(
             "measurements_calculated",
             "measurements_calculated_to_gold",
             calculated_repo_mock.read_stream.return_value,
