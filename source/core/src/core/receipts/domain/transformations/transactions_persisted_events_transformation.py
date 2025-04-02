@@ -10,8 +10,8 @@ from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
 from core.contracts.process_manager.PersistSubmittedTransaction.persist_submitted_transaction_proto_version import (
     PersistSubmittedTransactionProtoVersion,
 )
-from core.silver.domain.constants.column_names.silver_measurements_column_names import (
-    SilverMeasurementsColumnNames,  # Adjust
+from core.receipts.domain.constants.column_names.process_manager_receipts_column_names import (
+    ProcessManagerReceiptsColumnNames,
 )
 
 alias_name = "measurement_values"
@@ -27,7 +27,7 @@ def prepare_measurement(df) -> DataFrame:
             F.lit(PersistSubmittedTransactionProtoVersion.version_1).alias(
                 Brs021ForwardMeteredDataNotifyV1ColumnNames.version
             ),
-            df[SilverMeasurementsColumnNames.orchestration_instance_id].alias(
+            df[ProcessManagerReceiptsColumnNames.orchestration_instance_id].alias(
                 Brs021ForwardMeteredDataNotifyV1ColumnNames.orchestration_instance_id
             ),
         ).alias(Brs021ForwardMeteredDataNotifyV1EventColumnNames.value)
