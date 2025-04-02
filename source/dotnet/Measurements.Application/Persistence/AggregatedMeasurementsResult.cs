@@ -13,7 +13,7 @@ public class AggregatedMeasurementsResult(ExpandoObject raw)
 
     public decimal Quantity => _raw.aggregated_quantity;
 
-    public object[] Qualities => _raw.qualities; // TODO: maybe need to be object[]
+    public object[] Qualities => _raw.qualities;
 
     public long PointCount => _raw.point_count;
 }

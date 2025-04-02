@@ -80,7 +80,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     private async Task<IEnumerable<MeasurementAggregation>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
-        var pointElement = jsonDocument.RootElement.GetProperty("Points");
+        var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
         return pointElement.Deserialize<IEnumerable<MeasurementAggregation>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }

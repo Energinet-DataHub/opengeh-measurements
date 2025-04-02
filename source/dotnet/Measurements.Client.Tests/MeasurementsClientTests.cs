@@ -74,14 +74,12 @@ public class MeasurementsClientTests
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 
-    [Theory]
-    [InlineData(2023, 1)]
-    [InlineData(2023, 6)]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfMeasurementAggregations(int year, int month)
+    [Fact]
+    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfMeasurementAggregations()
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(year, month));
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays); // TODO: Create AggregatedResultJson
+        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2025, 3));
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
@@ -91,8 +89,8 @@ public class MeasurementsClientTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(5, actual.Count);
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
+        Assert.Equal(31, actual.Count);
+        Assert.True(actual.All(p => p.Qualities.All(q => q == Quality.Measured)));
     }
 
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
