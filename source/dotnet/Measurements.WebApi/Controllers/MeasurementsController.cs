@@ -2,6 +2,7 @@
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
@@ -12,6 +13,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
+    // [Authorize] TODO: Uncomment when authentication is implemented in all clients
     [Route("forPeriod")]
     public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
@@ -29,6 +31,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     }
 
     [HttpGet]
+    // [Authorize] TODO: Uncomment when authentication is implemented in all clients
     [Route("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
     {

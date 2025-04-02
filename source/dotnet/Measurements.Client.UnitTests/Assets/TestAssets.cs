@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Energinet.DataHub.Measurements.Client.Tests.Assets;
+namespace Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 
 public static class TestAssets
 {

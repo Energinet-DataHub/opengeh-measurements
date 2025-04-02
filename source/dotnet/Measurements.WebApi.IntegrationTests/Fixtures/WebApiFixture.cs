@@ -1,9 +1,13 @@
 ﻿using System.Globalization;
+using System.Net.Http.Headers;
+using Azure.Core;
+using Azure.Identity;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NodaTime;
@@ -20,6 +24,12 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private const string ApplicationIdUri = "https://management.azure.com";
+    private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
+    private const string CatalogName = "hive_metastore";
+
+    public HttpClient Client { get; }
+
     public WebApiFixture()
     {
         IntegrationTestConfiguration = new IntegrationTestConfiguration();
@@ -27,11 +37,13 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
+        Client = CreateClient();
+        Client.DefaultRequestHeaders.Authorization = CreateAuthorizationHeader();
     }
 
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+    private DatabricksSchemaManager DatabricksSchemaManager { get; }
 
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public async Task InitializeAsync()
     {
@@ -54,7 +66,18 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken);
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
-        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", "hive_metastore");
+        builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", CatalogName);
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
+        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", Issuer);
+    }
+
+    private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = ApplicationIdUri)
+    {
+        var token = new DefaultAzureCredential()
+            .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
+            .Token;
+
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
