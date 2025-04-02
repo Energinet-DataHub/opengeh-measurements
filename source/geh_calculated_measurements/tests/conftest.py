@@ -1,12 +1,15 @@
 ### This file contains the fixtures that are used in the tests. ###
 import os
+import shutil
+import sys
 from typing import Generator
+from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from delta import configure_spark_with_delta_pip
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
+from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
 from tests import TESTS_ROOT, create_job_environment_variables
@@ -35,25 +38,34 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
+# pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
+# Therefore, we need to create a global variable to store the Spark session and data directory.
+# This is a workaround to avoid creating a new Spark session for each test.
+_spark, data_dir = get_spark_test_session()
+
+
 @pytest.fixture(scope="session")
 def spark() -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
-    session = (
-        SparkSession.builder.appName("geh_calculated_measurements")  # # type: ignore
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-        # Enable Hive support for persistence across test sessions
-        .config("spark.sql.catalogImplementation", "hive")
-        .enableHiveSupport()
-    )
-    session = configure_spark_with_delta_pip(session).getOrCreate()
-    yield session
-    session.stop()
+    yield _spark
+    _spark.stop()
+    shutil.rmtree(data_dir)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def fix_print():
+    """
+    pytest-xdist disables stdout capturing by default, which means that print() statements
+    are not captured and displayed in the terminal.
+    That's because xdist cannot support -s for technical reasons wrt the process execution mechanism
+    https://github.com/pytest-dev/pytest-xdist/issues/354
+    """
+    original_print = print
+    with mock.patch("builtins.print") as mock_print:
+        mock_print.side_effect = lambda *args, **kwargs: original_print(*args, **{"file": sys.stderr, **kwargs})
+        yield mock_print
 
 
 @pytest.fixture(scope="session")

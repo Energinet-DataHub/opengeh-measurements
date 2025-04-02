@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -7,7 +7,7 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTest, Jo
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000060000000201"
-FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0)
+FIRST_OBSERVATION_TIME = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
 
 job_parameters = {
     "orchestration-instance-id": uuid.uuid4(),
