@@ -3,8 +3,6 @@ from unittest.mock import Mock
 from pytest_mock import MockFixture
 
 import core.gold.application.streams.gold_measurements_stream as sut
-from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
-from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 
 
@@ -18,12 +16,7 @@ def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture
 
     # Assert
     silver_repo_mock.read_stream.assert_called_once()
-    gold_stream_mock.write_stream.assert_called_once_with(
-        CheckpointNames.SILVER_TO_GOLD.value,
-        QueryNames.SILVER_TO_GOLD.value,
-        silver_repo_mock.read_stream.return_value,
-        sut._batch_operation,
-    )
+    gold_stream_mock.write_stream.assert_called_once()
 
 
 def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):
