@@ -108,7 +108,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var url = CreateUrl(expectedMeteringPointId, yearMonth);
 
         // Act
-        var actualResponse = await _client.GetAsync(url);
+        var actualResponse = await fixture.Client.GetAsync(url);
         var actual = await ParseResponseAsync<GetAggregatedMeasurementsResponse>(actualResponse);
 
         // Assert
