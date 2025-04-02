@@ -6,16 +6,12 @@ import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
-    silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
-    gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
-    mocker.patch.object(sut, "SilverMeasurementsRepository", return_value=silver_repo_mock)
-    mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
-    silver_repo_mock.read_stream.return_value = Mock()
+    silver_repo_mock = mocker.patch.object(sut, sut.SilverMeasurementsRepository.__name__)
+    gold_repo_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
 
     # Act
     sut.stream_measurements_silver_to_gold()

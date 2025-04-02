@@ -4,12 +4,13 @@ import core.gold.domain.transformations.gold_measurements_transformations as tra
 from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
 def stream_measurements_silver_to_gold() -> None:
-    silver_measurements = SilverMeasurementsRepository().read_stream()
-    GoldMeasurementsRepository().write_stream(
+    silver_measurements = SilverMeasurementsRepository().read()
+    GoldMeasurementsStream().write_stream(
         CheckpointNames.SILVER_TO_GOLD.value, QueryNames.SILVER_TO_GOLD.value, silver_measurements, _batch_operation
     )
 

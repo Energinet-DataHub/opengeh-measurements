@@ -5,11 +5,12 @@ from core.gold.domain.constants.streaming.checkpoint_names import CheckpointName
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.calculated_measurements_repository import CalculatedMeasurementsRepository
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 
 
 def stream_measurements_calculated_to_gold() -> None:
     calculated_measurements = CalculatedMeasurementsRepository().read_stream()
-    GoldMeasurementsRepository().write_stream(
+    GoldMeasurementsStream().write_stream(
         CheckpointNames.CALCULATED_TO_GOLD.value,
         QueryNames.CALCULATED_TO_GOLD.value,
         calculated_measurements,
