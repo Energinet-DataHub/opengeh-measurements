@@ -9,12 +9,9 @@ def test__notify__should_call_expected(
     mocker: MockerFixture,
 ) -> None:
     # Arrange
-    mock_spark = mock.Mock()
-    mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=mock_spark)
-
     mock_submitted_transactions_repository = mock.Mock()
     mocked_submitted_transactions_repository_read_submitted_transactions = mocker.patch(
-        f"{sut.__name__}.SubmittedTransactionsRepository.read",
+        f"{sut.__name__}.SilverMeasurementsRepository.read_submitted",
         return_value=mock_submitted_transactions_repository,
     )
 
@@ -34,7 +31,6 @@ def test__notify__should_call_expected(
     sut.notify()
 
     # Assert
-    mock_initialize_spark.assert_called_once()
     mocked_submitted_transactions_repository_read_submitted_transactions.assert_called_once()
 
     mock_submitted_transactions_transformation.assert_called_once_with(mock_submitted_transactions_repository)
