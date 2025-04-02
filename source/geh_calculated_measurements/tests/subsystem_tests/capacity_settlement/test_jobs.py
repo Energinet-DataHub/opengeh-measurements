@@ -2,9 +2,8 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
-from tests.subsystem_tests.capacity_settlement.seed_table import seed_table
-from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest
+from tests.subsystem_tests.capacity_settlement.fixture import Fixture
 
 CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
@@ -19,11 +18,6 @@ job_parameters = {
 class TestCapacitySettlement(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
-        config = EnvironmentConfiguration()
-        fixture = JobTestFixture(
-            environment_configuration=config,
-            job_name="CapacitySettlement",
+        return Fixture(
             job_parameters=job_parameters,
         )
-        seed_table(fixture)
-        return fixture

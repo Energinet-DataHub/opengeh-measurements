@@ -1,0 +1,80 @@
+from datetime import datetime, timezone
+
+from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
+
+# TODO BJM: Use values from production code
+database = "electricity_market_measurements_input"
+parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
+child_table = "net_consumption_group_6_child_metering_point_periods_v1"
+
+parent_metering_point_id = "170000070000000201"
+child_metering_point_id = "150000001500170200"
+
+
+class Fixture(JobTestFixture):
+    def __init__(self, job_parameters: dict = {}):
+        config = EnvironmentConfiguration()
+        super().__init__(
+            environment_configuration=config,
+            job_name="NetConsumptionGroup6",
+            job_parameters=job_parameters,
+        )
+
+    def delete_seeded_data(self) -> None:
+        statements = []
+        # PARENT
+        statements.append(f"""
+            DELETE FROM {self.config.catalog_name}.{database}.{parent_table} 
+            WHERE metering_point_id = '{parent_metering_point_id}'
+        """)
+        # CHILD
+        statements.append(f"""
+            DELETE FROM {self.config.catalog_name}.{database}.{child_table} 
+            WHERE parent_metering_point_id = '{parent_metering_point_id}'
+        """)
+
+        for statement in statements:
+            self.execute_statement(statement)
+
+    def seed_data(self) -> None:
+        statements = []
+        # PARENT
+        statements.append(f"""
+        INSERT INTO {self.config.catalog_name}.{database}.{parent_table} (
+            metering_point_id,
+            has_electrical_heating,
+            settlement_month,
+            period_from_date,
+            period_to_date,
+            move_in
+        )
+        VALUES (
+            '{parent_metering_point_id}',
+            {False},
+            {1},
+            '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            '{datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            {False}
+        )
+        """)
+        # CHILD
+        statements.append(f"""
+        INSERT INTO {self.config.catalog_name}.{database}.{child_table} (
+            metering_point_id,
+            metering_type,
+            parent_metering_point_id,
+            coupled_date,
+            uncoupled_date
+        )
+        VALUES (
+            '{child_metering_point_id}',
+            'net_consumption',
+            '{parent_metering_point_id}',
+            '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
+            '{datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
+        )
+        """)
+
+        for statement in statements:
+            self.execute_statement(statement)
