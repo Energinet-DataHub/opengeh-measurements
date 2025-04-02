@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pyspark.sql.functions as F
 import pytest
@@ -23,8 +24,8 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
                 "123456789012345",
                 "804",
                 MeteringPointResolution.HOUR.value,
-                datetime(2022, 1, 1, 0),
-                datetime(2022, 1, 1, 1),
+                datetime(2022, 1, 1, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
+                datetime(2022, 1, 1, 1, tzinfo=ZoneInfo("Europe/Copenhagen")),
             ),
         ],
         schema=MeteringPointPeriods.schema,

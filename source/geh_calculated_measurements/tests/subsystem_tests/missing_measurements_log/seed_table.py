@@ -1,13 +1,13 @@
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 _METERING_POINT_ID = "170000060000000201"
-PERIOD_START = datetime(2025, 1, 1, 23, 0, 0)
-PERIOD_END = datetime(2025, 1, 2, 23, 0, 0)
+PERIOD_START = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
+PERIOD_END = datetime(2025, 1, 2, 23, 0, 0, tzinfo=timezone.utc)
 
 
 def get_metering_point_periods_statement(catalog_name: str) -> str:
