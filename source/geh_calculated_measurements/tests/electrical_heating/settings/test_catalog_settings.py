@@ -1,14 +1,17 @@
 import os
 
+import pytest
+
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
+from tests import SPARK_CATALOG_NAME
 
 
-def test__catalog_settings__environmental_variables_are_read() -> None:
+def test__catalog_settings__environmental_variables_are_read(monkeypatch: pytest.MonkeyPatch) -> None:
     # Arrange
-    expected_catalog_name = os.getenv("CATALOG_NAME")
+    monkeypatch.setattr(os, "environ", {"CATALOG_NAME": SPARK_CATALOG_NAME})
 
     # Act
     actual = CatalogSettings()  # type: ignore
 
     # Assert
-    assert actual.catalog_name == expected_catalog_name
+    assert actual.catalog_name == SPARK_CATALOG_NAME
