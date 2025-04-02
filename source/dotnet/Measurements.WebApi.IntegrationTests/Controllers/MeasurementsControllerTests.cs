@@ -9,11 +9,8 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 
 [IntegrationTest]
-public class MeasurementsControllerTests(WebApiFixture fixture)
-    : IClassFixture<WebApiFixture>
+public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>
 {
-    private readonly HttpClient _client = fixture.CreateClient();
-
     [Fact]
     public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
@@ -24,7 +21,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actualResponse = await _client.GetAsync(url);
+        var actualResponse = await fixture.Client.GetAsync(url);
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
@@ -43,7 +40,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actualResponse = await _client.GetAsync(url);
+        var actualResponse = await fixture.Client.GetAsync(url);
         var actual = await ParseResponseAsync(actualResponse);
 
         // Assert
@@ -60,7 +57,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actualResponse = await _client.GetAsync(url);
+        var actualResponse = await fixture.Client.GetAsync(url);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
@@ -76,7 +73,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actualResponse = await _client.GetAsync(url);
+        var actualResponse = await fixture.Client.GetAsync(url);
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
@@ -92,7 +89,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actual = await _client.GetAsync(url);
+        var actual = await fixture.Client.GetAsync(url);
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
