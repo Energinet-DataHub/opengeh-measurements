@@ -3,7 +3,7 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using NodaTime;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.Client.Tests.Extensions;
+namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
 
 [UnitTest]
 public class DateAndTimeExtensionsTests
