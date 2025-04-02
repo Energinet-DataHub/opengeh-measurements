@@ -1,12 +1,9 @@
 import pytest
+from geh_common.data_products.measurements_calculated import calculated_measurements_v1, missing_measurements_log_v1
 from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.contracts.data_products import (
-    hourly_calculated_measurements_v1,
-    missing_measurements_log_v1,
-)
 from tests import SPARK_CATALOG_NAME
 
 
@@ -14,8 +11,8 @@ from tests import SPARK_CATALOG_NAME
     ("view_name", "contract_schema"),
     [
         (
-            CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME,
-            hourly_calculated_measurements_v1.hourly_calculated_measurements_v1,
+            calculated_measurements_v1.schema,
+            calculated_measurements_v1.calculated_measurements_v1,
         ),
         (
             CalculatedMeasurementsDatabaseDefinition.MISSING_MEASUREMENTS_LOG_VIEW_NAME,
