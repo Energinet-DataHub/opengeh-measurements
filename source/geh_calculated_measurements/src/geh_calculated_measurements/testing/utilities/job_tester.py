@@ -141,9 +141,6 @@ class JobTest(abc.ABC):
         # Act
         response = fixture.execute_statement(statement=statement)
 
-        print("response:", response)
-        print("response result:", response.result)
-
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0
         assert row_count > 0, (

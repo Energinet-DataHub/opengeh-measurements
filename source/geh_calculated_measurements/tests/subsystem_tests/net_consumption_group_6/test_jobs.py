@@ -26,10 +26,8 @@ class TestNetConsumptionGroup6(JobTest):
 
         # Insert seeded data
         seed_table(base_job_fixture)
-        print("REMOVING SEEDED DATA + SEEDING TABLE")
 
         yield base_job_fixture
 
         # Remove previously inserted seeded data
         delete_seeded_data(base_job_fixture)
-        print("REMOVING SEEDED DATA")
