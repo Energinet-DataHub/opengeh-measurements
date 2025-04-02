@@ -30,11 +30,11 @@ def _(spark: SparkSession, kafka_fixture: KafkaFixture) -> TestData:
     return test_data
 
 
-@then("the measurement transaction is available in the Gold Layer")
-def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
-    gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id)
-
-
 @then("an acknowledgement is sent to the Event Hub")
 def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
     kafka_fixture.assert_receipt(test_data.orchestration_instance_id)
+
+
+@then("the measurement transaction is available in the Gold Layer")
+def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
+    gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id)
