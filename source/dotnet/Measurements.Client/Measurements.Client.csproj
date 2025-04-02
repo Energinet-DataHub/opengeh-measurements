@@ -46,7 +46,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Abstractions\Measurements.Abstractions.csproj" />
-      <ProjectReference Include="..\Measurements.Application\Measurements.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
