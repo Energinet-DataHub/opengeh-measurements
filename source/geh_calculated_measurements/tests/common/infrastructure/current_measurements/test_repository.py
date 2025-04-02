@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 import pytest
 from pyspark.sql import SparkSession
@@ -24,7 +25,15 @@ def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsR
 @pytest.fixture(scope="module")
 def valid_df(spark: SparkSession) -> DataFrame:
     return spark.createDataFrame(
-        [("123456789012345678", "consumption", Decimal("1.123"), "measured", datetime.datetime(2023, 1, 1, 0, 0, 0))],
+        [
+            (
+                "123456789012345678",
+                "consumption",
+                Decimal("1.123"),
+                "measured",
+                datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
+            )
+        ],
         CurrentMeasurements.schema,
     )
 
