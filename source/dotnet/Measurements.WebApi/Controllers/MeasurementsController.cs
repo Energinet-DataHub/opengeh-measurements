@@ -13,7 +13,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
-    [Authorize]
+    // [Authorize] TODO: Uncomment when authentication is implemented in all clients
     public async Task<IActionResult> GetMeasurementAsync([FromQuery] GetMeasurementRequest request)
     {
         try
