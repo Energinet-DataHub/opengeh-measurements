@@ -2,6 +2,10 @@
 
 This directory contains contracts.
 
+## Data products
+
+Data products for Measurements Core are defined in `opengeh-python-packages` [here](https://github.com/Energinet-DataHub/opengeh-python-packages/tree/main/source/geh_common/src/geh_common/data_products/measurements_core)
+
 ## Protobuf
 
 In this folder we have protobuf files and the `assets` folder contains the descriptor files.
