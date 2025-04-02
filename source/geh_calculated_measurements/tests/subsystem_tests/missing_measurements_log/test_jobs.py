@@ -3,9 +3,8 @@ from datetime import timedelta
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
-from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.missing_measurements_log.seed_table import PERIOD_START, seed_table
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest
+from tests.subsystem_tests.missing_measurements_log.fixture import PERIOD_START, Fixture
 
 period_start = PERIOD_START
 period_end = period_start + timedelta(days=2)
@@ -19,16 +18,7 @@ job_parameters = {
 class TestMissingMeasurementsLog(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
-        config = EnvironmentConfiguration()
-        base_job_fixture = JobTestFixture(
-            environment_configuration=config,
-            job_name="MissingMeasurementsLog",
-            job_parameters=job_parameters,
-        )
-
-        seed_table(base_job_fixture)
-
-        return base_job_fixture
+        return Fixture
 
     @pytest.mark.skip(reason="Skipped due to issues with the telemetry data not available in the logs.")
     def test__and_then_job_telemetry_is_created(self, job_fixture) -> None:
