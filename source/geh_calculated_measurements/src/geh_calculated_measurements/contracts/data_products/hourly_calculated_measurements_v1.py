@@ -2,7 +2,6 @@ import pyspark.sql.types as t
 
 nullable = True
 
-
 hourly_calculated_measurements_v1 = t.StructType(
     [
         # "electrical_heating" or "capacity_settlement"

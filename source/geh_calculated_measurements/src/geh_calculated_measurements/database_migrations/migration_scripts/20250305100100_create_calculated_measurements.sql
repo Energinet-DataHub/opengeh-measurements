@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS {catalog_name}.{calculated_measurements_internal_data
     transaction_id STRING NOT NULL,
     transaction_creation_datetime TIMESTAMP NOT NULL,
     metering_point_type STRING NOT NULL,
-    observation_time TIMESTAMP NOT NULL,
+    date TIMESTAMP NOT NULL,
     quantity DECIMAL(18, 3) NOT NULL
 )
 USING DELTA
@@ -14,7 +14,4 @@ TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,
     delta.deletedFileRetentionDuration = 'interval 30 days'
-    delta.columnMapping.mode = 'name',
-    delta.minReaderVersion = '2',
-    delta.minWriterVersion = '5'
 )
