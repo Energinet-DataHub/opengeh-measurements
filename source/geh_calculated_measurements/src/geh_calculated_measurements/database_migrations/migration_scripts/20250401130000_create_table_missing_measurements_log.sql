@@ -9,4 +9,7 @@ TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,
     delta.deletedFileRetentionDuration = 'interval 30 days'
+    delta.columnMapping.mode = 'name',
+    delta.minReaderVersion = '2',
+    delta.minWriterVersion = '5'
 )
