@@ -3,11 +3,8 @@ from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.contracts.data_products import (
-    hourly_calculated_measurements_v1,
-    missing_measurements_log_v1,
-)
-from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
+from geh_calculated_measurements.contracts.data_products import hourly_calculated_measurements_v1
+from tests import SPARK_CATALOG_NAME
 
 
 @pytest.mark.parametrize(
@@ -31,10 +28,9 @@ def test_contract_and_schema_are_equal_parametrized(
 ) -> None:
     # Arrange
     database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
-    catalog = CatalogSettings().catalog_name
 
     # Act
-    view_df = spark.table(f"{catalog}.{database}.{view_name}").limit(1)
+    view_df = spark.table(f"{SPARK_CATALOG_NAME}.{database}.{view_name}").limit(1)
 
     # Assert
     assert_contract(actual_schema=view_df.schema, contract=contract_schema)
