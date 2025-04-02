@@ -1,0 +1,24 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test scenarios where there is a move in, in the middle of a period being used for estimation (cenc).
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1
+  settlement month is the 1 of january
+  move in takes place in november 2024
+  calculation period is from the 1 of january 2024 to the 31 of december 2024
+  the period being estimated is from the 1 of january 2025 to the 31 of december 2025
+                        ______|2024________|2025________
+  settlement month:     ------|+-----------|+-----------|
+  calculation period:   ------|++++++++++++|------------|
+  estimation period:    ------|------------|++++++++++++|
+  move in date:         ------|----------+-|------------|
+
+  a move in takes place in the middle of a period being used for estimation (cenc)
+  this will result in a default quantity value of 1800 for the settlement periods
+  and a daily quantity of 1800 / 365 = 4.9315 rounded to 4.932
+
+cases_tested:
+  "Move in in the middle of a period being used for estimation":
+    - "GIVEN (settlement month is the 1 of january) WHEN (move in takes place in november 2024) THEN (default quantity value of 1800 for the settlement periods and a daily quantity of 1800 / 365 = 4.9315 rounded to 4.932)"
