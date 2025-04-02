@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
-from pyspark.sql.streaming import DataStreamWriter
+from pyspark.sql.streaming.readwriter import DataStreamWriter
 
 
 class StreamingSettings(BaseSettings):
