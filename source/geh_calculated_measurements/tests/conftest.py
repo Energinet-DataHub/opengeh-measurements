@@ -16,10 +16,11 @@ from tests import TESTS_ROOT, create_job_environment_variables
 from tests.testsession_configuration import TestSessionConfiguration
 
 
-# TODO BJM: Should we remove this?
 @pytest.fixture(scope="module")
 def dummy_logging() -> Generator[None, None, None]:
-    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
+    """Ensure that logging hooks don't fail due to _TRACER_NAME not being set.
+
+    This fixture effectively disables the telemetry logging to Azure."""
     env_args = create_job_environment_variables()
     with pytest.MonkeyPatch.context() as mp:
         mp.setattr(os, "environ", env_args)
