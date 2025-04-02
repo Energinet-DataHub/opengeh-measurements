@@ -2,7 +2,7 @@
 
 ## Version 2.0.0
 
-- The built-in HttpClient will forward request header authentication to API.
+- Add authentication for API and implement authentication scheme for Measurements Client.
 
 ## Version 1.4.0
 
