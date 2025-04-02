@@ -4,6 +4,7 @@ using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using NodaTime;
+using NodaTime.Text;
 using Xunit;
 using Xunit.Categories;
 
@@ -26,7 +27,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Act
         var actualResponse = await _client.GetAsync(url);
-        var actual = await ParseResponseAsync(actualResponse);
+        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
 
         // Assert
         Assert.Equal(24, actual.Points.Count);
@@ -45,7 +46,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
 
         // Act
         var actualResponse = await _client.GetAsync(url);
-        var actual = await ParseResponseAsync(actualResponse);
+        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
 
         // Assert
         Assert.Equal(24, actual.Points.Count);
@@ -104,18 +105,23 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
+        var expectedFirstMinObservationTime = InstantPattern.ExtendedIso.Parse("2022-01-02T23:00:00Z").Value;
+        var expectedFirstMaxObservationTime = InstantPattern.ExtendedIso.Parse("2022-01-03T22:00:00Z").Value;
         var yearMonth = new YearMonth(2022, 1);
         var url = CreateUrl(expectedMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await _client.GetAsync(url);
-        // var actual = await ParseResponseAsync(actualResponse);
+        var actual = await ParseResponseAsync<GetAggregatedMeasurementsResponse>(actualResponse);
 
         // Assert
-        Assert.True(actualResponse.StatusCode == HttpStatusCode.OK);
-        // Assert.Equal(31, actual.Points.Count);
-        // Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
-        // Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));*/
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+        Assert.Equal(expectedFirstMinObservationTime, actual.MeasurementAggregations.First().MinObservationTime);
+        Assert.Equal(expectedFirstMaxObservationTime, actual.MeasurementAggregations.First().MaxObservationTime);
+        Assert.True(actual.MeasurementAggregations.All(p => p.Qualities.All(q => q == Quality.Measured)));
+        Assert.True(actual.MeasurementAggregations.All(p => p.PointCount == 24));
+        Assert.True(actual.MeasurementAggregations.All(p => p.Quantity == 285.6M));
     }
 
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
@@ -128,10 +134,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture)
         return $"measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
-    private async Task<GetMeasurementResponse> ParseResponseAsync(HttpResponseMessage response)
+    private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
+        where T : class
     {
         response.EnsureSuccessStatusCode();
         var actualBody = await response.Content.ReadAsStringAsync();
-        return new JsonSerializer().Deserialize<GetMeasurementResponse>(actualBody);
+        return new JsonSerializer().Deserialize<T>(actualBody);
     }
 }

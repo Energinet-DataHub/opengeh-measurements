@@ -25,7 +25,8 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
 
         const string groupByStatement = $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
                                         $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
-                                        $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
+                                        $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
+                                        $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
 
         return
             $"with most_recent as (" +
@@ -48,4 +49,21 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"group by {groupByStatement} " +
             $"order by {MeasurementAggregationConstants.MinObservationTime}";
     }
+
+    /*protected override IReadOnlyCollection<QueryParameter> GetParameters()
+    {
+        List<QueryParameter> parameters = [
+            QueryParameter.Create(MeasurementsGoldConstants.MeteringPointIdColumnName, _meteringPointId),
+            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateFromEpoch, _yearMonth.ToDateInterval().Item1.ToEpoch().ToString()),
+            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateToEpoch, _yearMonth.ToDateInterval().Item2.ToEpoch().ToString())
+        ];
+        parameters.AddRange(_indexedMeteringPointPartitions.Select(mpp => QueryParameter.Create(mpp.Item1, mpp.Item2)).ToList());
+        parameters.AddRange(
+        [
+            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateFromEpoch, _dateFromEpoch.ToString()),
+            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateToEpoch, _dateToEpoch.ToString())
+        ]);
+
+        return parameters;
+    }*/
 }

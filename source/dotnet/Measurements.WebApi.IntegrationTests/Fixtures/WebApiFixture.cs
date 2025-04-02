@@ -77,6 +77,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", true),
             (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", false),
             (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false),
             (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", false),
         };
 
@@ -87,7 +88,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
         return Enumerable.Range(0, 24).Select(i => new[]
