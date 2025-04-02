@@ -11,13 +11,15 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 [IntegrationTest]
 public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>
 {
+    private readonly HttpClient _client = fixture.CreateClient();
+
     [Fact]
     public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-02T00:00:00Z";
-        const string endDate = "2022-01-03T00:00:00Z";
+        const string startDate = "2022-01-03T00:00:00Z";
+        const string endDate = "2022-01-04T00:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -48,7 +50,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsOnlyNonCancelledObservations()
+    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -57,13 +59,10 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync(actualResponse);
+        var actualResponse = await _client.GetAsync(url);
 
         // Assert
-        Assert.Equal(24, actual.Points.Count);
-        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
-        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
+        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
     [Fact]

@@ -94,8 +94,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "calculated", true),
             (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", true),
             (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", false),
             (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
             (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", false),
