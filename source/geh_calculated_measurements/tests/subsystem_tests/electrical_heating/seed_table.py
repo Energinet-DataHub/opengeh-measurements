@@ -1,5 +1,5 @@
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
@@ -13,7 +13,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
             metering_point_id="170000060000000201",
-            observation_time=datetime(2024, 11, 30, 23, 0, 0),
+            observation_time=datetime(2024, 11, 30, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         )
         for i in range(1)

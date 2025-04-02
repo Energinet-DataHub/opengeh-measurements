@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 
