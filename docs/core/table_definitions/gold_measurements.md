@@ -15,5 +15,6 @@ This table contains measurements which is presented as one measurement value per
 | resolution | StringType | True | - | Not null |
 | transaction_id | StringType | True | Contains an ID for the specific time series transaction, provided by the sender or the source system. Uniqueness not guaranteed | - |
 | transaction_creation_datetime | TimestampType | True | Contains the UTC time for when the time series data was persisted in source system | - |
+| is_cancelled | BooleanType | True | Cancelled flag carried over from Migrations | "is_cancelled_is_not_null_chk" which checks is_cancelled is not null,  |
 | created | TimestampType | True | - | - |
 | modified | TimestampType | True | - | - |
