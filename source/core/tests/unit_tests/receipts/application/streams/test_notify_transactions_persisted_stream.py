@@ -2,7 +2,7 @@ from unittest import mock
 
 from pytest_mock import MockerFixture
 
-import core.silver.application.streams.notify_transactions_persisted_stream as sut
+import core.receipts.application.streams.receipt_notifier as sut
 
 
 def test__notify__should_call_expected(
