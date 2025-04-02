@@ -21,7 +21,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
-    private const string MeasurementsApiBaseAddress = "https://localhost:5001";
+    private const string MeasurementsApiBaseAddress = "http://localhost:5000";
 
     public MeasurementsClientFixture()
     {
