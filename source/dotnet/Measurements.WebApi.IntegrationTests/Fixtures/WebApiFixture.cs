@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Net.Http.Headers;
 using Azure.Core;
+using Azure.Identity;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
@@ -40,9 +41,9 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         Client.DefaultRequestHeaders.Authorization = CreateAuthorizationHeader();
     }
 
-    public DatabricksSchemaManager DatabricksSchemaManager { get; set; }
+    private DatabricksSchemaManager DatabricksSchemaManager { get; }
 
-    public IntegrationTestConfiguration IntegrationTestConfiguration { get; }
+    private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
     public async Task InitializeAsync()
     {
@@ -72,10 +73,11 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = ApplicationIdUri)
     {
-        var tokenResponse = IntegrationTestConfiguration.Credential.GetToken(
-            new TokenRequestContext([applicationIdUri]), CancellationToken.None);
+        var token = new DefaultAzureCredential()
+            .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
+            .Token;
 
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, tokenResponse.Token);
+        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>

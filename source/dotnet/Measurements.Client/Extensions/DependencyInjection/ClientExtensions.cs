@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
+using Azure.Core;
+using Azure.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -21,14 +22,15 @@ public static class ClientExtensions
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
-        services.AddHttpContextAccessor();
         services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
 
-            var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-            var token = httpContextAccessor.HttpContext?.Request.Headers.Authorization ?? string.Empty;
+            var token = new DefaultAzureCredential()
+                .GetToken(new TokenRequestContext([measurementHttpClientOptions.ApplicationIdUri]), CancellationToken.None)
+                .Token;
+
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         });
 

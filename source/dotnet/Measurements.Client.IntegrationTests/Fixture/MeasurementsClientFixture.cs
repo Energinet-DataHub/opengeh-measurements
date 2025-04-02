@@ -21,7 +21,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
-    private const string MeasurementsApiUrl = "https://localhost:5001";
+    private const string MeasurementsApiBaseAddress = "https://localhost:5001";
 
     public MeasurementsClientFixture()
     {
@@ -77,7 +77,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
                 });
             })
             .UseStartup<Startup>()
-            .UseUrls(MeasurementsApiUrl)
+            .UseUrls(MeasurementsApiBaseAddress)
             .Build();
 
         return host;
@@ -89,7 +89,8 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = MeasurementsApiUrl,
+                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = MeasurementsApiBaseAddress,
+                [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = ApplicationIdUri,
             })
             .Build();
 
