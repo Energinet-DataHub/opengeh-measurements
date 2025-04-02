@@ -19,6 +19,7 @@ class TestMissingMeasurementsLog(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
         return Fixture(job_parameters=job_parameters)
+
     @pytest.mark.skip(reason="Skipped due to issues with the telemetry data not available in the logs.")
     def test__and_then_job_telemetry_is_created(self, job_fixture) -> None:
         pass
