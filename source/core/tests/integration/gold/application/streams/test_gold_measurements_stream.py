@@ -47,6 +47,6 @@ def test__stream_measurements_silver_to_gold__append_to_receipts_table(
 
     # Arrange
     receipts = spark.table(
-        f"{CoreInternalSettings.core_internal_database_name}.{CoreInternalTableNames.process_manager_receipts}"
+        f"{CoreInternalSettings().core_internal_database_name}.{CoreInternalTableNames.process_manager_receipts}"
     ).where(f"orchestration_instance_id = '{orchestration_id}'")
     assert receipts.count() == 1
