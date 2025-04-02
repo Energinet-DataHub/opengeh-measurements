@@ -13,8 +13,7 @@ from geh_calculated_measurements.common.infrastructure.spark_initializor import 
 
 def execute() -> None:
     capacity_settlement_args = CapacitySettlementArgs()  # Retrieve calculation oriented settings / job arguments
-    logging_settings = LoggingSettings(subsystem="measurements", cloud_role_name="dbr-capacity-settlement")
-    configure_logging(logging_settings=logging_settings)
+    logging_settings = configure_logging(subsystem="measurements", cloud_role_name="dbr-capacity-settlement")
     orchestrate_business_logic(job_arguments=capacity_settlement_args, logging_settings=logging_settings)
 
 

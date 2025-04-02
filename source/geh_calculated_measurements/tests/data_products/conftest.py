@@ -12,6 +12,7 @@ from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import migrate
 from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
+from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
 
 
 @pytest.fixture(scope="module")
@@ -20,17 +21,22 @@ def migrations_executed(spark: SparkSession, dummy_logging) -> Generator[None, N
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
     a view/dataprodcut/table is required."""
-    dbs = ["measurements_calculated", "measurements_calculated_internal"]
-    for db in dbs:
-        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+    # Databases are created in dh3infrastructure using terraform
+    # So we need to create them in test environment
+    ensure_calculated_measurements_databases_exist(spark)
+
     migrate()
     yield
-    for db in dbs:
-        spark.sql(f"DROP DATABASE IF EXISTS {db} CASCADE")
+
+    drop_calculated_measurements_databases(spark)
 
 
 @pytest.fixture(scope="module")
-def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases:
+def test_cases(
+    spark: SparkSession,
+    request: pytest.FixtureRequest,
+    migrations_executed: None,  # Used implicitly
+) -> TestCases:
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)
 

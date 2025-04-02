@@ -7,7 +7,7 @@ def test__submitted_transactions__should_call_expected(mocker: MockerFixture) ->
     # Arrange
     mock_initialize_spark = mocker.patch(f"{sut.__name__}.spark_session.initialize_spark")
     mock_SubmittedTransactionsRepository = mocker.patch(f"{sut.__name__}.SubmittedTransactionsRepository")
-    mock_SilverMeasurementsRepository = mocker.patch(f"{sut.__name__}.SilverMeasurementsRepository")
+    mock_SilverMeasurementsRepository = mocker.patch(f"{sut.__name__}.SilverMeasurementsStream")
 
     # Act
     sut.stream_submitted_transactions()
