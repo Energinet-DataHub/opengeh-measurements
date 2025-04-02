@@ -20,7 +20,7 @@ from tests import SPARK_CATALOG_NAME
         ),
     ],
 )
-def test_contract_and_schema_are_equal_parametrized(
+def test_data_product_matches_contract(
     migrations_executed: None,  # Used implicitly
     spark: SparkSession,
     view_name: str,
