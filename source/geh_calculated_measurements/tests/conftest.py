@@ -5,7 +5,7 @@ from typing import Generator
 import geh_common.telemetry.logging_configuration
 import pytest
 from delta import configure_spark_with_delta_pip
-from geh_common.telemetry.logging_configuration import LoggingSettings, configure_logging
+from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from pyspark.sql import SparkSession
 
@@ -13,6 +13,7 @@ from tests import TESTS_ROOT, create_job_environment_variables
 from tests.testsession_configuration import TestSessionConfiguration
 
 
+# TODO BJM: Should we remove this?
 @pytest.fixture(scope="module")
 def dummy_logging() -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set."""
@@ -21,8 +22,7 @@ def dummy_logging() -> Generator[None, None, None]:
         mp.setattr(os, "environ", env_args)
         mp.setattr(geh_common.telemetry.logging_configuration, "configure_azure_monitor", lambda *args, **kwargs: None)
         mp.setattr(geh_common.telemetry.logging_configuration, "get_is_instrumented", lambda *args, **kwargs: False)
-        settings = LoggingSettings(cloud_role_name="test_role", subsystem="test_subsystem")
-        configure_logging(logging_settings=settings)
+        configure_logging(cloud_role_name="test_role", subsystem="test_subsystem")
         yield
 
 

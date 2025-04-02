@@ -2,8 +2,7 @@ import uuid
 
 import pytest
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
 from tests.subsystem_tests.capacity_settlement.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -17,21 +16,14 @@ job_parameters = {
 }
 
 
-@pytest.fixture(scope="session")
-def job_fixture(
-    environment_configuration: EnvironmentConfiguration,
-) -> BaseJobFixture:
-    base_job_fixture = BaseJobFixture(
-        environment_configuration=environment_configuration,
-        job_name="CapacitySettlement",
-        job_parameters=job_parameters,
-    )
-    seed_table(base_job_fixture)
-    return base_job_fixture
-
-
-class TestCapacitySettlement(BaseJobTests):
-    """
-    Test class for Capacity Settlement.
-
-    """
+class TestCapacitySettlement(JobTest):
+    @pytest.fixture(scope="class")
+    def fixture(self):
+        config = EnvironmentConfiguration()
+        fixture = JobTestFixture(
+            environment_configuration=config,
+            job_name="CapacitySettlement",
+            job_parameters=job_parameters,
+        )
+        seed_table(fixture)
+        return fixture

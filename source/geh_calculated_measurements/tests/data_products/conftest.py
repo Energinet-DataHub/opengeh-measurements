@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Generator
 
 import pytest
 from geh_common.testing.dataframes import write_when_files_to_delta
@@ -9,13 +8,12 @@ from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.database_migrations.migrations_runner import migrate
-from geh_calculated_measurements.database_migrations.settings.catalog_settings import CatalogSettings
-from tests import drop_calculated_measurements_databases, ensure_calculated_measurements_databases_exist
+from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
+from tests import SPARK_CATALOG_NAME, ensure_calculated_measurements_databases_exist
 
 
-@pytest.fixture(scope="module")
-def migrations_executed(spark: SparkSession, dummy_logging: None) -> Generator[None, None, None]:
+@pytest.fixture(scope="session")
+def migrations_executed(spark: SparkSession) -> None:
     """Executes all migrations.
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
@@ -25,10 +23,7 @@ def migrations_executed(spark: SparkSession, dummy_logging: None) -> Generator[N
     # So we need to create them in test environment
     ensure_calculated_measurements_databases_exist(spark)
 
-    migrate()
-    yield
-
-    drop_calculated_measurements_databases(spark)
+    _migrate(SPARK_CATALOG_NAME)
 
 
 @pytest.fixture(scope="module")
@@ -58,13 +53,11 @@ def test_cases(
 
     # Construct a list of TestCase objects
     test_cases = []
-    schema = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
-    with pytest.MonkeyPatch.context() as m:
-        m.setattr(os, "environ", {"CATALOG_NAME": "spark_catalog"})
-        catalog = CatalogSettings().catalog_name
 
     for path_name in then_files:
-        actual = spark.sql(f"SELECT * FROM {catalog}.{schema}.{path_name}")
+        actual = spark.sql(
+            f"SELECT * FROM {SPARK_CATALOG_NAME}.{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}.{path_name}"
+        )
 
         test_cases.append(
             TestCase(
