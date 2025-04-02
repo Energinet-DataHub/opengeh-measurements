@@ -7,6 +7,7 @@ from azure.keyvault.secrets import SecretClient
 from azure.monitor.query import LogsQueryStatus
 
 from geh_calculated_measurements.testing.utilities.log_query_client_wrapper import LogQueryClientWrapper
+from tests import SPARK_CATALOG_NAME
 
 
 def create_azure_log_query_runner(monkeypatch: pytest.MonkeyPatch) -> Callable[[str, int], LogsQueryStatus]:
@@ -32,7 +33,7 @@ def create_azure_log_query_runner(monkeypatch: pytest.MonkeyPatch) -> Callable[[
     if application_insights_connection_string is None:
         raise ValueError("The Azure Application Insights connection string cannot be empty.")
 
-    monkeypatch.setenv("CATALOG_NAME", "spark_catalog")
+    monkeypatch.setenv("CATALOG_NAME", SPARK_CATALOG_NAME)
     monkeypatch.setenv("APPLICATIONINSIGHTS_CONNECTION_STRING", application_insights_connection_string)
 
     def query_client(query: str, timeout_minutes: int = 15):

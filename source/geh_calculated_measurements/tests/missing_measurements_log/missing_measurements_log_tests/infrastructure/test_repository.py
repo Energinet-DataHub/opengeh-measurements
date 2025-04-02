@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import pyspark.sql.functions as F
-import pyspark.sql.types as T
 import pytest
 from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
@@ -11,6 +10,7 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure.databas
     MeteringPointPeriodsDatabaseDefinition,
 )
 from geh_calculated_measurements.missing_measurements_log.infrastructure.repository import Repository
+from tests import SPARK_CATALOG_NAME
 
 TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}"
 
@@ -33,28 +33,31 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="module")
 def repository(spark: SparkSession) -> Repository:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}")
-    return Repository(spark, catalog_name="spark_catalog")
+    return Repository(spark, catalog_name=SPARK_CATALOG_NAME)
 
 
-def test__when_missing_expected_column_raises_exception(
-    valid_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    # Arrange
-    invalid_dataframe = valid_dataframe.drop(F.col("metering_point_id"))
-    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        TABLE_OR_VIEW_NAME
-    )
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
+# def test__when_missing_expected_column_raises_exception(
+#     valid_dataframe: DataFrame,
+#     repository: Repository,
+# ) -> None:
+#     # Arrange
+#     invalid_dataframe = valid_dataframe.drop(F.col("metering_point_id"))
+#     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+#         TABLE_OR_VIEW_NAME
+#     )
 
-    # Act and Assert
-    with pytest.raises(
-        Exception,
-        match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\].*",
-    ):
-        repository.read_metering_point_periods()
+#     # Act and Assert
+#     with pytest.raises(
+#         Exception,
+#         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\].*",
+#     ):
+#         repository.read_metering_point_periods()
 
 
+# TODO BJM: This test should not create the table by itself. It breaks other tests because
+#           it changes the nullability of columns
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
     repository: Repository,
@@ -72,18 +75,20 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     assert actual.df.columns == valid_dataframe.schema.fieldNames()
 
 
-def test__when_source_contains_wrong_data_type_raises_exception(
-    valid_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    # Arrange
-    invalid_dataframe = valid_dataframe.withColumn(
-        "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
-    )
-    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        TABLE_OR_VIEW_NAME
-    )
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
+# def test__when_source_contains_wrong_data_type_raises_exception(
+#     valid_dataframe: DataFrame,
+#     repository: Repository,
+# ) -> None:
+#     # Arrange
+#     invalid_dataframe = valid_dataframe.withColumn(
+#         "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
+#     )
+#     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+#         TABLE_OR_VIEW_NAME
+#     )
 
-    # Act & Assert
-    with pytest.raises(Exception, match=r".*Schema mismatch.*"):
-        repository.read_metering_point_periods()
+#     # Act & Assert
+#     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
+#         repository.read_metering_point_periods()

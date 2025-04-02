@@ -1,0 +1,165 @@
+metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
+170000000000000200;0.25;measured;2023-12-31T23:00:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2023-12-31T23:15:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2023-12-31T23:30:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2023-12-31T23:45:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2024-01-01T00:00:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2024-01-01T00:15:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2024-01-01T01:30:00Z;consumption;Case 0
+170000000000000200;0.25;measured;2024-01-01T01:45:00Z;consumption;Case 0: Rows 1-8 will be aggregated to 1 row for Jan. 1st with 2 kWh in result
+170000000000000200;0.001;measured;2024-01-01T23:30:00Z;consumption;Case 0
+170000000000000200;0.001;measured;2024-01-01T23:45:00Z;consumption;Case 0: Rows 9-10 will be aggregated to 1 row for Jan. 2nd with 0.002 kWh in result
+170000000000000200;1.5;measured;2024-01-03T15:00:00Z;consumption;Case 0
+170000000000000200;1.5;measured;2024-01-03T15:45:00Z;consumption;Case 0: Rows 11-12 will be aggregated to 1 row for Jan. 3rd with 3 kWh in result
+170000000000000200;5.111;measured;2024-01-04T21:45:00Z;consumption;Case 0: Row 13 will be aggregated to 1 row for Jan. 4th with 5.111 kWh in result
+170000000000000201;3999.999;measured;2024-01-01T22:45:00Z;consumption;Case 1: Jan. 1st. Should be added to D14
+170000000000000201;0.001;measured;2024-01-01T23:00:00Z;consumption;Case 1: Jan. 2nd. Limit hit
+170000000000000201;1;measured;2024-01-01T23:15:00Z;consumption;Case 1: Jan. 2nd. Even though total of 1.001 logged on parent, only 0.001 should be added to D14
+170000000000000201;500;measured;2024-01-03T15:00:00Z;consumption;Case 1: Jan. 3rd. Nothing should be added to D14 now
+170000000000000202;4000.001;measured;2024-01-05T17:45:00Z;consumption;Case 2: Jan. 5th. Hit limit in one go. Only 4000 should be added to D14
+170000000000000203;4000;measured;2024-01-05T17:45:00Z;consumption;Case 3: Jan. 5th. Hit limit exactly in one go
+170000000000000203;0.001;measured;2024-01-06T10:30:00Z;consumption;Case 3: Jan. 6th.  Nothing should be added to D14 now
+170000000000000204;1;measured;2024-03-29T23:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T00:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T01:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T02:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T03:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T04:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T05:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T06:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T07:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T08:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T09:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T10:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T11:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T12:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T13:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T14:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T15:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T16:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T17:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T18:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T19:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T20:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T21:00:00Z;consumption;Case 4: Day 1
+170000000000000204;1;measured;2024-03-30T22:00:00Z;consumption;Case 4: Day 1 - row 1-24 will be aggregated for day 1
+170000000000000204;1;measured;2024-03-30T23:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T00:00:00Z;consumption;Case 4: Day 2 - 1 o'clock danish local time
+170000000000000204;1;measured;2024-03-31T01:00:00Z;consumption;Case 4: Day 2 - 3 o'clock danish local time. This is the hour where DST is applied.
+170000000000000204;1;measured;2024-03-31T02:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T03:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T04:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T05:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T06:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T07:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T08:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T09:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T10:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T11:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T12:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T13:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T14:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T15:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T16:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T17:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T18:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T19:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T20:00:00Z;consumption;Case 4: Day 2
+170000000000000204;1;measured;2024-03-31T21:45:00Z;consumption;Case 4: Day 2 - row 25-47 will be aggregated for day 2 (only 23 hours)
+170000000000000204;1;measured;2024-03-31T22:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-03-31T23:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T00:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T01:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T02:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T03:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T04:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T05:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T06:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T07:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T08:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T09:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T10:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T11:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T12:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T13:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T14:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T15:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T16:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T17:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T18:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T19:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T20:00:00Z;consumption;Case 4: Day 3
+170000000000000204;1;measured;2024-04-01T21:00:00Z;consumption;Case 4: Day 3 - row 48-71 will be aggregated for day 3
+170000000000000205;1;measured;2024-10-25T22:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-25T23:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T00:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T01:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T02:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T03:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T04:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T05:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T06:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T07:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T08:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T09:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T10:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T11:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T12:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T13:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T14:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T15:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T16:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T17:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T18:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T19:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T20:00:00Z;consumption;Case 5: Day 1
+170000000000000205;1;measured;2024-10-26T21:00:00Z;consumption;Case 5: Day 1 - row 1-24 will be aggregated for day 1
+170000000000000205;1;measured;2024-10-26T22:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-26T23:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T00:00:00Z;consumption;Case 5: Day 2 - 2 o'clock danish local time
+170000000000000205;1;measured;2024-10-27T01:00:00Z;consumption;Case 5: Day 2 - 2 o'clock danish local time. This is the hour where DST ends.
+170000000000000205;1;measured;2024-10-27T02:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T03:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T04:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T05:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T06:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T07:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T08:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T09:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T10:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T11:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T12:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T13:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T14:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T15:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T16:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T17:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T18:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T19:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T20:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T21:00:00Z;consumption;Case 5: Day 2
+170000000000000205;1;measured;2024-10-27T22:00:00Z;consumption;Case 5: Day 2 - row 25-49 will be aggregated for day 2 (25 hours)
+170000000000000205;1;measured;2024-10-27T23:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T00:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T01:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T02:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T03:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T04:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T05:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T06:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T07:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T08:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T09:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T10:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T11:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T12:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T13:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T14:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T15:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T16:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T17:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T18:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T19:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T20:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T21:00:00Z;consumption;Case 5: Day 3
+170000000000000205;1;measured;2024-10-28T22:00:00Z;consumption;Case 5: Day 3 - row 50-73 will be aggregated for day 3
