@@ -4,7 +4,7 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixt
 
 database = "electricity_market_measurements_input"
 parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
-child_table = "net_consumption_group_6_child_metering_point_periods_v1"
+child_table = "net_consumption_group_6_child_metering_point_v1"
 
 parent_metering_point_id = "170000000000000201"
 child_metering_point_id = "150000001500170200"

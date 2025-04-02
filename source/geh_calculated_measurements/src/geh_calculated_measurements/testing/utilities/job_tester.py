@@ -70,7 +70,9 @@ class JobTestFixture:
         while elapsed_time < timeout_minutes * 60:
             response = self.ws.statement_execution.get_statement(response.statement_id)
             if response.status.state not in [StatementState.RUNNING, StatementState.PENDING, StatementState.SUCCEEDED]:
-                raise ValueError(f"Statement execution failed with state {response.status.state}.")
+                raise ValueError(
+                    f"Statement execution failed with state {response.status.state} with error {response.status.error}"
+                )
             if response.status.state == StatementState.SUCCEEDED:
                 return response
             elapsed_time = time.time() - start_time
@@ -138,6 +140,9 @@ class JobTest(abc.ABC):
 
         # Act
         response = fixture.execute_statement(statement=statement)
+
+        print("response:", response)
+        print("response result:", response.result)
 
         # Assert
         row_count = response.result.row_count if response.result.row_count is not None else 0
