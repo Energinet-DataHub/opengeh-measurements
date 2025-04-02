@@ -8,10 +8,7 @@ using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.WebApi;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
@@ -33,7 +30,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             new HttpClientFactory(),
             IntegrationTestConfiguration.DatabricksSettings,
             "mmcore_measurementsapi");
-        MeasurementsApiApp = BuildMeasurementsApiApp();
+        MeasurementsApiHost = BuildMeasurementsApiHost();
         ServiceProvider = BuildServiceProvider();
     }
 
@@ -43,7 +40,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
 
     public ServiceProvider ServiceProvider { get; }
 
-    private WebApplication MeasurementsApiApp { get; }
+    private IWebHost MeasurementsApiHost { get; }
 
     private DatabricksSchemaManager DatabricksSchemaManager { get; }
 
@@ -54,31 +51,36 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
         await DatabricksSchemaManager.CreateSchemaAsync();
         await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRow());
-        await MeasurementsApiApp.StartAsync();
+        await MeasurementsApiHost.StartAsync();
     }
 
     public async Task DisposeAsync()
     {
         await DatabricksSchemaManager.DropSchemaAsync();
-        await MeasurementsApiApp.StopAsync();
+        await MeasurementsApiHost.StopAsync();
     }
 
-    private WebApplication BuildMeasurementsApiApp()
+    private IWebHost BuildMeasurementsApiHost()
     {
-        var builder = ApplicationFactory.CreateBuilder(null!);
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl,
-            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken,
-            [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
-            [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
-            [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
-            [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
-            [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}"] = Issuer,
-        });
-        builder.WebHost.UseUrls(MeasurementsApiUrl);
+        var host = WebHost.CreateDefaultBuilder()
+            .ConfigureAppConfiguration((_, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl,
+                    [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceToken)}"] = IntegrationTestConfiguration.DatabricksSettings.WorkspaceAccessToken,
+                    [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
+                    [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
+                    [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
+                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
+                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}"] = Issuer,
+                });
+            })
+            .UseStartup<Startup>()
+            .UseUrls(MeasurementsApiUrl)
+            .Build();
 
-        return builder.Build();
+        return host;
     }
 
     private static ServiceProvider BuildServiceProvider()

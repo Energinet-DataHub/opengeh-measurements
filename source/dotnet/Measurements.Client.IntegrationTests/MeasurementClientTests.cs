@@ -1,7 +1,6 @@
 ﻿using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 using Microsoft.Extensions.DependencyInjection;
-using NodaTime;
 using Xunit;
 using Xunit.Categories;
 

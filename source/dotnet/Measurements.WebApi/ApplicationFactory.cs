@@ -7,10 +7,8 @@ namespace Energinet.DataHub.Measurements.WebApi;
 
 public static class ApplicationFactory
 {
-    public static WebApplicationBuilder CreateBuilder(string[] args)
+    public static WebApplication BuildApplication(WebApplicationBuilder builder)
     {
-        var builder = WebApplication.CreateBuilder(args);
-
         // Common
         builder.Services.AddApplicationInsightsForWebApp(subsystemName: "Measurements");
         builder.Services.AddHealthChecksForWebApp();
@@ -30,9 +28,9 @@ public static class ApplicationFactory
         builder.Services.AddSwagger();
 
         // => Authentication/authorization
-        // builder.Services
-        //     .AddAuthenticationForWebApp(builder.Configuration)
-        //     .AddAuthorizationForWebApp();
-        return builder;
+        builder.Services
+            .AddAuthenticationForWebApp(builder.Configuration)
+            .AddAuthorizationForWebApp();
+        return builder.Build();
     }
 }
