@@ -17,7 +17,7 @@ def test__notify__should_call_expected(
 
     mock_submitted_transactions = mock.Mock()
     mock_submitted_transactions_transformation = mocker.patch(
-        f"{sut.__name__}.transactions_persisted_events_transformation.transform",
+        f"{sut.__name__}.transform",
         return_value=mock_submitted_transactions,
     )
 
