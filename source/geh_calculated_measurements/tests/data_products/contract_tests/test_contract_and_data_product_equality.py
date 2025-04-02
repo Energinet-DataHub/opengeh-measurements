@@ -3,7 +3,10 @@ from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.contracts.data_products import hourly_calculated_measurements_v1
+from geh_calculated_measurements.contracts.data_products import (
+    hourly_calculated_measurements_v1,
+    missing_measurements_log_v1,
+)
 from tests import SPARK_CATALOG_NAME
 
 

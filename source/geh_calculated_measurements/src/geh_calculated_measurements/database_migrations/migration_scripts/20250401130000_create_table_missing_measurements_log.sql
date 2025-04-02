@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS {catalog_name}.measurements_calculated_internal.missi
 (
     orchestration_instance_id STRING NOT NULL,
     metering_point_id STRING NOT NULL,
-    date INT NOT NULL    
+    date TIMESTAMP NOT NULL    
 )
 USING DELTA
 TBLPROPERTIES (
