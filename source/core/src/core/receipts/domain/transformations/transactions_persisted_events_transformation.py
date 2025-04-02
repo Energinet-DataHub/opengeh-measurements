@@ -10,7 +10,9 @@ from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
 from core.contracts.process_manager.PersistSubmittedTransaction.persist_submitted_transaction_proto_version import (
     PersistSubmittedTransactionProtoVersion,
 )
-from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
+from core.silver.domain.constants.column_names.silver_measurements_column_names import (
+    SilverMeasurementsColumnNames,  # Adjust
+)
 
 alias_name = "measurement_values"
 

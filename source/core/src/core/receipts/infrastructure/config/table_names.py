@@ -1,2 +1,2 @@
-class ReceiptTableNames:
+class TableNames:
     process_manager_receipts = "process_manager_receipts"
