@@ -11,7 +11,7 @@ from tests import SPARK_CATALOG_NAME
     ("view_name", "contract_schema"),
     [
         (
-            calculated_measurements_v1.schema,
+            CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME,
             calculated_measurements_v1.calculated_measurements_v1,
         ),
         (
@@ -27,10 +27,10 @@ def test_contract_and_schema_are_equal_parametrized(
     contract_schema,
 ) -> None:
     # Arrange
-    database = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
+    database_name = CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME
 
     # Act
-    view_df = spark.table(f"{SPARK_CATALOG_NAME}.{database}.{view_name}").limit(1)
+    view_df = spark.table(f"{SPARK_CATALOG_NAME}.{database_name}.{view_name}").limit(1)
 
     # Assert
     assert_contract(actual_schema=view_df.schema, contract=contract_schema)
