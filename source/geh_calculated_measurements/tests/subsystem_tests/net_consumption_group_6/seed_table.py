@@ -45,7 +45,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
         {False},
         {1},
         '{datetime(2022, 12, 31, 23, 0, 0).strftime("%Y-%m-%d %H:%M:%S")}',
-        '{datetime(2023, 12, 31, 23, 0, 0).strftime("%Y-%m-%d %H:%M:%S")}',
+        '{datetime(2025, 12, 31, 23, 0, 0).strftime("%Y-%m-%d %H:%M:%S")}',
         {False}
     )
     """)
@@ -63,7 +63,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
         'net_consumption',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0)}',
-        '{datetime(2023, 12, 31, 23, 0, 0)}'
+        '{datetime(2025, 12, 31, 23, 0, 0)}'
     )
     """)
 
