@@ -1,9 +1,10 @@
-from unittest.mock import Mock
+from unittest.mock import ANY, Mock
 
 from pytest_mock import MockFixture
 
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
 
 
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
@@ -22,9 +23,13 @@ def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture
 def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
+    receipts_repo_mock = Mock(spec=ReceiptsRepository)
     transform_mock = Mock()
+    transform_receipts_mock = Mock()
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
     mocker.patch.object(sut.transformations, "transform_silver_to_gold", transform_mock)
+    mocker.patch.object(sut, "ReceiptsRepository", return_value=receipts_repo_mock)
+    mocker.patch.object(sut.transformations, "transform_to_receipts", transform_receipts_mock)
     silver_measurements_mock = Mock()
 
     # Act
@@ -33,3 +38,5 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Assert
     transform_mock.assert_called_once_with(silver_measurements_mock)
     gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
+    transform_receipts_mock.assert_called_once_with(ANY)
+    gold_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
