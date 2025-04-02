@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 
@@ -44,8 +44,8 @@ def seed_table(job_fixture: JobTestFixture) -> None:
         '{parent_metering_point_id}',
         {False},
         {1},
-        '{datetime(2022, 12, 31, 23, 0, 0).strftime("%Y-%m-%d %H:%M:%S")}',
-        '{datetime(2023, 12, 31, 23, 0, 0).strftime("%Y-%m-%d %H:%M:%S")}',
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+        '{datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
         {False}
     )
     """)
@@ -62,8 +62,8 @@ def seed_table(job_fixture: JobTestFixture) -> None:
         '{child_metering_point_id}',
         'net_consumption',
         '{parent_metering_point_id}',
-        '{datetime(2022, 12, 31, 23, 0, 0)}',
-        '{datetime(2023, 12, 31, 23, 0, 0)}'
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
+        '{datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
     )
     """)
 

@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
 from geh_common.domain.types import MeteringPointType
 from geh_common.domain.types.quantity_quality import QuantityQuality
@@ -14,7 +14,7 @@ class GoldTableRow:
     metering_point_id: str
     orchestration_type: str = "submitted"
     orchestration_instance_id: uuid.UUID = uuid.uuid4()
-    observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0)
+    observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
     quantity: float = 1.7
     quality: str = QuantityQuality.MEASURED.value
     metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION
