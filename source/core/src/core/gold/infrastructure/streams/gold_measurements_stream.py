@@ -20,7 +20,6 @@ class GoldMeasurementsStream:
         source_table: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
-        query_name = "measurements_silver_to_gold"
         checkpoint_location = shared_helpers.get_checkpoint_path(
             self.data_lake_settings, self.gold_container_name, checkpoint_name
         )
