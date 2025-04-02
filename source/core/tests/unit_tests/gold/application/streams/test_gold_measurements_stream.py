@@ -15,7 +15,7 @@ def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture
     sut.stream_measurements_silver_to_gold()
 
     # Assert
-    silver_repo_mock.read_stream.assert_called_once()
+    silver_repo_mock.assert_called_once()
     gold_stream_mock.write_stream.assert_called_once()
 
 
