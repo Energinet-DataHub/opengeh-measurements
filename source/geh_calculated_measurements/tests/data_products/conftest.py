@@ -1,4 +1,3 @@
-### This file contains the fixtures that are used in the tests. ###
 from pathlib import Path
 
 import pytest
@@ -18,6 +17,7 @@ def migrations_executed(spark: SparkSession) -> None:
 
     This fixture is useful for all tests that require the migrations to be executed. E.g. when
     a view/dataprodcut/table is required."""
+
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
     ensure_calculated_measurements_databases_exist(spark)

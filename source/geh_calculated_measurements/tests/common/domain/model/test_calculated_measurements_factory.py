@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import UUID
 
@@ -13,10 +13,11 @@ from geh_calculated_measurements.common.domain import ContractColumnNames, calcu
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEFAULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
 DEFAULT_METERING_POINT_TYPE = MeteringPointType.ELECTRICAL_HEATING
-DEFAULT_DATE = datetime(2024, 3, 2, 23, 0)
+DEFAULT_DATE = datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)
 DEFAULT_QUANTITY = Decimal("999.123")
 DEFAULT_METERING_POINT_ID = "1234567890123"
 DEFAULT_TIME_ZONE = "Europe/Copenhagen"
+DEFAULT_TRANSACTION_CREATION_DATETIME = datetime(2024, 3, 1, 23, 0)
 
 
 def create_row(
@@ -59,7 +60,7 @@ class TestWhenValidInput:
         # Arrange
         expected_columns = [
             ContractColumnNames.metering_point_id,
-            ContractColumnNames.date,
+            ContractColumnNames.observation_time,
             ContractColumnNames.quantity,
             ContractColumnNames.orchestration_instance_id,
             ContractColumnNames.orchestration_type,
@@ -70,12 +71,13 @@ class TestWhenValidInput:
         df = create(spark)
 
         # Act
-        actual = calculated_measurements_factory.create(
+        actual = calculated_measurements_factory.deprecated_create(
             df,
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
             DEFAULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
             DEFAULT_TIME_ZONE,
+            DEFAULT_TRANSACTION_CREATION_DATETIME,
         )
 
         # Assert
@@ -90,12 +92,13 @@ class TestWhenInputContainsIrrelevantColumn:
         df = df.withColumn(irrelevant_column, F.lit("test"))
 
         # Act
-        actual = calculated_measurements_factory.create(
+        actual = calculated_measurements_factory.deprecated_create(
             df,
             DEFAULT_ORCHESTRATION_INSTANCE_ID,
             DEFAULT_ORCHESTRATION_TYPE,
             DEFAULT_METERING_POINT_TYPE,
             DEFAULT_TIME_ZONE,
+            DEFAULT_TRANSACTION_CREATION_DATETIME,
         )
 
         # Assert
@@ -107,19 +110,20 @@ class TestTransactionId:
         def test_returns_one_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0)),
-                create_row(date=datetime(2024, 3, 2, 23, 0)),
-                create_row(date=datetime(2024, 3, 3, 23, 0)),
+                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
             ]
             measurements = create(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_factory.deprecated_create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
 
             # Assert
@@ -129,23 +133,24 @@ class TestTransactionId:
         def test_returns_two_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0)),
-                create_row(date=datetime(2024, 3, 2, 23, 0)),
-                create_row(date=datetime(2024, 3, 3, 23, 0)),
+                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
                 # Here is the gap
-                create_row(date=datetime(2024, 3, 5, 23, 0)),
-                create_row(date=datetime(2024, 3, 6, 23, 0)),
-                create_row(date=datetime(2024, 3, 7, 23, 0)),
+                create_row(date=datetime(2024, 3, 5, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 6, 23, 0, tzinfo=timezone.utc)),
+                create_row(date=datetime(2024, 3, 7, 23, 0, tzinfo=timezone.utc)),
             ]
             measurements = create(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_factory.deprecated_create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
 
             # Assert
@@ -162,16 +167,16 @@ class TestTransactionId:
             [
                 (  # Entering DST
                     [
-                        datetime(2024, 3, 30, 23),
-                        datetime(2024, 3, 31, 22),
-                        datetime(2024, 4, 1, 22),
+                        datetime(2024, 3, 30, 23, tzinfo=timezone.utc),
+                        datetime(2024, 3, 31, 22, tzinfo=timezone.utc),
+                        datetime(2024, 4, 1, 22, tzinfo=timezone.utc),
                     ]
                 ),
                 (  # Exiting DST
                     [
-                        datetime(2024, 10, 26, 22),
-                        datetime(2024, 10, 27, 23),
-                        datetime(2024, 10, 28, 23),
+                        datetime(2024, 10, 26, 22, tzinfo=timezone.utc),
+                        datetime(2024, 10, 27, 23, tzinfo=timezone.utc),
+                        datetime(2024, 10, 28, 23, tzinfo=timezone.utc),
                     ]
                 ),
             ],
@@ -182,12 +187,13 @@ class TestTransactionId:
             measurements = create(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_factory.deprecated_create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
 
             # Assert
@@ -199,21 +205,22 @@ class TestTransactionId:
             mp_id_1 = "1111111111111"
             mp_id_2 = "2222222222222"
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0), metering_point_id=mp_id_1),
-                create_row(date=datetime(2024, 3, 2, 23, 0), metering_point_id=mp_id_1),
-                create_row(date=datetime(2024, 3, 1, 23, 0), metering_point_id=mp_id_2),
-                create_row(date=datetime(2024, 3, 2, 23, 0), metering_point_id=mp_id_2),
+                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
+                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
+                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
+                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
             ]
 
             measurements = create(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_factory.deprecated_create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
 
             # Assert
@@ -242,19 +249,21 @@ class TestTransactionId:
             orchestration_instance_id_2 = UUID("00000000-0000-0000-0000-000000000002")
 
             # Act
-            actual_1 = calculated_measurements_factory.create(
+            actual_1 = calculated_measurements_factory.deprecated_create(
                 measurements,
                 orchestration_instance_id_1,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
-            actual_2 = calculated_measurements_factory.create(
+            actual_2 = calculated_measurements_factory.deprecated_create(
                 measurements,
                 orchestration_instance_id_2,
                 DEFAULT_ORCHESTRATION_TYPE,
                 DEFAULT_METERING_POINT_TYPE,
                 DEFAULT_TIME_ZONE,
+                DEFAULT_TRANSACTION_CREATION_DATETIME,
             )
 
             # Assert
