@@ -22,7 +22,7 @@ public class MeasurementsControllerTests
         var measurementsHandler = new Mock<IMeasurementsHandler>();
         var controller = new MeasurementsController(measurementsHandler.Object);
         var request = new GetMeasurementRequest("1234567890", date, date.AddDays(1));
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateMeasurementResult(instant.ToDateTimeOffset())),
             new(CreateMeasurementResult(instant.ToDateTimeOffset())),

@@ -13,5 +13,5 @@ public interface IMeasurementsRepository
     /// <param name="meteringPointId"></param>
     /// <param name="from"></param>
     /// <param name="to"></param>
-    IAsyncEnumerable<MeasurementsResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to);
+    IAsyncEnumerable<MeasurementResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to);
 }

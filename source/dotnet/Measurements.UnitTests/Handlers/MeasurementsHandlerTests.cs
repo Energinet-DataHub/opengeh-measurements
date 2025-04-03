@@ -24,7 +24,7 @@ public class MeasurementsHandlerTests
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
         var raw = CreateRaw(date);
-        var measurementResult = new MeasurementsResult(raw);
+        var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
@@ -51,7 +51,7 @@ public class MeasurementsHandlerTests
         var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
-            .Returns(AsyncEnumerable.Empty<MeasurementsResult>());
+            .Returns(AsyncEnumerable.Empty<MeasurementResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act

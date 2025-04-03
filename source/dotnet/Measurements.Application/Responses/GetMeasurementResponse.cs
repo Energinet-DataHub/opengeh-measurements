@@ -19,7 +19,7 @@ public class GetMeasurementResponse
         Points = points;
     }
 
-    public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
+    public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var points = measurements
             .Select(measurement =>

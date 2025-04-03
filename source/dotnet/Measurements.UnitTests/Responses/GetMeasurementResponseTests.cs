@@ -16,7 +16,7 @@ public class GetMeasurementResponseTests
     {
         // Arrange
         var date = DateTimeOffset.Now;
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateRaw(date)),
             new(CreateRaw(date)),
@@ -49,7 +49,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenUnitKnown_ThenReturnsGetMeasurementResponse(string unit, Unit expectedUnit)
     {
         // Arrange
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateRaw(DateTimeOffset.Now, unit: unit)),
         };
@@ -65,7 +65,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenUnitUnknown_ThenThrowsException()
     {
         // Arrange
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateRaw(DateTimeOffset.Now, unit: "unknown")),
         };
@@ -83,7 +83,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenQualityKnown_ThenReturnsGetMeasurementResponse(string quality, Quality expectedQuality)
     {
         // Arrange
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateRaw(DateTimeOffset.Now, quality: quality)),
         };
@@ -99,7 +99,7 @@ public class GetMeasurementResponseTests
     public void Create_WhenQualityUnknown_ThenThrowsException()
     {
         // Arrange
-        var measurements = new List<MeasurementsResult>
+        var measurements = new List<MeasurementResult>
         {
             new(CreateRaw(DateTimeOffset.Now, quality: "unknown")),
         };
