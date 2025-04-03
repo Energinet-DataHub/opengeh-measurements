@@ -10,8 +10,8 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc import calculate_cenc
-from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_yearly import calculate_cenc
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_daily import calculate_daily
 
 
 @use_span()
@@ -33,6 +33,7 @@ def execute(
     measurements = calculate_daily(
         current_measurements=current_measurements,
         cenc=cenc,
+        child_metering_points=child_metering_points,
         time_zone=time_zone,
         execution_start_datetime=execution_start_datetime,
     )
