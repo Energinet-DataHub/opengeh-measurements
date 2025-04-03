@@ -13,6 +13,7 @@ from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
 @pytest.fixture(scope="session")
 def gold_table_seeded(spark: SparkSession) -> None:
+    spark.sparkContext.setLogLevel("ERROR")
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(

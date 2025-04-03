@@ -18,6 +18,7 @@ TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{M
 
 @pytest.fixture(scope="module")
 def valid_dataframe(spark: SparkSession) -> DataFrame:
+    spark.sparkContext.setLogLevel("ERROR")
     return spark.createDataFrame(
         [
             (
@@ -57,8 +58,12 @@ def repository(spark: SparkSession) -> Repository:
 #         repository.read_metering_point_periods()
 
 
+<<<<<<< Updated upstream
 # TODO BJM: This test should not create the table by itself. It breaks other tests because
 #           it changes the nullability of columns
+=======
+# Create huge spark outputs
+>>>>>>> Stashed changes
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
     repository: Repository,
@@ -76,6 +81,7 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     assert actual.df.columns == valid_dataframe.schema.fieldNames()
 
 
+<<<<<<< Updated upstream
 # TODO BJM: This is a bad test because it changes the table and thus can break other tests.
 #           At least when executed in parallel.
 # def test__when_source_contains_wrong_data_type_raises_exception(
@@ -89,6 +95,37 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 #     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
 #         TABLE_OR_VIEW_NAME
 #     )
+=======
+def test__spark_output(
+    valid_dataframe: DataFrame,
+    repository: Repository,
+) -> None:
+    invalid_dataframe = valid_dataframe.withColumn(
+        "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
+    )
+    # create spark error: Could not alter schema of table
+    # `electricity_market_measurements_input`.`missing_measurements_log_metering_point_periods_v1`
+    # in a Hive compatible way. Updating Hive metastore in Spark SQL specific format
+    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+        TABLE_OR_VIEW_NAME
+    )
+    assert 1 == 1
+    assert invalid_dataframe
+
+
+# Create huge spark outputs
+def test__when_source_contains_wrong_data_type_raises_exception(
+    valid_dataframe: DataFrame,
+    repository: Repository,
+) -> None:
+    # Arrange
+    invalid_dataframe = valid_dataframe.withColumn(
+        "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
+    )
+    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
+        TABLE_OR_VIEW_NAME
+    )
+>>>>>>> Stashed changes
 
 #     # Act & Assert
 #     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
