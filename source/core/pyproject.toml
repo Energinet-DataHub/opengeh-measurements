@@ -34,6 +34,8 @@ dev = [
     "pytest-bdd-report>=1.0.1",
     "protobuf>=6.30.1",
     "pytest-mock>=3.14.0",
+    "pytest-xdist>=3.6.1",
+    "psutil>=5.9.8",
 ]
 
 [build-system]
@@ -53,6 +55,8 @@ addopts = [
     "-ra",
     "-vv",
     "-s",
+    "-n=auto",
+    "--dist=load",
 ]
 
 [tool.coverage.report]
