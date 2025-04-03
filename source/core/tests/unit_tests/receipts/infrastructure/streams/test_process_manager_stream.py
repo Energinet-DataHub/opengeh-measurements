@@ -2,7 +2,7 @@ import os
 from unittest import mock
 
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
-from core.silver.infrastructure.streams.process_manager_stream import ProcessManagerStream
+from core.receipts.infrastructure.streams.process_manager_stream import ProcessManagerStream
 
 
 def test__write_stream__calls_expected_methods(mock_checkpoint_path):
