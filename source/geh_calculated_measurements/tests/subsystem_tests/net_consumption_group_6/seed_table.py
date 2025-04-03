@@ -1,18 +1,19 @@
 import random
 from datetime import datetime, timezone
 
+from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
+    ElectricityMarketMeasurementsInputDatabaseDefinition,
+)
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
-# TODO BJM: Use values from production code
-database = "electricity_market_measurements_input"
-parent_table = "net_consumption_group_6_consumption_metering_point_periods_v1"
-child_table = "net_consumption_group_6_child_metering_point_v1"
+database = ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME
+parent_table = (
+    ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS
+)
+child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
 
 parent_metering_point_id = "170000050000000201"
-
-database = "measurements_gold"
-table = "measurements"
 
 
 def seed_gold_table(job_fixture: JobTestFixture) -> None:
