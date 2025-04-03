@@ -15,5 +15,7 @@ public class AggregatedMeasurementsResult(ExpandoObject raw)
 
     public object[] Qualities => _raw.qualities;
 
+    public object[] Resolutions => _raw.resolutions;
+
     public long PointCount => _raw.point_count;
 }

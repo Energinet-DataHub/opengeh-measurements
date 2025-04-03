@@ -31,7 +31,7 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
         return
             $"with most_recent as (" +
             $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
-            $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
+            $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
             $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
             $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{startDate.ToUtcString()}' " +
@@ -42,6 +42,7 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MeasurementAggregationConstants.MaxObservationTime}, " +
             $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {MeasurementAggregationConstants.AggregatedQuantity}, " +
             $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {MeasurementAggregationConstants.Qualities}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {MeasurementAggregationConstants.Resolutions}, " +
             $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MeasurementAggregationConstants.PointCount} " +
             $"from most_recent " +
             $"where row = 1 " +

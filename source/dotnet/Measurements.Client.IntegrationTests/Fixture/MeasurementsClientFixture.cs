@@ -109,6 +109,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
         };
 
@@ -124,6 +125,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             $"{i}.4",
             "'measured'",
             "'2025-03-12T03:40:55Z'",
+            "'PT1H'",
             "false",
         });
     }

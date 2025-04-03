@@ -18,8 +18,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-03T00:00:00Z";
-        const string endDate = "2022-01-04T00:00:00Z";
+        const string startDate = "2022-01-02T23:00:00Z";
+        const string endDate = "2022-01-03T23:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -37,8 +37,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-03T00:00:00Z"; // On this date, the fixture inserts multiple measurements with the same observation time
-        const string endDate = "2022-01-04T00:00:00Z";
+        const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts multiple measurements with the same observation time
+        const string endDate = "2022-01-03T23:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -54,8 +54,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-02T00:00:00Z";  // On this date, the fixture inserts both cancelled and non-cancelled measurements with the same observation time
-        const string endDate = "2022-01-03T00:00:00Z";
+        const string startDate = "2022-01-01T23:00:00Z";  // On this date, the fixture inserts both cancelled and non-cancelled measurements with the same observation time
+        const string endDate = "2022-01-02T23:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -70,8 +70,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
-        const string startDate = "2021-01-02T00:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
-        const string endDate = "2021-01-03T00:00:00Z";
+        const string startDate = "2022-01-31T23:00:00Z";
+        const string endDate = "2022-01-01T23:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
@@ -86,8 +86,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-02-01T00:00:00Z";
-        const string endDate = "2022-02-02T00:00:00Z";
+        const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
+        const string endDate = "2022-02-01T23:00:00Z";
         var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act

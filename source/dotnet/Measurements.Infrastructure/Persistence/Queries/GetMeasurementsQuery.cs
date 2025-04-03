@@ -28,8 +28,8 @@ public class GetMeasurementsQuery : DatabricksStatement
             $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
             $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate.ToUtcString()}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate.ToUtcString()}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate}' " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName} " +
             $"from most_recent " +

@@ -28,6 +28,7 @@ public class GetAggregatedMeasurementsResponse
                     measurement.MaxObservationTime,
                     measurement.Quantity,
                     measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)),
+                    measurement.Resolutions.Select(resolution => ResolutionParser.ParseResolution((string)resolution)),
                     measurement.PointCount))
             .ToList();
 
