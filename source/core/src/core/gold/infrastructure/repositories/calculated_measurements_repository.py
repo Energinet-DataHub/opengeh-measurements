@@ -13,5 +13,4 @@ class CalculatedMeasurementsRepository:
         self.spark = spark_session.initialize_spark()
 
     def read_stream(self) -> DataFrame:
-        spark = spark_session.initialize_spark()
-        return spark.readStream.format("delta").option("ignoreDeletes", "true").table(self.view)
+        return self.spark.readStream.format("delta").option("ignoreDeletes", "true").table(self.view)
