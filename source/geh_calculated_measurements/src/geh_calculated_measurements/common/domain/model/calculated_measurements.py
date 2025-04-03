@@ -40,7 +40,7 @@ class CalculatedMeasurements(DataFrameWrapper):
             T.StructField(ContractColumnNames.metering_point_type, T.StringType(), not nullable),
             #
             # UTC time
-            T.StructField(ContractColumnNames.date, T.TimestampType(), not nullable),
+            T.StructField(ContractColumnNames.observation_time, T.TimestampType(), not nullable),
             # The calculated quantity
             T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), not nullable),
         ]

@@ -1,25 +1,13 @@
-﻿using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
-using Energinet.DataHub.Measurements.WebApi;
+﻿using Energinet.DataHub.Measurements.WebApi;
 
-var app = ApplicationFactory.CreateApplication(args);
+var builder = WebApplication.CreateBuilder(args);
+var startup = new Startup(builder.Configuration);
 
-/*
-// Configure the HTTP request pipeline.
-*/
+startup.ConfigureServices(builder.Services);
 
-app.UseRouting();
-app.UseSwaggerForWebApp();
-app.UseHttpsRedirection();
+var app = builder.Build();
 
-// Authentication/authorization
-app.UseAuthentication();
-app.UseAuthorization();
-
-// Health Checks
-app.MapLiveHealthChecks();
-app.MapReadyHealthChecks();
-app.MapStatusHealthChecks();
-app.MapControllers();
+startup.Configure(app);
 
 app.Run();
 
