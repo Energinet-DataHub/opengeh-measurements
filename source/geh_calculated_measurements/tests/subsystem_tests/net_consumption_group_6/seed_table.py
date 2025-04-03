@@ -5,6 +5,7 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 database = ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME
@@ -16,7 +17,7 @@ child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTI
 parent_metering_point_id = "170000050000000201"
 
 
-def seed_gold_table(job_fixture: JobTestFixture) -> None:
+def _seed_gold_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
             metering_point_id="170000000000000201",
