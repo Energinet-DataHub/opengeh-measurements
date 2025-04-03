@@ -1,9 +1,9 @@
 from pyspark.sql.dataframe import DataFrame
 
 import core.gold.domain.transformations.gold_measurements_transformations as transformations
+import core.gold.domain.transformations.receipts_transformation as receipt_transformations
 from core.gold.domain.constants.streaming.checkpoint_names import CheckpointNames
 from core.gold.domain.constants.streaming.query_names import QueryNames
-import core.gold.domain.transformations.receipts_transformation as receipt_transformations
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
