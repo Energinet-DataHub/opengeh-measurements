@@ -110,6 +110,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRow()
