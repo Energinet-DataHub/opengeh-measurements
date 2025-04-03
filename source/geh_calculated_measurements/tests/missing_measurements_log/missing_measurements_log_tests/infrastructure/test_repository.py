@@ -5,6 +5,7 @@ import pyspark.sql.functions as F
 import pytest
 from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import IntegerType as T
 
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
@@ -58,12 +59,8 @@ def repository(spark: SparkSession) -> Repository:
 #         repository.read_metering_point_periods()
 
 
-<<<<<<< Updated upstream
 # TODO BJM: This test should not create the table by itself. It breaks other tests because
 #           it changes the nullability of columns
-=======
-# Create huge spark outputs
->>>>>>> Stashed changes
 def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
     repository: Repository,
@@ -123,6 +120,7 @@ def test__when_source_contains_wrong_data_type_raises_exception(
     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
         TABLE_OR_VIEW_NAME
     )
+
 
 #     # Act & Assert
 #     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
