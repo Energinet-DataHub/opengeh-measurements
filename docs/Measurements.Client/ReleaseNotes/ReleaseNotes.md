@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 2.0.0
+
+- Add authentication for API and implement authentication scheme for Measurements Client.
+
 ## Version 1.4.0
 
 - Updated measurement points to only contain latest values.
