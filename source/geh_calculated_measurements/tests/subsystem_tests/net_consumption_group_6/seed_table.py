@@ -19,8 +19,8 @@ table = "measurements"
 def seed_gold_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
-            metering_point_id="170000030000000201",
-            observation_time=datetime(2024, 11, 30, 23, 0, 0, tzinfo=timezone.utc),
+            metering_point_id="170000000000000201",
+            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         )
         for i in range(1)
