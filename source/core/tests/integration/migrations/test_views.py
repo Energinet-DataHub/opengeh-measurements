@@ -3,12 +3,12 @@ from decimal import Decimal
 
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 import pytest
+from geh_common.data_products.measurements_core.measurements_gold.current_v1 import current_v1
 from pyspark.sql import SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
-from core.contracts.current_v1 import current_v1
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
