@@ -5,7 +5,13 @@ from datetime import timedelta
 import pytest
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from azure.monitor.query import LogsQueryClient, LogsQueryPartialResult, LogsQueryResult, LogsQueryStatus
+from azure.monitor.query import (
+    LogsQueryClient,
+    LogsQueryError,
+    LogsQueryPartialResult,
+    LogsQueryResult,
+    LogsQueryStatus,
+)
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
@@ -77,6 +83,42 @@ class JobTestFixture:
             print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
 
+    def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> dict:
+        details = {
+            "code": 500,
+            "message": "An error occurred while querying the logs.",
+            "details": None,
+        }
+        error = LogsQueryError(details)
+        if isinstance(response, LogsQueryResult):
+            error.details = {
+                "tables": {
+                    t.name: {
+                        "nrows": len(t.rows),
+                        "columns": [col.name for col in t.columns],
+                    }
+                    for t in response.tables
+                },
+                "status": response.status,
+                "statistics": response.statistics,
+            }
+        elif isinstance(response, LogsQueryPartialResult):
+            if response.partial_error is None:
+                error.details = {
+                    "tables": {
+                        t.name: {
+                            "nrows": len(t.rows),
+                            "columns": [col.name for col in t.columns],
+                        }
+                        for t in response.partial_data
+                    },
+                    "status": response.status,
+                    "statistics": response.statistics,
+                }
+            else:
+                error = response.partial_error
+        return LogsQueryError(details)
+
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         response = self.azure_logs_query_client.query_workspace(
             self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
@@ -84,7 +126,7 @@ class JobTestFixture:
         if response.status == LogsQueryStatus.SUCCESS and len(response.tables) > 0 and len(response.tables[0].rows) > 0:
             return response
         else:
-            error = response.partial_error
+            error = self._error_from_response(response)
             if error is not None:
                 raise ValueError(f"Query failed with error: {error}")
 
