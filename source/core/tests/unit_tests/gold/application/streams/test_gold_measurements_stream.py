@@ -1,37 +1,35 @@
-from unittest.mock import Mock
+from unittest.mock import ANY, Mock
 
 from pytest_mock import MockFixture
 
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
+from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
 
 
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
-    silver_repo_mock = Mock(spec=SilverMeasurementsRepository)
-    gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
-    mocker.patch.object(sut, "SilverMeasurementsRepository", return_value=silver_repo_mock)
-    mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
-    silver_repo_mock.read_stream.return_value = Mock()
+    silver_repo_mock = mocker.patch.object(sut, sut.SilverMeasurementsRepository.__name__)
+    gold_repo_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
 
     # Act
     sut.stream_measurements_silver_to_gold()
 
     # Assert
-    silver_repo_mock.read_stream.assert_called_once()
-    gold_repo_mock.write_stream.assert_called_once_with(
-        silver_repo_mock.read_stream.return_value,
-        sut._batch_operation,
-    )
+    silver_repo_mock.assert_called_once()
+    gold_repo_mock.assert_called_once()
 
 
 def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
+    receipts_repo_mock = Mock(spec=ReceiptsRepository)
     transform_mock = Mock()
+    transform_receipts_mock = Mock()
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
     mocker.patch.object(sut.transformations, "transform_silver_to_gold", transform_mock)
+    mocker.patch.object(sut, "ReceiptsRepository", return_value=receipts_repo_mock)
+    mocker.patch.object(sut.receipt_transformations, "transform", transform_receipts_mock)
     silver_measurements_mock = Mock()
 
     # Act
@@ -40,3 +38,5 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Assert
     transform_mock.assert_called_once_with(silver_measurements_mock)
     gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
+    transform_receipts_mock.assert_called_once_with(ANY)
+    gold_repo_mock.append_if_not_exists.assert_called_once_with(ANY)

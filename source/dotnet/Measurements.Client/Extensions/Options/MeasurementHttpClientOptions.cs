@@ -8,4 +8,7 @@ public class MeasurementHttpClientOptions
 
     [Required(AllowEmptyStrings = false)]
     public string BaseAddress { get; init; } = string.Empty;
+
+    [Required(AllowEmptyStrings = false)]
+    public string ApplicationIdUri { get; init; } = string.Empty;
 }
