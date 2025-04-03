@@ -38,25 +38,16 @@ def gold_table_seeded(spark: SparkSession) -> None:
 # TODO BJM: Rely on a fixture to set up these shared tables?
 @pytest.fixture(autouse=True)
 def calculated_measurements_table_created(spark: SparkSession) -> None:
-    with pytest.MonkeyPatch.context() as ctx:
-        spark.sparkContext.setLogLevel("ERROR")
-        spark.conf.set("hive.metastore.schema.verification", "true")
-        spark.conf.set("hive.metastore.schema.version", "2.3.0")
-        spark.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
-        spark.conf.set("spark.sql.debug.maxToStringFields", "50")
-        spark.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
-        spark.conf.set("spark.hive.metastore.uris", "")
-        ctx.setenv("HADOOP_HOME", "")
-        ctx.setenv("HADOOP_OPTS", "-Djava.library.path=")
-        create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
+    spark.sparkContext.setLogLevel("ERROR")
+    create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
-        create_table(
-            spark,
-            database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
-            table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME,
-            schema=CalculatedMeasurements.schema,
-            table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
-        )
+    create_table(
+        spark,
+        database_name=CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
+        table_name=CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME,
+        schema=CalculatedMeasurements.schema,
+        table_location=f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}/{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}",
+    )
 
 
 def test_calculated_measurements_table_creation(
