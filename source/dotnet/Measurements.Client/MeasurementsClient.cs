@@ -9,15 +9,20 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
+public class MeasurementsClient : IMeasurementsClient
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
+    private readonly HttpClient _httpClient;
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter() },
     };
+
+    public MeasurementsClient(IHttpClientFactory httpClientFactory)
+    {
+        _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
+    }
 
     public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {

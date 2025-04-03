@@ -91,7 +91,6 @@ def calculate_daily(
 
     result_df = df.select(
         F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.metering_point_type),
         F.col(ContractColumnNames.date),
         F.col(ContractColumnNames.quantity),
     )
