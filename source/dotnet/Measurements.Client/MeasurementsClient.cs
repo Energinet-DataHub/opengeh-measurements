@@ -80,12 +80,26 @@ public class MeasurementsClient : IMeasurementsClient
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var measurementAggregation = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
 
-        return measurementAggregation
-            .Select(measurementPoint =>
-                new MeasurementAggregation(
-                    measurementPoint.MinObservationTime.ToLocalDate(),
-                    measurementPoint.Quantity,
-                    MissingValues: true));
+        IEnumerable<MeasurementAggregation> measurementAggregations = [];
+
+        foreach (var measurementPoint in measurementAggregation)
+        {
+            var measurementAggregationPoint = new MeasurementAggregation(
+                measurementPoint.MinObservationTime.ToLocalDate(),
+                measurementPoint.Quantity,
+                SetMissingValuesForAggregation(measurementPoint.PointCount, measurementPoint.MinObservationTime, measurementPoint.MaxObservationTime));
+
+            measurementAggregations = measurementAggregations.Append(measurementAggregationPoint);
+        }
+
+        return measurementAggregations;
+    }
+
+    private bool SetMissingValuesForAggregation(int pointCount, DateTimeOffset minObservationTime, DateTimeOffset maxObservationTime)
+    {
+        var timeSpan = maxObservationTime - minObservationTime;
+        var hours = timeSpan.TotalHours + 1;
+        return Math.Abs(hours - pointCount) == 0;
     }
 
     private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)

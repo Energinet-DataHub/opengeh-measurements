@@ -29,7 +29,7 @@ public static class DateAndTimeExtensions
     public static LocalDate ToLocalDate(this DateTimeOffset dateTimeOffset)
     {
         var instant = Instant.FromDateTimeOffset(dateTimeOffset);
-        var localDateTime = instant.InUtc().LocalDateTime;
+        var localDateTime = instant.InZone(_danishZone).LocalDateTime;
         return localDateTime.Date;
     }
 
