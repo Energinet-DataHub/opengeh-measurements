@@ -26,6 +26,13 @@ public static class DateAndTimeExtensions
             .ToDateTimeOffset();
     }
 
+    public static LocalDate ToLocalDate(this DateTimeOffset dateTimeOffset)
+    {
+        var instant = Instant.FromDateTimeOffset(dateTimeOffset);
+        var localDateTime = instant.InUtc().LocalDateTime;
+        return localDateTime.Date;
+    }
+
     public static string ToFormattedString(this DateTimeOffset date)
     {
         return date.ToString(Format, CultureInfo.InvariantCulture);

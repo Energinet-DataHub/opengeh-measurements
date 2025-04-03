@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Client.Models;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -77,17 +78,22 @@ public class MeasurementsClient : IMeasurementsClient
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var measurementPoints = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
+        var measurementAggregation = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
 
-        return measurementPoints;
+        return measurementAggregation
+            .Select(measurementPoint =>
+                new MeasurementAggregation(
+                    measurementPoint.MinObservationTime.ToLocalDate(),
+                    measurementPoint.Quantity,
+                    MissingValues: true));
     }
 
-    private async Task<IEnumerable<MeasurementAggregation>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementAggregation>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<AggregatedMeasurements>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

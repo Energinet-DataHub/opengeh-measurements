@@ -1,3 +1,5 @@
-﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using NodaTime;
 
-public record MeasurementAggregation(DateTimeOffset MinObservationTime, DateTimeOffset MaxObservationTime, decimal Quantity, IEnumerable<Quality> Qualities, int PointCount);
+namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+
+public record MeasurementAggregation(LocalDate Date, decimal Quantity, bool MissingValues);

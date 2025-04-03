@@ -90,7 +90,9 @@ public class MeasurementsClientTests
         // Assert
         Assert.NotNull(actual);
         Assert.Equal(31, actual.Count);
-        Assert.True(actual.All(p => p.Qualities.All(q => q == Quality.Measured)));
+        Assert.True(actual.First().Date == new LocalDate(2025, 3, 1));
+        Assert.True(actual.Last().Date == new LocalDate(2025, 3, 31));
+        Assert.False(actual.All(p => p.MissingValues));
     }
 
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
