@@ -180,6 +180,10 @@ def _align_metering_point_type() -> Column:
             == CoreMeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION.value,
             GehCommonMeteringPointType.COLLECTIVE_NET_CONSUMPTION.value,
         )
+        .when(
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_INTERNAL_USE.value,
+            GehCommonMeteringPointType.INTERNAL_USE.value,
+        )
         .otherwise(F.col(SilverMeasurementsColumnNames.metering_point_type))
     )
 
