@@ -14,6 +14,8 @@ class DatabricksSettings(BaseSettings):
 
     workspace_url: str = Field(alias="DATABRICKS_WORKSPACE_URL")
     token: str = Field(alias="DATABRICKS_TOKEN")
+    warehouse_id: str = Field(alias="DATABRICKS_WAREHOUSE_ID")
+    catalog: str = Field(alias="CATALOG")
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_ROOT}/.env",

@@ -1,0 +1,31 @@
+from pytest_bdd import given, scenarios, then, when
+
+import tests.helpers.identifier_helper as identifier_helper
+from tests.subsystem_tests.builders.calculated_measurements_row_builder import (
+    CalculatedMeasurementsRow,
+    CalculatedMeasurementsRowBuilder,
+)
+from tests.subsystem_tests.fixtures.calculated_measurements_fixture import (
+    CalculatedMeasurementsFixture,
+)
+
+scenarios("../features/transmission_of_calculated_measurements.feature")
+
+
+@given("valid calculated measurements", target_fixture="test_data")
+def _() -> CalculatedMeasurementsRow:
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    return CalculatedMeasurementsRowBuilder().build(orchestration_instance_id=orchestration_instance_id)
+
+
+@when("inserted into the calculated measurements table")
+def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
+    calculated_measurements_fixture = CalculatedMeasurementsFixture()
+    calculated_measurements_fixture.insert_calculated_measurements(calculated_measurements_row)
+
+
+@then("the calculated measurements are avaiable in the Gold Layer")
+def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
+    # Use GoldLayerFixture from other PR
+    # gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
+    pass
