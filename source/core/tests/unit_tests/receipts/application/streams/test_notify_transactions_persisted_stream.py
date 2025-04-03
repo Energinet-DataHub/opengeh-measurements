@@ -2,7 +2,7 @@ from unittest import mock
 
 from pytest_mock import MockerFixture
 
-import core.silver.application.streams.notify_transactions_persisted_stream as sut
+import core.receipts.application.streams.receipt_notifier as sut
 
 
 def test__notify__should_call_expected(
@@ -11,13 +11,13 @@ def test__notify__should_call_expected(
     # Arrange
     mock_submitted_transactions_repository = mock.Mock()
     mocked_submitted_transactions_repository_read_submitted_transactions = mocker.patch(
-        f"{sut.__name__}.SilverMeasurementsRepository.read_submitted",
+        f"{sut.__name__}.ReceiptsRepository.read",
         return_value=mock_submitted_transactions_repository,
     )
 
     mock_submitted_transactions = mock.Mock()
     mock_submitted_transactions_transformation = mocker.patch(
-        f"{sut.__name__}.transactions_persisted_events_transformation.transform",
+        f"{sut.__name__}.transform",
         return_value=mock_submitted_transactions,
     )
 
