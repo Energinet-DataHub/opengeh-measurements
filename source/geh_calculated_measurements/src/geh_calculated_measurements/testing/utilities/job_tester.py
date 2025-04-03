@@ -42,6 +42,14 @@ class JobTestFixture:
             raise ValueError(f"Multiple jobs found with name {job_name}.")
         return jobs[0]
 
+    def seed_data(self) -> None:
+        # This method can be overridden in subclasses to seed data before running the tests.
+        pass
+
+    def delete_seeded_data(self) -> None:
+        # This method can be overridden in subclasses to delete seeded data after running the tests.
+        pass
+
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
@@ -94,6 +102,17 @@ class JobTest(abc.ABC):
     @abc.abstractmethod
     def fixture(self) -> JobTestFixture:
         raise NotImplementedError("The fixture method must be implemented.")
+
+    @pytest.fixture(scope="class", autouse=True)
+    def seeding(self, fixture: JobTestFixture):
+        # Remove previously inserted seeded data
+        fixture.delete_seeded_data()
+        # Insert seeded data
+        fixture.seed_data()
+        yield
+
+        # Remove previously inserted seeded data
+        fixture.delete_seeded_data()
 
     @pytest.mark.order(1)
     def test__fixture_is_correctly_made(self, fixture: JobTestFixture):

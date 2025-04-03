@@ -29,7 +29,7 @@ class TestElectricalHeating(JobTest):
         return JobTestFixture(
             environment_configuration=config,
             job_name="ElectricalHeating",
-            job_job_parametereters={"orchestration-instance-id": uuid.uuid4()},
+            job_parameters={"orchestration-instance-id": uuid.uuid4()},
         )
 
     @pytest.fixture(autouse=True, scope="class")
