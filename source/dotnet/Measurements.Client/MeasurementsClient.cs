@@ -52,10 +52,11 @@ public class MeasurementsClient : IMeasurementsClient
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
+        return await ParseMeasurementAggregationResponseAsync(query.YearMonth, response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> ParseMeasurementsResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPoint>> ParseMeasurementsResponseAsync(
+        HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
@@ -65,29 +66,37 @@ public class MeasurementsClient : IMeasurementsClient
         return measurementPoints;
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> DeserializeMeasurementsResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPoint>> DeserializeMeasurementsResponseStreamAsync(
+        Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("Points");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions)
+               ?? throw new InvalidOperationException();
     }
 
-    private async Task<IEnumerable<MeasurementAggregation>> ParseMeasurementAggregationResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementAggregation>> ParseMeasurementAggregationResponseAsync(
+        YearMonth yearMonth, HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        if (response.StatusCode == HttpStatusCode.NotFound) return [];
+        IEnumerable<MeasurementAggregation> measurementAggregations = [];
+        if (response.StatusCode == HttpStatusCode.NotFound) return measurementAggregations;
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var measurementAggregation = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
+        var aggregatedMeasurements = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
 
-        IEnumerable<MeasurementAggregation> measurementAggregations = [];
+        var aggregatedMeasurementsDictionary = aggregatedMeasurements.ToDictionary(
+            am => am.MinObservationTime.ToLocalDate(),
+            am => am);
 
-        foreach (var measurementPoint in measurementAggregation)
+        var daysInMonth = yearMonth.ToDateInterval();
+        foreach (var date in daysInMonth)
         {
+            aggregatedMeasurementsDictionary.TryGetValue(date, out var aggregatedMeasurement);
             var measurementAggregationPoint = new MeasurementAggregation(
-                measurementPoint.MinObservationTime.ToLocalDate(),
-                measurementPoint.Quantity,
-                SetMissingValuesForAggregation(measurementPoint.PointCount, measurementPoint.MinObservationTime, measurementPoint.MaxObservationTime));
+                aggregatedMeasurement?.MinObservationTime.ToLocalDate() ?? date,
+                aggregatedMeasurement?.Quantity ?? 0,
+                SetMissingValuesForAggregation(aggregatedMeasurement));
 
             measurementAggregations = measurementAggregations.Append(measurementAggregationPoint);
         }
@@ -95,19 +104,23 @@ public class MeasurementsClient : IMeasurementsClient
         return measurementAggregations;
     }
 
-    private bool SetMissingValuesForAggregation(int pointCount, DateTimeOffset minObservationTime, DateTimeOffset maxObservationTime)
+    private bool SetMissingValuesForAggregation(AggregatedMeasurements? aggregatedMeasurement)
     {
-        var timeSpan = maxObservationTime - minObservationTime;
+        if (aggregatedMeasurement == null) return true;
+
+        var timeSpan = aggregatedMeasurement.MaxObservationTime - aggregatedMeasurement.MinObservationTime;
         var hours = timeSpan.TotalHours + 1;
-        return Math.Abs(hours - pointCount) == 0;
+        return Math.Abs(hours - aggregatedMeasurement.PointCount) != 0;
     }
 
-    private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(
+        Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<AggregatedMeasurements>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<AggregatedMeasurements>>(_jsonSerializerOptions)
+               ?? throw new InvalidOperationException();
     }
 
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

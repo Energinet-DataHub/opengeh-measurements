@@ -92,7 +92,7 @@ public class MeasurementsClientTests
         Assert.Equal(31, actual.Count);
         Assert.True(actual.First().Date == new LocalDate(2025, 3, 1));
         Assert.True(actual.Last().Date == new LocalDate(2025, 3, 31));
-        Assert.True(actual.All(p => p.MissingValues));
+        Assert.False(actual.All(p => p.MissingValues));
     }
 
     [Fact]
@@ -110,13 +110,13 @@ public class MeasurementsClientTests
 
         // Assert
         Assert.NotNull(actual);
-        // Assert.Equal(31, actual.Count);
+        Assert.Equal(31, actual.Count);
         Assert.True(actual.First().Date == new LocalDate(2024, 10, 1));
         Assert.True(actual.Last().Date == new LocalDate(2024, 10, 31));
-        Assert.True(actual
+        Assert.False(actual
             .Where(p => p.Date <= new LocalDate(2024, 10, 30))
             .All(q => q.MissingValues));
-        Assert.False(actual.Last().MissingValues);
+        Assert.True(actual.Last().MissingValues);
     }
 
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
