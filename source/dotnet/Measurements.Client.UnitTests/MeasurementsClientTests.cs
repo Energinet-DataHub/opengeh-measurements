@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using AutoFixture.Xunit2;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
