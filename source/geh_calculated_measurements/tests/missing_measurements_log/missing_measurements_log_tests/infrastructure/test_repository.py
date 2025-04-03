@@ -5,7 +5,6 @@ import pyspark.sql.functions as F
 import pytest
 from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.types import IntegerType as T
 
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
@@ -91,36 +90,6 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 #     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
 #         TABLE_OR_VIEW_NAME
 #     )
-def test__spark_output(
-    valid_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    invalid_dataframe = valid_dataframe.withColumn(
-        "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
-    )
-    # create spark error: Could not alter schema of table
-    # `electricity_market_measurements_input`.`missing_measurements_log_metering_point_periods_v1`
-    # in a Hive compatible way. Updating Hive metastore in Spark SQL specific format
-    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        TABLE_OR_VIEW_NAME
-    )
-    assert 1 == 1
-    assert invalid_dataframe
-
-
-# Create huge spark outputs
-def test__when_source_contains_wrong_data_type_raises_exception(
-    valid_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    # Arrange
-    invalid_dataframe = valid_dataframe.withColumn(
-        "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
-    )
-    invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-        TABLE_OR_VIEW_NAME
-    )
-
 
 #     # Act & Assert
 #     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
