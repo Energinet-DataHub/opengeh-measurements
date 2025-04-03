@@ -126,6 +126,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             "'measured'",
             "'2025-03-12T03:40:55Z'",
             "false",
+            $"'{observationTime.ToFormattedString()}'",
         });
     }
 }
