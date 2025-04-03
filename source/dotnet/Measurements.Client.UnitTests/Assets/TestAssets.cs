@@ -10,6 +10,8 @@ public static class TestAssets
 
     public static string MeasurementsAggregatedByDay => GetJsonFile($"{nameof(MeasurementsAggregatedByDay)}.json");
 
+    public static string MeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(MeasurementsAggregatedByDayMissingMeasurements)}.json");
+
     private static string GetJsonFile(string filename)
     {
         var assembly = Assembly.GetExecutingAssembly();
