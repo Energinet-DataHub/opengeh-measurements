@@ -6,7 +6,7 @@ from core.receipts.infrastructure.repositories.receipts_repository import Receip
 from core.settings.core_internal_settings import CoreInternalSettings
 
 
-def test__read_submitted_transactions__calls_expected(mocker: MockerFixture) -> None:
+def test__read__calls_expected(mocker: MockerFixture) -> None:
     # Arrange
     mock_spark = mocker.Mock()
     mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=mock_spark)
