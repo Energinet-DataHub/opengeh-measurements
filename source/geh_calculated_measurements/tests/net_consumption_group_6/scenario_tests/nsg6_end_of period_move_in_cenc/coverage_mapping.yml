@@ -5,10 +5,10 @@ notes: |
   ## DESIGN CONSIDERATIONS
 
   CASE 1
-  settlement month is the 1 of january
-  move in takes place in november 2024
-  calculation period is from the 1 of january 2024 to the 31 of december 2024
-  the period being estimated is from the 1 of january 2025 to the 31 of december 2025
+  settlement month is the 1st of january.
+  Move in takes place in november 2024.
+  Calculation period is from the 1st of january 2024 to the 31 of december 2024.
+  The period being estimated for is from the 1 of january 2025 to the 31 of december 2025.
                         ______|2024________|2025________
   settlement month:     ------|+-----------|+-----------|
   calculation period:   ------|++++++++++++|------------|
