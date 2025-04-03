@@ -2,7 +2,6 @@ import random
 from datetime import datetime, timezone
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
-from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 # TODO BJM: Use values from production code
