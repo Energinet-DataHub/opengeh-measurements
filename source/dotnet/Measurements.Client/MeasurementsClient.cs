@@ -79,8 +79,7 @@ public class MeasurementsClient : IMeasurementsClient
     private async Task<IEnumerable<MeasurementAggregation>> ParseMeasurementAggregationResponseAsync(
         YearMonth yearMonth, HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        IEnumerable<MeasurementAggregation> measurementAggregations = [];
-        if (response.StatusCode == HttpStatusCode.NotFound) return measurementAggregations;
+        if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var aggregatedMeasurements = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
@@ -90,18 +89,14 @@ public class MeasurementsClient : IMeasurementsClient
             am => am);
 
         var daysInMonth = yearMonth.ToDateInterval();
-        foreach (var date in daysInMonth)
+        return daysInMonth.Select(date =>
         {
             aggregatedMeasurementsDictionary.TryGetValue(date, out var aggregatedMeasurement);
-            var measurementAggregationPoint = new MeasurementAggregation(
+            return new MeasurementAggregation(
                 aggregatedMeasurement?.MinObservationTime.ToLocalDate() ?? date,
                 aggregatedMeasurement?.Quantity ?? 0,
                 SetMissingValuesForAggregation(aggregatedMeasurement));
-
-            measurementAggregations = measurementAggregations.Append(measurementAggregationPoint);
-        }
-
-        return measurementAggregations;
+        });
     }
 
     private bool SetMissingValuesForAggregation(AggregatedMeasurements? aggregatedMeasurement)
