@@ -81,7 +81,6 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
     assert actual.df.columns == valid_dataframe.schema.fieldNames()
 
 
-<<<<<<< Updated upstream
 # TODO BJM: This is a bad test because it changes the table and thus can break other tests.
 #           At least when executed in parallel.
 # def test__when_source_contains_wrong_data_type_raises_exception(
@@ -95,7 +94,6 @@ def test__when_source_contains_unexpected_columns_returns_data_without_unexpecte
 #     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
 #         TABLE_OR_VIEW_NAME
 #     )
-=======
 def test__spark_output(
     valid_dataframe: DataFrame,
     repository: Repository,
@@ -125,7 +123,6 @@ def test__when_source_contains_wrong_data_type_raises_exception(
     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
         TABLE_OR_VIEW_NAME
     )
->>>>>>> Stashed changes
 
 #     # Act & Assert
 #     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
