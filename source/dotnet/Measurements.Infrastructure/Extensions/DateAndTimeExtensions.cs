@@ -16,4 +16,10 @@ public static class DateAndTimeExtensions
             .ToInstant()
             .ToString(Format, CultureInfo.InvariantCulture);
     }
+
+    public static string ToUtcString(this Instant date)
+    {
+        var localDate = date.InUtc().Date;
+        return localDate.ToUtcString();
+    }
 }

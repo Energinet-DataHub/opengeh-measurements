@@ -1,5 +1,6 @@
 ﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
@@ -27,8 +28,8 @@ public class GetMeasurementsQuery : DatabricksStatement
             $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
             $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate.ToUtcString()}' " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate.ToUtcString()}' " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName} " +
             $"from most_recent " +
