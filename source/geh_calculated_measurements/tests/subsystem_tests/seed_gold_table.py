@@ -5,8 +5,12 @@ from datetime import datetime, timezone
 from geh_common.domain.types import MeteringPointType
 from geh_common.domain.types.quantity_quality import QuantityQuality
 
-database = "measurements_gold"
-table = "measurements"
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
+
+database = MeasurementsGoldDatabaseDefinition.DATABASE_NAME
+table = MeasurementsGoldDatabaseDefinition.MEASUREMENTS_TABLE_NAME
 
 
 @dataclass
