@@ -11,6 +11,9 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
 from tests import create_job_environment_variables
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests.conftest import (
+    electricity_market_calculated_measurements_create_and_seed_tables,
+)
 
 
 def test_execute(
@@ -19,6 +22,7 @@ def test_execute(
     dummy_logging: None,  # Used implicitly
 ) -> None:
     # Arrange
+    electricity_market_calculated_measurements_create_and_seed_tables(spark)
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
