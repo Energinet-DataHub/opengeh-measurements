@@ -16,7 +16,6 @@ scenarios("../features/transmission_of_calculated_measurements.feature")
 @given("a new valid calculated measurements", target_fixture="calculated_measurements_row")
 def _() -> CalculatedMeasurementsRow:
     orchestration_instance_id = identifier_helper.generate_random_string()
-    print(orchestration_instance_id)
     return CalculatedMeasurementsRowBuilder().build(orchestration_instance_id=orchestration_instance_id)
 
 
