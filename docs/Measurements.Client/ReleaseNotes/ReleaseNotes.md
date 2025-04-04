@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 2.1.0
+
+- Add created timestamp to measurement point.
+
 ## Version 2.0.1
 
 - Bugfix.
