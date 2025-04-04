@@ -236,7 +236,8 @@
       "MinObservationTime": "2024-10-30T23:00:00Z",
       "MaxObservationTime": "2024-10-31T22:00:00Z",
       "Quantity": 3.1,
-      "Qualities": ["Measured"],
+      "Qualities": ["measured"],
+      "Resolutions": ["PT1H"],
       "PointCount": 21
     }
   ]

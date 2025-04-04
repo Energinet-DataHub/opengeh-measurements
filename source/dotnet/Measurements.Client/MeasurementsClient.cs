@@ -104,8 +104,20 @@ public class MeasurementsClient : IMeasurementsClient
         if (aggregatedMeasurement == null) return true;
 
         var timeSpan = aggregatedMeasurement.MaxObservationTime - aggregatedMeasurement.MinObservationTime;
-        var hours = timeSpan.TotalHours + 1;
-        return Math.Abs(hours - aggregatedMeasurement.PointCount) != 0;
+        var hours = (int)timeSpan.TotalHours + 1;
+
+        // All points for a doy should have the same resolution
+        var resolution = aggregatedMeasurement.Resolutions.Single();
+
+        var expectedPointCount = resolution switch
+        {
+            Resolution.PT15M => hours * 4,
+            Resolution.PT1H => hours,
+            Resolution.P1D or Resolution.P1M or Resolution.P1Y => 1,
+            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
+        };
+
+        return expectedPointCount - aggregatedMeasurement.PointCount != 0;
     }
 
     private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(
