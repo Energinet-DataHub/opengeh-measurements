@@ -27,6 +27,7 @@ def set_test_environment_variables() -> None:
     os.environ["BRONZE_DATABASE_NAME"] = "measurements_bronze"
     os.environ["SILVER_DATABASE_NAME"] = "measurements_silver"
     os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"
+    os.environ["CALCULATED_DATABASE_NAME"] = "measurements_calculated"
     os.environ["CORE_INTERNAL_DATABASE_NAME"] = "measurements_core_internal"
     os.environ["EVENT_HUB_NAMESPACE"] = "event_hub_namespace"
     os.environ["EVENT_HUB_INSTANCE"] = "event_hub_instance"
