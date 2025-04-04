@@ -16,6 +16,8 @@ from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
+    migrations_executed: None,  # Used implicitly
+    external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
 ) -> None:
     # Arrange
