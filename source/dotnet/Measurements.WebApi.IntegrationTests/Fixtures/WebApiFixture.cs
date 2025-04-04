@@ -90,6 +90,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
         };
 
     private static List<IEnumerable<string>> CreateRows()
@@ -122,6 +123,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
             values.IsCancelled ? "true" : "false",
+            $"'{FormatString(observationDateTime)}'",
         });
     }
 
