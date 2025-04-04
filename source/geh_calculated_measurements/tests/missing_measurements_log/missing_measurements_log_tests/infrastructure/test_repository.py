@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
 
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
@@ -17,7 +18,7 @@ TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{M
 
 @pytest.fixture(scope="module")
 def valid_dataframe(spark: SparkSession) -> DataFrame:
-    return spark.createDataFrame(
+    df = spark.createDataFrame(
         [
             (
                 "123456789012345",
@@ -29,6 +30,8 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
         ],
         schema=MeteringPointPeriods.schema,
     )
+    assert df.schema == MeteringPointPeriods.schema
+    return df
 
 
 @pytest.fixture(scope="module")
@@ -36,59 +39,45 @@ def repository(spark: SparkSession) -> Repository:
     return Repository(spark, catalog_name=SPARK_CATALOG_NAME)
 
 
-# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
-#           At least when executed in parallel.
-# def test__when_missing_expected_column_raises_exception(
-#     valid_dataframe: DataFrame,
-#     repository: Repository,
-# ) -> None:
-#     # Arrange
-#     invalid_dataframe = valid_dataframe.drop(F.col("metering_point_id"))
-#     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-#         TABLE_OR_VIEW_NAME
-#     )
+def test__when_invalid_contract__raises_with_useful_message(
+    valid_dataframe: DataFrame,
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Arrange
+    invalid_df = valid_dataframe.drop(F.col("metering_point_id"))
 
-#     # Act and Assert
-#     with pytest.raises(
-#         Exception,
-#         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\].*",
-#     ):
-#         repository.read_metering_point_periods()
+    def mock_read_table(*args, **kwargs):
+        return invalid_df
 
+    monkeypatch.setattr(Repository, "_read", mock_read_table)
 
-# TODO BJM: This test should not create the table by itself. It breaks other tests because
-#           it changes the nullability of columns
-# def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
-#     valid_dataframe: DataFrame,
-#     repository: Repository,
-# ) -> None:
-#     # Arrange
-#     valid_dataframe_with_extra_col = valid_dataframe.withColumn("extra_col", F.lit("extra_value"))
-#     valid_dataframe_with_extra_col.write.format("delta").mode("overwrite").option(
-#         "overwriteSchema", "true"
-#     ).saveAsTable(TABLE_OR_VIEW_NAME)
-
-#     # Act
-#     actual = repository.read_metering_point_periods()
-
-#     # Assert
-#     assert actual.df.columns == valid_dataframe.schema.fieldNames()
+    # Assert
+    with pytest.raises(
+        Exception,
+        match=r"The data source does not comply with the contract.*",
+    ):
+        # Act
+        repository.read_metering_point_periods()
 
 
-# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
-#           At least when executed in parallel.
-# def test__when_source_contains_wrong_data_type_raises_exception(
-#     valid_dataframe: DataFrame,
-#     repository: Repository,
-# ) -> None:
-#     # Arrange
-#     invalid_dataframe = valid_dataframe.withColumn(
-#         "metering_point_id", F.col("metering_point_id").cast(T.IntegerType())
-#     )
-#     invalid_dataframe.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(
-#         TABLE_OR_VIEW_NAME
-#     )
+def test__when_source_contains_unexpected_columns__returns_data_without_unexpected_column(
+    valid_dataframe: DataFrame,
+    repository: Repository,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test that the repository can handle columns being added as it is defined to _not_ be a breaking change.
+    The repository should return the data without the unexpected column."""
+    # Arrange
+    valid_df_with_extra_col = valid_dataframe.withColumn("extra_col", F.lit("extra_value"))
 
-#     # Act & Assert
-#     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
-#         repository.read_metering_point_periods()
+    def mock_read_table(*args, **kwargs):
+        return valid_df_with_extra_col
+
+    monkeypatch.setattr(Repository, "_read", mock_read_table)
+
+    # Act
+    actual = repository.read_metering_point_periods()
+
+    # Assert
+    assert actual.df.schema == MeteringPointPeriods.schema
