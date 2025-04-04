@@ -4,8 +4,7 @@ This directory contains contracts.
 
 ## Data products
 
-The contracts are written as data products in the form of a Python file that contains the Structured Data of the
-contract.
+Data products for Measurements Core are defined in `opengeh-python-packages` [here](https://github.com/Energinet-DataHub/opengeh-python-packages/tree/main/source/geh_common/src/geh_common/data_products/measurements_core)
 
 ## Protobuf
 

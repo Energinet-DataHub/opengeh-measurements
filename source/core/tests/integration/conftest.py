@@ -5,6 +5,7 @@ from pytest_mock import MockerFixture
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
 import tests.helpers.schema_helper as schema_helper
 from core.migrations import migrations_runner
+from tests.helpers.schema_helper import create_external_schemas, create_external_tables
 
 
 def pytest_runtest_setup() -> None:
@@ -26,3 +27,9 @@ def migrations_executed(spark: SparkSession, session_mocker: MockerFixture) -> N
     schema_helper.create_schemas(spark)
 
     migrations_runner.migrate()
+
+
+@pytest.fixture(scope="session")
+def create_external_resources(spark: SparkSession, session_mocker: MockerFixture) -> None:
+    create_external_schemas(spark)
+    create_external_tables(spark)
