@@ -24,7 +24,7 @@ def migrations_executed(spark: SparkSession, session_mocker: MockerFixture) -> N
     session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksApiClient.__name__)
     session_mocker.patch.object(migrations_runner, migrations_runner.DatabricksSettings.__name__)
 
-    schema_helper.create_schemas(spark)
+    schema_helper.create_internal_schemas(spark)
 
     migrations_runner.migrate()
 
