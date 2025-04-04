@@ -6,9 +6,11 @@ from geh_calculated_measurements.net_consumption_group_6.application.net_consump
     NetConsumptionGroup6Args,
 )
 from tests import PROJECT_ROOT, create_job_environment_variables
-from tests.net_consumption_group_6 import CONTAINER_NAME
+from tests.net_consumption_group_6 import NET_CONSUMPTION_GROUP_6_SUBSYSTEM_NAME
 
-_CONTRACTS_PATH = (PROJECT_ROOT / "src" / "geh_calculated_measurements" / CONTAINER_NAME / "contracts").as_posix()
+_CONTRACTS_PATH = (
+    PROJECT_ROOT / "src" / "geh_calculated_measurements" / NET_CONSUMPTION_GROUP_6_SUBSYSTEM_NAME / "contracts"
+).as_posix()
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = uuid.UUID("12345678-9fc8-409a-a169-fbd49479d711")
 DEFAULT_TIME_ZONE = "Europe/Copenhagen"
