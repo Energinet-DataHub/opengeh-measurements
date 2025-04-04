@@ -12,7 +12,7 @@ from tests.subsystem_tests.fixtures.calculated_measurements_fixture import (
 scenarios("../features/transmission_of_calculated_measurements.feature")
 
 
-@given("valid calculated measurements", target_fixture="test_data")
+@given("a new valid calculated measurements", target_fixture="test_data")
 def _() -> CalculatedMeasurementsRow:
     orchestration_instance_id = identifier_helper.generate_random_string()
     return CalculatedMeasurementsRowBuilder().build(orchestration_instance_id=orchestration_instance_id)
