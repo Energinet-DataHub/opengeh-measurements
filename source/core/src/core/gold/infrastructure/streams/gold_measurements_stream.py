@@ -2,7 +2,6 @@ from typing import Callable
 
 from pyspark.sql import DataFrame
 
-from core.gold.infrastructure.config import GoldTableNames
 from core.settings import StorageAccountSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.streaming_settings import StreamingSettings
@@ -16,12 +15,13 @@ class GoldMeasurementsStream:
 
     def write_stream(
         self,
+        checkpoint_name: str,
+        query_name: str,
         source_table: DataFrame,
         batch_operation: Callable[["DataFrame", int], None],
     ) -> bool | None:
-        query_name = "measurements_silver_to_gold"
         checkpoint_location = shared_helpers.get_checkpoint_path(
-            self.data_lake_settings, self.gold_container_name, GoldTableNames.gold_measurements
+            self.data_lake_settings, self.gold_container_name, checkpoint_name
         )
 
         write_stream = (
