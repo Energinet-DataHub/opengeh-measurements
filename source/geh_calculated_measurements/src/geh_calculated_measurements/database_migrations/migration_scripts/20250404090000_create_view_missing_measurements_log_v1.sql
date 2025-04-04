@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW {catalog_name}.measurements_calculated.missing_measurements_log_v1 AS
+CREATE VIEW {catalog_name}.measurements_calculated.missing_measurements_log_v1 AS
 SELECT orchestration_instance_id,
        metering_point_id,
        date        

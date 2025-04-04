@@ -13,3 +13,4 @@ TBLPROPERTIES (
     delta.minReaderVersion = '2',
     delta.minWriterVersion = '5'
 )
+CLUSTER BY (orchestration_instance_id, metering_point_id)
