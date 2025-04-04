@@ -30,7 +30,7 @@ def spark(session_mocker: MockerFixture) -> Generator[SparkSession, None, None]:
         "io.delta:delta-core_2.12:2.3.0",
     ]
     session, _ = get_spark_test_session(extra_packages=extra_packages)
-    schema_helper.create_schemas(session)
+    schema_helper.create_internal_schemas(session)
     session_mocker.patch(f"{gold_spark.__name__}.initialize_spark", return_value=session)
 
     yield session
