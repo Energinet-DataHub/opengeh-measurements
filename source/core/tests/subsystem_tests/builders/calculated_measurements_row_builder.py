@@ -25,7 +25,7 @@ class CalculatedMeasurementsRowBuilder:
         self,
         orchestration_type: str = OrchestrationType.CAPACITY_SETTLEMENT.value,
         orchestration_instance_id: str = "test_orchestration_instance_id",
-        metering_point_id: str = identifier_helper.create_random_metering_point_id(),  # OBS: change to correct mp id
+        metering_point_id: str = identifier_helper.create_random_metering_point_id(),
         transaction_id: str = "test_transaction_id",
         transaction_creation_datetime: datetime = datetime(2023, 1, 1, 12, 0, 0),
         metering_point_type: str = MeteringPointType.CAPACITY_SETTLEMENT.value,
