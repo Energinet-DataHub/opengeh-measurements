@@ -7,3 +7,5 @@ metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;p
 170000000000000205;true;;1;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 5: Period 2 (May-Jul). Limit: 92/366*4000 = 1005.464
 170000000000000206;true;;1;2023-12-31T23:00:00Z;;Case 6: EH consumption MP with no end date for has_electrical_heating
 170000000000000207;true;;1;2023-12-31T23:00:00Z;;Case 7: EH consumption MP without child MP
+170000000000000208;true;;1;2022-12-31T23:00:00Z;2023-08-31T22:00:00Z;Case 8: EH consumption MP changes net settlement group
+170000000000000208;true;;1;2023-08-31T22:00:00Z;;Case 8: EH consumption MP changes net settlement group - gains supply_to_grid and consumption_from_grid (but is not net settlement group 2 or 6)
