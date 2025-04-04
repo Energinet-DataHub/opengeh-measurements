@@ -12,6 +12,7 @@ class MockConfig:
     workspace_url: str
     databricks_token: str
     shared_keyvault_url: str
+    azure_log_analytics_workspace_id_secret_name: str
 
 
 def test_wait_for_log_query_completion(monkeypatch):
@@ -20,7 +21,12 @@ def test_wait_for_log_query_completion(monkeypatch):
     )
     keyvault_url = os.getenv("AZURE_KEYVAULT_URL")
     assert keyvault_url is not None, "The Azure Key Vault name cannot be empty."
-    config = MockConfig(shared_keyvault_url=keyvault_url, workspace_url="", databricks_token="")
+    config = MockConfig(
+        shared_keyvault_url=keyvault_url,
+        azure_log_analytics_workspace_id_secret_name="AZURE-LOGANALYTICS-WORKSPACE-ID",
+        workspace_url="",
+        databricks_token="",
+    )
     fixture = JobTestFixture(config, "integration_test_job")
     query = """
         AppTraces
