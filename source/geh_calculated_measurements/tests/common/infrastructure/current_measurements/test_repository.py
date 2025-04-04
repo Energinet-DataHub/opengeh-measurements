@@ -64,9 +64,10 @@ def valid_df(spark: SparkSession) -> DataFrame:
 #         current_measurements_repository.read_current_measurements()
 
 
-# TODO BJM: This test should not create the table by itself
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
 # def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
 #     current_measurements_repository: CurrentMeasurementsRepository,
+#     external_dataproducts_created: None,  # Used implicitly
 #     valid_df: DataFrame,
 # ) -> None:
 #     # Arrange
