@@ -95,7 +95,7 @@ class JobTestFixture:
                 "tables": {
                     t.name: {
                         "nrows": len(t.rows),
-                        "columns": [col.name for col in t.columns],
+                        "columns": [col for col in t.columns],
                     }
                     for t in response.tables
                 },
@@ -108,7 +108,7 @@ class JobTestFixture:
                     "tables": {
                         t.name: {
                             "nrows": len(t.rows),
-                            "columns": [col.name for col in t.columns],
+                            "columns": [col for col in t.columns],
                         }
                         for t in response.partial_data
                     },
