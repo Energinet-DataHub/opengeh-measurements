@@ -5,7 +5,6 @@ from geh_common.databricks import DatabricksApiClient
 
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.gold_settings import GoldSettings
-from tests.subsystem_tests.settings.catalog_settings import CatalogSettings
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings
 
 
@@ -13,8 +12,6 @@ class GoldLayerFixture:
     def __init__(self) -> None:
         self.gold_settings = GoldSettings()
         self.gold_table = f"{self.gold_settings.gold_database_name}.{GoldTableNames.gold_measurements}"
-        self.catalog_settings = CatalogSettings()  # type: ignore
-        self.catalog_name = self.catalog_settings.catalog_name
         self.databricks_settings = DatabricksSettings()  # type: ignore
         self.databricks_api_client = DatabricksApiClient(
             self.databricks_settings.token,
@@ -26,7 +23,7 @@ class GoldLayerFixture:
     ) -> None:
         query = f"""
                 SELECT COUNT(*) AS count
-                FROM {self.catalog_name}.{self.gold_table}
+                FROM {self.databricks_settings.catalog_name}.{self.gold_table}
                 WHERE orchestration_instance_id = '{orchestration_instance_id}'
             """
 

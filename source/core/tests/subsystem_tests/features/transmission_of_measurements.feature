@@ -6,6 +6,5 @@ Feature: Transmission of measurements
   Scenario: Measurement transaction acknowledged after transmission
     Then an acknowledgement is sent to the Event Hub
 
-  Scenario: Measurement transaction delivered to Gold Layer and acknowledged
-    Then an acknowledgement is sent to the Event Hub
-    And the measurement transaction is available in the Gold Layer
+  Scenario: Measurement transaction delivered to Gold Layer
+    Then the measurement transaction is available in the Gold Layer

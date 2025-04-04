@@ -18,7 +18,7 @@ class TestData:
 @given("a valid measurement transaction is enqueued in the Event Hub", target_fixture="test_data")
 def _(spark: SparkSession, kafka_fixture: KafkaFixture) -> TestData:
     orchestration_instance_id = identifier_helper.generate_random_string()
-    metering_point_id = identifier_helper.create_pseudo_random_metering_point_id()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
     value = (
         ValueBuilder(spark)
         .add_row(
