@@ -11,7 +11,7 @@ from tests import SPARK_CATALOG_NAME
     ("view_name", "contract_schema"),
     [
         (
-            CalculatedMeasurementsDatabaseDefinition.HOURLY_CALCULATED_MEASUREMENTS_VIEW_NAME,
+            CalculatedMeasurementsDatabaseDefinition.CALCULATED_MEASUREMENTS_VIEW_NAME,
             calculated_measurements_v1.calculated_measurements_v1,
         ),
         (
