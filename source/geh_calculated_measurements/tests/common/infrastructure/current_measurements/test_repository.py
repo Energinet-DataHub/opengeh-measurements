@@ -64,7 +64,7 @@ def test__when_invalid_contract__raises_with_useful_message(
         current_measurements_repository.read_current_measurements()
 
 
-def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
+def test__when_source_contains_unexpected_columns__returns_data_without_unexpected_column(
     current_measurements_repository: CurrentMeasurementsRepository,
     valid_df: DataFrame,
     monkeypatch: pytest.MonkeyPatch,
