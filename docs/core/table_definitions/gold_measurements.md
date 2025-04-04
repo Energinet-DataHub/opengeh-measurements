@@ -18,3 +18,16 @@ This table contains measurements which is presented as one measurement value per
 | is_cancelled | BooleanType | True | Cancelled flag carried over from Migrations | "is_cancelled_is_not_null_chk" which checks is_cancelled is not null,  |
 | created | TimestampType | True | - | - |
 | modified | TimestampType | True | - | - |
+
+## Cluster Keys
+
+The following cluster keys are defined to optimize query performance and support table operations:
+
+1. `orchestration_type`
+   - Enables efficient writes to the table for different orchestration types (`submitted`, `calculated`, `migration`) and avoids concurrent writes.
+2. `metering_point_id`
+   - Optimized for queries filtering by metering point.
+3. `observation_time`
+   - Optimized for queries filtering by observation time.
+4. `transaction_creation_datetime`
+   - Ensures efficient identification of the current measurement by transaction creation time.
