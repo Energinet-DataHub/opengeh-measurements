@@ -25,7 +25,7 @@ public class MeasurementsClient : IMeasurementsClient
         _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(
+    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(
         GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
@@ -35,7 +35,7 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(
+    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForPeriodAsync(
         GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
@@ -55,7 +55,7 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseMeasurementAggregationResponseAsync(query.YearMonth, response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> ParseMeasurementsResponseAsync(
+    private async Task<IEnumerable<MeasurementPointDto>> ParseMeasurementsResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
@@ -66,13 +66,13 @@ public class MeasurementsClient : IMeasurementsClient
         return measurementPoints;
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> DeserializeMeasurementsResponseStreamAsync(
+    private async Task<IEnumerable<MeasurementPointDto>> DeserializeMeasurementsResponseStreamAsync(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("Points");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions)
+        return pointElement.Deserialize<IEnumerable<MeasurementPointDto>>(_jsonSerializerOptions)
                ?? throw new InvalidOperationException();
     }
 

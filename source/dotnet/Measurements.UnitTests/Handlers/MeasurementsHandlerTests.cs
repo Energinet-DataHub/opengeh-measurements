@@ -21,9 +21,9 @@ public class MeasurementsHandlerTests
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
         // Arrange
-        var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
-        var raw = CreateRaw(now);
+        var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
+        var raw = CreateRaw(date);
         var measurementResult = new MeasurementsResult(raw);
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
@@ -35,18 +35,19 @@ public class MeasurementsHandlerTests
         var actualPoint = actual.Points.Single();
 
         // Assert
-        Assert.Equal(now, actualPoint.ObservationTime.ToDateTimeOffset());
+        Assert.Equal(date, actualPoint.ObservationTime.ToDateTimeOffset());
         Assert.Equal(42, actualPoint.Quantity);
         Assert.Equal(Quality.Measured, actualPoint.Quality);
         Assert.Equal(Unit.kWh, actualPoint.Unit);
+        Assert.Equal(date, actualPoint.Created.ToDateTimeOffset());
     }
 
     [Fact]
     public async Task GetMeasurementsAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
     {
         // Arrange
-        var now = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var request = new GetMeasurementRequest("123456789", now, now.AddDays(1));
+        var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
         var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
             .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
@@ -65,6 +66,7 @@ public class MeasurementsHandlerTests
         raw.observation_time = now;
         raw.quantity = 42;
         raw.quality = "measured";
+        raw.created = now;
         return raw;
     }
 }

@@ -1,8 +1,12 @@
 # Measurements.Client Release Notes
 
-## Version 2.1.0
+## Version 2.2.0
 
 - Added method to get aggregated measurements for a month
+
+## Version 2.1.0
+
+- Add created timestamp to measurement point.
 
 ## Version 2.0.1
 

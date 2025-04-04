@@ -36,7 +36,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
 
     public static string TestMeteringPointId => "1234567890";
 
-    public static LocalDate TestDate => new(2023, 1, 2);
+    public static LocalDate TestDate => new(2025, 1, 2);
 
     public ServiceProvider ServiceProvider { get; }
 
@@ -111,6 +111,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRow()
@@ -124,9 +125,10 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
-            "'2025-03-12T03:40:55Z'",
+            "'2025-01-15T03:40:55Z'",
             "'PT1H'",
             "false",
+            "'2025-01-17T03:40:55Z'",
         });
     }
 }
