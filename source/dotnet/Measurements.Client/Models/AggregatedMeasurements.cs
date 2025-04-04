@@ -1,8 +1,11 @@
-﻿namespace Energinet.DataHub.Measurements.Client.Models;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+
+namespace Energinet.DataHub.Measurements.Client.Models;
 
 internal sealed record AggregatedMeasurements(
     DateTimeOffset MinObservationTime,
     DateTimeOffset MaxObservationTime,
     decimal Quantity,
+    IEnumerable<Quality> Qualities,
     IEnumerable<Resolution> Resolutions,
     int PointCount);

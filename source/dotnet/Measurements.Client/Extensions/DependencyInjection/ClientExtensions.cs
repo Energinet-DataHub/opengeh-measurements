@@ -34,6 +34,7 @@ public static class ClientExtensions
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         });
 
+        services.AddScoped<MeasurementAggregationFactory>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
         return services;

@@ -20,8 +20,11 @@ public class MeasurementsClient : IMeasurementsClient
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public MeasurementsClient(IHttpClientFactory httpClientFactory)
+    private readonly MeasurementAggregationFactory _measurementAggregationFactory;
+
+    public MeasurementsClient(IHttpClientFactory httpClientFactory, MeasurementAggregationFactory measurementAggregationFactory)
     {
+        _measurementAggregationFactory = measurementAggregationFactory;
         _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
@@ -92,32 +95,8 @@ public class MeasurementsClient : IMeasurementsClient
         return daysInMonth.Select(date =>
         {
             aggregatedMeasurementsDictionary.TryGetValue(date, out var aggregatedMeasurement);
-            return new MeasurementAggregation(
-                aggregatedMeasurement?.MinObservationTime.ToLocalDate() ?? date,
-                aggregatedMeasurement?.Quantity ?? 0,
-                SetMissingValuesForAggregation(aggregatedMeasurement));
+            return _measurementAggregationFactory.CreateMeasurementAggregation(aggregatedMeasurement, date);
         });
-    }
-
-    private bool SetMissingValuesForAggregation(AggregatedMeasurements? aggregatedMeasurement)
-    {
-        if (aggregatedMeasurement == null) return true;
-
-        var timeSpan = aggregatedMeasurement.MaxObservationTime - aggregatedMeasurement.MinObservationTime;
-        var hours = (int)timeSpan.TotalHours + 1;
-
-        // All points for a doy should have the same resolution
-        var resolution = aggregatedMeasurement.Resolutions.Single();
-
-        var expectedPointCount = resolution switch
-        {
-            Resolution.PT15M => hours * 4,
-            Resolution.PT1H => hours,
-            Resolution.P1D or Resolution.P1M or Resolution.P1Y => 1,
-            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
-        };
-
-        return expectedPointCount - aggregatedMeasurement.PointCount != 0;
     }
 
     private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(
