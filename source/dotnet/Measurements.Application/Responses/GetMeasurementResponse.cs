@@ -26,8 +26,8 @@ public class GetMeasurementResponse
                 new Point(
                     measurement.ObservationTime,
                     measurement.Quantity,
-                    ParseQuality(measurement.Quality),
-                    ParseUnit(measurement.Unit),
+                    QualityParser.ParseQuality(measurement.Quality),
+                    UnitParser.ParseUnit(measurement.Unit),
                     measurement.Created))
             .ToList();
 
