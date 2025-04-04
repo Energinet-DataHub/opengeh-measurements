@@ -83,7 +83,7 @@ class JobTestFixture:
             print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
 
-    def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> dict:
+    def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> LogsQueryError:
         details = {
             "code": 500,
             "message": "An error occurred while querying the logs.",
@@ -127,8 +127,15 @@ class JobTestFixture:
             return response
         else:
             error = self._error_from_response(response)
-            if error is not None:
-                raise ValueError(f"Query failed with error: {error}")
+            error_msg = f"""
+            Failed to execute query:
+            --- Query ---
+            {query}
+
+            --- Error ---
+            {error}
+            """
+            raise ValueError(error_msg)
 
 
 class JobTest(abc.ABC):
