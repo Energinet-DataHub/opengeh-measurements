@@ -12,6 +12,7 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.repository import Repository
+from tests import SPARK_CATALOG_NAME
 
 PARENT_TABLE_NAME = f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
 CHILD_TABLE_NAME = f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
@@ -53,7 +54,7 @@ def valid_child_dataframe(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="module")
 def repository(spark: SparkSession) -> Repository:
-    return Repository(spark, catalog_name="spark_catalog")
+    return Repository(spark, catalog_name=SPARK_CATALOG_NAME)
 
 
 # TODO BJM: This is a bad test because it changes the table and thus can break other tests.
