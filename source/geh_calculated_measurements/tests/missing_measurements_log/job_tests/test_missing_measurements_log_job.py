@@ -20,6 +20,7 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
 def test_execute(
     monkeypatch,
     dummy_logging: None,  # Used implicitly
+    migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
 ) -> None:
     # Arrange

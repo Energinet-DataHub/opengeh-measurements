@@ -4,6 +4,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = PROJECT_ROOT / "tests"
 
 SPARK_CATALOG_NAME = "spark_catalog"
+MEASUREMENTS_GOLD_TABLE_NAME = "measurements"
 
 
 def create_job_environment_variables(eletricity_market_path: str = "some_path") -> dict:

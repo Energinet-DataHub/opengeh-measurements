@@ -18,6 +18,7 @@ def test_execute(
     spark: SparkSession,
     gold_table_seeded: Any,  # Used implicitly
     migrations_executed: None,  # Used implicitly
+    external_dataproducts_created: None,  # Used implicitly
     dummy_logging: Any,  # Used implicitly
     monkeypatch,
 ) -> None:
