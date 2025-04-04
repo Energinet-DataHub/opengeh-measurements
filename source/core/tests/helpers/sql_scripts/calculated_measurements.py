@@ -4,7 +4,6 @@ from core.settings.calculated_settings import CalculatedSettings
 
 def create_calculated_measurements_v1_query() -> str:
     calculated_settings = CalculatedSettings()
-
     return f"""
     CREATE TABLE IF NOT EXISTS {calculated_settings.calculated_database_name}.{ExternalViewNames.calculated_measurements_v1} (
         orchestration_type STRING NOT NULL,
@@ -26,3 +25,8 @@ def create_calculated_measurements_v1_query() -> str:
         delta.deletedFileRetentionDuration = 'interval 30 days'
     );
     """
+
+
+def create_calculated_measurements_schema_query() -> str:
+    calculated_settings = CalculatedSettings()
+    return f"CREATE DATABASE IF NOT EXISTS {calculated_settings.calculated_database_name}"
