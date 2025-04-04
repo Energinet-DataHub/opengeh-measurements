@@ -92,7 +92,7 @@ public class MeasurementAggregationFactoryTests
         // Assert
         Assert.Equal(date, result.Date);
         Assert.Equal(Quality.Missing, result.Quality);
-        Assert.Equal(100.0m, result.Quantity);
+        Assert.Equal(0.0m, result.Quantity);
         Assert.True(result.MissingValues);
     }
 }
