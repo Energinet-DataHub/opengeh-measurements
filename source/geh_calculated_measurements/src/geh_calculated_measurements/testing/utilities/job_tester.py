@@ -89,7 +89,7 @@ class JobTestFixture:
             "message": "An error occurred while querying the logs.",
             "details": None,
         }
-        error = LogsQueryError(details)
+        error = LogsQueryError(**details)
         if isinstance(response, LogsQueryResult):
             error.details = {
                 "tables": {
@@ -117,7 +117,7 @@ class JobTestFixture:
                 }
             else:
                 error = response.partial_error
-        return LogsQueryError(details)
+        return LogsQueryError(**details)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         response = self.azure_logs_query_client.query_workspace(
