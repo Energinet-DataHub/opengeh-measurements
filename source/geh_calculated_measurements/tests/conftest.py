@@ -148,14 +148,7 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
 
-    create_table(
-        spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
-        schema=CurrentMeasurements.schema,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
-    )
-
+    # Removed duplicate call to create_table for MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
     create_database(spark, MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME)
 
     create_table(
