@@ -1,4 +1,3 @@
-### This file contains the fixtures that are used in the tests. ###
 import os
 import shutil
 import sys
@@ -9,10 +8,26 @@ import geh_common.telemetry.logging_configuration
 import pytest
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
+from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from tests import TESTS_ROOT, create_job_environment_variables
+from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
+from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
+    MeasurementsGoldDatabaseDefinition,
+)
+from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
+from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
+from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
+    MeteringPointPeriodsDatabaseDefinition,
+)
+from tests import (
+    SPARK_CATALOG_NAME,
+    TESTS_ROOT,
+    create_job_environment_variables,
+)
 from tests.testsession_configuration import TestSessionConfiguration
 
 
@@ -100,4 +115,47 @@ def assert_dataframes_configuration(
         show_actual_and_expected_count=test_session_configuration.scenario_tests.show_actual_and_expected_count,
         show_actual_and_expected=test_session_configuration.scenario_tests.show_actual_and_expected,
         show_columns_when_actual_and_expected_are_equal=test_session_configuration.scenario_tests.show_columns_when_actual_and_expected_are_equal,
+    )
+
+
+@pytest.fixture(scope="session")
+def migrations_executed(spark: SparkSession) -> None:
+    """Executes all migrations.
+
+    This fixture is useful for all tests that require the migrations to be executed. E.g. when
+    a view/dataprodcut/table is required."""
+
+    # Databases are created in dh3infrastructure using terraform
+    # So we need to create them in test environment
+    for db in [
+        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
+        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+    ]:
+        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
+
+    _migrate(SPARK_CATALOG_NAME)
+
+
+@pytest.fixture(scope="session")
+def external_dataproducts_created(spark: SparkSession) -> None:
+    """Create external dataproducts (databases, tables and views) as needed by tests."""
+    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
+
+    create_table(
+        spark,
+        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
+        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
+        schema=CurrentMeasurements.schema,
+        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+    )
+
+    # Removed duplicate call to create_table for MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
+    create_database(spark, MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME)
+
+    create_table(
+        spark,
+        database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
+        table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
+        schema=MeteringPointPeriods.schema,
+        table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )

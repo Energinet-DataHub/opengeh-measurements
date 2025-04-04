@@ -13,7 +13,7 @@ from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
 
 def test_execute(
-    spark: SparkSession, gold_table_seeded: Any, calculated_measurements_table_created: Any, dummy_logging, monkeypatch
+    spark: SparkSession, gold_table_seeded: Any, migrations_executed: None, dummy_logging, monkeypatch
 ) -> None:
     spark.sparkContext.setLogLevel("ERROR")
 
