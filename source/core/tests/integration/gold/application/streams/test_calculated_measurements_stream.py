@@ -3,7 +3,6 @@ from pyspark.sql import SparkSession
 import core.gold.application.streams.calculated_measurements_stream as sut
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
-from core.gold.infrastructure.config import GoldTableNames
 from core.gold.infrastructure.config.external_view_names import ExternalViewNames
 from core.settings.calculated_settings import CalculatedSettings
 from tests.helpers.builders.calculated_builder import CalculatedMeasurementsBuilder
