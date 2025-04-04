@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pyspark.sql.functions as F
 import pytest
 from pyspark.sql import DataFrame, SparkSession
 
@@ -77,7 +76,8 @@ def repository(spark: SparkSession) -> Repository:
 #     ):
 #         repository.read_net_consumption_group_6_consumption_metering_point_periods()
 
-
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
 # def test__when_child_table_is_missing_expected_column_raises_exception(
 #     create_electricity_market_database: None,
 #     valid_child_dataframe: DataFrame,
@@ -96,41 +96,43 @@ def repository(spark: SparkSession) -> Repository:
 #     ):
 #         repository.read_net_consumption_group_6_child_metering_points()
 
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
+# def test__when_parent_dataframe_contains_unexpected_columns_returns_data_without_unexpected_column(
+#     create_electricity_market_database: None,
+#     valid_parent_dataframe: DataFrame,
+#     repository: Repository,
+# ) -> None:
+#     # Arrange
+#     valid_dataframe_with_extra_col = valid_parent_dataframe.withColumn("extra_col", F.lit("extra_value"))
+#     valid_dataframe_with_extra_col.write.format("delta").mode("overwrite").option(
+#         "overwriteSchema", "true"
+#     ).saveAsTable(PARENT_TABLE_NAME)
 
-def test__when_parent_dataframe_contains_unexpected_columns_returns_data_without_unexpected_column(
-    create_electricity_market_database: None,
-    valid_parent_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    # Arrange
-    valid_dataframe_with_extra_col = valid_parent_dataframe.withColumn("extra_col", F.lit("extra_value"))
-    valid_dataframe_with_extra_col.write.format("delta").mode("overwrite").option(
-        "overwriteSchema", "true"
-    ).saveAsTable(PARENT_TABLE_NAME)
+#     # Act
+#     actual = repository.read_net_consumption_group_6_consumption_metering_point_periods()
 
-    # Act
-    actual = repository.read_net_consumption_group_6_consumption_metering_point_periods()
+#     # Assert
+#     assert actual.df.columns == valid_parent_dataframe.schema.fieldNames()
 
-    # Assert
-    assert actual.df.columns == valid_parent_dataframe.schema.fieldNames()
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
+# def test__when_child_dataframe_contains_unexpected_columns_returns_data_without_unexpected_column(
+#     create_electricity_market_database: None,
+#     valid_child_dataframe: DataFrame,
+#     repository: Repository,
+# ) -> None:
+#     # Arrange
+#     valid_dataframe_with_extra_col = valid_child_dataframe.withColumn("extra_col", F.lit("extra_value"))
+#     valid_dataframe_with_extra_col.write.format("delta").mode("overwrite").option(
+#         "overwriteSchema", "true"
+#     ).saveAsTable(CHILD_TABLE_NAME)
 
+#     # Act
+#     actual = repository.read_net_consumption_group_6_child_metering_points()
 
-def test__when_child_dataframe_contains_unexpected_columns_returns_data_without_unexpected_column(
-    create_electricity_market_database: None,
-    valid_child_dataframe: DataFrame,
-    repository: Repository,
-) -> None:
-    # Arrange
-    valid_dataframe_with_extra_col = valid_child_dataframe.withColumn("extra_col", F.lit("extra_value"))
-    valid_dataframe_with_extra_col.write.format("delta").mode("overwrite").option(
-        "overwriteSchema", "true"
-    ).saveAsTable(CHILD_TABLE_NAME)
-
-    # Act
-    actual = repository.read_net_consumption_group_6_child_metering_points()
-
-    # Assert
-    assert actual.df.columns == valid_child_dataframe.schema.fieldNames()
+#     # Assert
+#     assert actual.df.columns == valid_child_dataframe.schema.fieldNames()
 
 
 # TODO BJM: This is a bad test because it changes the table and thus can break other tests.
@@ -152,7 +154,8 @@ def test__when_child_dataframe_contains_unexpected_columns_returns_data_without_
 #     with pytest.raises(Exception, match=r".*Schema mismatch.*"):
 #         repository.read_net_consumption_group_6_consumption_metering_point_periods()
 
-
+# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
+#           At least when executed in parallel.
 # def test__when_child_contains_wrong_data_type_raises_exception(
 #     create_electricity_market_database: None,
 #     valid_child_dataframe: DataFrame,
