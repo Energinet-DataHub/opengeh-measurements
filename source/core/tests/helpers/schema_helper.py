@@ -27,4 +27,4 @@ def create_external_schemas(spark: SparkSession) -> None:
 
 
 def create_external_tables(spark: SparkSession) -> None:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {ExternalViewNames.calculated_measurements_v1}")
+    spark.sql(f"CREATE TABLE IF NOT EXISTS {ExternalViewNames.calculated_measurements_v1}")
