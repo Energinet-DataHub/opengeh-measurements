@@ -20,13 +20,7 @@ def test_execute(
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
-    sys_args = [
-        "dummy_script_name",
-        f"--orchestration-instance-id={orchestration_instance_id}",
-        "--calculation-year=2026",
-        "--calculation-month=1",
-    ]
-    monkeypatch.setattr(sys, "argv", sys_args)
+    monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
     # Act

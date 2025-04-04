@@ -36,11 +36,7 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             # The number of the month. 1 is January, 12 is December.
             # For all but settlement group 6 the month is January.
             # <1 | 2 | 3 | ... | 12>
-            t.StructField(
-                "settlement_month",
-                t.IntegerType(),
-                not nullable,
-            ),
+            t.StructField("settlement_month", t.IntegerType(), not nullable),
             #
             # See the description of periodization of data above.
             # <UTC time>

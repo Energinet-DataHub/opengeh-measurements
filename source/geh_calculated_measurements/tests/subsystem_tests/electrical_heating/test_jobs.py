@@ -1,39 +1,26 @@
-import random
 import uuid
-from datetime import datetime
 
 import pytest
-from geh_common.domain.types import MeteringPointType
 
-from tests.subsystem_tests.base_resources.base_job_fixture import BaseJobFixture
-from tests.subsystem_tests.base_resources.base_job_tests import BaseJobTests
+from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from tests.subsystem_tests.electrical_heating.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
-from tests.subsystem_tests.seed_gold_table import GoldTableRow, GoldTableSeeder
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
-gold_table_row = GoldTableRow(
-    metering_point_id="170000030000000201",
-    observation_time=datetime(2024, 11, 30, 23, 0, 0),
-    quantity=random.uniform(0.1, 10.0),
-    metering_point_type=MeteringPointType.CONSUMPTION,
-)
 
-
-@pytest.fixture(scope="session")
-def job_fixture(
-    environment_configuration: EnvironmentConfiguration,
-) -> BaseJobFixture:
-    table_seeder = GoldTableSeeder(environment_configuration)
-    table_seeder.seed(gold_table_row)
-    return BaseJobFixture(
-        environment_configuration=environment_configuration,
-        job_name="ElectricalHeating",
-        job_parameters=job_parameters,
-    )
-
-
-class TestElectricalHeating(BaseJobTests):
+class TestElectricalHeating(JobTest):
     """
     Test class for electrical heating.
     """
+
+    @pytest.fixture(scope="class")
+    def fixture(self):
+        config = EnvironmentConfiguration()
+        fixture = JobTestFixture(
+            environment_configuration=config,
+            job_name="ElectricalHeating",
+            job_parameters=job_parameters,
+        )
+        seed_table(fixture)
+        return fixture
