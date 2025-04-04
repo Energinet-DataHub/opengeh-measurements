@@ -17,7 +17,7 @@ def test__stream_measurements_calculated_to_gold__append_to_gold_measurements(
     only in Databricks Runtime. A subsystem test will cover the view case.
     """
     # Arrange
-    calculated_database_name = CalculatedSettings.calculated_database_name
+    calculated_database_name = CalculatedSettings().calculated_database_name
     metering_point_id = identifier_helper.create_random_metering_point_id()
     calculated_measurements = CalculatedMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
     table_helper.append_to_table(
