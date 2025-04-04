@@ -14,4 +14,6 @@ public class MeasurementsResult(ExpandoObject raw)
     public decimal Quantity => _raw.quantity;
 
     public string Quality => _raw.quality;
+
+    public Instant Created => Instant.FromDateTimeOffset(_raw.created);
 }
