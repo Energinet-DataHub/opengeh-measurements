@@ -2,14 +2,13 @@
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Route("measurements")]
-public class MeasurementsController(IMeasurementsHandler measurementsHandler)
+public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
     : ControllerBase
 {
     [HttpGet]
@@ -26,6 +25,11 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
             return NotFound(e.Message);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Could not get measurements.");
+            throw;
         }
     }
 }
