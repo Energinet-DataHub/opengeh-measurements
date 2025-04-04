@@ -42,7 +42,7 @@ def valid_df(spark: SparkSession) -> DataFrame:
     return df
 
 
-def test__when_invalid_contract_raises_with_useful_message(
+def test__when_invalid_contract__raises_with_useful_message(
     current_measurements_repository: CurrentMeasurementsRepository,
     valid_df: DataFrame,
     monkeypatch: pytest.MonkeyPatch,
