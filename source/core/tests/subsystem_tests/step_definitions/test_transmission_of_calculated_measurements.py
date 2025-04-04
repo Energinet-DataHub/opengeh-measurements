@@ -8,6 +8,7 @@ from tests.subsystem_tests.builders.calculated_measurements_row_builder import (
 from tests.subsystem_tests.fixtures.calculated_measurements_fixture import (
     CalculatedMeasurementsFixture,
 )
+from tests.subsystem_tests.fixtures.gold_layer_fixture import GoldLayerFixture
 
 scenarios("../features/transmission_of_calculated_measurements.feature")
 
@@ -25,7 +26,5 @@ def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
 
 
 @then("the calculated measurements are avaiable in the Gold Layer")
-def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
-    # Use GoldLayerFixture from other PR
-    # gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
-    pass
+def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
+    gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
