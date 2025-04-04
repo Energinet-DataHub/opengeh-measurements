@@ -6,7 +6,7 @@ from core.settings.calculated_settings import CalculatedSettings
 from core.settings.core_internal_settings import CoreInternalSettings
 from core.settings.gold_settings import GoldSettings
 from core.settings.silver_settings import SilverSettings
-from tests.helpers.sql_scripts.create_calculated_measurements_v1 import create_calculated_measurements_v1
+from tests.helpers.sql_scripts.create_calculated_measurements_v1 import create_calculated_measurements_v1_query
 
 
 def create_internal_schemas(spark: SparkSession) -> None:
@@ -27,4 +27,4 @@ def create_external_schemas(spark: SparkSession) -> None:
 
 
 def create_external_tables(spark: SparkSession) -> None:
-    spark.sql(create_calculated_measurements_v1)
+    spark.sql(create_calculated_measurements_v1_query())
