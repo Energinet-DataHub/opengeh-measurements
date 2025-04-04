@@ -24,7 +24,7 @@ public class MeasurementsClient : IMeasurementsClient
         _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
@@ -33,7 +33,7 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPoint>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
 
@@ -42,7 +42,7 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPointDto>> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
@@ -52,12 +52,12 @@ public class MeasurementsClient : IMeasurementsClient
         return measurementPoints;
     }
 
-    private async Task<IEnumerable<MeasurementPoint>> DeserializeResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementPointDto>> DeserializeResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("Points");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementPoint>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<MeasurementPointDto>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

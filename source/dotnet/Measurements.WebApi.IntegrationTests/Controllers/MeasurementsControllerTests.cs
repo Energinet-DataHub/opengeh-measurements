@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
@@ -28,6 +29,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(24, actual.Points.Count);
         Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
         Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
+        Assert.True(actual.Points.All(p => p.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture) == startDate));
     }
 
     [Fact]

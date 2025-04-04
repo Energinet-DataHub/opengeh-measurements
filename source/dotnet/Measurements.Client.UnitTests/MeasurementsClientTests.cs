@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
@@ -12,15 +13,12 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests;
 [UnitTest]
 public class MeasurementsClientTests
 {
-    [Theory]
-    [InlineData(2023, 1, 2)]
-    [InlineData(2023, 6, 15)]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints(
-        int year, int month, int day)
+    [Fact]
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(year, month, day));
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayExcludingHistory);
+        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
@@ -32,15 +30,14 @@ public class MeasurementsClientTests
         Assert.NotNull(actual);
         Assert.Equal(24, actual.Count);
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
+        Assert.True(actual.All(p => p.Created.ToFormattedString() == "2022-01-03T15:00:00Z"));
     }
 
     [Fact]
     public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery(
-            "1234567890",
-            new LocalDate(1990, 1, 2));
+        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -57,9 +54,8 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
-        var from = new LocalDate(2023, 1, 2);
-        var to = new LocalDate(2023, 1, 6);
-        var query = new GetMeasurementsForPeriodQuery("1234567890", from, to);
+        var testDate = new LocalDate(1, 2, 3);
+        var query = new GetMeasurementsForPeriodQuery("1234567890", testDate, testDate);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);

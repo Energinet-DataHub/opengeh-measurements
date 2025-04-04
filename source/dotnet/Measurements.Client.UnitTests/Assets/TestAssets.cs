@@ -4,7 +4,7 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 
 public static class TestAssets
 {
-    public static string MeasurementsForDayExcludingHistory => GetJsonFile($"{nameof(MeasurementsForDayExcludingHistory)}.json");
+    public static string MeasurementsForSingleDay => GetJsonFile($"{nameof(MeasurementsForSingleDay)}.json");
 
     public static string MeasurementsForMultipleDays => GetJsonFile($"{nameof(MeasurementsForMultipleDays)}.json");
 

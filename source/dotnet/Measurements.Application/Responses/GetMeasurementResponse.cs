@@ -27,7 +27,8 @@ public class GetMeasurementResponse
                     measurement.ObservationTime,
                     measurement.Quantity,
                     ParseQuality(measurement.Quality),
-                    ParseUnit(measurement.Unit)))
+                    ParseUnit(measurement.Unit),
+                    measurement.Created))
             .ToList();
 
         return points.Count <= 0
