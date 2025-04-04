@@ -31,15 +31,15 @@ class CalculatedMeasurementsFixture:
             observation_time,
             quantity
           ) 
-          VALUE (
-            {row.orchestration_type},
-            {row.orchestration_instance_id},
-            {row.metering_point_id},
-            {row.transaction_id},
-            {row.transaction_creation_datetime},
-            {row.metering_point_type},
-            {row.observation_time},
-            {row.quantity}
+          VALUES (
+            '{row.orchestration_type}',
+            '{row.orchestration_instance_id}',
+            '{row.metering_point_id}',
+            '{row.transaction_id}',
+            GETDATE(),
+            '{row.metering_point_type}',
+            '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}',
+            '{format(row.quantity, ".3f")}'
           )
         """
 
