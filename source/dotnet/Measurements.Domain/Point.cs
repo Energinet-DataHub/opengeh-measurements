@@ -2,4 +2,4 @@
 
 namespace Energinet.DataHub.Measurements.Domain;
 
-public record Point(Instant ObservationTime, decimal Quantity, Quality Quality, Unit Unit);
+public record Point(Instant ObservationTime, decimal Quantity, Quality Quality, Unit Unit, Instant Created);
