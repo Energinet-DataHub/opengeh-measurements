@@ -3,7 +3,9 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 import pytest
+from geh_common.data_products.measurements_core.measurements_gold.current_v1 import current_v1
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
 from geh_calculated_measurements.common.domain import CurrentMeasurements
@@ -24,69 +26,62 @@ def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsR
 
 @pytest.fixture(scope="module")
 def valid_df(spark: SparkSession) -> DataFrame:
-    return spark.createDataFrame(
+    df = spark.createDataFrame(
         [
             (
                 "123456789012345678",
-                "consumption",
+                datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
                 Decimal("1.123"),
                 "measured",
-                datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
+                "consumption",
             )
         ],
         CurrentMeasurements.schema,
     )
+    assert df.schema == current_v1
+    return df
 
 
-# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
-#           At least when executed in parallel.
-# def test__when_missing_expected_column_raises_exception(
-#     current_measurements_repository: CurrentMeasurementsRepository,
-#     valid_df: DataFrame,
-# ) -> None:
-#     # Arrange
-#     invalid_df = valid_df.drop(F.col("quantity"))
+def test__when_invalid_contract_raises_with_useful_message(
+    current_measurements_repository: CurrentMeasurementsRepository,
+    valid_df: DataFrame,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Arrange
+    invalid_df = valid_df.drop(F.col("quantity"))
 
-#     (
-#         invalid_df.write.format("delta")
-#         .mode("overwrite")
-#         .option("overwriteSchema", "true")
-#         .saveAsTable(
-#             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-#         )
-#     )
+    def mock_read_table(*args, **kwargs):
+        return invalid_df
 
-#     # Act & Assert
-#     with pytest.raises(
-#         Exception,
-#         match=r"\[UNRESOLVED_COLUMN\.WITH_SUGGESTION\].*",
-#     ):
-#         current_measurements_repository.read_current_measurements()
+    monkeypatch.setattr(CurrentMeasurementsRepository, "_read", mock_read_table)
+
+    # Assert
+    with pytest.raises(
+        Exception,
+        match=r"The data source does not comply with the contract.*",
+    ):
+        # Act
+        current_measurements_repository.read_current_measurements()
 
 
-# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
-# def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
-#     current_measurements_repository: CurrentMeasurementsRepository,
-#     external_dataproducts_created: None,  # Used implicitly
-#     valid_df: DataFrame,
-# ) -> None:
-#     # Arrange
-#     valid_df_with_extra_col = valid_df.withColumn("extra_col", F.lit("extra_value"))
+def test__when_source_contains_unexpected_columns_returns_data_without_unexpected_column(
+    current_measurements_repository: CurrentMeasurementsRepository,
+    valid_df: DataFrame,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Arrange
+    valid_df_with_extra_col = valid_df.withColumn("extra_col", F.lit("extra_value"))
 
-#     (
-#         valid_df_with_extra_col.write.format("delta")
-#         .mode("overwrite")
-#         .option("overwriteSchema", "true")
-#         .saveAsTable(
-#             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-#         )
-#     )
+    def mock_read_table(*args, **kwargs):
+        return valid_df_with_extra_col
 
-#     # Act
-#     col_with_extra = current_measurements_repository.read_current_measurements().df.columns
+    monkeypatch.setattr(CurrentMeasurementsRepository, "_read", mock_read_table)
 
-#     # Assert
-#     assert col_with_extra == valid_df.columns
+    # Act
+    actual = current_measurements_repository.read_current_measurements().df.schema
+
+    # Assert
+    assert actual == current_v1
 
 
 # TODO BJM: This is a bad test because it changes the table and thus can break other tests.
