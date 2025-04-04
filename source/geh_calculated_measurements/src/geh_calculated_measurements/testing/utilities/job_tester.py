@@ -120,7 +120,9 @@ class JobTestFixture:
         return LogsQueryError(details)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
-        response = self.azure_logs_query_client.query_workspace(self.azure_log_analytics_workspace_id, query)
+        response = self.azure_logs_query_client.query_workspace(
+            self.azure_log_analytics_workspace_id, query, timespan=None
+        )
         if response.status == LogsQueryStatus.SUCCESS and len(response.tables) > 0 and len(response.tables[0].rows) > 0:
             return response
         else:
