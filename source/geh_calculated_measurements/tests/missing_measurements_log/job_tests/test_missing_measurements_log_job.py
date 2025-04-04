@@ -32,4 +32,4 @@ def test_execute(
     execute()
 
     # Assert
-    # TODO: Assert that data is written in delta. For now the test only asserts that no exception is raised.
+    # TODO JMG: Assert that data is written in delta. For now the test only asserts that no exception is raised.
