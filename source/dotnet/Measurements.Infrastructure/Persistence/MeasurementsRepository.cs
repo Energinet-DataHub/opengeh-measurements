@@ -21,4 +21,13 @@ public class MeasurementsRepository(
         await foreach (var row in rows)
             yield return new MeasurementsResult(row);
     }
+
+    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedMeasurementsAsync(string meteringPointId, YearMonth yearMonth)
+    {
+        var statement = new GetAggregatedMeasurementsQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);
+        var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
+
+        await foreach (var row in rows)
+            yield return new AggregatedMeasurementsResult(row);
+    }
 }

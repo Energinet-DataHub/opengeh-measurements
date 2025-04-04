@@ -33,6 +33,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Assets\QuarterlyMeasurementsAggregatedByDay.json" />
+      <EmbeddedResource Include="Assets\HourlyMeasurementsAggregatedByDay.json" />
+      <EmbeddedResource Include="Assets\HourlyMeasurementsAggregatedByDayMissingMeasurements.json" />
       <EmbeddedResource Include="Assets\MeasurementsForSingleDay.json" />
       <EmbeddedResource Include="Assets\MeasurementsForMultipleDays.json" />
     </ItemGroup>

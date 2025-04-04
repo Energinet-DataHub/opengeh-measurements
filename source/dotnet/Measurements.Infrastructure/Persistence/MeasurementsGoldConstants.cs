@@ -11,4 +11,5 @@ public static class MeasurementsGoldConstants
     public const string TransactionCreationDatetimeColumnName = "transaction_creation_datetime";
     public const string IsCancelledColumnName = "is_cancelled";
     public const string CreatedColumnName = "created";
+    public const string ResolutionColumnName = "resolution";
 }
