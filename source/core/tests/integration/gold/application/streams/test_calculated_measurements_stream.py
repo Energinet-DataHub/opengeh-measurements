@@ -28,7 +28,7 @@ def test__stream_measurements_calculated_to_gold__append_to_gold_measurements(
     sut.stream_measurements_calculated_to_gold()
 
     # Arrange
-    gold_measurements = spark.table(f"{calculated_database_name}.{GoldTableNames.gold_measurements}").where(
+    gold_measurements = spark.table(f"{calculated_database_name}.{ExternalViewNames.calculated_measurements_v1}").where(
         f"metering_point_id = '{metering_point_id}'"
     )
     assert gold_measurements.count() == 1
