@@ -31,13 +31,11 @@ class JobTestFixture:
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
-        secret_client = SecretClient(
-            vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/",
-            credential=credentials,
-        )
-        self.azure_logs_query_client = LogsQueryClient(credentials)
+        secret_client = SecretClient(vault_url=self.config.shared_keyvault_url, credential=credentials)
         azure_log_analytics_workspace_id = secret_client.get_secret("log-shared-workspace-id").value
         assert azure_log_analytics_workspace_id is not None, "The Azure log analytics workspace ID cannot be empty."
+
+        self.azure_logs_query_client = LogsQueryClient(credentials)
         self.azure_log_analytics_workspace_id = azure_log_analytics_workspace_id
 
     def _get_job_by_name(self, job_name: str) -> BaseJob:
