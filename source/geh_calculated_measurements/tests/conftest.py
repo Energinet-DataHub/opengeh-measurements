@@ -50,6 +50,7 @@ def spark() -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
+    _spark.sparkContext.setLogLevel("ERROR")
     yield _spark
     _spark.stop()
     shutil.rmtree(data_dir)

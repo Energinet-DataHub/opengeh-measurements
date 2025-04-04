@@ -20,17 +20,10 @@ def test_execute(
     dummy_logging: None,  # Used implicitly
 ) -> None:
     # Arrange
-    # spark.sparkContext.setLogLevel("ERROR")
-    # spark.conf.set("hive.metastore.schema.verification", "true")
-    # spark.conf.set("hive.metastore.schema.version", "2.3.0")
-    # spark.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
-    # spark.conf.set("spark.sql.debug.maxToStringFields", "50")
 
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
-    # monkeypatch.setenv("HADOOP_HOME", "")
-    # monkeypatch.setenv("HADOOP_OPTS", "-Djava.library.path=")
     # Act
     execute()
 

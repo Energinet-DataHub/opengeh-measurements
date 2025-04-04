@@ -14,8 +14,6 @@ from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 # TODO BJM: Rely on a fixture to set up these shared tables?
 @pytest.fixture(autouse=True)
 def gold_table_seeded(spark: SparkSession) -> None:
-    spark.sparkContext.setLogLevel("ERROR")
-
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
     create_table(
@@ -38,7 +36,6 @@ def gold_table_seeded(spark: SparkSession) -> None:
 # TODO BJM: Rely on a fixture to set up these shared tables?
 @pytest.fixture(autouse=True)
 def calculated_measurements_table_created(spark: SparkSession) -> None:
-    spark.sparkContext.setLogLevel("ERROR")
     create_database(spark, CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME)
 
     create_table(

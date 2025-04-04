@@ -18,7 +18,6 @@ TABLE_OR_VIEW_NAME = f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{M
 
 @pytest.fixture(scope="module")
 def valid_dataframe(spark: SparkSession) -> DataFrame:
-    spark.sparkContext.setLogLevel("ERROR")
     return spark.createDataFrame(
         [
             (
