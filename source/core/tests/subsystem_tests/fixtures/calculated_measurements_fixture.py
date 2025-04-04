@@ -17,8 +17,12 @@ class CalculatedMeasurementsFixture:
         """
         Inserts the calculated measurements into the databricks table.
         """
+        catalog_name = "catalog"
+        database_name = "schema"
+        table_name = "gold_calculated_measurements"
+
         query = f"""
-          INSERT INTO gold_calculated_measurements (
+          INSERT INTO {catalog_name}.{database_name}.{table_name} (
             orchestration_type,
             orchestration_instance_id,
             metering_point_id,
