@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings>=2.7.1",
-    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.5.3#subdirectory=source/geh_common",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.6.0#subdirectory=source/geh_common",
     "pydantic>=2.10.6",
 ]
 
@@ -14,7 +14,7 @@ dependencies = [
 migrate = "core.entry_points:migrate"
 stream_calculated_measurements = "core.silver.entry_points:stream_calculated_measurements"
 stream_silver_to_gold_measurements = "core.gold.entry_points:stream_silver_to_gold_measurements"
-notify_transactions_persisted = "core.silver.entry_points:notify_transactions_persisted"
+notify_transactions_persisted = "core.receipts.entry_points:notify_transactions_persisted"
 ingest_submitted_transactions = "core.bronze.entry_points:ingest_submitted_transactions"
 stream_submitted_transactions_to_silver = "core.silver.entry_points:stream_submitted_transactions"
 migrate_time_series_from_migrations = "core.bronze.entry_points:migrate_time_series_from_migrations_to_measurements"

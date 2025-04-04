@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-import core.silver.domain.transformations.transactions_persisted_events_transformation as sut
+import core.receipts.domain.transformations.transactions_persisted_events_transformation as sut
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.protobuf_helper as protobuf_helper
 from core.contracts.process_manager.PersistSubmittedTransaction.persist_submitted_transaction_proto_version import (
