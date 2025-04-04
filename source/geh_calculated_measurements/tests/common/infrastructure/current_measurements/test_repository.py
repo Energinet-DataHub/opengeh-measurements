@@ -69,6 +69,8 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     valid_df: DataFrame,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    """Test that the repository can handle columns being added as it is defined to _not_ be a breaking change.
+    The repository should return the data without the unexpected column."""
     # Arrange
     valid_df_with_extra_col = valid_df.withColumn("extra_col", F.lit("extra_value"))
 
@@ -78,32 +80,7 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     monkeypatch.setattr(CurrentMeasurementsRepository, "_read", mock_read_table)
 
     # Act
-    actual = current_measurements_repository.read_current_measurements().df.schema
+    actual = current_measurements_repository.read_current_measurements()
 
     # Assert
-    assert actual == current_v1
-
-
-# TODO BJM: This is a bad test because it changes the table and thus can break other tests.
-#           At least when executed in parallel.
-# def test__when_source_contains_wrong_data_type_raises_exception(
-#     current_measurements_repository: CurrentMeasurementsRepository,
-#     valid_df: DataFrame,
-# ) -> None:
-#     # Arrange
-#     invalid_df = valid_df.withColumn("metering_point_id", F.col("metering_point_id").cast(T.IntegerType()))
-#     (
-#         invalid_df.write.format("delta")
-#         .mode("overwrite")
-#         .option("overwriteSchema", "true")
-#         .saveAsTable(
-#             f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-#         )
-#     )
-
-#     # Act & Assert
-#     with pytest.raises(
-#         AssertionError,
-#         match=r"Schema mismatch",
-#     ):
-#         current_measurements_repository.read_current_measurements()
+    assert actual.df.schema == current_v1
