@@ -3,11 +3,11 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Models;
 using NodaTime;
 
-namespace Energinet.DataHub.Measurements.Client;
+namespace Energinet.DataHub.Measurements.Client.Factories;
 
 public sealed class MeasurementAggregationFactory
 {
-    internal MeasurementAggregation CreateMeasurementAggregation(
+    public MeasurementAggregation Create(
         AggregatedMeasurements? aggregatedMeasurement,
         LocalDate date)
     {

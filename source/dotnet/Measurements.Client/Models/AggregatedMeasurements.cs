@@ -2,7 +2,7 @@
 
 namespace Energinet.DataHub.Measurements.Client.Models;
 
-internal sealed record AggregatedMeasurements(
+public sealed record AggregatedMeasurements(
     DateTimeOffset MinObservationTime,
     DateTimeOffset MaxObservationTime,
     decimal Quantity,

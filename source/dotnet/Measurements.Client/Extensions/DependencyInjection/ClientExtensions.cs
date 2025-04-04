@@ -2,6 +2,7 @@
 using Azure.Core;
 using Azure.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
+using Energinet.DataHub.Measurements.Client.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

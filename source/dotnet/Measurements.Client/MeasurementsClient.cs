@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Client.Factories;
 using Energinet.DataHub.Measurements.Client.Models;
 using NodaTime;
 
@@ -95,7 +96,7 @@ public class MeasurementsClient : IMeasurementsClient
         return daysInMonth.Select(date =>
         {
             aggregatedMeasurementsDictionary.TryGetValue(date, out var aggregatedMeasurement);
-            return _measurementAggregationFactory.CreateMeasurementAggregation(aggregatedMeasurement, date);
+            return _measurementAggregationFactory.Create(aggregatedMeasurement, date);
         });
     }
 
