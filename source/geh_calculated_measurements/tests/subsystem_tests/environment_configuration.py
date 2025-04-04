@@ -20,6 +20,9 @@ class EnvironmentConfiguration(ApplicationSettings):
     workspace_url: str = Field(init=False, alias="WORKSPACE_URL")
     shared_keyvault_name: str = Field(init=False, alias="SHARED_KEYVAULT_NAME")
     shared_keyvault_url: str = Field(init=False, default="", alias="SHARED_KEYVAULT_URL")
+    azure_log_analytics_workspace_id_secret_name: str = Field(
+        init=False, default="log-shared-workspace-id", alias="SHARED_AZURE_LOG_ANALYTICS_WORKSPACE_ID"
+    )
 
     # for performance test
 
