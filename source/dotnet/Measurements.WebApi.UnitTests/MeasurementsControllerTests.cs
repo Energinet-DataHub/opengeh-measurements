@@ -1,5 +1,7 @@
 ﻿using System.Dynamic;
+using System.Net;
 using AutoFixture.Xunit2;
+using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
@@ -7,6 +9,7 @@ using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Energinet.DataHub.Measurements.WebApi.UnitTests;
@@ -14,18 +17,19 @@ namespace Energinet.DataHub.Measurements.WebApi.UnitTests;
 public class MeasurementsControllerTests
 {
     [Theory]
-    [AutoData]
-    public async Task GetMeasurementAsync_WhenMeasurementsExists_ReturnValidJson(GetMeasurementRequest request)
+    [AutoMoqData]
+    public async Task GetMeasurementAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetMeasurementRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var measurementsHandler = new Mock<IMeasurementsHandler>();
         var response = CreateResponse();
         var expected = CreateExpected();
-
         measurementsHandler
             .Setup(x => x.GetMeasurementAsync(It.IsAny<GetMeasurementRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
         var actual = (await sut.GetMeasurementAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -35,15 +39,17 @@ public class MeasurementsControllerTests
     }
 
     [Theory]
-    [AutoData]
-    public async Task GetMeasurementAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(GetMeasurementRequest request)
+    [AutoMoqData]
+    public async Task GetMeasurementAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetMeasurementRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var measurementsHandler = new Mock<IMeasurementsHandler>();
         measurementsHandler
             .Setup(x => x.GetMeasurementAsync(It.IsAny<GetMeasurementRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
-        var sut = new MeasurementsController(measurementsHandler.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
         var actual = await sut.GetMeasurementAsync(request);
@@ -54,20 +60,23 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetMeasurementAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(GetMeasurementRequest request)
+    public async Task GetMeasurementAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+        GetMeasurementRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var measurementsHandler = new Mock<IMeasurementsHandler>();
         measurementsHandler
             .Setup(x => x.GetMeasurementAsync(It.IsAny<GetMeasurementRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
         var actual = await sut.GetMeasurementAsync(request);
 
         // Assert
         Assert.IsType<ObjectResult>(actual);
+        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
     }
 
     private static GetMeasurementResponse CreateResponse()
