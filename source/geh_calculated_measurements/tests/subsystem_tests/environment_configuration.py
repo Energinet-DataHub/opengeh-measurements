@@ -37,16 +37,12 @@ class EnvironmentConfiguration(ApplicationSettings):
         env_file_encoding="utf-8",
     )
 
-    @model_validator(mode="before")
-    @classmethod
-    def set_shared_keyvault_url(cls, data: Any) -> Any:
-        if isinstance(data, dict):
-            keyvault_url = data.get("shared_keyvault_url")
-            keyvault_name = data.get("shared_keyvault_name")
-            if keyvault_url and keyvault_name:
-                raise ValueError("Both SHARED_KEYVAULT_URL and SHARED_KEYVAULT_NAME are set. Please set only one.")
-            elif not keyvault_url and not keyvault_name:
-                raise ValueError("Either SHARED_KEYVAULT_URL or SHARED_KEYVAULT_NAME must be set.")
-            if keyvault_name and not keyvault_url:
-                data["shared_keyvault_url"] = f"https://{keyvault_name}.vault.azure.net/"
-        return data
+    @model_validator(mode="after")
+    def set_shared_keyvault_url(self) -> Any:
+        if self.shared_keyvault_name and self.shared_keyvault_url:
+            raise ValueError("Both SHARED_KEYVAULT_NAME and SHARED_KEYVAULT_URL are set. Please set only one.")
+        elif not self.shared_keyvault_name and not self.shared_keyvault_url:
+            raise ValueError("Either SHARED_KEYVAULT_NAME or SHARED_KEYVAULT_URL must be set.")
+        if self.shared_keyvault_name and not self.shared_keyvault_url:
+            self.shared_keyvault_url = f"https://{self.shared_keyvault_name}.vault.azure.net/"
+        return self
