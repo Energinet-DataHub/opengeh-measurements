@@ -1,3 +1,6 @@
+from typing import Optional
+
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.gold.infrastructure.config.spark as spark_session
@@ -13,16 +16,24 @@ class GoldMeasurementsRepository:
         self.table = f"{self.gold_database_name}.{GoldTableNames.gold_measurements}"
         self.spark = spark_session.initialize_spark()
 
-    def append_if_not_exists(self, gold_measurements: DataFrame) -> None:
+    def append_if_not_exists(
+        self, gold_measurements: DataFrame, orchestration_type: Optional[GehCommonOrchestrationType] = None
+    ) -> None:
         """Append to the table unless there are duplicates based on all columns except 'created'.
 
         :param gold_measurements: DataFrame containing the data to be appended.
         """
+        if orchestration_type is not None:
+            orchestration_type_filters = {GoldMeasurementsColumnNames.orchestration_type: orchestration_type.value}
+        else:
+            orchestration_type_filters = None
+
         delta_table_helper.append_if_not_exists(
             self.spark,
             gold_measurements,
             self.table,
             self._merge_columns(),
+            target_filters=orchestration_type_filters,
         )
 
     def _merge_columns(self) -> list[str]:

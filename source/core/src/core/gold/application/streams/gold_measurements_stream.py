@@ -1,3 +1,4 @@
+from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql.dataframe import DataFrame
 
 import core.gold.domain.transformations.gold_measurements_transformations as transformations
@@ -19,7 +20,9 @@ def stream_measurements_silver_to_gold() -> None:
 
 def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
     gold_measurements = transformations.transform_silver_to_gold(silver_measurements)
-    GoldMeasurementsRepository().append_if_not_exists(gold_measurements)
+    GoldMeasurementsRepository().append_if_not_exists(
+        gold_measurements, orchestration_type=GehCommonOrchestrationType.SUBMITTED
+    )
 
     receipts = receipt_transformations.transform(gold_measurements)
     ReceiptsRepository().append_if_not_exists(receipts)
