@@ -61,6 +61,6 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     silver_mock_transform.assert_called_once_with(mock_migrated_transactions)
     gold_mock_transform.assert_called_once_with(mock_transformed_to_silver_transactions)
     mock_append_if_not_exists.assert_called_once_with(
-        silver_measurements=mock_transformed_to_gold_transactions,
+        mock_transformed_to_gold_transactions,
         orchestration_type=GehCommonOrchestrationType.MIGRATION,
     )
