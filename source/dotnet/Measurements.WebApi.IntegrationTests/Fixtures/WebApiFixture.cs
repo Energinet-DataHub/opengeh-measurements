@@ -106,14 +106,15 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", "PT1H",  false),
         };
 
-        return [.. dates.SelectMany(CreateRow)];
+        return [.. dates.SelectMany(values => CreateRow(values))];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, string Resolution, bool IsCancelled) values)
+    private static IEnumerable<IEnumerable<string>> CreateRow(
+        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, string Resolution, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0);
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
         return Enumerable.Range(0, 24).Select(i => new[]
