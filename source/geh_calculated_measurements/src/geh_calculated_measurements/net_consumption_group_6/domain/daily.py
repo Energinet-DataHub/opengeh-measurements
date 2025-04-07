@@ -49,6 +49,9 @@ def calculate_daily(
     time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
 
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
+        F.make_date(F.col("settlement_year"), F.col(ContractColumnNames.settlement_month), F.lit(1)).alias(
+            "settlement_date"
+        ),
         F.col(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.metering_point_type),
         (
@@ -78,7 +81,13 @@ def calculate_daily(
         )
         .select(
             "cenc.*",
-            F.col("ts.latest_observation_date").alias("last_run"),
+            F.when(
+                F.col("ts.latest_observation_date").isNull()
+                | (F.col("ts.latest_observation_date") < F.col("cenc.settlement_date")),
+                F.date_add(F.col("cenc.settlement_date"), -1),
+            )
+            .otherwise(F.col("ts.latest_observation_date"))
+            .alias("last_run"),
         )
     )
 
@@ -91,6 +100,7 @@ def calculate_daily(
 
     result_df = df.select(
         F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.metering_point_type),
         F.col(ContractColumnNames.date),
         F.col(ContractColumnNames.quantity),
     )
