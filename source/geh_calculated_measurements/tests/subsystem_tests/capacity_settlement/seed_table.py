@@ -11,7 +11,7 @@ table = "measurements"
 def seed_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
-            metering_point_id=170000060000000201,
+            metering_point_id="170000040000000201",
             observation_time=datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc),
             quantity=i,
         )
