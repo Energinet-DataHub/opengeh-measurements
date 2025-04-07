@@ -4,6 +4,7 @@ from decimal import Decimal
 from geh_common.testing.dataframes.assert_schemas import assert_schema
 from pyspark.sql import Row, SparkSession
 
+from geh_calculated_measurements.electrical_heating.domain.model.test import MyTable
 from geh_calculated_measurements.electrical_heating.domain.model.time_series_pointsv2 import (
     TimeSeriesPointsV2,
     time_series_points_v1_contract_schema,
@@ -47,3 +48,13 @@ def test__read_time_series_points__returns_expected_domain_object(
     assert DEFAULT_METERING_POINT_ID == time_series_points._df.collect()[0].metering_point_id
     assert DEFAULT_QUANTITY == time_series_points._df.collect()[0].quantity
     assert DEFAULT_DATE == time_series_points._df.collect()[0].observation_time
+
+
+def test():
+    table = MyTable()
+    df = table.read()
+    df.show()
+
+    print(f"Field id: {table.metering_point_id}")
+    print(f"Field time: {table.observation_time}")
+    print(f"Schema: {table.schema.json()}")
