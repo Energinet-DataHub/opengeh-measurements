@@ -14,13 +14,13 @@ public class DateExtensionTests
     [InlineData(2025, 10, 24, 22, "2025-10-25")]
     [InlineData(2025, 10, 25, 22, "2025-10-26")]
     [InlineData(2025, 10, 26, 23, "2025-10-27")]
-    public void ToLocalDate_WhenCalled_ReturnsLocalDate(int year, int month, int day, int hour, string expected)
+    public void ToDateOnly_WhenCalled_ReturnsLocalDate(int year, int month, int day, int hour, string expected)
     {
         // Arrange
         var date = Instant.FromUtc(year, month, day, hour, 0, 0);
 
         // Act
-        var actual = date.ToLocalDate();
+        var actual = date.ToDateOnly();
 
         // Assert
         Assert.Equal(expected, actual.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));

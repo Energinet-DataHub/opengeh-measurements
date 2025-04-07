@@ -25,7 +25,7 @@ public class GetAggregatedMeasurementsResponse
         var measurementAggregations = measurements
             .Select(measurement =>
                 new MeasurementAggregation(
-                    measurement.MinObservationTime.ToLocalDate(),
+                    measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
                     measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)).Min(),
                     SetMissingValuesForAggregation(measurement)))

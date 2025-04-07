@@ -20,7 +20,7 @@ public class GetAggregatedMeasurementResponseTests
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
 
-        var expectedDate = minObservationTime.ToLocalDate();
+        var expectedDate = minObservationTime.ToDateOnly();
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>()
         {

@@ -104,7 +104,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var expectedDate = Instant.FromUtc(2022, 1, 2, 23, 0, 0).ToLocalDate();
+        var expectedDate = Instant.FromUtc(2022, 1, 2, 23, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2022, 1);
         var url = CreateUrl(expectedMeteringPointId, yearMonth);
 
@@ -117,8 +117,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(2, actual.MeasurementAggregations.Count);
         Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
         Assert.True(actual.MeasurementAggregations.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.MeasurementAggregations.All(p => p.MissingValues));
         Assert.True(actual.MeasurementAggregations.All(p => p.Quantity == 285.6M));
+        Assert.False(actual.MeasurementAggregations.All(p => p.MissingValues));
     }
 
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)

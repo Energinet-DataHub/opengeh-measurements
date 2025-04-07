@@ -2,4 +2,4 @@
 
 namespace Energinet.DataHub.Measurements.Domain;
 
-public record MeasurementAggregation(LocalDate Date, decimal Quantity, Quality Quality, bool MissingValues);
+public record MeasurementAggregation(DateOnly Date, decimal Quantity, Quality Quality, bool MissingValues);
