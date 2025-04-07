@@ -84,14 +84,13 @@ class JobTestFixture:
             time.sleep(poll_interval_seconds)
 
     def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> LogsQueryError:
-        details = {
+        err = {
             "code": 500,
             "message": "An error occurred while querying the logs.",
             "details": None,
         }
-        error = LogsQueryError(**details)
         if isinstance(response, LogsQueryResult):
-            error.details = {
+            err["details"] = {
                 "tables": {
                     t.name: {
                         "nrows": len(t.rows),
@@ -104,7 +103,7 @@ class JobTestFixture:
             }
         elif isinstance(response, LogsQueryPartialResult):
             if response.partial_error is None:
-                error.details = {
+                err["details"] = {
                     "tables": {
                         t.name: {
                             "nrows": len(t.rows),
@@ -116,8 +115,8 @@ class JobTestFixture:
                     "statistics": response.statistics,
                 }
             else:
-                error = response.partial_error
-        return LogsQueryError(**details)
+                err = response.partial_error
+        return LogsQueryError(**err)
 
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         response = self.azure_logs_query_client.query_workspace(
