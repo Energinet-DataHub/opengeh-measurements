@@ -13,5 +13,6 @@ class Cenc(DataFrameWrapper):
             T.StructField("quantity", T.DecimalType(18, 3), False),
             T.StructField("settlement_year", T.IntegerType(), False),
             T.StructField("settlement_month", T.IntegerType(), False),
+            T.StructField("calculation_type", T.StringType(), False),
         ]
     )

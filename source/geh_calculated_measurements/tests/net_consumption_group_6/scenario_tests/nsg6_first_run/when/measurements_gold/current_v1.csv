@@ -1,4 +1,4 @@
-metering_point_id;metering_point_type;observation_time;quantity;quality;#commentT
-170000000001500200;consumption;2024-01-31T23:00:00Z;2000;measured;
-060000001500170200;supply_to_grid;2024-01-31T23:00:00Z;1000;measured;consumption_from_grid - supply_to_grid = 1000 / 365 = 2,740
-070000001500170200;consumption_from_grid;2024-01-31T23:00:00Z;2000;estimated;
+metering_point_id;metering_point_type;observation_time;quantity;quality;calculation_type;#commentT
+170000000001500200;consumption;2024-01-31T23:00:00Z;2000;measured;null;
+060000001500170200;supply_to_grid;2024-01-31T23:00:00Z;1000;measured;null;consumption_from_grid - supply_to_grid = 1000 / 365 = 2,740
+070000001500170200;consumption_from_grid;2024-01-31T23:00:00Z;2000;estimated;null

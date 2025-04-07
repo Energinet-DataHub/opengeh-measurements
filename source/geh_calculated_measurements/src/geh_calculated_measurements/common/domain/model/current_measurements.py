@@ -27,9 +27,6 @@ class CurrentMeasurements(DataFrameWrapper):
             #
             # UTC time
             T.StructField("observation_time", T.TimestampType(), not nullable),
-            #
-            #  "CNC" | "CENC"
-            T.StructField("calculation_type", T.StringType(), not nullable),
         ]
     )
 
