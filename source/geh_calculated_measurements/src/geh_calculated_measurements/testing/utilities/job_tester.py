@@ -77,7 +77,7 @@ class JobTestFixture:
             response = self.ws.statement_execution.get_statement(response.statement_id)
             if response.status.state not in [StatementState.RUNNING, StatementState.PENDING, StatementState.SUCCEEDED]:
                 raise ValueError(
-                    f"Statement execution failed with state {response.status.state} with error {response.status.error}"
+                    f"Statement execution failed with state {response.status.state} and error {response.status.error}"
                 )
             if response.status.state == StatementState.SUCCEEDED:
                 return response
