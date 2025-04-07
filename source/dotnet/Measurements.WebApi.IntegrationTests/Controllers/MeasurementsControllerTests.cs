@@ -6,7 +6,6 @@ using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using NodaTime;
-using NodaTime.Text;
 using Xunit;
 using Xunit.Categories;
 
