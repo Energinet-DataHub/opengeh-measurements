@@ -14,10 +14,15 @@ class Table(ABC):
         self._df = df
 
     def __init_subclass__(cls) -> None:
-        """Doc."""
+        """init_subclass method is a special class method that is automatically called when a class is subclassed."""
+        """ It allows customization of the behavior of subclasses when they are created."""
+        """cls refers to the subclass being created."""
+
         schema = []
 
         d = {**cls.__class__.__dict__, **cls.__dict__}
+
+        # Inspect all attributes of the class and its parent classes
         for name, field in d.items():
             if isinstance(field, T.StructField):
                 schema.append(field)
@@ -25,3 +30,5 @@ class Table(ABC):
                 setattr(cls, f"{name}_type", field.dataType)
 
         cls.schema = T.StructType(schema)
+
+        # TODO Assert scheam with custom assert'er

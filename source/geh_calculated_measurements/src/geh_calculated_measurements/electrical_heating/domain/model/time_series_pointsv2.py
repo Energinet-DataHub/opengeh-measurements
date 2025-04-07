@@ -27,3 +27,6 @@ class TimeSeriesPointsV2(Table):
     metering_point_type = t.StructField("metering_point_type", t.StringType(), not Table.nullable)
     observation_time = t.StructField("observation_time", t.TimestampType(), not Table.nullable)
     quantity = t.StructField("quantity", t.DecimalType(18, 3), not Table.nullable)
+
+
+TimeSeriesPointsV2.metering_point_id
