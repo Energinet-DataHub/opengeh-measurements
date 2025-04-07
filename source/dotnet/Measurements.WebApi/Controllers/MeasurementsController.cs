@@ -8,7 +8,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Route("measurements")]
-public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
+public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
@@ -25,11 +25,6 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
             return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get measurements.");
-            throw;
         }
     }
 }
