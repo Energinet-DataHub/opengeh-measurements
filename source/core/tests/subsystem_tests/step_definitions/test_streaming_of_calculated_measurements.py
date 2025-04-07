@@ -13,7 +13,7 @@ from tests.subsystem_tests.fixtures.gold_layer_fixture import GoldLayerFixture
 scenarios("../features/streaming_of_calculated_measurements.feature")
 
 
-@given("a new valid calculated measurements", target_fixture="calculated_measurements_row")
+@given("new valid calculated measurements", target_fixture="calculated_measurements_row")
 def _() -> CalculatedMeasurementsRow:
     orchestration_instance_id = identifier_helper.generate_random_string()
     return CalculatedMeasurementsRowBuilder().build(orchestration_instance_id=orchestration_instance_id)
@@ -25,6 +25,6 @@ def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
     calculated_measurements_fixture.insert_calculated_measurements(calculated_measurements_row)
 
 
-@then("the calculated measurements are avaiable in the Gold Layer")
+@then("the calculated measurements are available in the Gold Layer")
 def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
     gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
