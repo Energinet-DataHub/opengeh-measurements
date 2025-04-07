@@ -2,7 +2,7 @@
 
 ## Version 2.2.0
 
-- Added method to get aggregated measurements for a month
+- Added method to get aggregated measurements for a month.
 
 ## Version 2.1.0
 
