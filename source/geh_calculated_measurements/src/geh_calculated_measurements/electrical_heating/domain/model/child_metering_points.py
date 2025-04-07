@@ -39,11 +39,10 @@ class ChildMeteringPoints(DataFrameWrapper):
             # GSRN number
             t.StructField("metering_point_id", t.StringType(), not nullable),
             #
-            # 'supply_to_grid' | 'consumption_from_grid' |
-            # 'electrical_heating' | 'net_consumption'
+            # ( 'supply_to_grid' | 'consumption_from_grid' | 'electrical_heating' | 'net_consumption' )
             t.StructField("metering_point_type", t.StringType(), not nullable),
             #
-            # 'calculated' | 'virtual' | 'physical'
+            # ( 'calculated' | 'virtual' | 'physical' )
             t.StructField("metering_point_sub_type", t.StringType(), not nullable),
             #
             # GSRN number

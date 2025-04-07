@@ -56,17 +56,17 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             # true:  The consumption metering has electrical heating in the stated period
             # false: The consumption metering point was previously marked as having electrical
             #        heating in the stated period, but this has been corrected
-            # <true | false>
+            # ( true | false )
             t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
             #
-            # <2 | 3 | 4 | 5 | 6 | 99 | NULL>
-            t.StructField("net_settlement_group", t.IntegerType(), nullable),
+            # ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 99 )
+            t.StructField("net_settlement_group", t.IntegerType(), not nullable),
             #
             # Settlement month is 1st of January for all consumption with electrical heating except for
             # net settlement group 6, where the date is the scheduled meter reading date.
             # The number of the month. 1 is January, 12 is December.
             # For all but settlement group 6 the month is January.
-            # <1 | 2 | 3 | ... | 12>
+            # ( 1 | 2 | 3 | ... | 12 )
             t.StructField(
                 "settlement_month",
                 t.IntegerType(),
@@ -74,11 +74,11 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             ),
             #
             # See the description of periodization of data above.
-            # <UTC time>
+            # UTC time
             t.StructField("period_from_date", t.TimestampType(), not nullable),
             #
             # See the description of periodization of data above.
-            # <UTC time>
-            t.StructField("period_to_date", t.TimestampType(), nullable),
+            # UTC time
+            t.StructField("period_to_date", t.TimestampType(), not nullable),
         ]
     )
