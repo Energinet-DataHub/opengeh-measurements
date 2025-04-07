@@ -21,6 +21,13 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
 
     protected override string GetSqlStatement()
     {
+        const string AggregatedQuantity = "aggregated_quantity";
+        const string MinObservationTime = "min_observation_time";
+        const string MaxObservationTime = "max_observation_time";
+        const string Qualities = "qualities";
+        const string Resolutions = "resolutions";
+        const string PointCount = "point_count";
+
         var (startDate, endDate) = _yearMonth.ToDateInterval();
 
         const string groupByStatement = $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
@@ -38,17 +45,17 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{endDate.ToUtcString()}' " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
-            $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MeasurementAggregationConstants.MinObservationTime}, " +
-            $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MeasurementAggregationConstants.MaxObservationTime}, " +
-            $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {MeasurementAggregationConstants.AggregatedQuantity}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {MeasurementAggregationConstants.Qualities}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {MeasurementAggregationConstants.Resolutions}, " +
-            $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MeasurementAggregationConstants.PointCount} " +
+            $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MinObservationTime}, " +
+            $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {MaxObservationTime}, " +
+            $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedQuantity}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {Qualities}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {Resolutions}, " +
+            $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {PointCount} " +
             $"from most_recent " +
             $"where row = 1 " +
             $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"group by {groupByStatement} " +
-            $"order by {MeasurementAggregationConstants.MinObservationTime}";
+            $"order by {MinObservationTime}";
     }
 
     /*protected override IReadOnlyCollection<QueryParameter> GetParameters()
