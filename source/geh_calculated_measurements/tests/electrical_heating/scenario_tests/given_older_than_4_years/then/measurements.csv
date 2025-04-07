@@ -1,0 +1,5 @@
+metering_point_type;metering_point_id;date;quantity;#comment
+electrical_heating;140000000000170200;2021-01-31T23:00:00Z;483.562;New limit (2000), new value (was 1500) Limit = (181/365*400) = 1983.562
+electrical_heating;140000000000170200;2021-02-28T23:00:00Z;0;New limit (2000), new value (was 1000)
+electrical_heating;140000000000170200;2021-06-30T22:00:00Z;1500;New limit (2000), new value (was 0)
+electrical_heating;140000000000170200;2021-07-31T22:00:00Z;516.438;New limit (2000), new value (was 0)  Limit = (184/365*400) = 2016.438
