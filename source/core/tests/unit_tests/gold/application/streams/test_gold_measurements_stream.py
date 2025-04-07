@@ -10,14 +10,14 @@ from core.receipts.infrastructure.repositories.receipts_repository import Receip
 def test__stream_measurements_silver_to_gold__calls_expected(mocker: MockFixture):
     # Arrange
     silver_repo_mock = mocker.patch.object(sut, sut.SilverMeasurementsRepository.__name__)
-    gold_repo_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
+    gold_stream_mock = mocker.patch.object(sut, sut.GoldMeasurementsStream.__name__)
 
     # Act
     sut.stream_measurements_silver_to_gold()
 
     # Assert
     silver_repo_mock.assert_called_once()
-    gold_repo_mock.assert_called_once()
+    gold_stream_mock.assert_called_once()
 
 
 def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurements(mocker: MockFixture):

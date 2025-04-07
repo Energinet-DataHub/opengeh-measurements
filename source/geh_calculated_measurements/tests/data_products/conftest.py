@@ -7,22 +7,7 @@ from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
-from tests import SPARK_CATALOG_NAME, ensure_calculated_measurements_databases_exist
-
-
-@pytest.fixture(scope="session")
-def migrations_executed(spark: SparkSession) -> None:
-    """Executes all migrations.
-
-    This fixture is useful for all tests that require the migrations to be executed. E.g. when
-    a view/dataprodcut/table is required."""
-
-    # Databases are created in dh3infrastructure using terraform
-    # So we need to create them in test environment
-    ensure_calculated_measurements_databases_exist(spark)
-
-    _migrate(SPARK_CATALOG_NAME)
+from tests import SPARK_CATALOG_NAME
 
 
 @pytest.fixture(scope="module")

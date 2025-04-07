@@ -2,6 +2,7 @@
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
@@ -14,11 +15,12 @@ public class GetMeasurementResponseTests
     public void Create_WhenMeasurementsExist_ThenReturnsGetMeasurementResponse()
     {
         // Arrange
+        var date = DateTimeOffset.Now;
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw()),
-            new(CreateRaw()),
-            new(CreateRaw()),
+            new(CreateRaw(date)),
+            new(CreateRaw(date)),
+            new(CreateRaw(date)),
         };
 
         // Act
@@ -26,9 +28,14 @@ public class GetMeasurementResponseTests
 
         // Assert
         Assert.Equal(3, actual.Points.Count);
-        Assert.True(actual.Points.All(p => p.Quantity == 42));
-        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
-        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
+        Assert.All(actual.Points, p =>
+        {
+            Assert.Equal(Instant.FromDateTimeOffset(date), p.ObservationTime);
+            Assert.Equal(42, p.Quantity);
+            Assert.Equal(Unit.kWh, p.Unit);
+            Assert.Equal(Quality.Measured, p.Quality);
+            Assert.Equal(Instant.FromDateTimeOffset(date), p.Created);
+        });
     }
 
     [Theory]
@@ -44,7 +51,7 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(unit: unit)),
+            new(CreateRaw(DateTimeOffset.Now, unit: unit)),
         };
 
         // Act
@@ -60,7 +67,7 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(unit: "unknown")),
+            new(CreateRaw(DateTimeOffset.Now, unit: "unknown")),
         };
 
         // Act
@@ -78,7 +85,7 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(quality: quality)),
+            new(CreateRaw(DateTimeOffset.Now, quality: quality)),
         };
 
         // Act
@@ -94,7 +101,7 @@ public class GetMeasurementResponseTests
         // Arrange
         var measurements = new List<MeasurementsResult>
         {
-            new(CreateRaw(quality: "unknown")),
+            new(CreateRaw(DateTimeOffset.Now, quality: "unknown")),
         };
 
         // Act
@@ -102,13 +109,14 @@ public class GetMeasurementResponseTests
         Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
-    private static ExpandoObject CreateRaw(string unit = "kwh", string quality = "measured")
+    private static ExpandoObject CreateRaw(DateTimeOffset date, string unit = "kwh", string quality = "measured")
     {
         dynamic raw = new ExpandoObject();
         raw.unit = unit;
-        raw.observation_time = DateTimeOffset.Now;
+        raw.observation_time = date;
         raw.quantity = 42;
         raw.quality = quality;
+        raw.created = date;
         return raw;
     }
 }
