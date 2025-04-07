@@ -57,21 +57,4 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"group by {groupByStatement} " +
             $"order by {MinObservationTime}";
     }
-
-    /*protected override IReadOnlyCollection<QueryParameter> GetParameters()
-    {
-        List<QueryParameter> parameters = [
-            QueryParameter.Create(MeasurementsGoldConstants.MeteringPointIdColumnName, _meteringPointId),
-            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateFromEpoch, _yearMonth.ToDateInterval().Item1.ToEpoch().ToString()),
-            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateToEpoch, _yearMonth.ToDateInterval().Item2.ToEpoch().ToString())
-        ];
-        parameters.AddRange(_indexedMeteringPointPartitions.Select(mpp => QueryParameter.Create(mpp.Item1, mpp.Item2)).ToList());
-        parameters.AddRange(
-        [
-            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateFromEpoch, _dateFromEpoch.ToString()),
-            QueryParameter.Create(TimeSeriesQueryParameterMarkerConstants.DateToEpoch, _dateToEpoch.ToString())
-        ]);
-
-        return parameters;
-    }*/
 }
