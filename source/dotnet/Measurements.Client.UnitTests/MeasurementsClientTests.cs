@@ -7,6 +7,7 @@ using Moq;
 using Moq.Protected;
 using NodaTime;
 using Xunit.Categories;
+using DateOnly = System.DateOnly;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests;
 
@@ -86,8 +87,8 @@ public class MeasurementsClientTests
         // Assert
         Assert.NotNull(actual);
         Assert.Equal(31, actual.Count);
-        Assert.True(actual.First().Date == new LocalDate(2025, 3, 1));
-        Assert.True(actual.Last().Date == new LocalDate(2025, 3, 31));
+        Assert.True(actual.First().Date == new DateOnly(2025, 3, 1));
+        Assert.True(actual.Last().Date == new DateOnly(2025, 3, 31));
         Assert.False(actual.All(p => p.MissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
@@ -108,8 +109,8 @@ public class MeasurementsClientTests
         // Assert
         Assert.NotNull(actual);
         Assert.Equal(31, actual.Count);
-        Assert.True(actual.First().Date == new LocalDate(2025, 3, 1));
-        Assert.True(actual.Last().Date == new LocalDate(2025, 3, 31));
+        Assert.True(actual.First().Date == new DateOnly(2025, 3, 1));
+        Assert.True(actual.Last().Date == new DateOnly(2025, 3, 31));
         Assert.False(actual.All(p => p.MissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
@@ -130,8 +131,8 @@ public class MeasurementsClientTests
         // Assert
         Assert.NotNull(actual);
         Assert.Equal(30, actual.Count);
-        Assert.True(actual.First().Date == new LocalDate(2024, 10, 1));
-        Assert.True(actual.Last().Date == new LocalDate(2024, 10, 31));
+        Assert.True(actual.First().Date == new DateOnly(2024, 10, 1));
+        Assert.True(actual.Last().Date == new DateOnly(2024, 10, 31));
         Assert.True(actual.Last().MissingValues);
     }
 
