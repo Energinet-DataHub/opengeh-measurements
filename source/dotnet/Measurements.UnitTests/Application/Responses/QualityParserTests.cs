@@ -1,7 +1,8 @@
-﻿using Energinet.DataHub.Measurements.Domain;
+﻿using Energinet.DataHub.Measurements.Application.Responses;
+using Energinet.DataHub.Measurements.Domain;
 using Xunit;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Domain;
+namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 public class QualityParserTests
 {

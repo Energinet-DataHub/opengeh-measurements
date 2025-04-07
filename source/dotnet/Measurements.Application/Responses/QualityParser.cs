@@ -1,4 +1,6 @@
-﻿namespace Energinet.DataHub.Measurements.Domain;
+﻿using Energinet.DataHub.Measurements.Domain;
+
+namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public sealed class QualityParser
 {
