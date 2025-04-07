@@ -25,6 +25,6 @@ def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
     calculated_measurements_fixture.insert_calculated_measurements(calculated_measurements_row)
 
 
-@then("the calculated measurements are avaiable in the Gold Layer")
+@then("the calculated measurements are available in the Gold Layer")
 def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
     gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
