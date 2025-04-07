@@ -10,8 +10,8 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc import calculate_cenc
-from geh_calculated_measurements.net_consumption_group_6.domain.daily import calculate_daily
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_daily import calculate_daily
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_yearly import calculate_cenc
 
 
 @use_span()

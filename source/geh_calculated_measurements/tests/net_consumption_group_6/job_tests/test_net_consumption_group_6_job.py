@@ -8,7 +8,7 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
+from geh_calculated_measurements.net_consumption_group_6.entry_points.cenc_entry_point import execute
 from tests import create_job_environment_variables
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
