@@ -21,6 +21,31 @@ PARENT_TABLE = (
 CHILD_TABLE = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
 
 
+@pytest.mark.parametrize(
+    ("database_name", "table_name", "metering_point_id"),
+    [
+        (
+            ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+            ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
+            "170000050000000201",
+        ),
+        (
+            ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+            ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
+            "150000001500170200",
+        ),
+        (
+            ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+            ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
+            "060000001500170200",
+        ),
+        (
+            ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+            ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
+            "070000001500170200",
+        ),
+    ],
+)
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
@@ -29,6 +54,9 @@ def test_execute(
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
+    database_name: str,
+    table_name: str,
+    metering_point_id: str,
 ) -> None:
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
@@ -39,20 +67,7 @@ def test_execute(
     execute()
 
     # Assert
-    actual_parent_table = spark.read.table(f"{DATABASE}.{PARENT_TABLE}").where(
-        F.col(ContractColumnNames.metering_point_id) == "170000050000000201"
+    actual_table = spark.read.table(f"{database_name}.{table_name}").where(
+        F.col(ContractColumnNames.metering_point_id) == metering_point_id
     )
-    assert actual_parent_table.count() > 0
-
-    actual_child_table_net_consumption = spark.read.table(f"{DATABASE}.{CHILD_TABLE}").where(
-        F.col(ContractColumnNames.metering_point_id) == "150000001500170200"
-    )
-    assert actual_child_table_net_consumption.count() > 0
-    actual_child_table_supply_to_grid = spark.read.table(f"{DATABASE}.{CHILD_TABLE}").where(
-        F.col(ContractColumnNames.metering_point_id) == "060000001500170200"
-    )
-    assert actual_child_table_supply_to_grid.count() > 0
-    actual_child_table_consumption_from_grid = spark.read.table(f"{DATABASE}.{CHILD_TABLE}").where(
-        F.col(ContractColumnNames.metering_point_id) == "070000001500170200"
-    )
-    assert actual_child_table_consumption_from_grid.count() > 0
+    assert actual_table.count() > 0
