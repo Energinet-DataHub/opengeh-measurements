@@ -114,10 +114,10 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0);
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
-        return Enumerable.Range(0, 24).Select(i => new[]
+        var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
             "'1234567890'",
             "'kwh'",
@@ -129,6 +129,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             values.IsCancelled ? "true" : "false",
             $"'{FormatString(observationDateTime)}'",
         });
+
+        return rows;
     }
 
     private static string FormatString(Instant date)
