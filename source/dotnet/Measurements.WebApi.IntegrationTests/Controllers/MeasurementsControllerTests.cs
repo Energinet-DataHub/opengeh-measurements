@@ -121,6 +121,23 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.False(actual.MeasurementAggregations.All(p => p.MissingValues));
     }
 
+    [Theory]
+    [InlineData(-9999, 1)]
+    [InlineData(10000, 1)]
+    [InlineData(2022, 0)]
+    [InlineData(2022, 13)]
+    public async Task GetAggregatedAsync_WhenRequestIsInvalid_ThrowsArgumentOutOfRangeException(int year, int month)
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var yearMonth = new YearMonth(year, month);
+        var url = CreateUrl(expectedMeteringPointId, yearMonth);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => fixture.Client.GetAsync(url));
+    }
+
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
     {
         return $"measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
