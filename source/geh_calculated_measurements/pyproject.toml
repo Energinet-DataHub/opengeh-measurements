@@ -23,6 +23,7 @@ execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_g
 execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
 
 migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
+covernator = "geh_common.covernator_streamlit:main"
 
 [build-system]
 requires = ["hatchling"]
