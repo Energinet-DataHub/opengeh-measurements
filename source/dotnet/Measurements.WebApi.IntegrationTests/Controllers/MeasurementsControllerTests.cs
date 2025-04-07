@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Net;
+using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
@@ -104,8 +105,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var expectedFirstMinObservationTime = InstantPattern.ExtendedIso.Parse("2022-01-02T23:00:00Z").Value;
-        var expectedFirstMaxObservationTime = InstantPattern.ExtendedIso.Parse("2022-01-03T22:00:00Z").Value;
+        var expectedDate = Instant.FromUtc(2022, 1, 2, 23, 0, 0).ToLocalDate();
         var yearMonth = new YearMonth(2022, 1);
         var url = CreateUrl(expectedMeteringPointId, yearMonth);
 
@@ -116,10 +116,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
         Assert.Equal(2, actual.MeasurementAggregations.Count);
-        Assert.Equal(expectedFirstMinObservationTime, actual.MeasurementAggregations.First().MinObservationTime);
-        Assert.Equal(expectedFirstMaxObservationTime, actual.MeasurementAggregations.First().MaxObservationTime);
-        Assert.True(actual.MeasurementAggregations.All(p => p.Qualities.All(q => q == Quality.Measured)));
-        Assert.True(actual.MeasurementAggregations.All(p => p.PointCount == 24));
+        Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
+        Assert.True(actual.MeasurementAggregations.All(p => p.Quality == Quality.Measured));
+        Assert.True(actual.MeasurementAggregations.All(p => p.MissingValues));
         Assert.True(actual.MeasurementAggregations.All(p => p.Quantity == 285.6M));
     }
 

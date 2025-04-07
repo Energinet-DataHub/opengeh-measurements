@@ -5,29 +5,19 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
-using Energinet.DataHub.Measurements.Client.Factories;
-using Energinet.DataHub.Measurements.Client.Models;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient : IMeasurementsClient
+public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter() },
     };
-
-    private readonly MeasurementAggregationFactory _measurementAggregationFactory;
-
-    public MeasurementsClient(IHttpClientFactory httpClientFactory, MeasurementAggregationFactory measurementAggregationFactory)
-    {
-        _measurementAggregationFactory = measurementAggregationFactory;
-        _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
-    }
 
     public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(
         GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
@@ -49,14 +39,14 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementAggregation>> GetAggregatedMeasurementsForMonth(
+    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedMeasurementsForMonth(
         GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.YearMonth);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementAggregationResponseAsync(query.YearMonth, response, cancellationToken);
+        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
     }
 
     private async Task<IEnumerable<MeasurementPointDto>> ParseMeasurementsResponseAsync(
@@ -80,26 +70,22 @@ public class MeasurementsClient : IMeasurementsClient
                ?? throw new InvalidOperationException();
     }
 
-    private async Task<IEnumerable<MeasurementAggregation>> ParseMeasurementAggregationResponseAsync(
-        YearMonth yearMonth, HttpResponseMessage response, CancellationToken cancellationToken)
+    private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
+        HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound) return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var aggregatedMeasurements = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
-
-        return aggregatedMeasurements.Select(am => _measurementAggregationFactory.Create(am)).ToList();
-
-        //return aggregatedMeasurementsDictionary.Select(am => _measurementAggregationFactory.Create(am.Value, am.Key));
+        return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(
+    private async Task<IEnumerable<MeasurementAggregationDto>> DeserializeMeasurementAggregationResponseStreamAsync(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<AggregatedMeasurements>>(_jsonSerializerOptions)
+        return pointElement.Deserialize<IEnumerable<MeasurementAggregationDto>>(_jsonSerializerOptions)
                ?? throw new InvalidOperationException();
     }
 

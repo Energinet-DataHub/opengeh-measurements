@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Application.Exceptions;
+using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Domain;
 
@@ -24,16 +25,33 @@ public class GetAggregatedMeasurementsResponse
         var measurementAggregations = measurements
             .Select(measurement =>
                 new MeasurementAggregation(
-                    measurement.MinObservationTime,
-                    measurement.MaxObservationTime,
+                    measurement.MinObservationTime.ToLocalDate(),
                     measurement.Quantity,
-                    measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)),
-                    measurement.Resolutions.Select(resolution => ResolutionParser.ParseResolution((string)resolution)),
-                    measurement.PointCount))
+                    measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)).Min(),
+                    SetMissingValuesForAggregation(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()
             : new GetAggregatedMeasurementsResponse(measurementAggregations);
+    }
+
+    private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
+    {
+        var timeSpan = aggregatedMeasurements.MaxObservationTime - aggregatedMeasurements.MinObservationTime;
+        var hours = (int)timeSpan.TotalHours + 1;
+
+        // All points for a day should have the same resolution
+        var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
+
+        var expectedPointCount = resolution switch
+        {
+            Resolution.PT15M => hours * 4,
+            Resolution.PT1H => hours,
+            Resolution.P1D or Resolution.P1M or Resolution.P1Y => 1,
+            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
+        };
+
+        return expectedPointCount - aggregatedMeasurements.PointCount != 0;
     }
 }

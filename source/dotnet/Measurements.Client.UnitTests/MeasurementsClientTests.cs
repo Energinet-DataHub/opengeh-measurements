@@ -2,7 +2,6 @@
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
-using Energinet.DataHub.Measurements.Client.Factories;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
@@ -22,7 +21,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
@@ -42,7 +41,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
@@ -60,7 +59,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetMeasurementsForPeriodAsync(query, CancellationToken.None)).ToList();
@@ -79,7 +78,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
@@ -101,7 +100,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.QuarterlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
@@ -123,7 +122,7 @@ public class MeasurementsClientTests
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDayMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementAggregationFactory());
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
         var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
