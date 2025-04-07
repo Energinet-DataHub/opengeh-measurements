@@ -10,7 +10,7 @@ from tests.subsystem_tests.fixtures.calculated_measurements_fixture import (
 )
 from tests.subsystem_tests.fixtures.gold_layer_fixture import GoldLayerFixture
 
-scenarios("../features/transmission_of_calculated_measurements.feature")
+scenarios("../features/streaming_of_calculated_measurements.feature")
 
 
 @given("a new valid calculated measurements", target_fixture="calculated_measurements_row")
