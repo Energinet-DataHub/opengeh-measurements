@@ -88,16 +88,9 @@ public class MeasurementsClient : IMeasurementsClient
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var aggregatedMeasurements = await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
 
-        var aggregatedMeasurementsDictionary = aggregatedMeasurements.ToDictionary(
-            am => am.MinObservationTime.ToLocalDate(),
-            am => am);
+        return aggregatedMeasurements.Select(am => _measurementAggregationFactory.Create(am)).ToList();
 
-        var daysInMonth = yearMonth.ToDateInterval();
-        return daysInMonth.Select(date =>
-        {
-            aggregatedMeasurementsDictionary.TryGetValue(date, out var aggregatedMeasurement);
-            return _measurementAggregationFactory.Create(aggregatedMeasurement, date);
-        });
+        //return aggregatedMeasurementsDictionary.Select(am => _measurementAggregationFactory.Create(am.Value, am.Key));
     }
 
     private async Task<IEnumerable<AggregatedMeasurements>> DeserializeMeasurementAggregationResponseStreamAsync(

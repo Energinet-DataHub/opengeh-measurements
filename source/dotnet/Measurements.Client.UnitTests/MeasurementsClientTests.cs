@@ -130,12 +130,9 @@ public class MeasurementsClientTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(31, actual.Count);
+        Assert.Equal(30, actual.Count);
         Assert.True(actual.First().Date == new LocalDate(2024, 10, 1));
         Assert.True(actual.Last().Date == new LocalDate(2024, 10, 31));
-        Assert.True(actual
-            .Where(p => p.Date == new LocalDate(2024, 10, 3))
-            .All(q => q.MissingValues));
         Assert.True(actual.Last().MissingValues);
     }
 

@@ -1,34 +1,29 @@
 ﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Models;
-using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client.Factories;
 
 public sealed class MeasurementAggregationFactory
 {
-    public MeasurementAggregation Create(
-        AggregatedMeasurements? aggregatedMeasurement,
-        LocalDate date)
+    public MeasurementAggregation Create(AggregatedMeasurements aggregatedMeasurements)
     {
-        var lowestAvailableQuality = aggregatedMeasurement?.Qualities.Min();
+        var lowestAvailableQuality = aggregatedMeasurements.Qualities.Min();
 
         return new MeasurementAggregation(
-            aggregatedMeasurement?.MinObservationTime.ToLocalDate() ?? date,
-            aggregatedMeasurement?.Quantity ?? 0,
-            lowestAvailableQuality ?? Quality.Missing,
-            SetMissingValuesForAggregation(aggregatedMeasurement));
+            aggregatedMeasurements.MinObservationTime.ToLocalDate(),
+            aggregatedMeasurements.Quantity,
+            lowestAvailableQuality,
+            SetMissingValuesForAggregation(aggregatedMeasurements));
     }
 
-    private bool SetMissingValuesForAggregation(AggregatedMeasurements? aggregatedMeasurement)
+    private bool SetMissingValuesForAggregation(AggregatedMeasurements aggregatedMeasurements)
     {
-        if (aggregatedMeasurement == null) return true;
-
-        var timeSpan = aggregatedMeasurement.MaxObservationTime - aggregatedMeasurement.MinObservationTime;
+        var timeSpan = aggregatedMeasurements.MaxObservationTime - aggregatedMeasurements.MinObservationTime;
         var hours = (int)timeSpan.TotalHours + 1;
 
-        // All points for a doy should have the same resolution
-        var resolution = aggregatedMeasurement.Resolutions.Single();
+        // All points for a day should have the same resolution
+        var resolution = aggregatedMeasurements.Resolutions.Single();
 
         var expectedPointCount = resolution switch
         {
@@ -38,6 +33,6 @@ public sealed class MeasurementAggregationFactory
             _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
         };
 
-        return expectedPointCount - aggregatedMeasurement.PointCount != 0;
+        return expectedPointCount - aggregatedMeasurements.PointCount != 0;
     }
 }
