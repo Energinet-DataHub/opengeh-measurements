@@ -8,11 +8,11 @@ public sealed class ResolutionParser
     {
         return resolution.ToUpper() switch
         {
-            "PT15M" => Resolution.PT15M,
-            "PT1H" => Resolution.PT1H,
-            "P1D" => Resolution.P1D,
-            "P1M" => Resolution.P1M,
-            "P1Y" => Resolution.P1Y,
+            "PT15M" => Resolution.QuarterHourly,
+            "PT1H" => Resolution.Hourly,
+            "P1D" => Resolution.Daily,
+            "P1M" => Resolution.Monthly,
+            "P1Y" => Resolution.Yearly,
             _ => throw new ArgumentOutOfRangeException(nameof(resolution)),
         };
     }

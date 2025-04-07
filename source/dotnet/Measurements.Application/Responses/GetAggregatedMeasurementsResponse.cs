@@ -46,9 +46,9 @@ public class GetAggregatedMeasurementsResponse
 
         var expectedPointCount = resolution switch
         {
-            Resolution.PT15M => hours * 4,
-            Resolution.PT1H => hours,
-            Resolution.P1D or Resolution.P1M or Resolution.P1Y => 1,
+            Resolution.QuarterHourly => hours * 4,
+            Resolution.Hourly => hours,
+            Resolution.Daily or Resolution.Monthly or Resolution.Yearly => 1,
             _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
         };
 
