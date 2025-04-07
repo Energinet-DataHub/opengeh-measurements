@@ -11,10 +11,11 @@ import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType as CoreMeteringPointType
+from core.contracts.process_manager.enums.metering_point_type import MeteringPointType as MeteringPointType
 from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
 from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
 from core.contracts.process_manager.enums.unit import Unit as CoreUnit
+from core.contracts.process_manager.PersistSubmittedTransaction.PersistSubmittedTransaction_pb2 import MeteringPointType
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 
@@ -73,115 +74,106 @@ def _align_orchestration_type() -> Column:
 def _align_metering_point_type() -> Column:
     return (
         F.when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_CONSUMPTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_CONSUMPTION,
             GehCommonMeteringPointType.CONSUMPTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_PRODUCTION,
             GehCommonMeteringPointType.PRODUCTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_EXCHANGE.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_EXCHANGE,
             GehCommonMeteringPointType.EXCHANGE.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_VE_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_VE_PRODUCTION,
             GehCommonMeteringPointType.VE_PRODUCTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_ANALYSIS.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_ANALYSIS,
             GehCommonMeteringPointType.ANALYSIS.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_NOT_USED.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NOT_USED,
             GehCommonMeteringPointType.NOT_USED.value,
         )
         .when(
             F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_SURPLUS_PRODUCTION_GROUP_6.value,
+            == MeteringPointType.MPT_SURPLUS_PRODUCTION_GROUP_6,
             GehCommonMeteringPointType.SURPLUS_PRODUCTION_GROUP_6.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_NET_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_PRODUCTION,
             GehCommonMeteringPointType.NET_PRODUCTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_SUPPLY_TO_GRID.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_SUPPLY_TO_GRID,
             GehCommonMeteringPointType.SUPPLY_TO_GRID.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_CONSUMPTION_FROM_GRID.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_CONSUMPTION_FROM_GRID,
             GehCommonMeteringPointType.CONSUMPTION_FROM_GRID.value,
         )
         .when(
             F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_WHOLESALE_SERVICES_INFORMATION.value,
+            == MeteringPointType.MPT_WHOLESALE_SERVICES_INFORMATION,
             GehCommonMeteringPointType.WHOLESALE_SERVICES_INFORMATION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_OWN_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_OWN_PRODUCTION,
             GehCommonMeteringPointType.OWN_PRODUCTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_NET_FROM_GRID.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_FROM_GRID,
             GehCommonMeteringPointType.NET_FROM_GRID.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_NET_TO_GRID.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_TO_GRID,
             GehCommonMeteringPointType.NET_TO_GRID.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_TOTAL_CONSUMPTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_TOTAL_CONSUMPTION,
             GehCommonMeteringPointType.TOTAL_CONSUMPTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_NET_LOSS_CORRECTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_LOSS_CORRECTION,
             GehCommonMeteringPointType.NET_LOSS_CORRECTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_ELECTRICAL_HEATING.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_ELECTRICAL_HEATING,
             GehCommonMeteringPointType.ELECTRICAL_HEATING.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_NET_CONSUMPTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_CONSUMPTION,
             GehCommonMeteringPointType.NET_CONSUMPTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_OTHER_CONSUMPTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_OTHER_CONSUMPTION,
             GehCommonMeteringPointType.OTHER_CONSUMPTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_OTHER_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_OTHER_PRODUCTION,
             GehCommonMeteringPointType.OTHER_PRODUCTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_CAPACITY_SETTLEMENT.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_CAPACITY_SETTLEMENT,
             GehCommonMeteringPointType.CAPACITY_SETTLEMENT.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_EXCHANGE_REACTIVE_ENERGY.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_EXCHANGE_REACTIVE_ENERGY,
             GehCommonMeteringPointType.EXCHANGE_REACTIVE_ENERGY.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_COLLECTIVE_NET_PRODUCTION.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_COLLECTIVE_NET_PRODUCTION,
             GehCommonMeteringPointType.COLLECTIVE_NET_PRODUCTION.value,
         )
         .when(
             F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == CoreMeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION.value,
+            == MeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION,
             GehCommonMeteringPointType.COLLECTIVE_NET_CONSUMPTION.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == CoreMeteringPointType.MPT_INTERNAL_USE.value,
+            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_INTERNAL_USE,
             GehCommonMeteringPointType.INTERNAL_USE.value,
         )
         .otherwise(F.col(SilverMeasurementsColumnNames.metering_point_type))
