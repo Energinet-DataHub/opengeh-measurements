@@ -102,7 +102,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"measurements?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
-    private async Task<GetMeasurementResponse> ParseResponseAsync(HttpResponseMessage response)
+    private static async Task<GetMeasurementResponse> ParseResponseAsync(HttpResponseMessage response)
     {
         response.EnsureSuccessStatusCode();
         var actualBody = await response.Content.ReadAsStringAsync();

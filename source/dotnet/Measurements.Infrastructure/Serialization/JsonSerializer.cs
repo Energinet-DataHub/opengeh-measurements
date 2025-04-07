@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Serialization;
 
@@ -9,11 +8,7 @@ public class JsonSerializer
     private readonly JsonSerializerOptions _options = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters =
-        {
-            NodaConverters.InstantConverter,
-            new JsonStringEnumConverter(),
-        },
+        Converters = { new JsonStringEnumConverter() },
     };
 
     public string Serialize<T>(T value)

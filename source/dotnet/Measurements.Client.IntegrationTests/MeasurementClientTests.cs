@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -20,6 +21,10 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         var measurements = await measurementsClient.GetMeasurementsForDayAsync(query);
 
         // Assert
-        Assert.Equal(24, measurements.Count());
+        Assert.Equal(24, measurements.MeasurementPositions.Count());
+        Assert.All(measurements.MeasurementPositions, position =>
+        {
+            Assert.All(position.MeasurementPoints, point => Assert.Equal(Quality.Measured, point.Quality));
+        });
     }
 }

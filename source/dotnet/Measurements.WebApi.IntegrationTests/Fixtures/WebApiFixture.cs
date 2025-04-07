@@ -107,7 +107,12 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         return [.. dates.SelectMany(CreateRow)];
     }
 
-    private static IEnumerable<IEnumerable<string>> CreateRow((LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, bool IsCancelled) values)
+    private static IEnumerable<IEnumerable<string>> CreateRow(
+        (
+            LocalDate ObservationTime,
+            LocalDate TransactionCreationDate,
+            string Quality,
+            bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;

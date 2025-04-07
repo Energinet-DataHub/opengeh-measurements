@@ -1,0 +1,8 @@
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+
+/// <summary>
+/// Represents a collection of measurement points observed at the same position on a timeline.
+/// </summary>
+/// <param name="ObservationTime">Timestampt defining position on a timeline, i.e. '2025-03-12T03:15:00Z'.</param>
+/// <param name="MeasurementPoints">Points of measurements constituting current and historical measurements.</param>
+public sealed record MeasurementPositionDto(DateTimeOffset ObservationTime, IEnumerable<MeasurementPointDto> MeasurementPoints);

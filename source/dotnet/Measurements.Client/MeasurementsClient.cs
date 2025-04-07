@@ -1,10 +1,9 @@
 ﻿using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -13,18 +12,12 @@ public class MeasurementsClient : IMeasurementsClient
 {
     private readonly HttpClient _httpClient;
 
-    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() },
-    };
-
     public MeasurementsClient(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
     }
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<MeasurementDto> GetMeasurementsForDayAsync(GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
@@ -33,31 +26,14 @@ public class MeasurementsClient : IMeasurementsClient
         return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForPeriodAsync(GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
+    private static async Task<MeasurementDto> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
+        if (response.StatusCode == HttpStatusCode.NotFound) return new MeasurementDto([]);
 
-        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+        var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var result = new MeasurementSerializer().Deserialize<MeasurementDto>(json);
 
-        return await ParseResponseAsync(response, cancellationToken).ConfigureAwait(false);
-    }
-
-    private async Task<IEnumerable<MeasurementPointDto>> ParseResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
-    {
-        if (response.StatusCode == HttpStatusCode.NotFound) return [];
-
-        var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var measurementPoints = await DeserializeResponseStreamAsync(stream, cancellationToken);
-
-        return measurementPoints;
-    }
-
-    private async Task<IEnumerable<MeasurementPointDto>> DeserializeResponseStreamAsync(Stream stream, CancellationToken cancellationToken)
-    {
-        var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
-        var pointElement = jsonDocument.RootElement.GetProperty("Points");
-
-        return pointElement.Deserialize<IEnumerable<MeasurementPointDto>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
     private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

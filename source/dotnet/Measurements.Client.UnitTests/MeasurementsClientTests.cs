@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
-using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
@@ -14,7 +12,7 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests;
 public class MeasurementsClientTests
 {
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
+    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurement()
     {
         // Arrange
         var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
@@ -24,13 +22,12 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
+        var actual = await sut.GetMeasurementsForDayAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(24, actual.Count);
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.All(p => p.Created.ToFormattedString() == "2022-01-03T15:00:00Z"));
+        Assert.Equal(24, actual.MeasurementPositions.Count());
+        Assert.Equal(2, actual.MeasurementPositions.First().MeasurementPoints.Count());
     }
 
     [Fact]
@@ -44,30 +41,10 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).MeasurementPositions;
 
         // Assert
         Assert.Empty(actual);
-    }
-
-    [Fact]
-    public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
-    {
-        // Arrange
-        var testDate = new LocalDate(1, 2, 3);
-        var query = new GetMeasurementsForPeriodQuery("1234567890", testDate, testDate);
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays);
-        var httpClient = CreateHttpClient(response);
-        var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
-
-        // Act
-        var actual = (await sut.GetMeasurementsForPeriodAsync(query, CancellationToken.None)).ToList();
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.Equal(96, actual.Count);
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
