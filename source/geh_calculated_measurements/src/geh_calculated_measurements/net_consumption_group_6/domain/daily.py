@@ -82,7 +82,8 @@ def calculate_daily(
         .select(
             "cenc.*",
             F.when(
-                F.col("ts.latest_observation_date").isNull(),
+                F.col("ts.latest_observation_date").isNull()
+                | (F.col("ts.latest_observation_date") < F.col("cenc.settlement_date")),
                 F.date_add(F.col("cenc.settlement_date"), -1),
             )
             .otherwise(F.col("ts.latest_observation_date"))
