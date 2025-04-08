@@ -52,13 +52,6 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             # GSRN number
             t.StructField("metering_point_id", t.StringType(), not nullable),
             #
-            # States whether the metering point has electrical heating in the period
-            # true:  The consumption metering has electrical heating in the stated period
-            # false: The consumption metering point was previously marked as having electrical
-            #        heating in the stated period, but this has been corrected
-            # ( true | false )
-            t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
-            #
             # ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 99 )
             t.StructField("net_settlement_group", t.IntegerType(), not nullable),
             #
@@ -79,6 +72,6 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             #
             # See the description of periodization of data above.
             # UTC time
-            t.StructField("period_to_date", t.TimestampType(), not nullable),
+            t.StructField("period_to_date", t.TimestampType(), nullable),
         ]
     )
