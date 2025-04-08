@@ -10,7 +10,7 @@ from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
-def test__migrated_transactions__should_save_in_silver_measurements(
+def test__migrated_transactions__should_save_in_gold_measurements(
     mock_checkpoint_path, spark: SparkSession, migrations_executed, mocker: MockerFixture
 ) -> None:
     # Arrange

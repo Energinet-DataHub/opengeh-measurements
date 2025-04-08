@@ -24,7 +24,9 @@ class GoldMeasurementsRepository:
         :param gold_measurements: DataFrame containing the data to be appended.
         """
         if orchestration_type is not None:
-            orchestration_type_filters = {GoldMeasurementsColumnNames.orchestration_type: orchestration_type.value}
+            orchestration_type_filters = {
+                GoldMeasurementsColumnNames.orchestration_type: f"'{orchestration_type.value}'"
+            }
         else:
             orchestration_type_filters = None
 
