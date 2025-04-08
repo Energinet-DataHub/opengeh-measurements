@@ -35,10 +35,10 @@ indent_size = 4
 
 # C# files
 [*.{cs,csx}]
-max_line_length = 99
+max_line_length = 120
 
 [resharper_]
-csharp_max_line_length = 99
+csharp_max_line_length = 120
 
 ##############################################################
 # .NET Conventions                                           #

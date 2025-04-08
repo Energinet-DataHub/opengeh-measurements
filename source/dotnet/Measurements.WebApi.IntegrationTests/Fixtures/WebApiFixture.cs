@@ -89,6 +89,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
             { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
         };
@@ -97,29 +98,26 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", false),
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", true),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", false),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
-            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", "PT1H",  false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", "PT1H", true),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", "PT1H",  false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
+            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
+            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", "PT1H",  false),
         };
 
-        return [.. dates.SelectMany(CreateRow)];
+        return [.. dates.SelectMany(values => CreateRow(values))];
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
-        (
-            LocalDate ObservationTime,
-            LocalDate TransactionCreationDate,
-            string Quality,
-            bool IsCancelled) values)
+        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, string Resolution, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0);
+        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
         var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
 
-        return Enumerable.Range(0, 24).Select(i => new[]
+        var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
             "'1234567890'",
             "'kwh'",
@@ -127,9 +125,12 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             $"{i}.4",
             $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
+            $"'{values.Resolution}'",
             values.IsCancelled ? "true" : "false",
             $"'{FormatString(observationDateTime)}'",
         });
+
+        return rows;
     }
 
     private static string FormatString(Instant date)

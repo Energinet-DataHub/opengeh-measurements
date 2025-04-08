@@ -13,7 +13,8 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
 {
     [HttpGet]
     // [Authorize] TODO: Uncomment when authentication is implemented in all clients
-    public async Task<IActionResult> GetMeasurementAsync([FromQuery] GetMeasurementRequest request)
+    [Route("forPeriod")]
+    public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
         try
         {
@@ -31,6 +32,24 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
             logger.LogError(exception, "Could not get requested measurement");
 
             return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+        }
+    }
+
+    [HttpGet]
+    // [Authorize] TODO: Uncomment when authentication is implemented in all clients
+    [Route("aggregatedByMonth")]
+    public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    {
+        try
+        {
+            var aggregatedMeasurements = await measurementsHandler.GetAggregatedMeasurementsAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedMeasurements);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundDuringPeriodException e)
+        {
+            return NotFound(e.Message);
         }
     }
 }
