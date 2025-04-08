@@ -65,8 +65,8 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     metering_point_periods_table: MeteringPointPeriodsTable,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Test that the repository can handle columns being added as it is defined to _not_ be a breaking change.
-    The repository should return the data without the unexpected column."""
+    """Test that the read method can handle columns being added as it is defined to _not_ be a breaking change.
+    The method should return the data without the unexpected column."""
     # Arrange
     valid_df_with_extra_col = valid_dataframe.withColumn("extra_col", F.lit("extra_value"))
 
