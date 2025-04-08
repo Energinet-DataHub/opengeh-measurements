@@ -1,4 +1,4 @@
-﻿from abc import ABC
+from abc import ABC
 
 import pyspark.sql.types as t
 from geh_common.testing.dataframes import assert_schema
