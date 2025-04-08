@@ -21,7 +21,7 @@ class Table(ABC):
 
     @classmethod
     def __init_subclass__(cls) -> None:
-        """Special method that is called automatically when a class is subclassed."""
+        """Initialize subclass by setting up schema, columns, and Spark session."""
         schema = []
         columns = []
 
