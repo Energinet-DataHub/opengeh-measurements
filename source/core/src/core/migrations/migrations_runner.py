@@ -16,7 +16,6 @@ def migrate() -> None:
 
     _stop_job_runs()
     migration_pipeline.migrate(spark_config)
-    _start_jobs()
 
 
 def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
@@ -51,17 +50,3 @@ def _stop_job_runs() -> None:
 
         print(f"Canceling job run {run_id} for job {job}")  # noqa: T201
         databricks_api_client.cancel_job_run(run_id)
-
-
-def _start_jobs() -> None:
-    databricks_settings = DatabricksSettings()
-    databricks_api_client = DatabricksApiClient(
-        databricks_host=databricks_settings.databricks_workspace_url,
-        databricks_token=databricks_settings.databricks_token,
-    )
-
-    jobs = databricks_settings.databricks_jobs.split(",")
-    for job in jobs:
-        print(f"Starting job {job}")  # noqa: T201
-        job_id = databricks_api_client.get_job_id(job)
-        databricks_api_client.start_job(job_id, [])

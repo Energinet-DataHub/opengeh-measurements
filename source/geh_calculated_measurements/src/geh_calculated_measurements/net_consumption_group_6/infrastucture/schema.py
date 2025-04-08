@@ -6,7 +6,7 @@ nullable = True
 # - Energy supplier is changed or is removed.
 # - A new customer moves in.
 # - Change to electrical heating status.
-consumption_metering_point_periods_v1 = t.StructType(
+net_consumption_group_6_consumption_metering_point_periods_v1 = t.StructType(
     [
         # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
@@ -34,14 +34,14 @@ consumption_metering_point_periods_v1 = t.StructType(
 # - Supply to grid (D06)
 # - Consumption from grid (D07)
 # - Net consumption (D15)
-child_metering_point_periods_v1 = t.StructType(
+net_consumption_group_6_child_metering_point_v1 = t.StructType(
     [
         # GSRN number.
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
         # 'supply_to_grid' | 'consumption_from_grid' |'Net_consumption'|
         # The metering point type.
-        t.StructField("metering_type", t.StringType(), not nullable),
+        t.StructField("metering_point_type", t.StringType(), not nullable),
         #
         # The parent metering point GSRN number.
         t.StructField("parent_metering_point_id", t.StringType(), not nullable),
