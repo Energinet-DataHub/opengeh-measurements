@@ -2,7 +2,7 @@
 
 namespace Energinet.DataHub.Measurements.Application.Extensions;
 
-public static class DateExtensions
+public static class InstantExtensions
 {
     private static readonly DateTimeZone _danishZone = DateTimeZoneProviders.Tzdb["Europe/Copenhagen"];
 
