@@ -46,9 +46,6 @@ class GoldMeasurementsRepository:
         self,
         query_name: QueryNames,
     ) -> dict[str, list[str]]:
-        """Each stream writes only a certain subset of orchestration_types.
-        This function indicates which write which, to be used to avoid concurrent writes with filters.
-        """
         if query_name == QueryNames.SILVER_TO_GOLD.value:
             return {GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.SUBMITTED.value]}
         if query_name == QueryNames.MIGRATIONS_TO_GOLD.value:
