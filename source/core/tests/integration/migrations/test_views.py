@@ -14,7 +14,7 @@ from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
 
 
-def test__current_view_v1__should_have_expected_schema(spark: SparkSession, migrations_executed: None) -> None:
+def test__current_view_v1__should_have_expected_schema(spark: SparkSession) -> None:
     # Arrange
     gold_settings = GoldSettings()
 
@@ -23,9 +23,7 @@ def test__current_view_v1__should_have_expected_schema(spark: SparkSession, migr
     assert_schemas.assert_schema(actual=actual_current.schema, expected=current_v1)
 
 
-def test__current_view_v1__should_return_nothing_if_no_active_measurements_exists(
-    spark: SparkSession, migrations_executed: None
-) -> None:
+def test__current_view_v1__should_return_nothing_if_no_active_measurements_exists(spark: SparkSession) -> None:
     # Arrange
     gold_settings = GoldSettings()
     metering_point_id = identifier_helper.create_random_metering_point_id()
@@ -68,7 +66,7 @@ def test__current_view_v1__should_return_nothing_if_no_active_measurements_exist
     assert actual.count() == 0
 
 
-def test__current_v1__should_return_active_measurement_only(spark: SparkSession, migrations_executed: None) -> None:
+def test__current_v1__should_return_active_measurement_only(spark: SparkSession) -> None:
     # Arrange
     gold_settings = GoldSettings()
     metering_point_id = identifier_helper.create_random_metering_point_id()
@@ -128,7 +126,6 @@ def test__current_view_v1__when_given_column_is_null__should_not_be_returned_by_
     quantity: Decimal,
     quality: str,
     spark: SparkSession,
-    migrations_executed: None,
 ) -> None:
     # Arrange
     gold_settings = GoldSettings()

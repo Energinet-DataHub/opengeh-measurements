@@ -15,7 +15,7 @@ def pytest_runtest_setup() -> None:
     environment_variables_helpers.set_test_environment_variables()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def migrations_executed(spark: SparkSession, session_mocker: MockerFixture) -> None:
     """
     This is actually the main part of all our tests.
