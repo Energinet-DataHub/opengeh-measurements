@@ -8,6 +8,12 @@ public static class TestAssets
 
     public static string MeasurementsForMultipleDays => GetJsonFile($"{nameof(MeasurementsForMultipleDays)}.json");
 
+    public static string HourlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDay)}.json");
+
+    public static string HourlyMeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDayMissingMeasurements)}.json");
+
+    public static string QuarterlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(QuarterlyMeasurementsAggregatedByDay)}.json");
+
     private static string GetJsonFile(string filename)
     {
         var assembly = Assembly.GetExecutingAssembly();
