@@ -15,7 +15,7 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>
 {
     [Fact]
-    public async Task GetAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
+    public async Task GetMeasurementsAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -35,7 +35,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAsync_WhenMultipleMeasurementsExistWithEqualObservationTime_ReturnsOnlyOnePerObservationTime()
+    public async Task GetMeasurementsAsync_WhenMultipleMeasurementsExistWithEqualObservationTime_ReturnsOnlyOnePerObservationTime()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -52,7 +52,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAsync_WhenCancelledMeasurementsExists_ReturnsNotFoundStatus()
+    public async Task GetMeasurementsAsync_WhenCancelledMeasurementsExists_ReturnsNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -68,7 +68,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
+    public async Task GetMeasurementsAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
@@ -84,7 +84,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
+    public async Task GetMeasurementsAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -100,7 +100,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    public async Task GetAggregatedMeasurementsAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
@@ -121,21 +121,19 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.False(actual.MeasurementAggregations.All(p => p.MissingValues));
     }
 
-    [Theory]
-    [InlineData(-9999, 1)]
-    [InlineData(10000, 1)]
-    [InlineData(2022, 0)]
-    [InlineData(2022, 13)]
-    public async Task GetAggregatedAsync_WhenRequestIsInvalid_ThrowsArgumentOutOfRangeException(int year, int month)
+    [Fact]
+    public async Task GetAggregatedMeasurementsAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
-        var yearMonth = new YearMonth(year, month);
+        const string expectedMeteringPointId = "not existing id";
+        var yearMonth = new YearMonth(2022, 1);
         var url = CreateUrl(expectedMeteringPointId, yearMonth);
 
         // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => fixture.Client.GetAsync(url));
+        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
     private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
