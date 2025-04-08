@@ -1,5 +1,4 @@
 from datetime import datetime
-from math import e
 
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
