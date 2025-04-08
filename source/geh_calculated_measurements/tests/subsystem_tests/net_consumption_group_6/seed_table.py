@@ -1,6 +1,8 @@
 import random
 from datetime import datetime, timezone
 
+from geh_common.domain.types import MeteringPointType
+
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
@@ -23,8 +25,19 @@ def _seed_gold_table(job_fixture: JobTestFixture) -> None:
             metering_point_id="170000000000000201",
             observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
-        )
-        for i in range(1)
+        ),
+        GoldTableRow(
+            metering_point_id="070000001500170200",
+            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            quantity=random.uniform(0.1, 10.0),
+            metering_point_type=MeteringPointType.CONSUMPTION_FROM_GRID,
+        ),
+        GoldTableRow(
+            metering_point_id="060000001500170200",
+            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            quantity=random.uniform(0.1, 10.0),
+            metering_point_type=MeteringPointType.SUPPLY_TO_GRID,
+        ),
     ]
     statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
 

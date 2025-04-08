@@ -13,7 +13,7 @@ from tests.subsystem_tests.net_consumption_group_6.seed_table import (
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 
-@pytest.mark.skip(reason="The test is failing because the seeded data lacks the date prior the calculation date.")
+# @pytest.mark.skip(reason="The test is failing because the seeded data lacks the date prior the calculation date.")
 class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
     def fixture(self):
