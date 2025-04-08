@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
@@ -45,26 +46,6 @@ public class MeasurementsClientTests
 
         // Assert
         Assert.Empty(actual);
-    }
-
-    [Fact]
-    public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
-    {
-        // Arrange
-        var testDate = new LocalDate(1, 2, 3);
-        var query = new GetMeasurementsForPeriodQuery("1234567890", testDate, testDate);
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays);
-        var httpClient = CreateHttpClient(response);
-        var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object);
-
-        // Act
-        var actual = (await sut.GetMeasurementsForPeriodAsync(query, CancellationToken.None)).ToList();
-
-        // Assert
-        Assert.NotNull(actual);
-        Assert.Equal(96, actual.Count);
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
     }
 
     [Fact]

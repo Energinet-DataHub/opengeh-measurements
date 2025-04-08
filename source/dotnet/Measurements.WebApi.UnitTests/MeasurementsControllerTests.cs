@@ -32,7 +32,7 @@ public class MeasurementsControllerTests
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementAsync(request) as OkObjectResult)!.Value!.ToString();
+        var actual = (await sut.GetMeasurementsAsync(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -52,7 +52,7 @@ public class MeasurementsControllerTests
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
-        var actual = await sut.GetMeasurementAsync(request);
+        var actual = await sut.GetMeasurementsAsync(request);
 
         // Assert
         Assert.IsType<NotFoundObjectResult>(actual);
@@ -72,7 +72,7 @@ public class MeasurementsControllerTests
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act
-        var actual = await sut.GetMeasurementAsync(request);
+        var actual = await sut.GetMeasurementsAsync(request);
 
         // Assert
         Assert.IsType<ObjectResult>(actual);
