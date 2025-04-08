@@ -7,19 +7,19 @@ from geh_common.data_products.measurements_core.measurements_gold.current_v1 imp
 from pyspark.sql import SparkSession
 from pyspark.sql.dataframe import DataFrame
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure.current_measurements.current_meaurements import (
-    CurruntMeasurements,
+from geh_calculated_measurements.common.infrastructure import (
+    CurrentMeasurementsTable,
 )
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
+from tests import SPARK_CATALOG_NAME
 
 
 @pytest.fixture(scope="module")
-def current_measurements(spark: SparkSession) -> CurruntMeasurements:
+def current_measurements(spark: SparkSession) -> CurrentMeasurementsTable:
     spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}")
-    return CurruntMeasurements()
+    return CurrentMeasurementsTable(SPARK_CATALOG_NAME)
 
 
 @pytest.fixture(scope="module")
@@ -34,13 +34,13 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "consumption",
             )
         ],
-        CurrentMeasurements.schema,
+        CurrentMeasurementsTable.schema,
     )
     return df
 
 
 def test__(
-    current_measurements: CurruntMeasurements,
+    current_measurements: CurrentMeasurementsTable,
     valid_df: DataFrame,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

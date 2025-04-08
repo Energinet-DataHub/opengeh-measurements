@@ -6,14 +6,13 @@ from pyspark.sql import DataFrame, SparkSession
 
 
 class Table(ABC):
-    fully_quallified_name: str
+    fully_qualified_name: str
     schema: t.StructType
     spark: SparkSession
     columns: list[str]
-    nullable = True
 
     def __init__(self) -> None:
-        if not hasattr(self, "fully_quallified_name"):
+        if not hasattr(self, "fully_qualified_name"):
             raise AttributeError("Table must define a fully qualified name.")
         if not hasattr(self, "schema"):
             raise AttributeError("Table must define a schema.")
@@ -23,8 +22,6 @@ class Table(ABC):
     @classmethod
     def __init_subclass__(cls) -> None:
         """Special method that is called automatically when a class is subclassed."""
-        super().__init_subclass__()
-
         schema = []
         columns = []
 
@@ -41,7 +38,8 @@ class Table(ABC):
         cls.spark = SparkSession.builder.getOrCreate()
         cls._read = cls.read
 
-        def _read(self, *args, **kwargs):
+        def _read(self, *args, **kwargs) -> DataFrame:
+            """Read the table from the Spark session and assert the schema."""
             _df = self._read(*args, **kwargs)
             assert_schema(cls.schema, _df.schem)
             return _df
@@ -49,4 +47,4 @@ class Table(ABC):
         cls.read = _read
 
     def read(self) -> DataFrame:
-        return self.spark.table(self.fully_quallified_name)
+        return self.spark.table(self.fully_qualified_name)
