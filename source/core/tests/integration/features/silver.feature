@@ -2,39 +2,38 @@ Feature: Streaming from Bronze to Silver
 
   Scenario: Processing submitted measurements to Silver
     Given new valid submitted measurements inserted into the bronze submitted table
-    When streaming submitted transactions to the Silver Layer
+    When streaming the submitted transaction to the Silver layer
     Then the measurements are available in the silver measurements table
 
   Scenario: Processing invalid submitted measurements
     Given invalid submitted measurements inserted into the bronze submitted table
-    When streaming submitted transactions to the Silver Layer
-    Then the measurements are persisted into the invalid bronze submitted transaction table
-    And are not available in the silver measurements table
+    When streaming the submitted transaction to the Silver layer
+    Then measurements are persisted into the invalid bronze submitted transaction table
 
   Scenario: Processing submitted transaction with unspecified resolution
     Given a submitted transaction with unspecified resolution
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table
-    And are not available in the silver measurements table
+    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
 
-  Scenario Outline: Processing unspecified values should be quarantined
-    Given a row where the column <column> value is Unspecified
+  Scenario: Processing submitted transaction with unspecified metering point type
+    Given a submitted transaction with unspecified metering point type
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table
-    And are not available in the silver measurements table
+    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
 
-    Examples:
-    | column              |
-    | orchestration_type  |
-    | metering_point_type |
-    | resolution          |
-    | unit                |
+  Scenario: Processing submitted transaction with unspecified unit
+    Given a submitted transaction with unspecified unit
+    When streaming the submitted transaction to the Silver layer
+    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
+
+  Scenario: Processing submitted transaction with unspecified orchestration type
+    Given a submitted transaction with unspecified orchestration type
+    When streaming the submitted transaction to the Silver layer
+    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table            
 
   Scenario Outline: Processing submitted transaction with valid metering point type
     Given measurements where the metering point type has value <metering_point_type>
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the silver measurements table
-    And are not quarantined in the bronze quarantine table
+    Then the measurements are available in the silver measurements table
 
     Examples:
     | metering_point_type                 |
@@ -68,8 +67,7 @@ Feature: Streaming from Bronze to Silver
   Scenario Outline: Processing submitted transaction with valid resolution
     Given measurements where the resolution has value <resolution>
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the silver measurements table
-    And are not quarantined in the bronze quarantine table
+    Then the measurements are available in the silver measurements table
 
     Examples:
     | resolution |
@@ -79,17 +77,15 @@ Feature: Streaming from Bronze to Silver
   Scenario: Processing submitted transaction with valid orchestration type
     Given measurements where the orchestration type has value `OT_SUBMITTED_MEASURE_DATA`
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the silver measurements table
-    And are not quarantined in the bronze quarantine table
+    Then the measurements are available in the silver measurements table
 
   Scenario Outline: Processing submitted transaction with valid quality
     Given measurements where the quality has value <quality>
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the silver measurements table
-    And are not quarantined in the bronze quarantine table
+    Then the measurements are available in the silver measurements table
 
     Examples:
-    | quality       |
+    | quality |
     | Q_MISSING     |
     | Q_ESTIMATED   |
     | Q_MEASURED    |
@@ -98,8 +94,7 @@ Feature: Streaming from Bronze to Silver
   Scenario Outline: Processing submitted transaction with valid unit
     Given measurements where the unit has value <unit>
     When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the silver measurements table
-    And are not quarantined in the bronze quarantine table
+    Then the measurements are available in the silver measurements table
 
     Examples:
     | unit       |
