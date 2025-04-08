@@ -1,7 +1,7 @@
 from abc import ABC
 
 import pyspark.sql.types as t
-from geh_common.testing.dataframes import assert_schema
+from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
 
 
@@ -44,7 +44,13 @@ class Table(ABC):
 
         def _read(self, *args, **kwargs) -> DataFrame:
             _df = self._read(*args, **kwargs)
-            assert_schema(cls.schema, _df.schem)
+
+            # Assert the actual schema against the contract schema
+            assert_contract(_df.schema, self.schema)
+
+            # Only select the columns defined in the respective subclass' schema
+            _df = _df.select(*[field.name for field in self.schema.fields])
+
             return _df
 
         cls.read = _read
