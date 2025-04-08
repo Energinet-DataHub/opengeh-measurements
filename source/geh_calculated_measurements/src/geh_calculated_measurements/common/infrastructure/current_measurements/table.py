@@ -24,7 +24,7 @@ class Table(ABC):
     @classmethod
     def __init_subclass__(cls) -> None:
         """Automatically called when a class is subclassed."""
-        """The parameter cls refers to the subclass of the Table class that is being created"""
+        """cls is a reference to the class object of the subclass being created."""
         schema = []
         columns = []
 
