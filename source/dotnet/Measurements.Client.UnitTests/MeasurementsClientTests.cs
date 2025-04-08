@@ -7,7 +7,6 @@ using Moq;
 using Moq.Protected;
 using NodaTime;
 using Xunit.Categories;
-using DateOnly = System.DateOnly;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests;
 
