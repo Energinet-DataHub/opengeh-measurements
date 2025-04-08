@@ -42,4 +42,6 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
         transform_mock.return_value, orchestration_type=GehCommonOrchestrationType.SUBMITTED
     )
     transform_receipts_mock.assert_called_once_with(ANY)
-    gold_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
+    gold_repo_mock.append_if_not_exists.assert_called_once_with(
+        ANY, orchestration_type=GehCommonOrchestrationType.SUBMITTED
+    )
