@@ -28,3 +28,8 @@ def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
 @then("the calculated measurements are available in the Gold Layer")
 def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
     gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
+
+
+@given("a failing step")
+def _() -> None:
+    assert False, "This step is intentionally failing to demonstrate the test failure reporting."
