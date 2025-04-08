@@ -1,3 +1,6 @@
+from datetime import datetime
+from math import e
+
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_to_utc
@@ -20,6 +23,7 @@ def execute(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
+    execution_start_datetime: datetime,
 ) -> DataFrame:
     """Calculate the electrical heating for the given time series points and metering point periods.
 
@@ -27,7 +31,7 @@ def execute(
     """
     # Join metering point periods and return them in local time and split by settlement month
     metering_point_periods = trans.get_joined_metering_point_periods_in_local_time(
-        consumption_metering_point_periods, child_metering_points, time_zone
+        consumption_metering_point_periods, child_metering_points, time_zone, execution_start_datetime
     )
 
     # It's important that time series are aggregated hourly before converting to local time.
