@@ -6,28 +6,30 @@ from pyspark.sql import DataFrame, SparkSession
 
 
 class Table(ABC):
-    fully_quallified_name: str
+    fully_qualified_name: str
     schema: t.StructType
     spark: SparkSession
     columns: list[str]
-    nullable = True
 
     def __init__(self) -> None:
-        if not hasattr(self, "fully_quallified_name"):
+        if not hasattr(self, "fully_qualified_name"):
             raise AttributeError("Table must define a fully qualified name.")
         if not hasattr(self, "schema"):
             raise AttributeError("Table must define a schema.")
         if not hasattr(self, "spark"):
             raise AttributeError("Table must define a Spark session.")
 
+        self.spark = SparkSession.builder.getOrCreate()
+
     @classmethod
     def __init_subclass__(cls) -> None:
-        """Special method that is called automatically when a class is subclassed."""
-        super().__init_subclass__()
-
+        """Automatically called when a class is subclassed."""
+        """The parameter cls refers to the subclass of the Table class that is being created"""
         schema = []
         columns = []
 
+        # The following ensures that both the subclass's attributes and
+        # any inherited or metaclass-level attributes are included when iterating over dic.
         d = {**cls.__class__.__dict__, **cls.__dict__}
         for name, field in d.items():
             if isinstance(field, t.StructField):
@@ -38,10 +40,9 @@ class Table(ABC):
 
         cls.schema = t.StructType(schema)
         cls.columns = columns
-        cls.spark = SparkSession.builder.getOrCreate()
         cls._read = cls.read
 
-        def _read(self, *args, **kwargs):
+        def _read(self, *args, **kwargs) -> DataFrame:
             _df = self._read(*args, **kwargs)
             assert_schema(cls.schema, _df.schem)
             return _df
@@ -49,4 +50,4 @@ class Table(ABC):
         cls.read = _read
 
     def read(self) -> DataFrame:
-        return self.spark.table(self.fully_quallified_name)
+        return self.spark.table(self.fully_qualified_name)
