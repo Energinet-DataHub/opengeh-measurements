@@ -1,4 +1,4 @@
-import pyspark.sql.types as t
+﻿import pyspark.sql.types as t
 
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
