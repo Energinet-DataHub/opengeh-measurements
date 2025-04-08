@@ -19,17 +19,10 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
         )
 
     schema = t.StructType(
-        [  # metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in
+        [  # metering_point_id;settlement_month;period_from_date;period_to_date;move_in
             #
             # GSRN number
             t.StructField("metering_point_id", t.StringType(), not nullable),
-            #
-            # States whether the metering point has electrical heating in the period
-            # true:  The consumption metering has electrical heating in the stated period
-            # false: The consumption metering point was previously marked as having electrical
-            #        heating in the stated period, but this has been corrected
-            # <true | false>
-            t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
             #
             # Settlement month is 1st of January for all consumption with electrical heating except for
             # net settlement group 6, where the date is the scheduled meter reading date.

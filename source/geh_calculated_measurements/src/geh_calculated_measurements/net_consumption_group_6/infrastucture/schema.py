@@ -11,9 +11,6 @@ net_consumption_group_6_consumption_metering_point_periods_v1 = t.StructType(
         # GSRN number
         t.StructField("metering_point_id", t.StringType(), not nullable),
         #
-        # States whether the metering point has electrical heating in the period.
-        t.StructField("has_electrical_heating", t.BooleanType(), not nullable),
-        #
         # The settlement month. 1 is January, 12 is December.
         t.StructField("settlement_month", t.IntegerType(), not nullable),
         #

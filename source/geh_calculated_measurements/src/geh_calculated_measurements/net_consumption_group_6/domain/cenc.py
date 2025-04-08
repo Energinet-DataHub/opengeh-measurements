@@ -57,7 +57,7 @@ def calculate_cenc(
         .withColumn(
             "net_quantity",
             F.when(
-                F.col(ContractColumnNames.move_in) & F.col("has_electrical_heating"),
+                F.col(ContractColumnNames.move_in),
                 F.lit(ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING),
             )
             .when(F.col(ContractColumnNames.move_in), F.lit(ESTIMATED_CONSUMPTION_MOVE_IN))
@@ -110,7 +110,6 @@ def _join_parent_child_with_consumption(
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}"),
             F.col(f"consumption.{ContractColumnNames.period_from_date}"),
             F.col(f"consumption.{ContractColumnNames.period_to_date}"),
-            F.col(f"consumption.{ContractColumnNames.has_electrical_heating}"),
             F.col(f"consumption.{ContractColumnNames.settlement_month}"),
             F.col("consumption.move_in"),
         )

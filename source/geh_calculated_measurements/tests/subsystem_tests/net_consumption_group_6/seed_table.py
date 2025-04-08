@@ -54,7 +54,6 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     statements.append(f"""
     INSERT INTO {job_fixture.config.catalog_name}.{database}.{parent_table} (
         metering_point_id,
-        has_electrical_heating,
         settlement_month,
         period_from_date,
         period_to_date,
@@ -62,7 +61,6 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     )
     VALUES (
         '{parent_metering_point_id}',
-        {False},
         {1},
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
