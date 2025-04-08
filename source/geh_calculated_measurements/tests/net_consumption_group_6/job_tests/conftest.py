@@ -28,7 +28,7 @@ def gold_table_seeded(
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
         format="delta",
-        mode="overwrite",
+        mode="append",
     )
 
 
