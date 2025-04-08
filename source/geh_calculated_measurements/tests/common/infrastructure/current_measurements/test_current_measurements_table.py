@@ -1,6 +1,5 @@
-import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
-from zoneinfo import ZoneInfo
 
 import pytest
 from geh_common.data_products.measurements_core.measurements_gold.current_v1 import current_v1
@@ -23,12 +22,12 @@ def current_measurements(spark: SparkSession) -> CurrentMeasurementsTable:
 
 
 @pytest.fixture(scope="module")
-def valid_df(spark: SparkSession) -> DataFrame:
-    df = spark.createDataFrame(
+def expected(spark: SparkSession) -> DataFrame:
+    return spark.createDataFrame(
         [
             (
                 "123456789012345678",
-                datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
+                datetime(2023, 1, 1, 0, 0, 0, 0, timezone.utc),
                 Decimal("1.123"),
                 "measured",
                 "consumption",
@@ -36,17 +35,16 @@ def valid_df(spark: SparkSession) -> DataFrame:
         ],
         CurrentMeasurementsTable.schema,
     )
-    return df
 
 
-def test__(
+def test__current_measurements_read__has_correct_schema_and_records(
     current_measurements: CurrentMeasurementsTable,
-    valid_df: DataFrame,
+    expected: DataFrame,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # Arrange
     def mock_read() -> DataFrame:
-        return valid_df
+        return expected
 
     monkeypatch.setattr(current_measurements, "read", mock_read)
 
@@ -54,6 +52,6 @@ def test__(
     actual = current_measurements.read()
 
     # Assert
-    assert actual.collect() == valid_df.collect()
-    assert actual.schema == valid_df.schema
+    assert actual.collect() == expected.collect()
+    assert actual.schema == expected.schema
     assert actual.schema == current_v1
