@@ -16,3 +16,16 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then the transaction are persisted into the bronze quarantine table
     And are not available in the silver measurements table
+
+  Scenario Outline: Processing unspecified values should be quarantined
+    Given a row where the column <column> value is Unspecified
+    When streaming the submitted transaction to the Silver layer
+    Then the transaction are persisted into the bronze quarantine table
+    And are not available in the silver measurements table
+
+    Examples:
+    | column              |
+    | orchestration_type  |
+    | metering_point_type |
+    | resolution          |
+    | unit                |
