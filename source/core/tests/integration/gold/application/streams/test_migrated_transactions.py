@@ -4,9 +4,9 @@ from pytest_mock import MockerFixture
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
 from core.gold.application.streams import migrated_transactions_stream as mit
+from core.gold.infrastructure.config import GoldTableNames
 from core.settings.bronze_settings import BronzeSettings
-from core.settings.silver_settings import SilverSettings
-from core.silver.infrastructure.config import SilverTableNames
+from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
@@ -16,7 +16,7 @@ def test__migrated_transactions__should_save_in_silver_measurements(
     # Arrange
     mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
     bronze_settings = BronzeSettings()
-    silver_settings = SilverSettings()
+    gold_settings = GoldSettings()
 
     expected_transaction_id = "UnitTestingMigratedStream"
     bronze_migrated_transactions = MigratedTransactionsBuilder(spark).add_row(transaction_id=expected_transaction_id)
@@ -31,7 +31,7 @@ def test__migrated_transactions__should_save_in_silver_measurements(
     mit.stream_migrated_transactions_to_gold()
 
     # Assert
-    silver_table = spark.table(f"{silver_settings.silver_database_name}.{SilverTableNames.silver_measurements}").where(
+    silver_table = spark.table(f"{gold_settings.gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"transaction_id = '{expected_transaction_id}'"
     )
     assert silver_table.count() == 1

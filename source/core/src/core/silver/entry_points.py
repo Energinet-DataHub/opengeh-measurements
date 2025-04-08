@@ -1,4 +1,3 @@
-import core.silver.application.streams.migrated_transactions as migrated_transactions
 import core.silver.application.streams.submitted_transactions as submitted_transactions
 
 
