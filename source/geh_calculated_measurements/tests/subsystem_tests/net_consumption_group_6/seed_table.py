@@ -20,21 +20,22 @@ parent_metering_point_id = "170000050000000201"
 
 
 def _seed_gold_table(job_fixture: JobTestFixture) -> None:
+    year = datetime.now().year - 1
     gold_table_rows = [
         GoldTableRow(
             metering_point_id="170000000000000201",
-            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         ),
         GoldTableRow(
             metering_point_id="070000001500170200",
-            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
             metering_point_type=MeteringPointType.CONSUMPTION_FROM_GRID,
         ),
         GoldTableRow(
             metering_point_id="060000001500170200",
-            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
             metering_point_type=MeteringPointType.SUPPLY_TO_GRID,
         ),
