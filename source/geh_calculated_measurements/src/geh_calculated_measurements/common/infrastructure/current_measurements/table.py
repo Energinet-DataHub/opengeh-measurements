@@ -1,7 +1,7 @@
-from abc import ABC
+﻿from abc import ABC
 
 import pyspark.sql.types as t
-from geh_common.testing.dataframes import assert_schema
+from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
 
 
@@ -44,8 +44,8 @@ class Table(ABC):
 
         def _read(self, *args, **kwargs) -> DataFrame:
             _df = self._read(*args, **kwargs)
-            assert_schema(cls.schema, _df.schem)
-            return _df
+            assert_contract(_df.schema, cls.schema)
+            return _df.select(columns)
 
         cls.read = _read
 
