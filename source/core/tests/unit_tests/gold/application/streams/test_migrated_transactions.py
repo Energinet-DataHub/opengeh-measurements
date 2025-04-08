@@ -1,9 +1,9 @@
 from unittest import mock
 
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pytest_mock import MockerFixture
 
 from core.gold.application.streams import migrated_transactions_stream as mit
+from core.gold.domain.constants.streaming.query_names import QueryNames
 
 
 def test__migrated_transactions__should_call_expected(
@@ -62,5 +62,5 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     gold_mock_transform.assert_called_once_with(mock_transformed_to_silver_transactions)
     mock_append_if_not_exists.assert_called_once_with(
         mock_transformed_to_gold_transactions,
-        orchestration_type=GehCommonOrchestrationType.MIGRATION,
+        query_name=QueryNames.MIGRATIONS_TO_GOLD,
     )

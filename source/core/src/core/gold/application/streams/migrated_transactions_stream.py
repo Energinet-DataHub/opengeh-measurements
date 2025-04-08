@@ -1,4 +1,3 @@
-from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from pyspark.sql import DataFrame
 
 import core.bronze.application.config.spark_session as spark_session
@@ -24,6 +23,4 @@ def stream_migrated_transactions_to_gold() -> None:
 def _batch_operation(batch_df: DataFrame, batch_id: int) -> None:
     bronze_migrated_as_silver = silver_migrations_transformations.transform(batch_df)
     gold_measurements = gold_migrations_transformations.transform_silver_to_gold(bronze_migrated_as_silver)
-    GoldMeasurementsRepository().append_if_not_exists(
-        gold_measurements, orchestration_type=GehCommonOrchestrationType.MIGRATION
-    )
+    GoldMeasurementsRepository().append_if_not_exists(gold_measurements, query_name=QueryNames.MIGRATIONS_TO_GOLD)

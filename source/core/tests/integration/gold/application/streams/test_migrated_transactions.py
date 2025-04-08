@@ -31,7 +31,7 @@ def test__migrated_transactions__should_save_in_gold_measurements(
     mit.stream_migrated_transactions_to_gold()
 
     # Assert
-    silver_table = spark.table(f"{gold_settings.gold_database_name}.{GoldTableNames.gold_measurements}").where(
+    gold_table = spark.table(f"{gold_settings.gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"transaction_id = '{expected_transaction_id}'"
     )
-    assert silver_table.count() == 1
+    assert gold_table.count() == 24

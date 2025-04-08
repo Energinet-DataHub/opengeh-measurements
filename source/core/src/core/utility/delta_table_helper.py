@@ -9,7 +9,7 @@ def append_if_not_exists(
     dataframe: DataFrame,
     table: str,
     merge_columns: list[str],
-    target_filters: Optional[dict[str, str]] = None,
+    target_filters: Optional[dict[str, list[str]]] = None,
 ) -> None:
     """Append to table unless there are duplicates based on merge columns.
 
@@ -31,11 +31,9 @@ def append_if_not_exists(
     ]
 
     if target_filters is not None:
-        target_filter_list = [
-            f"{current_alias_table_name}.{column_name} <=> {target_filters[column_name]}"
-            for column_name in target_filters
-        ]
-        merge_check_list += target_filter_list
+        for column_name in target_filters:
+            allowed_column_values = ",".join([f"'{x}'" for x in target_filters[column_name]])
+            merge_check_list.append(f"{current_alias_table_name}.{column_name} in ({allowed_column_values})")
 
     merge_check = " AND ".join(merge_check_list)
 
