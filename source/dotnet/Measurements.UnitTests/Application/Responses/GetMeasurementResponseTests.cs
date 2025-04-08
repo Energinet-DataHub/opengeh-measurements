@@ -6,7 +6,7 @@ using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Responses;
+namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
 public class GetMeasurementResponseTests
