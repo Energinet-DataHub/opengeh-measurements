@@ -42,6 +42,7 @@ class GoldMeasurementsRepository:
             GoldMeasurementsColumnNames.transaction_creation_datetime,
         ]
 
+    # We need to filter on specific orchestration types per stream, to avoid overlapping writes crashing streams.
     def _get_possible_orchestration_types_for_stream(
         self,
         query_name: QueryNames,
