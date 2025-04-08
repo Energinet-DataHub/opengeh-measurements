@@ -86,7 +86,7 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     # Arrange
     valid_df_with_extra_col = valid_df.withColumn("extra_col", F.lit("extra_value"))
 
-    def mock_read_table(*args, **kwargs):
+    def mock_read_table(*args, **kwargs) -> DataFrame:
         return valid_df_with_extra_col
 
     monkeypatch.setattr(CurrentMeasurementsTable, "_read", mock_read_table)
