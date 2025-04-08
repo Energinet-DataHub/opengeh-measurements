@@ -15,5 +15,7 @@ public class MeasurementResult(ExpandoObject raw)
 
     public string Quality => _raw.quality;
 
+    public string Resolution => _raw.resolution;
+
     public Instant Created => Instant.FromDateTimeOffset(_raw.created);
 }

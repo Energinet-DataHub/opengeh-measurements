@@ -28,6 +28,7 @@ public class GetMeasurementResponse
                     measurement.Quantity,
                     QualityParser.ParseQuality(measurement.Quality),
                     UnitParser.ParseUnit(measurement.Unit),
+                    ResolutionParser.ParseResolution(measurement.Resolution),
                     measurement.Created))
             .ToList();
 

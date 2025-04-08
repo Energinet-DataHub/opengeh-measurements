@@ -88,7 +88,7 @@ public class MeasurementsControllerTests
 
     private static string CreateExpected()
     {
-        return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Created":"2023-10-15T21:00:00Z"}]}""";
+        return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z"}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()
@@ -100,6 +100,7 @@ public class MeasurementsControllerTests
         raw.observation_time = date;
         raw.quantity = 42;
         raw.quality = "measured";
+        raw.resolution = "PT1H";
         raw.created = date;
         return raw;
     }
