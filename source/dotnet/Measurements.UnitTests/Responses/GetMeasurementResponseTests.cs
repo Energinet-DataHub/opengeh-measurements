@@ -28,14 +28,14 @@ public class GetMeasurementResponseTests
 
         // Assert
         Assert.Equal(3, actual.Points.Count);
-        Assert.All(actual.Points, p =>
+        foreach (var point in actual.Points)
         {
-            Assert.Equal(Instant.FromDateTimeOffset(date), p.ObservationTime);
-            Assert.Equal(42, p.Quantity);
-            Assert.Equal(Unit.kWh, p.Unit);
-            Assert.Equal(Quality.Measured, p.Quality);
-            Assert.Equal(Instant.FromDateTimeOffset(date), p.Created);
-        });
+            Assert.Equal(Instant.FromDateTimeOffset(date), point.ObservationTime);
+            Assert.Equal(42, point.Quantity);
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Instant.FromDateTimeOffset(date), point.Created);
+        }
     }
 
     [Theory]

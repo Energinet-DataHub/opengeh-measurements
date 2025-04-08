@@ -53,6 +53,7 @@ public class MeasurementsClientTests
         httpClientFactoryMock
             .Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
+
         return httpClientFactoryMock;
     }
 

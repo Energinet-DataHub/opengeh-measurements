@@ -27,9 +27,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(24, actual.Points.Count);
-        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
-        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.Points.All(p => p.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture) == startDate));
+        foreach (var point in actual.Points)
+        {
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(startDate, point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
+        }
     }
 
     [Fact]

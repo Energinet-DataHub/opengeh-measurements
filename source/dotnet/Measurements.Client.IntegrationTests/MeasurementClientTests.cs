@@ -22,9 +22,17 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
 
         // Assert
         Assert.Equal(24, measurements.MeasurementPositions.Count());
-        Assert.All(measurements.MeasurementPositions, position =>
+        AssertAllPointsInPositionsEqualsExpected(measurements, Quality.Measured);
+    }
+
+    private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements, Quality expectedQuality)
+    {
+        foreach (var position in measurements.MeasurementPositions)
         {
-            Assert.All(position.MeasurementPoints, point => Assert.Equal(Quality.Measured, point.Quality));
-        });
+            foreach (var point in position.MeasurementPoints)
+            {
+                Assert.Equal(expectedQuality, point.Quality);
+            }
+        }
     }
 }
