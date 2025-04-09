@@ -6,6 +6,9 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from geh_common.data_products.electricity_market_measurements_input import (
+    missing_measurements_log_metering_point_periods_v1,
+)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -181,4 +184,11 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
         schema=net_consumption_group_6_child_metering_point_v1,
         table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+    )
+    create_table(
+        spark,
+        database_name=missing_measurements_log_metering_point_periods_v1.database_name,
+        table_name=missing_measurements_log_metering_point_periods_v1.view_name,
+        schema=missing_measurements_log_metering_point_periods_v1.schema,
+        table_location=f"{missing_measurements_log_metering_point_periods_v1.database_name}/{missing_measurements_log_metering_point_periods_v1.view_name}",
     )

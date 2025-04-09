@@ -1,3 +1,8 @@
+from re import M
+
+from tests.missing_measurements_log import MISSING_MEASUREMENTS_LOG_TESTS_DIR
+
+
 class ElectricityMarketMeasurementsInputDatabaseDefinition:
     """This class defines names for the database and tables related to electricity market measurements.
 
@@ -9,3 +14,4 @@ class ElectricityMarketMeasurementsInputDatabaseDefinition:
     NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS = (
         "net_consumption_group_6_consumption_metering_point_periods_v1"
     )
+    MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS = "missing_measurements_log_metering_point_periods_v1"
