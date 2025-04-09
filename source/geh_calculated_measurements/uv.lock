@@ -368,15 +368,15 @@ wheels = [
 
 [[package]]
 name = "delta-spark"
-version = "3.2.0"
+version = "3.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "importlib-metadata" },
     { name = "pyspark" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/38/06/a64cc4e17fe959cf60dc126bf3283fc9f22fc91f000b7f3f5e465338022d/delta-spark-3.2.0.tar.gz", hash = "sha256:641967828e47c64805f8c746513da80bea24b5f19b069cdcf64561cd3692e11d", size = 22147 }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/a4/d2c4638ee561b5986c355e9b0a2f245d86597370fe8d1c2b2b6942ec4b74/delta-spark-3.3.0.tar.gz", hash = "sha256:bf163a60eaebd362f84f941066a7ca400bb63553f5ffb4924873a2b2ad4811a8", size = 22483 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/8e/bb778f5049aa371bf80a7a781b237eb10ef104f8736fe00d25fcfee80c2b/delta_spark-3.2.0-py3-none-any.whl", hash = "sha256:c4ff3fa7218e58a702cb71eb64384b0005c4d6f0bbdd0fe0b38a53564d946e09", size = 21186 },
+    { url = "https://files.pythonhosted.org/packages/a7/fc/e57607f6685d13ad71c93f1c63ceabd1eff667c4ca0ebea733a8f37eb711/delta_spark-3.3.0-py3-none-any.whl", hash = "sha256:bd28e455e1e59bf3c74ab2ba71cfa14fffd9cfa1c55c9fb522448acc68674881", size = 21919 },
 ]
 
 [[package]]
@@ -476,10 +476,10 @@ requires-dist = [
     { name = "azure-core", specifier = "==1.32.0" },
     { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
     { name = "configargparse", specifier = "==1.7.0" },
-    { name = "delta-spark", specifier = "==3.2.0" },
-    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.2" },
+    { name = "delta-spark", specifier = "==3.3.0" },
+    { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.4" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
-    { name = "pyspark", specifier = "==3.5.1" },
+    { name = "pyspark", specifier = "==3.5.3" },
     { name = "python-dateutil", specifier = "==2.8.2" },
     { name = "tomli", specifier = ">=2.2.1" },
 ]
@@ -497,8 +497,8 @@ dev = [
 
 [[package]]
 name = "geh-common"
-version = "5.6.2"
-source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.2#eef28712072cfc1e55ecc42e162fa03c3f452126" }
+version = "5.6.4"
+source = { git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.4#9ca6e5456abaf667cded961bb6f0b4a13c791028" }
 dependencies = [
     { name = "azure-core" },
     { name = "azure-identity" },
@@ -1070,12 +1070,12 @@ crypto = [
 
 [[package]]
 name = "pyspark"
-version = "3.5.1"
+version = "3.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "py4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/73/e5/c9eb78cc982dafb7b5834bc5c368fe596216c8b9f7c4b4ffa104c4d2ab8f/pyspark-3.5.1.tar.gz", hash = "sha256:dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910", size = 316955685 }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/90/cb80c8cf194958ab9a3242851c62fa5aef1a0b42f2d9642f1e2eca098005/pyspark-3.5.3.tar.gz", hash = "sha256:68b7cc0c0c570a7d8644f49f40d2da8709b01d30c9126cc8cf93b4f84f3d9747", size = 317304325 }
 
 [[package]]
 name = "pytest"
