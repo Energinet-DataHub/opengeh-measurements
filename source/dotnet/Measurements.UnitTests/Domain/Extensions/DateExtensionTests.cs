@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Domain.Extensions;
 
-public class DateExtensionTests
+public class InstantExtensionTests
 {
     [Theory]
     [InlineData(2025, 3, 29, 23,  "2025-03-30")]
