@@ -11,7 +11,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.tabl
 class CurrentMeasurementsTable(Table):
     def __init__(self, catalog_name: str) -> None:
         self.fully_qualified_name = f"{catalog_name}.{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
-        # super().__init__()
+        super().__init__()
 
     metering_point_id = T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False)
     observation_time = T.StructField(ContractColumnNames.observation_time, T.TimestampType(), False)
