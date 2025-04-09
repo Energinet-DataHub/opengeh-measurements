@@ -5,7 +5,13 @@ from datetime import timedelta
 import pytest
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from azure.monitor.query import LogsQueryClient, LogsQueryPartialResult, LogsQueryResult, LogsQueryStatus
+from azure.monitor.query import (
+    LogsQueryClient,
+    LogsQueryError,
+    LogsQueryPartialResult,
+    LogsQueryResult,
+    LogsQueryStatus,
+)
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
@@ -25,13 +31,13 @@ class JobTestFixture:
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
-        secret_client = SecretClient(
-            vault_url=f"https://{self.config.shared_keyvault_name}.vault.azure.net/",
-            credential=credentials,
-        )
-        self.azure_logs_query_client = LogsQueryClient(credentials)
-        azure_log_analytics_workspace_id = secret_client.get_secret("log-shared-workspace-id").value
+        secret_client = SecretClient(vault_url=self.config.shared_keyvault_url, credential=credentials)
+        azure_log_analytics_workspace_id = secret_client.get_secret(
+            self.config.azure_log_analytics_workspace_id_secret_name
+        ).value
         assert azure_log_analytics_workspace_id is not None, "The Azure log analytics workspace ID cannot be empty."
+
+        self.azure_logs_query_client = LogsQueryClient(credentials)
         self.azure_log_analytics_workspace_id = azure_log_analytics_workspace_id
 
     def _get_job_by_name(self, job_name: str) -> BaseJob:
@@ -70,23 +76,67 @@ class JobTestFixture:
         while elapsed_time < timeout_minutes * 60:
             response = self.ws.statement_execution.get_statement(response.statement_id)
             if response.status.state not in [StatementState.RUNNING, StatementState.PENDING, StatementState.SUCCEEDED]:
-                raise ValueError(f"Statement execution failed with state {response.status.state}.")
+                raise ValueError(
+                    f"Statement execution failed with state {response.status.state} and error {response.status.error}"
+                )
             if response.status.state == StatementState.SUCCEEDED:
                 return response
             elapsed_time = time.time() - start_time
             print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
 
+    def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> LogsQueryError:
+        err = {
+            "code": 500,
+            "message": "An error occurred while querying the logs.",
+            "details": None,
+        }
+        if isinstance(response, LogsQueryResult):
+            err["details"] = {
+                "tables": {
+                    t.name: {
+                        "nrows": len(t.rows),
+                        "columns": [col for col in t.columns],
+                    }
+                    for t in response.tables
+                },
+                "status": response.status,
+                "statistics": response.statistics,
+            }
+        elif isinstance(response, LogsQueryPartialResult):
+            if response.partial_error is None:
+                err["details"] = {
+                    "tables": {
+                        t.name: {
+                            "nrows": len(t.rows),
+                            "columns": [col for col in t.columns],
+                        }
+                        for t in response.partial_data
+                    },
+                    "status": response.status,
+                    "statistics": response.statistics,
+                }
+            else:
+                err = response.partial_error
+        return LogsQueryError(**err)
+
     def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
         response = self.azure_logs_query_client.query_workspace(
-            self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
+            self.azure_log_analytics_workspace_id, query, timespan=None
         )
         if response.status == LogsQueryStatus.SUCCESS and len(response.tables) > 0 and len(response.tables[0].rows) > 0:
             return response
         else:
-            error = response.partial_error
-            if error is not None:
-                raise ValueError(f"Query failed with error: {error}")
+            error = self._error_from_response(response)
+            error_msg = f"""
+            Failed to execute query:
+            --- Query ---
+            {query}
+
+            --- Error ---
+            {error}
+            """
+            raise ValueError(error_msg)
 
 
 class JobTest(abc.ABC):

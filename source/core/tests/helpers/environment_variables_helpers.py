@@ -39,3 +39,8 @@ def set_test_environment_variables() -> None:
     os.environ["DATABRICKS_WORKSPACE_URL"] = "workspace-url"
     os.environ["DATABRICKS_TOKEN"] = "token"
     os.environ["DATABRICKS_JOBS"] = "job1,job2"
+
+
+def set_subsystem_test_environment_variables() -> None:
+    os.environ["GOLD_CONTAINER_NAME"] = "gold"
+    os.environ["GOLD_DATABASE_NAME"] = "measurements_gold"

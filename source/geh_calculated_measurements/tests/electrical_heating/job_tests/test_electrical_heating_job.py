@@ -17,7 +17,8 @@ from tests.electrical_heating.job_tests import get_test_files_folder_path
 def test_execute(
     spark: SparkSession,
     gold_table_seeded: Any,  # Used implicitly
-    calculated_measurements_table_created: Any,  # Used implicitly
+    migrations_executed: None,  # Used implicitly
+    external_dataproducts_created: None,  # Used implicitly
     dummy_logging: Any,  # Used implicitly
     monkeypatch,
 ) -> None:
