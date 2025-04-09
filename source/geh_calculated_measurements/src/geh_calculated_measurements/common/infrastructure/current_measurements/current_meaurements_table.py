@@ -20,4 +20,5 @@ class CurrentMeasurementsTable(Table):
     metering_point_type = T.StructField(ContractColumnNames.metering_point_type, T.StringType(), False)
 
     def read(self) -> DataFrame:
+        print("here-------------------------------------------------------")
         return self.spark.table(self.fully_qualified_name)

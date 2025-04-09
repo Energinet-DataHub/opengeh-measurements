@@ -45,9 +45,15 @@ class Table(ABC):
         # Store a reference to the original read method of the subclass before it is overridden.
         # This allows the original read method to be called later, even after it has been replaced
         # by the custom _read method.
+
+        # The idea is to inject a custom read method into the subclass that will
+        # perform additional checks and transformations on the DataFrame before returning it.
+        # TODO cls.read -> cls._read -> cls.read
+
         cls._read = cls.read
 
         def _read(self, *args, **kwargs) -> DataFrame:
+            print("here2-------------------------------------------------------")
             _df = self._read(*args, **kwargs)
 
             # Assert the actual schema against the contract schema
@@ -62,4 +68,5 @@ class Table(ABC):
 
     @abstractmethod
     def read(self) -> DataFrame:
+        print("here3-------------------------------------------------------")
         pass
