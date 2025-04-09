@@ -12,7 +12,7 @@ from core.bronze.infrastructure.repositories.migrated_transactions_repository im
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
 
-def test__read__should_return_the_correct_dataframe(spark: SparkSession, migrations_executed: None) -> None:
+def test__read__should_return_the_correct_dataframe(spark: SparkSession) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
 
@@ -24,7 +24,7 @@ def test__read__should_return_the_correct_dataframe(spark: SparkSession, migrati
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_none_when_empty(
-    spark: SparkSession, migrations_executed: None, mocker: MockFixture
+    spark: SparkSession, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
@@ -41,7 +41,7 @@ def test__calculate_latest_created_timestamp_that_has_been_migrated__should_retu
 
 
 def test__calculate_latest_created_timestamp_that_has_been_migrated__should_return_correct_datetime(
-    spark: SparkSession, migrations_executed: None, mocker: MockFixture
+    spark: SparkSession, mocker: MockFixture
 ) -> None:
     # Arrange
     repo = MigratedTransactionsRepository(spark)
