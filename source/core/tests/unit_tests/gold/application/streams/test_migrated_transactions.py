@@ -41,8 +41,13 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     # Arrange
     batch_id = 1
     mock_migrated_transactions = mock.Mock()
+    mock_filtered = mock.Mock()
     mock_transformed_to_silver_transactions = mock.Mock()
     mock_transformed_to_gold_transactions = mock.Mock()
+    silver_mock_filter = mocker.patch(
+        f"{mit.__name__}.silver_migrations_transformations.filter_away_rows_older_than_2017",
+        return_value=mock_filtered,
+    )
     silver_mock_transform = mocker.patch(
         f"{mit.__name__}.silver_migrations_transformations.transform",
         return_value=mock_transformed_to_silver_transactions,
@@ -58,7 +63,8 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     mit._batch_operation(mock_migrated_transactions, batch_id)
 
     # Assert
-    silver_mock_transform.assert_called_once_with(mock_migrated_transactions)
+    silver_mock_filter.assert_called_once_with(mock_migrated_transactions)
+    silver_mock_transform.assert_called_once_with(mock_filtered)
     gold_mock_transform.assert_called_once_with(mock_transformed_to_silver_transactions)
     mock_append_if_not_exists.assert_called_once_with(
         mock_transformed_to_gold_transactions,
