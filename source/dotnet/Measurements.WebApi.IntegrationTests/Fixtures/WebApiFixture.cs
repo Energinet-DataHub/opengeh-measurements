@@ -106,7 +106,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality",  false),
         };
 
-        return [.. dates.SelectMany(values => CreateRow(values))];
+        return [.. dates.SelectMany(CreateRow)];
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
