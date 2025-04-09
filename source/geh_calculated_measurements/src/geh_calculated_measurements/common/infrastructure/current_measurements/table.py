@@ -1,4 +1,4 @@
-from abc import ABC
+﻿from abc import ABC, abstractmethod
 
 import pyspark.sql.types as t
 from geh_common.testing.dataframes import assert_contract
@@ -12,14 +12,15 @@ class Table(ABC):
     columns: list[str]
 
     def __init__(self) -> None:
+        # TODO Ask about this
+        self.spark = SparkSession.builder.getOrCreate()
+
         if not hasattr(self, "fully_qualified_name"):
             raise AttributeError("Table must define a fully qualified name.")
         if not hasattr(self, "schema"):
             raise AttributeError("Table must define a schema.")
         if not hasattr(self, "spark"):
             raise AttributeError("Table must define a Spark session.")
-
-        self.spark = SparkSession.builder.getOrCreate()
 
     @classmethod
     def __init_subclass__(cls) -> None:
@@ -40,6 +41,10 @@ class Table(ABC):
 
         cls.schema = t.StructType(schema)
         cls.columns = columns
+
+        # Store a reference to the original read method of the subclass before it is overridden.
+        # This allows the original read method to be called later, even after it has been replaced
+        # by the custom _read method.
         cls._read = cls.read
 
         def _read(self, *args, **kwargs) -> DataFrame:
@@ -49,11 +54,12 @@ class Table(ABC):
             assert_contract(_df.schema, self.schema)
 
             # Only select the columns defined in the respective subclass' schema (stored in cls.columns)
-            _df = _df.select(*self.columns)
+            return _df.select(*self.columns)
 
-            return _df
-
+        # Replaces the original read method of the subclass with a custom _read method.
+        # This is done dynamically at the time the subclass is created.
         cls.read = _read
 
+    @abstractmethod
     def read(self) -> DataFrame:
-        return self.spark.table(self.fully_qualified_name)
+        pass

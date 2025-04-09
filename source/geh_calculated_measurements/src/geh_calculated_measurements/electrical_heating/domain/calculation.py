@@ -5,7 +5,7 @@ from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
-from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsTable
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -16,7 +16,7 @@ from geh_calculated_measurements.electrical_heating.domain.transformations.commo
 
 @use_span()
 def execute(
-    current_measurements: CurrentMeasurements,
+    current_measurements_table: CurrentMeasurementsTable,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
@@ -32,7 +32,7 @@ def execute(
 
     # It's important that time series are aggregated hourly before converting to local time.
     # The reason is that when moving from DST to standard time, the same hour is duplicated in local time.
-    time_series_points_hourly = calculate_hourly_quantity(current_measurements.df)
+    time_series_points_hourly = calculate_hourly_quantity(current_measurements_table.read())
 
     # Add observation time in local time
     time_series_points_hourly = time_series_points_hourly.select(
@@ -49,7 +49,7 @@ def execute(
 
     # Get old electrical heating in local time
     old_electrical_heating = trans.get_daily_energy_in_local_time(
-        current_measurements.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
+        current_measurements_table.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
     )
 
     # Filter out unchanged electrical heating
