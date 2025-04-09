@@ -1,4 +1,5 @@
 import pyspark.sql.types as T
+from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
@@ -17,3 +18,7 @@ class CurrentMeasurementsTable(Table):
     quantity = T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False)
     quality = T.StructField(ContractColumnNames.quality, T.StringType(), False)
     metering_point_type = T.StructField(ContractColumnNames.metering_point_type, T.StringType(), False)
+
+    def read(self) -> DataFrame:
+        print("here-------------------------------------------------------")  # noqa: T201
+        return self.spark.table(self.fully_qualified_name)

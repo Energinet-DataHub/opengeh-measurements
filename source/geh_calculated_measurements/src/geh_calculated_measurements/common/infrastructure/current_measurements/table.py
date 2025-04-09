@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import pyspark.sql.types as t
 from geh_common.testing.dataframes import assert_contract
@@ -72,6 +72,7 @@ class Table(ABC):
         # This is done dynamically at the time the subclass is created.
         cls.read = _read
 
+    @abstractmethod
     def read(self) -> DataFrame:
-        print("here-------------------------------------------------------")  # noqa: T201
-        return self.spark.table(self.fully_qualified_name)
+        print("here3-------------------------------------------------------")  # noqa: T201
+        pass
