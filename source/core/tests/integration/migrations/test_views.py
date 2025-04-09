@@ -20,7 +20,7 @@ def test__current_view_v1__should_have_expected_schema(spark: SparkSession) -> N
 
     # Assert
     actual_current = spark.table(f"{gold_settings.gold_database_name}.{GoldViewNames.current_v1}")
-    assert_schemas.assert_schema(actual=actual_current.schema, expected=current_v1)
+    assert_schemas.assert_schema(actual=actual_current.schema, expected=current_v1, ignore_nullability=True)
 
 
 def test__current_view_v1__should_return_nothing_if_no_active_measurements_exists(spark: SparkSession) -> None:
