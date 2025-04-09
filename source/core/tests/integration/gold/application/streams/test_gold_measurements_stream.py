@@ -12,7 +12,9 @@ from core.silver.infrastructure.config import SilverTableNames
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
-def test__stream_measurements_silver_to_gold__append_to_gold_measurements(spark: SparkSession) -> None:
+def test__stream_measurements_silver_to_gold__append_to_gold_measurements(
+    spark: SparkSession, mock_checkpoint_path
+) -> None:
     # Arrange
     metering_point_id = identifier_helper.create_random_metering_point_id()
     silver_measurements = SilverMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
