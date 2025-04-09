@@ -48,8 +48,8 @@ class Table(ABC):
             # Assert the actual schema against the contract schema
             assert_contract(_df.schema, self.schema)
 
-            # Only select the columns defined in the respective subclass' schema
-            _df = _df.select(*[field.name for field in self.schema.fields])
+            # Only select the columns defined in the respective subclass' schema (stored in cls.columns)
+            _df = _df.select(*self.columns)
 
             return _df
 
