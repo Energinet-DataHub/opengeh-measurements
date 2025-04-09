@@ -85,4 +85,5 @@ enum Resolution {
   R_UNSPECIFIED = 0;
   R_PT15M = 1;
   R_PT1H = 2;
+  R_P1M = 3;
 }
