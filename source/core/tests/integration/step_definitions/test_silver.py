@@ -1,5 +1,6 @@
 """Streaming from Bronze to Silver feature tests."""
 
+import pyspark.sql.functions as F
 from pyspark.sql import SparkSession
 from pytest_bdd import given, parsers, scenarios, then, when
 
@@ -270,7 +271,7 @@ def _(spark: SparkSession, key: str):
     """are not quarantined in the bronze quarantine table."""
     bronze_invalid_table = spark.table(
         f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}"
-    ).where(f"key = '{key}'")
+    ).where(F.col("key") == key)
 
     assert bronze_invalid_table.count() == 1
 
