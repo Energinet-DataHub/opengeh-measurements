@@ -11,7 +11,7 @@ from tests.helpers.builders.migrated_transactions_builder import MigratedTransac
 
 
 def test__migrated_transactions__should_save_in_silver_measurements(
-    mock_checkpoint_path, spark: SparkSession, migrations_executed, mocker: MockerFixture
+    mock_checkpoint_path, spark: SparkSession, mocker: MockerFixture
 ) -> None:
     # Arrange
     mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
