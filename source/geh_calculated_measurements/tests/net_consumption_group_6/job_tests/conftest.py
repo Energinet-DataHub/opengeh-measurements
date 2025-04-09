@@ -1,3 +1,4 @@
+import random
 from datetime import datetime, timezone
 
 import pytest
@@ -18,6 +19,31 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema im
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
+def create_random_metering_point_id(position=8, digit=9):
+    id = "".join(random.choice("0123456789") for _ in range(18))
+    return id[:position] + str(digit) + id[position + 1 :]
+
+
+@pytest.fixture(scope="class")
+def parent_metering_point_id() -> str:
+    return create_random_metering_point_id()
+
+
+@pytest.fixture(scope="class")
+def child_net_consumption_metering_point() -> str:
+    return create_random_metering_point_id()
+
+
+@pytest.fixture(scope="class")
+def child_supply_to_grid_metering_point() -> str:
+    return create_random_metering_point_id()
+
+
+@pytest.fixture(scope="class")
+def child_consumption_from_grid_metering_point() -> str:
+    return create_random_metering_point_id()
+
+
 @pytest.fixture(autouse=True)
 def gold_table_seeded(
     spark: SparkSession,
@@ -33,12 +59,18 @@ def gold_table_seeded(
 
 
 @pytest.fixture
-def electricity_market_tables_seeded(spark) -> None:
+def electricity_market_tables_seeded(
+    spark: SparkSession,
+    parent_metering_point_id: str,
+    child_consumption_from_grid_metering_point: str,
+    child_net_consumption_metering_point: str,
+    child_supply_to_grid_metering_point: str,
+) -> None:
     # PARENT
     df = spark.createDataFrame(
         [
             (
-                170000050000000201,
+                parent_metering_point_id,
                 False,
                 1,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
@@ -48,7 +80,7 @@ def electricity_market_tables_seeded(spark) -> None:
         ],
         schema=net_consumption_group_6_consumption_metering_point_periods_v1,
     )
-    df.write.format("delta").mode("overwrite").saveAsTable(
+    df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
     )
 
@@ -56,29 +88,29 @@ def electricity_market_tables_seeded(spark) -> None:
     df = spark.createDataFrame(
         [
             (
-                150000001500170200,
+                child_net_consumption_metering_point,
                 "net_consumption",
-                170000050000000201,
+                parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
-                "060000001500170200",
+                child_supply_to_grid_metering_point,
                 "supply_to_grid",
-                170000050000000201,
+                parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
-                "070000001500170200",
+                child_consumption_from_grid_metering_point,
                 "consumption_from_grid",
-                170000050000000201,
+                parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
         ],
         schema=net_consumption_group_6_child_metering_point_v1,
     )
-    df.write.format("delta").mode("overwrite").saveAsTable(
+    df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
     )

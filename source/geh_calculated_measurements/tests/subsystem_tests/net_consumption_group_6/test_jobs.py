@@ -16,7 +16,13 @@ job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 @pytest.mark.skip(reason="The test is failing because the seeded data lacks the date prior the calculation date.")
 class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self):
+    def fixture(
+        self,
+        parent_metering_point_id: str,
+        child_net_consumption_metering_point: str,
+        child_supply_to_grid_metering_point: str,
+        child_consumption_from_grid_metering_point: str,
+    ):
         config = EnvironmentConfiguration()
         # Construct fixture
         base_job_fixture = JobTestFixture(
@@ -26,15 +32,33 @@ class TestNetConsumptionGroup6(JobTest):
         )
 
         # Remove previously inserted seeded data
-        delete_seeded_data(base_job_fixture)
+        delete_seeded_data(
+            base_job_fixture,
+            parent_metering_point_id,
+            child_net_consumption_metering_point,
+            child_supply_to_grid_metering_point,
+            child_consumption_from_grid_metering_point,
+        )
 
         # Seed gold table
-        _seed_gold_table(base_job_fixture)
+        _seed_gold_table(base_job_fixture, parent_metering_point_id)
 
         # Seed electricity market
-        seed_electricity_market_tables(base_job_fixture)
+        seed_electricity_market_tables(
+            base_job_fixture,
+            parent_metering_point_id,
+            child_net_consumption_metering_point,
+            child_supply_to_grid_metering_point,
+            child_consumption_from_grid_metering_point,
+        )
 
         yield base_job_fixture
 
         # Remove previously inserted seeded data
-        delete_seeded_data(base_job_fixture)
+        delete_seeded_data(
+            base_job_fixture,
+            parent_metering_point_id,
+            child_net_consumption_metering_point,
+            child_supply_to_grid_metering_point,
+            child_consumption_from_grid_metering_point,
+        )
