@@ -145,8 +145,9 @@ def migrations_executed(spark: SparkSession) -> None:
 @pytest.fixture(scope="session")
 def external_dataproducts_created(spark: SparkSession) -> None:
     """Create external dataproducts (databases, tables and views) as needed by tests."""
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
 
+    # Create measurements gold database and tables
+    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
         database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
@@ -155,9 +156,8 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
 
-    # Removed duplicate call to create_table for MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
+    # Create missing measurements log database and tables
     create_database(spark, MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME)
-
     create_table(
         spark,
         database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
@@ -166,8 +166,8 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )
 
+    # Create net consumption group 6 database and tables
     create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
-
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
