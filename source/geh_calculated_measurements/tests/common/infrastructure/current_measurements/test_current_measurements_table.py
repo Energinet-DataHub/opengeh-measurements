@@ -65,7 +65,7 @@ def test__when_invalid_contract__raises_with_useful_message(
     def mock_read_table(*args, **kwargs) -> DataFrame:
         return invalid_df
 
-    monkeypatch.setattr(CurrentMeasurementsTable, "_read", mock_read_table)
+    monkeypatch.setattr(current_measurements_table, "_read", mock_read_table)
 
     # Assert
     with pytest.raises(
@@ -89,7 +89,7 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     def mock_read_table(*args, **kwargs) -> DataFrame:
         return valid_df_with_extra_col
 
-    monkeypatch.setattr(CurrentMeasurementsTable, "_read", mock_read_table)
+    monkeypatch.setattr(current_measurements_table, "_read", mock_read_table)
 
     # Act
     actual = current_measurements_table.read()
