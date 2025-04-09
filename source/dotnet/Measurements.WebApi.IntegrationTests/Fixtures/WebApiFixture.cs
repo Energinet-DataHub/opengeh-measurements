@@ -98,19 +98,19 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", "PT1H", true),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
-            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", "PT1H",  false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured",  false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", true),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality",  false),
         };
 
         return [.. dates.SelectMany(values => CreateRow(values))];
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
-        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, string Resolution, bool IsCancelled) values)
+        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreationDate = values.TransactionCreationDate;
@@ -125,7 +125,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             $"{i}.4",
             $"'{values.Quality}'",
             $"'{FormatString(transactionCreationDateTime)}'",
-            $"'{values.Resolution}'",
+            "'PT1H'",
             values.IsCancelled ? "true" : "false",
             $"'{FormatString(observationDateTime)}'",
         });

@@ -33,6 +33,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         {
             Assert.Equal(Unit.kWh, point.Unit);
             Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Resolution.Hourly, point.Resolution);
             Assert.Equal(startDate, point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
         }
     }
