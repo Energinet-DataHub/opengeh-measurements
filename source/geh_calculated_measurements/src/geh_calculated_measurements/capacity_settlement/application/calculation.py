@@ -23,18 +23,18 @@ from geh_calculated_measurements.common.domain import (
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
-    CurrentMeasurementsRepository,
+    CurrentMeasurementsTable,
 )
 
 
 @use_span()
 def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
     # Create repositories to obtain data frames
-    current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
+    current_measurements_table = CurrentMeasurementsTable(args.catalog_name)
     electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
 
     # Read data frames
-    current_measurements = current_measurements_repository.read_current_measurements()
+    current_measurements = current_measurements_table.read()
     metering_point_periods = electricity_market_repository.read_metering_point_periods()
 
     # Execute the domain logic
