@@ -19,7 +19,7 @@ def test__with_version__adds_version_column_to_dataframe(spark: SparkSession) ->
     assert actual_row["version"] == str(version)
 
 
-def test__with_version__when_protobuf_message_cannot_be_parsed__should_return_invalid_dataframe(
+def test__with_version__when_protobuf_message_cannot_be_parsed__returns_none_in_version(
     spark: SparkSession,
 ) -> None:
     # Arrange
