@@ -5,8 +5,7 @@ description = "A combined package for capacity settlement, electrical heating an
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "delta-spark==3.3.0",
-    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.6.2#subdirectory=source/geh_common",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.6.4#subdirectory=source/geh_common",
     "python-dateutil==2.8.2",
     "tomli>=2.2.1",
 ]
