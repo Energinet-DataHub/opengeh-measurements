@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import pyspark.sql.types as t
 from geh_common.testing.dataframes import assert_contract
@@ -50,8 +50,9 @@ class Table(ABC):
         # perform additional checks and transformations on the DataFrame before returning it.
         #
         # The flow is:
-        # When the subclass read is called (cls.read) it calls the base _read which  perform additional
-        # checks and transformations and when call the subcalls read (cls.read).
+        # When the subclass read is called (cls.read), it calls the base read (_read) which calls the
+        # subclass read (cls.read) to performs additional checks and transformations before return the
+        # modified dataframe.
 
         cls._read = cls.read
 
@@ -71,7 +72,6 @@ class Table(ABC):
         # This is done dynamically at the time the subclass is created.
         cls.read = _read
 
-    @abstractmethod
     def read(self) -> DataFrame:
-        print("here3-------------------------------------------------------")  # noqa: T201
-        pass
+        print("here-------------------------------------------------------")  # noqa: T201
+        return self.spark.table(self.fully_qualified_name)
