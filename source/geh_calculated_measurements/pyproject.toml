@@ -11,7 +11,7 @@ dependencies = [
     "delta-spark==3.3.0",
     "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.6.4#subdirectory=source/geh_common",
     "pydantic-settings>=2.7.1",
-    "pyspark==3.5.1",
+    "pyspark==3.5.3",
     "python-dateutil==2.8.2",
     "tomli>=2.2.1",
 ]
