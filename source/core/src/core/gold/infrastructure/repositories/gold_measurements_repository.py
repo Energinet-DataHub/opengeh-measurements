@@ -26,11 +26,21 @@ class GoldMeasurementsRepository:
             self.spark,
             gold_measurements,
             self.table,
-            self._merge_columns(),
+            self._merge_columns(query_name),
             target_filters=orchestration_type_filters,
         )
 
-    def _merge_columns(self) -> list[str]:
+    def _merge_columns(self, query_name: QueryNames) -> list[str]:
+        if query_name == QueryNames.MIGRATIONS_TO_GOLD:
+            return [
+                GoldMeasurementsColumnNames.metering_point_id,
+                GoldMeasurementsColumnNames.observation_time,
+                GoldMeasurementsColumnNames.transaction_creation_datetime,
+                GoldMeasurementsColumnNames.transaction_id,
+                GoldMeasurementsColumnNames.resolution,
+                GoldMeasurementsColumnNames.is_cancelled,
+            ]
+
         return [
             GoldMeasurementsColumnNames.metering_point_id,
             GoldMeasurementsColumnNames.orchestration_type,
