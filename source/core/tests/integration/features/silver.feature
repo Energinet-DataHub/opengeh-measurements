@@ -35,76 +35,47 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table            
 
-  Scenario Outline: Processing submitted transaction with valid metering point type
-    Given measurements where the metering point type has value <metering_point_type>
+Scenario Outline: Processing submitted transaction with valid <field>
+    Given measurements where the <field> has value <value>
     When streaming the submitted transaction to the Silver layer
     Then the measurements are available in the silver measurements table
 
-    Examples:
-    | metering_point_type                 |
-    | MPT_ANALYSIS                        |
-    | MPT_CAPACITY_SETTLEMENT             |
-    | MPT_COLLECTIVE_NET_CONSUMPTION      |
-    | MPT_COLLECTIVE_NET_PRODUCTION       |
-    | MPT_CONSUMPTION                     |
-    | MPT_CONSUMPTION_FROM_GRID           |
-    | MPT_CONSUMPTION                     |
-    | MPT_ELECTRICAL_HEATING              |
-    | MPT_EXCHANGE                        |
-    | MPT_EXCHANGE_REACTIVE_ENERGY        |
-    | MPT_INTERNAL_USE                    |
-    | MPT_NET_CONSUMPTION                 |
-    | MPT_NET_FROM_GRID                   |
-    | MPT_NET_LOSS_CORRECTION             |
-    | MPT_NET_PRODUCTION                  |
-    | MPT_NET_TO_GRID                     |
-    | MPT_NOT_USED                        |
-    | MPT_OTHER_CONSUMPTION               |
-    | MPT_OTHER_PRODUCTION                |
-    | MPT_OWN_PRODUCTION                  |
-    | MPT_PRODUCTION                      |
-    | MPT_SUPPLY_TO_GRID                  |
-    | MPT_SURPLUS_PRODUCTION_GROUP_6      |
-    | MPT_TOTAL_CONSUMPTION               |
-    | MPT_VE_PRODUCTION                   |
-    | MPT_WHOLESALE_SERVICES_INFORMATION  |
-
-  Scenario Outline: Processing submitted transaction with valid resolution
-    Given measurements where the resolution has value <resolution>
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
-
-    Examples:
-    | resolution |
-    | R_PT15M    |
-    | R_PT1H     |
-
-  Scenario: Processing submitted transaction with valid orchestration type
-    Given measurements where the orchestration type has value `OT_SUBMITTED_MEASURE_DATA`
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
-
-  Scenario Outline: Processing submitted transaction wih valid quality
-    Given measurements where the quality has value <quality>
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
-
-    Examples:
-    | quality |
-    | Q_MISSING     |
-    | Q_ESTIMATED   |
-    | Q_MEASURED    |
-    | Q_CALCULATED  |
-
-  Scenario Outline: Processing submitted transaction with valid unit
-    Given measurements where the unit has value <unit>
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
-
-    Examples:
-    | unit       |
-    | U_KWH      |
-    | U_KW       |
-    | U_MWH      |
-    | U_TONNE     |
-    | U_KVARH     |
+  Examples:
+    | field               | value                          |
+    | metering_point_type | MPT_ANALYSIS                   |
+    | metering_point_type | MPT_CAPACITY_SETTLEMENT        |
+    | metering_point_type | MPT_COLLECTIVE_NET_CONSUMPTION |
+    | metering_point_type | MPT_COLLECTIVE_NET_PRODUCTION  |
+    | metering_point_type | MPT_CONSUMPTION                |
+    | metering_point_type | MPT_CONSUMPTION_FROM_GRID      |
+    | metering_point_type | MPT_ELECTRICAL_HEATING         |
+    | metering_point_type | MPT_EXCHANGE                   |
+    | metering_point_type | MPT_EXCHANGE_REACTIVE_ENERGY   |
+    | metering_point_type | MPT_INTERNAL_USE               |
+    | metering_point_type | MPT_NET_CONSUMPTION            |
+    | metering_point_type | MPT_NET_FROM_GRID              |
+    | metering_point_type | MPT_NET_LOSS_CORRECTION        |
+    | metering_point_type | MPT_NET_PRODUCTION             |
+    | metering_point_type | MPT_NET_TO_GRID                |
+    | metering_point_type | MPT_NOT_USED                   |
+    | metering_point_type | MPT_OTHER_CONSUMPTION          |
+    | metering_point_type | MPT_OTHER_PRODUCTION           |
+    | metering_point_type | MPT_OWN_PRODUCTION             |
+    | metering_point_type | MPT_PRODUCTION                 |
+    | metering_point_type | MPT_SUPPLY_TO_GRID             |
+    | metering_point_type | MPT_SURPLUS_PRODUCTION_GROUP_6 |
+    | metering_point_type | MPT_TOTAL_CONSUMPTION          |
+    | metering_point_type | MPT_VE_PRODUCTION              |
+    | metering_point_type | MPT_WHOLESALE_SERVICES_INFORMATION |
+    | resolution          | R_PT15M                        |
+    | resolution          | R_PT1H                         |
+    | orchestration_type  | OT_SUBMITTED_MEASURE_DATA      |
+    | quality             | Q_MISSING                      |
+    | quality             | Q_ESTIMATED                    |
+    | quality             | Q_MEASURED                     |
+    | quality             | Q_CALCULATED                   |
+    | unit                | U_KWH                          |
+    | unit                | U_KW                           |
+    | unit                | U_MWH                          |
+    | unit                | U_TONNE                        |
+    | unit                | U_KVARH                        |
