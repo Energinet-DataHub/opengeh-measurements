@@ -12,6 +12,7 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     CurrentMeasurements,
 )
+from geh_calculated_measurements.common.infrastructure import initialize_spark
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
 )
@@ -91,7 +92,24 @@ def calculate_daily(
         )
     )
 
-    df = cenc_w_last_run.select(
+    # Filter out rows where last_run is >= execution_start_datetime
+    filtered_cenc = cenc_w_last_run.filter(F.col("last_run") < F.col("execution_start_datetime"))
+
+    # If all rows were filtered out, return an empty dataframe with the required schema
+    if filtered_cenc.count() == 0:
+        schema = T.StructType(
+            [
+                T.StructField(ContractColumnNames.metering_point_id, T.StringType(), True),
+                T.StructField(ContractColumnNames.date, T.DateType(), True),
+                T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), True),
+            ]
+        )
+        spark = initialize_spark()
+        empty_df = spark.createDataFrame([], schema)
+        return empty_df
+
+    # Process only valid date ranges
+    df = filtered_cenc.select(
         "*",
         F.explode(
             F.sequence(F.date_add(F.col("last_run"), 1), F.col("execution_start_datetime"), F.expr("INTERVAL 1 DAY"))
