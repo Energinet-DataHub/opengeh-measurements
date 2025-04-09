@@ -9,7 +9,7 @@ from core.settings.bronze_settings import BronzeSettings
 from tests.helpers.builders.submitted_transactions_quarantined_builder import SubmittedTransactionsQuarantinedBuilder
 
 
-def test__append__should_append_to_table(spark: SparkSession, migrations_executed) -> None:
+def test__append__should_append_to_table(spark: SparkSession) -> None:
     # Arrange
     transaction_id = identifier_helper.generate_random_string()
     submitted_transactions_quarantined = (
