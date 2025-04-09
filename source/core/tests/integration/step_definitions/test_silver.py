@@ -141,21 +141,11 @@ def _(spark: SparkSession, field: str, value: str):
     """Generic step for setting a field on measurements."""
 
     orchestration_instance_id = identifier_helper.generate_random_string()
+    value = (
+        ValueBuilder(spark).add_row(**{field: value}, orchestration_instance_id=orchestration_instance_id).build()  # type: ignore
+    )
 
-    # Fields that go in PointsBuilder
-    if field == "quality":
-        points = PointsBuilder(spark).add_row(**{field: value}).build()  # type: ignore
-        value_obj = (
-            ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
-        )
-
-    # All other fields go directly to ValueBuilder
-    else:
-        value_obj = (
-            ValueBuilder(spark).add_row(**{field: value}, orchestration_instance_id=orchestration_instance_id).build()  # type: ignore
-        )
-
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value_obj).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
 
     table_helper.append_to_table(
         submitted_transaction,
@@ -163,6 +153,24 @@ def _(spark: SparkSession, field: str, value: str):
         BronzeTableNames.bronze_submitted_transactions_table,
     )
 
+    return orchestration_instance_id
+
+
+@given(
+    parsers.parse("measurements points where the quality has value {quality}"),
+    target_fixture="expected_orchestration_id",
+)
+def _(spark: SparkSession, quality: str):
+    """measurements points where the quality has value <quality>."""
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    points = PointsBuilder(spark).add_row(quality=quality).build()
+    value = ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
     return orchestration_instance_id
 
 

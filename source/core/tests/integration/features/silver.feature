@@ -70,12 +70,20 @@ Scenario Outline: Processing submitted transaction with valid <field>
     | resolution          | R_PT15M                        |
     | resolution          | R_PT1H                         |
     | orchestration_type  | OT_SUBMITTED_MEASURE_DATA      |
-    | quality             | Q_MISSING                      |
-    | quality             | Q_ESTIMATED                    |
-    | quality             | Q_MEASURED                     |
-    | quality             | Q_CALCULATED                   |
     | unit                | U_KWH                          |
     | unit                | U_KW                           |
     | unit                | U_MWH                          |
     | unit                | U_TONNE                        |
     | unit                | U_KVARH                        |
+
+  Scenario Outline: Processing submitted transaction points with valid quality
+    Given measurements points where the quality has value <quality>
+    When streaming the submitted transaction to the Silver layer
+    Then the measurements are available in the silver measurements table
+
+    Examples:
+    | quality |
+    | Q_MISSING     |
+    | Q_ESTIMATED   |
+    | Q_MEASURED    |
+    | Q_CALCULATED  |
