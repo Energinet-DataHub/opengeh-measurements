@@ -1,8 +1,3 @@
-from re import M
-
-from tests.missing_measurements_log import MISSING_MEASUREMENTS_LOG_TESTS_DIR
-
-
 class ElectricityMarketMeasurementsInputDatabaseDefinition:
     """This class defines names for the database and tables related to electricity market measurements.
 
