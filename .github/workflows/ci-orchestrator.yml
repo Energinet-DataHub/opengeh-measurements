@@ -51,7 +51,6 @@ jobs:
       tests_directory: tests/integration
       create_subsystem_release: true
       environment: AzureAuth
-      pytest_addopts: --bdd-report="measurements_core_integration_test_report.html"
       azure_tenant_id: ${{ vars.integration_test_azure_tenant_id }}
       azure_subscription_id: ${{ vars.integration_test_azure_subscription_id }}
       azure_spn_id: ${{ vars.integration_test_azure_spn_id_oidc }}
