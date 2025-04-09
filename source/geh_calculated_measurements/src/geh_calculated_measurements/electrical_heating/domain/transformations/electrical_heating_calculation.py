@@ -159,7 +159,11 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
 
     no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(
         periods_with_hourly_energy.where(
-            F.col(ContractColumnNames.net_settlement_group).isNull() | (~F.col("is_end_of_period"))
+            (
+                F.col(ContractColumnNames.net_settlement_group).isNull()
+                | ~F.col(ContractColumnNames.net_settlement_group).isin(2, 6)
+            )
+            | ~F.col("is_end_of_period")
         )
     )
 
