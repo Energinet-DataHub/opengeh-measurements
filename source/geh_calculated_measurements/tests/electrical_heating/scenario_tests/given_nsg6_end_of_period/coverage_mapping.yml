@@ -32,19 +32,6 @@ notes: |
   - D15/End:              |_______________________________________________________________________________________________________________________________|
   - D15/Up to End:                                                                                                                                        |_________________
 
-  CASE 5 (Sent out all values after Up To End)
-  SMRD 3
-                                               |2024  Mar                                     |2025   | Mar
-                                               |__..._|_______________________________________|_______|
-  Measurement data:                                   +   +   +   +   +   +   +   +   +   +   +   +
-  Written to D14 up to end:                           +   +   +   +   +   +   +   +   +   +   +   +
-  Different D14 values after End of Period:                                   +   +   +
-  Sent to market/gold after End of Period:            +   +   +   +   +   +   +   +   +   +   +   +
-
-
-
-
-
 cases_tested:
   "Electrical Heating Tests":
     - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
