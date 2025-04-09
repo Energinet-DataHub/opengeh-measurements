@@ -142,10 +142,6 @@ def _(spark: SparkSession, field: str, value: str):
 
     orchestration_instance_id = identifier_helper.generate_random_string()
 
-    # Normalize value if surrounded by backticks, necessary for parsing
-    if value.startswith("`") and value.endswith("`"):
-        value = value[1:-1]
-
     # Fields that go in PointsBuilder
     if field == "quality":
         points = PointsBuilder(spark).add_row(**{field: value}).build()  # type: ignore
