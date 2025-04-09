@@ -1,4 +1,5 @@
 import uuid
+from typing import Generator
 
 import pytest
 
@@ -29,11 +30,11 @@ class TestElectricalHeating(JobTest):
         return JobTestFixture(
             environment_configuration=config,
             job_name="ElectricalHeating",
-            job_job_parametereters={"orchestration-instance-id": uuid.uuid4()},
+            job_parameters={"orchestration-instance-id": uuid.uuid4()},
         )
 
     @pytest.fixture(autouse=True, scope="class")
-    def patch_repositories(self, fixture: JobTestFixture) -> None:
+    def patch_repositories(self, fixture: JobTestFixture) -> Generator[None, None, None]:
         with pytest.MonkeyPatch.context() as monkeypatch:
             # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
             monkeypatch.setattr(

@@ -1,4 +1,5 @@
 import uuid
+from typing import Any, Generator
 
 import pytest
 
@@ -16,7 +17,7 @@ job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 @pytest.mark.skip(reason="The test is failing because the seeded data lacks the date prior the calculation date.")
 class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self):
+    def fixture(self, external_dataproducts_created) -> Generator[JobTestFixture, Any, None]:
         config = EnvironmentConfiguration()
         # Construct fixture
         base_job_fixture = JobTestFixture(
