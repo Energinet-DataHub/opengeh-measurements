@@ -48,12 +48,17 @@ class Table(ABC):
 
         # The idea is to inject a custom read method into the subclass that will
         # perform additional checks and transformations on the DataFrame before returning it.
-        # TODO cls.read -> cls._read -> cls.read
+        #
+        # The flow is:
+        # When the subclass read is called (cls.read) it calls the base _read which  perform additional
+        # checks and transformations and when call the subcalls read (cls.read).
 
         cls._read = cls.read
 
         def _read(self, *args, **kwargs) -> DataFrame:
-            print("here2-------------------------------------------------------")
+            print("here2-------------------------------------------------------")  # noqa: T201
+
+            # Call the original read method of the subclass
             _df = self._read(*args, **kwargs)
 
             # Assert the actual schema against the contract schema
@@ -68,5 +73,5 @@ class Table(ABC):
 
     @abstractmethod
     def read(self) -> DataFrame:
-        print("here3-------------------------------------------------------")
+        print("here3-------------------------------------------------------")  # noqa: T201
         pass
