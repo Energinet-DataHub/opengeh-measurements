@@ -57,8 +57,6 @@ class Table(ABC):
         cls._read = cls.read
 
         def _read(self, *args, **kwargs) -> DataFrame:
-            print("here2-------------------------------------------------------")  # noqa: T201
-
             # Call the original read method of the subclass
             _df = self._read(*args, **kwargs)
 
@@ -74,5 +72,4 @@ class Table(ABC):
 
     @abstractmethod
     def read(self) -> DataFrame:
-        print("here3-------------------------------------------------------")  # noqa: T201
         pass
