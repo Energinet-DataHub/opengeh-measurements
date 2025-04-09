@@ -18,7 +18,7 @@ job_parameters = {
 
 class TestMissingMeasurementsLog(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self, external_dataproducts_created):
+    def fixture(self):
         config = EnvironmentConfiguration()
         base_job_fixture = JobTestFixture(
             environment_configuration=config,

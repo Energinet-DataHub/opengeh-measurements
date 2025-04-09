@@ -15,7 +15,7 @@ class TestElectricalHeating(JobTest):
     """
 
     @pytest.fixture(scope="class")
-    def fixture(self, external_dataproducts_created) -> JobTestFixture:
+    def fixture(self):
         config = EnvironmentConfiguration()
         fixture = JobTestFixture(
             environment_configuration=config,
