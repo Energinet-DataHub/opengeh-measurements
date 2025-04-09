@@ -134,95 +134,39 @@ def _(spark: SparkSession):
 
 
 @given(
-    parsers.parse("measurements where the metering point type has value {metering_point_type}"),
+    parsers.parse("measurements where the {field} has value {value}"),
     target_fixture="expected_orchestration_id",
 )
-def _(metering_point_type: str, spark: SparkSession):
-    """measurements where the metering point type has value <metering_point_type>."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = (
-        ValueBuilder(spark)
-        .add_row(metering_point_type=metering_point_type, orchestration_instance_id=orchestration_instance_id)
-        .build()
-    )
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return orchestration_instance_id
+def _(spark: SparkSession, field: str, value: str):
+    """Generic step for setting a field on measurements."""
 
-
-@given(
-    "measurements where the orchestration type has value `OT_SUBMITTED_MEASURE_DATA`",
-    target_fixture="expected_orchestration_id",
-)
-def _(spark: SparkSession):
-    """measurements where the orchestration type has value `OT_SUBMITTED_MEASURE_DATA`."""
     orchestration_instance_id = identifier_helper.generate_random_string()
-    value = (
-        ValueBuilder(spark)
-        .add_row(
-            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
-            orchestration_instance_id=orchestration_instance_id,
+
+    # Normalize value if surrounded by backticks, necessary for parsing
+    if value.startswith("`") and value.endswith("`"):
+        value = value[1:-1]
+
+    # Fields that go in PointsBuilder
+    if field == "quality":
+        points = PointsBuilder(spark).add_row(**{field: value}).build()  # type: ignore
+        value_obj = (
+            ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
         )
-        .build()
-    )
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+
+    # All other fields go directly to ValueBuilder
+    else:
+        value_obj = (
+            ValueBuilder(spark).add_row(**{field: value}, orchestration_instance_id=orchestration_instance_id).build()  # type: ignore
+        )
+
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value_obj).build()
+
     table_helper.append_to_table(
         submitted_transaction,
         BronzeSettings().bronze_database_name,
         BronzeTableNames.bronze_submitted_transactions_table,
     )
-    return orchestration_instance_id
 
-
-@given(parsers.parse("measurements where the quality has value {quality}"), target_fixture="expected_orchestration_id")
-def _(spark: SparkSession, quality: str):
-    """measurements where the quality has value <quality>."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    points = PointsBuilder(spark).add_row(quality=quality).build()
-    value = ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return orchestration_instance_id
-
-
-@given(
-    parsers.parse("measurements where the resolution has value {resolution}"),
-    target_fixture="expected_orchestration_id",
-)
-def _(spark: SparkSession, resolution: str):
-    """measurements where the resolution has value <resolution>."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = (
-        ValueBuilder(spark).add_row(resolution=resolution, orchestration_instance_id=orchestration_instance_id).build()
-    )
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return orchestration_instance_id
-
-
-@given(parsers.parse("measurements where the unit has value {unit}"), target_fixture="expected_orchestration_id")
-def _(spark: SparkSession, unit: str):
-    """measurements where the unit has value <unit>."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = ValueBuilder(spark).add_row(unit=unit, orchestration_instance_id=orchestration_instance_id).build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
     return orchestration_instance_id
 
 
