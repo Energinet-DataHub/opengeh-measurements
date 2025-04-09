@@ -47,7 +47,7 @@ def execute(
 
     # Calculate electrical heating in local time
     new_electrical_heating = trans.calculate_electrical_heating_in_local_time(
-        time_series_points_hourly, metering_point_periods
+        time_series_points_hourly, metering_point_periods, time_zone, execution_start_datetime
     )
 
     # Get old electrical heating in local time
