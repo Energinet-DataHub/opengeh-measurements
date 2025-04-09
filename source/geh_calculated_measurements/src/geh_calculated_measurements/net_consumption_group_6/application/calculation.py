@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
-    CurrentMeasurementsTable,
+    CurrentMeasurementsRepository,
 )
 from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
     NetConsumptionGroup6Args,
@@ -20,10 +20,10 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
-    current_measurements_table = CurrentMeasurementsTable(args.catalog_name)
+    current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
-    current_measurements = current_measurements_table.read()
+    current_measurements = current_measurements_repository.read_current_measurements()
     consumption_metering_point_periods = (
         electricity_market_repository.read_net_consumption_group_6_consumption_metering_point_periods()
     )
