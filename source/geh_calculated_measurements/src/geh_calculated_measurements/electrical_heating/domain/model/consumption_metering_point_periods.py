@@ -52,14 +52,14 @@ class ConsumptionMeteringPointPeriods(DataFrameWrapper):
             # GSRN number
             t.StructField("metering_point_id", t.StringType(), not nullable),
             #
-            # ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 99 )
+            # 0 | 1 | 2 | 3 | 4 | 5 | 6 | 99
             t.StructField("net_settlement_group", t.IntegerType(), not nullable),
             #
             # Settlement month is 1st of January for all consumption with electrical heating except for
             # net settlement group 6, where the date is the scheduled meter reading date.
             # The number of the month. 1 is January, 12 is December.
             # For all but settlement group 6 the month is January.
-            # ( 1 | 2 | 3 | ... | 12 )
+            # 1 | 2 | 3 | ... | 12
             t.StructField(
                 "settlement_month",
                 t.IntegerType(),
