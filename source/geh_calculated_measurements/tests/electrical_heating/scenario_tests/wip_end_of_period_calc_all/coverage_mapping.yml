@@ -21,4 +21,5 @@ notes: |
 
 
 cases_tested:
-
+  "Results Filtering":
+    "GIVEN the calculation type is end-of-period AND the previous result was up-to-end THEN we SHOULD ALWAYS generate a result for that MP/day"
