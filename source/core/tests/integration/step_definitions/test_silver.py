@@ -70,7 +70,7 @@ def _(spark):
         ValueBuilder(spark)
         .add_row(
             orchestration_instance_id=orchestration_instance_id,
-            metering_point_type=Unit.U_UNSPECIFIED.value,
+            unit=Unit.U_UNSPECIFIED.value,
         )
         .build()
     )
@@ -108,7 +108,21 @@ def _(spark):
 def _(spark: SparkSession):
     """invalid submitted measurements inserted into the bronze submitted table."""
     key = identifier_helper.generate_random_binary()
-    value = "invalid_protobuf_value"
+    value = identifier_helper.generate_random_binary()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return key
+
+
+@given("submitted measurements with unknown version inserted into the bronze submitted table", target_fixture="key")
+def _(spark: SparkSession):
+    """submitted measurements with unknown version inserted into the bronze submitted table."""
+    key = identifier_helper.generate_random_binary()
+    value = ValueBuilder(spark).add_row(version="9999999").build()
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
     table_helper.append_to_table(
         submitted_transaction,

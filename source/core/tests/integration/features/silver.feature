@@ -10,6 +10,11 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then measurements are persisted into the invalid bronze submitted transaction table
 
+  Scenario: Processing invalid submitted measurements
+    Given submitted measurements with unknown version inserted into the bronze submitted table
+    When streaming the submitted transaction to the Silver layer
+    Then measurements are persisted into the invalid bronze submitted transaction table    
+
   Scenario: Processing submitted transaction with unspecified resolution
     Given a submitted transaction with unspecified resolution
     When streaming the submitted transaction to the Silver layer
@@ -79,7 +84,7 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then the measurements are available in the silver measurements table
 
-  Scenario Outline: Processing submitted transaction with valid quality
+  Scenario Outline: Processing submitted transaction wih valid quality
     Given measurements where the quality has value <quality>
     When streaming the submitted transaction to the Silver layer
     Then the measurements are available in the silver measurements table
@@ -100,8 +105,6 @@ Feature: Streaming from Bronze to Silver
     | unit       |
     | U_KWH      |
     | U_KW       |
-    | U_MW       |
     | U_MWH      |
-    | U_TONN     |
-    | U_KVAR     |
-    | U_MVAR     |
+    | U_TONNE     |
+    | U_KVARH     |
