@@ -191,6 +191,28 @@ def _(spark: SparkSession):
     return orchestration_instance_id
 
 
+@given(
+    "duplicated valid submitted measurements inserted into the bronze submitted table",
+    target_fixture="expected_orchestration_id",
+)
+def _(spark: SparkSession):
+    """duplicated valid submitted measurements inserted into the bronze submitted table."""
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return orchestration_instance_id
+
+
 @when("streaming the submitted transaction to the Silver layer")
 def _(mock_checkpoint_path):
     """streaming the submitted transaction to the Silver layer."""

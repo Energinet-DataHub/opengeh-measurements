@@ -5,6 +5,11 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then the measurements are available in the silver measurements table
 
+  Scenario: Processing duplicated submitted measurements to Silver
+    Given duplicated valid submitted measurements inserted into the bronze submitted table
+    When streaming the submitted transaction to the Silver layer
+    Then the measurements are available in the silver measurements table    
+
   Scenario: Processing invalid submitted measurements
     Given invalid submitted measurements inserted into the bronze submitted table
     When streaming the submitted transaction to the Silver layer
