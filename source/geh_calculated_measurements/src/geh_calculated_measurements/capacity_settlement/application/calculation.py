@@ -17,10 +17,10 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
     CapacitySettlementRepository,
     ElectricityMarketRepository,
 )
+from geh_calculated_measurements.common.application.model import calculated_measurements_factory
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
 )
-from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,

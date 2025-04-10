@@ -8,10 +8,10 @@ from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
-from geh_calculated_measurements.common.domain.model.calculated_measurements import (
+from geh_calculated_measurements.common.application.model.calculated_measurements import (
     CalculatedMeasurements,
 )
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 
 UUID_NAMESPACE = uuid.UUID("539ba8c3-5d10-4aa9-81d5-632cfce33e18")
 """ Define a fixed UUID to use as the namespace for generating UUID v5 values. 
