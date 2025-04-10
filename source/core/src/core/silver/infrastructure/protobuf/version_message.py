@@ -10,12 +10,12 @@ def with_version(protobuf_message: DataFrame) -> DataFrame:
     message_name = "VersionMessage"
     message_alias = "version_message"
 
+    options = {"mode": "PERMISSIVE"}
+
     protobuf_message = protobuf_message.withColumn(
         message_alias,
         from_protobuf(
-            protobuf_message.value,
-            message_name,
-            descFilePath=DescriptorFilePaths.VersionMessage,
+            protobuf_message.value, message_name, descFilePath=DescriptorFilePaths.VersionMessage, options=options
         ),
     )
 
