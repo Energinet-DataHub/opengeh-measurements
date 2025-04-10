@@ -49,12 +49,6 @@ def transform(migrated_transactions: DataFrame) -> DataFrame:
     return measurements
 
 
-def filter_away_rows_older_than_2017(migrated_transactions: DataFrame) -> DataFrame:
-    return migrated_transactions.filter(
-        F.col(BronzeMigratedTransactionsColumnNames.valid_to_date) > "2016-12-31 23:00:00"
-    )
-
-
 def _reorganize_values_array_to_match_measurements() -> Column:
     return F.transform(
         F.col(BronzeMigratedTransactionsColumnNames.values),

@@ -2,6 +2,7 @@ from pyspark.sql import DataFrame
 
 import core.bronze.application.config.spark_session as spark_session
 import core.gold.domain.transformations.gold_measurements_transformations as gold_migrations_transformations
+import core.silver.domain.filters.migrations_filters as silver_migrations_filters
 import core.silver.domain.transformations.migrations_transformation as silver_migrations_transformations
 from core.bronze.infrastructure.repositories.migrated_transactions_repository import (
     MigratedTransactionsRepository,
@@ -21,7 +22,7 @@ def stream_migrated_transactions_to_gold() -> None:
 
 
 def _batch_operation(batch_df: DataFrame, batch_id: int) -> None:
-    batch_df_filtered = silver_migrations_transformations.filter_away_rows_older_than_2017(batch_df)
+    batch_df_filtered = silver_migrations_filters.filter_away_rows_older_than_2017(batch_df)
     bronze_migrated_as_silver = silver_migrations_transformations.transform(batch_df_filtered)
     gold_measurements = gold_migrations_transformations.transform_silver_to_gold(bronze_migrated_as_silver)
     GoldMeasurementsRepository().append_if_not_exists(gold_measurements, query_name=QueryNames.MIGRATIONS_TO_GOLD)

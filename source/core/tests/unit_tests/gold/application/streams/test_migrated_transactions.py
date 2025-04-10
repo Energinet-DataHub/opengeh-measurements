@@ -45,7 +45,7 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     mock_transformed_to_silver_transactions = mock.Mock()
     mock_transformed_to_gold_transactions = mock.Mock()
     silver_mock_filter = mocker.patch(
-        f"{mit.__name__}.silver_migrations_transformations.filter_away_rows_older_than_2017",
+        f"{mit.__name__}.silver_migrations_filters.filter_away_rows_older_than_2017",
         return_value=mock_filtered,
     )
     silver_mock_transform = mocker.patch(
