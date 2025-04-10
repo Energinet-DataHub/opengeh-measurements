@@ -19,7 +19,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
 )
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
-from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
+from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
     MeteringPointPeriodsDatabaseDefinition,
 )
@@ -162,7 +162,7 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         spark,
         database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
         table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
-        schema=MeteringPointPeriods.schema,
+        schema=MeteringPointPeriodsTable.schema,
         table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )
 
