@@ -15,7 +15,8 @@
     "GIVEN it is the day of winter daylight savings change THEN we should aggregate daily consumption for 25 hours AND last quarter of the day is UTC 22.45": true
 
   "Results Filtering":
-    "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should NOT generate a result for that MP/day": true
+    "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day": true
+    "GIVEN the calculation type is end-of-period AND the previous result was up-to-end THEN we SHOULD ALWAYS generate a result for that MP/day": true
 
   "Net Settlement Groups":
     "Electrical heating without net settlement group": true

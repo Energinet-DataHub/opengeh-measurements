@@ -1,4 +1,13 @@
 metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
+060000000600170200;750;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 0
+070000000600170200;1500;calculated;2023-12-31T23:00:00Z;net_consumption;Case 0
+150000000600170200;750;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 0
+060000000600170200;750;estimated;2024-01-01T23:00:00Z;consumption_from_grid;Case 0
+070000000600170200;1500;calculated;2024-01-01T23:00:00Z;net_consumption;Case 0
+150000000600170200;750;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 0
+060000000600170200;1500;estimated;2024-12-31T22:45:00Z;consumption_from_grid;Case 0
+070000000600170200;750;calculated;2024-12-31T22:45:00Z;net_consumption;Case 0
+150000000600170200;0;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 0
 170000000000600201;0;measured;2023-12-31T23:00:00Z;consumption;Case 1: 2024 Day 1 - Hour 1
 170000000000600201;92.277;measured;2023-12-31T23:15:00Z;consumption;Case 1: 2024 Day 1 - Hour 1
 170000000000600201;0;measured;2023-12-31T23:30:00Z;consumption;Case 1: 2024 Day 1 - Hour 1
@@ -218,9 +227,6 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000600203;3.742;measured;2024-10-28T20:00:00Z;consumption;Case 3 - day 6
 170000000000600203;16.237;measured;2024-10-28T21:00:00Z;consumption;Case 3 - day 6
 170000000000600203;7.393;measured;2024-10-28T22:00:00Z;consumption;Case 3 - day 6
-060000000600170200;750;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 0
-060000000600170200;750;estimated;2024-01-01T23:00:00Z;consumption_from_grid;Case 0
-060000000600170200;1500;estimated;2024-12-31T22:45:00Z;consumption_from_grid;Case 0
 070000000600170201;88.693;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 1: 2024 Day 1 - Hour 1
 070000000600170201;97.556;estimated;2023-12-31T23:15:00Z;consumption_from_grid;Case 1: 2024 Day 1 - Hour 1
 070000000600170201;209.755;estimated;2023-12-31T23:30:00Z;consumption_from_grid;Case 1: 2024 Day 1 - Hour 1
@@ -450,9 +456,6 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 070000000600170204;100;estimated;2025-01-31T22:45:00Z;consumption_from_grid;Case 4 - period 4 (non-leap): Day 16
 070000000600170204;5000;estimated;2025-01-31T23:00:00Z;consumption_from_grid;Case 4 - period 5 (Up to end): Day 1
 070000000600170204;5000;estimated;2025-02-28T22:45:00Z;consumption_from_grid;Case 4 - period 5 (Up to end): Day 28
-070000000600170200;1500;calculated;2023-12-31T23:00:00Z;net_consumption;Case 0
-070000000600170200;1500;calculated;2024-01-01T23:00:00Z;net_consumption;Case 0
-070000000600170200;750;calculated;2024-12-31T22:45:00Z;net_consumption;Case 0
 150000000600170201;0;calculated;2023-12-31T23:00:00Z;net_consumption;Case 1: 2024 Day 1 - Hour 1
 150000000600170201;92.277;calculated;2023-12-31T23:15:00Z;net_consumption;Case 1: 2024 Day 1 - Hour 1
 150000000600170201;0;calculated;2023-12-31T23:30:00Z;net_consumption;Case 1: 2024 Day 1 - Hour 1
@@ -682,9 +685,6 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 150000000600170204;50;calculated;2025-01-31T22:45:00Z;net_consumption;Case 4 - period 4 (non-leap): Day 16
 150000000600170204;2500;calculated;2025-01-31T23:00:00Z;net_consumption;Case 4 - period 5 (Up to end): Day 1
 150000000600170204;2500;calculated;2025-02-28T22:45:00Z;net_consumption;Case 4 - period 5 (Up to end): Day 28
-150000000600170200;750;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 0
-150000000600170200;750;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 0
-150000000600170200;0;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 0
 060000000600170201;132.888;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1
 060000000600170201;5.279;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1
 060000000600170201;234.592;measured;2023-12-31T23:30:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1
