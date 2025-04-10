@@ -2,6 +2,7 @@ import random
 from datetime import datetime, timezone
 from typing import Any, Generator
 
+import pyspark.sql.functions as F
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
@@ -52,6 +53,42 @@ def gold_table_seeded(
 ) -> None:
     file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
     time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+    time_series_points.write.saveAsTable(
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+        format="delta",
+        mode="append",
+    )
+
+
+@pytest.fixture
+def gold_table_seeded_randomized_metering_point(
+    spark: SparkSession,
+    parent_metering_point_id: str,
+    child_consumption_from_grid_metering_point: str,
+    child_net_consumption_metering_point: str,
+    child_supply_to_grid_metering_point: str,
+) -> None:
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
+    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+
+    randomized_metering_point_id_df = spark.createDataFrame(
+        [
+            (parent_metering_point_id, "consumption"),
+            (child_consumption_from_grid_metering_point, "consumption_from_grid"),
+            (child_net_consumption_metering_point, "net_consumption"),
+            (child_supply_to_grid_metering_point, "supply_to_grid"),
+        ],
+        schema=["new_metering_point_id", "metering_point_type"],
+    )
+    time_series_points = time_series_points.join(randomized_metering_point_id_df, on="metering_point_type", how="left")
+
+    time_series_points = time_series_points.select(
+        F.col("new_metering_point_id").alias("metering_point_id"),
+        "metering_point_type",
+        "observation_time",
+        "quantity",
+        "quality",
+    )
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
         format="delta",
