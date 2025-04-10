@@ -51,6 +51,16 @@ notes: |
   Measurement data:    ++
   Added to child:     nothing
 
+  CASE 8 - Change of net settlement group (but not to 2 or 6). Should be functionally equivalent.
+                      |2023       |2024       |2025
+  Parent start/end:   |------|----------------------...
+  Periods:            |______|____|___________|_____...
+  D06 start/end:             |----------------------...
+  D07 start/end:             |----------------------...
+  Measurement data:     +++   +++     +++      +++
+
+
+
 cases_tested:
   "Electrical Heating Tests":
     - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"

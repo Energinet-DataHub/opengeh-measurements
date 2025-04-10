@@ -1,6 +1,7 @@
-from .repository import Repository as Repository
+from geh_calculated_measurements.missing_measurements_log.infrastructure.metering_point_periods_table import (
+    MeteringPointPeriodsTable,
+)
 
 __all__ = [
-    # Electricity market repository, types, and database definitions
-    "Repository",
+    "MeteringPointPeriodsTable",
 ]

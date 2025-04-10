@@ -91,7 +91,11 @@ def calculate_daily(
         )
     )
 
-    df = cenc_w_last_run.select(
+    # Filter out rows where last_run is >= execution_start_datetime
+    filtered_cenc = cenc_w_last_run.filter(F.col("last_run") < F.col("execution_start_datetime"))
+
+    # Process only valid date ranges
+    df = filtered_cenc.select(
         "*",
         F.explode(
             F.sequence(F.date_add(F.col("last_run"), 1), F.col("execution_start_datetime"), F.expr("INTERVAL 1 DAY"))
