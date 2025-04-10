@@ -1,4 +1,4 @@
-﻿import pyspark.sql.types as T
+import pyspark.sql.types as T
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
