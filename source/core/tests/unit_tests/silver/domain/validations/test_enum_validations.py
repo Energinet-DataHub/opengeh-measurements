@@ -13,7 +13,7 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Persis
     Resolution,
     Unit,
 )
-from tests.helpers.builders.submitted_transactions_builder import PointsBuilder, UnpackedSubmittedTransactionsBuilder
+from tests.helpers.builders.submitted_transactions_value_builder import PointsBuilder, SubmittedTransactionsValueBuilder
 
 metering_point_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonMeteringPointType]
 orchestration_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonOrchestrationType]
@@ -37,7 +37,7 @@ def test__orchestration_type_enum_validations(
 ) -> None:
     # Arrange
     unpacked_submitted_transactions = (
-        UnpackedSubmittedTransactionsBuilder(spark).add_row(orchestration_type=orchestration_type).build()
+        SubmittedTransactionsValueBuilder(spark).add_row(orchestration_type=orchestration_type).build()
     )
 
     # Act
@@ -62,7 +62,7 @@ def test__quality_enum_validations(
 ) -> None:
     # Arrange
     points = PointsBuilder(spark).add_row(quality=quality).build()
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(points=points).build()
+    unpacked_submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
@@ -75,7 +75,7 @@ def test__quality_enum_validations_when_points_column_is_null__then_data_is_inva
     spark: SparkSession,
 ) -> None:
     # Arrange
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(points=None).build()
+    unpacked_submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(points=None).build()
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_quality_enum())
@@ -99,7 +99,7 @@ def test__metering_point_type_enum_validations(
 ) -> None:
     # Arrange
     unpacked_submitted_transactions = (
-        UnpackedSubmittedTransactionsBuilder(spark).add_row(metering_point_type=metering_point_type).build()
+        SubmittedTransactionsValueBuilder(spark).add_row(metering_point_type=metering_point_type).build()
     )
 
     # Act
@@ -123,7 +123,7 @@ def test__unit_enum_validations(
     expected_count: int,
 ) -> None:
     # Arrange
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(unit=unit).build()
+    unpacked_submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(unit=unit).build()
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_unit_enum())
@@ -146,7 +146,7 @@ def test__resolution_enum_validations(
     expected_count: int,
 ) -> None:
     # Arrange
-    unpacked_submitted_transactions = UnpackedSubmittedTransactionsBuilder(spark).add_row(resolution=resolution).build()
+    unpacked_submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(resolution=resolution).build()
 
     # Act
     actual = unpacked_submitted_transactions.filter(enum_validations.validate_resolution_enum())

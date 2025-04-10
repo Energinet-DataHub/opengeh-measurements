@@ -19,13 +19,9 @@ class TestData:
 def _(spark: SparkSession, kafka_fixture: KafkaFixture) -> TestData:
     orchestration_instance_id = identifier_helper.generate_random_string()
     metering_point_id = identifier_helper.create_random_metering_point_id()
-    value = (
-        ValueBuilder(spark)
-        .add_row(
-            orchestration_instance_id=orchestration_instance_id,
-            metering_point_id=metering_point_id,
-        )
-        .build()
+    value = ValueBuilder().build(
+        orchestration_instance_id=orchestration_instance_id,
+        metering_point_id=metering_point_id,
     )
     test_data = TestData(orchestration_instance_id, value)
     kafka_fixture.send_submitted_transactions_event(test_data.value)

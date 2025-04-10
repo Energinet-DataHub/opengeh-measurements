@@ -19,13 +19,9 @@ def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_subm
     # Arrange
     bronze_settings = BronzeSettings()
     expected_orchestration_id = identifier_helper.generate_random_string()
-    value = (
-        ValueBuilder(spark)
-        .add_row(
-            orchestration_instance_id=expected_orchestration_id,
-            metering_point_type=MeteringPointType.MPT_UNSPECIFIED,
-        )
-        .build()
+    value = ValueBuilder().build(
+        orchestration_instance_id=expected_orchestration_id,
+        metering_point_type=MeteringPointType.MPT_UNSPECIFIED,
     )
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
     table_helper.append_to_table(
@@ -52,7 +48,7 @@ def test__submitted_transactions__should_save_in_silver_measurements(
     bronze_settings = BronzeSettings()
     silver_settings = SilverSettings()
     expected_orchestration_id = identifier_helper.generate_random_string()
-    value = ValueBuilder(spark).add_row(orchestration_instance_id=expected_orchestration_id).build()
+    value = ValueBuilder().build(orchestration_instance_id=expected_orchestration_id)
     submitted_transactions = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
     table_helper.append_to_table(
         submitted_transactions,

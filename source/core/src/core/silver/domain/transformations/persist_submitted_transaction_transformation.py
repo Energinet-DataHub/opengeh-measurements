@@ -2,6 +2,7 @@ import pyspark.sql.functions as F
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_quality import QuantityQuality as GehCommonQuality
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import Column, DataFrame
 from pyspark.sql.types import DecimalType
@@ -14,6 +15,7 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,
+    Quality,
     Resolution,
     Unit,
 )
@@ -54,7 +56,7 @@ def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
                 (x.quantity.units + (x.quantity.nanos / 1_000_000_000))
                 .cast(DecimalType(18, 3))
                 .alias(SilverMeasurementsColumnNames.Points.quantity),
-                x.quality.alias(SilverMeasurementsColumnNames.Points.quality),
+                _align_quality(x.quality).alias(SilverMeasurementsColumnNames.Points.quality),
             ),
         ).alias(SilverMeasurementsColumnNames.points),
         F.lit(False).alias(SilverMeasurementsColumnNames.is_cancelled),
@@ -206,4 +208,22 @@ def _align_resolution() -> Column:
             GehCommonResolution.MONTH.value,
         )
         .otherwise(F.col(SilverMeasurementsColumnNames.resolution))
+    )
+
+
+def _align_quality(quality: Column) -> Column:
+    return (
+        F.when(
+            quality == Quality.Q_MEASURED,
+            GehCommonQuality.MEASURED.value,
+        )
+        .when(
+            quality == Quality.Q_ESTIMATED,
+            GehCommonQuality.ESTIMATED.value,
+        )
+        .when(
+            quality == Quality.Q_CALCULATED,
+            GehCommonQuality.CALCULATED.value,
+        )
+        .otherwise(quality)
     )
