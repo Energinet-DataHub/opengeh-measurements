@@ -14,7 +14,7 @@ cases_tested:
     - "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
 
   "Results Filtering":
-    - "GIVEN there is already an electrical heating MP measurement data for a day WHEN the calculated result is the same for that MP/day THEN we should NOT generate a result for that MP/day"
+    - "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day"
 
   "Net Settlement Groups":
     - "Electrical heating without net settlement group"

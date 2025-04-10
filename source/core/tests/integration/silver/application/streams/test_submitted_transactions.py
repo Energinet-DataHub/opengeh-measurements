@@ -12,7 +12,7 @@ from tests.helpers.builders.submitted_transactions_builder import SubmittedTrans
 
 
 def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_submitted_transactions_quarantined(
-    mock_checkpoint_path, spark: SparkSession, migrations_executed
+    mock_checkpoint_path, spark: SparkSession
 ) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
@@ -45,7 +45,6 @@ def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_subm
 def test__submitted_transactions__should_save_in_silver_measurements(
     mock_checkpoint_path,
     spark: SparkSession,
-    migrations_executed,
 ) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
