@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime
 from uuid import UUID
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
@@ -36,7 +36,7 @@ def create(
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
     time_zone: str,
-    transaction_creation_datetime: datetime = datetime.now(UTC),
+    transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurements:
     assert_schema(
         measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True, ignore_column_order=True
