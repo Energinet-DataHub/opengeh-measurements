@@ -77,7 +77,7 @@ def electricity_market_tables_seeded(spark) -> None:
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
         ],
-        schema=net_consumption_group_6_child_metering_points_v1,
+        schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
