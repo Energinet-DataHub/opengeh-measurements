@@ -21,7 +21,7 @@ from tests.helpers.builders.submitted_transactions_builder import (
     ValueBuilder,
 )
 
-scenarios("../features/silver.feature")
+scenarios("../features/stream_bronze_to_silver.feature")
 
 
 @given("a submitted transaction with unspecified resolution", target_fixture="expected_orchestration_id")
