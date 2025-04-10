@@ -27,3 +27,33 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000207;1;measured;2024-01-02T23:00:00Z;consumption;Case 7
 170000000000000207;1;measured;2024-01-03T23:00:00Z;consumption;Case 7
 170000000000000207;1;measured;2024-01-04T23:00:00Z;consumption;Case 7
+170000000000000208;2000;measured;2023-04-05T12:00:00Z;consumption;Case 8: Period 1, day 1
+170000000000000208;2000;measured;2023-04-06T12:00:00Z;consumption;Case 8: Period 1, day 2. Limit: 243*365*4000 = 2663.014
+170000000000000208;2000;measured;2023-04-07T12:00:00Z;consumption;Case 8: Period 1, day 3
+170000000000000208;1000;measured;2023-10-05T12:00:00Z;consumption;Case 8: Period 2, day 1
+060000000000170208;50;measured;2023-10-05T12:00:00Z;supply_to_grid;Case 8: Period 2, day 1
+070000000000170208;100;measured;2023-10-05T12:00:00Z;consumption_from_grid;Case 8: Period 2, day 1
+170000000000000208;1000;measured;2023-10-06T12:00:00Z;consumption;Case 8: Period 2, day 2. Limit: 122*365*4000 = 1336.986
+060000000000170208;50;measured;2023-10-06T12:00:00Z;supply_to_grid;Case 8: Period 2, day 2
+070000000000170208;100;measured;2023-10-06T12:00:00Z;consumption_from_grid;Case 8: Period 2, day 2
+170000000000000208;1000;measured;2023-10-07T12:00:00Z;consumption;Case 8: Period 2, day 3
+060000000000170208;50;measured;2023-10-07T12:00:00Z;supply_to_grid;Case 8: Period 2, day 3
+070000000000170208;100;measured;2023-10-07T12:00:00Z;consumption_from_grid;Case 8: Period 2, day 3
+170000000000000208;2500;measured;2024-03-05T12:00:00Z;consumption;Case 8: Period 3, day 1
+060000000000170208;50;measured;2024-03-05T12:00:00Z;supply_to_grid;Case 8: Period 3, day 1
+070000000000170208;100;measured;2024-03-05T12:00:00Z;consumption_from_grid;Case 8: Period 3, day 1
+170000000000000208;1500;measured;2024-03-06T12:00:00Z;consumption;Case 8: Period 3, day 2
+060000000000170208;50;measured;2024-03-06T12:00:00Z;supply_to_grid;Case 8: Period 3, day 2. Limit: 4000
+070000000000170208;100;measured;2024-03-06T12:00:00Z;consumption_from_grid;Case 8: Period 3, day 2
+170000000000000208;0;measured;2024-03-07T12:00:00Z;consumption;Case 8: Period 3, day 3
+060000000000170208;50;measured;2024-03-07T12:00:00Z;supply_to_grid;Case 8: Period 3, day 3
+070000000000170208;100;measured;2024-03-07T12:00:00Z;consumption_from_grid;Case 8: Period 3, day 3
+170000000000000208;2500;measured;2025-03-05T12:00:00Z;consumption;Case 8: Period 4, day 1
+060000000000170208;50;measured;2025-03-05T12:00:00Z;supply_to_grid;Case 8: Period 4, day 1
+070000000000170208;100;measured;2025-03-05T12:00:00Z;consumption_from_grid;Case 8: Period 4, day 1
+170000000000000208;1500;measured;2025-03-06T12:00:00Z;consumption;Case 8: Period 4, day 2
+060000000000170208;50;measured;2025-03-06T12:00:00Z;supply_to_grid;Case 8: Period 4, day 2. Limit: 4000
+070000000000170208;100;measured;2025-03-06T12:00:00Z;consumption_from_grid;Case 8: Period 4, day 2
+170000000000000208;0;measured;2025-03-07T12:00:00Z;consumption;Case 8: Period 4, day 3
+060000000000170208;50;measured;2025-03-07T12:00:00Z;supply_to_grid;Case 8: Period 4, day 3
+070000000000170208;100;measured;2025-03-07T12:00:00Z;consumption_from_grid;Case 8: Period 4, day 3
