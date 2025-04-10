@@ -3,7 +3,7 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold import current_v1
+from geh_common.data_products.measurements_core.measurements_gold.current_v1 import schema as current_v1
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
@@ -38,7 +38,7 @@ def valid_df(spark: SparkSession) -> DataFrame:
         ],
         CurrentMeasurements.schema,
     )
-    assert df.schema == current_v1.schema
+    assert df.schema == current_v1
     return df
 
 
@@ -83,4 +83,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = current_measurements_repository.read_current_measurements()
 
     # Assert
-    assert actual.df.schema == current_v1.schema
+    assert actual.df.schema == current_v1
