@@ -45,6 +45,8 @@ def pytest_collection_modifyitems(config, items) -> None:
         for item in items:
             if "subsystem_tests" in item.nodeid:
                 item.add_marker(skip_subsystem_tests)
+            if "integration" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
 
 
 @pytest.fixture(scope="module")
