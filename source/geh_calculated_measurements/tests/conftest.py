@@ -38,6 +38,15 @@ from tests import (
 from tests.testsession_configuration import TestSessionConfiguration
 
 
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    if not os.getenv("DATABRICKS_RUNTIME_VERSION"):
+        skip_subsystem_tests = pytest.mark.skip(reason="Skipping subsystem tests because you run locally")
+        for item in items:
+            if "subsystem_tests" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
+
+
 @pytest.fixture(scope="module")
 def dummy_logging() -> Generator[None, None, None]:
     """Ensure that logging hooks don't fail due to _TRACER_NAME not being set.
