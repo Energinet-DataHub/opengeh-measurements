@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import Table
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
-    MeteringPointPeriodsDatabaseDefinition,
+    ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 
 
@@ -16,7 +16,7 @@ class MeteringPointPeriodsTable(Table):
     """
 
     def __init__(self, catalog_name: str) -> None:
-        self.fully_qualified_name = f"{catalog_name}.{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}"
+        self.fully_qualified_name = f"{catalog_name}.{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.METERING_POINT_PERIODS}"
         super().__init__()
 
     metering_point_id = T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False)

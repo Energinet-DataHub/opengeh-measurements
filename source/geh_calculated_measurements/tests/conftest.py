@@ -21,14 +21,7 @@ from geh_calculated_measurements.database_migrations import MeasurementsCalculat
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
-    MeteringPointPeriodsDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema import (
-    net_consumption_group_6_child_metering_point_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
 )
 from tests import (
     SPARK_CATALOG_NAME,
@@ -156,29 +149,29 @@ def external_dataproducts_created(spark: SparkSession) -> None:
     )
 
     # Removed duplicate call to create_table for MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
-    create_database(spark, MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME)
-
-    create_table(
-        spark,
-        database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
-        table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
-        schema=MeteringPointPeriodsTable.schema,
-        table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
-    )
-
     create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
 
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1,
-        table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
+        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.METERING_POINT_PERIODS,
+        schema=MeteringPointPeriodsTable.schema,
+        table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.METERING_POINT_PERIODS}",
     )
-    create_table(
-        spark,
-        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
-        schema=net_consumption_group_6_child_metering_point_v1,
-        table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
-    )
+
+    # create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
+
+    # create_table(
+    #     spark,
+    #     database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+    #     table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
+    #     schema=net_consumption_group_6_consumption_metering_point_periods_v1,
+    #     table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
+    # )
+    # create_table(
+    #     spark,
+    #     database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+    #     table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
+    #     schema=net_consumption_group_6_child_metering_point_v1,
+    #     table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+    # )
