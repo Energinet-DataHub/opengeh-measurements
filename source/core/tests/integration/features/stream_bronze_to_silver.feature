@@ -20,25 +20,18 @@ Feature: Streaming from Bronze to Silver
     When streaming the submitted transaction to the Silver layer
     Then measurements are persisted into the invalid bronze submitted transaction table    
 
-  Scenario: Processing submitted transaction with unspecified resolution
-    Given a submitted transaction with unspecified resolution
+  Scenario Outline: Processing submitted transaction with unspecified <field>
+    Given measurements where the <field> has value <value>
     When streaming the submitted transaction to the Silver layer
     Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
 
-  Scenario: Processing submitted transaction with unspecified metering point type
-    Given a submitted transaction with unspecified metering point type
-    When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
-
-  Scenario: Processing submitted transaction with unspecified unit
-    Given a submitted transaction with unspecified unit
-    When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
-
-  Scenario: Processing submitted transaction with unspecified orchestration type
-    Given a submitted transaction with unspecified orchestration type
-    When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table            
+  Examples:
+    | field               | value            |
+    | resolution          | R_UNSPECIFIED    |
+    | metering_point_type | MPT_UNSPECIFIED  |
+    | unit                | U_UNSPECIFIED    |
+    | orchestration_type  | OT_UNSPECIFIED   |
+      
 
 Scenario Outline: Processing submitted transaction with valid <field>
     Given measurements where the <field> has value <value>
