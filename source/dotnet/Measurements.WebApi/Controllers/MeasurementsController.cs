@@ -8,18 +8,36 @@ using Microsoft.AspNetCore.Mvc;
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [HttpGet]
-    // [Authorize] TODO: Uncomment when authentication is implemented in all clients
-    public async Task<IActionResult> GetMeasurementAsync([FromQuery] GetMeasurementRequest request)
+    [Route("forPeriod")]
+    public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
         try
         {
             var measurement = await measurementsHandler.GetMeasurementAsync(request);
             var result = new JsonSerializer().Serialize(measurement);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundDuringPeriodException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("aggregatedByMonth")]
+    public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    {
+        try
+        {
+            var aggregatedMeasurements = await measurementsHandler.GetAggregatedMeasurementsAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedMeasurements);
 
             return Ok(result);
         }

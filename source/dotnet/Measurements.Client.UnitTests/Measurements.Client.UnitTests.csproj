@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.4"/>
-        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="7.2.2" />
+        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="7.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.14" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
@@ -33,6 +33,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Assets\QuarterlyMeasurementsAggregatedByDay.json" />
+      <EmbeddedResource Include="Assets\HourlyMeasurementsAggregatedByDay.json" />
+      <EmbeddedResource Include="Assets\HourlyMeasurementsAggregatedByDayMissingMeasurements.json" />
       <EmbeddedResource Include="Assets\MeasurementsForSingleDay.json" />
       <EmbeddedResource Include="Assets\MeasurementsForMultipleDays.json" />
     </ItemGroup>

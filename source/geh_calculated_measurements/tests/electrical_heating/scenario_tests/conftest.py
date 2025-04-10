@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import DataFrame, SparkSession
@@ -38,9 +39,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         ChildMeteringPoints.schema,
     )
 
-    # Reenable when needed again:
-    # with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
-    #     scenario_parameters = yaml.safe_load(f)
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
     actual: DataFrame = execute(
@@ -48,6 +48,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
         "Europe/Copenhagen",
+        scenario_parameters["execution_start_datetime"],
     )
 
     # Sort to make the tests deterministic
