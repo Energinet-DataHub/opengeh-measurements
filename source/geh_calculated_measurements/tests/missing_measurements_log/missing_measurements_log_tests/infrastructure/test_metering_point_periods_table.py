@@ -6,7 +6,6 @@ from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
     MeteringPointPeriodsDatabaseDefinition,
@@ -28,9 +27,9 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
                 datetime(2022, 1, 1, 1, tzinfo=ZoneInfo("Europe/Copenhagen")),
             ),
         ],
-        schema=MeteringPointPeriods.schema,
+        schema=MeteringPointPeriodsTable.schema,
     )
-    assert df.schema == MeteringPointPeriods.schema
+    assert df.schema == MeteringPointPeriodsTable.schema
     return df
 
 
@@ -80,4 +79,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = metering_point_periods_table.read()
 
     # Assert
-    assert actual.schema == MeteringPointPeriods.schema
+    assert actual.schema == MeteringPointPeriodsTable.schema

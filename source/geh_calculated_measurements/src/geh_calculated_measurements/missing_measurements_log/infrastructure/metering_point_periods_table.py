@@ -9,6 +9,12 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure.databas
 
 
 class MeteringPointPeriodsTable(Table):
+    """Represents periods for metering points with physical status "connected" or "disconnected".
+
+    Includes all metering point types except those where subtype="calculated" or where type is "internal_use" (D99).
+    The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
+    """
+
     def __init__(self, catalog_name: str) -> None:
         self.fully_qualified_name = f"{catalog_name}.{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}.{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}"
         super().__init__()
