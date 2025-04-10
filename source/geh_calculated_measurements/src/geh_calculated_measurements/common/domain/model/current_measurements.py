@@ -6,7 +6,7 @@ nullable = True
 
 
 class CurrentMeasurements(DataFrameWrapper):
-    """All current (latest) measurements. This is a generic type used for multiple types of calculation."""
+    """Current (latest) measurements from measurements_gold."""
 
     schema = schema
 

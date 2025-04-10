@@ -252,15 +252,6 @@ wheels = [
 ]
 
 [[package]]
-name = "configargparse"
-version = "1.7"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/70/8a/73f1008adfad01cb923255b924b1528727b8270e67cb4ef41eabdc7d783e/ConfigArgParse-1.7.tar.gz", hash = "sha256:e7067471884de5478c58a511e529f0f9bd1c66bfef1dea90935438d6c23306d1", size = 43817 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/b3/b4ac838711fd74a2b4e6f746703cf9dd2cf5462d17dac07e349234e21b97/ConfigArgParse-1.7-py3-none-any.whl", hash = "sha256:d249da6591465c6c26df64a9f73d2536e743be2f244eb3ebe61114af2f94f86b", size = 25489 },
-]
-
-[[package]]
 name = "coverage"
 version = "7.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -370,6 +361,7 @@ wheels = [
 [[package]]
 name = "delta-spark"
 version = "3.3.0"
+version = "3.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "importlib-metadata" },
@@ -459,13 +451,7 @@ name = "geh-calculated-measurements"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "azure-core" },
-    { name = "azure-monitor-opentelemetry" },
-    { name = "configargparse" },
-    { name = "delta-spark" },
     { name = "geh-common" },
-    { name = "pydantic-settings" },
-    { name = "pyspark" },
     { name = "python-dateutil" },
     { name = "tomli" },
 ]

@@ -7,6 +7,9 @@ from unittest import mock
 import geh_common.telemetry.logging_configuration
 import pytest
 from filelock import FileLock
+from geh_common.data_products.electricity_market_measurements_input import (
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -26,10 +29,6 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure.databas
 )
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema import (
-    net_consumption_group_6_child_metering_point_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
 )
 from tests import (
     SPARK_CATALOG_NAME,
