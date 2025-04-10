@@ -114,7 +114,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var observationDate = values.ObservationTime;
         var transactionCreated = values.TransactionCreated;
-        var observationDateInstant = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0);
+        var observationDateInstant = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromDays(-1));
         var transactionCreatedInstant = Instant.FromUtc(transactionCreated.Year, transactionCreated.Month, transactionCreated.Day, 0, 0, 0);
 
         var rows = Enumerable.Range(0, 24).Select(i => new[]
