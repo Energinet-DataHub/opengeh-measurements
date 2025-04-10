@@ -18,6 +18,7 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     CurrentMeasurements,
 )
+from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
 
 
 @use_span()
@@ -81,7 +82,7 @@ def execute(
     )
 
     calculation_output = CalculationOutput(
-        calculated_measurements_daily=measurements,
+        calculated_measurements_daily=CalculatedMeasurementsDaily(measurements),
         ten_largest_quantities=ten_largest_quantities,
     )
 

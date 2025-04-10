@@ -10,9 +10,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.application.model import calculated_measurements_factory
-from geh_calculated_measurements.common.application.model.calculated_measurements_factory import (
-    calculated_measurements_daily_schema,
-)
+from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
 
 
 @pytest.fixture(scope="module")
@@ -21,11 +19,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     scenario_path = str(Path(request.module.__file__).parent)
 
     # Read input data
-    calculated_measurements_daily = read_csv(
+    daily = read_csv(
         spark,
         f"{scenario_path}/when/calculated_measurements_daily.csv",
-        calculated_measurements_daily_schema,
+        CalculatedMeasurementsDaily.schema,
     )
+    calculated_measurements_daily = CalculatedMeasurementsDaily(daily)
 
     # Execute the logic to be tested
     actual = calculated_measurements_factory.create(

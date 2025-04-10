@@ -51,7 +51,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         [
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/measurements.csv",
-                actual=calculation_output.calculated_measurements_daily,
+                actual=calculation_output.calculated_measurements_daily.df,
             ),
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/ten_largest_quantities.csv",

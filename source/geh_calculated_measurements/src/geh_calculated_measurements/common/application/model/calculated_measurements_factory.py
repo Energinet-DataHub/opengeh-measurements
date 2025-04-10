@@ -3,15 +3,15 @@ from datetime import datetime
 from uuid import UUID
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
-from geh_common.testing.dataframes import assert_schema
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.common.application.model.calculated_measurements import (
-    CalculatedMeasurements,
+from geh_calculated_measurements.common.application.model.calculated_measurements_internal import (
+    CalculatedMeasurementsInternal,
 )
 from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
+from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
 
 UUID_NAMESPACE = uuid.UUID("539ba8c3-5d10-4aa9-81d5-632cfce33e18")
 """ Define a fixed UUID to use as the namespace for generating UUID v5 values. 
@@ -19,32 +19,17 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
-# TODO BJM: Make this into a type - used as calculations domain output and factory input
-calculated_measurements_daily_schema = T.StructType(
-    [
-        T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False),
-        # TODO BJM: Rename to obervation_time
-        T.StructField(ContractColumnNames.date, T.TimestampType(), False),
-        T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
-    ]
-)
-
-
 def create(
-    measurements: DataFrame,
+    measurements: CalculatedMeasurementsDaily,
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
     time_zone: str,
     transaction_creation_datetime: datetime = datetime.now(),
-) -> CalculatedMeasurements:
-    assert_schema(
-        measurements.schema, calculated_measurements_daily_schema, ignore_nullability=True, ignore_column_order=True
-    )
-
+) -> CalculatedMeasurementsInternal:
     df = (
         # Explode the date column to create a row for each hour in the day
-        measurements.withColumn(
+        measurements.df.withColumn(
             ContractColumnNames.observation_time,
             F.explode(
                 F.sequence(
@@ -81,7 +66,7 @@ def deprecated_create(
     metering_point_type: MeteringPointType,
     time_zone: str,
     transaction_creation_datetime: datetime,
-) -> CalculatedMeasurements:
+) -> CalculatedMeasurementsInternal:
     # TODO BJM: Update unit tests in test_calculated_measurements_factory.py and remove this temp workaround
     df = measurements
     if ContractColumnNames.observation_time not in measurements.columns:
@@ -97,7 +82,7 @@ def deprecated_create(
         }
     )
 
-    return CalculatedMeasurements(df)
+    return CalculatedMeasurementsInternal(df)
 
 
 def _add_transaction_id(orchestration_instance_id: UUID, time_zone: str) -> Column:

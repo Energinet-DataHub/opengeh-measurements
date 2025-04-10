@@ -12,7 +12,7 @@ from geh_calculated_measurements.net_consumption_group_6 import domain as ncg6
 # Imports for all other StructTypes in the infrastructure directory
 ALL_CONTRACT_STRUCT_TYPES = [
     common.CurrentMeasurements.schema,
-    common_app.CalculatedMeasurements.schema,
+    common_app.CalculatedMeasurementsInternal.schema,
     cs.MeteringPointPeriods.schema,
     cs.TenLargestQuantities.schema,
     cs_app.Calculations.schema,
