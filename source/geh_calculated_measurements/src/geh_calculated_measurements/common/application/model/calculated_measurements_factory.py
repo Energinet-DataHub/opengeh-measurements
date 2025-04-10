@@ -8,10 +8,10 @@ from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
-from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
-from geh_calculated_measurements.common.domain.model.calculated_measurements import (
+from geh_calculated_measurements.common.application.model.calculated_measurements import (
     CalculatedMeasurements,
 )
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 
 UUID_NAMESPACE = uuid.UUID("539ba8c3-5d10-4aa9-81d5-632cfce33e18")
 """ Define a fixed UUID to use as the namespace for generating UUID v5 values. 
@@ -19,11 +19,13 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
+# TODO BJM: Make this into a type - used as calculations domain output and factory input
 calculated_measurements_daily_schema = T.StructType(
     [
-        T.StructField("metering_point_id", T.StringType(), False),
-        T.StructField("date", T.TimestampType(), False),
-        T.StructField("quantity", T.DecimalType(18, 3), False),
+        T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False),
+        # TODO BJM: Rename to obervation_time
+        T.StructField(ContractColumnNames.date, T.TimestampType(), False),
+        T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
     ]
 )
 

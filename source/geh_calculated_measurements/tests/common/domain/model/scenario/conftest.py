@@ -9,8 +9,8 @@ from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
-from geh_calculated_measurements.common.domain.model.calculated_measurements_factory import (
+from geh_calculated_measurements.common.application.model import calculated_measurements_factory
+from geh_calculated_measurements.common.application.model.calculated_measurements_factory import (
     calculated_measurements_daily_schema,
 )
 
