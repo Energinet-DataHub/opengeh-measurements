@@ -19,11 +19,13 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
+# TODO BJM: Make this into a type - used as calculations domain output and factory input
 calculated_measurements_daily_schema = T.StructType(
     [
-        T.StructField("metering_point_id", T.StringType(), False),
-        T.StructField("date", T.TimestampType(), False),
-        T.StructField("quantity", T.DecimalType(18, 3), False),
+        T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False),
+        # TODO BJM: Rename to obervation_time
+        T.StructField(ContractColumnNames.date, T.TimestampType(), False),
+        T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
     ]
 )
 

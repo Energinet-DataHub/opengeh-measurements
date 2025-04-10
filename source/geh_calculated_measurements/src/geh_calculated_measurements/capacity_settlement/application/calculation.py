@@ -5,7 +5,6 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql import types as T
 
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import CapacitySettlementArgs
 from geh_calculated_measurements.capacity_settlement.application.model.calculations import Calculations
@@ -82,14 +81,6 @@ def _create_calculations(
     calculation_year: int,
 ) -> Calculations:
     execution_time = datetime.now(UTC).replace(microsecond=0)
-    schema = T.StructType(
-        [
-            T.StructField("orchestration_instance_id", T.StringType(), False),
-            T.StructField("calculation_year", T.IntegerType(), False),
-            T.StructField("calculation_month", T.IntegerType(), False),
-            T.StructField("execution_time", T.TimestampType(), False),
-        ]
-    )
     return Calculations(
         spark.createDataFrame(
             [
@@ -100,6 +91,6 @@ def _create_calculations(
                     execution_time,
                 )
             ],
-            schema=schema,
+            schema=Calculations.schema,
         )
     )
