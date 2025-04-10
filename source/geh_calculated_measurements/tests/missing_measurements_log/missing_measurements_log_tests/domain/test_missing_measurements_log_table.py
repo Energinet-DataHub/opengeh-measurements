@@ -22,7 +22,6 @@ def test__when__debug(spark: SparkSession) -> None:
 def test__when__(spark: SparkSession, external_dataproducts_created: None) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()
-    print(str(orchestration_instance_id))
     sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE, orchestration_instance_id)
 
     schema = StructType(
