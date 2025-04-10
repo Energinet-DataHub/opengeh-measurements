@@ -42,8 +42,8 @@ public class GetMeasurementsQuery : DatabricksStatement
     {
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, _meteringPointId),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, _startDate.ToUtcString()),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, _endDate.ToUtcString())
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, _startDate.ToString()),
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, _endDate.ToString())
         ];
 
         return parameters;
