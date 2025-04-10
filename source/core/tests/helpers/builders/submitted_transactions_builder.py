@@ -11,17 +11,19 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 )
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
 from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
-from core.contracts.process_manager.enums.orchestration_type import OrchestrationType
-from core.contracts.process_manager.enums.quality import Quality
-from core.contracts.process_manager.enums.resolution import Resolution
-from core.contracts.process_manager.enums.unit import Unit
 from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+    OrchestrationType,
+    Quality,
+    Resolution,
+    Unit,
+)
 from tests.helpers.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
 
 
 class Point:
-    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = Quality.Q_MEASURED.value) -> None:
+    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: int = Quality.Q_MEASURED) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = quality
@@ -36,7 +38,7 @@ class PointsBuilder:
         self,
         position: int = 1,
         quantity=DecimalValue(1, 0),
-        quality: str = Quality.Q_MEASURED.value,
+        quality: int = Quality.Q_MEASURED,
     ) -> "PointsBuilder":
         self.data.append(Point(position, quantity, quality))
         return self
@@ -50,13 +52,13 @@ class Value:
         self,
         version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        orchestration_type: int = OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
-        unit: str = Unit.U_KWH.value,
-        resolution: str = Resolution.R_PT15M.value,
+        metering_point_type: int = MeteringPointType.MPT_PRODUCTION,
+        unit: int = Unit.U_KWH,
+        resolution: int = Resolution.R_PT15M,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
         points: list | None = [Point()],
@@ -84,13 +86,13 @@ class ValueBuilder:
         self,
         version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        orchestration_type: int = OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
-        unit: str = Unit.U_KWH.value,
-        resolution: str = Resolution.R_PT15M.value,
+        metering_point_type: int = MeteringPointType.MPT_PRODUCTION,
+        unit: int = Unit.U_KWH,
+        resolution: int = Resolution.R_PT15M,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
         points: list = [Point()],
@@ -184,13 +186,13 @@ class UnpackedSubmittedTransactionsBuilder:
         self,
         version: str = "1",
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        orchestration_type: int = OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
-        unit: str = Unit.U_KWH.value,
-        resolution: str = Resolution.R_PT15M.value,
+        metering_point_type: int = MeteringPointType.MPT_PRODUCTION,
+        unit: int = Unit.U_KWH,
+        resolution: int = Resolution.R_PT15M,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
         points: list | None = [Point()],

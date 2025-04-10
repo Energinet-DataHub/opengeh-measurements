@@ -11,11 +11,12 @@ import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType as MeteringPointType
-from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
-from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
-from core.contracts.process_manager.enums.unit import Unit as CoreUnit
-from core.contracts.process_manager.PersistSubmittedTransaction.PersistSubmittedTransaction_pb2 import MeteringPointType
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+    OrchestrationType,
+    Resolution,
+    Unit,
+)
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 
 
@@ -65,8 +66,7 @@ def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
 
 def _align_orchestration_type() -> Column:
     return F.when(
-        F.col(SilverMeasurementsColumnNames.orchestration_type)
-        == CoreOrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
+        F.col(SilverMeasurementsColumnNames.orchestration_type) == OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
         GehCommonOrchestrationType.SUBMITTED.value,
     ).otherwise(F.col(SilverMeasurementsColumnNames.orchestration_type))
 
@@ -182,11 +182,11 @@ def _align_metering_point_type() -> Column:
 
 def _align_unit() -> Column:
     return (
-        F.when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KWH.value, GehCommonUnit.KWH.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KW.value, GehCommonUnit.KW.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_MWH.value, GehCommonUnit.MWH.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_TONNE.value, GehCommonUnit.TONNE.value)
-        .when(F.col(SilverMeasurementsColumnNames.unit) == CoreUnit.U_KVARH.value, GehCommonUnit.KVARH.value)
+        F.when(F.col(SilverMeasurementsColumnNames.unit) == Unit.U_KWH, GehCommonUnit.KWH.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == Unit.U_KW, GehCommonUnit.KW.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == Unit.U_MWH, GehCommonUnit.MWH.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == Unit.U_TONNE, GehCommonUnit.TONNE.value)
+        .when(F.col(SilverMeasurementsColumnNames.unit) == Unit.U_KVARH, GehCommonUnit.KVARH.value)
         .otherwise(F.col(SilverMeasurementsColumnNames.unit))
     )
 
@@ -194,11 +194,11 @@ def _align_unit() -> Column:
 def _align_resolution() -> Column:
     return (
         F.when(
-            F.col(SilverMeasurementsColumnNames.resolution) == CoreResolution.R_PT15M.value,
+            F.col(SilverMeasurementsColumnNames.resolution) == Resolution.R_PT15M,
             GehCommonResolution.QUARTER.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.resolution) == CoreResolution.R_PT1H.value,
+            F.col(SilverMeasurementsColumnNames.resolution) == Resolution.R_PT1H,
             GehCommonResolution.HOUR.value,
         )
         .otherwise(F.col(SilverMeasurementsColumnNames.resolution))

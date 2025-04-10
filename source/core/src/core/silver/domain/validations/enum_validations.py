@@ -8,7 +8,7 @@ from pyspark.sql import Column
 from core.bronze.domain.constants.column_names.submitted_transactions_unpacked_column_names import (
     SubmittedTransactionsUnpackedColumnNames,
 )
-from core.contracts.process_manager.enums.quality import Quality
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import Quality
 from core.utility.columns_helper import invalid_if_null
 
 
@@ -20,7 +20,7 @@ def validate_orchestration_type_enum() -> Column:
 
 def validate_quality_enum() -> Column:
     """Quality check: QCST01-02."""
-    valid_qualities = [name for name in Quality._member_names_ if name != Quality.Q_UNSPECIFIED.value]
+    valid_qualities = [name for name in Quality.values() if name != Quality.Q_UNSPECIFIED]
 
     return invalid_if_null(SubmittedTransactionsUnpackedColumnNames.points).otherwise(
         F.forall(
