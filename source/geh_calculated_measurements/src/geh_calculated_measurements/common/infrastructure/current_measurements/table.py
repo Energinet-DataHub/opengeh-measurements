@@ -12,15 +12,11 @@ class Table(ABC):
     columns: list[str]
 
     def __init__(self) -> None:
-        # TODO Ask about this
+        # TODO AJW Verify where to init spark
         self.spark = SparkSession.builder.getOrCreate()
 
         if not hasattr(self, "fully_qualified_name"):
             raise AttributeError("Table must define a fully qualified name.")
-        if not hasattr(self, "schema"):
-            raise AttributeError("Table must define a schema.")
-        if not hasattr(self, "spark"):
-            raise AttributeError("Table must define a Spark session.")
 
     @classmethod
     def __init_subclass__(cls) -> None:
@@ -39,21 +35,21 @@ class Table(ABC):
                 setattr(cls, name, field.name)
                 setattr(cls, f"{name}_type", field.dataType)
 
+        # Assign the schema and columns to the class attribute schema and columns
         cls.schema = t.StructType(schema)
         cls.columns = columns
 
-        # Store a reference to the original read method of the subclass before it is overridden.
-        # This allows the original read method to be called later, even after it has been replaced
-        # by the custom _read method.
-
-        # The idea is to inject a custom read method into the subclass that will
+        # The idea with the following is to intercept the subclass read method in order to
         # perform additional checks and transformations on the DataFrame before returning it.
-        #
-        # The flow is:
+
+        # The flow:
         # When the subclass read is called (cls.read), it calls the base read (_read) which calls the
         # subclass read (cls.read) to performs additional checks and transformations before return the
         # modified dataframe.
 
+        # Store a reference to the original read method of the subclass before it is overridden.
+        # This allows the original read method to be called later, even after it has been replaced
+        # by the custom _read method.
         cls._read = cls.read
 
         def _read(self, *args, **kwargs) -> DataFrame:

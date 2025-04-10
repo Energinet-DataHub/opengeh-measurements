@@ -11,6 +11,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.curr
 from geh_calculated_measurements.common.infrastructure.current_measurements.repository import (
     Repository as CurrentMeasurementsRepository,
 )
+from geh_calculated_measurements.common.infrastructure.current_measurements.table import Table
 from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "CurrentMeasurementsRepository",
     "CurrentMeasurementsTable",
     "initialize_spark",
+    "Table",
 ]
