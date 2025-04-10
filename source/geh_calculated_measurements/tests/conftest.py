@@ -6,6 +6,7 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from filelock import FileLock
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -68,7 +69,7 @@ _spark, data_dir = get_spark_test_session()
 
 
 @pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
+def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
@@ -143,9 +144,26 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def external_dataproducts_created(spark: SparkSession) -> None:
+def external_dataproducts_created(spark: SparkSession, tmp_path_factory, worker_id) -> None:
     """Create external dataproducts (databases, tables and views) as needed by tests."""
+    if worker_id == "master":
+        # not executing in with multiple workers, just produce the data and let
+        # pytest's fixture caching do its job
+        return _create_dataproducts(spark)
 
+    # get the temp directory shared by all workers
+    root_tmp_dir = tmp_path_factory.getbasetemp().parent
+
+    fn = root_tmp_dir / "data.txt"
+    with FileLock(str(fn) + ".lock"):
+        if fn.is_file():
+            return
+        else:
+            _create_dataproducts(spark)
+            fn.write_text("done", encoding="utf-8")
+
+
+def _create_dataproducts(spark):
     # Create measurements gold database and tables
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
     create_table(
