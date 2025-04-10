@@ -139,12 +139,17 @@ class ValueBuilder:
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
 
+        options = {
+            "enums.as.ints": "true",
+        }
+
         df_value = df_value.withColumn(
             BronzeSubmittedTransactionsColumnNames.value,
             to_protobuf(
                 BronzeSubmittedTransactionsColumnNames.value,
                 "PersistSubmittedTransaction",
                 descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
+                options=options,
             ),
         )
 
