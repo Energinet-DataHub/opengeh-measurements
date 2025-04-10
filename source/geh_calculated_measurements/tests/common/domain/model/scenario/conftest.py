@@ -10,7 +10,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.application.model import calculated_measurements_factory
-from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
 
 @pytest.fixture(scope="module")

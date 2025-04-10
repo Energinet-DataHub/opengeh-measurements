@@ -7,7 +7,7 @@ from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
 from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,

@@ -12,7 +12,7 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     CurrentMeasurements,
 )
-from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
 )

@@ -18,7 +18,7 @@ from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     CurrentMeasurements,
 )
-from geh_calculated_measurements.common.domain.model.calculated_measurements import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
 
 @use_span()
