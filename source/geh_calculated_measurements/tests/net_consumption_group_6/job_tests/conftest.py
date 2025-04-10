@@ -46,7 +46,7 @@ def electricity_market_tables_seeded(spark) -> None:
                 False,
             )
         ],
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1,
+        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
