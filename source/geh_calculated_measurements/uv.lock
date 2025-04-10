@@ -251,15 +251,6 @@ wheels = [
 ]
 
 [[package]]
-name = "configargparse"
-version = "1.7"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/70/8a/73f1008adfad01cb923255b924b1528727b8270e67cb4ef41eabdc7d783e/ConfigArgParse-1.7.tar.gz", hash = "sha256:e7067471884de5478c58a511e529f0f9bd1c66bfef1dea90935438d6c23306d1", size = 43817 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/b3/b4ac838711fd74a2b4e6f746703cf9dd2cf5462d17dac07e349234e21b97/ConfigArgParse-1.7-py3-none-any.whl", hash = "sha256:d249da6591465c6c26df64a9f73d2536e743be2f244eb3ebe61114af2f94f86b", size = 25489 },
-]
-
-[[package]]
 name = "coverage"
 version = "7.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -449,13 +440,7 @@ name = "geh-calculated-measurements"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "azure-core" },
-    { name = "azure-monitor-opentelemetry" },
-    { name = "configargparse" },
-    { name = "delta-spark" },
     { name = "geh-common" },
-    { name = "pydantic-settings" },
-    { name = "pyspark" },
     { name = "python-dateutil" },
     { name = "tomli" },
 ]
@@ -473,13 +458,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "azure-core", specifier = "==1.32.0" },
-    { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
-    { name = "configargparse", specifier = "==1.7.0" },
-    { name = "delta-spark", specifier = "==3.3.0" },
     { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.5" },
-    { name = "pydantic-settings", specifier = ">=2.7.1" },
-    { name = "pyspark", specifier = "==3.5.3" },
     { name = "python-dateutil", specifier = "==2.8.2" },
     { name = "tomli", specifier = ">=2.2.1" },
 ]
@@ -1070,12 +1049,12 @@ crypto = [
 
 [[package]]
 name = "pyspark"
-version = "3.5.3"
+version = "3.5.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "py4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/90/cb80c8cf194958ab9a3242851c62fa5aef1a0b42f2d9642f1e2eca098005/pyspark-3.5.3.tar.gz", hash = "sha256:68b7cc0c0c570a7d8644f49f40d2da8709b01d30c9126cc8cf93b4f84f3d9747", size = 317304325 }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/8f/b616ef710932ccdbabd8511e08890a677482ab2967b7cf276c09a02bc64c/pyspark-3.5.5.tar.gz", hash = "sha256:6effc9ce98edf231f4d683fd14f7270629bf8458c628d6a2620ded4bb34f3cb9", size = 317214975 }
 
 [[package]]
 name = "pytest"

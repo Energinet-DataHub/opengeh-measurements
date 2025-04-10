@@ -5,7 +5,7 @@ from geh_common.testing.dataframes import write_when_files_to_delta
 from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_names
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.common.application.model import CalculatedMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
 from tests import SPARK_CATALOG_NAME
 
