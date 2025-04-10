@@ -72,6 +72,7 @@ class Resolution(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     R_UNSPECIFIED: _ClassVar[Resolution]
     R_PT15M: _ClassVar[Resolution]
     R_PT1H: _ClassVar[Resolution]
+    R_P1M: _ClassVar[Resolution]
 
 OT_UNSPECIFIED: OrchestrationType
 OT_SUBMITTED_MEASURE_DATA: OrchestrationType
@@ -117,6 +118,7 @@ U_MVAR: Unit
 R_UNSPECIFIED: Resolution
 R_PT15M: Resolution
 R_PT1H: Resolution
+R_P1M: Resolution
 
 class PersistSubmittedTransaction(_message.Message):
     __slots__ = (

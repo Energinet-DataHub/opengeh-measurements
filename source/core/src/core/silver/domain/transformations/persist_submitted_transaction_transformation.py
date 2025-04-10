@@ -202,7 +202,7 @@ def _align_resolution() -> Column:
             GehCommonResolution.HOUR.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.resolution) == CoreResolution.R_P1M.value,
+            F.col(SilverMeasurementsColumnNames.resolution) == Resolution.R_P1M,
             GehCommonResolution.MONTH.value,
         )
         .otherwise(F.col(SilverMeasurementsColumnNames.resolution))
