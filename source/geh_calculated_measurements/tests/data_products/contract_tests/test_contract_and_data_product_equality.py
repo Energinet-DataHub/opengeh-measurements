@@ -12,11 +12,11 @@ from tests import SPARK_CATALOG_NAME
     [
         (
             CalculatedMeasurementsDatabaseDefinition.CALCULATED_MEASUREMENTS_VIEW_NAME,
-            calculated_measurements_v1.calculated_measurements_v1,
+            calculated_measurements_v1.schema,
         ),
         (
             CalculatedMeasurementsDatabaseDefinition.MISSING_MEASUREMENTS_LOG_VIEW_NAME,
-            missing_measurements_log_v1.missing_measurements_log_v1,
+            missing_measurements_log_v1.schema,
         ),
     ],
 )

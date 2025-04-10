@@ -3,6 +3,10 @@ from typing import Any, Generator
 
 import pyspark.sql.functions as F
 import pytest
+from geh_common.data_products.electricity_market_measurements_input import (
+    net_consumption_group_6_child_metering_points_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
@@ -14,7 +18,6 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema import (
-    net_consumption_group_6_child_metering_point_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
 from tests import create_random_metering_point_id
@@ -116,7 +119,7 @@ def electricity_market_tables_seeded(
                 False,
             )
         ],
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1,
+        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
@@ -147,7 +150,7 @@ def electricity_market_tables_seeded(
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
         ],
-        schema=net_consumption_group_6_child_metering_point_v1,
+        schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
