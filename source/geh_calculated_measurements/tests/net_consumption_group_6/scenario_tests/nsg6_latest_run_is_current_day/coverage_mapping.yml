@@ -1,0 +1,22 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test scenarios where the latest net_consumption is at the same day as the execution_start_datetime there should be no results.
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1
+  Calculation period is from the 1st of january 2024 to the 31 of december 2024.
+  The period being estimated for is from the 1st of january 2025 to the 31 of december 2025.
+                        ______|2024________|2025________
+  settlement month:     ------|+-----------|+-----------|
+  calculation period:   ------|++++++++++++|------------|
+  estimation period:    ------|------------|++++++++++++|
+
+  execution_start_datetime: 025-01-01T23:00:00Z
+
+  latest net_consumption is 2025-01-01T23:00:00Z and is the same as the execution_start_datetime.
+  This means that there will be no results.
+
+cases_tested:
+  "Latest net_consumption is at the same day as execution_start_datetime":
+    - "GIVEN (calculation period is from 2024-01-01 to 2024-12-31 and estimation period is from 2025-01-01 to 2025-12-31) WHEN (latest net_consumption is 2025-01-01T23:00:00Z, which is the same as execution_start_datetime) THEN (there will be no results)"

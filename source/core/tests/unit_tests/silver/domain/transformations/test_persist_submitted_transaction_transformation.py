@@ -143,6 +143,10 @@ def test__transform__should_transform_metering_point_type_to_expected(
             Resolution.R_PT15M,
             GehCommonResolution.QUARTER,
         ),
+        (
+            CoreResolution.R_P1M.value,
+            GehCommonResolution.MONTH.value,
+        ),
     ],
 )
 def test__transform__should_transform_resolution_to_expected(

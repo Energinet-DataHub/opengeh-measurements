@@ -49,6 +49,9 @@ def calculate_daily(
     time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
 
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
+        F.make_date(F.col("settlement_year"), F.col(ContractColumnNames.settlement_month), F.lit(1)).alias(
+            "settlement_date"
+        ),
         F.col(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.metering_point_type),
         (
@@ -78,11 +81,21 @@ def calculate_daily(
         )
         .select(
             "cenc.*",
-            F.col("ts.latest_observation_date").alias("last_run"),
+            F.when(
+                F.col("ts.latest_observation_date").isNull()
+                | (F.col("ts.latest_observation_date") < F.col("cenc.settlement_date")),
+                F.date_add(F.col("cenc.settlement_date"), -1),
+            )
+            .otherwise(F.col("ts.latest_observation_date"))
+            .alias("last_run"),
         )
     )
 
-    df = cenc_w_last_run.select(
+    # Filter out rows where last_run is >= execution_start_datetime
+    filtered_cenc = cenc_w_last_run.filter(F.col("last_run") < F.col("execution_start_datetime"))
+
+    # Process only valid date ranges
+    df = filtered_cenc.select(
         "*",
         F.explode(
             F.sequence(F.date_add(F.col("last_run"), 1), F.col("execution_start_datetime"), F.expr("INTERVAL 1 DAY"))

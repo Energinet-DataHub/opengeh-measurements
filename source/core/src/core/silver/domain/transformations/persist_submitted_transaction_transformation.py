@@ -201,5 +201,9 @@ def _align_resolution() -> Column:
             F.col(SilverMeasurementsColumnNames.resolution) == Resolution.R_PT1H,
             GehCommonResolution.HOUR.value,
         )
+        .when(
+            F.col(SilverMeasurementsColumnNames.resolution) == CoreResolution.R_P1M.value,
+            GehCommonResolution.MONTH.value,
+        )
         .otherwise(F.col(SilverMeasurementsColumnNames.resolution))
     )

@@ -13,4 +13,11 @@ public interface IMeasurementsHandler
     /// </summary>
     /// <param name="getMeasurementRequest"></param>
     Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest getMeasurementRequest);
+
+    /// <summary>
+    /// Get aggregated measurements matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedMeasurementsForMonthRequest"></param>
+    Task<GetAggregatedMeasurementsResponse> GetAggregatedMeasurementsAsync(
+        GetAggregatedMeasurementsForMonthRequest getAggregatedMeasurementsForMonthRequest);
 }
