@@ -163,7 +163,7 @@ def external_dataproducts_created(spark: SparkSession) -> None:
         database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
         table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
         schema=MeteringPointPeriodsTable.schema,
-        table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
+        # table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )
 
     # Create net consumption group 6 database and tables
