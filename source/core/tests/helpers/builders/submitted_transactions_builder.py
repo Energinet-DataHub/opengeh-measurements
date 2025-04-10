@@ -30,7 +30,7 @@ class ValueBuilder:
         start_datetime: Timestamp = datetime_helper.get_proto_timestamp(),
         end_datetime: Timestamp = datetime_helper.get_proto_timestamp(),
     ) -> bytes:
-        points = [Point(position=1, quantity=DecimalValue(1, 0), quality=Quality.Q_MEASURED)]
+        points = [Point(position=1, quantity=DecimalValue(units=1, nanos=0), quality=Quality.Q_MEASURED)]
 
         submitted_transaction = PersistSubmittedTransaction(
             version=version,

@@ -9,6 +9,7 @@ from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
 import core.silver.domain.transformations.persist_submitted_transaction_transformation as sut
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 import DecimalValue
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,
@@ -16,7 +17,6 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Persis
     Unit,
 )
 from tests.helpers.builders.submitted_transactions_value_builder import (
-    DecimalValue,
     PointsBuilder,
     SubmittedTransactionsValueBuilder,
 )
@@ -37,16 +37,14 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
 def test__create_by_submitted_transaction__should_return_correct_decimal_value(spark: SparkSession) -> None:
     # Arrange
     expected_decimal_value = Decimal(1.5)
-    points = PointsBuilder().add_row(quantity=DecimalValue(units=1, nanos=500000000)).build()
-    print(points)
+    decimal_value = DecimalValue(units=1, nanos=500000000)
+    points = PointsBuilder().add_row(quantity=decimal_value).build()
     submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
-    print(submitted_transaction.collect())
 
     # Act
     actual = sut.transform(submitted_transaction)
 
     # Assert
-    print(actual.collect()[0].points[0])
     assert actual.collect()[0].points[0].quantity == expected_decimal_value
 
 
@@ -119,7 +117,7 @@ def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> Non
     ],
 )
 def test__transform__should_transform_metering_point_type_to_expected(
-    metering_point_type: int, expected_metering_point_type: str, spark: SparkSession
+    metering_point_type: MeteringPointType, expected_metering_point_type: str, spark: SparkSession
 ) -> None:
     # Arrange
     submitted_transactions = (
@@ -158,7 +156,7 @@ def test__transform__should_transform_metering_point_type_to_expected(
     ],
 )
 def test__transform__should_transform_resolution_to_expected(
-    resolution: int, expected_resolution: str, spark: SparkSession
+    resolution: Resolution, expected_resolution: str, spark: SparkSession
 ) -> None:
     # Arrange
     submitted_transactions = (
