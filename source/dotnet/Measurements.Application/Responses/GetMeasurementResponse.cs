@@ -11,8 +11,6 @@ public class GetMeasurementResponse
 {
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
-    public SortedList<Instant, Point> Points2 { get; init; } = [];
-
     [JsonConstructor]
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
@@ -32,13 +30,9 @@ public class GetMeasurementResponse
                     QualityParser.ParseQuality(measurement.Quality),
                     UnitParser.ParseUnit(measurement.Unit),
                     ResolutionParser.ParseResolution(measurement.Resolution),
-                    measurement.Created))
+                    measurement.Created,
+                    measurement.TransactionCreationDatetime))
             .ToList();
-
-        foreach (var measurement in measurements)
-        {
-
-        }
 
         return points.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()

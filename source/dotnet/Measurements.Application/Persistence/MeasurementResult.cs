@@ -18,4 +18,6 @@ public class MeasurementResult(ExpandoObject raw)
     public string Resolution => _raw.resolution;
 
     public Instant Created => Instant.FromDateTimeOffset(_raw.created);
+
+    public Instant TransactionCreationDatetime => Instant.FromDateTimeOffset(_raw.transaction_creation_datetime);
 }
