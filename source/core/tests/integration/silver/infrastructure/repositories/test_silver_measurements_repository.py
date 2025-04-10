@@ -11,9 +11,7 @@ from core.silver.infrastructure.repositories.silver_measurements_repository impo
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
 
-def test__append_if_not_exists__when_row_already_exists_in_table__should_not_append(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__append_if_not_exists__when_row_already_exists_in_table__should_not_append(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -36,9 +34,7 @@ def test__append_if_not_exists__when_row_already_exists_in_table__should_not_app
     assert actual.count() == 1
 
 
-def test__append_if_not_exists__when_not_exists_in_table__should_append(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__append_if_not_exists__when_not_exists_in_table__should_append(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -56,9 +52,7 @@ def test__append_if_not_exists__when_not_exists_in_table__should_append(
     assert actual.count() == 1
 
 
-def test__append_if_not_exists__when_only_created_col_is_different__should_not_append(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__append_if_not_exists__when_only_created_col_is_different__should_not_append(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -96,9 +90,7 @@ def test__append_if_not_exists__when_only_created_col_is_different__should_not_a
     )
 
 
-def test__append_if_not_exists__when_data_exists_but_no_duplicates__should_append(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__append_if_not_exists__when_data_exists_but_no_duplicates__should_append(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -135,7 +127,7 @@ def test__append_if_not_exists__when_data_exists_but_no_duplicates__should_appen
     assert actual.count() == 2
 
 
-def test__read_submitted_transaction__returns_expected(spark: SparkSession, migrations_executed) -> None:
+def test__read_submitted_transaction__returns_expected(spark: SparkSession) -> None:
     # Arrange
     orchestration_instance_id = identifier_helper.generate_random_string()
     silver_measurements = (

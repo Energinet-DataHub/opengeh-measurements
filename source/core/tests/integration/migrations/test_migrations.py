@@ -16,7 +16,7 @@ from tests.helpers.builders.silver_measurements_builder import SilverMeasurement
 from tests.helpers.schemas.silver_measurements_schema import silver_measurements_schema
 
 
-def test__migrations__should_create_silver_measurements_table(spark: SparkSession, migrations_executed: None) -> None:
+def test__migrations__should_create_silver_measurements_table(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
 
@@ -25,7 +25,7 @@ def test__migrations__should_create_silver_measurements_table(spark: SparkSessio
     assert_schemas.assert_schema(actual=silver_measurements.schema, expected=silver_measurements_schema)
 
 
-def test__migrations__should_create_gold_measurements(spark: SparkSession, migrations_executed: None) -> None:
+def test__migrations__should_create_gold_measurements(spark: SparkSession) -> None:
     # Arrange
     gold_settings = GoldSettings()
 
@@ -34,7 +34,7 @@ def test__migrations__should_create_gold_measurements(spark: SparkSession, migra
     assert_schemas.assert_schema(actual=gold_measurements.schema, expected=gold_measurements_schema)
 
 
-def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, migrations_executed: None):
+def test__migrations__should_create_bronze_migrated_table(spark: SparkSession):
     # Arrange
     bronze_settings = BronzeSettings()
 
@@ -45,9 +45,7 @@ def test__migrations__should_create_bronze_migrated_table(spark: SparkSession, m
     assert_schemas.assert_schema(actual=bronze_migrated.schema, expected=migrated_transactions_schema)
 
 
-def test__ingest_submitted_transactions__should_create_submitted_transactions_table(
-    spark: SparkSession, migrations_executed: None
-) -> None:
+def test__ingest_submitted_transactions__should_create_submitted_transactions_table(spark: SparkSession) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
 
@@ -58,9 +56,7 @@ def test__ingest_submitted_transactions__should_create_submitted_transactions_ta
     assert_schemas.assert_schema(actual=submitted_transactions.schema, expected=submitted_transactions_schema)
 
 
-def test__migration__should_create_invalid_submitted_transactions_table(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__migration__should_create_invalid_submitted_transactions_table(spark: SparkSession) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
 
@@ -73,7 +69,7 @@ def test__migration__should_create_invalid_submitted_transactions_table(
     )
 
 
-def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSession, migrations_executed) -> None:
+def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSession) -> None:
     # Arrange
     silver_settings = SilverSettings()
     silver_data_builder = SilverMeasurementsBuilder(spark)
@@ -98,9 +94,7 @@ def test__migration__should_add_is_cancelled_null_constraints(spark: SparkSessio
     assert count_before == count_after
 
 
-def test__migration__should_create_submitted_transactions_quarantined_table(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__migration__should_create_submitted_transactions_quarantined_table(spark: SparkSession) -> None:
     # Arrange
     bronze_settings = BronzeSettings()
 
