@@ -41,7 +41,7 @@ from tests.testsession_configuration import TestSessionConfiguration
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 def pytest_collection_modifyitems(config, items) -> None:
     if not os.getenv("DATABRICKS_RUNTIME_VERSION"):
-        skip_subsystem_tests = pytest.mark.skip(reason="Skipping subsystem tests because you run locally")
+        skip_subsystem_tests = pytest.mark.skip(reason="Skipping subsystem tests because tests are executed locally")
         for item in items:
             if "subsystem_tests" in item.nodeid:
                 item.add_marker(skip_subsystem_tests)
