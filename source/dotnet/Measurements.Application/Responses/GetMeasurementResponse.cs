@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Domain;
-using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
@@ -15,7 +14,7 @@ public class GetMeasurementResponse
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(List<Point> points)
+    private GetMeasurementResponse(IReadOnlyCollection<Point> points)
     {
         Points = points;
     }

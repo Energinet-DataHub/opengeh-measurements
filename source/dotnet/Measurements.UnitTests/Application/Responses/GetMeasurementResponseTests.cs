@@ -110,13 +110,49 @@ public class GetMeasurementResponseTests
         Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
     }
 
-    private static ExpandoObject CreateRaw(DateTimeOffset date, string unit = "kwh", string quality = "measured")
+    [Theory]
+    [InlineData("PT15M", Resolution.QuarterHourly)]
+    [InlineData("PT1H", Resolution.Hourly)]
+    [InlineData("P1D", Resolution.Daily)]
+    [InlineData("P1M", Resolution.Monthly)]
+    [InlineData("P1Y", Resolution.Yearly)]
+    public void Create_WhenResolutionKnown_ThenReturnsGetMeasurementResponse(string resolution, Resolution expectedResolution)
+    {
+        // Arrange
+        var measurements = new List<MeasurementResult>
+        {
+            new(CreateRaw(DateTimeOffset.Now, resolution: resolution)),
+        };
+
+        // Act
+        var actual = GetMeasurementResponse.Create(measurements);
+
+        // Assert
+        Assert.Equal(expectedResolution, actual.Points.Single().Resolution);
+    }
+
+    [Fact]
+    public void Create_WhenResolutionUnknown_ThenThrowsException()
+    {
+        // Arrange
+        var measurements = new List<MeasurementResult>
+        {
+            new(CreateRaw(DateTimeOffset.Now, resolution: "unknown")),
+        };
+
+        // Act
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
+    }
+
+    private static ExpandoObject CreateRaw(DateTimeOffset date, string resolution = "PT1H", string unit = "kwh", string quality = "measured")
     {
         dynamic raw = new ExpandoObject();
         raw.unit = unit;
         raw.observation_time = date;
         raw.quantity = 42;
         raw.quality = quality;
+        raw.resolution = resolution;
         raw.created = date;
         raw.transaction_creation_datetime = date;
         return raw;
