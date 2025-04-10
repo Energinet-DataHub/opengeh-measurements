@@ -54,7 +54,7 @@ addopts = [
     "-s",
     # pytest-xdist options
     "-n=auto",
-    "--dist=loadfile",
+    "--dist=load",
 
 ]
 
