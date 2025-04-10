@@ -1,4 +1,5 @@
-﻿from datetime import datetime
+﻿import uuid
+from datetime import datetime
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType, StructField, StructType, TimestampType
@@ -20,7 +21,9 @@ def test__when__debug(spark: SparkSession) -> None:
 
 def test__when__(spark: SparkSession, external_dataproducts_created: None) -> None:
     # Arrange
-    sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE)
+    orchestration_instance_id = uuid.uuid4()
+    print(str(orchestration_instance_id))
+    sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE, orchestration_instance_id)
 
     schema = StructType(
         [
@@ -44,5 +47,6 @@ def test__when__(spark: SparkSession, external_dataproducts_created: None) -> No
     actual = sut.read()
 
     # Assert
+    actual.show(truncate=False)
     # TODO AJW: Add assertions to check the contents of the DataFrame
     assert actual is not None
