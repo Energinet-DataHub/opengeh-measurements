@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold.current_v1 import current_v1
+from geh_common.data_products.measurements_core.measurements_gold.current_v1 import schema
 from pyspark.sql import SparkSession
 from pyspark.sql.dataframe import DataFrame
 
@@ -54,4 +54,4 @@ def test__current_measurements_read__has_correct_schema_and_records(
     # Assert
     assert actual.collect() == expected.collect()
     assert actual.schema == expected.schema
-    assert actual.schema == current_v1
+    assert actual.schema == schema
