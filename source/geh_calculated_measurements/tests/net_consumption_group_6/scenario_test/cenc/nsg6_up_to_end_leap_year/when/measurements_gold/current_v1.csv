@@ -1,0 +1,9 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#commentT
+170000000001500200;consumption;2023-01-31T23:00:00Z;2000;measured;
+070000001500170200;consumption_from_grid;2023-01-31T23:00:00Z;2000;estimated;
+060000001500170200;supply_to_grid;2023-01-31T23:00:00Z;1000;measured;d07-d06 = 1000 / 366 = 2,732
+170000000001500201;consumption;2023-01-31T23:00:00Z;4000;measured;
+070000001500170201;consumption_from_grid;2023-01-31T23:00:00Z;4000;estimated;
+060000001500170201;supply_to_grid;2023-01-31T23:00:00Z;1000;measured;d07-d06 = 3000 / 366 = 8,196
+150000001500170201;net_consumption;2023-02-27T23:00:00Z;1;calculated;
+150000001500170200;net_consumption;2023-12-30T23:00:00Z;1;calculated;
