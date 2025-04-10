@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold.current_v1 import schema
+from geh_common.data_products.measurements_core.measurements_gold import current_v1
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
@@ -51,7 +51,7 @@ def test__current_measurements_read__has_correct_schema_and_records(
     # Assert
     assert actual.collect() == valid_df.collect()
     assert actual.schema == valid_df.schema
-    assert actual.schema == current_v1
+    assert actual.schema == current_v1.schema
 
 
 def test__when_invalid_contract__raises_with_useful_message(
@@ -95,4 +95,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = current_measurements_table.read()
 
     # Assert
-    assert actual.schema == schema
+    assert actual.schema == current_v1.schema
