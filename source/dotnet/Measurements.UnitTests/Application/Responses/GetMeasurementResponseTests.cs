@@ -35,7 +35,7 @@ public class GetMeasurementResponseTests
             Assert.Equal(Unit.kWh, point.Unit);
             Assert.Equal(Quality.Measured, point.Quality);
             Assert.Equal(Instant.FromDateTimeOffset(date), point.Created);
-            Assert.Equal(Instant.FromDateTimeOffset(date), point.TransactionCreationDatetime);
+            Assert.Equal(Instant.FromDateTimeOffset(date), point.TransactionCreated);
         }
     }
 

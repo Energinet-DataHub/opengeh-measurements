@@ -30,7 +30,7 @@ public class GetMeasurementResponse
                     UnitParser.ParseUnit(measurement.Unit),
                     ResolutionParser.ParseResolution(measurement.Resolution),
                     measurement.Created,
-                    measurement.TransactionCreationDatetime))
+                    measurement.TransactionCreated))
             .ToList();
 
         return points.Count <= 0

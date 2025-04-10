@@ -110,24 +110,24 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
-        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, bool IsCancelled) values)
+        (LocalDate ObservationTime, LocalDate TransactionCreated, string Quality, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
-        var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
-        var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
+        var transactionCreated = values.TransactionCreated;
+        var observationDateInstant = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0);
+        var transactionCreatedInstant = Instant.FromUtc(transactionCreated.Year, transactionCreated.Month, transactionCreated.Day, 0, 0, 0);
 
         var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
             "'1234567890'",
             "'kwh'",
-            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"'{FormatString(observationDateInstant.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
             $"'{values.Quality}'",
-            $"'{FormatString(transactionCreationDateTime)}'",
+            $"'{FormatString(transactionCreatedInstant)}'",
             "'PT1H'",
             values.IsCancelled ? "true" : "false",
-            $"'{FormatString(observationDateTime)}'",
+            $"'{FormatString(observationDateInstant)}'",
         });
 
         return rows;

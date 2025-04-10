@@ -66,7 +66,9 @@ public class MeasurementsHandlerTests
         raw.observation_time = now;
         raw.quantity = 42;
         raw.quality = "measured";
+        raw.resolution = "PT1H";
         raw.created = now;
+        raw.transaction_creation_datetime = now;
         return raw;
     }
 }

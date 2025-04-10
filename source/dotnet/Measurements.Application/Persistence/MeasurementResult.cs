@@ -19,5 +19,5 @@ public class MeasurementResult(ExpandoObject raw)
 
     public Instant Created => Instant.FromDateTimeOffset(_raw.created);
 
-    public Instant TransactionCreationDatetime => Instant.FromDateTimeOffset(_raw.transaction_creation_datetime);
+    public Instant TransactionCreated => Instant.FromDateTimeOffset(_raw.transaction_creation_datetime);
 }
