@@ -1,0 +1,2 @@
+ALTER TABLE {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements
+CLUSTER BY (orchestration_instance_id, transaction_id, metering_point_id, transaction_creation_datetime)
