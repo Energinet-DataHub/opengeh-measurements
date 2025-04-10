@@ -7,12 +7,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
-from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
 from tests import SPARK_CATALOG_NAME
-
-TABLE_OR_VIEW_NAME = f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.METERING_POINT_PERIODS}"
 
 
 @pytest.fixture(scope="module")
