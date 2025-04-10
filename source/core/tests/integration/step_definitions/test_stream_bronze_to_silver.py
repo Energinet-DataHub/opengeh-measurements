@@ -1,5 +1,3 @@
-"""Streaming from Bronze to Silver feature tests."""
-
 import pyspark.sql.functions as F
 from pyspark.sql import SparkSession
 from pytest_bdd import given, parsers, scenarios, then, when
@@ -20,9 +18,48 @@ from tests.helpers.builders.submitted_transactions_builder import (
 scenarios("../features/stream_bronze_to_silver.feature")
 
 
-@given("invalid submitted measurements inserted into the bronze submitted table", target_fixture="key")
+# Given steps
+
+
+@given(
+    "valid submitted transactions inserted into the bronze submitted table",
+    target_fixture="expected_orchestration_id",
+)
 def _(spark: SparkSession):
-    """invalid submitted measurements inserted into the bronze submitted table."""
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return orchestration_instance_id
+
+
+@given(
+    "duplicated valid submitted transactions inserted into the bronze submitted table",
+    target_fixture="expected_orchestration_id",
+)
+def _(spark: SparkSession):
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return orchestration_instance_id
+
+
+@given("invalid submitted transactions inserted into the bronze submitted table", target_fixture="key")
+def _(spark: SparkSession):
     key = identifier_helper.generate_random_binary()
     value = identifier_helper.generate_random_binary()
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
@@ -36,7 +73,6 @@ def _(spark: SparkSession):
 
 @given("submitted measurements with unknown version inserted into the bronze submitted table", target_fixture="key")
 def _(spark: SparkSession):
-    """submitted measurements with unknown version inserted into the bronze submitted table."""
     key = identifier_helper.generate_random_binary()
     value = ValueBuilder(spark).add_row(version="9999999").build()
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
@@ -49,12 +85,10 @@ def _(spark: SparkSession):
 
 
 @given(
-    parsers.parse("measurements where the {field} has value {value}"),
+    parsers.parse("submitted transaction where the {field} has value {value}"),
     target_fixture="expected_orchestration_id",
 )
 def _(spark: SparkSession, field: str, value: str):
-    """Generic step for setting a field on measurements."""
-
     orchestration_instance_id = identifier_helper.generate_random_string()
     value = (
         ValueBuilder(spark).add_row(**{field: value}, orchestration_instance_id=orchestration_instance_id).build()  # type: ignore
@@ -72,11 +106,10 @@ def _(spark: SparkSession, field: str, value: str):
 
 
 @given(
-    parsers.parse("measurements points where the quality has value {quality}"),
+    parsers.parse("submitted transaction points where the quality has value {quality}"),
     target_fixture="expected_orchestration_id",
 )
 def _(spark: SparkSession, quality: str):
-    """measurements points where the quality has value <quality>."""
     orchestration_instance_id = identifier_helper.generate_random_string()
     points = PointsBuilder(spark).add_row(quality=quality).build()
     value = ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
@@ -89,56 +122,21 @@ def _(spark: SparkSession, quality: str):
     return orchestration_instance_id
 
 
-@given(
-    "new valid submitted measurements inserted into the bronze submitted table",
-    target_fixture="expected_orchestration_id",
-)
-def _(spark: SparkSession):
-    """new valid submitted measurements inserted into the bronze submitted table."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return orchestration_instance_id
+# When steps
 
 
-@given(
-    "duplicated valid submitted measurements inserted into the bronze submitted table",
-    target_fixture="expected_orchestration_id",
-)
-def _(spark: SparkSession):
-    """duplicated valid submitted measurements inserted into the bronze submitted table."""
-    orchestration_instance_id = identifier_helper.generate_random_string()
-    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return orchestration_instance_id
-
-
-@when("streaming the submitted transaction to the Silver layer")
+@when("streaming submitted transactions to the Silver layer")
 def _(mock_checkpoint_path):
-    """streaming the submitted transaction to the Silver layer."""
     sut.stream_submitted_transactions()
 
 
+# Then steps
+
+
 @then(
-    "the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table"
+    "submitted transaction is persisted into the bronze quarantine table and are not available in the silver measurements table"
 )
 def _(spark: SparkSession, expected_orchestration_id: str):
-    """are not available in the silver measurements table."""
     silver_table = spark.table(f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{expected_orchestration_id}'"
     )
@@ -151,9 +149,8 @@ def _(spark: SparkSession, expected_orchestration_id: str):
     assert bronze_quarantine_table.count() == 1
 
 
-@then("measurements are persisted into the invalid bronze submitted transaction table")
+@then("submitted transaction is persisted into the invalid bronze submitted transaction table")
 def _(spark: SparkSession, key: str):
-    """are not quarantined in the bronze quarantine table."""
     bronze_invalid_table = spark.table(
         f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}"
     ).where(F.col("key") == key)
@@ -161,9 +158,8 @@ def _(spark: SparkSession, key: str):
     assert bronze_invalid_table.count() == 1
 
 
-@then("the measurements are available in the silver measurements table")
+@then("measurements are available in the silver measurements table")
 def _(spark: SparkSession, expected_orchestration_id: str):
-    """the measurements are available in the silver measurements table."""
     silver_table = spark.table(f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{expected_orchestration_id}'"
     )
