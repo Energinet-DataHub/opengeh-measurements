@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.11"
 
 [[package]]
@@ -21,16 +22,16 @@ wheels = [
 
 [[package]]
 name = "azure-core"
-version = "1.32.0"
+version = "1.33.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
     { name = "six" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cc/ee/668328306a9e963a5ad9f152cd98c7adad86c822729fd1d2a01613ad1e67/azure_core-1.32.0.tar.gz", hash = "sha256:22b3c35d6b2dae14990f6c1be2912bf23ffe50b220e708a28ab1bb92b1c730e5", size = 279128 }
+sdist = { url = "https://files.pythonhosted.org/packages/75/aa/7c9db8edd626f1a7d99d09ef7926f6f4fb34d5f9fa00dc394afdfe8e2a80/azure_core-1.33.0.tar.gz", hash = "sha256:f367aa07b5e3005fec2c1e184b882b0b039910733907d001c20fb08ebb8c0eb9", size = 295633 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/83/325bf5e02504dbd8b4faa98197a44cdf8a325ef259b48326a2b6f17f8383/azure_core-1.32.0-py3-none-any.whl", hash = "sha256:eac191a0efb23bfa83fddf321b27b122b4ec847befa3091fa736a5c32c50d7b4", size = 198855 },
+    { url = "https://files.pythonhosted.org/packages/07/b7/76b7e144aa53bd206bf1ce34fa75350472c3f69bf30e5c8c18bc9881035d/azure_core-1.33.0-py3-none-any.whl", hash = "sha256:9b5b6d0223a1d38c37500e6971118c1e0f13f54951e6893968b38910bc9cda8f", size = 207071 },
 ]
 
 [[package]]
@@ -78,7 +79,7 @@ wheels = [
 
 [[package]]
 name = "azure-monitor-opentelemetry"
-version = "1.6.4"
+version = "1.6.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-core" },
@@ -94,9 +95,9 @@ dependencies = [
     { name = "opentelemetry-resource-detector-azure" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/5e/8c65c97a4210ef6df7593676c3c2c95766f1114363016e5c78ba5cd47996/azure_monitor_opentelemetry-1.6.4.tar.gz", hash = "sha256:9f5ce4c666caf1f9b536f8ab4ee207dff94777d568517c74f26e3327f75c3fc3", size = 45114 }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/82/4fd411d038443972c9363ead05194c692c03e15bd1f1c8d57a265597f1f0/azure_monitor_opentelemetry-1.6.6.tar.gz", hash = "sha256:e27031f9759e1dfcf63e2c39b079a83e61c664c51e28044456cb3767851f91e5", size = 46977 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4f/0f/c9a0f044e3ff0b4c2c1bc3e29d315cce27b6d6af6c781b6a522fe23f7c62/azure_monitor_opentelemetry-1.6.4-py3-none-any.whl", hash = "sha256:014142ffa420bc2b287ff3bd30de6c31d64b2846423d011a8280334d7afcb01a", size = 23002 },
+    { url = "https://files.pythonhosted.org/packages/29/5c/f1cf67ad33ac4758d5cbd2a456c744c76d4f7035ddce810f79c38d0efeb9/azure_monitor_opentelemetry-1.6.6-py3-none-any.whl", hash = "sha256:934bfaef0829714641bd7d68d9dd348b5fe8b44aca99c385431df8b1c414d6ee", size = 23633 },
 ]
 
 [[package]]
@@ -473,15 +474,15 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "azure-core", specifier = "==1.32.0" },
-    { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
-    { name = "configargparse", specifier = "==1.7.0" },
+    { name = "azure-core", specifier = "==1.33.0" },
+    { name = "azure-monitor-opentelemetry", specifier = "==1.6.6" },
+    { name = "configargparse", specifier = "==1.7" },
     { name = "delta-spark", specifier = "==3.2.0" },
     { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.6.3" },
-    { name = "pydantic-settings", specifier = ">=2.7.1" },
-    { name = "pyspark", specifier = "==3.5.1" },
-    { name = "python-dateutil", specifier = "==2.8.2" },
-    { name = "tomli", specifier = ">=2.2.1" },
+    { name = "pydantic-settings", specifier = "==2.8.1" },
+    { name = "pyspark", specifier = "==3.5.5" },
+    { name = "python-dateutil", specifier = "==2.9.0" },
+    { name = "tomli", specifier = "==2.2.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -1070,12 +1071,12 @@ crypto = [
 
 [[package]]
 name = "pyspark"
-version = "3.5.1"
+version = "3.5.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "py4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/73/e5/c9eb78cc982dafb7b5834bc5c368fe596216c8b9f7c4b4ffa104c4d2ab8f/pyspark-3.5.1.tar.gz", hash = "sha256:dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910", size = 316955685 }
+sdist = { url = "https://files.pythonhosted.org/packages/5f/8f/b616ef710932ccdbabd8511e08890a677482ab2967b7cf276c09a02bc64c/pyspark-3.5.5.tar.gz", hash = "sha256:6effc9ce98edf231f4d683fd14f7270629bf8458c628d6a2620ded4bb34f3cb9", size = 317214975 }
 
 [[package]]
 name = "pytest"
@@ -1132,14 +1133,14 @@ wheels = [
 
 [[package]]
 name = "python-dateutil"
-version = "2.8.2"
+version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4c/c4/13b4776ea2d76c115c1d1b84579f3764ee6d57204f6be27119f13a61d0a9/python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86", size = 357324 }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/77/bd458a2e387e98f71de86dcc2ca2cab64489736004c80bc12b70da8b5488/python-dateutil-2.9.0.tar.gz", hash = "sha256:78e73e19c63f5b20ffa567001531680d939dc042bf7850431877645523c66709", size = 342990 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9", size = 247702 },
+    { url = "https://files.pythonhosted.org/packages/13/7f/98d6f9ca8b731506c85785bbb8806c01f5966a4df6d68c0d1cf3b16967e1/python_dateutil-2.9.0-py2.py3-none-any.whl", hash = "sha256:cbf2f1da5e6083ac2fbfd4da39a25f34312230110440f424a14c7558bb85d82e", size = 230495 },
 ]
 
 [[package]]
