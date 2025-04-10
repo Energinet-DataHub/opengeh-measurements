@@ -18,6 +18,7 @@ class ContractColumnNames:
     parent_metering_point_id = "parent_metering_point_id"
     period_from_date = "period_from_date"
     period_to_date = "period_to_date"
+    quality = "quality"
     quantity = "quantity"
     settlement_month = "settlement_month"
     transaction_creation_datetime = "transaction_creation_datetime"
