@@ -1,5 +1,6 @@
 import random
 from datetime import datetime, timezone
+from typing import Any, Generator
 
 import pytest
 from geh_common.pyspark.read_csv import read_csv_path
@@ -65,7 +66,7 @@ def electricity_market_tables_seeded(
     child_consumption_from_grid_metering_point: str,
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
-) -> None:
+) -> Generator[None, Any, None]:
     # PARENT
     df = spark.createDataFrame(
         [
@@ -114,3 +115,17 @@ def electricity_market_tables_seeded(
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
     )
+
+    yield
+
+    # Clean up
+
+    spark.sql(f"""
+                DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
+                WHERE metering_point_id = {parent_metering_point_id}
+              """)
+
+    spark.sql(f"""
+                DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
+                WHERE metering_point_id IN ({child_net_consumption_metering_point}, {child_supply_to_grid_metering_point}, {child_consumption_from_grid_metering_point})
+              """)
