@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -14,3 +15,8 @@ def create_job_environment_variables(eletricity_market_path: str = "some_path") 
         "ELECTRICITY_MARKET_DATA_PATH": eletricity_market_path,
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "some_connection_string",
     }
+
+
+def create_random_metering_point_id(position=8, digit=9):
+    id = "".join(random.choice("0123456789") for _ in range(18))
+    return id[:position] + str(digit) + id[position + 1 :]

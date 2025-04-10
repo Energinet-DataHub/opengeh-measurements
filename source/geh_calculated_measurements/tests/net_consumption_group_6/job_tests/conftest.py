@@ -1,4 +1,3 @@
-import random
 from datetime import datetime, timezone
 from typing import Any, Generator
 
@@ -18,35 +17,31 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema im
     net_consumption_group_6_child_metering_point_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
+from tests import create_random_metering_point_id
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-def create_random_metering_point_id(position=8, digit=9):
-    id = "".join(random.choice("0123456789") for _ in range(18))
-    return id[:position] + str(digit) + id[position + 1 :]
-
-
-@pytest.fixture(scope="class")
+@pytest.fixture
 def parent_metering_point_id() -> str:
     return create_random_metering_point_id()
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def child_net_consumption_metering_point() -> str:
     return create_random_metering_point_id()
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def child_supply_to_grid_metering_point() -> str:
     return create_random_metering_point_id()
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def child_consumption_from_grid_metering_point() -> str:
     return create_random_metering_point_id()
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def gold_table_seeded(
     spark: SparkSession,
     external_dataproducts_created: None,  # Used implicitly
@@ -68,9 +63,7 @@ def gold_table_seeded_randomized_metering_point(
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
 ) -> None:
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
-
+    # Create dataframe from the random metering point ids
     randomized_metering_point_id_df = spark.createDataFrame(
         [
             (parent_metering_point_id, "consumption"),
@@ -80,8 +73,13 @@ def gold_table_seeded_randomized_metering_point(
         ],
         schema=["new_metering_point_id", "metering_point_type"],
     )
-    time_series_points = time_series_points.join(randomized_metering_point_id_df, on="metering_point_type", how="left")
 
+    # Read test csv file
+    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
+    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+
+    # Join the random metering points to the test data
+    time_series_points = time_series_points.join(randomized_metering_point_id_df, on="metering_point_type", how="left")
     time_series_points = time_series_points.select(
         F.col("new_metering_point_id").alias("metering_point_id"),
         "metering_point_type",
@@ -89,6 +87,8 @@ def gold_table_seeded_randomized_metering_point(
         "quantity",
         "quality",
     )
+
+    # Persist the data to the table
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
         format="delta",

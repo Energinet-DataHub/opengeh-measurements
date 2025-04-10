@@ -44,7 +44,6 @@ def _seed_gold_table(
         ),
     ]
     statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
-    print("statement:", statement)
     job_fixture.execute_statement(statement)
 
 
