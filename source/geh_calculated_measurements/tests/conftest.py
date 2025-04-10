@@ -6,6 +6,10 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from geh_common.data_products.electricity_market_measurements_input import (
+    net_consumption_group_6_child_metering_points_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
