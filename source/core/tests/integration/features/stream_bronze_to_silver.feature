@@ -1,42 +1,35 @@
 Feature: Streaming from Bronze to Silver
 
-  Scenario: Processing submitted measurements to Silver
-    Given new valid submitted measurements inserted into the bronze submitted table
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
+  Scenario: Processing submitted transactions to Silver
+    Given valid submitted transactions inserted into the bronze submitted table
+    When streaming submitted transactions to the Silver layer
+    Then measurements are available in the silver measurements table
 
-  Scenario: Processing duplicated submitted measurements to Silver
-    Given duplicated valid submitted measurements inserted into the bronze submitted table
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table    
+  Scenario: Processing duplicated submitted transactions to Silver
+    Given duplicated valid submitted transactions inserted into the bronze submitted table
+    When streaming submitted transactions to the Silver layer
+    Then measurements are available in the silver measurements table
 
-  Scenario: Processing invalid submitted measurements
-    Given invalid submitted measurements inserted into the bronze submitted table
-    When streaming the submitted transaction to the Silver layer
-    Then measurements are persisted into the invalid bronze submitted transaction table
-
-  Scenario: Processing invalid submitted measurements
-    Given submitted measurements with unknown version inserted into the bronze submitted table
-    When streaming the submitted transaction to the Silver layer
-    Then measurements are persisted into the invalid bronze submitted transaction table    
+  Scenario: Processing invalid submitted transactions
+    Given invalid submitted transactions inserted into the bronze submitted table
+    When streaming submitted transactions to the Silver layer
+    Then submitted transaction is persisted into the invalid bronze submitted transaction table
 
   Scenario Outline: Processing submitted transaction with unspecified <field>
-    Given measurements where the <field> has value <value>
-    When streaming the submitted transaction to the Silver layer
-    Then the transaction are persisted into the bronze quarantine table and are not available in the silver measurements table
-
+    Given submitted transaction where the <field> has value <value>
+    When streaming submitted transactions to the Silver layer
+    Then submitted transaction is persisted into the bronze quarantine table and are not available in the silver measurements table
   Examples:
     | field               | value            |
     | resolution          | R_UNSPECIFIED    |
     | metering_point_type | MPT_UNSPECIFIED  |
     | unit                | U_UNSPECIFIED    |
     | orchestration_type  | OT_UNSPECIFIED   |
-      
 
 Scenario Outline: Processing submitted transaction with valid <field>
-    Given measurements where the <field> has value <value>
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
+    Given submitted transaction where the <field> has value <value>
+    When streaming submitted transactions to the Silver layer
+    Then measurements are available in the silver measurements table
 
   Examples:
     | field               | value                          |
@@ -74,10 +67,10 @@ Scenario Outline: Processing submitted transaction with valid <field>
     | unit                | U_TONNE                        |
     | unit                | U_KVARH                        |
 
-  Scenario Outline: Processing submitted transaction points with valid quality
-    Given measurements points where the quality has value <quality>
-    When streaming the submitted transaction to the Silver layer
-    Then the measurements are available in the silver measurements table
+  Scenario Outline: Processing submitted transaction point with valid quality
+    Given submitted transaction points where the quality has value <quality>
+    When streaming submitted transactions to the Silver layer
+    Then measurements are available in the silver measurements table
 
     Examples:
     | quality |
