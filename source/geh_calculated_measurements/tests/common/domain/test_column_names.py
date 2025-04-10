@@ -2,15 +2,16 @@ import pytest
 
 from geh_calculated_measurements.capacity_settlement import domain as cs
 from geh_calculated_measurements.capacity_settlement.application.model import calculations as cs_app
-from geh_calculated_measurements.common import domain as common
 from geh_calculated_measurements.common.application import model as common_app
 from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain import model as common
 from geh_calculated_measurements.electrical_heating import domain as eh
 from geh_calculated_measurements.electrical_heating.domain import EphemeralColumnNames
 from geh_calculated_measurements.net_consumption_group_6 import domain as ncg6
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_CONTRACT_STRUCT_TYPES = [
+    common.CalculatedMeasurementsDaily.schema,
     common.CurrentMeasurements.schema,
     common_app.CalculatedMeasurementsInternal.schema,
     cs.MeteringPointPeriods.schema,
