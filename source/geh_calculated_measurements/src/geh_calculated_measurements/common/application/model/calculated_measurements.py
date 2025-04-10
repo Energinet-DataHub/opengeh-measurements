@@ -7,7 +7,10 @@ from geh_calculated_measurements.common.domain.column_names import ContractColum
 nullable = True
 
 
+# TODO BJM: Rename to CalculatedMeasurementsInternal
 class CalculatedMeasurements(DataFrameWrapper):
+    """The internal storage model of calculated measurements used by all calculations producing calculated measurements."""
+
     def __init__(self, df: DataFrame):
         super().__init__(
             df=df,
