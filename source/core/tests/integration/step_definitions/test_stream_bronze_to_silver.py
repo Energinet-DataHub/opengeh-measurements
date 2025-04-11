@@ -92,7 +92,9 @@ def _(spark: SparkSession):
 def _(spark: SparkSession):
     orchestration_instance_id = identifier_helper.generate_random_string()
     # Insert into silver measurements table
-    silver_measurements = SilverMeasurementsBuilder(spark).add_row().build()
+    silver_measurements = (
+        SilverMeasurementsBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    )
     table_helper.append_to_table(
         silver_measurements,
         SilverSettings().silver_database_name,
