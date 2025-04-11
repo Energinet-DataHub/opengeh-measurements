@@ -45,7 +45,7 @@ public class GetAggregatedMeasurementsQueryTests
                $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
                $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
                $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount}, " +
-               $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates}" +
+               $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates} " +
                $"from most_recent " +
                $"where row = 1 " +
                $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
