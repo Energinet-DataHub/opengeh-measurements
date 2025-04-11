@@ -44,6 +44,7 @@ def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> 
         OrchestrationType.NET_CONSUMPTION,
         MeteringPointType.NET_CONSUMPTION,
         args.time_zone,
+        transaction_creation_datetime=args.execution_start_datetime,
     )
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
