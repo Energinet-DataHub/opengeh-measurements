@@ -9,6 +9,7 @@ from core.bronze.infrastructure.config.table_names import TableNames as BronzeTa
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config.table_names import TableNames as SilverTableNames
+from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 from tests.helpers.builders.submitted_transactions_builder import (
     PointsBuilder,
     SubmittedTransactionsBuilder,
@@ -82,6 +83,31 @@ def _(spark: SparkSession):
         BronzeTableNames.bronze_submitted_transactions_table,
     )
     return key
+
+
+@given(
+    "valid submitted transactions inserted into the silver measurements table and the same submitted transactions inserted into the bronze submitted table",
+    target_fixture="expected_orchestration_id",
+)
+def _(spark: SparkSession):
+    orchestration_instance_id = identifier_helper.generate_random_string()
+    # Insert into silver measurements table
+    silver_measurements = SilverMeasurementsBuilder(spark).add_row().build()
+    table_helper.append_to_table(
+        silver_measurements,
+        SilverSettings().silver_database_name,
+        SilverTableNames.silver_measurements,
+    )
+
+    # Insert into bronze submitted transactions table
+    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return orchestration_instance_id
 
 
 @given(
