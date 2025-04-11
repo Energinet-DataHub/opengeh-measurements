@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+from dataclasses import dataclass
 from typing import Generator
 from unittest import mock
 
@@ -11,6 +12,7 @@ from geh_common.data_products.electricity_market_measurements_input import (
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
+from geh_common.data_products.measurements_core.measurements_gold import current_v1
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -18,10 +20,6 @@ from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
@@ -38,6 +36,20 @@ from tests import (
 )
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+
+@dataclass
+class DataProduct:
+    database_name: str
+    view_name: str
+
+
+@dataclass
+class ExternalDataProducts:
+    CURRENT_MEASUREMENTS = DataProduct(
+        database_name=current_v1.database_name,
+        view_name=current_v1.view_name,
+    )
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
@@ -184,10 +196,9 @@ def _create_dataproducts(spark):
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
+        database_name=ExternalDataProducts.CURRENT_MEASUREMENTS.database_name,
+        table_name=ExternalDataProducts.CURRENT_MEASUREMENTS.view_name,
         schema=CurrentMeasurements.schema,
-        # table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
 
     # Create missing measurements log database and tables
@@ -197,22 +208,18 @@ def _create_dataproducts(spark):
         database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
         table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
         schema=MeteringPointPeriodsTable.schema,
-        # table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )
 
     # Create net consumption group 6 database and tables
-    # create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
-        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
     )
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
         schema=net_consumption_group_6_child_metering_points_v1.schema,
-        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
     )
