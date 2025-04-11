@@ -35,13 +35,18 @@ from tests import (
     TESTS_ROOT,
     create_job_environment_variables,
 )
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 def pytest_collection_modifyitems(config, items) -> None:
-    if not os.getenv("DATABRICKS_RUNTIME_VERSION"):
-        skip_subsystem_tests = pytest.mark.skip(reason="Skipping subsystem tests because tests are executed locally")
+    skip_subsystem_tests = pytest.mark.skip(
+        reason="Skipping subsystem tests because environmental variables could not be set"
+    )
+    try:
+        EnvironmentConfiguration()
+    except Exception:
         for item in items:
             if "subsystem_tests" in item.nodeid:
                 item.add_marker(skip_subsystem_tests)
