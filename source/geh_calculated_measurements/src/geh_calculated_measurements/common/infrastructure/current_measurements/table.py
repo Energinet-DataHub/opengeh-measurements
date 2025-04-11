@@ -32,8 +32,6 @@ class Table(ABC):
             if isinstance(field, t.StructField):
                 schema.append(field)
                 columns.append(field.name)
-                setattr(cls, name, field.name)
-                setattr(cls, f"{name}_type", field.dataType)
 
         # Assign the schema and columns to the class attribute schema and columns
         cls.schema = t.StructType(schema)
