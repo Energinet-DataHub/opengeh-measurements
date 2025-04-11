@@ -5,12 +5,15 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
-using Energinet.DataHub.Measurements.Client.Serialization;
+using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
-public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasurementsClient
+public class MeasurementsClient(
+    IHttpClientFactory httpClientFactory,
+    IMeasurementsForDayResponseParser measurementsForDayResponseParser)
+    : IMeasurementsClient
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
 
@@ -23,32 +26,25 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     public async Task<MeasurementDto> GetMeasurementsForDayAsync(
         GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
+        var url = CreateGetMeasurementsForPeriodUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
+        if (response.StatusCode == HttpStatusCode.NotFound) return new MeasurementDto([]);
+
+        var result = await measurementsForDayResponseParser.ParseResponseMessage(response, cancellationToken);
+
+        return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
     public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedMeasurementsForMonth(
         GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateUrl(query.MeteringPointId, query.YearMonth);
+        var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
-    }
-
-    private async Task<MeasurementDto> ParseMeasurementsResponseAsync(
-        HttpResponseMessage response, CancellationToken cancellationToken)
-    {
-        if (response.StatusCode == HttpStatusCode.NotFound) return new MeasurementDto([]);
-
-        var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        var result = new MeasurementSerializer().Deserialize<MeasurementDto>(json);
-
-        return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
     private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
@@ -70,12 +66,12 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
                ?? throw new InvalidOperationException();
     }
 
-    private static string CreateUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
+    private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
         return $"/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 
-    private static string CreateUrl(string meteringPointId, YearMonth yearMonth)
+    private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, YearMonth yearMonth)
     {
         return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
