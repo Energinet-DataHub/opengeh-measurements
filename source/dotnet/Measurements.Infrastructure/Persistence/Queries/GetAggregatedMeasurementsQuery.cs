@@ -22,11 +22,6 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
 
     protected override string GetSqlStatement()
     {
-        const string groupByStatement = $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-                                        $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
-                                        $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
-                                        $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
-
         return
             $"with most_recent as (" +
             $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
@@ -46,7 +41,7 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"from most_recent " +
             $"where row = 1 " +
             $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
-            $"group by {groupByStatement} " +
+            $"group by {CreateGroupByStatement()} " +
             $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
     }
 
@@ -61,5 +56,13 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
         ];
 
         return parameters;
+    }
+
+    private static string CreateGroupByStatement()
+    {
+        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
+               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
     }
 }
