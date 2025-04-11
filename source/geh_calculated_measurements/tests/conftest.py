@@ -43,7 +43,7 @@ from tests.testsession_configuration import TestSessionConfiguration
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 def pytest_collection_modifyitems(config, items) -> None:
     skip_subsystem_tests = pytest.mark.skip(
-        reason="Skipping subsystem tests because environmental variables could not be set"
+        reason="Skipping subsystem tests because environmental variables could not be set. See .sample.env file on how to set environmental variables locally"
     )
     try:
         EnvironmentConfiguration()
