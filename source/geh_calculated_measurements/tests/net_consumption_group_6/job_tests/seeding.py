@@ -1,14 +1,11 @@
 from datetime import datetime, timezone
-from typing import Any, Generator
 
-import pyspark.sql.functions as F
-import pytest
 from geh_common.data_products.electricity_market_measurements_input import (
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
 from geh_common.pyspark.read_csv import read_csv_path
-from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
@@ -17,47 +14,11 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
-from tests import create_random_metering_point_id
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-@pytest.fixture
-def parent_metering_point_id() -> str:
-    return create_random_metering_point_id()
-
-
-@pytest.fixture
-def child_net_consumption_metering_point() -> str:
-    return create_random_metering_point_id()
-
-
-@pytest.fixture
-def child_supply_to_grid_metering_point() -> str:
-    return create_random_metering_point_id()
-
-
-@pytest.fixture
-def child_consumption_from_grid_metering_point() -> str:
-    return create_random_metering_point_id()
-
-
-@pytest.fixture
-def gold_table_seeded(
-    spark: SparkSession,
-    external_dataproducts_created: None,  # Used implicitly
-) -> None:
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
-    time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
-        format="delta",
-        mode="append",
-    )
-
-
-@pytest.fixture
-def gold_table_seeded_randomized_metering_point(
-    spark: SparkSession,
+def _seed_gold(
+    spark,
     parent_metering_point_id: str,
     child_consumption_from_grid_metering_point: str,
     child_net_consumption_metering_point: str,
@@ -96,14 +57,13 @@ def gold_table_seeded_randomized_metering_point(
     )
 
 
-@pytest.fixture
-def electricity_market_tables_seeded(
-    spark: SparkSession,
+def _seed_electricity_market(
+    spark,
     parent_metering_point_id: str,
     child_consumption_from_grid_metering_point: str,
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
-) -> Generator[None, Any, None]:
+) -> None:
     # PARENT
     df = spark.createDataFrame(
         [
@@ -153,16 +113,30 @@ def electricity_market_tables_seeded(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
     )
 
-    yield
 
-    # Clean up
+def _remove_seeded_gold_data(
+    spark,
+    parent_metering_point_id,
+    child_consumption_from_grid_metering_point,
+    child_net_consumption_metering_point,
+    child_supply_to_grid_metering_point,
+) -> None:
+    pass
 
+
+def _remove_seeded_electricity_market_data(
+    spark,
+    parent_metering_point_id: str,
+    child_consumption_from_grid_metering_point: str,
+    child_net_consumption_metering_point: str,
+    child_supply_to_grid_metering_point: str,
+) -> None:
     spark.sql(f"""
                 DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
                 WHERE metering_point_id = {parent_metering_point_id}
-              """)
+            """)
 
     spark.sql(f"""
                 DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
                 WHERE metering_point_id IN ({child_net_consumption_metering_point}, {child_supply_to_grid_metering_point}, {child_consumption_from_grid_metering_point})
-              """)
+            """)
