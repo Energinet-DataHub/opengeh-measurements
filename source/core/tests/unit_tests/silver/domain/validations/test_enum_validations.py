@@ -2,6 +2,7 @@ import pytest
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_quality import QuantityQuality as GehCommonQuality
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
@@ -17,7 +18,7 @@ from tests.helpers.builders.silver_measurements_builder import SilverMeasurement
 
 metering_point_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonMeteringPointType]
 orchestration_type_enum_params = [pytest.param(x.value, 1) for x in GehCommonOrchestrationType]
-quality_enum_params = [pytest.param(x, 1) for x in Quality.values() if x != Quality.Q_UNSPECIFIED]
+quality_enum_params = [pytest.param(x.value, 1) for x in GehCommonQuality]
 unit_enum_params = [pytest.param(x.value, 1) for x in GehCommonUnit]
 resolution_enum_params = [pytest.param(x.value, 1) for x in GehCommonResolution]
 
