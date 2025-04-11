@@ -31,6 +31,7 @@ public class GetAggregatedMeasurementsQueryTests
     {
         return $"with most_recent as (" +
                $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
+               $"count(*) over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}) as row_count, " +
                $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
                $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
                $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
@@ -43,7 +44,8 @@ public class GetAggregatedMeasurementsQueryTests
                $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
                $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
                $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
-               $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount} " +
+               $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount}, " +
+               $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates}" +
                $"from most_recent " +
                $"where row = 1 " +
                $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
