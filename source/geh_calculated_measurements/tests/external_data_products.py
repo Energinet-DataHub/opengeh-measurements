@@ -11,7 +11,6 @@ class DataProduct:
     schema: Any
 
 
-@dataclass
 class ExternalDataProducts:
     CURRENT_MEASUREMENTS: DataProduct = DataProduct(
         database_name=current.database_name,
