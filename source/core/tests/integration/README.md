@@ -41,4 +41,3 @@ to automatically generate step function template for undefined steps.
 ## Running Tests
 
 You can run the tests just like unit tests.
- 
