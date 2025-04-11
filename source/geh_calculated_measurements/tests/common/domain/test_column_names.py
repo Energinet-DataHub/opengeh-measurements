@@ -1,17 +1,27 @@
 import pytest
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements, ContractColumnNames
-from geh_calculated_measurements.electrical_heating.domain import (
-    ChildMeteringPoints,
-    ConsumptionMeteringPointPeriods,
-    EphemeralColumnNames,
-)
+from geh_calculated_measurements.capacity_settlement import domain as cs
+from geh_calculated_measurements.capacity_settlement.application.model import calculations as cs_app
+from geh_calculated_measurements.common.application import model as common_app
+from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain import model as common
+from geh_calculated_measurements.electrical_heating import domain as eh
+from geh_calculated_measurements.electrical_heating.domain import EphemeralColumnNames
+from geh_calculated_measurements.net_consumption_group_6 import domain as ncg6
 
 # Imports for all other StructTypes in the infrastructure directory
 ALL_CONTRACT_STRUCT_TYPES = [
-    ChildMeteringPoints.schema,
-    ConsumptionMeteringPointPeriods.schema,
-    CalculatedMeasurements.schema,
+    common.CalculatedMeasurementsDaily.schema,
+    common.CurrentMeasurements.schema,
+    common_app.CalculatedMeasurementsInternal.schema,
+    cs.MeteringPointPeriods.schema,
+    cs.TenLargestQuantities.schema,
+    cs_app.Calculations.schema,
+    eh.ChildMeteringPoints.schema,
+    eh.ConsumptionMeteringPointPeriods.schema,
+    ncg6.Cenc.schema,
+    ncg6.ChildMeteringPoints.schema,
+    ncg6.ConsumptionMeteringPointPeriods.schema,
 ]
 
 
