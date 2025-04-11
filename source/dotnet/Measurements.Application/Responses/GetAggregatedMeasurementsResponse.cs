@@ -27,13 +27,21 @@ public class GetAggregatedMeasurementsResponse
                 new MeasurementAggregation(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
-                    measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)).Min(),
-                    SetMissingValuesForAggregation(measurement)))
+                    SetQuality(measurement),
+                    SetMissingValuesForAggregation(measurement),
+                    SetContainsUpdatedValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()
             : new GetAggregatedMeasurementsResponse(measurementAggregations);
+    }
+
+    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.Qualities
+            .Select(quality => QualityParser.ParseQuality((string)quality))
+            .Min();
     }
 
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
@@ -65,5 +73,10 @@ public class GetAggregatedMeasurementsResponse
             _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
         };
         return expectedPointCount;
+    }
+
+    private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.ObservationUpdates > 1;
     }
 }
