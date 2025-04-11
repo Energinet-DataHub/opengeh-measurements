@@ -12,7 +12,10 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
         var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         var pointsDto = new MeasurementSerializer().Deserialize<PointsDto>(json);
 
-        var positions = pointsDto.Points.GroupBy(p => p.ObservationTime).ToList();
+        var positions = pointsDto.Points
+            .OrderBy(p => p.ObservationTime)
+            .GroupBy(p => p.ObservationTime)
+            .ToList();
 
         for (var positionIndex = 0; positionIndex < positions.Count; positionIndex++)
         {
