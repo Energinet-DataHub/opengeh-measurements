@@ -27,7 +27,7 @@ public class GetAggregatedMeasurementsResponse
                 new MeasurementAggregation(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
-                    measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)).Min(),
+                    SetQuality(measurement),
                     SetMissingValuesForAggregation(measurement),
                     SetContainsUpdatedValues(measurement)))
             .ToList();
@@ -35,6 +35,13 @@ public class GetAggregatedMeasurementsResponse
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()
             : new GetAggregatedMeasurementsResponse(measurementAggregations);
+    }
+
+    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.Qualities
+            .Select(quality => QualityParser.ParseQuality((string)quality))
+            .Min();
     }
 
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
