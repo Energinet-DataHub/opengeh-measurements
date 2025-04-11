@@ -10,7 +10,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiController]
 [Authorize]
 [Route("measurements")]
-public class MeasurementsController(IMeasurementsHandler measurementsHandler)
+public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
     : ControllerBase
 {
     [HttpGet]
@@ -27,6 +27,12 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
             return NotFound(e.Message);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Could not get requested measurement");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
         }
     }
 

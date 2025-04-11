@@ -36,7 +36,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
 
     public static string TestMeteringPointId => "1234567890";
 
-    public static LocalDate TestDate => new(2025, 1, 2);
+    public static LocalDate TestObservationDate => new(2025, 1, 2);
 
     public ServiceProvider ServiceProvider { get; }
 
@@ -108,15 +108,15 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
             { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRow()
     {
-        var observationTime = TestDate.ToUtcDateTimeOffset();
+        var observationTime = TestObservationDate.ToUtcDateTimeOffset();
 
         return Enumerable.Range(0, 24).Select(i => new[]
         {
@@ -125,10 +125,10 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             $"'{observationTime.AddHours(i).ToFormattedString()}'",
             $"{i}.4",
             "'measured'",
-            "'2025-01-15T03:40:55Z'",
             "'PT1H'",
             "false",
             "'2025-01-17T03:40:55Z'",
+            "'2025-01-15T03:40:55Z'",
         });
     }
 }
