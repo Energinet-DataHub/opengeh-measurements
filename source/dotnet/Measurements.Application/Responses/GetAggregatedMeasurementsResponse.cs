@@ -28,7 +28,8 @@ public class GetAggregatedMeasurementsResponse
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
                     measurement.Qualities.Select(quality => QualityParser.ParseQuality((string)quality)).Min(),
-                    SetMissingValuesForAggregation(measurement)))
+                    SetMissingValuesForAggregation(measurement),
+                    SetContainsUpdatedValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -65,5 +66,10 @@ public class GetAggregatedMeasurementsResponse
             _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
         };
         return expectedPointCount;
+    }
+
+    private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.ObservationUpdates > 1;
     }
 }
