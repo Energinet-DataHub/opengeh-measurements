@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 from decimal import Decimal
 
-from geh_common.data_products.measurements_calculated.calculated_measurements_v1 import calculated_measurements_v1
+from geh_common.data_products.measurements_calculated.calculated_measurements_v1 import schema
 
 
 class CalculatedMeasurementsBuilder:
@@ -42,4 +42,4 @@ class CalculatedMeasurementsBuilder:
         return self
 
     def build(self):
-        return self.spark.createDataFrame(self.data, schema=calculated_measurements_v1)
+        return self.spark.createDataFrame(self.data, schema=schema)
