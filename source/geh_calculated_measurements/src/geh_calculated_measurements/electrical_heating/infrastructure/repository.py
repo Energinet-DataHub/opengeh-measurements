@@ -23,6 +23,7 @@ class Repository:
     def read_consumption_metering_point_periods(self) -> ConsumptionMeteringPointPeriods:
         file_path = f"{self._electricity_market_data_path}/{self._consumption_metering_point_periods_file_name}"
         df = read_csv_path(spark=self._spark, path=file_path, schema=ConsumptionMeteringPointPeriods.schema)
+        # TODO FIX BY READING FROM DELTA
         return ConsumptionMeteringPointPeriods(df)
 
     def read_child_metering_points(self) -> ChildMeteringPoints:
