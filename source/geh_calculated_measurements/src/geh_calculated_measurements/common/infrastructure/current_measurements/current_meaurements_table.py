@@ -1,16 +1,14 @@
 import pyspark.sql.types as T
+from geh_common.data_products.measurements_core.measurements_gold import current_v1
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
 from geh_calculated_measurements.common.infrastructure.current_measurements.table import Table
 
 
 class CurrentMeasurementsTable(Table):
     def __init__(self, catalog_name: str) -> None:
-        self.fully_qualified_name = f"{catalog_name}.{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"
+        self.fully_qualified_name = f"{catalog_name}.{current_v1.database_name}.{current_v1.view_name}"
         super().__init__()
 
     metering_point_id = T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False)
