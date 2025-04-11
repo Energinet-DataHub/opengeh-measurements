@@ -8,8 +8,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -32,7 +32,7 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "consumption",
             )
         ],
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
     assert df.schema == current_v1
     return df

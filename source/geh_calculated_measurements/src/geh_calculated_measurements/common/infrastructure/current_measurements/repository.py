@@ -19,7 +19,7 @@ class Repository:
 
     def read_current_measurements(self) -> CurrentMeasurements:
         df = self._read()
-        assert_contract(df.schema, CurrentMeasurements.schema)
+        assert_contract(df.schema, current_v1.schema)
         return CurrentMeasurements(df)
 
     def _read(self) -> DataFrame:
