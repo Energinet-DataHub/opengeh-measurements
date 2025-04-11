@@ -75,3 +75,6 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
 
     # Assert
     assert actual.schema == MeteringPointPeriodsTable.schema
+
+
+# TODO JMG : Contract test

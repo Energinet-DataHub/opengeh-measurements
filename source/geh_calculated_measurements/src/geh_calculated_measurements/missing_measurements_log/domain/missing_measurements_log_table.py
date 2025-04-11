@@ -27,13 +27,9 @@ class MissingMeasurementsLogTable(Table):
     metering_point_id = T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False)
     date = T.StructField(ContractColumnNames.date, T.TimestampType(), False)
 
-    def read(self) -> DataFrame:
-        current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
-        metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
-
-        # Expected
+    def _get_expected_measurement_counts(self, metering_point_periods: DataFrame) -> DataFrame:
         metering_point_periods_local_time = convert_from_utc(metering_point_periods, self.time_zone)
-        expected_daily_entries_local_time = (
+        expected_measurement_counts = (
             metering_point_periods_local_time.withColumn(
                 "start_of_day",
                 F.explode(
@@ -58,40 +54,54 @@ class MissingMeasurementsLogTable(Table):
                         F.col(MeteringPointPeriodsTable.resolution) == MeteringPointResolution.HOUR.value, 3600
                     ).when(F.col(MeteringPointPeriodsTable.resolution) == MeteringPointResolution.QUARTER.value, 900)
                     # 3600 seconds for 1 hour, 900 seconds for 15 minutes
-                ).alias("observations_count"),
+                ).alias("measurement_counts"),
+            )
+            .select(
+                F.col(MeteringPointPeriodsTable.metering_point_id),
+                F.col("start_of_day").alias(self.date),
+                F.col("measurement_counts"),
             )
         )
 
-        expected_daily_entries = convert_to_utc(expected_daily_entries_local_time, self.time_zone)
+        return convert_to_utc(expected_measurement_counts, self.time_zone)
 
-        # Actual
-        current_measurements_local_time = convert_from_utc(current_measurements, self.time_zone)
-        actual_daily_observations = (
-            current_measurements_local_time.withColumn(
-                "observation_date", F.to_date(F.col(CurrentMeasurementsTable.observation_time))
-            )
-            .groupBy("observation_date", CurrentMeasurementsTable.metering_point_id)
-            .agg(F.count("*").alias("observations_count"))
+    def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
+        # Filter quality=missing
+        current_measurements = convert_from_utc(current_measurements, self.time_zone)
+        actual_measurement_counts = (
+            current_measurements.withColumn(self.date, F.to_date(F.col(CurrentMeasurementsTable.observation_time)))
+            .groupBy(self.date, CurrentMeasurementsTable.metering_point_id)
+            .agg(F.count("*").alias("measurement_counts"))
         ).select(
             F.col(CurrentMeasurementsTable.metering_point_id),
-            F.col("observation_date"),
-            F.col("observations_count"),
+            F.col(self.date),
+            F.col("measurement_counts"),
         )
 
+        return actual_measurement_counts
+
+    # TODO JMG: use_span?
+    def read(self) -> DataFrame:
+        current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
+        metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
+
+        expected_measurement_counts = self._get_expected_measurement_counts(metering_point_periods)
+        actual_measurement_counts = self._get_actual_measurement_counts(current_measurements)
+
         # Find missing measurements
-        missing_measurements = expected_daily_entries.join(
-            actual_daily_observations,
+        missing_measurements = expected_measurement_counts.join(
+            actual_measurement_counts,
             [
-                expected_daily_entries[MeteringPointPeriodsTable.metering_point_id]
-                == actual_daily_observations[CurrentMeasurementsTable.metering_point_id],
-                expected_daily_entries["start_of_day"] == actual_daily_observations["observation_date"],
-                expected_daily_entries["observations_count"] == actual_daily_observations["observations_count"],
+                expected_measurement_counts[MeteringPointPeriodsTable.metering_point_id]
+                == actual_measurement_counts[CurrentMeasurementsTable.metering_point_id],
+                expected_measurement_counts[self.date] == actual_measurement_counts[self.date],
+                expected_measurement_counts["measurement_counts"] == actual_measurement_counts["measurement_counts"],
             ],
             "left_anti",
         ).select(
             F.lit(str(self.input_orchestration_instance_id)).alias(self.orchestration_instance_id),
             F.col(self.metering_point_id),
-            F.col("start_of_day").alias(self.date),
+            F.col(self.date),
         )
 
         return missing_measurements
