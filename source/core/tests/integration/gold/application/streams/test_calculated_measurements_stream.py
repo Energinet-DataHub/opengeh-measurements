@@ -9,7 +9,7 @@ from tests.helpers.builders.calculated_builder import CalculatedMeasurementsBuil
 
 
 def test__stream_measurements_calculated_to_gold__append_to_gold_measurements(
-    spark: SparkSession, create_external_resources, migrations_executed, mock_checkpoint_path
+    spark: SparkSession, create_external_resources, mock_checkpoint_path
 ) -> None:
     """
     Note: We're appending to a table instead of a view, as streaming from views isn't supported in native Spark—

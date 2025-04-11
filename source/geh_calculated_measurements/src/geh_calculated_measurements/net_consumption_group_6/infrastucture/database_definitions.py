@@ -1,3 +1,4 @@
+# TODO BJM: Use from geh_common
 class ElectricityMarketMeasurementsInputDatabaseDefinition:
     """This class defines names for the database and tables related to electricity market measurements.
 

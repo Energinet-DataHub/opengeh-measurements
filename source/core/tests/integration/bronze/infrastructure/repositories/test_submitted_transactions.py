@@ -3,9 +3,7 @@ from pyspark.sql import SparkSession
 from core.bronze.infrastructure.repositories.submitted_transactions_repository import SubmittedTransactionsRepository
 
 
-def test__read_submitted_transactions__should_read_from_submitted_transactions_table(
-    spark: SparkSession, migrations_executed
-) -> None:
+def test__read_submitted_transactions__should_read_from_submitted_transactions_table(spark: SparkSession) -> None:
     # Arrange
     sut = SubmittedTransactionsRepository(spark)
 

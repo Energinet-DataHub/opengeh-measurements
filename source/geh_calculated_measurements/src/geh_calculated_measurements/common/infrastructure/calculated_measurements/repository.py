@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CalculatedMeasurements
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain.model.current_measurements import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
@@ -24,7 +24,7 @@ class Repository:
             return f"{self._catalog_name}.{database_name}.{table_name}"
         return f"{database_name}.{table_name}"
 
-    def write_calculated_measurements(self, data: CalculatedMeasurements) -> None:
+    def write_calculated_measurements(self, data: CalculatedMeasurementsInternal) -> None:
         df = data.df
         database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
