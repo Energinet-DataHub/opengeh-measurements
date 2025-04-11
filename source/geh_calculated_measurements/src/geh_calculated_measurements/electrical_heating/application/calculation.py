@@ -26,8 +26,12 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
+    print("D:")
+    current_measurements.df.show(truncate=False)
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
+    consumption_metering_point_periods.df.show(truncate=False)
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
+    child_metering_point_periods.df.show(truncate=False)
 
     # Execute the domain logic
     calculated_measurements_daily = execute(

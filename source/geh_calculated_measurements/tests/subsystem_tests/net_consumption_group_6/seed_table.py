@@ -1,6 +1,8 @@
 import random
 from datetime import datetime, timezone
 
+from geh_common.domain.types import MeteringPointType
+
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
@@ -14,41 +16,72 @@ parent_table = (
 )
 child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
 
-parent_metering_point_id = "170000050000000201"
 
-
-def _seed_gold_table(job_fixture: JobTestFixture) -> None:
+def _seed_gold_table(
+    job_fixture: JobTestFixture,
+    parent_metering_point_id,
+    child_supply_to_grid_metering_point,
+    child_consumption_from_grid_metering_point,
+) -> None:
+    year = datetime.now().year - 1
     gold_table_rows = [
         GoldTableRow(
-            metering_point_id="170000000000000201",
-            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            metering_point_id=parent_metering_point_id,
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
-        )
-        for i in range(1)
+        ),
+        GoldTableRow(
+            metering_point_id=child_consumption_from_grid_metering_point,
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            quantity=random.uniform(0.1, 10.0),
+            metering_point_type=MeteringPointType.CONSUMPTION_FROM_GRID,
+        ),
+        GoldTableRow(
+            metering_point_id=child_supply_to_grid_metering_point,
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            quantity=random.uniform(0.1, 10.0),
+            metering_point_type=MeteringPointType.SUPPLY_TO_GRID,
+        ),
     ]
     statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
-
     job_fixture.execute_statement(statement)
 
 
-def delete_seeded_data(job_fixture: JobTestFixture) -> None:
+def delete_seeded_data(
+    job_fixture: JobTestFixture,
+    parent_metering_point_id: str,
+    child_net_consumption_metering_point: str,
+    child_supply_to_grid_metering_point: str,
+    child_consumption_from_grid_metering_point: str,
+) -> None:
     statements = []
     # PARENT
     statements.append(f"""
         DELETE FROM {job_fixture.config.catalog_name}.{database}.{parent_table} 
         WHERE metering_point_id = '{parent_metering_point_id}'
     """)
-    # CHILD
+    # CHILDEN
     statements.append(f"""
         DELETE FROM {job_fixture.config.catalog_name}.{database}.{child_table} 
-        WHERE parent_metering_point_id = '{parent_metering_point_id}'
+        WHERE metering_point_id IN 
+            (
+                '{child_net_consumption_metering_point}',
+                '{child_supply_to_grid_metering_point}',
+                '{child_consumption_from_grid_metering_point}'
+            )        
     """)
 
     for statement in statements:
         job_fixture.execute_statement(statement)
 
 
-def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
+def seed_electricity_market_tables(
+    job_fixture: JobTestFixture,
+    parent_metering_point_id: str,
+    child_net_consumption_metering_point: str,
+    child_supply_to_grid_metering_point: str,
+    child_consumption_from_grid_metering_point: str,
+) -> None:
     statements = []
     # PARENT
     statements.append(f"""
@@ -79,7 +112,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
         uncoupled_date
     )
     VALUES (
-        '150000001500170200',
+        '{child_net_consumption_metering_point}',
         'net_consumption',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
@@ -95,7 +128,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
         uncoupled_date
     )
     VALUES (
-        '060000001500170200',
+        '{child_supply_to_grid_metering_point}',
         'supply_to_grid',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
@@ -111,7 +144,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
         uncoupled_date
     )
     VALUES (
-        '070000001500170200',
+        '{child_consumption_from_grid_metering_point}',
         'consumption_from_grid',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
