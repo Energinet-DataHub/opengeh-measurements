@@ -8,5 +8,5 @@ public class AggregatedMeasurementsConstants
     public const string Qualities = "qualities";
     public const string Resolutions = "resolutions";
     public const string PointCount = "point_count";
-    public const string ObservationUpdates = "ObservationUpdates";
+    public const string ObservationUpdates = "observation_updates";
 }
