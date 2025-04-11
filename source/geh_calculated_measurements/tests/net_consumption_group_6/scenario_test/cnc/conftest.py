@@ -54,21 +54,8 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         execution_start_datetime=scenario_parameters["execution_start_datetime"],
     )
 
-    # Return test cases
-    # test_cases_list = []
-
-    # measurements_csv_path = Path(f"{scenario_path}/then/measurements.csv")
-    # if measurements_csv_path.exists():
-    #    test_cases_list.append(
-    #        TestCase(
-    #            expected_csv_path=str(measurements_csv_path),
-    #            actual=measurements.df,
-    #        ),
-    #    )
-
     return TestCases(
         [
-            # Cache actual in order to prevent the assertion to potentially evaluate the same DataFrame multiple times
-            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements.df),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements),
         ]
     )

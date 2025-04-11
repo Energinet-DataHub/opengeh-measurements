@@ -14,10 +14,6 @@ def test_case(
 ) -> None:
     test_case = test_cases[name]
 
-    print("tables in test_case")
-    test_case.actual.show()
-    test_case.expected.show()
-
     assert_dataframes_and_schemas(
         actual=test_case.actual,
         expected=test_case.expected,
