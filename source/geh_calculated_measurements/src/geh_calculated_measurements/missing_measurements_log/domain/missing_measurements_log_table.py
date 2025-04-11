@@ -28,6 +28,7 @@ class MissingMeasurementsLogTable(Table):
     date = T.StructField(ContractColumnNames.date, T.TimestampType(), False)
 
     def _get_expected_measurement_counts(self, metering_point_periods: DataFrame) -> DataFrame:
+        """Calculate the expected measurement counts grouped by metering point and date."""
         metering_point_periods_local_time = convert_from_utc(metering_point_periods, self.time_zone)
         expected_measurement_counts = (
             metering_point_periods_local_time.withColumn(
@@ -66,6 +67,7 @@ class MissingMeasurementsLogTable(Table):
         return convert_to_utc(expected_measurement_counts, self.time_zone)
 
     def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
+        """Calculate the actual measurement counts grouped by metering point and date."""
         # Filter quality=missing
         current_measurements = convert_from_utc(current_measurements, self.time_zone)
         actual_measurement_counts = (
@@ -78,18 +80,12 @@ class MissingMeasurementsLogTable(Table):
             F.col("measurement_counts"),
         )
 
-        return actual_measurement_counts
+        return convert_to_utc(actual_measurement_counts, self.time_zone)
 
-    # TODO JMG: use_span?
-    def read(self) -> DataFrame:
-        current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
-        metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
-
-        expected_measurement_counts = self._get_expected_measurement_counts(metering_point_periods)
-        actual_measurement_counts = self._get_actual_measurement_counts(current_measurements)
-
-        # Find missing measurements
-        missing_measurements = expected_measurement_counts.join(
+    def _get_missing_measurments(
+        self, expected_measurement_counts: DataFrame, actual_measurement_counts: DataFrame
+    ) -> DataFrame:
+        return expected_measurement_counts.join(
             actual_measurement_counts,
             [
                 expected_measurement_counts[MeteringPointPeriodsTable.metering_point_id]
@@ -104,4 +100,15 @@ class MissingMeasurementsLogTable(Table):
             F.col(self.date),
         )
 
-        return missing_measurements
+    # TODO JMG: use_span?
+    def read(self) -> DataFrame:
+        current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
+        metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
+
+        expected_measurement_counts = self._get_expected_measurement_counts(metering_point_periods)
+        actual_measurement_counts = self._get_actual_measurement_counts(current_measurements)
+
+        return self._get_missing_measurments(
+            expected_measurement_counts=expected_measurement_counts,
+            actual_measurement_counts=actual_measurement_counts,
+        )
