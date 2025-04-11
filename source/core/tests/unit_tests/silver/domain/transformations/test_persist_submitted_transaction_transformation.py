@@ -5,6 +5,7 @@ import pytest
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_quality import QuantityQuality as GehCommonQuality
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
@@ -13,6 +14,7 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Decima
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,
+    Quality,
     Resolution,
     Unit,
 )
@@ -220,3 +222,33 @@ def test__trasnform__should_transform_unit_to_expected(unit: Unit, expected_unit
 
     # Assert
     assert actual.collect()[0].unit == expected_unit
+
+
+@pytest.mark.parametrize(
+    "quality, expected_quality",
+    [
+        (Quality.Q_CALCULATED, GehCommonQuality.CALCULATED.value),
+        (Quality.Q_ESTIMATED, GehCommonQuality.ESTIMATED.value),
+        (Quality.Q_MEASURED, GehCommonQuality.MEASURED.value),
+    ],
+)
+def test__trasnform__should_transform_quality_to_expected(
+    quality: Quality, expected_quality: str, spark: SparkSession
+) -> None:
+    # Arrange
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=MeteringPointType.MPT_CONSUMPTION,
+            resolution=Resolution.R_PT1H,
+            points=PointsBuilder().add_row(quality=quality).build(),
+        )
+        .build()
+    )
+
+    # Act
+    actual = sut.transform(submitted_transactions)
+
+    # Assert
+    assert actual.collect()[0].points[0].quality == expected_quality
