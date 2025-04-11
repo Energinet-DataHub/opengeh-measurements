@@ -22,8 +22,6 @@ from tests.net_consumption_group_6.job_tests.seeding import (
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
-    # gold_table_seeded_randomized_metering_point: None,  # Used implicitly
-    # electricity_market_tables_seeded: None,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
