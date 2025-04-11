@@ -44,12 +44,10 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
         args.time_zone,
     )
+    execution_start_datetime = datetime.now(UTC)
 
     calculations = _create_calculations(
-        spark,
-        args.orchestration_instance_id,
-        args.calculation_month,
-        args.calculation_year,
+        spark, args.orchestration_instance_id, args.calculation_month, args.calculation_year, execution_start_datetime
     )
 
     # Write the calculated measurements
@@ -59,6 +57,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         OrchestrationType.CAPACITY_SETTLEMENT,
         MeteringPointType.CAPACITY_SETTLEMENT,
         args.time_zone,
+        execution_start_datetime,
     )
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
@@ -79,8 +78,8 @@ def _create_calculations(
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
+    execution_start_datetime: datetime,
 ) -> Calculations:
-    execution_time = datetime.now(UTC).replace(microsecond=0)
     return Calculations(
         spark.createDataFrame(
             [
@@ -88,7 +87,7 @@ def _create_calculations(
                     str(orchestration_instance_id),
                     calculation_year,
                     calculation_month,
-                    execution_time,
+                    execution_start_datetime,
                 )
             ],
             schema=Calculations.schema,
