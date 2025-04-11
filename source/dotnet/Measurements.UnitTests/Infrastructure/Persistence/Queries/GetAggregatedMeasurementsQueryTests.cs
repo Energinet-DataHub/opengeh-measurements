@@ -15,14 +15,8 @@ public class GetAggregatedMeasurementsQueryTests
     public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)]int year, [Range(1, 12)]int month)
     {
         // Arrange
-        const string europeCopenhagenTimeZone = "Europe/Copenhagen";
         var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
-
-        const string groupByStatement = $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-                                        $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
-                                        $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
-                                        $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))";
 
         var expectedResult = $"with most_recent as (" +
             $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
@@ -42,7 +36,7 @@ public class GetAggregatedMeasurementsQueryTests
             $"from most_recent " +
             $"where row = 1 " +
             $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
-            $"group by {groupByStatement} " +
+            $"group by {CreateGroupByStatement()} " +
             $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
 
         var getAggregatedMeasurementsQuery = new GetAggregatedMeasurementsQuery(meteringPointId, yearMonth, databricksSchemaOptions);
@@ -52,5 +46,15 @@ public class GetAggregatedMeasurementsQueryTests
 
         // Assert
         Assert.Equal(expectedResult, result);
+    }
+
+    private static string CreateGroupByStatement()
+    {
+        const string europeCopenhagenTimeZone = "Europe/Copenhagen";
+
+        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
+               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))";
     }
 }
