@@ -12,13 +12,6 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure.databas
 from tests import SPARK_CATALOG_NAME, TIME_ZONE
 
 
-def test__when__debug(spark: SparkSession) -> None:
-    # Arrange
-    # sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE)
-    print("here------------------------------------------------")
-    print(MissingMeasurementsLogTable.metering_point_id)
-
-
 def test__when__(spark: SparkSession, external_dataproducts_created: None) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()

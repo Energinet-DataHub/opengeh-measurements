@@ -2,6 +2,4 @@ from geh_calculated_measurements.missing_measurements_log.domain.missing_measure
     MissingMeasurementsLogTable,
 )
 
-from .calculation import execute
-
-__all__ = ["execute", "MissingMeasurementsLogTable"]
+__all__ = ["MissingMeasurementsLogTable"]

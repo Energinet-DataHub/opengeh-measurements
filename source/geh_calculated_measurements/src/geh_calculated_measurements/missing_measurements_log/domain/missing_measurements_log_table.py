@@ -70,7 +70,9 @@ class MissingMeasurementsLogTable(Table):
 
     def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
         """Calculate the actual measurement counts grouped by metering point and date."""
-        current_measurements = current_measurements.where(F.col(CurrentMeasurementsTable..observation_time.name).isNotNull())
+        current_measurements = current_measurements.where(
+            F.col(CurrentMeasurementsTable.observation_time.name).isNotNull()
+        )
 
         current_measurements = convert_from_utc(current_measurements, self.time_zone)
         actual_measurement_counts = (
@@ -87,22 +89,22 @@ class MissingMeasurementsLogTable(Table):
 
         return convert_to_utc(actual_measurement_counts, self.time_zone)
 
-    def _get_missing_measurments(
+    def _get_missing_measurements(
         self, expected_measurement_counts: DataFrame, actual_measurement_counts: DataFrame
     ) -> DataFrame:
         return expected_measurement_counts.join(
             actual_measurement_counts,
             [
-                expected_measurement_counts[MeteringPointPeriodsTable.metering_point_id]
-                == actual_measurement_counts[CurrentMeasurementsTable.metering_point_id],
-                expected_measurement_counts[self.date] == actual_measurement_counts[self.date],
+                expected_measurement_counts[MeteringPointPeriodsTable.metering_point_id.name]
+                == actual_measurement_counts[CurrentMeasurementsTable.metering_point_id.name],
+                expected_measurement_counts[self.date.name] == actual_measurement_counts[self.date.name],
                 expected_measurement_counts["measurement_counts"] == actual_measurement_counts["measurement_counts"],
             ],
             "left_anti",
         ).select(
-            F.lit(str(self.input_orchestration_instance_id)).alias(self.orchestration_instance_id),
-            F.col(self.metering_point_id),
-            F.col(self.date),
+            F.lit(str(self.input_orchestration_instance_id)).alias(self.orchestration_instance_id.name),
+            F.col(self.metering_point_id.name),
+            F.col(self.date.name),
         )
 
     def read(self) -> DataFrame:
@@ -112,10 +114,7 @@ class MissingMeasurementsLogTable(Table):
         expected_measurement_counts = self._get_expected_measurement_counts(metering_point_periods)
         actual_measurement_counts = self._get_actual_measurement_counts(current_measurements)
 
-        return self._get_missing_measurments(
+        return self._get_missing_measurements(
             expected_measurement_counts=expected_measurement_counts,
             actual_measurement_counts=actual_measurement_counts,
         )
-
-    def write(self) -> None:
-        self.read().write.format("delta").mode("overwrite").saveAsTable(self.fully_qualified_name)

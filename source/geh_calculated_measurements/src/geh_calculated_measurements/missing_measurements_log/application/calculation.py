@@ -15,11 +15,3 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
     df = missing_measurements_log_table.read()
     df.show()
     # TODO JMG: missing_measurements_log_table.write(df)
-
-
-def execute_application_test(spark: SparkSession, args: MissingMeasurementsLogArgs) -> None:
-    composite_table = MissingMeasurementsLogTable(args.catalog_name, args.time_zone, args.orchestration_instance_id)
-    df = composite_table.read()
-
-    df.show()
-    # TODO JMG: missing_measurements_log_table.write(df)
