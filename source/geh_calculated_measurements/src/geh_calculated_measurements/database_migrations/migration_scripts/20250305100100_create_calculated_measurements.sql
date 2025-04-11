@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements
+CREATE TABLE IF NOT EXISTS {catalog_name}.measurements_calculated_internal.calculated_measurements
 (
     orchestration_type STRING NOT NULL,
     orchestration_instance_id STRING NOT NULL,

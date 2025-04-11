@@ -1,10 +1,8 @@
+from geh_common.data_products.measurements_core.measurements_gold import current_v1
 from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
 
 from geh_calculated_measurements.common.domain.model.current_measurements import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
 
 
 class Repository:
@@ -23,6 +21,4 @@ class Repository:
 
     def _read(self) -> DataFrame:
         """Read table or view. The function is introduced to allow mocking in tests."""
-        database_name = MeasurementsGoldDatabaseDefinition.DATABASE_NAME
-        table_name = MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
-        return self._spark.read.table(f"{self._catalog_name}.{database_name}.{table_name}")
+        return self._spark.read.table(f"{self._catalog_name}.{current_v1.database_name}.{current_v1.view_name}")
