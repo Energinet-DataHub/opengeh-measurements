@@ -12,6 +12,17 @@ class SilverMeasurementsBuilder:
         self.spark = spark_session
         self.data = []
 
+    @staticmethod
+    def _generate_default_points():
+        return [
+            {
+                "position": position,
+                "quantity": Decimal(1.0),
+                "quality": "measured",
+            }
+            for position in range(1, 25)
+        ]
+
     def add_row(
         self,
         orchestration_type=OrchestrationType.SUBMITTED.value,
@@ -24,12 +35,10 @@ class SilverMeasurementsBuilder:
         resolution="PT1H",
         start_datetime=datetime_helper.get_datetime(year=2020, month=1),
         end_datetime=datetime_helper.get_datetime(year=2020, month=2),
-        points=None,
+        points=_generate_default_points(),
         is_cancelled=False,
         created=datetime_helper.get_datetime(year=2020, month=1, day=1),
     ):
-        if points is None:
-            points = self._generate_default_points()
         self.data.append(
             (
                 orchestration_type,
@@ -55,16 +64,6 @@ class SilverMeasurementsBuilder:
             "quantity": quantity,
             "quality": quality,
         }
-
-    def _generate_default_points(self):
-        return [
-            {
-                "position": position,
-                "quantity": Decimal(1.0),
-                "quality": "measured",
-            }
-            for position in range(1, 25)
-        ]
 
     def build(self):
         return self.spark.createDataFrame(self.data, schema=silver_measurements_schema)
