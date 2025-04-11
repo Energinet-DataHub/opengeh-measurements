@@ -38,7 +38,7 @@ to automatically generate step function template for undefined steps.
 
  The only outputs the missing steps in the Terminal, so you would have to copy-paste the code into the test file.
 
- ## Running Tests
+## Running Tests
 
- You can run the tests just like unit tests.
+You can run the tests just like unit tests.
  
