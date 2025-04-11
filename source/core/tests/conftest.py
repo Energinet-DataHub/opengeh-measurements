@@ -1,3 +1,4 @@
+import tempfile
 from typing import Generator
 from unittest.mock import patch
 
@@ -29,9 +30,9 @@ def spark(session_mocker: MockerFixture) -> Generator[SparkSession, None, None]:
 
 @pytest.fixture
 def mock_checkpoint_path():
+    temp_checkpoint = tempfile.mkdtemp()
+
     with patch.object(
-        shared_helpers,
-        shared_helpers.get_storage_base_path.__name__,
-        return_value="tests/__checkpoints__/",
+        shared_helpers, shared_helpers.get_storage_base_path.__name__, return_value=temp_checkpoint
     ) as mock_checkpoint_path:
         yield mock_checkpoint_path

@@ -12,6 +12,6 @@ from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repo
 def handle(submitted_transactions: DataFrame) -> None:
     collected_versions = ",".join(protobuf_versions.get_versions())
     unknown_protobuf_messages = submitted_transactions.filter(
-        f"{ValueColumnNames.version} not in ({collected_versions})"
+        f"'{ValueColumnNames.version}' not in ({collected_versions})"
     )
     InvalidSubmittedTransactionsRepository().append(unknown_protobuf_messages)

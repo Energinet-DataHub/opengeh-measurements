@@ -37,4 +37,4 @@ def test__handle__filters_submitted_transactions_by_version(mocker: MockerFixtur
     sut.handle(submitted_transactions)
 
     # Assert
-    submitted_transactions.filter.assert_called_once_with(f"{ValueColumnNames.version} not in (1,2,3)")
+    submitted_transactions.filter.assert_called_once_with(f"'{ValueColumnNames.version}' not in (1,2,3)")
