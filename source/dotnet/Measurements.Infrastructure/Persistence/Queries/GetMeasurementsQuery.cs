@@ -1,5 +1,6 @@
 ﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
@@ -26,13 +27,24 @@ public class GetMeasurementsQuery : DatabricksStatement
             $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
             $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName}, {MeasurementsGoldConstants.CreatedColumnName}, {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} " +
             $"from {_databricksSchemaOptions.CatalogName}.{_databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
-            $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = '{_meteringPointId}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= '{_startDate}' " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < '{_endDate}' " +
+            $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
+            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.CreatedColumnName}, {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} " +
             $"from most_recent " +
             $"where not {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"order by {MeasurementsGoldConstants.ObservationTimeColumnName}";
+    }
+
+    protected override IReadOnlyCollection<QueryParameter> GetParameters()
+    {
+        List<QueryParameter> parameters = [
+            QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, _meteringPointId),
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, _startDate.ToString()),
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, _endDate.ToString())
+        ];
+
+        return parameters;
     }
 }
