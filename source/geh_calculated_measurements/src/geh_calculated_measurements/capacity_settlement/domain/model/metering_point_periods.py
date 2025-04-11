@@ -1,10 +1,8 @@
+from geh_common.data_products.electricity_market_measurements_input.capacity_settlement_metering_point_periods_v1 import (
+    schema,
+)
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
 from pyspark.sql import DataFrame
-from pyspark.sql import types as T
-
-from geh_calculated_measurements.common.domain import ContractColumnNames
-
-nullable = True
 
 
 class MeteringPointPeriods(DataFrameWrapper):
@@ -20,28 +18,4 @@ class MeteringPointPeriods(DataFrameWrapper):
             ignore_nullability=True,
         )
 
-    schema = T.StructType(
-        [
-            # ID of the consumption metering point (parent)
-            T.StructField(ContractColumnNames.metering_point_id, T.StringType(), not nullable),
-            #
-            # Date when the consumption metering is either (a) entering 'connected'/'disconnected' first time or (b) move-in has occurred.
-            # UTC time
-            T.StructField(ContractColumnNames.period_from_date, T.TimestampType(), not nullable),
-            #
-            # Date when the consumption metering point is closed down or a move-in has occurred.
-            # UTC time
-            T.StructField(ContractColumnNames.period_to_date, T.TimestampType(), nullable),
-            #
-            # ID of the child metering point, which is of type 'capacity_settlement'
-            T.StructField(ContractColumnNames.child_metering_point_id, T.StringType(), not nullable),
-            #
-            # The date where the child metering point (of type 'capacity_settlement') was created
-            # UTC time
-            T.StructField(ContractColumnNames.child_period_from_date, T.TimestampType(), not nullable),
-            #
-            # The date where the child metering point (of type 'capacity_settlement') was closed down
-            # UTC time
-            T.StructField(ContractColumnNames.child_period_to_date, T.TimestampType(), nullable),
-        ]
-    )
+    schema = schema

@@ -6,6 +6,11 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from filelock import FileLock
+from geh_common.data_products.electricity_market_measurements_input import (
+    net_consumption_group_6_child_metering_points_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
@@ -25,10 +30,6 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure.databas
 )
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.schema import (
-    net_consumption_group_6_child_metering_point_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
 )
 from tests import (
     SPARK_CATALOG_NAME,
@@ -84,7 +85,7 @@ _spark, data_dir = get_spark_test_session()
 
 
 @pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
+def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
@@ -159,42 +160,59 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def external_dataproducts_created(spark: SparkSession) -> None:
+def external_dataproducts_created(spark: SparkSession, tmp_path_factory, worker_id) -> None:
     """Create external dataproducts (databases, tables and views) as needed by tests."""
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
+    if worker_id == "master":
+        # not executing in with multiple workers, just produce the data and let
+        # pytest's fixture caching do its job
+        return _create_dataproducts(spark)
 
+    # get the temp directory shared by all workers
+    root_tmp_dir = tmp_path_factory.getbasetemp().parent
+
+    fn = root_tmp_dir / "data.txt"
+    with FileLock(str(fn) + ".lock"):
+        if fn.is_file():
+            return
+        else:
+            _create_dataproducts(spark)
+            fn.write_text("done", encoding="utf-8")
+
+
+def _create_dataproducts(spark):
+    # Create measurements gold database and tables
+    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
         database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
         table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
         schema=CurrentMeasurements.schema,
-        table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+        # table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
     )
 
-    # Removed duplicate call to create_table for MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS
-    create_database(spark, MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME)
-
+    # Create missing measurements log database and tables
+    create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
         database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
         table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
         schema=MeteringPointPeriodsTable.schema,
-        table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
+        # table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
     )
 
-    create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
-
+    # Create net consumption group 6 database and tables
+    # create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1,
-        table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
+        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
+        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
     )
     create_table(
         spark,
         database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
-        schema=net_consumption_group_6_child_metering_point_v1,
-        table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+        schema=net_consumption_group_6_child_metering_points_v1.schema,
+        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
     )
