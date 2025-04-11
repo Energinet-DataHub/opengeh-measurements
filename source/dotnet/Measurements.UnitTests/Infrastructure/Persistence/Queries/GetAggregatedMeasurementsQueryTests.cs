@@ -17,35 +17,38 @@ public class GetAggregatedMeasurementsQueryTests
         // Arrange
         var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
-
-        var expectedResult = $"with most_recent as (" +
-            $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
-            $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
-            $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
-            $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
-            $") " +
-            $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
-            $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MinObservationTime}, " +
-            $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MaxObservationTime}, " +
-            $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
-            $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount} " +
-            $"from most_recent " +
-            $"where row = 1 " +
-            $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
-            $"group by {CreateGroupByStatement()} " +
-            $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
-
+        var expected = CreateExpectedQuery(databricksSchemaOptions);
         var getAggregatedMeasurementsQuery = new GetAggregatedMeasurementsQuery(meteringPointId, yearMonth, databricksSchemaOptions);
 
         // Act
-        var result = getAggregatedMeasurementsQuery.ToString();
+        var actual = getAggregatedMeasurementsQuery.ToString();
 
         // Assert
-        Assert.Equal(expectedResult, result);
+        Assert.Equal(expected, actual);
+    }
+
+    private static string CreateExpectedQuery(DatabricksSchemaOptions databricksSchemaOptions)
+    {
+        return $"with most_recent as (" +
+               $"select row_number() over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName} order by {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
+               $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
+               $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
+               $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
+               $") " +
+               $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
+               $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MinObservationTime}, " +
+               $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MaxObservationTime}, " +
+               $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
+               $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
+               $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
+               $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount} " +
+               $"from most_recent " +
+               $"where row = 1 " +
+               $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
+               $"group by {CreateGroupByStatement()} " +
+               $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
     }
 
     private static string CreateGroupByStatement()
