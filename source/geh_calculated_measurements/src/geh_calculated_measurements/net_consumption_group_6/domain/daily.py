@@ -5,13 +5,14 @@ from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
-from pyspark.sql import Column, DataFrame
+from pyspark.sql import Column
 from pyspark.sql import types as T
 
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
     CurrentMeasurements,
 )
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     Cenc,
 )
@@ -35,7 +36,7 @@ def calculate_daily(
     cenc: Cenc,
     time_zone: str,
     execution_start_datetime: datetime,
-) -> DataFrame:
+) -> CalculatedMeasurementsDaily:
     cenc_added_col = cenc.df.select(  # adding needed columns
         "*",
         F.lit(MeteringPointType.NET_CONSUMPTION.value).alias(ContractColumnNames.metering_point_type),
@@ -91,7 +92,11 @@ def calculate_daily(
         )
     )
 
-    df = cenc_w_last_run.select(
+    # Filter out rows where last_run is >= execution_start_datetime
+    filtered_cenc = cenc_w_last_run.filter(F.col("last_run") < F.col("execution_start_datetime"))
+
+    # Process only valid date ranges
+    df = filtered_cenc.select(
         "*",
         F.explode(
             F.sequence(F.date_add(F.col("last_run"), 1), F.col("execution_start_datetime"), F.expr("INTERVAL 1 DAY"))
@@ -106,4 +111,4 @@ def calculate_daily(
 
     result_df = convert_to_utc(result_df, time_zone)
 
-    return result_df
+    return CalculatedMeasurementsDaily(result_df)

@@ -1,12 +1,14 @@
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -38,20 +40,20 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         ChildMeteringPoints.schema,
     )
 
-    # Reenable when needed again:
-    # with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
-    #     scenario_parameters = yaml.safe_load(f)
+    with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+        scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
-    actual: DataFrame = execute(
+    actual: CalculatedMeasurementsDaily = execute(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
         "Europe/Copenhagen",
+        scenario_parameters["execution_start_datetime"],
     )
 
     # Sort to make the tests deterministic
-    actual_df = actual.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
+    actual_df = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
 
     # Return test cases
     return TestCases(

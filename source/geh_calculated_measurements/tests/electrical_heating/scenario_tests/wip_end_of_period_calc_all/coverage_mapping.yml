@@ -1,0 +1,25 @@
+notes: |
+  CASE 5 (Sent out all values after Up To End)
+  SMRD 3
+                                               |2024  Mar                                     |2025   | Mar
+                                               |__..._|_______________________________________|_______|
+  Measurement data:                                   +   +   +   +   +   +   +   +   +   +   +   +
+  Written to D14 up to end:                           +   +   +   +   +   +   +   +   +   +   +   +
+  Different D14 values after End of Period:                                   +   +   +
+  Sent to market/gold after End of Period:            +   +   +   +   +   +   +   +   +   +   +   +
+
+
+
+  CASE 5 (Sent out all values after Up To End)
+                                               |2024                                        |2025
+                                               |____________________________________________|____...
+  Measurement data:                            +   +   +   +   +   +   +   +   +   +   +   +
+  Written to D14 up to end:                    +   +   +   +   +   +   +   +   +   +   +   +
+  Different D14 values after End of Period:                            +   +   +
+  Sent to market/gold after End of Period:     +   +   +   +   +   +   +   +   +   +   +   +
+
+
+
+cases_tested:
+  "Results Filtering":
+    "GIVEN the calculation type is end-of-period AND the previous result was up-to-end THEN we SHOULD ALWAYS generate a result for that MP/day"

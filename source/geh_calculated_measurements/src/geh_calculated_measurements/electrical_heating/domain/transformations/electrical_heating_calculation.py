@@ -1,3 +1,6 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 from geh_common.domain.types import NetSettlementGroup
 from geh_common.testing.dataframes import testing
 from pyspark.sql import Column, DataFrame, Window
@@ -11,7 +14,10 @@ _ELECTRICAL_HEATING_LIMIT_YEARLY = 4000.0
 """Limit in kWh."""
 
 
-def calculate_electrical_heating_in_local_time(time_series_points_hourly: DataFrame, periods: DataFrame) -> DataFrame:
+def calculate_electrical_heating_in_local_time(
+    time_series_points_hourly: DataFrame, periods: DataFrame, time_zone: str, execution_start_datetime: datetime
+) -> DataFrame:
+    execution_start_datetime_local_time = execution_start_datetime.astimezone(ZoneInfo(time_zone))
     periods = _find_source_metering_point_for_energy(periods)
 
     periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
@@ -19,7 +25,9 @@ def calculate_electrical_heating_in_local_time(time_series_points_hourly: DataFr
         time_series_points_hourly,
     )
 
-    periods_with_daily_energy_and_limit = _calculate_period_limit(periods_with_hourly_energy)
+    periods_with_daily_energy_and_limit = _calculate_period_limit(
+        periods_with_hourly_energy, execution_start_datetime_local_time
+    )
 
     new_electrical_heating = _aggregate_quantity_over_period(periods_with_daily_energy_and_limit)
     new_electrical_heating = _impose_period_quantity_limit(new_electrical_heating)
@@ -144,14 +152,17 @@ def _join_source_metering_point_periods_with_energy_hourly(
 
 
 @testing()
-def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
+def _calculate_period_limit(
+    periods_with_hourly_energy: DataFrame, execution_start_datetime_local_time: datetime
+) -> DataFrame:
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
     periods_with_hourly_energy = periods_with_hourly_energy.select(
         "*",
-        (F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), 12) <= F.current_date()).alias(
-            "is_end_of_period"
-        ),
+        (
+            F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), 12)
+            <= F.lit(execution_start_datetime_local_time)
+        ).alias("is_end_of_period"),
     )
 
     # Prevent multiple evaluations of this expensive data frame
@@ -159,7 +170,11 @@ def _calculate_period_limit(periods_with_hourly_energy: DataFrame) -> DataFrame:
 
     no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(
         periods_with_hourly_energy.where(
-            F.col(ContractColumnNames.net_settlement_group).isNull() | (~F.col("is_end_of_period"))
+            (
+                F.col(ContractColumnNames.net_settlement_group).isNull()
+                | ~F.col(ContractColumnNames.net_settlement_group).isin(2, 6)
+            )
+            | ~F.col("is_end_of_period")
         )
     )
 
