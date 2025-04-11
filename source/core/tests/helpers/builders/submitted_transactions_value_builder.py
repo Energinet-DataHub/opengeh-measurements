@@ -3,54 +3,35 @@ from datetime import datetime
 from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+    OrchestrationType,
+    Point,
+    Quality,
+    Resolution,
+    Unit,
+)
 from tests.helpers.schemas.bronze_submitted_transactions_value_schema import (
     bronze_submitted_transactions_value_schema,
 )
 
 
-class DecimalValue:
-    def __init__(self, units: int = 1, nanos: int = 0) -> None:
-        self.units = units
-        self.nanos = nanos
+class PointsBuilder:
+    def __init__(self) -> None:
+        self.data = []
 
-
-class Point:
-    def __init__(
-        self, position: int = 1, quantity: DecimalValue = DecimalValue(1, 0), quality: str = "Q_UNSPECIFIED"
-    ) -> None:
-        self.position = position
-        self.quantity = quantity
-        self.quality = quality
-
-
-class Value:
-    def __init__(
+    def add_row(
         self,
-        version: int = 1,
-        orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = "OT_UNSPECIFIED",
-        metering_point_id: str = "503928175928475638",
-        transaction_id: str = "5a76d246-ceae-459f-9e9f",
-        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = "MPT_UNSPECIFIED",
-        unit: str = "U_UNSPECIFIED",
-        resolution: str = "R_UNSPECIFIED",
-        start_datetime: datetime = datetime_helper.random_datetime(),
-        end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list[Point] = [Point()],
-    ) -> None:
-        self.version = version
-        self.orchestration_instance_id = orchestration_instance_id
-        self.orchestration_type = orchestration_type
-        self.metering_point_id = metering_point_id
-        self.transaction_id = transaction_id
-        self.transaction_creation_datetime = transaction_creation_datetime
-        self.metering_point_type = metering_point_type
-        self.unit = unit
-        self.resolution = resolution
-        self.start_datetime = start_datetime
-        self.end_datetime = end_datetime
-        self.points = points
+        position: int = 1,
+        quantity: DecimalValue = DecimalValue(units=1, nanos=0),
+        quality: Quality = Quality.Q_MEASURED,
+    ) -> "PointsBuilder":
+        self.data.append((position, (quantity.units, quantity.nanos), quality))
+        return self
+
+    def build(self):
+        return self.data
 
 
 class SubmittedTransactionsValueBuilder:
@@ -60,11 +41,40 @@ class SubmittedTransactionsValueBuilder:
 
     def add_row(
         self,
-        value: Value = Value(),
-        points: list = [Point()],
+        version: str = "1",
+        orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
+        orchestration_type: OrchestrationType = OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+        metering_point_id: str = "503928175928475638",
+        transaction_id: str = "5a76d246-ceae-459f-9e9f",
+        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
+        metering_point_type: MeteringPointType = MeteringPointType.MPT_PRODUCTION,
+        unit: Unit = Unit.U_KWH,
+        resolution: Resolution = Resolution.R_PT15M,
+        start_datetime: datetime = datetime_helper.random_datetime(),
+        end_datetime: datetime = datetime_helper.random_datetime(),
+        points: list[Point] = [Point()],
+        key: bytes = b"",
+        partition: int = 0,
     ) -> "SubmittedTransactionsValueBuilder":
-        value.points = points
-        self.data.append(value)
+        self.data.append(
+            (
+                version,
+                orchestration_instance_id,
+                orchestration_type,
+                metering_point_id,
+                transaction_id,
+                transaction_creation_datetime,
+                metering_point_type,
+                unit,
+                resolution,
+                start_datetime,
+                end_datetime,
+                points,
+                key,
+                partition,
+            )
+        )
+
         return self
 
     def build(self) -> DataFrame:

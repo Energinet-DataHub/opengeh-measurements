@@ -3,12 +3,9 @@ import random
 from decimal import Decimal
 
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
-import pytest
-from geh_common.domain.types.quantity_quality import QuantityQuality
 from pyspark.sql import SparkSession
 
 import core.gold.domain.transformations.gold_measurements_transformations as sut
-from core.bronze.domain.constants.enums.quality import SubmittedTransactionsQuality
 from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
@@ -139,32 +136,3 @@ def test__transform_silver_to_gold__fifty_minutes_resolution__returns_correct_ob
     assert df_gold.count() == 24
     for index, time in enumerate(df_gold.select(GoldMeasurementsColumnNames.observation_time).collect()):
         assert time[0] == start_date_time + datetime.timedelta(minutes=index * 15)
-
-
-@pytest.mark.parametrize(
-    "submitted_quality, expected_quality",
-    [
-        pytest.param(SubmittedTransactionsQuality.Q_CALCULATED.value, QuantityQuality.CALCULATED.value),
-        pytest.param(SubmittedTransactionsQuality.Q_ESTIMATED.value, QuantityQuality.ESTIMATED.value),
-        pytest.param(SubmittedTransactionsQuality.Q_MEASURED.value, QuantityQuality.MEASURED.value),
-        pytest.param(SubmittedTransactionsQuality.Q_MISSING.value, QuantityQuality.MISSING.value),
-        pytest.param(
-            SubmittedTransactionsQuality.Q_UNSPECIFIED.value, SubmittedTransactionsQuality.Q_UNSPECIFIED.value
-        ),
-    ],
-)
-def test__transform_silver_to_gold__when_quality_is_set__should_return_expected(
-    submitted_quality, expected_quality, spark: SparkSession
-) -> None:
-    # Arrange
-    builder = SilverMeasurementsBuilder(spark)
-    point = builder.generate_point(quality=submitted_quality)
-
-    silver_measurements = SilverMeasurementsBuilder(spark).add_row(points=[point]).build()
-
-    # Act
-    actual = sut.transform_silver_to_gold(silver_measurements)
-
-    # Assert
-    actual_row = actual.collect()[0]
-    assert actual_row[GoldMeasurementsColumnNames.quality] == expected_quality

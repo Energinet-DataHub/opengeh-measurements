@@ -17,3 +17,5 @@ class SilverMeasurementsColumnNames:
         position = "position"
         quantity = "quantity"
         quality = "quality"
+
+        points_quality = "points.quality"
