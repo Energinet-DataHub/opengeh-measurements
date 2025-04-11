@@ -35,31 +35,33 @@ class MissingMeasurementsLogTable(Table):
                 "start_of_day",
                 F.explode(
                     F.sequence(
-                        F.col(MeteringPointPeriodsTable.period_from_date),
-                        F.col(MeteringPointPeriodsTable.period_to_date),
+                        F.col(MeteringPointPeriodsTable.period_from_date.name),
+                        F.col(MeteringPointPeriodsTable.period_to_date.name),
                         F.expr("INTERVAL 1 DAY"),
                     )
                 ),
             )
             .where(
                 # to date is exclusive
-                F.col("start_of_day") < F.col(MeteringPointPeriodsTable.period_to_date)
+                F.col("start_of_day") < F.col(MeteringPointPeriodsTable.period_to_date.name)
             )
             .select(
-                F.col(MeteringPointPeriodsTable.metering_point_id),
+                F.col(MeteringPointPeriodsTable.metering_point_id.name),
                 F.col("start_of_day"),
                 (F.col("start_of_day") + F.expr("INTERVAL 1 DAY")).alias("end_of_day"),
                 (
                     (F.unix_timestamp(F.col("end_of_day")) - F.unix_timestamp(F.col("start_of_day")))
                     / F.when(
-                        F.col(MeteringPointPeriodsTable.resolution) == MeteringPointResolution.HOUR.value, 3600
-                    ).when(F.col(MeteringPointPeriodsTable.resolution) == MeteringPointResolution.QUARTER.value, 900)
+                        F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.HOUR.value, 3600
+                    ).when(
+                        F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.QUARTER.value, 900
+                    )
                     # 3600 seconds for 1 hour, 900 seconds for 15 minutes
                 ).alias("measurement_counts"),
             )
             .select(
-                F.col(MeteringPointPeriodsTable.metering_point_id),
-                F.col("start_of_day").alias(self.date),
+                F.col(MeteringPointPeriodsTable.metering_point_id.name),
+                F.col("start_of_day").alias(self.date.name),
                 F.col("measurement_counts"),
             )
         )
@@ -68,15 +70,18 @@ class MissingMeasurementsLogTable(Table):
 
     def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
         """Calculate the actual measurement counts grouped by metering point and date."""
-        # Filter quality=missing
+        current_measurements = current_measurements.where(F.col(CurrentMeasurementsTable..observation_time.name).isNotNull())
+
         current_measurements = convert_from_utc(current_measurements, self.time_zone)
         actual_measurement_counts = (
-            current_measurements.withColumn(self.date, F.to_date(F.col(CurrentMeasurementsTable.observation_time)))
-            .groupBy(self.date, CurrentMeasurementsTable.metering_point_id)
+            current_measurements.withColumn(
+                self.date.name, F.to_date(F.col(CurrentMeasurementsTable.observation_time.name))
+            )
+            .groupBy(self.date.name, CurrentMeasurementsTable.metering_point_id.name)
             .agg(F.count("*").alias("measurement_counts"))
         ).select(
-            F.col(CurrentMeasurementsTable.metering_point_id),
-            F.col(self.date),
+            F.col(CurrentMeasurementsTable.metering_point_id.name),
+            F.col(self.date.name),
             F.col("measurement_counts"),
         )
 
@@ -100,7 +105,6 @@ class MissingMeasurementsLogTable(Table):
             F.col(self.date),
         )
 
-    # TODO JMG: use_span?
     def read(self) -> DataFrame:
         current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
         metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
@@ -112,3 +116,6 @@ class MissingMeasurementsLogTable(Table):
             expected_measurement_counts=expected_measurement_counts,
             actual_measurement_counts=actual_measurement_counts,
         )
+
+    def write(self) -> None:
+        self.read().write.format("delta").mode("overwrite").saveAsTable(self.fully_qualified_name)
