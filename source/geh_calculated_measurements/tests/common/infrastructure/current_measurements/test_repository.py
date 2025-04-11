@@ -8,16 +8,12 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
 def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsRepository:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}")
     return CurrentMeasurementsRepository(
         spark=spark,
         catalog_name=spark.catalog.currentCatalog(),
@@ -36,7 +32,7 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "consumption",
             )
         ],
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
     assert df.schema == current_v1
     return df
