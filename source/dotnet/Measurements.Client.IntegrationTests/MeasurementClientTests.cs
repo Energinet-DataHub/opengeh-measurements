@@ -30,7 +30,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     {
         for (var positionIndex = 1; positionIndex < measurements.MeasurementPositions.Count(); positionIndex++)
         {
-            var position = measurements.MeasurementPositions.ElementAt(positionIndex);
+            var position = measurements.MeasurementPositions.ElementAt(positionIndex - 1);
             Assert.Equal(positionIndex, position.Index);
 
             for (var pointIndex = 1; pointIndex < position.MeasurementPoints.Count(); pointIndex++)
