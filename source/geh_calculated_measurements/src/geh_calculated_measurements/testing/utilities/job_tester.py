@@ -15,6 +15,7 @@ from azure.monitor.query import (
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
+from geh_common.data_products.measurements_core.measurements_gold import current_v1
 
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
@@ -179,6 +180,33 @@ class JobTest(abc.ABC):
         catalog = fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = "calculated_measurements"
+        statement = f"""
+            SELECT * 
+            FROM {catalog}.{database}.{table} 
+            WHERE orchestration_instance_id = '{fixture.job_parameters.get("orchestration-instance-id")}' 
+            LIMIT 1
+        """
+
+        # Act
+        response = fixture.execute_statement(statement=statement)
+
+        # Assert
+        row_count = response.result.row_count if response.result.row_count is not None else 0
+        assert row_count > 0, (
+            f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}."
+        )
+
+    @pytest.mark.order(5)
+    def test__and_then_data_is_available_in_gold(self, fixture: JobTestFixture):
+        """This test also tests the data flow from measurements to core.
+
+        The primary driver for adding this test is to ensure that the data product used
+        by core as a streaming source supports streaming.
+        """
+        # Arrange
+        catalog = fixture.config.catalog_name
+        database = current_v1.database_name
+        table = current_v1.view_name
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 

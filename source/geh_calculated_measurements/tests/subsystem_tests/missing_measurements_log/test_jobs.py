@@ -37,3 +37,7 @@ class TestMissingMeasurementsLog(JobTest):
     @pytest.mark.skip(reason="This test is temporary skipped because the storing implementation is not yet made.")
     def test__and_then_data_is_written_to_delta(self, job_fixture) -> None:
         pass
+
+    @pytest.mark.skip(reason="Missing measurements log does not generate measurements data.")
+    def test__and_then_data_is_available_in_gold(self, fixture: JobTestFixture):
+        pass
