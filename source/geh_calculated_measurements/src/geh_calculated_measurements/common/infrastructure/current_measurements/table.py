@@ -5,6 +5,7 @@ from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
 
 
+# TODO AJW: Fix location (it's not related to current measurements). Move to geh_common?
 class Table(ABC):
     fully_qualified_name: str
     schema: t.StructType
