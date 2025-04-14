@@ -92,9 +92,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var expectedDate = Instant
-            .FromUtc(2021, 1, 31, 23, 0, 0)
-            .ToDateOnly();
+        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2021, 2);
         var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth);
 
