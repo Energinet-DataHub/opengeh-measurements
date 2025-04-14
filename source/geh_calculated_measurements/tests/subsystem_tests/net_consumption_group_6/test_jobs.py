@@ -51,7 +51,7 @@ class TestNetConsumptionGroup6(JobTest):
 
         yield base_job_fixture
 
-        # Remove previously inserted seeded data
+        # Clean up
         delete_seeded_data(
             base_job_fixture,
             parent_metering_point_id,
