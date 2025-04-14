@@ -20,19 +20,7 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
         for (var positionIndex = 0; positionIndex < positions.Count; positionIndex++)
         {
             var position = positions[positionIndex];
-            var orderedPoints = position.OrderByDescending(p => p.TransactionCreated).ToList();
-
-            var points = orderedPoints
-                .Select((_, pointIndex) => orderedPoints.ElementAt(pointIndex))
-                .Select((point, pointIndex) =>
-                    new MeasurementPointDto(
-                        Order: pointIndex + 1,
-                        point.Quantity,
-                        point.Quality,
-                        point.Unit,
-                        point.Resolution,
-                        point.Created))
-                .ToList();
+            var points = CreatePoints(position);
 
             measurementPositions.Add(
                 new MeasurementPositionDto(
@@ -42,6 +30,23 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
         }
 
         return new MeasurementDto(measurementPositions);
+    }
+
+    private static List<MeasurementPointDto> CreatePoints(IGrouping<DateTimeOffset, PointDto> position)
+    {
+        var orderedPoints = position.OrderByDescending(p => p.TransactionCreated).ToList();
+
+        return orderedPoints
+            .Select((_, pointIndex) => orderedPoints.ElementAt(pointIndex))
+            .Select((point, pointIndex) =>
+                new MeasurementPointDto(
+                    Order: pointIndex + 1,
+                    point.Quantity,
+                    point.Quality,
+                    point.Unit,
+                    point.Resolution,
+                    point.Created))
+            .ToList();
     }
 
     private record PointsDto(List<PointDto> Points);
