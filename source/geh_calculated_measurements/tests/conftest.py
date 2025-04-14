@@ -8,6 +8,8 @@ import geh_common.telemetry.logging_configuration
 import pytest
 from filelock import FileLock
 from geh_common.data_products.electricity_market_measurements_input import (
+    electrical_heating_child_metering_points_v1,
+    electrical_heating_consumption_metering_point_periods_v1,
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
@@ -215,4 +217,18 @@ def _create_dataproducts(spark):
         table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
         schema=net_consumption_group_6_child_metering_points_v1.schema,
         # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+    )
+
+    # Create electrical heating tables
+    create_table(
+        spark,
+        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+        table_name=electrical_heating_child_metering_points_v1.view_name,
+        schema=electrical_heating_child_metering_points_v1.schema,
+    )
+    create_table(
+        spark,
+        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
+        table_name=electrical_heating_consumption_metering_point_periods_v1.view_name,
+        schema=electrical_heating_consumption_metering_point_periods_v1.schema,
     )

@@ -21,7 +21,7 @@ from geh_calculated_measurements.electrical_heating.infrastructure import (
 @use_span()
 def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
