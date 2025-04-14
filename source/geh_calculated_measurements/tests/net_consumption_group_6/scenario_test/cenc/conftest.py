@@ -14,7 +14,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc_calculation import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_logic import execute_logic
 
 
 @pytest.fixture(scope="module")
@@ -53,7 +53,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         execution_start_datetime = datetime.now(UTC)
 
     # Execute the logic
-    cenc, measurements = execute(
+    cenc, measurements = execute_logic(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
