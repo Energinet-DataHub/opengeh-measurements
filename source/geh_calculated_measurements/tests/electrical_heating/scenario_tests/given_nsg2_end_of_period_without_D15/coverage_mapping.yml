@@ -30,6 +30,13 @@ notes: |
   Days in period:                    | 213 days                                   |
   Measurement data:                   +                                          ++
 
+  CASE 6 (NSG2 metering point goes from without to with D15)
+                                     | Parent MP gets D15                         |
+                          |2024______|____________________________________________|_______...
+  Parent start/end:       |----------|--------------------------------------------|_______...
+  Days in period:         | 31 days  | 335 days                                   | (up to end)
+  Measurement data:        ++          ++                                           +++
+
 
 
 cases_tested:
