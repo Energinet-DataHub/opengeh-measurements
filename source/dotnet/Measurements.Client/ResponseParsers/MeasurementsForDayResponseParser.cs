@@ -21,20 +21,18 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
         {
             var position = positions[positionIndex];
             var orderedPoints = position.OrderByDescending(p => p.TransactionCreated).ToList();
-            var points = new List<MeasurementPointDto>();
 
-            for (var pointIndex = 0; pointIndex < orderedPoints.Count; pointIndex++)
-            {
-                var point = orderedPoints.ElementAt(pointIndex);
-
-                points.Add(new MeasurementPointDto(
-                    Order: pointIndex + 1,
-                    point.Quantity,
-                    point.Quality,
-                    point.Unit,
-                    point.Resolution,
-                    point.Created));
-            }
+            var points = orderedPoints
+                .Select((_, pointIndex) => orderedPoints.ElementAt(pointIndex))
+                .Select((point, pointIndex) =>
+                    new MeasurementPointDto(
+                        Order: pointIndex + 1,
+                        point.Quantity,
+                        point.Quality,
+                        point.Unit,
+                        point.Resolution,
+                        point.Created))
+                .ToList();
 
             measurementPositions.Add(
                 new MeasurementPositionDto(
