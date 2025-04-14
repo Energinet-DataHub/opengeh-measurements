@@ -28,7 +28,7 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
                 var point = orderedPoints.ElementAt(pointIndex);
 
                 points.Add(new MeasurementPointDto(
-                    pointIndex + 1,
+                    Order: pointIndex + 1,
                     point.Quantity,
                     point.Quality,
                     point.Unit,
@@ -38,7 +38,7 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
 
             measurementPositions.Add(
                 new MeasurementPositionDto(
-                    positionIndex + 1,
+                    Index: positionIndex + 1,
                     position.Key,
                     points));
         }
