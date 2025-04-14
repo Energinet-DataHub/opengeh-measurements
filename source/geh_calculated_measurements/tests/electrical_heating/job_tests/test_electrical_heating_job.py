@@ -16,7 +16,12 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_
 )
 from tests import create_job_environment_variables
 from tests.electrical_heating.job_tests import get_test_files_folder_path
-from tests.electrical_heating.job_tests.seeding import seed_electricity_market, seed_gold
+from tests.electrical_heating.job_tests.seeding import (
+    remove_electricity_market_seeding,
+    remove_gold_seeding,
+    seed_electricity_market,
+    seed_gold,
+)
 
 
 def test_execute(
@@ -45,3 +50,7 @@ def test_execute(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
+
+    # Clean up
+    remove_gold_seeding(spark)
+    remove_electricity_market_seeding(spark)

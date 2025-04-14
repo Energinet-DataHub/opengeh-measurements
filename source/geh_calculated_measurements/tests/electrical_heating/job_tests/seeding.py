@@ -21,7 +21,7 @@ def seed_gold(spark: SparkSession) -> None:
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
         format="delta",
-        mode="overwrite",
+        mode="append",
     )
 
 
@@ -41,3 +41,13 @@ def seed_electricity_market(spark: SparkSession) -> None:
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{electrical_heating_child_metering_points_v1.view_name}"
     )
+
+
+def remove_gold_seeding(spark) -> None:
+    # TODO XHTCA
+    pass
+
+
+def remove_electricity_market_seeding(spark) -> None:
+    # TODO XHTCA
+    pass
