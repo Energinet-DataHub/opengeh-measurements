@@ -3,7 +3,7 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold.current_v1 import current_v1
+from geh_common.data_products.measurements_core.measurements_gold.current_v1 import schema as current_v1
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame

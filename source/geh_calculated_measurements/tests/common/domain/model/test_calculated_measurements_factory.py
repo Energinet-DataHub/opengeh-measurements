@@ -8,7 +8,8 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import DataFrame, Row, SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ContractColumnNames, calculated_measurements_factory
+from geh_calculated_measurements.common.application.model import calculated_measurements_factory
+from geh_calculated_measurements.common.domain import ContractColumnNames
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEFAULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING

@@ -20,4 +20,4 @@ def stream_measurements_calculated_to_gold() -> None:
 
 def _batch_operation(calculated_measurements: DataFrame, batch_id: int) -> None:
     gold_measurements = transformations.transform_calculated_to_gold(calculated_measurements)
-    GoldMeasurementsRepository().append_if_not_exists(gold_measurements)
+    GoldMeasurementsRepository().append_if_not_exists(gold_measurements, query_name=QueryNames.CALCULATED_TO_GOLD)

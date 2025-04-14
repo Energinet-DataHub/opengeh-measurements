@@ -1,13 +1,15 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 import yaml
 from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -42,17 +44,23 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
+    # Use current time as default execution start datetime if not provided
+    if scenario_parameters is not None and "execution_start_datetime" in scenario_parameters:
+        execution_start_datetime = scenario_parameters["execution_start_datetime"]
+    else:
+        execution_start_datetime = datetime.now(UTC)
+
     # Execute the logic
-    actual: DataFrame = execute(
+    actual: CalculatedMeasurementsDaily = execute(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
         "Europe/Copenhagen",
-        scenario_parameters["execution_start_datetime"],
+        execution_start_datetime,
     )
 
     # Sort to make the tests deterministic
-    actual_df = actual.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
+    actual_df = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
 
     # Return test cases
     return TestCases(

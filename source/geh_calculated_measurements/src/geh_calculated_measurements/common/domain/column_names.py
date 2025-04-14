@@ -1,11 +1,14 @@
 class ContractColumnNames:
     """Column names used in the dataframes."""
 
+    calculation_month = "calculation_month"
+    calculation_year = "calculation_year"
     coupled_date = "coupled_date"
     child_metering_point_id = "child_metering_point_id"
     child_period_from_date = "child_period_from_date"
     child_period_to_date = "child_period_to_date"
     date = "date"
+    execution_time = "execution_time"
     grid_area_code = "grid_area_code"
     has_electrical_heating = "has_electrical_heating"
     metering_point_id = "metering_point_id"
@@ -23,6 +26,7 @@ class ContractColumnNames:
     quantity = "quantity"
     resolution = "resolution"
     settlement_month = "settlement_month"
+    settlement_year = "settlement_year"
     transaction_creation_datetime = "transaction_creation_datetime"
     transaction_id = "transaction_id"
     uncoupled_date = "uncoupled_date"

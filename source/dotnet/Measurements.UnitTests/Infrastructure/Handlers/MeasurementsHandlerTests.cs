@@ -10,7 +10,7 @@ using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Handlers;
+namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Handlers;
 
 [UnitTest]
 public class MeasurementsHandlerTests

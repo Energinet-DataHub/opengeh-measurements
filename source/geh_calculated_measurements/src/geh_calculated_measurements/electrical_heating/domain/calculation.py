@@ -4,10 +4,10 @@ import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_to_utc
 from geh_common.telemetry import use_span
-from pyspark.sql import DataFrame
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
 from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -23,7 +23,7 @@ def execute(
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
     execution_start_datetime: datetime,
-) -> DataFrame:
+) -> CalculatedMeasurementsDaily:
     """Calculate the electrical heating for the given time series points and metering point periods.
 
     Returns the calculated electrical heating in UTC where the new value has changed.
@@ -62,4 +62,4 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    return changed_electrical_heating_in_utc
+    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)

@@ -8,6 +8,8 @@ nullable = True
 
 
 class Calculations(DataFrameWrapper):
+    """The internal storage model of calculations."""
+
     def __init__(self, df: DataFrame):
         super().__init__(
             df=df,
@@ -22,12 +24,12 @@ class Calculations(DataFrameWrapper):
             T.StructField(ContractColumnNames.orchestration_instance_id, T.StringType(), not nullable),
             #
             # Calculation year
-            T.StructField("calculation_year", T.IntegerType(), not nullable),
+            T.StructField(ContractColumnNames.calculation_year, T.IntegerType(), not nullable),
             #
             # Calculation month
-            T.StructField("calculation_month", T.IntegerType(), not nullable),
+            T.StructField(ContractColumnNames.calculation_month, T.IntegerType(), not nullable),
             #
             # Execution time of the calculation
-            T.StructField("execution_time", T.TimestampType(), not nullable),
+            T.StructField(ContractColumnNames.execution_time, T.TimestampType(), not nullable),
         ]
     )

@@ -3,6 +3,7 @@ from unittest.mock import ANY, Mock
 from pytest_mock import MockFixture
 
 import core.gold.application.streams.gold_measurements_stream as sut
+from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
 
@@ -37,6 +38,8 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
 
     # Assert
     transform_mock.assert_called_once_with(silver_measurements_mock)
-    gold_repo_mock.append_if_not_exists.assert_called_once_with(transform_mock.return_value)
+    gold_repo_mock.append_if_not_exists.assert_called_once_with(
+        transform_mock.return_value, query_name=QueryNames.SILVER_TO_GOLD
+    )
     transform_receipts_mock.assert_called_once_with(ANY)
-    gold_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
+    receipts_repo_mock.append_if_not_exists.assert_called_once_with(ANY)

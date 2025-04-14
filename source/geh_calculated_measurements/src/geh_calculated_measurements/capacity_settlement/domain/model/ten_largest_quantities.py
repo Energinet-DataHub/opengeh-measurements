@@ -8,6 +8,8 @@ nullable = True
 
 
 class TenLargestQuantities(DataFrameWrapper):
+    """The internal storage model of the ten largest quantities."""
+
     def __init__(self, df: DataFrame):
         super().__init__(
             df=df,
