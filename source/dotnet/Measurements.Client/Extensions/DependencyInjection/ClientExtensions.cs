@@ -1,6 +1,5 @@
-﻿using System.Net.Http.Headers;
-using Azure.Core;
-using Azure.Identity;
+﻿using Azure.Identity;
+using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -22,16 +21,22 @@ public static class ClientExtensions
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
+        services.AddSingleton<IAuthorizationHeaderProvider>(serviceProvider =>
+        {
+            var credential = new DefaultAzureCredential();
+            var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+
+            return new AuthorizationHeaderProvider(credential, options.ApplicationIdUri);
+        });
+
         services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+            var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
+            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader();
+
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
-
-            var token = new DefaultAzureCredential()
-                .GetToken(new TokenRequestContext([measurementHttpClientOptions.ApplicationIdUri]), CancellationToken.None)
-                .Token;
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
         });
 
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();

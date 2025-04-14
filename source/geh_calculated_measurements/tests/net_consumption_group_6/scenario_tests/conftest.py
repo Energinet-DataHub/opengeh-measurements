@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -45,13 +46,19 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
+    # Use current time as default execution start datetime if not provided
+    if scenario_parameters is not None and "execution_start_datetime" in scenario_parameters:
+        execution_start_datetime = scenario_parameters["execution_start_datetime"]
+    else:
+        execution_start_datetime = datetime.now(UTC)
+
     # Execute the logic
     cenc, measurements = execute(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
         "Europe/Copenhagen",
-        scenario_parameters["execution_start_datetime"],
+        execution_start_datetime,
     )
 
     # Return test cases
@@ -70,7 +77,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         test_cases_list.append(
             TestCase(
                 expected_csv_path=str(measurements_csv_path),
-                actual=measurements,
+                actual=measurements.df,
             ),
         )
     return TestCases(test_cases_list)

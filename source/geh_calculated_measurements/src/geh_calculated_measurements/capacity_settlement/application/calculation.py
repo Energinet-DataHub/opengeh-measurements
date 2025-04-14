@@ -5,7 +5,6 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry import use_span
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql import types as T
 
 from geh_calculated_measurements.capacity_settlement.application.capacity_settlement_args import CapacitySettlementArgs
 from geh_calculated_measurements.capacity_settlement.application.model.calculations import Calculations
@@ -17,10 +16,10 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
     CapacitySettlementRepository,
     ElectricityMarketRepository,
 )
+from geh_calculated_measurements.common.application.model import calculated_measurements_factory
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
 )
-from geh_calculated_measurements.common.domain.model import calculated_measurements_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,
@@ -45,12 +44,10 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         args.calculation_year,
         args.time_zone,
     )
+    execution_start_datetime = datetime.now(UTC)
 
     calculations = _create_calculations(
-        spark,
-        args.orchestration_instance_id,
-        args.calculation_month,
-        args.calculation_year,
+        spark, args.orchestration_instance_id, args.calculation_month, args.calculation_year, execution_start_datetime
     )
 
     # Write the calculated measurements
@@ -60,6 +57,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
         OrchestrationType.CAPACITY_SETTLEMENT,
         MeteringPointType.CAPACITY_SETTLEMENT,
         args.time_zone,
+        execution_start_datetime,
     )
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
@@ -80,16 +78,8 @@ def _create_calculations(
     orchestration_instance_id: UUID,
     calculation_month: int,
     calculation_year: int,
+    execution_start_datetime: datetime,
 ) -> Calculations:
-    execution_time = datetime.now(UTC).replace(microsecond=0)
-    schema = T.StructType(
-        [
-            T.StructField("orchestration_instance_id", T.StringType(), False),
-            T.StructField("calculation_year", T.IntegerType(), False),
-            T.StructField("calculation_month", T.IntegerType(), False),
-            T.StructField("execution_time", T.TimestampType(), False),
-        ]
-    )
     return Calculations(
         spark.createDataFrame(
             [
@@ -97,9 +87,9 @@ def _create_calculations(
                     str(orchestration_instance_id),
                     calculation_year,
                     calculation_month,
-                    execution_time,
+                    execution_start_datetime,
                 )
             ],
-            schema=schema,
+            schema=Calculations.schema,
         )
     )

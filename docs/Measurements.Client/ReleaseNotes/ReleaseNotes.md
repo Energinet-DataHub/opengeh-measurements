@@ -1,5 +1,13 @@
 # Measurements.Client Release Notes
 
+## Version 2.3.0
+
+- ContainsUpdatedValues added to MeasurementAggregationDto.
+
+## Version 2.2.0
+
+- Added method to get aggregated measurements for a month.
+
 ## Version 2.1.0
 
 - Add created timestamp to measurement point.

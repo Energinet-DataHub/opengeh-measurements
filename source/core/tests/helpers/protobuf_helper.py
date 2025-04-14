@@ -1,3 +1,5 @@
+import random
+
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.protobuf.functions import from_protobuf
@@ -34,3 +36,7 @@ def unpack_brs021_forward_metered_data_notify_v1(brs021_forward_metered_data_not
             Brs021ForwardMeteredDataNotifyV1ColumnNames.orchestration_instance_id
         ),
     )
+
+
+def generate_random_binary() -> bytes:
+    return bytes(random.getrandbits(8) for _ in range(18))
