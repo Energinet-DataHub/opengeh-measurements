@@ -1,12 +1,9 @@
-import random
 from datetime import datetime, timezone
 
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
-from tests.subsystem_tests import seed_gold_table
-from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 database = ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME
 parent_table = (
@@ -15,20 +12,6 @@ parent_table = (
 child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
 
 parent_metering_point_id = "170000050000000201"
-
-
-def _seed_gold_table(job_fixture: JobTestFixture) -> None:
-    gold_table_rows = [
-        GoldTableRow(
-            metering_point_id="170000000000000201",
-            observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-            quantity=random.uniform(0.1, 10.0),
-        )
-        for i in range(1)
-    ]
-    statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
-
-    job_fixture.execute_statement(statement)
 
 
 def delete_seeded_data(job_fixture: JobTestFixture) -> None:

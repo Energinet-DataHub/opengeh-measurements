@@ -38,3 +38,7 @@ class TestNetConsumptionGroup6(JobTest):
 
         # Remove previously inserted seeded data
         delete_seeded_data(base_job_fixture)
+
+    @pytest.mark.skip(reason="TODO JVM")
+    def test__and_then_data_is_available_in_gold(self, fixture: JobTestFixture):
+        pass
