@@ -43,7 +43,7 @@ public class MeasurementsForDayResponseParserTests
     }
 
     [Fact]
-    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PointAreOrderedCorrect()
+    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PointsAreOrderedCorrectly()
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayWithHistoricalObservations);
