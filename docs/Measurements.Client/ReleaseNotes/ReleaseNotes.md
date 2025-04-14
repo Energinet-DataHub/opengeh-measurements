@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 3.0.0
+
+- Include historical values in forPeriod.
+
 ## Version 2.3.0
 
 - ContainsUpdatedValues added to MeasurementAggregationDto.
