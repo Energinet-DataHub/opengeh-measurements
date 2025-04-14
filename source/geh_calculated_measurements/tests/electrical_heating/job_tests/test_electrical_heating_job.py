@@ -51,7 +51,6 @@ def _seed_gold(spark: SparkSession) -> None:
 def test_execute(
     spark: SparkSession,
     gold_table_seeded,
-    gold_table_seeded_2,
     dummy_logging: Any,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
@@ -62,15 +61,12 @@ def test_execute(
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
-    # _seed_gold(spark)
-    print("A:")
     spark.sql(
         f"""SELECT * FROM {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}"""
     ).show(truncate=False)
 
     # Act
     execute()
-    print("B:")
     spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
     ).show(truncate=False)
@@ -80,13 +76,3 @@ def test_execute(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
     ).where(F.col(ContractColumnNames.orchestration_instance_id) == orchestration_instance_id)
     assert actual.count() > 0
-
-    # Clean up
-    spark.sql(f"""
-        DELETE FROM {CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}
-        WHERE orchestration_instance_id = '{orchestration_instance_id}'
-    """)
-
-    # spark.sql(f"""
-    #             SELECT * FROM {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}
-    #           """).show(truncate=False)
