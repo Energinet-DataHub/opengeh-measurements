@@ -56,6 +56,7 @@ cases_tested:
 
   "Net Settlement Groups":
     - "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
+    - "Electrical heating with net settlement group 2 - Parent MP GAINS net consumption MP"
 
   "Settlement Group Calculation Type":
     - "END OF PERIOD calculation"
