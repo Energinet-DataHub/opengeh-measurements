@@ -6,8 +6,6 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTest, Jo
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import (
     _seed_gold_table,
-    delete_seeded_data,
-    seed_electricity_market_tables,
 )
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
@@ -26,18 +24,21 @@ class TestNetConsumptionGroup6(JobTest):
         )
 
         # Remove previously inserted seeded data
-        delete_seeded_data(base_job_fixture)
+        # TODO JMK: Views cannot be modified
+        # delete_seeded_data(base_job_fixture)
 
         # Seed gold table
         _seed_gold_table(base_job_fixture)
 
         # Seed electricity market
-        seed_electricity_market_tables(base_job_fixture)
+        # TODO JMK: Views cannot be modified
+        # seed_electricity_market_tables(base_job_fixture)
 
-        yield base_job_fixture
+        return base_job_fixture
 
         # Remove previously inserted seeded data
-        delete_seeded_data(base_job_fixture)
+        # TODO JMK: Views cannot be modified
+        # delete_seeded_data(base_job_fixture)
 
     @pytest.mark.skip(reason="TODO JVM")
     def test__and_then_data_is_available_in_gold(self, fixture: JobTestFixture):

@@ -210,7 +210,7 @@ class JobTest(abc.ABC):
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 
-            WHERE orchestration_instance_id = '{fixture.job_parameters.get("orchestration-instance-id")}' 
+            WHERE metering_point_id = '{fixture.metering_point_id}' 
             LIMIT 1
         """
 
