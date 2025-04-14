@@ -15,7 +15,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
 from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
     ElectricityMarketMeasurementsInputDatabaseDefinition,
 )
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests import cnc_get_test_files_folder_path
 
 
 @pytest.fixture(autouse=True)
@@ -23,7 +23,7 @@ def gold_table_seeded(
     spark: SparkSession,
     external_dataproducts_created: None,  # Used implicitly
 ) -> None:
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
+    file_name = f"{cnc_get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
     time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",

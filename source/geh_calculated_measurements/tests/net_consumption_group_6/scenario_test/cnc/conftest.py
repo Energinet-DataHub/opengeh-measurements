@@ -13,7 +13,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cnc_calculation import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.cnc_logic import execute
 
 
 @pytest.fixture(scope="module")
