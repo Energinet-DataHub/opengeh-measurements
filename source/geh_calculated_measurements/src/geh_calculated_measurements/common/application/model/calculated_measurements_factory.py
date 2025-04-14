@@ -29,7 +29,7 @@ def create(
 ) -> CalculatedMeasurementsInternal:
     df = (
         # Explode the date column to create a row for each hour in the day
-        measurements.df.withColumn(
+        measurements.withColumn(
             ContractColumnNames.observation_time,
             F.explode(
                 F.sequence(
