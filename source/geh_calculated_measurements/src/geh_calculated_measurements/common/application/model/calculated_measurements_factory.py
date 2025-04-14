@@ -14,8 +14,8 @@ from geh_calculated_measurements.common.domain.column_names import ContractColum
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
 UUID_NAMESPACE = uuid.UUID("539ba8c3-5d10-4aa9-81d5-632cfce33e18")
-""" Define a fixed UUID to use as the namespace for generating UUID v5 values. 
-This ensures that all UUIDs generated with this namespace and a given name are stable (i.e., the same input always 
+""" Define a fixed UUID to use as the namespace for generating UUID v5 values.
+This ensures that all UUIDs generated with this namespace and a given name are stable (i.e., the same input always
 produces the same output)."""
 
 
@@ -25,7 +25,7 @@ def create(
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
     time_zone: str,
-    transaction_creation_datetime: datetime = datetime.now(),
+    transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
     df = (
         # Explode the date column to create a row for each hour in the day
