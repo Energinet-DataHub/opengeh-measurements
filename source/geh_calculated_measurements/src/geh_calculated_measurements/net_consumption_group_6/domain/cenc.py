@@ -10,7 +10,6 @@ from pyspark.sql.window import Window
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
-    Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
