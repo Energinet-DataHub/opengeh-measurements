@@ -5,7 +5,7 @@ from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
-from pyspark.sql import Column
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import types as T
 
 from geh_calculated_measurements.common.domain import (
@@ -33,11 +33,11 @@ def days_in_year(year: Column, month: Column) -> Column:
 @testing()
 def calculate_daily(
     current_measurements: CurrentMeasurements,
-    cenc: Cenc,
+    cenc: DataFrame,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> CalculatedMeasurementsDaily:
-    cenc_added_col = cenc.df.select(  # adding needed columns
+    cenc_added_col = cenc.select(  # adding needed columns
         "*",
         F.lit(MeteringPointType.NET_CONSUMPTION.value).alias(ContractColumnNames.metering_point_type),
         F.lit(execution_start_datetime).alias("execution_start_datetime"),
@@ -111,4 +111,4 @@ def calculate_daily(
 
     result_df = convert_to_utc(result_df, time_zone)
 
-    return CalculatedMeasurementsDaily(result_df)
+    return result_df

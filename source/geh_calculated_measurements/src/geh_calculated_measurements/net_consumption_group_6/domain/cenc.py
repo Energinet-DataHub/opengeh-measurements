@@ -24,7 +24,7 @@ def calculate_cenc(
     current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
-) -> Cenc:
+) -> DataFrame:
     """Calculate _calculated annual estimated net consumption_ (CENC) for metering points.."""
     # Constants for estimated consumption for move_in cases
     ESTIMATED_CONSUMPTION_MOVE_IN = 1800
@@ -71,7 +71,7 @@ def calculate_cenc(
         )
     )
 
-    return Cenc(result)
+    return result
 
 
 def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:
