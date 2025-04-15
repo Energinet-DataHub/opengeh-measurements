@@ -198,7 +198,7 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
                 F.col(ContractColumnNames.metering_point_type) == MeteringPointType.SUPPLY_TO_GRID.value,
                 F.col(ContractColumnNames.quantity),
             ).otherwise(0)
-        ).alias("supply_consumption"),
+        ).alias("supply_quantity"),
     )
 
 
@@ -207,7 +207,7 @@ def _calculate_net_quantity(consumption_supply_df: DataFrame) -> DataFrame:
     return consumption_supply_df.withColumn(
         "net_quantity",
         F.greatest(
-            (F.col("consumption_quantity") - F.col("supply_consumption")),
+            (F.col("consumption_quantity") - F.col("supply_quantity")),
             F.lit(0),
         ),
     )
