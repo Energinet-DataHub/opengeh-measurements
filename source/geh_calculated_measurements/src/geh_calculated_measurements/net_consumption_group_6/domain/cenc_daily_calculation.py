@@ -37,4 +37,4 @@ def execute(
         execution_start_datetime=execution_start_datetime,
     )
 
-    return [cenc, measurements]
+    return (cenc, measurements)
