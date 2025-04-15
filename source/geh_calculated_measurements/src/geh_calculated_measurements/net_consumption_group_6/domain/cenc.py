@@ -48,7 +48,24 @@ def calculate_cenc(
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
     # Prepare final result with estimated values for move-in cases
-    result = (
+    result = prepare_cenc_with_move_in(
+        ESTIMATED_CONSUMPTION_MOVE_IN,
+        ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
+        net_consumption_metering_points,
+        net_quantity,
+    )
+
+    return Cenc(result)
+
+
+def prepare_cenc_with_move_in(
+    ESTIMATED_CONSUMPTION_MOVE_IN,
+    ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
+    net_consumption_metering_points,
+    net_quantity,
+) -> DataFrame:
+    """Prepare CENC with move-in values."""
+    return (
         net_consumption_metering_points.join(
             net_quantity,
             on=[ContractColumnNames.parent_metering_point_id, "settlement_date"],
@@ -70,8 +87,6 @@ def calculate_cenc(
             F.month(F.col("settlement_date")).alias(ContractColumnNames.settlement_month),
         )
     )
-
-    return Cenc(result)
 
 
 def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:
