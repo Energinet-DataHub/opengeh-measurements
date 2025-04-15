@@ -19,12 +19,13 @@ public class GetAggregatedMeasurementResponseTests
 
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
 
         var expectedDate = minObservationTime.ToDateOnly();
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
         };
 
         // Act
@@ -47,10 +48,30 @@ public class GetAggregatedMeasurementResponseTests
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
         var qualities = new[] { "measured", "measured" };
         var resolutions = new[] { "PT1H", "PT15M" };
+        var units = new[] { "kWh" };
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
+        };
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements));
+    }
+
+    [Fact]
+    public void Create_MultipleUnits_ShouldThrowException()
+    {
+        // Arrange
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
+        var qualities = new[] { "measured", "measured" };
+        var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh", "kVArh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
         };
 
         // Act & Assert
@@ -65,10 +86,11 @@ public class GetAggregatedMeasurementResponseTests
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(24)); // 24 hours to simulate missing values
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
         };
 
         // Act
@@ -86,10 +108,11 @@ public class GetAggregatedMeasurementResponseTests
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
         var qualities = new[] { "invalid_quality" };
         var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
         };
 
         // Act & Assert
@@ -104,10 +127,11 @@ public class GetAggregatedMeasurementResponseTests
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, 2L)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 2L)),
         };
 
         // Act
@@ -118,7 +142,12 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     private static ExpandoObject CreateRaw(
-        Instant minObservationTime, Instant maxObservationTime, string[] qualities, string[] resolutions, long observationUpdates = 1L)
+        Instant minObservationTime,
+        Instant maxObservationTime,
+        string[] qualities,
+        string[] resolutions,
+        string[] units,
+        long observationUpdates = 1L)
     {
         dynamic raw = new ExpandoObject();
         raw.min_observation_time = minObservationTime.ToDateTimeOffset();
@@ -126,6 +155,7 @@ public class GetAggregatedMeasurementResponseTests
         raw.aggregated_quantity = 100.0m;
         raw.qualities = qualities;
         raw.resolutions = resolutions;
+        raw.units = units;
         raw.point_count = 24L;
         raw.observation_updates = observationUpdates;
 
