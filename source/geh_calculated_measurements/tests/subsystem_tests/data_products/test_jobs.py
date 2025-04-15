@@ -4,6 +4,7 @@ from datetime import UTC, datetime, timezone
 from decimal import Decimal
 
 from geh_common.data_products.measurements_core.measurements_gold import current_v1
+from geh_common.databricks.databricks_api_client import DatabricksApiClient
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
@@ -11,8 +12,6 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 
 orchestration_instance_id = uuid.uuid4()
 job_parameters = {"orchestration-instance-id": orchestration_instance_id}
-
-from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 
 def create_quantity(min=0.00, max=999999999999999.999) -> Decimal:
