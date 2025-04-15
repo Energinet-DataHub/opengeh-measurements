@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Application.Exceptions;
+﻿using Asp.Versioning;
+using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
@@ -7,14 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
+[ApiVersion(1)]
 [ApiController]
 [Authorize]
 [Route("measurements")]
+[Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
-    [HttpGet]
-    [Route("forPeriod")]
+    [MapToApiVersion(1)]
+    [HttpGet("forPeriod")]
     public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
         try
@@ -30,8 +33,8 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
         }
     }
 
-    [HttpGet]
-    [Route("aggregatedByMonth")]
+    [MapToApiVersion(1)]
+    [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
     {
         try
