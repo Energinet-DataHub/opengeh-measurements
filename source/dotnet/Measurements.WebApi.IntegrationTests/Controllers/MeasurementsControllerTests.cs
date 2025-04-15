@@ -142,7 +142,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Arrange
         const string expectedMeteringPointId = "1234567890";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateUrl(expectedMeteringPointId, yearMonth, "v1");
+        var url = CreateUrl(expectedMeteringPointId, yearMonth, "v2");
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);

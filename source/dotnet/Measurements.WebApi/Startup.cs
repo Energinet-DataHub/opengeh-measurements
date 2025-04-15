@@ -68,30 +68,32 @@ public class Startup(IConfiguration configuration)
         {
             // Define an ApiVersionSet
             var versionSet = endpoints.NewApiVersionSet()
-                .HasApiVersion(1) // Define the API version
+                .HasApiVersion(1)
+                .HasApiVersion(2)
                 .ReportApiVersions() // Optional: Include supported versions in the response headers
                 .Build();
 
             endpoints
                 .MapGroup("v{version:apiVersion}/measurements")
-                //.WithApiVersionSet(versionSet)
-                //.HasApiVersion(1)
-                .WithTags("v1");
+                .WithApiVersionSet(versionSet)
+                .HasApiVersion(1)
+                .HasApiVersion(2)
+                .WithTags("v1")
+                .MapControllers();
 
             endpoints
                 .MapGroup("measurements")
-                .MapDefaultControllerRoute()
-                //.WithApiVersionSet(versionSet)
-                //.HasApiVersion(1)
-                //.IsApiVersionNeutral()
-                .WithTags("Default v1");
+                .WithApiVersionSet(versionSet)
+                .HasApiVersion(1)
+                .WithTags("Default v1")
+                .MapControllers();
 
             // endpoints.MapGet("v{version:apiVersion}/measurements", () => "Version 1 - Get all measurements");
             // endpoints.MapControllers().WithApiVersionSet(versionSet);
             endpoints.MapLiveHealthChecks();
             endpoints.MapReadyHealthChecks();
             endpoints.MapStatusHealthChecks();
-            endpoints.MapControllers().WithApiVersionSet(versionSet);
+            //endpoints.MapControllers().WithApiVersionSet(versionSet);
         });
 
         // ConfigureVersioning(app);

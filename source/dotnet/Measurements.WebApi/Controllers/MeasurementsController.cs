@@ -9,10 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiVersion(1)]
+[ApiVersion(2)]
 [ApiController]
 [Authorize]
-[Route("measurements")]
-[Route("v{version:apiVersion}/measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
@@ -43,6 +42,22 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
             var result = new JsonSerializer().Serialize(aggregatedMeasurements);
 
             return Ok(result);
+        }
+        catch (MeasurementsNotFoundDuringPeriodException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [MapToApiVersion(2)]
+    [HttpGet("aggregatedByMonth")]
+    public async Task<IActionResult> GetAggregatedMeasurementsAsyncV2([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    {
+        try
+        {
+            const string result = "[]";
+
+            return await Task.FromResult(Ok(result));
         }
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
