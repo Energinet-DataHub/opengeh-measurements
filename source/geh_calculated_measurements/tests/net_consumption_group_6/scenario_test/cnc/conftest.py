@@ -13,7 +13,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cnc_calculation import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.cnc_daily_calculation import execute
 
 
 @pytest.fixture(scope="module")
@@ -56,6 +56,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     return TestCases(
         [
-            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements.df),
         ]
     )

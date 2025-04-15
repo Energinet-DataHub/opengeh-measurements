@@ -75,7 +75,7 @@ def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
     Returns:
         DataFrame with columns:
             - metering_point_id: ID of the metering point
-            - observation_time: Daily observation time
+            - date: Daily observation time
             - quantity: The calculated daily quantity as DecimalType(18, 3)
     """
     cnc_diff = (
@@ -85,14 +85,13 @@ def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
             on=[
                 F.col(f"cnc.{ContractColumnNames.metering_point_id}")
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
-                F.col(f"cnc.{ContractColumnNames.observation_time}")
-                == F.col(f"ts.{ContractColumnNames.observation_time}"),
+                F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
             ],
             how="left_anti",
         )
         .select(
             F.col(ContractColumnNames.metering_point_id),
-            F.col(f"cnc.{ContractColumnNames.observation_time}").alias(ContractColumnNames.observation_time),
+            F.col(f"cnc.{ContractColumnNames.date}").alias(ContractColumnNames.date),
             F.col("cnc.daily_quantity").alias(ContractColumnNames.quantity),
         )
     )
@@ -119,10 +118,10 @@ def _expand_periods_to_daily_observations(periods_with_net_consumption) -> DataF
                 F.date_add(ContractColumnNames.period_to_date, -1),
                 F.expr("INTERVAL 1 DAY"),
             )
-        ).alias(ContractColumnNames.observation_time),
+        ).alias(ContractColumnNames.date),
     ).select(
         F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.observation_time),
+        F.col(ContractColumnNames.date),
         F.col("daily_quantity").cast(T.DecimalType(18, 3)),
     )
 
@@ -240,7 +239,7 @@ def _join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
             - parent_metering_point_id: ID of the parent metering point
             - period_start: Start date of the period
             - period_end: End date of the period
-            - observation_time: Observation time
+            - date: Observation time
             - quantity: The quantity as DecimalType(18, 3)
     """
     periods_with_ts = (
@@ -261,7 +260,7 @@ def _join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
             F.col(f"mp.{ContractColumnNames.parent_metering_point_id}"),
             F.col("mp.period_start"),
             F.col("mp.period_end"),
-            F.col(f"ts.{ContractColumnNames.observation_time}"),
+            F.col(f"ts.{ContractColumnNames.observation_time}").alias(ContractColumnNames.date),
             F.col(f"ts.{ContractColumnNames.quantity}"),
         )
     )
