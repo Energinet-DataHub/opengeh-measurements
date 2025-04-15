@@ -174,9 +174,6 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
 
 def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
     """Join metering point with time series and sum quantity for consumption_from_grid and supply_to_grid."""
-    consumption_from_grid = MeteringPointType.CONSUMPTION_FROM_GRID.value
-    supply_to_grid = MeteringPointType.SUPPLY_TO_GRID.value
-
     # Join and filter in one step
     joined_df = parent_child_df.join(
         time_series_df,
@@ -192,15 +189,16 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
     return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
         F.sum(
             F.when(
-                F.col(ContractColumnNames.metering_point_type) == consumption_from_grid,
+                F.col(ContractColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value,
                 F.col(ContractColumnNames.quantity),
             ).otherwise(0)
-        ).alias(consumption_from_grid),
+        ).alias("consumption_quantity"),
         F.sum(
             F.when(
-                F.col(ContractColumnNames.metering_point_type) == supply_to_grid, F.col(ContractColumnNames.quantity)
+                F.col(ContractColumnNames.metering_point_type) == MeteringPointType.SUPPLY_TO_GRID.value,
+                F.col(ContractColumnNames.quantity),
             ).otherwise(0)
-        ).alias(supply_to_grid),
+        ).alias("supply_consumption"),
     )
 
 
@@ -209,10 +207,7 @@ def _calculate_net_quantity(consumption_supply_df: DataFrame) -> DataFrame:
     return consumption_supply_df.withColumn(
         "net_quantity",
         F.greatest(
-            (
-                F.col(str(MeteringPointType.CONSUMPTION_FROM_GRID.value))
-                - F.col(str(MeteringPointType.SUPPLY_TO_GRID.value))
-            ),
+            (F.col("consumption_quantity") - F.col("supply_consumption")),
             F.lit(0),
         ),
     )
