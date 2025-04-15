@@ -12,7 +12,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiController]
 [Authorize]
 [Route("measurements")]
-[Route("v{v:apiVersion}/measurements")]
+[Route("v{version:apiVersion}/measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
