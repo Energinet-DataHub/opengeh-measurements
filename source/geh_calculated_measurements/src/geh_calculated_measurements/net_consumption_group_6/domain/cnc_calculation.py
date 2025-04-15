@@ -31,71 +31,42 @@ def execute(
         )
     )
 
-    parent_child_joined = join_child_to_consumption(
+    parent_child_joined = _join_child_to_consumption(
         consumption_metering_point_periods, child_metering_points, execution_start_datetime
     )
     filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
     # enforce 3 year
-    metering_points = generate_metering_points_with_cut_off(parent_child_joined)
+    metering_points = _generate_metering_points_with_cut_off(parent_child_joined)
 
     # split periods by settelement month
-    periods = create_periods_for_settlement(metering_points)
+    periods = _create_periods_for_settlement(metering_points)
 
     # filter out periods that are not in the last 3 years
-    periods_with_cut_off = apply_cut_off_to_periods(periods)
+    periods_with_cut_off = _apply_cut_off_to_periods(periods)
 
     # ts for each period
-    periods_with_ts = join_time_series_to_periods(filtered_time_series, periods)
+    periods_with_ts = _join_time_series_to_periods(filtered_time_series, periods)
 
     # sum ts over each period
-    net_consumption_over_ts = aggregate_consumption_data(periods_with_ts)
+    net_consumption_over_ts = _aggregate_consumption_data(periods_with_ts)
 
     # calculate daily quantity
-    periods_with_net_consumption = derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts)
+    periods_with_net_consumption = _derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts)
 
     # generate daily observations quantity
-    cnc_measurements = expand_periods_to_daily_observations(periods_with_net_consumption)
+    cnc_measurements = _expand_periods_to_daily_observations(periods_with_net_consumption)
 
     # check if any cnc differs from the newly calculated
-    cnc_diff = get_cnc_discrepancies(periods_with_ts, cnc_measurements)
+    cnc_diff = _get_cnc_discrepancies(periods_with_ts, cnc_measurements)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
 
     return cnc_diff_utc
 
 
-def expand_periods_to_daily_observations(periods_with_net_consumption) -> DataFrame:
-    """Expand periods with net consumption to daily observations.
-
-    This function expands the periods with net consumption into daily observations.
-
-    Returns:
-        DataFrame with columns:
-            - metering_point_id: ID of the metering point
-            - observation_time: Daily observation time
-            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
-    """
-    cnc_measurements = periods_with_net_consumption.select(
-        "*",
-        F.explode(
-            F.sequence(
-                F.col("period_start_with_cut_off"),
-                F.date_add(ContractColumnNames.period_to_date, -1),
-                F.expr("INTERVAL 1 DAY"),
-            )
-        ).alias(ContractColumnNames.observation_time),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.observation_time),
-        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
-    )
-
-    return cnc_measurements
-
-
-def get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
+def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
     """Get discrepancies between the calculated and the original CNC measurements.
 
     This function checks for discrepancies between the calculated CNC measurements and the original CNC measurements.
@@ -128,7 +99,36 @@ def get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
     return cnc_diff
 
 
-def derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts) -> DataFrame:
+def _expand_periods_to_daily_observations(periods_with_net_consumption) -> DataFrame:
+    """Expand periods with net consumption to daily observations.
+
+    This function expands the periods with net consumption into daily observations.
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - observation_time: Daily observation time
+            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
+    """
+    cnc_measurements = periods_with_net_consumption.select(
+        "*",
+        F.explode(
+            F.sequence(
+                F.col("period_start_with_cut_off"),
+                F.date_add(ContractColumnNames.period_to_date, -1),
+                F.expr("INTERVAL 1 DAY"),
+            )
+        ).alias(ContractColumnNames.observation_time),
+    ).select(
+        F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.observation_time),
+        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
+    )
+
+    return cnc_measurements
+
+
+def _derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts) -> DataFrame:
     """Derive daily quantity from net consumption over time series.
 
     This function derives the daily quantity from net consumption over time series.
@@ -177,7 +177,7 @@ def derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts
     return periods_with_net_consumption
 
 
-def aggregate_consumption_data(periods_with_ts) -> DataFrame:
+def _aggregate_consumption_data(periods_with_ts) -> DataFrame:
     """Aggregate consumption data over time series.
 
     This function aggregates consumption data over time series.
@@ -227,7 +227,7 @@ def aggregate_consumption_data(periods_with_ts) -> DataFrame:
     return net_consumption_over_ts
 
 
-def join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
+def _join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
     """Join time series to periods.
 
     This function joins the filtered time series data with the periods data.
@@ -268,7 +268,7 @@ def join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
     return periods_with_ts
 
 
-def apply_cut_off_to_periods(periods) -> DataFrame:
+def _apply_cut_off_to_periods(periods) -> DataFrame:
     """Apply cut off to periods.
 
     This function applies a cut off date to the periods data.
@@ -306,7 +306,7 @@ def apply_cut_off_to_periods(periods) -> DataFrame:
     return periods_w_cut_off
 
 
-def create_periods_for_settlement(metering_points) -> DataFrame:
+def _create_periods_for_settlement(metering_points) -> DataFrame:
     """Create periods for settlement.
 
     This function creates periods for settlement by exploding the periods based on the settlement month.
@@ -384,7 +384,7 @@ def create_periods_for_settlement(metering_points) -> DataFrame:
     return periods
 
 
-def generate_metering_points_with_cut_off(parent_child_joined) -> DataFrame:
+def _generate_metering_points_with_cut_off(parent_child_joined) -> DataFrame:
     """Generate metering points with cut off date.
 
     This function generates metering points with a cut off date.
@@ -432,7 +432,7 @@ def generate_metering_points_with_cut_off(parent_child_joined) -> DataFrame:
     return metering_points
 
 
-def join_child_to_consumption(
+def _join_child_to_consumption(
     consumption_metering_point_periods, child_metering_points, execution_start_datetime
 ) -> DataFrame:
     """Join child metering points with consumption metering point periods.

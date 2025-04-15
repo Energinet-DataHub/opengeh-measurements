@@ -112,7 +112,7 @@ def _join_parent_child_with_consumption(
             F.col(f"consumption.{ContractColumnNames.period_to_date}"),
             F.col(f"consumption.{ContractColumnNames.has_electrical_heating}"),
             F.col(f"consumption.{ContractColumnNames.settlement_month}"),
-            F.col("consumption.move_in"),
+            F.col(f"consumption.{ContractColumnNames.move_in}"),
         )
     )
 
