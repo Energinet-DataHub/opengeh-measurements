@@ -31,7 +31,7 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
 
     base_job_fixture = JobTestFixture(
         environment_configuration=config,
-        job_name="NetConsumptionGroup6",
+        job_name="",
         job_parameters=job_parameters,
     )
 
