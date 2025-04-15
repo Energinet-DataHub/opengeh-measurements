@@ -26,11 +26,7 @@ def execute(
     execution_start_datetime: datetime,
 ) -> CalculatedMeasurementsDaily:
     # Filter and join the data
-    filtered_time_series = current_measurements.df.where(
-        F.col(ContractColumnNames.metering_point_type).isin(
-            MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
-        )
-    )
+    filtered_time_series = _filter_and_aggregate_daily(current_measurements)
 
     parent_child_joined = _join_child_to_consumption(
         consumption_metering_point_periods, child_metering_points, execution_start_datetime
@@ -107,7 +103,7 @@ def _expand_periods_to_daily_observations(periods_with_net_consumption) -> DataF
     Returns:
         DataFrame with columns:
             - metering_point_id: ID of the metering point
-            - observation_time: Daily observation time
+            - date: Daily observation time
             - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
     """
     cnc_measurements = periods_with_net_consumption.select(
@@ -168,8 +164,8 @@ def _derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_t
         )
         .select(
             F.col(f"mp.{ContractColumnNames.metering_point_id}"),
-            F.col(ContractColumnNames.period_to_date),
             F.col("period_start_with_cut_off"),
+            F.col(ContractColumnNames.period_to_date),
             F.col("daily_quantity"),
         )
     )
@@ -249,8 +245,8 @@ def _join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
             on=[
                 F.col(f"mp.{ContractColumnNames.metering_point_id}")
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
-                (F.col(f"ts.{ContractColumnNames.observation_time}") >= F.col("mp.period_start"))
-                & (F.col(f"ts.{ContractColumnNames.observation_time}") <= F.col("mp.period_end")),
+                (F.col(f"ts.{ContractColumnNames.date}") >= F.col("mp.period_start"))
+                & (F.col(f"ts.{ContractColumnNames.date}") <= F.col("mp.period_end")),
             ],
             how="left",
         )
@@ -260,7 +256,7 @@ def _join_time_series_to_periods(filtered_time_series, periods) -> DataFrame:
             F.col(f"mp.{ContractColumnNames.parent_metering_point_id}"),
             F.col("mp.period_start"),
             F.col("mp.period_end"),
-            F.col(f"ts.{ContractColumnNames.observation_time}").alias(ContractColumnNames.date),
+            F.col(f"ts.{ContractColumnNames.date}").alias(ContractColumnNames.date),
             F.col(f"ts.{ContractColumnNames.quantity}"),
         )
     )
@@ -469,3 +465,44 @@ def _join_child_to_consumption(
     )
 
     return parent_child_joined
+
+
+def _filter_and_aggregate_daily(current_measurements) -> DataFrame:
+    """Filter and aggregate daily measurements.
+
+    This function filters the current measurements data and aggregates it to daily observations.
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - metering_point_type: Type of the metering point
+            - date: Daily observation time
+            - quantity: The quantity as DecimalType(18, 3)
+    """
+    filtered_time_series = current_measurements.df.where(
+        F.col(ContractColumnNames.metering_point_type).isin(
+            MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
+        )
+    )
+    filtered_time_series_daily = (
+        filtered_time_series.select(
+            "*",
+            F.to_date(F.col(ContractColumnNames.observation_time)).alias(ContractColumnNames.date),
+        )
+        .groupBy(
+            ContractColumnNames.metering_point_id,
+            ContractColumnNames.metering_point_type,
+            ContractColumnNames.date,
+        )
+        .agg(
+            F.sum(ContractColumnNames.quantity).alias(ContractColumnNames.quantity),
+        )
+        .select(
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.metering_point_type),
+            F.col(ContractColumnNames.date),
+            F.col(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
+        )
+    )
+
+    return filtered_time_series_daily

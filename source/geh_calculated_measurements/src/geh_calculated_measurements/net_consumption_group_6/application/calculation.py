@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
     NetConsumptionGroup6Args,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc_calculation import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_daily_calculation import execute
 from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
     ElectricityMarketRepository,
 )

@@ -14,7 +14,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc_calculation import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_daily_calculation import execute
 
 
 @pytest.fixture(scope="module")
