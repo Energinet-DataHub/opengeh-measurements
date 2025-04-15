@@ -13,21 +13,16 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 orchestration_instance_id = uuid.uuid4()
 job_parameters = {"orchestration-instance-id": orchestration_instance_id}
 
-# TODO XHTCA: brug funktionen fra __init__
-# def create_metering_point_id(position=8, digit=9) -> str:
-#     id = "".join(random.choice("0123456789") for _ in range(18))
-#     return id[:position] + str(digit) + id[position + 1 :]
 
-
-def create_metering_point_id():
-    return "999999999999999999"
+def create_quantity(min=0.00, max=999999999999999.999) -> Decimal:
+    return Decimal(random.uniform(min, max)).quantize(Decimal("1.000"))
 
 
 def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None:
     # Arrange
     config = EnvironmentConfiguration()
-    metering_point_id = create_metering_point_id()
-    quantity = Decimal(f"{random.uniform(1.0, 100.0):.3f}")
+
+    quantity = create_quantity()
 
     base_job_fixture = JobTestFixture(
         environment_configuration=config,
@@ -43,7 +38,7 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
       (
         '{"electrical_heating"}',
         '{orchestration_instance_id}',
-        '{metering_point_id}',
+        '{170000030000000201}',
         '{uuid.uuid4()}',
         '{datetime.now(UTC)}',
         '{"electrical_heating"}',
@@ -58,7 +53,7 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
     statement = f"""
                   SELECT *
                   FROM {config.catalog_name}.{current_v1.database_name}.{current_v1.view_name}
-                  WHERE metering_point_id = '{metering_point_id}' and quantity = {quantity}
+                  WHERE metering_point_id = '{170000030000000201}' and quantity = {quantity}
                   LIMIT 1
                 """
     base_job_fixture.wait_for_data(statement)
