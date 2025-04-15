@@ -14,10 +14,6 @@ orchestration_instance_id = uuid.uuid4()
 job_parameters = {"orchestration-instance-id": orchestration_instance_id}
 
 
-# def create_metering_point_id():
-#     return "999999999999999999"
-
-
 def create_metering_point_id(position=8, digit=9) -> str:
     id = "".join(random.choice("0123456789") for _ in range(18))
     return id[:position] + str(digit) + id[position + 1 :]
@@ -54,7 +50,7 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
     response_seed = base_job_fixture.execute_statement(statement_seed)
     assert response_seed.result.row_count == 1
 
-    # Act:
+    # Act
     statement = f"""
                   SELECT *
                   FROM {config.catalog_name}.{current_v1.database_name}.{current_v1.view_name}
