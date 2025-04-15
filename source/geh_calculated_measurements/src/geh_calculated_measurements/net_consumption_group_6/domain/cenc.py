@@ -10,6 +10,7 @@ from pyspark.sql.window import Window
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
+    Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
@@ -23,7 +24,7 @@ def calculate_cenc(
     current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
-) -> DataFrame:
+) -> Cenc:
     """Calculate _calculated annual estimated net consumption_ (CENC) for metering points.."""
     # Constants for estimated consumption for move_in cases
     ESTIMATED_CONSUMPTION_MOVE_IN = 1800
@@ -70,7 +71,7 @@ def calculate_cenc(
         )
     )
 
-    return result
+    return Cenc(result)
 
 
 def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:

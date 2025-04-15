@@ -10,7 +10,8 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc_logic import execute_logic
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc import calculate_cenc
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_daily import calculate_daily
 
 
 @use_span()
@@ -21,12 +22,19 @@ def execute(
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> Tuple[Cenc, CalculatedMeasurementsDaily]:
-    cenc, measurements = execute_logic(
+    cenc = calculate_cenc(
+        consumption_metering_point_periods,
+        child_metering_points,
+        current_measurements,
+        time_zone,
+        execution_start_datetime,
+    )
+
+    measurements = calculate_daily(
         current_measurements=current_measurements,
-        consumption_metering_point_periods=consumption_metering_point_periods,
-        child_metering_points=child_metering_points,
+        cenc=cenc,
         time_zone=time_zone,
         execution_start_datetime=execution_start_datetime,
     )
 
-    return [Cenc(cenc), CalculatedMeasurementsDaily(measurements)]
+    return [cenc, measurements]

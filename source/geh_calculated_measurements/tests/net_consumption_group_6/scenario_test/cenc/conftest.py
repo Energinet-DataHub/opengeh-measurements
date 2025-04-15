@@ -14,7 +14,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cenc_logic import execute_logic
+from geh_calculated_measurements.net_consumption_group_6.domain.cenc_calculation import execute
 
 
 @pytest.fixture(scope="module")
@@ -53,7 +53,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         execution_start_datetime = datetime.now(UTC)
 
     # Execute the logic
-    cenc, measurements = execute_logic(
+    cenc, measurements = execute(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_points),
@@ -68,7 +68,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         test_cases_list.append(
             TestCase(
                 expected_csv_path=str(cenc_csv_path),
-                actual=cenc,
+                actual=cenc.df,
             )
         )
 
@@ -77,7 +77,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         test_cases_list.append(
             TestCase(
                 expected_csv_path=str(measurements_csv_path),
-                actual=measurements,
+                actual=measurements.df,
             ),
         )
     return TestCases(test_cases_list)
