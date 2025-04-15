@@ -7,11 +7,12 @@ from geh_common.data_products.measurements_core.measurements_gold import current
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 orchestration_instance_id = uuid.uuid4()
 job_parameters = {"orchestration-instance-id": orchestration_instance_id}
+
+from geh_common.databricks.databricks_api_client import DatabricksApiClient
 
 
 def create_quantity(min=0.00, max=999999999999999.999) -> Decimal:
@@ -24,11 +25,12 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
 
     quantity = create_quantity()
 
-    base_job_fixture = JobTestFixture(
-        environment_configuration=config,
-        job_name="",
-        job_parameters=job_parameters,
-    )
+    databricks_api_client = DatabricksApiClient(config.databricks_token, config.workspace_url)
+    # base_job_fixture = JobTestFixture(
+    #     environment_configuration=config,
+    #     job_name="",
+    #     job_parameters=job_parameters,
+    # )
 
     database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
     table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
@@ -46,7 +48,7 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
         {quantity}
       )
     """
-    response_seed = base_job_fixture.execute_statement(statement_seed)
+    response_seed = databricks_api_client.execute_statement(statement=statement_seed, warehouse_id=config.warehouse_id)
     assert response_seed.result.row_count == 1
 
     # Act
@@ -56,4 +58,4 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
                   WHERE metering_point_id = '{170000030000000201}' and quantity = {quantity}
                   LIMIT 1
                 """
-    base_job_fixture.wait_for_data(statement)
+    databricks_api_client.wait_for_data(statement=statement, warehouse_id=config.warehouse_id)
