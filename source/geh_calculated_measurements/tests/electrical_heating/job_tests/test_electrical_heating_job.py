@@ -12,11 +12,14 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.electrical_heating.entry_point import execute
 from tests import create_job_environment_variables
 from tests.electrical_heating.job_tests import get_test_files_folder_path
+from tests.electrical_heating.job_tests.seeding import (
+    seed_electricity_market,
+    seed_gold,
+)
 
 
 def test_execute(
     spark: SparkSession,
-    gold_table_seeded: Any,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: Any,  # Used implicitly
@@ -26,6 +29,9 @@ def test_execute(
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
+
+    seed_gold(spark)
+    seed_electricity_market(spark)
 
     # Act
     execute()
