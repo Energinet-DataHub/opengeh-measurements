@@ -38,12 +38,11 @@ def electricity_market_data_products_created_as_tables(
 
 def _electricity_market_data_products_created_as_tables(spark: SparkSession) -> None:
     configuration = EnvironmentConfiguration()
-    catalog_name = EnvironmentConfiguration().catalog_name
     # TODO BJM: create_database() and create_table() doesn't support catalog_name
     database_name = f"{configuration.catalog_name}.{configuration.electricity_market_database_name}"
 
     # (Re)create the database
-    spark.sql(f"DROP DATABASE IF EXISTS {catalog_name}.{database_name} CASCADE")
+    spark.sql(f"DROP DATABASE IF EXISTS {database_name} CASCADE")
     create_database(spark, database_name)
 
     # Create missing measurements log table
