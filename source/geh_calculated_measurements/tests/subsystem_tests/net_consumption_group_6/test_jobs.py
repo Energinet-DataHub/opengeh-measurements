@@ -37,5 +37,3 @@ class TestNetConsumptionGroup6(JobTest):
 
         # Remove previously inserted seeded data
         delete_seeded_data(base_job_fixture)
-
-        print("HELLO")
