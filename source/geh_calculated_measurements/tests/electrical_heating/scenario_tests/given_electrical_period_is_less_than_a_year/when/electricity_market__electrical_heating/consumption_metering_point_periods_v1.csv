@@ -1,11 +1,11 @@
-metering_point_id;has_electrical_heating;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
-170000000000000201;true;1;1;2023-11-30T23:00:00Z;;Case 1: Three periods because crossing years. Period 1: December 2023 (31 days). Period 2: 2024 (full limit). Period 3: 2025 (full limit)
-170000000000000202;true;1;1;2023-11-21T23:00:00Z;2024-02-29T23:00:00Z;Case 2: Two periods because crossing years. Period 1: November 21st to end of year 2023 (9+31 days). Period 2: Jan-feb 2024 (31+29 days)
-170000000000000203;true;0;1;2024-02-29T23:00:00Z;2024-03-01T23:00:00Z;Case 3: One period of one day.
-170000000000000204;true;4;1;2024-02-29T23:00:00Z;;Case 4: One period of 10 months - Mar-Dec 2024 (306 days)
-170000000000000205;true;5;1;2023-12-31T23:00:00Z;2024-02-29T23:00:00Z;Case 5: Period 1 (Jan-Feb). Limit: 60/366*4000 = 655.738
-170000000000000205;true;5;1;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 5: Period 2 (May-Jul). Limit: 92/366*4000 = 1005.464
-170000000000000206;true;0;1;2023-12-31T23:00:00Z;;Case 6: EH consumption MP with no end date for has_electrical_heating
-170000000000000207;true;7;1;2023-12-31T23:00:00Z;;Case 7: EH consumption MP without child MP
-170000000000000208;true;0;1;2022-12-31T23:00:00Z;2023-08-31T22:00:00Z;Case 8: EH consumption MP changes net settlement group
-170000000000000208;true;3;1;2023-08-31T22:00:00Z;;Case 8: EH consumption MP changes net settlement group - gains supply_to_grid and consumption_from_grid (but is not net settlement group 2 or 6)
+metering_point_id;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
+170000000000000201;1;1;2023-11-30T23:00:00Z;;Case 1: Three periods because crossing years. Period 1: December 2023 (31 days). Period 2: 2024 (full limit). Period 3: 2025 (full limit)
+170000000000000202;1;1;2023-11-21T23:00:00Z;2024-02-29T23:00:00Z;Case 2: Two periods because crossing years. Period 1: November 21st to end of year 2023 (9+31 days). Period 2: Jan-feb 2024 (31+29 days)
+170000000000000203;0;1;2024-02-29T23:00:00Z;2024-03-01T23:00:00Z;Case 3: One period of one day.
+170000000000000204;4;1;2024-02-29T23:00:00Z;;Case 4: One period of 10 months - Mar-Dec 2024 (306 days)
+170000000000000205;5;1;2023-12-31T23:00:00Z;2024-02-29T23:00:00Z;Case 5: Period 1 (Jan-Feb). Limit: 60/366*4000 = 655.738
+170000000000000205;5;1;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 5: Period 2 (May-Jul). Limit: 92/366*4000 = 1005.464
+170000000000000206;0;1;2023-12-31T23:00:00Z;;Case 6: EH consumption MP with no end date for has_electrical_heating
+170000000000000207;7;1;2023-12-31T23:00:00Z;;Case 7: EH consumption MP without child MP
+170000000000000208;0;1;2022-12-31T23:00:00Z;2023-08-31T22:00:00Z;Case 8: EH consumption MP changes net settlement group
+170000000000000208;3;1;2023-08-31T22:00:00Z;;Case 8: EH consumption MP changes net settlement group - gains supply_to_grid and consumption_from_grid (but is not net settlement group 2 or 6)
