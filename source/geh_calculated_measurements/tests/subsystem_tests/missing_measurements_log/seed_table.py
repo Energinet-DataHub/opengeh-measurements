@@ -1,6 +1,10 @@
 import random
 from datetime import datetime, timedelta, timezone
 
+from geh_common.data_products.electricity_market_measurements_input import (
+    missing_measurements_log_metering_point_periods_v1,
+)
+
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
@@ -12,7 +16,7 @@ PERIOD_END = datetime(2025, 1, 2, 23, 0, 0, tzinfo=timezone.utc)
 
 def get_metering_point_periods_statement(catalog_name: str) -> str:
     return f"""
-        INSERT INTO {catalog_name}.electricity_market_measurements_input.missing_measurements_log_metering_point_periods_v1 (
+        INSERT INTO {catalog_name}.{missing_measurements_log_metering_point_periods_v1.database_name}.{missing_measurements_log_metering_point_periods_v1.view_name} (
             metering_point_id,
             grid_area_code,
             resolution,
