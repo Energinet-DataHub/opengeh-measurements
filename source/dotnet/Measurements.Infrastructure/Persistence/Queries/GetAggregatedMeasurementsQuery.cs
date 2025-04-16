@@ -38,6 +38,7 @@ public class GetAggregatedByMonthQuery : DatabricksStatement
             $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
             $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
             $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.UnitColumnName})) as {AggregatedMeasurementsConstants.Units}, " +
             $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount}, " +
             $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates} " +
             $"from most_recent " +

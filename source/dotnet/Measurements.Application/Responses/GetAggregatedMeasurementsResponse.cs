@@ -9,6 +9,7 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetAggregatedMeasurementsResponse
 {
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
     public IReadOnlyCollection<MeasurementAggregation> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
@@ -28,6 +29,7 @@ public class GetAggregatedMeasurementsResponse
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
                     SetQuality(measurement),
+                    SetUnit(measurement),
                     SetMissingValuesForAggregation(measurement),
                     SetContainsUpdatedValues(measurement)))
             .ToList();
@@ -42,6 +44,11 @@ public class GetAggregatedMeasurementsResponse
         return aggregatedMeasurementsResult.Qualities
             .Select(quality => QualityParser.ParseQuality((string)quality))
             .Min();
+    }
+
+    private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
