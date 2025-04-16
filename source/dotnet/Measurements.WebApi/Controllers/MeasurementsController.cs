@@ -19,7 +19,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     {
         try
         {
-            var measurement = await measurementsHandler.GetByPeriod(request);
+            var measurement = await measurementsHandler.GetByPeriodAsync(request);
             var result = new JsonSerializer().Serialize(measurement);
 
             return Ok(result);

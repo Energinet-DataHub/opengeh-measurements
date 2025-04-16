@@ -31,7 +31,7 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
-        var actual = await sut.GetByPeriod(request);
+        var actual = await sut.GetByPeriodAsync(request);
         var actualPoint = actual.Points.Single();
 
         // Assert
@@ -56,7 +56,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetByPeriod(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetByPeriodAsync(request));
     }
 
     private static dynamic CreateRaw(DateTimeOffset now)

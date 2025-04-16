@@ -12,7 +12,7 @@ public interface IMeasurementsHandler
     /// Get measurement matching request attributes.
     /// </summary>
     /// <param name="getByPeriodRequest"></param>
-    Task<GetMeasurementResponse> GetByPeriod(GetByPeriodRequest getByPeriodRequest);
+    Task<GetMeasurementResponse> GetByPeriodAsync(GetByPeriodRequest getByPeriodRequest);
 
     /// <summary>
     /// Get aggregated measurements matching request attributes.
