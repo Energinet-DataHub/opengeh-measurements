@@ -27,7 +27,7 @@ public class MeasurementsRepositoryTests
         var to = Instant.FromUtc(2021, 1, 2, 0, 0);
         var raw = CreateMeasurementResults(10);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetMeasurementsQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetByPeriodQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
