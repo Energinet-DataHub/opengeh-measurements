@@ -132,7 +132,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var yearMonth = new YearMonth(2022, 1);
+        var yearMonth = new YearMonth(2021, 2);
         var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v1");
 
         // Act
@@ -149,7 +149,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var yearMonth = new YearMonth(2022, 1);
+        var yearMonth = new YearMonth(2021, 2);
         var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v2");
 
         // Act
