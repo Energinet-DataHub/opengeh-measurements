@@ -20,7 +20,7 @@ def electricity_market_data_products_created_as_tables(
 
     This enables subsystem tests to use these tables and seed them with data."""
     if worker_id == "master":
-        # not executing in with multiple workers, just produce the data and let
+        # not executing with multiple workers, just produce the data and let
         # pytest's fixture caching do its job
         return _electricity_market_data_products_created_as_tables(spark)
 
@@ -37,13 +37,16 @@ def electricity_market_data_products_created_as_tables(
 
 
 def _electricity_market_data_products_created_as_tables(spark: SparkSession) -> None:
-    database_name = EnvironmentConfiguration().electricity_market_database_name
+    configuration = EnvironmentConfiguration()
+    catalog_name = EnvironmentConfiguration().catalog_name
+    # TODO BJM: create_database() and create_table() doesn't support catalog_name
+    database_name = f"{configuration.catalog_name}.{configuration.electricity_market_database_name}"
 
     # (Re)create the database
-    spark.sql(f"DROP DATABASE IF EXISTS {database_name} CASCADE")
+    spark.sql(f"DROP DATABASE IF EXISTS {catalog_name}.{database_name} CASCADE")
     create_database(spark, database_name)
 
-    # Create missing measurements log database and tables
+    # Create missing measurements log table
     create_table(
         spark,
         database_name=database_name,
@@ -51,7 +54,7 @@ def _electricity_market_data_products_created_as_tables(spark: SparkSession) -> 
         schema=MeteringPointPeriodsTable.schema,
     )
 
-    # Create net consumption database and tables
+    # Create net consumption tables
     create_table(
         spark,
         database_name=database_name,
