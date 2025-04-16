@@ -5,6 +5,7 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixt
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
+# TODO Henrik: Do not hardcode these here
 database = "measurements_gold"
 table = "measurements"
 
