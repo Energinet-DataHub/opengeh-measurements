@@ -51,5 +51,6 @@ def seed_table(
     job_fixture: JobTestFixture,
 ) -> None:
     catalog_name = job_fixture.config.catalog_name
+    database_name = job_fixture.config.electricity_market_database_name
     job_fixture.execute_statement(gold_table_statement(catalog_name))
     job_fixture.execute_statement(get_metering_point_periods_statement(catalog_name, database_name))
