@@ -34,22 +34,48 @@ def cnc_daily(
     CalculatedMeasurementsDaily
       Object containing the calculated net consumption discrepancies in UTC.
     """
-    # convert to local time
     periods_with_net_consumption = convert_from_utc(periods_with_net_consumption, time_zone)
     periods_with_ts = convert_from_utc(periods_with_ts, time_zone)
 
-    # generate daily observations quantity
-    cnc_measurements = _expand_periods_to_daily_observations(periods_with_net_consumption)
+    cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
 
-    # check if any cnc differs from the newly calculated
-    cnc_diff = _get_cnc_discrepancies(periods_with_ts, cnc_measurements)
+    cnc_diff = _get_changed_cnc_daily_values(periods_with_ts, cnc_measurements)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
 
     return CalculatedMeasurementsDaily(cnc_diff_utc)
 
 
-def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
+def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFrame:
+    """Expand periods with net consumption to daily observations.
+
+    This function expands the periods with net consumption into daily observations.
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - date: Daily observation time
+            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
+    """
+    cnc_measurements = periods_with_net_consumption.select(
+        "*",
+        F.explode(
+            F.sequence(
+                F.col("period_start_with_cut_off"),
+                F.date_add(ContractColumnNames.period_to_date, -1),
+                F.expr("INTERVAL 1 DAY"),
+            )
+        ).alias(ContractColumnNames.date),
+    ).select(
+        F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.date),
+        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
+    )
+
+    return cnc_measurements
+
+
+def _get_changed_cnc_daily_values(periods_with_ts: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
     """Get discrepancies between the calculated and the original CNC measurements.
 
     This function checks for discrepancies between the calculated CNC measurements and the original CNC measurements.
@@ -79,32 +105,3 @@ def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
     )
 
     return cnc_diff
-
-
-def _expand_periods_to_daily_observations(periods_with_net_consumption) -> DataFrame:
-    """Expand periods with net consumption to daily observations.
-
-    This function expands the periods with net consumption into daily observations.
-
-    Returns:
-        DataFrame with columns:
-            - metering_point_id: ID of the metering point
-            - date: Daily observation time
-            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
-    """
-    cnc_measurements = periods_with_net_consumption.select(
-        "*",
-        F.explode(
-            F.sequence(
-                F.col("period_start_with_cut_off"),
-                F.date_add(ContractColumnNames.period_to_date, -1),
-                F.expr("INTERVAL 1 DAY"),
-            )
-        ).alias(ContractColumnNames.date),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.date),
-        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
-    )
-
-    return cnc_measurements
