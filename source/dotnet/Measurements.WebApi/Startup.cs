@@ -1,5 +1,4 @@
-﻿using Asp.Versioning;
-using Asp.Versioning.Conventions;
+﻿using Asp.Versioning.Conventions;
 using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
 using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
@@ -34,23 +33,6 @@ public class Startup(IConfiguration configuration)
         services
             .AddAuthenticationForWebApp(configuration)
             .AddAuthorizationForWebApp();
-
-        // Versioning
-        services.AddApiVersioning(
-            options =>
-            {
-                options.DefaultApiVersion = new ApiVersion(1.0);
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.ReportApiVersions = true;
-                options.ApiVersionReader = new UrlSegmentApiVersionReader();
-            })
-            .AddMvc()
-            .AddApiExplorer(
-                options =>
-                {
-                    options.GroupNameFormat = "'v'VVV";
-                    options.SubstituteApiVersionInUrl = true;
-                });
     }
 
     public void Configure(IApplicationBuilder app)
