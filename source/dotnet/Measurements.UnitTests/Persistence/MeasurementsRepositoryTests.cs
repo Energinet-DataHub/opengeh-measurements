@@ -18,6 +18,29 @@ public class MeasurementsRepositoryTests
 {
     [Theory]
     [InlineAutoData]
+    public async Task GetMeasurementAsyncV1_WhenCalled_ReturnsMeasurement(
+        Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
+    {
+        // Arrange
+        const string meteringPointId = "1234567890";
+        var from = Instant.FromUtc(2021, 1, 1, 0, 0);
+        var to = Instant.FromUtc(2021, 1, 2, 0, 0);
+        var raw = CreateMeasurementResults(10);
+        databricksSqlWarehouseQueryExecutorMock
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetCurrentMeasurementsQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Returns(raw);
+        var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+
+        // Act
+        var actual = await sut.GetMeasurementsAsyncV1(meteringPointId, from, to).ToListAsync();
+
+        // Assert
+        Assert.Equal(10, actual.Count);
+    }
+
+    [Theory]
+    [InlineAutoData]
     public async Task GetMeasurementAsync_WhenCalled_ReturnsMeasurement(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {

@@ -18,6 +18,28 @@ public class MeasurementsControllerTests
 {
     [Theory]
     [AutoMoqData]
+    public async Task GetMeasurementAsyncV1_WhenMeasurementsExists_ReturnValidJson(
+        GetMeasurementRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var response = CreateResponse();
+        var expected = CreateExpected();
+        measurementsHandler
+            .Setup(x => x.GetMeasurementAsyncV1(It.IsAny<GetMeasurementRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = (await sut.GetMeasurementsAsyncV1(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
     public async Task GetMeasurementAsync_WhenMeasurementsExists_ReturnValidJson(
         GetMeasurementRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
