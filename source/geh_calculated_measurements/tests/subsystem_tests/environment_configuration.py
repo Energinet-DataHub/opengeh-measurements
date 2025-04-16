@@ -24,6 +24,13 @@ class EnvironmentConfiguration(ApplicationSettings):
         init=False, default="log-shared-workspace-id", alias="SHARED_AZURE_LOG_ANALYTICS_WORKSPACE_ID"
     )
 
+    # For dev enviroments this is overriden by environment variable in dh3environments. It will be a name dedicated
+    # for calculated measurements subsystem tests to create a "mock" of the Electricity Market data products.
+    electricity_market_database_name: str = Field(
+        init=False,
+        alias="ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME",
+    )
+
     # for performance test
 
     schema_name: str = Field(init=False, default="", alias="SHARED_SCHEMA_NAME")
