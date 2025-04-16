@@ -991,3 +991,16 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000001500170204;1;measured;2024-10-27T00:00:00Z;supply_to_grid;Case 4 - winter time change
 060000001500170204;2;measured;2024-10-27T01:00:00Z;supply_to_grid;Case 4 - winter time change
 060000001500170204;2000;measured;2024-10-27T23:00:00Z;supply_to_grid;Case 4 - make sure we hit limit
+150000001500170206;0;calculated;2023-12-31T23:00:00Z;net_consumption;Case 6
+060000001500170206;50;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 6
+070000001500170206;25;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 6
+060000001500170206;50;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 6 (D15 data missing for this quarter)
+070000001500170206;25;estimated;2023-12-31T23:15:00Z;consumption_from_grid;Case 6 (D15 data missing for this quarter)
+060000001500170206;50;measured;2024-01-01T00:15:00Z;supply_to_grid;Case 6 (D15 data missing for this quarter)
+070000001500170206;25;estimated;2024-01-01T00:15:00Z;consumption_from_grid;Case 6 (D15 data missing for this quarter)
+150000001500170206;1500;calculated;2024-01-01T23:00:00Z;net_consumption;Case 6
+060000001500170206;1500;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 6
+070000001500170206;3000;estimated;2024-01-01T23:00:00Z;consumption_from_grid;Case 6
+150000001500170206;750;calculated;2024-12-31T22:45:00Z;net_consumption;Case 6
+060000001500170206;750;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 6
+070000001500170206;1500;estimated;2024-12-31T22:45:00Z;consumption_from_grid;Case 6

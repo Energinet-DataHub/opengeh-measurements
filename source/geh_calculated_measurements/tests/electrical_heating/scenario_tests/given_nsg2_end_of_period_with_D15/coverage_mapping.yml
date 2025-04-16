@@ -29,6 +29,14 @@ notes: |
   Days in period:                    | 213 days                                   |
   Measurement data:                   +                                          +
 
+  Case 6 (limit is correctly calculated even if D15 data is missing)
+  All three days should be included in limit reduction calculation, even though there is only D15 for two days
+              |2024
+              |Jan__________________________|Feb___...
+  D06 data:   ++                            +
+  D07 data:   ++                            +
+  D15 data:    +                            +
+
 
 
 cases_tested:

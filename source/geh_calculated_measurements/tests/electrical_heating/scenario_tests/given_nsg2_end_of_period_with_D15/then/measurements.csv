@@ -25,3 +25,6 @@ electrical_heating;140000001500170203;2024-10-27T23:00:00Z;0;Case 3
 electrical_heating;140000001500170204;2024-03-30T23:00:00Z;1;Case 4 - summer time change
 electrical_heating;140000001500170204;2024-10-26T22:00:00Z;1;Case 4 - winter time change
 electrical_heating;140000001500170204;2024-10-27T23:00:00Z;321.869;Case 4 - make sure we hit limit
+electrical_heating;140000001500170206;2023-12-31T23:00:00Z;0;Case 6: Limit 1675
+electrical_heating;140000001500170206;2024-01-01T23:00:00Z;1500;Case 6: Limit 1675
+electrical_heating;140000001500170206;2024-12-30T23:00:00Z;175;Case 6: Limit 1675
