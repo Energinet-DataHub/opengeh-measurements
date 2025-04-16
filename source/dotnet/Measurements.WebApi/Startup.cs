@@ -39,7 +39,7 @@ public class Startup(IConfiguration configuration)
         services.AddApiVersioning(
             options =>
             {
-                options.DefaultApiVersion = new ApiVersion(1);
+                options.DefaultApiVersion = new ApiVersion(1.0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = new UrlSegmentApiVersionReader();
@@ -48,7 +48,7 @@ public class Startup(IConfiguration configuration)
             .AddApiExplorer(
                 options =>
                 {
-                    options.GroupNameFormat = "'v'V";
+                    options.GroupNameFormat = "'v'VVV";
                     options.SubstituteApiVersionInUrl = true;
                 });
     }
@@ -66,21 +66,20 @@ public class Startup(IConfiguration configuration)
         {
             // Define an ApiVersionSet containing all API versions
             var versionSet = endpoints.NewApiVersionSet()
-                .HasApiVersion(1)
+                .HasApiVersion(1.0)
                 .ReportApiVersions()
                 .Build();
 
             endpoints
                 .MapGroup("v{version:apiVersion}/measurements")
                 .WithApiVersionSet(versionSet)
-                .HasApiVersion(1)
-                .WithTags("v1")
+                .HasApiVersion(1.0)
                 .MapControllers();
 
             endpoints
                 .MapGroup("measurements")
                 .WithApiVersionSet(versionSet)
-                .HasApiVersion(1)
+                .HasApiVersion(1.0)
                 .WithTags("Default v1")
                 .MapControllers();
 

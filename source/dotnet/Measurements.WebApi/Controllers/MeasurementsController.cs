@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
-[ApiVersion(1)]
+[ApiVersion(1.0)]
 [ApiController]
 [Authorize]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
-    [MapToApiVersion(1)]
+    [MapToApiVersion(1.0)]
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
     {
@@ -31,7 +31,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
         }
     }
 
-    [MapToApiVersion(1)]
+    [MapToApiVersion(1.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
     {
