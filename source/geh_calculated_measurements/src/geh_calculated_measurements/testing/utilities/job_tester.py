@@ -85,6 +85,32 @@ class JobTestFixture:
             print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
 
+    def wait_for_data(self, statement, timeout_minutes: int = 15, poll_interval_seconds: int = 5) -> StatementResponse:
+        response = self.ws.statement_execution.execute_statement(
+            warehouse_id=self.config.warehouse_id, statement=statement
+        )
+
+        # Wait for the data to arrive in gold
+        start_time = time.time()
+        elapsed_time = 0
+        while elapsed_time < timeout_minutes * 60:
+            response = self.ws.statement_execution.get_statement(response.statement_id)
+            if response.status.state not in [StatementState.RUNNING, StatementState.PENDING, StatementState.SUCCEEDED]:
+                raise ValueError(
+                    f"Statement execution failed with state {response.status.state} and error {response.status.error}"
+                )
+            if response.status.state == StatementState.SUCCEEDED:
+                if response.result.row_count != 1:
+                    response = self.ws.statement_execution.execute_statement(
+                        warehouse_id=self.config.warehouse_id, statement=statement
+                    )
+                else:
+                    return response
+            elapsed_time = time.time() - start_time
+            print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
+            time.sleep(poll_interval_seconds)
+        raise TimeoutError(f"Timed out after {timeout_minutes} minutes waiting for data.")
+
     def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> LogsQueryError:
         err = {
             "code": 500,
