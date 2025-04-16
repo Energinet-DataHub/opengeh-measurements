@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Tuple
 
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
@@ -9,7 +10,6 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
-from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -18,13 +18,33 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
 
 @use_span()
 @testing()
-def execute(
+def cnc(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
-) -> CalculatedMeasurementsDaily:
+) -> Tuple[DataFrame, DataFrame]:
+    """Execute the calculation of net consumption for a group of metering points.
+
+    Parameters:
+    consumption_metering_point_periods : ConsumptionMeteringPointPeriods
+      Information about consumption metering point periods.
+    child_metering_points : ChildMeteringPoints
+      Information about child metering points.
+    current_measurements : CurrentMeasurements
+      Current measurement data for metering points.
+    time_zone : str
+      The time zone to use for datetime conversions.
+    execution_start_datetime : datetime
+      The start time for the execution process.
+
+    Returns:
+    Tuple[DataFrame, DataFrame]
+      A tuple containing:
+      - DataFrame with periods and their calculated net consumption (converted to UTC)
+      - DataFrame with periods and their corresponding time series data (converted to UTC)
+    """
     # Filter and join the data
     filtered_time_series = _filter_and_aggregate_daily(current_measurements)
 
@@ -52,76 +72,10 @@ def execute(
     # calculate daily quantity
     periods_with_net_consumption = _derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts)
 
-    # generate daily observations quantity
-    cnc_measurements = _expand_periods_to_daily_observations(periods_with_net_consumption)
-
-    # check if any cnc differs from the newly calculated
-    cnc_diff = _get_cnc_discrepancies(periods_with_ts, cnc_measurements)
-
-    cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
-
-    return CalculatedMeasurementsDaily(cnc_diff_utc)
-
-
-def _get_cnc_discrepancies(periods_with_ts, cnc_measurements) -> DataFrame:
-    """Get discrepancies between the calculated and the original CNC measurements.
-
-    This function checks for discrepancies between the calculated CNC measurements and the original CNC measurements.
-
-    Returns:
-        DataFrame with columns:
-            - metering_point_id: ID of the metering point
-            - date: Daily observation time
-            - quantity: The calculated daily quantity as DecimalType(18, 3)
-    """
-    cnc_diff = (
-        cnc_measurements.alias("cnc")
-        .join(
-            periods_with_ts.alias("ts"),
-            on=[
-                F.col(f"cnc.{ContractColumnNames.metering_point_id}")
-                == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
-                F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
-            ],
-            how="left_anti",
-        )
-        .select(
-            F.col(ContractColumnNames.metering_point_id),
-            F.col(f"cnc.{ContractColumnNames.date}").alias(ContractColumnNames.date),
-            F.col("cnc.daily_quantity").alias(ContractColumnNames.quantity),
-        )
+    return (
+        convert_to_utc(periods_with_net_consumption, time_zone),
+        convert_to_utc(periods_with_ts, time_zone),
     )
-
-    return cnc_diff
-
-
-def _expand_periods_to_daily_observations(periods_with_net_consumption) -> DataFrame:
-    """Expand periods with net consumption to daily observations.
-
-    This function expands the periods with net consumption into daily observations.
-
-    Returns:
-        DataFrame with columns:
-            - metering_point_id: ID of the metering point
-            - date: Daily observation time
-            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
-    """
-    cnc_measurements = periods_with_net_consumption.select(
-        "*",
-        F.explode(
-            F.sequence(
-                F.col("period_start_with_cut_off"),
-                F.date_add(ContractColumnNames.period_to_date, -1),
-                F.expr("INTERVAL 1 DAY"),
-            )
-        ).alias(ContractColumnNames.date),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.date),
-        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
-    )
-
-    return cnc_measurements
 
 
 def _derive_daily_quantity_from_net(periods_with_cut_off, net_consumption_over_ts) -> DataFrame:
