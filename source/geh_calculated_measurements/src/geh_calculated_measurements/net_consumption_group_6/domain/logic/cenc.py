@@ -48,7 +48,24 @@ def calculate_cenc(
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
     # Prepare final result with estimated values for move-in cases
-    result = (
+    result = prepare_cenc_with_move_in(
+        ESTIMATED_CONSUMPTION_MOVE_IN,
+        ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
+        net_consumption_metering_points,
+        net_quantity,
+    )
+
+    return Cenc(result)
+
+
+def prepare_cenc_with_move_in(
+    ESTIMATED_CONSUMPTION_MOVE_IN,
+    ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
+    net_consumption_metering_points,
+    net_quantity,
+) -> DataFrame:
+    """Prepare CENC with move-in values."""
+    return (
         net_consumption_metering_points.join(
             net_quantity,
             on=[ContractColumnNames.parent_metering_point_id, "settlement_date"],
@@ -70,8 +87,6 @@ def calculate_cenc(
             F.month(F.col("settlement_date")).alias(ContractColumnNames.settlement_month),
         )
     )
-
-    return Cenc(result)
 
 
 def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:
@@ -112,7 +127,7 @@ def _join_parent_child_with_consumption(
             F.col(f"consumption.{ContractColumnNames.period_to_date}"),
             F.col(f"consumption.{ContractColumnNames.has_electrical_heating}"),
             F.col(f"consumption.{ContractColumnNames.settlement_month}"),
-            F.col("consumption.move_in"),
+            F.col(f"consumption.{ContractColumnNames.move_in}"),
         )
     )
 
@@ -159,9 +174,6 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
 
 def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
     """Join metering point with time series and sum quantity for consumption_from_grid and supply_to_grid."""
-    consumption_from_grid = MeteringPointType.CONSUMPTION_FROM_GRID.value
-    supply_to_grid = MeteringPointType.SUPPLY_TO_GRID.value
-
     # Join and filter in one step
     joined_df = parent_child_df.join(
         time_series_df,
@@ -177,15 +189,16 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
     return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
         F.sum(
             F.when(
-                F.col(ContractColumnNames.metering_point_type) == consumption_from_grid,
+                F.col(ContractColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value,
                 F.col(ContractColumnNames.quantity),
             ).otherwise(0)
-        ).alias(consumption_from_grid),
+        ).alias("consumption_quantity"),
         F.sum(
             F.when(
-                F.col(ContractColumnNames.metering_point_type) == supply_to_grid, F.col(ContractColumnNames.quantity)
+                F.col(ContractColumnNames.metering_point_type) == MeteringPointType.SUPPLY_TO_GRID.value,
+                F.col(ContractColumnNames.quantity),
             ).otherwise(0)
-        ).alias(supply_to_grid),
+        ).alias("supply_quantity"),
     )
 
 
@@ -194,10 +207,7 @@ def _calculate_net_quantity(consumption_supply_df: DataFrame) -> DataFrame:
     return consumption_supply_df.withColumn(
         "net_quantity",
         F.greatest(
-            (
-                F.col(str(MeteringPointType.CONSUMPTION_FROM_GRID.value))
-                - F.col(str(MeteringPointType.SUPPLY_TO_GRID.value))
-            ),
+            (F.col("consumption_quantity") - F.col("supply_quantity")),
             F.lit(0),
         ),
     )
