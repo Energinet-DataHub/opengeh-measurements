@@ -1,18 +1,19 @@
 import random
 from datetime import datetime, timezone
 
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
+from geh_common.data_products.electricity_market_measurements_input import (
+    net_consumption_group_6_child_metering_points_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
 )
+from geh_common.domain.types import MeteringPointType, OrchestrationType
+
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
-database = ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME
-parent_table = (
-    ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS
-)
-child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
+parent_table = net_consumption_group_6_consumption_metering_point_periods_v1.view_name
+child_table = net_consumption_group_6_child_metering_points_v1.view_name
 
 parent_metering_point_id = "170000050000000201"
 
@@ -21,7 +22,9 @@ parent_metering_point_id = "170000050000000201"
 def _seed_gold_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [
         GoldTableRow(
-            metering_point_id="170000000000000201",
+            metering_point_id=create_random_metering_point_id(CalculationType.NET_CONSUMPTION),
+            metering_point_type=MeteringPointType.NET_CONSUMPTION,
+            orchestration_type=OrchestrationType.NET_CONSUMPTION,
             observation_time=datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         )
@@ -33,18 +36,15 @@ def _seed_gold_table(job_fixture: JobTestFixture) -> None:
 
 
 def delete_seeded_data(job_fixture: JobTestFixture) -> None:
-    # TODO JMK: Data cannot be modified through views
-    return
-
     statements = []
     # PARENT
     statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{database}.{parent_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{parent_table} 
         WHERE metering_point_id = '{parent_metering_point_id}'
     """)
     # CHILD
     statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{database}.{child_table} 
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} 
         WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """)
 
@@ -53,13 +53,10 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
 
 
 def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
-    # TODO JMK: Data cannot be modified through views
-    return
-
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{parent_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -78,7 +75,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     """)
     # CHILDREN
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -94,7 +91,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -110,7 +107,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,

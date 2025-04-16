@@ -19,7 +19,9 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 @use_span()
 def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(
+        spark, args.catalog_name, args.electricity_market_database_name
+    )
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames

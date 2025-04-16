@@ -18,7 +18,7 @@ job_parameters = {
 
 class TestCapacitySettlement(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self) -> JobTestFixture:
+    def fixture(self, electricity_market_data_products_created_as_tables) -> JobTestFixture:
         config = EnvironmentConfiguration()
         fixture = JobTestFixture(
             environment_configuration=config,

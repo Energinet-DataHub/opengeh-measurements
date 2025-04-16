@@ -12,8 +12,8 @@ from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
 )
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
@@ -33,7 +33,7 @@ def gold_table_seeded(
 
 
 @pytest.fixture
-def electricity_market_tables_seeded(spark) -> None:
+def electricity_market_tables_seeded(spark: SparkSession) -> None:
     # PARENT
     df = spark.createDataFrame(
         [
@@ -49,7 +49,7 @@ def electricity_market_tables_seeded(spark) -> None:
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
+        f"{DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME}.{net_consumption_group_6_consumption_metering_point_periods_v1.view_name}"
     )
 
     # CHILDREN
@@ -80,5 +80,5 @@ def electricity_market_tables_seeded(spark) -> None:
         schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
+        f"{DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME}.{net_consumption_group_6_child_metering_points_v1.view_name}"
     )
