@@ -11,20 +11,20 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Handlers;
 public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     : IMeasurementsHandler
 {
-    public async Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest request)
+    public async Task<GetMeasurementResponse> GetByPeriod(GetByPeriodRequest request)
     {
         var foundMeasurements = await measurementsRepository
-            .GetMeasurementsAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
+            .GetByPeriodAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetMeasurementResponse.Create(foundMeasurements);
     }
 
-    public async Task<GetAggregatedMeasurementsResponse> GetAggregatedMeasurementsAsync(GetAggregatedMeasurementsForMonthRequest request)
+    public async Task<GetAggregatedMeasurementsResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest request)
     {
         var yearMonth = new YearMonth(request.Year, request.Month);
         var aggregatedMeasurements = await measurementsRepository
-            .GetAggregatedMeasurementsAsync(request.MeteringPointId, yearMonth)
+            .GetAggregatedByMonthAsync(request.MeteringPointId, yearMonth)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);

@@ -18,7 +18,7 @@ public class MeasurementsRepositoryTests
 {
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsync_WhenCalled_ReturnsMeasurement(
+    public async Task GetByPeriod_WhenCalled_ReturnsMeasurement(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
@@ -33,7 +33,7 @@ public class MeasurementsRepositoryTests
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetMeasurementsAsync(meteringPointId, from, to).ToListAsync();
+        var actual = await sut.GetByPeriodAsync(meteringPointId, from, to).ToListAsync();
 
         // Assert
         Assert.Equal(10, actual.Count);
