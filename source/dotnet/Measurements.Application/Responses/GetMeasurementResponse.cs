@@ -8,6 +8,7 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 
 public class GetMeasurementResponse
 {
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]

@@ -127,9 +127,46 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAggregatedMeasurementsAsync_WhenUsingExplicitVersionV1_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v1");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<GetAggregatedMeasurementsResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+    }
+
+    [Fact]
+    public async Task GetAggregatedMeasurementsAsync_WhenUsingExplicitVersionV2_ReturnsNotFound()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v2");
+
+        // Act
+        var actual = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, actual.StatusCode);
+    }
+
     private static string CreateGetMeasurementsForPeriodUrl(string expectedMeteringPointId, string startDate, string endDate)
     {
         return $"measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
+    }
+
+    private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, YearMonth yearMonth, string version)
+    {
+        return $"{version}/measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, YearMonth yearMonth)

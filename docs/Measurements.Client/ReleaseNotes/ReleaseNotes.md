@@ -4,6 +4,10 @@
 
 - Include historical values in forPeriod.
 
+## Version 2.4.0
+
+- Unit added to MeasurementAggregationDto.
+
 ## Version 2.3.0
 
 - ContainsUpdatedValues added to MeasurementAggregationDto.

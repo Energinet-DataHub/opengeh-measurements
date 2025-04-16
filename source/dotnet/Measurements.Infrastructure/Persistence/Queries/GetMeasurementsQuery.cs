@@ -1,6 +1,5 @@
 ﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
