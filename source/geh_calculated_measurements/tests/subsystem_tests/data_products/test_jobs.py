@@ -25,11 +25,6 @@ def test__calculated_measurements_v1__is_streamable(spark: SparkSession) -> None
     quantity = create_quantity()
 
     databricks_api_client = DatabricksApiClient(config.databricks_token, config.workspace_url)
-    # base_job_fixture = JobTestFixture(
-    #     environment_configuration=config,
-    #     job_name="",
-    #     job_parameters=job_parameters,
-    # )
 
     database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
     table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
