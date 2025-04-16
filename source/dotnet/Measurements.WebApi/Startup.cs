@@ -49,6 +49,7 @@ public class Startup(IConfiguration configuration)
             // Define an ApiVersionSet containing all API versions
             var versionSet = endpoints.NewApiVersionSet()
                 .HasApiVersion(1.0)
+                .HasApiVersion(2.0)
                 .ReportApiVersions()
                 .Build();
 
@@ -56,6 +57,7 @@ public class Startup(IConfiguration configuration)
                 .MapGroup("v{version:apiVersion}/measurements")
                 .WithApiVersionSet(versionSet)
                 .HasApiVersion(1.0)
+                .HasApiVersion(2.0)
                 .MapControllers();
 
             endpoints

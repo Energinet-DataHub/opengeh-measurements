@@ -15,12 +15,12 @@ public class GetMeasurementResponse
     [Browsable(false)]
     private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(List<Point> points)
+    private GetMeasurementResponse(IReadOnlyCollection<Point> points)
     {
         Points = points;
     }
 
-    public static GetMeasurementResponse Create(IEnumerable<MeasurementsResult> measurements)
+    public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var points = measurements
             .Select(measurement =>
@@ -29,7 +29,9 @@ public class GetMeasurementResponse
                     measurement.Quantity,
                     QualityParser.ParseQuality(measurement.Quality),
                     UnitParser.ParseUnit(measurement.Unit),
-                    measurement.Created))
+                    ResolutionParser.ParseResolution(measurement.Resolution),
+                    measurement.Created,
+                    measurement.TransactionCreated))
             .ToList();
 
         return points.Count <= 0

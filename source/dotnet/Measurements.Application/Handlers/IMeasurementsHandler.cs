@@ -9,7 +9,13 @@ namespace Energinet.DataHub.Measurements.Application.Handlers;
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Get measurement matching request attributes.
+    /// Get current measurements matching request attributes.
+    /// </summary>
+    /// <param name="getMeasurementRequest"></param>
+    Task<GetMeasurementResponse> GetMeasurementAsyncV1(GetMeasurementRequest getMeasurementRequest);
+
+    /// <summary>
+    /// Get measurements matching request attributes.
     /// </summary>
     /// <param name="getMeasurementRequest"></param>
     Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest getMeasurementRequest);
