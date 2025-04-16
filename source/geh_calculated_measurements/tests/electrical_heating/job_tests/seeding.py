@@ -26,6 +26,7 @@ def seed_gold(spark: SparkSession) -> None:
 
 
 def seed_electricity_market(spark: SparkSession) -> None:
+    # consumption_metering_point_periods_v1
     file_path = (
         f"{get_test_files_folder_path()}/{electrical_heating_consumption_metering_point_periods_v1.view_name}.csv"
     )
@@ -35,19 +36,9 @@ def seed_electricity_market(spark: SparkSession) -> None:
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{electrical_heating_consumption_metering_point_periods_v1.view_name}"
     )
-
+    # child_metering_points_v1
     file_path = f"{get_test_files_folder_path()}/{electrical_heating_child_metering_points_v1.view_name}.csv"
     df = read_csv_path(spark=spark, path=file_path, schema=electrical_heating_child_metering_points_v1.schema)
     df.write.format("delta").mode("append").saveAsTable(
         f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{electrical_heating_child_metering_points_v1.view_name}"
     )
-
-
-def remove_gold_seeding(spark) -> None:
-    # TODO XHTCA
-    pass
-
-
-def remove_electricity_market_seeding(spark) -> None:
-    # TODO XHTCA
-    pass
