@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence.Queries;
 
-public class GetMeasurementsQueryTests
+public class GetByPeriodQueryTests
 {
     [Theory]
     [AutoData]
@@ -16,10 +16,10 @@ public class GetMeasurementsQueryTests
         // Arrange
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expectedResult = CreateExpectedQuery(databricksSchemaOptions);
-        var getMeasurementsQuery = new GetMeasurementsQuery(meteringPointId, startDate, endDate, databricksSchemaOptions);
+        var GetByPeriodQuery = new GetByPeriodQuery(meteringPointId, startDate, endDate, databricksSchemaOptions);
 
         // Act
-        var result = getMeasurementsQuery.ToString();
+        var result = GetByPeriodQuery.ToString();
 
         // Assert
         Assert.Equal(expectedResult, result);

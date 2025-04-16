@@ -4,14 +4,14 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetMeasurementsQuery : DatabricksStatement
+public class GetByPeriodQuery : DatabricksStatement
 {
     private readonly string _meteringPointId;
     private readonly Instant _startDate;
     private readonly Instant _endDate;
     private readonly DatabricksSchemaOptions _databricksSchemaOptions;
 
-    public GetMeasurementsQuery(string meteringPointId, Instant startDate, Instant endDate, DatabricksSchemaOptions databricksSchemaOptions)
+    public GetByPeriodQuery(string meteringPointId, Instant startDate, Instant endDate, DatabricksSchemaOptions databricksSchemaOptions)
     {
         _meteringPointId = meteringPointId;
         _startDate = startDate;

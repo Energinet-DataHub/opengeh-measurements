@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetAggregatedMeasurementsQuery : DatabricksStatement
+public class GetAggregatedByMonthQuery : DatabricksStatement
 {
     private const string EuropeCopenhagenTimeZone = "Europe/Copenhagen";
 
@@ -13,7 +13,7 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
     private readonly YearMonth _yearMonth;
     private readonly DatabricksSchemaOptions _databricksSchemaOptions;
 
-    public GetAggregatedMeasurementsQuery(string meteringPointId, YearMonth yearMonth, DatabricksSchemaOptions databricksSchemaOptions)
+    public GetAggregatedByMonthQuery(string meteringPointId, YearMonth yearMonth, DatabricksSchemaOptions databricksSchemaOptions)
     {
         _meteringPointId = meteringPointId;
         _yearMonth = yearMonth;

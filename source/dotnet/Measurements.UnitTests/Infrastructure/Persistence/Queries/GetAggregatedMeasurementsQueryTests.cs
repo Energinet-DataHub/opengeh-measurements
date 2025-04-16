@@ -8,20 +8,20 @@ using Xunit;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence.Queries;
 
-public class GetAggregatedMeasurementsQueryTests
+public class GetAggregatedByMonthQueryTests
 {
     [Theory]
     [AutoData]
-    public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)]int year, [Range(1, 12)]int month)
+    public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)] int year, [Range(1, 12)] int month)
     {
         // Arrange
         var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expected = CreateExpectedQuery(databricksSchemaOptions);
-        var getAggregatedMeasurementsQuery = new GetAggregatedMeasurementsQuery(meteringPointId, yearMonth, databricksSchemaOptions);
+        var GetAggregatedByMonthQuery = new GetAggregatedByMonthQuery(meteringPointId, yearMonth, databricksSchemaOptions);
 
         // Act
-        var actual = getAggregatedMeasurementsQuery.ToString();
+        var actual = GetAggregatedByMonthQuery.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
