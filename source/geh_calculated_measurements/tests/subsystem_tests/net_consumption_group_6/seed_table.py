@@ -19,6 +19,7 @@ child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTI
 parent_metering_point_id = "170000050000000201"
 
 
+# TODO JMK: Do not prefix with _ in symbols used outside the module
 def _seed_gold_table(job_fixture: JobTestFixture) -> None:
     year = datetime.now().year - 1
     gold_table_rows = [
@@ -46,6 +47,9 @@ def _seed_gold_table(job_fixture: JobTestFixture) -> None:
 
 
 def delete_seeded_data(job_fixture: JobTestFixture) -> None:
+    # TODO JMK: Data cannot be modified through views
+    return
+
     statements = []
     # PARENT
     statements.append(f"""
@@ -63,6 +67,9 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
 
 
 def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
+    # TODO JMK: Data cannot be modified through views
+    return
+
     statements = []
     # PARENT
     statements.append(f"""
