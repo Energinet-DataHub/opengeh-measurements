@@ -39,19 +39,19 @@ public class GetAggregatedByMonthQueryTests
                $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
                $") " +
                $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
-               $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MinObservationTime}, " +
-               $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MaxObservationTime}, " +
-               $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
-               $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
-               $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
-               $"array_agg(distinct({MeasurementsGoldConstants.UnitColumnName})) as {AggregatedMeasurementsConstants.Units}, " +
-               $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount}, " +
-               $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates} " +
+               $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
+               $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
+               $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
+               $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
+               $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedQueryConstants.Resolutions}, " +
+               $"array_agg(distinct({MeasurementsGoldConstants.UnitColumnName})) as {AggregatedQueryConstants.Units}, " +
+               $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.PointCount}, " +
+               $"max(row_count) as {AggregatedQueryConstants.ObservationUpdates} " +
                $"from most_recent " +
                $"where row = 1 " +
                $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
                $"group by {CreateGroupByStatement()} " +
-               $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
+               $"order by {AggregatedQueryConstants.MinObservationTime}";
     }
 
     private static string CreateGroupByStatement()
