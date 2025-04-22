@@ -4,14 +4,14 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetByPeriodQuery : DatabricksStatement
+public class GetCurrentByPeriodQuery : DatabricksStatement
 {
     private readonly string _meteringPointId;
     private readonly Instant _startDate;
     private readonly Instant _endDate;
     private readonly DatabricksSchemaOptions _databricksSchemaOptions;
 
-    public GetByPeriodQuery(string meteringPointId, Instant startDate, Instant endDate, DatabricksSchemaOptions databricksSchemaOptions)
+    public GetCurrentByPeriodQuery(string meteringPointId, Instant startDate, Instant endDate, DatabricksSchemaOptions databricksSchemaOptions)
     {
         _meteringPointId = meteringPointId;
         _startDate = startDate;
@@ -32,7 +32,8 @@ public class GetByPeriodQuery : DatabricksStatement
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.CreatedColumnName}, {MeasurementsGoldConstants.TransactionCreationDatetimeColumnName} " +
             $"from most_recent " +
-            $"where not {MeasurementsGoldConstants.IsCancelledColumnName} " +
+            $"where row = 1 " +
+            $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"order by {MeasurementsGoldConstants.ObservationTimeColumnName}";
     }
 

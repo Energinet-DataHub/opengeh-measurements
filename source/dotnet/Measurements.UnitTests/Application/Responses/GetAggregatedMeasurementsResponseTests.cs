@@ -5,9 +5,11 @@ using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
+[UnitTest]
 public class GetAggregatedMeasurementResponseTests
 {
     [Fact]

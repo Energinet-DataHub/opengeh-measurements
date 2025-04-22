@@ -1,8 +1,10 @@
 ﻿using Energinet.DataHub.Measurements.Application.Requests;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Requests;
 
+[UnitTest]
 public class GetAggregatedByMonthRequestTests
 {
     [Fact]
