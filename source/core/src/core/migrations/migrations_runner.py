@@ -39,6 +39,7 @@ def _stop_job_runs() -> None:
     )
 
     jobs = databricks_settings.databricks_jobs.split(",")
+    
     for job in jobs:
         print(f"Finding job run for job: {job}")  # noqa: T201
         job_id = databricks_api_client.get_job_id(job)
