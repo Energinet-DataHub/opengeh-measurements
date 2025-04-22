@@ -71,7 +71,7 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
+    public async Task GetAggregatedMeasurementsByMonthAsync_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
     {
         // Arrange
         var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
@@ -93,7 +93,7 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForQuarterlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
+    public async Task GetAggregatedMeasurementsByMonthAsync_WhenCalledForQuarterlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
     {
         // Arrange
         var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
@@ -115,7 +115,7 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations()
+    public async Task GetAggregatedMeasurementsByMonthAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations()
     {
         // Arrange
         var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2024, 10));
