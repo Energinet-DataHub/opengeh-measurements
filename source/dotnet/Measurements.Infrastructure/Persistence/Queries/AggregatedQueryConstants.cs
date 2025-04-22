@@ -1,6 +1,6 @@
 ﻿namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class AggregatedMeasurementsConstants
+public static class AggregatedQueryConstants
 {
     public const string AggregatedQuantity = "aggregated_quantity";
     public const string MinObservationTime = "min_observation_time";
