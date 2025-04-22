@@ -1,4 +1,6 @@
-﻿using NodaTime;
+﻿using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Domain;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
@@ -21,4 +23,9 @@ public interface IMeasurementsRepository
     /// Get aggregated measurements for a given metering point for a month defined by the yearMonth parameter.
     /// </summary>
     IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, YearMonth yearMonth);
+
+    /// <summary>
+    /// Get aggregated measurements for a given metering point for a year defined by the year parameter.
+    /// </summary>
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByYearAsync(string meteringPointId, Year year);
 }

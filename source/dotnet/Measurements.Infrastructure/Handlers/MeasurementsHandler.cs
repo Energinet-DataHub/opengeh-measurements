@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Application.Responses;
+using Energinet.DataHub.Measurements.Domain;
 using NodaTime;
 using NodaTime.Extensions;
 
@@ -34,6 +35,16 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
         var yearMonth = new YearMonth(request.Year, request.Month);
         var aggregatedMeasurements = await measurementsRepository
             .GetAggregatedByMonthAsync(request.MeteringPointId, yearMonth)
+            .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
+
+        return GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
+    }
+
+    public async Task<GetAggregatedMeasurementsResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest request)
+    {
+        var year = new Year(request.Year);
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByYearAsync(request.MeteringPointId, year)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
