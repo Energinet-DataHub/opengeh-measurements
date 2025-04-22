@@ -20,7 +20,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     };
 
     public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(
-        GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+        GetByDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
@@ -29,8 +29,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForPeriodAsync(
-        GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPointDto>> GetByPeriodAsync(
+        GetByPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
 

@@ -17,7 +17,7 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -37,7 +37,7 @@ public class MeasurementsClientTests
     public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -51,18 +51,18 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetMeasurementsForPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
+    public async Task GetByPeriodAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
         var testDate = new LocalDate(1, 2, 3);
-        var query = new GetMeasurementsForPeriodQuery("1234567890", testDate, testDate);
+        var query = new GetByPeriodQuery("1234567890", testDate, testDate);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForMultipleDays);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForPeriodAsync(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetByPeriodAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);

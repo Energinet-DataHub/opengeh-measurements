@@ -14,7 +14,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     public async Task GetMeasurementsForDayAsync_WhenCalled_ReturnsValidMeasurement()
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery(MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestDate);
+        var query = new GetByDayQuery(MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestDate);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
         var measurements = await measurementsClient.GetMeasurementsForDayAsync(query);
