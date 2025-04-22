@@ -67,10 +67,7 @@ class MissingMeasurementsLogTable(Table):
             )
         )
 
-        t = convert_to_utc(expected_measurement_counts, self.time_zone)
-        print("here")
-        t.show(truncate=False)
-        return t
+        return convert_to_utc(expected_measurement_counts, self.time_zone)
 
     def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
         """Calculate the actual measurement counts grouped by metering point and date."""
