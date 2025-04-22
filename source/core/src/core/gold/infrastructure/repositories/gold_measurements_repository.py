@@ -45,9 +45,6 @@ class GoldMeasurementsRepository:
             GoldMeasurementsColumnNames.metering_point_id,
             GoldMeasurementsColumnNames.orchestration_type,
             GoldMeasurementsColumnNames.observation_time,
-            GoldMeasurementsColumnNames.quantity,
-            GoldMeasurementsColumnNames.quality,
-            GoldMeasurementsColumnNames.metering_point_type,
             GoldMeasurementsColumnNames.transaction_id,
             GoldMeasurementsColumnNames.transaction_creation_datetime,
         ]
