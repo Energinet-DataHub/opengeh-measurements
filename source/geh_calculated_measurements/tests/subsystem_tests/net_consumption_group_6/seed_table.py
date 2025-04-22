@@ -21,7 +21,17 @@ consumption_from_grid_metering_point_id = create_random_metering_point_id(Calcul
 supply_to_grid_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
 
 
-def seed_table(job_fixture: JobTestFixture) -> None:
+def seed_table(
+    job_fixture: JobTestFixture,
+) -> None:
+    catalog_name = job_fixture.config.catalog_name
+    database_name = job_fixture.config.electricity_market_database_name
+    job_fixture.execute_statement(gold_table_statement(catalog_name))
+    for statement in electricity_market_tables_statements(catalog_name, database_name):
+        job_fixture.execute_statement(statement)
+
+
+def gold_table_statement(catalog_name: str) -> str:
     year = datetime.now().year - 1
     gold_table_rows = [
         GoldTableRow(
@@ -46,9 +56,7 @@ def seed_table(job_fixture: JobTestFixture) -> None:
             quantity=random.uniform(0.1, 10.0),
         ),
     ]
-    statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
-
-    job_fixture.execute_statement(statement)
+    return seed_gold_table.get_statement(catalog_name, gold_table_rows)
 
 
 def delete_seeded_data(job_fixture: JobTestFixture) -> None:
@@ -68,11 +76,11 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
         job_fixture.execute_statement(statement)
 
 
-def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
+def electricity_market_tables_statements(catalog_name: str, database_name: str) -> list[str]:
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{parent_table} (
+    INSERT INTO {catalog_name}.{database_name}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -91,7 +99,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     """)
     # CHILDREN
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -107,7 +115,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -123,7 +131,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -138,6 +146,4 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
     )
     """)
-
-    for statement in statements:
-        job_fixture.execute_statement(statement)
+    return statements

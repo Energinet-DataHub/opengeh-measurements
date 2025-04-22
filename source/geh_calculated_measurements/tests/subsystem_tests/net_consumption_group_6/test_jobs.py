@@ -6,7 +6,6 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTest, Jo
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import (
     delete_seeded_data,
-    seed_electricity_market_tables,
     seed_table,
 )
 
@@ -27,11 +26,8 @@ class TestNetConsumptionGroup6(JobTest):
         # Remove previously inserted seeded data
         delete_seeded_data(base_job_fixture)
 
-        # Seed gold table
+        # Seed gold table and electricity market tables
         seed_table(base_job_fixture)
-
-        # Seed electricity market
-        seed_electricity_market_tables(base_job_fixture)
 
         yield base_job_fixture
 
