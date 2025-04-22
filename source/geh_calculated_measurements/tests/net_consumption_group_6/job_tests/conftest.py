@@ -18,7 +18,7 @@ from geh_calculated_measurements.common.infrastructure.electricity_market import
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def gold_table_seeded(
     spark: SparkSession,
     external_dataproducts_created: None,  # Used implicitly
