@@ -16,11 +16,11 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
 {
     [MapToApiVersion(1.0)]
     [HttpGet("forPeriod")]
-    public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
+    public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
         try
         {
-            var measurement = await measurementsHandler.GetMeasurementAsync(request);
+            var measurement = await measurementsHandler.GetByPeriodAsync(request);
             var result = new JsonSerializer().Serialize(measurement);
 
             return Ok(result);
@@ -33,12 +33,12 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
 
     [MapToApiVersion(1.0)]
     [HttpGet("aggregatedByMonth")]
-    public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
     {
         try
         {
-            var aggregatedMeasurements = await measurementsHandler.GetAggregatedMeasurementsAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedMeasurements);
+            var aggregatedByMonth = await measurementsHandler.GetAggregatedByMonthAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByMonth);
 
             return Ok(result);
         }
