@@ -1,10 +1,6 @@
 import random
 from datetime import datetime, timezone
 
-from geh_common.domain.types import MeteringPointType
-
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
 from geh_common.data_products.electricity_market_measurements_input import (
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
@@ -27,21 +23,25 @@ def _seed_gold_table(job_fixture: JobTestFixture) -> None:
     year = datetime.now().year - 1
     gold_table_rows = [
         GoldTableRow(
-            metering_point_id="170000000000000201",
+            metering_point_id=create_random_metering_point_id(CalculationType.NET_CONSUMPTION),
+            metering_point_type=MeteringPointType.NET_CONSUMPTION,
+            orchestration_type=OrchestrationType.NET_CONSUMPTION,
             observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         ),
         GoldTableRow(
-            metering_point_id="070000001500170200",
-            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-            quantity=random.uniform(0.1, 10.0),
+            metering_point_id=create_random_metering_point_id(CalculationType.NET_CONSUMPTION),
             metering_point_type=MeteringPointType.CONSUMPTION_FROM_GRID,
-        ),
-        GoldTableRow(
-            metering_point_id="060000001500170200",
+            orchestration_type=OrchestrationType.NET_CONSUMPTION,
             observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
+        ),
+        GoldTableRow(
+            metering_point_id=create_random_metering_point_id(CalculationType.NET_CONSUMPTION),
             metering_point_type=MeteringPointType.SUPPLY_TO_GRID,
+            orchestration_type=OrchestrationType.NET_CONSUMPTION,
+            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            quantity=random.uniform(0.1, 10.0),
         ),
     ]
     statement = seed_gold_table.get_statement(job_fixture.config.catalog_name, gold_table_rows)
