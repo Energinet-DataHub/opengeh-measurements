@@ -35,7 +35,7 @@ public class MeasurementsClientTests
 
         // Assert
         Assert.NotNull(actual);
-        Assert.Equal(expectedMeasurementDto, expectedMeasurementDto);
+        Assert.Equal(expectedMeasurementDto, actual);
     }
 
     [Theory]
