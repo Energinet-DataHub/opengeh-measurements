@@ -217,7 +217,8 @@ class JobTest(abc.ABC):
         response = fixture.execute_statement(statement)
 
         # Assert
-        assert response.status is not None and response.status.state == StatementState.SUCCEEDED, (
+        assert response.status is not None
+        assert response.status.state == StatementState.SUCCEEDED, (
             f"Expected statement to succeed, but got {response.status}. Statement: {statement}"
         )
         assert response.result is not None, f"""Expected a result, but got None.
