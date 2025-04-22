@@ -78,4 +78,21 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
             return NotFound(e.Message);
         }
     }
+
+    [MapToApiVersion(1.0)]
+    [HttpGet("aggregateByPeriod")]
+    public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
+    {
+        try
+        {
+            var aggregatedByMonth = await measurementsHandler.GetAggregatedByPeriodAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByMonth);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundDuringPeriodException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

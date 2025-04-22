@@ -38,4 +38,9 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
 
         return GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
     }
+
+    public Task<GetAggregatedMeasurementsResponse> GetAggregatedByPeriodAsync(GetAggregatedByPeriodRequest getAggregatedByPeriodRequest)
+    {
+        throw new NotImplementedException();
+    }
 }
