@@ -18,10 +18,10 @@ public class GetAggregatedByMonthQueryTests
         var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expected = CreateExpectedQuery(databricksSchemaOptions);
-        var GetAggregatedByMonthQuery = new GetAggregatedByMonthQuery(meteringPointId, yearMonth, databricksSchemaOptions);
+        var getAggregatedByMonthQuery = new GetAggregatedByMonthQuery(meteringPointId, yearMonth, databricksSchemaOptions);
 
         // Act
-        var actual = GetAggregatedByMonthQuery.ToString();
+        var actual = getAggregatedByMonthQuery.ToString();
 
         // Assert
         Assert.Equal(expected, actual);

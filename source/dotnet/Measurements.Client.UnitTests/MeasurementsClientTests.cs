@@ -74,7 +74,7 @@ public class MeasurementsClientTests
     public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -96,7 +96,7 @@ public class MeasurementsClientTests
     public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForQuarterlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations()
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.QuarterlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -118,7 +118,7 @@ public class MeasurementsClientTests
     public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations()
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2024, 10));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2024, 10));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDayMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
