@@ -30,6 +30,7 @@ class MissingMeasurementsLogTable(Table):
     def _get_expected_measurement_counts(self, metering_point_periods: DataFrame) -> DataFrame:
         """Calculate the expected measurement counts grouped by metering point and date."""
         metering_point_periods_local_time = convert_from_utc(metering_point_periods, self.time_zone)
+        metering_point_periods_local_time.show(truncate=False)
         expected_measurement_counts = (
             metering_point_periods_local_time.withColumn(
                 "start_of_day",
@@ -66,7 +67,10 @@ class MissingMeasurementsLogTable(Table):
             )
         )
 
-        return convert_to_utc(expected_measurement_counts, self.time_zone)
+        t = convert_to_utc(expected_measurement_counts, self.time_zone)
+        print("here")
+        t.show(truncate=False)
+        return t
 
     def _get_actual_measurement_counts(self, current_measurements: DataFrame) -> DataFrame:
         """Calculate the actual measurement counts grouped by metering point and date."""
