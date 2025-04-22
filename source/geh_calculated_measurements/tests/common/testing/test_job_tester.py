@@ -73,6 +73,12 @@ class TestRunnerWithCorrectImplementation(JobTest):
             mp.setattr(JobTestFixture, "start_job", lambda *args, **kwargs: 1)
             mp.setattr(JobTestFixture, "wait_for_job_completion", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "wait_for_log_query_completion", lambda *args, **kwargs: None)
+            mp.setattr(JobTestFixture, "orchestration_instance_id", str(uuid.uuid4()))
+            mp.setattr(
+                JobTestFixture,
+                "execute_statement",
+                lambda *args, **kwargs: StatementResponse(status=StatementStatus(state=StatementState.SUCCEEDED)),
+            )
             config = EnvironmentConfiguration()
             return JobTestFixture(
                 environment_configuration=config,

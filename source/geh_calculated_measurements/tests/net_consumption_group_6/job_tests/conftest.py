@@ -33,7 +33,7 @@ def gold_table_seeded(
 
 
 @pytest.fixture
-def electricity_market_tables_seeded(spark: SparkSession) -> None:
+def electricity_market_tables_seeded(spark: SparkSession, external_dataproducts_created: None) -> None:
     # PARENT
     df = spark.createDataFrame(
         [
