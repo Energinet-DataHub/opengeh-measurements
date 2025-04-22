@@ -38,13 +38,14 @@ def append_if_not_exists(
             allowed_column_values = ",".join([f"'{x}'" for x in target_filters[column_name]])
             merge_check_list.append(f"{current_alias_table_name}.{column_name} in ({allowed_column_values})")
 
-    for clustering_key in clustering_columns_to_filter_specifically:
-        clustering_key_type = dict(dataframe.dtypes)[clustering_key]
-        if isinstance(clustering_key_type, TimestampType) or isinstance(clustering_key_type, DateType):
-            extra_merge_check = get_target_filter_for_datetime_clustering_key(
-                dataframe, clustering_key, current_alias_table_name
-            )
-            merge_check_list.append(extra_merge_check)
+    if clustering_columns_to_filter_specifically is not None:
+        for clustering_key in clustering_columns_to_filter_specifically:
+            clustering_key_type = dict(dataframe.dtypes)[clustering_key]
+            if isinstance(clustering_key_type, TimestampType) or isinstance(clustering_key_type, DateType):
+                extra_merge_check = get_target_filter_for_datetime_clustering_key(
+                    dataframe, clustering_key, current_alias_table_name
+                )
+                merge_check_list.append(extra_merge_check)
 
     merge_check = " AND ".join(merge_check_list)
 
