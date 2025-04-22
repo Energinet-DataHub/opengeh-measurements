@@ -41,4 +41,6 @@ def seed_table(
 ) -> None:
     catalog_name = job_fixture.config.catalog_name
     job_fixture.execute_statement(gold_table_statement(catalog_name))
-    job_fixture.execute_statement(get_metering_point_periods_statement(catalog_name))
+
+    # TODO JMG: Data cannot be modified through views
+    # job_fixture.execute_statement(get_metering_point_periods_statement(catalog_name))

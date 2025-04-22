@@ -45,6 +45,7 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
         orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
         metering_point_type=MeteringPointType.ELECTRICAL_HEATING,
         time_zone=args.time_zone,
+        transaction_creation_datetime=args.execution_start_datetime,
     )
     calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements)
