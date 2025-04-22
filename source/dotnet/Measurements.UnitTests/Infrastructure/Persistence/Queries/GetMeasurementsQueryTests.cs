@@ -16,10 +16,10 @@ public class GetByPeriodQueryTests
         // Arrange
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expectedResult = CreateExpectedQuery(databricksSchemaOptions);
-        var GetByPeriodQuery = new GetByPeriodQuery(meteringPointId, startDate, endDate, databricksSchemaOptions);
+        var getByPeriodQuery = new GetByPeriodQuery(meteringPointId, startDate, endDate, databricksSchemaOptions);
 
         // Act
-        var result = GetByPeriodQuery.ToString();
+        var result = getByPeriodQuery.ToString();
 
         // Assert
         Assert.Equal(expectedResult, result);
