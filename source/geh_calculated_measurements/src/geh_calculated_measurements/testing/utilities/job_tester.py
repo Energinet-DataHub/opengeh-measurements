@@ -16,6 +16,7 @@ from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
 
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
@@ -50,6 +51,8 @@ class JobTestFixture:
 
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
+        if base_job.job_id is None:
+            raise ValueError(f"Job ID is None for job {self.job_name}.")
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
         job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
         return job
@@ -84,6 +87,8 @@ class JobTestFixture:
             elapsed_time = time.time() - start_time
             print(f"Query did not complete in {elapsed_time} seconds. Retrying in {poll_interval_seconds} seconds...")  # noqa: T201
             time.sleep(poll_interval_seconds)
+
+        return response
 
     def _error_from_response(self, response: LogsQueryResult | LogsQueryPartialResult) -> LogsQueryError:
         err = {
@@ -120,23 +125,38 @@ class JobTestFixture:
                 err = response.partial_error
         return LogsQueryError(**err)
 
-    def wait_for_log_query_completion(self, query: str) -> LogsQueryResult | LogsQueryPartialResult:
-        response = self.azure_logs_query_client.query_workspace(
-            self.azure_log_analytics_workspace_id, query, timespan=None
-        )
-        if response.status == LogsQueryStatus.SUCCESS and len(response.tables) > 0 and len(response.tables[0].rows) > 0:
-            return response
-        else:
-            error = self._error_from_response(response)
-            error_msg = f"""
-            Failed to execute query:
-            --- Query ---
-            {query}
+    def wait_for_log_query_completion(
+        self, query: str, timeout_minutes: int = 5
+    ) -> LogsQueryResult | LogsQueryPartialResult:
+        """Execute a query and wait for its completion.
 
-            --- Error ---
-            {error}
-            """
-            raise ValueError(error_msg)
+        The query must return at least one row to be considered successful.
+        """
+        start_time = time.time()
+        elapsed_time = 0
+
+        response = self.azure_logs_query_client.query_workspace(
+            self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
+        )
+
+        while response.status == LogsQueryStatus.SUCCESS and elapsed_time < timeout_minutes * 60:
+            if len(response.tables[0].rows) > 0:
+                return response
+            response = self.azure_logs_query_client.query_workspace(
+                self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
+            )
+            elapsed_time = time.time() - start_time
+
+        error = self._error_from_response(response)
+        error_msg = f"""
+        Failed to execute query:
+        --- Query ---
+        {query}
+
+        --- Error ---
+        {error}
+        """
+        raise ValueError(error_msg)
 
 
 class JobTest(abc.ABC):
@@ -170,7 +190,7 @@ class JobTest(abc.ABC):
 
         # Assert
         assert actual.status == LogsQueryStatus.SUCCESS, (
-            f"The query did not complete successfully: {actual.status}. Query: {query}"
+            f"Expected log entries, but none found: {actual.status}. Query: {query}"
         )
 
     @pytest.mark.order(4)
@@ -178,18 +198,23 @@ class JobTest(abc.ABC):
         # Arrange
         catalog = fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
-        table = "calculated_measurements"
+        table = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 
-            WHERE orchestration_instance_id = '{fixture.job_parameters.get("orchestration-instance-id")}' 
+            WHERE {ContractColumnNames.orchestration_instance_id} = '{fixture.job_parameters.get("orchestration-instance-id")}' 
             LIMIT 1
         """
 
         # Act
-        response = fixture.execute_statement(statement=statement)
+        response = fixture.execute_statement(statement)
 
         # Assert
+        assert response.result is not None, f"""Expected a result, but got None.
+            Statement: {statement}.
+            Response: {response}.
+            Orchestration instance ID: {fixture.job_parameters.get("orchestration-instance-id")}"""
+
         row_count = response.result.row_count if response.result.row_count is not None else 0
         assert row_count > 0, (
             f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}."

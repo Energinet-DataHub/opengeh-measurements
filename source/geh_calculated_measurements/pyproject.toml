@@ -55,7 +55,7 @@ addopts = [
     "-s",
     # pytest-xdist options
     "-n=auto",
-    "--dist=load",
+    "--dist=loadfile",
 ]
 
 [tool.coverage.report]
