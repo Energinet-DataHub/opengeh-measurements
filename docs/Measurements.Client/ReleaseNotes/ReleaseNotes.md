@@ -2,7 +2,7 @@
 
 ## Version 2.4.1
 
-- Renamed Query names.
+- Renamed Method and Query names to be more extendable.
 
 ## Version 2.4.0
 
