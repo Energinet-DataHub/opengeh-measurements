@@ -14,7 +14,7 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests;
 public class MeasurementsClientTests
 {
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
+    public async Task GetByDayAsync_WhenCalledWithValidQuery_ReturnsListOfPoints()
     {
         // Arrange
         var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
@@ -24,7 +24,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetByDayAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -34,7 +34,7 @@ public class MeasurementsClientTests
     }
 
     [Fact]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
+    public async Task GetByDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList()
     {
         // Arrange
         var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
@@ -44,7 +44,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetByDayAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.Empty(actual);

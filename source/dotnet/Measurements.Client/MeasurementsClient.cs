@@ -19,7 +19,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(
+    public async Task<IEnumerable<MeasurementPointDto>> GetByDayAsync(
         GetByDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
