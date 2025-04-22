@@ -41,6 +41,7 @@ class JobTestFixture:
         self.azure_logs_query_client = LogsQueryClient(credentials)
         self.azure_log_analytics_workspace_id = azure_log_analytics_workspace_id
 
+    @property
     def orchestration_instance_id(self) -> str:
         """Get the orchestration instance ID from the job parameters."""
         id = self.job_parameters.get("orchestration-instance-id")
