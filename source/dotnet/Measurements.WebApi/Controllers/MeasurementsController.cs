@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Application.Exceptions;
+﻿using Asp.Versioning;
+using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
@@ -7,19 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
+[ApiVersion(1.0)]
 [ApiController]
 [Authorize]
-[Route("measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
-    [HttpGet]
-    [Route("forPeriod")]
-    public async Task<IActionResult> GetMeasurementsAsync([FromQuery] GetMeasurementRequest request)
+    [MapToApiVersion(1.0)]
+    [HttpGet("forPeriod")]
+    public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
         try
         {
-            var measurement = await measurementsHandler.GetMeasurementAsync(request);
+            var measurement = await measurementsHandler.GetByPeriodAsync(request);
             var result = new JsonSerializer().Serialize(measurement);
 
             return Ok(result);
@@ -30,14 +31,14 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler)
         }
     }
 
-    [HttpGet]
-    [Route("aggregatedByMonth")]
-    public async Task<IActionResult> GetAggregatedMeasurementsAsync([FromQuery] GetAggregatedMeasurementsForMonthRequest request)
+    [MapToApiVersion(1.0)]
+    [HttpGet("aggregatedByMonth")]
+    public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
     {
         try
         {
-            var aggregatedMeasurements = await measurementsHandler.GetAggregatedMeasurementsAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedMeasurements);
+            var aggregatedByMonth = await measurementsHandler.GetAggregatedByMonthAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByMonth);
 
             return Ok(result);
         }

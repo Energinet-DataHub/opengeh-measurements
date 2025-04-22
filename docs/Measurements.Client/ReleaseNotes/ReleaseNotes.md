@@ -1,5 +1,17 @@
 # Measurements.Client Release Notes
 
+## Version 2.4.1
+
+- Renamed Method and Query names to be more extendable.
+
+## Version 2.4.0
+
+- Unit added to MeasurementAggregationDto.
+
+## Version 2.3.0
+
+- ContainsUpdatedValues added to MeasurementAggregationDto.
+
 ## Version 2.2.0
 
 - Added method to get aggregated measurements for a month.
