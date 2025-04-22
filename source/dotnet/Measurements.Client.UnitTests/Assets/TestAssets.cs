@@ -6,7 +6,7 @@ public static class TestAssets
 {
     public static string MeasurementsForSingleDay => GetJsonFile($"{nameof(MeasurementsForSingleDay)}.json");
 
-    public static string MeasurementsForMultipleDays => GetJsonFile($"{nameof(MeasurementsForMultipleDays)}.json");
+    public static string MeasurementsForDayWithHistoricalObservations => GetJsonFile($"{nameof(MeasurementsForDayWithHistoricalObservations)}.json");
 
     public static string HourlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDay)}.json");
 

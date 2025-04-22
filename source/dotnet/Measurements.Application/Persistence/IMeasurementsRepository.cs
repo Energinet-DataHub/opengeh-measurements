@@ -8,9 +8,14 @@ namespace Energinet.DataHub.Measurements.Application.Persistence;
 public interface IMeasurementsRepository
 {
     /// <summary>
+    /// Get current measurements for a given metering point in period defined by from and to timestamps.
+    /// </summary>
+    IAsyncEnumerable<MeasurementResult> GetByPeriodAsyncV1(string meteringPointId, Instant from, Instant to);
+
+    /// <summary>
     /// Get measurements for a given metering point in period defined by from and to timestamps.
     /// </summary>
-    IAsyncEnumerable<MeasurementsResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
+    IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
 
     /// <summary>
     /// Get aggregated measurements for a given metering point for a month defined by the yearMonth parameter.

@@ -88,46 +88,50 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
             { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
             { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
             { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
+            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static List<IEnumerable<string>> CreateRows()
     {
         var dates = new[]
         {
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 3), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 4), "calculated", "PT1H", true),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 4), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
-            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", "PT1H",  false),
-            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", "PT1H",  false),
+            (new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false),
+            (new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true),
+            (new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false),
+            (new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false),
+            (new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false),
+            (new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "invalidQuality", false),
         };
 
-        return [.. dates.SelectMany(values => CreateRow(values))];
+        return [.. dates.SelectMany(CreateRow)];
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
-        (LocalDate ObservationTime, LocalDate TransactionCreationDate, string Quality, string Resolution, bool IsCancelled) values)
+        (LocalDate ObservationTime, LocalDate TransactionCreated, string Quality, bool IsCancelled) values)
     {
         var observationDate = values.ObservationTime;
-        var transactionCreationDate = values.TransactionCreationDate;
-        var observationDateTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
-        var transactionCreationDateTime = Instant.FromUtc(transactionCreationDate.Year, transactionCreationDate.Month, transactionCreationDate.Day, 0, 0, 0);
+        var transactionCreated = values.TransactionCreated;
+        var observationDateInstant = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
+        var transactionCreatedInstant = Instant.FromUtc(transactionCreated.Year, transactionCreated.Month, transactionCreated.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
 
         var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
             "'1234567890'",
             "'kwh'",
-            $"'{FormatString(observationDateTime.Plus(Duration.FromHours(i)))}'",
+            $"'{FormatString(observationDateInstant.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",
             $"'{values.Quality}'",
-            $"'{FormatString(transactionCreationDateTime)}'",
-            $"'{values.Resolution}'",
+            "'PT1H'",
             values.IsCancelled ? "true" : "false",
-            $"'{FormatString(observationDateTime)}'",
+            $"'{FormatString(transactionCreatedInstant)}'",
+            $"'{FormatString(transactionCreatedInstant)}'",
         });
 
         return rows;
