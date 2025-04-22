@@ -17,21 +17,21 @@ public class MeasurementsHandlerTests
 {
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsyncV1_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+    public async Task GetByPeriodAsyncV1_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
         // Arrange
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
+        var request = new GetByPeriodRequest("123456789", date, date.AddDays(1));
         var raw = CreateRaw(date);
         var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
-            .Setup(x => x.GetMeasurementsAsyncV1(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Setup(x => x.GetByPeriodAsyncV1(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
-        var actual = await sut.GetMeasurementAsyncV1(request);
+        var actual = await sut.GetByPeriodAsyncV1(request);
         var actualPoint = actual.Points.Single();
 
         // Assert
@@ -44,21 +44,21 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+    public async Task GetByPeriod_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
         // Arrange
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
+        var request = new GetByPeriodRequest("123456789", date, date.AddDays(1));
         var raw = CreateRaw(date);
         var measurementResult = new MeasurementResult(raw);
         measurementRepositoryMock
-            .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Setup(x => x.GetByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
-        var actual = await sut.GetMeasurementAsync(request);
+        var actual = await sut.GetByPeriodAsync(request);
         var actualPoint = actual.Points.Single();
 
         // Assert
@@ -70,20 +70,20 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetMeasurementsAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetByPeriodAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
     {
         // Arrange
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var request = new GetMeasurementRequest("123456789", date, date.AddDays(1));
+        var request = new GetByPeriodRequest("123456789", date, date.AddDays(1));
         var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
-            .Setup(x => x.GetMeasurementsAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Setup(x => x.GetByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
             .Returns(AsyncEnumerable.Empty<MeasurementResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetMeasurementAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetByPeriodAsync(request));
     }
 
     private static dynamic CreateRaw(DateTimeOffset now)

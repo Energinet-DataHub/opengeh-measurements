@@ -16,12 +16,12 @@ public class MeasurementsClientTests
 {
     [Theory]
     [AutoMoqData]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithValidQuery_ReturnsMeasurement(
+    public async Task GetByDayAsync_WhenCalledWithValidQuery_ReturnsMeasurement(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
         MeasurementDto expectedMeasurementDto)
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -31,7 +31,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = await sut.GetMeasurementsForDayAsync(query, CancellationToken.None);
+        var actual = await sut.GetByDayAsync(query, CancellationToken.None);
 
         // Assert
         Assert.NotNull(actual);
@@ -40,18 +40,18 @@ public class MeasurementsClientTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetMeasurementsForDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList(
+    public async Task GetByDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetMeasurementsForDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetMeasurementsForDayAsync(query, CancellationToken.None)).MeasurementPositions;
+        var actual = (await sut.GetByDayAsync(query, CancellationToken.None)).MeasurementPositions;
 
         // Assert
         Assert.Empty(actual);
@@ -59,18 +59,18 @@ public class MeasurementsClientTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
+    public async Task GetAggregatedByMonth_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -83,18 +83,18 @@ public class MeasurementsClientTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledForQuarterlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
+    public async Task GetAggregatedMeasurementsByMonthAsync_WhenCalledForQuarterlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.QuarterlyMeasurementsAggregatedByDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -107,18 +107,18 @@ public class MeasurementsClientTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetAggregatedMeasurementsForDayAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations(
+    public async Task GetAggregatedMeasurementsByMonthAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetAggregatedMeasurementsForMonthQuery("1234567890", new YearMonth(2024, 10));
+        var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2024, 10));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.HourlyMeasurementsAggregatedByDayMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);

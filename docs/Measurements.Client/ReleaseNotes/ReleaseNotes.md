@@ -4,6 +4,10 @@
 
 - Include historical values in forPeriod.
 
+## Version 2.4.1
+
+- Renamed Method and Query names to be more extendable.
+
 ## Version 2.4.0
 
 - Unit added to MeasurementAggregationDto.

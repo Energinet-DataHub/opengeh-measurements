@@ -18,7 +18,7 @@ public class MeasurementsRepositoryTests
 {
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsyncV1_WhenCalled_ReturnsMeasurement(
+    public async Task GetByPeriodAsyncV1_WhenCalled_ReturnsMeasurement(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
@@ -27,13 +27,13 @@ public class MeasurementsRepositoryTests
         var to = Instant.FromUtc(2021, 1, 2, 0, 0);
         var raw = CreateMeasurementResults(10);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetCurrentMeasurementsQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetCurrentByPeriodQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetMeasurementsAsyncV1(meteringPointId, from, to).ToListAsync();
+        var actual = await sut.GetByPeriodAsyncV1(meteringPointId, from, to).ToListAsync();
 
         // Assert
         Assert.Equal(10, actual.Count);
@@ -41,7 +41,7 @@ public class MeasurementsRepositoryTests
 
     [Theory]
     [InlineAutoData]
-    public async Task GetMeasurementAsync_WhenCalled_ReturnsMeasurement(
+    public async Task GetByPeriod_WhenCalled_ReturnsMeasurement(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
@@ -50,13 +50,13 @@ public class MeasurementsRepositoryTests
         var to = Instant.FromUtc(2021, 1, 2, 0, 0);
         var raw = CreateMeasurementResults(10);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetMeasurementsQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetByPeriodQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetMeasurementsAsync(meteringPointId, from, to).ToListAsync();
+        var actual = await sut.GetByPeriodAsync(meteringPointId, from, to).ToListAsync();
 
         // Assert
         Assert.Equal(10, actual.Count);

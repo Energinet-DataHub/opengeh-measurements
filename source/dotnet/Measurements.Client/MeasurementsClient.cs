@@ -23,22 +23,22 @@ public class MeasurementsClient(
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public async Task<MeasurementDto> GetMeasurementsForDayAsync(
-        GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsForPeriodUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        if (response.StatusCode == HttpStatusCode.NotFound) return new MeasurementDto([]);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return new MeasurementDto([]);
 
         var result = await measurementsForDayResponseParser.ParseResponseMessage(response, cancellationToken);
 
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedMeasurementsForMonth(
-        GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByMonth(
+        GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
 
@@ -50,7 +50,8 @@ public class MeasurementsClient(
     private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        if (response.StatusCode == HttpStatusCode.NotFound) return [];
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
