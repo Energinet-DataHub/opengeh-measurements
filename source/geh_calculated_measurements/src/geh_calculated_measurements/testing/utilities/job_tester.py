@@ -41,6 +41,13 @@ class JobTestFixture:
         self.azure_logs_query_client = LogsQueryClient(credentials)
         self.azure_log_analytics_workspace_id = azure_log_analytics_workspace_id
 
+    def orchestration_instance_id(self) -> str:
+        """Get the orchestration instance ID from the job parameters."""
+        id = self.job_parameters.get("orchestration-instance-id")
+        if not isinstance(id, str):
+            raise ValueError("The orchestration instance ID is not set or is not a string.")
+        return id
+
     def _get_job_by_name(self, job_name: str) -> BaseJob:
         jobs = list(self.ws.jobs.list(name=job_name))
         if len(jobs) == 0:
@@ -182,7 +189,7 @@ class JobTest(abc.ABC):
         query = f"""
         AppTraces
         | where Properties["Subsystem"] == 'measurements'
-        | where Properties["orchestration_instance_id"] == '{fixture.job_parameters.get("orchestration-instance-id")}'
+        | where Properties["orchestration_instance_id"] == '{fixture.orchestration_instance_id}'
         """
 
         # Act
@@ -202,7 +209,7 @@ class JobTest(abc.ABC):
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 
-            WHERE {ContractColumnNames.orchestration_instance_id} = '{fixture.job_parameters.get("orchestration-instance-id")}' 
+            WHERE {ContractColumnNames.orchestration_instance_id} = '{fixture.orchestration_instance_id}' 
             LIMIT 1
         """
 
@@ -210,12 +217,15 @@ class JobTest(abc.ABC):
         response = fixture.execute_statement(statement)
 
         # Assert
+        assert response.status == StatementState.SUCCEEDED, (
+            f"Expected statement to succeed, but got {response.status}. Statement: {statement}"
+        )
         assert response.result is not None, f"""Expected a result, but got None.
             Statement: {statement}.
             Response: {response}.
-            Orchestration instance ID: {fixture.job_parameters.get("orchestration-instance-id")}"""
+            Orchestration instance ID: {fixture.orchestration_instance_id}"""
 
         row_count = response.result.row_count if response.result.row_count is not None else 0
         assert row_count > 0, (
-            f"Expected count to be greater than 0 for table {catalog}.{database}.{table}, but got {row_count}."
+            f"Expected rows added to table `{catalog}.{database}.{table}` for orchestration instance ID `{fixture.orchestration_instance_id}`, but got {row_count}."
         )
