@@ -72,19 +72,6 @@ def _(spark: SparkSession):
     return key
 
 
-@given("submitted measurements with unknown version inserted into the bronze submitted table", target_fixture="key")
-def _(spark: SparkSession):
-    key = identifier_helper.generate_random_binary()
-    value = ValueBuilder(spark).add_row(version="9999999").build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
-    table_helper.append_to_table(
-        submitted_transaction,
-        BronzeSettings().bronze_database_name,
-        BronzeTableNames.bronze_submitted_transactions_table,
-    )
-    return key
-
-
 @given(
     "valid submitted transactions inserted into the silver measurements table and the same submitted transactions inserted into the bronze submitted table",
     target_fixture="expected_orchestration_id",
