@@ -15,7 +15,7 @@ job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self):
+    def fixture(self, electricity_market_data_products_created_as_tables):
         config = EnvironmentConfiguration()
         # Construct fixture
         base_job_fixture = JobTestFixture(
