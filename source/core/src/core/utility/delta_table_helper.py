@@ -58,7 +58,7 @@ def append_if_not_exists(
 def get_target_filter_for_datetime_clustering_key(
     update_df: DataFrame, clustering_col: str, current_alias_table_name: str
 ) -> str:
-    dates_to_filter = [row[0] for row in update_df.select(col(clustering_col).cast("date")).collect()]
+    dates_to_filter = [row[0] for row in update_df.select(col(clustering_col).cast("date")).distinct().collect()]
     if len(dates_to_filter) == 0:
         return "TRUE"
 
