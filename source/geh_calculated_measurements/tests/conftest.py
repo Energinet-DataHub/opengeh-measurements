@@ -8,6 +8,7 @@ import geh_common.telemetry.logging_configuration
 import pytest
 from filelock import FileLock
 from geh_common.data_products.electricity_market_measurements_input import (
+    missing_measurements_log_metering_point_periods_v1,
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
 )
@@ -22,21 +23,34 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+)
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
-from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
-    MeteringPointPeriodsDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
 from tests import (
     SPARK_CATALOG_NAME,
     TESTS_ROOT,
     create_job_environment_variables,
 )
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    skip_subsystem_tests = pytest.mark.skip(
+        reason="Skipping subsystem tests because environmental variables could not be set. See .sample.env file on how to set environmental variables locally"
+    )
+    try:
+        EnvironmentConfiguration()
+    except Exception:
+        for item in items:
+            if "subsystem_tests" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
+            if "integration" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
 
 
 @pytest.fixture(scope="module")
@@ -174,24 +188,24 @@ def _create_dataproducts(spark):
     )
 
     # Create missing measurements log database and tables
-    create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
+    create_database(spark, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
     create_table(
         spark,
-        database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
-        table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
+        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        table_name=missing_measurements_log_metering_point_periods_v1.view_name,
         schema=MeteringPointPeriodsTable.schema,
     )
 
     # Create net consumption group 6 database and tables
     create_table(
         spark,
-        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
+        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        table_name=net_consumption_group_6_consumption_metering_point_periods_v1.view_name,
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     create_table(
         spark,
-        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
+        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        table_name=net_consumption_group_6_child_metering_points_v1.view_name,
         schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
