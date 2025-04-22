@@ -11,9 +11,11 @@ using Energinet.DataHub.Measurements.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.WebApi.UnitTests;
 
+[UnitTest]
 public class MeasurementsControllerTests
 {
     [Theory]

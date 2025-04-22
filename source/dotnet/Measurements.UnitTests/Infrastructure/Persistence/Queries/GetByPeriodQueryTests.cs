@@ -4,9 +4,11 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence.Queries;
 
+[UnitTest]
 public class GetByPeriodQueryTests
 {
     [Theory]
