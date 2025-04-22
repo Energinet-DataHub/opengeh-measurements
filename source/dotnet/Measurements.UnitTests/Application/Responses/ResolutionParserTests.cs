@@ -1,9 +1,11 @@
 ﻿using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
+[UnitTest]
 public class ResolutionParserTests
 {
     [Theory]
