@@ -2,7 +2,6 @@ from geh_common.domain.types.orchestration_type import OrchestrationType as GehC
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
-from core.gold.domain.constants.column_names.gold_measurements_column_names import GoldMeasurementsColumnNames
 from core.settings.silver_settings import SilverSettings
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
 from core.silver.infrastructure.config import SilverTableNames
@@ -46,9 +45,6 @@ class SilverMeasurementsRepository:
             silver_measurements,
             self.table,
             self._merge_columns(),
-            target_filters={
-                GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.SUBMITTED.value]
-            },
         )
 
     def _merge_columns(self) -> list[str]:
