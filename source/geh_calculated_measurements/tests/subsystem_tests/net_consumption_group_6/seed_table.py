@@ -99,7 +99,7 @@ def seed_electricity_market_tables(job_fixture: JobTestFixture) -> None:
         uncoupled_date
     )
     VALUES (
-        '150000001500170200',
+        '{net_consumption_metering_point_id}',
         'net_consumption',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
