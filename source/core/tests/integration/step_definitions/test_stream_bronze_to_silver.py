@@ -1,4 +1,5 @@
 import pyspark.sql.functions as F
+from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from pyspark.sql import SparkSession
 from pytest_bdd import given, parsers, scenarios, then, when
 
@@ -6,6 +7,7 @@ import core.silver.entry_points as sut
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
+from core.contracts.process_manager.enums.resolution import Resolution
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config.table_names import TableNames as SilverTableNames
@@ -80,7 +82,9 @@ def _(spark: SparkSession):
     orchestration_instance_id = identifier_helper.generate_random_string()
     # Insert into silver measurements table
     silver_measurements = (
-        SilverMeasurementsBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+        SilverMeasurementsBuilder(spark)
+        .add_row(orchestration_instance_id=orchestration_instance_id, resolution=MeteringPointResolution.HOUR.value)
+        .build()
     )
     table_helper.append_to_table(
         silver_measurements,
@@ -89,7 +93,11 @@ def _(spark: SparkSession):
     )
 
     # Insert into bronze submitted transactions table
-    value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
+    value = (
+        ValueBuilder(spark)
+        .add_row(orchestration_instance_id=orchestration_instance_id, resolution=Resolution.R_PT1H.value)
+        .build()
+    )
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
     table_helper.append_to_table(
         submitted_transaction,
