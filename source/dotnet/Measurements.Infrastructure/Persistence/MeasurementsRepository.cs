@@ -13,18 +13,18 @@ public class MeasurementsRepository(
     IOptions<DatabricksSchemaOptions> databricksSchemaOptions)
     : IMeasurementsRepository
 {
-    public async IAsyncEnumerable<MeasurementsResult> GetMeasurementsAsync(string meteringPointId, Instant from, Instant to)
+    public async IAsyncEnumerable<MeasurementsResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to)
     {
-        var statement = new GetMeasurementsQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
+        var statement = new GetByPeriodQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
         var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)
             yield return new MeasurementsResult(row);
     }
 
-    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedMeasurementsAsync(string meteringPointId, YearMonth yearMonth)
+    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, YearMonth yearMonth)
     {
-        var statement = new GetAggregatedMeasurementsQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);
+        var statement = new GetAggregatedByMonthQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);
         var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)

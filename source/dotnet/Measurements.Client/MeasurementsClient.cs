@@ -19,8 +19,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         Converters = { new JsonStringEnumConverter() },
     };
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForDayAsync(
-        GetMeasurementsForDayQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPointDto>> GetByDayAsync(
+        GetByDayQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.Date, query.Date.PlusDays(1));
 
@@ -29,8 +29,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementPointDto>> GetMeasurementsForPeriodAsync(
-        GetMeasurementsForPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementPointDto>> GetByPeriodAsync(
+        GetByPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.FromDate, query.ToDate);
 
@@ -39,8 +39,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedMeasurementsForMonth(
-        GetAggregatedMeasurementsForMonthQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByMonth(
+        GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.YearMonth);
 
@@ -52,7 +52,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     private async Task<IEnumerable<MeasurementPointDto>> ParseMeasurementsResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        if (response.StatusCode == HttpStatusCode.NotFound) return [];
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var measurementPoints = await DeserializeMeasurementsResponseStreamAsync(stream, cancellationToken);
@@ -73,7 +74,8 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
     private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
-        if (response.StatusCode == HttpStatusCode.NotFound) return [];
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);

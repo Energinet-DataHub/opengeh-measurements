@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetAggregatedMeasurementsQuery : DatabricksStatement
+public class GetAggregatedByMonthQuery : DatabricksStatement
 {
     private const string EuropeCopenhagenTimeZone = "Europe/Copenhagen";
 
@@ -13,7 +13,7 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
     private readonly YearMonth _yearMonth;
     private readonly DatabricksSchemaOptions _databricksSchemaOptions;
 
-    public GetAggregatedMeasurementsQuery(string meteringPointId, YearMonth yearMonth, DatabricksSchemaOptions databricksSchemaOptions)
+    public GetAggregatedByMonthQuery(string meteringPointId, YearMonth yearMonth, DatabricksSchemaOptions databricksSchemaOptions)
     {
         _meteringPointId = meteringPointId;
         _yearMonth = yearMonth;
@@ -33,19 +33,19 @@ public class GetAggregatedMeasurementsQuery : DatabricksStatement
             $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
-            $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MinObservationTime}, " +
-            $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.MaxObservationTime}, " +
-            $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedMeasurementsConstants.AggregatedQuantity}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedMeasurementsConstants.Qualities}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedMeasurementsConstants.Resolutions}, " +
-            $"array_agg(distinct({MeasurementsGoldConstants.UnitColumnName})) as {AggregatedMeasurementsConstants.Units}, " +
-            $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedMeasurementsConstants.PointCount}, " +
-            $"max(row_count) as {AggregatedMeasurementsConstants.ObservationUpdates} " +
+            $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
+            $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
+            $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedQueryConstants.Resolutions}, " +
+            $"array_agg(distinct({MeasurementsGoldConstants.UnitColumnName})) as {AggregatedQueryConstants.Units}, " +
+            $"count({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.PointCount}, " +
+            $"max(row_count) as {AggregatedQueryConstants.ObservationUpdates} " +
             $"from most_recent " +
             $"where row = 1 " +
             $"and not {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"group by {CreateGroupByStatement()} " +
-            $"order by {AggregatedMeasurementsConstants.MinObservationTime}";
+            $"order by {AggregatedQueryConstants.MinObservationTime}";
     }
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
