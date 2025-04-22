@@ -81,7 +81,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -103,7 +103,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -125,7 +125,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object);
 
         // Act
-        var actual = (await sut.GetAggregatedMeasurementsForMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregatedByMonth(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);

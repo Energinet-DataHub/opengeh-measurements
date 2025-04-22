@@ -39,7 +39,7 @@ public class MeasurementsClient(IHttpClientFactory httpClientFactory) : IMeasure
         return await ParseMeasurementsResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedMeasurementsForMonth(
+    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByMonth(
         GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateUrl(query.MeteringPointId, query.YearMonth);

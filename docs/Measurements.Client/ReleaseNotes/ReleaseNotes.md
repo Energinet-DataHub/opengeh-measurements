@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 2.4.1
+
+- Renamed Query names.
+
 ## Version 2.4.0
 
 - Unit added to MeasurementAggregationDto.
