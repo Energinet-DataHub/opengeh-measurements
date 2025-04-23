@@ -27,7 +27,7 @@ class ExternalDataProducts:
         ]
 
     @staticmethod
-    def get_all_dataproducts() -> list[DataProduct]:
+    def get_all_data_products() -> list[DataProduct]:
         return [
             getattr(ExternalDataProducts, attr)
             for attr in dir(ExternalDataProducts)
