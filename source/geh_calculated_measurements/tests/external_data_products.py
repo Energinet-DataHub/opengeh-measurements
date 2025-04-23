@@ -12,6 +12,12 @@ class DataProduct:
 
 
 class ExternalDataProducts:
+    """
+    This class contains all external data products used in the project.
+
+    The intention is to have all data product dependencies defined in one place in the test code. This way, it is easier to bump for instance the version of a data product.
+    """
+
     CURRENT_MEASUREMENTS: DataProduct = DataProduct(
         database_name=current.database_name,
         view_name=current.view_name,

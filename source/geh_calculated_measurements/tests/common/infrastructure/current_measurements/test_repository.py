@@ -80,4 +80,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = current_measurements_repository.read_current_measurements()
 
     # Assert
-    assert actual.df.schema == current_v1
+    assert actual.df.schema == current_v1_schema

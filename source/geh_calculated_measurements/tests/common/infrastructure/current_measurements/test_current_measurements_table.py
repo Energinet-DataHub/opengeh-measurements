@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold import current_v1
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
@@ -11,6 +10,7 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.curr
     CurrentMeasurementsTable,
 )
 from tests.conftest import SPARK_CATALOG_NAME
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -30,7 +30,7 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "consumption",
             )
         ],
-        CurrentMeasurementsTable.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
 
 
@@ -51,7 +51,7 @@ def test__current_measurements_read__has_correct_schema_and_records(
     # Assert
     assert actual.collect() == valid_df.collect()
     assert actual.schema == valid_df.schema
-    assert actual.schema == current_v1.schema
+    assert actual.schema == ExternalDataProducts.CURRENT_MEASUREMENTS.schema
 
 
 def test__when_invalid_contract__raises_with_useful_message(
@@ -95,4 +95,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = current_measurements_table.read()
 
     # Assert
-    assert actual.schema == current_v1.schema
+    assert actual.schema == ExternalDataProducts.CURRENT_MEASUREMENTS.schema
