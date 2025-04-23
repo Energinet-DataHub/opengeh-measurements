@@ -1,5 +1,4 @@
 import os
-import shutil
 import sys
 from typing import Generator
 from unittest import mock
@@ -89,7 +88,7 @@ def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     yield _spark
     _spark.stop()
-    #shutil.rmtree(data_dir)
+    # shutil.rmtree(data_dir)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -169,7 +168,7 @@ def external_dataproducts_created(
     root_tmp_dir = tmp_path_factory.getbasetemp().parent
 
     fn = root_tmp_dir / f"{testrun_uid}.txt"
-    with FileLock(str(fn)+ ".lock"):
+    with FileLock(str(fn) + ".lock"):
         if fn.is_file():
             return
         else:
