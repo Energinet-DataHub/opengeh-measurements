@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional
 
 from delta import DeltaTable
@@ -62,5 +63,38 @@ def get_target_filter_for_datetime_clustering_key(
     if len(dates_to_filter) == 0:
         return "TRUE"
 
-    joined_string = ",".join([str(date) for date in dates_to_filter])
-    return f"CAST({current_alias_table_name}.{clustering_col} AS DATE) in ({joined_string})"
+    def generate_intervals(dates):
+        # Sort the dates
+        dates = sorted(dates)
+
+        intervals = []
+        start_date = dates[0]
+        end_date = dates[0]
+
+        for i in range(1, len(dates)):
+            if dates[i] == end_date + timedelta(days=1):
+                end_date = dates[i]
+            else:
+                intervals.append((start_date, end_date))
+                start_date = dates[i]
+                end_date = dates[i]
+
+        intervals.append((start_date, end_date))
+        return intervals
+
+    # Example usage
+    intervals = generate_intervals(dates_to_filter)
+    filters = []
+    for interval in intervals:
+        if interval[0] == interval[1]:
+            filters.append(
+                f"CAST({current_alias_table_name}.{clustering_col} AS DATE) == '{interval[0].strftime('%Y-%m-%d')}'"
+            )
+        else:
+            filters.append(
+                f"(CAST({current_alias_table_name}.{clustering_col} AS DATE) >= '{interval[0].strftime('%Y-%m-%d')}' AND CAST({current_alias_table_name}.{clustering_col} AS DATE) <= '{interval[1].strftime('%Y-%m-%d')}')"
+            )
+
+    joined_string = " OR ".join(filters)
+    raise ValueError(joined_string)
+    return f"({joined_string})"
