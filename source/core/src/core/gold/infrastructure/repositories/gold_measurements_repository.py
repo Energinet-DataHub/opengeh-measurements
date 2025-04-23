@@ -56,7 +56,7 @@ class GoldMeasurementsRepository:
         self,
         query_name: QueryNames,
     ) -> dict[str, list[str]]:
-        if query_name == QueryNames.SILVER_TO_GOLD.value:
+        if query_name == QueryNames.SILVER_TO_GOLD:
             return {GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.SUBMITTED.value]}
         if query_name == QueryNames.MIGRATIONS_TO_GOLD.value:
             return {GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.MIGRATION.value]}
