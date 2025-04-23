@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
-        <PackageVersion>2.3.0$(VersionSuffix)</PackageVersion>
+        <PackageVersion>3.0.0$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Client library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>
@@ -52,6 +52,7 @@
       <PackageReference Include="Azure.Identity" Version="1.13.2" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
       <PackageReference Include="NodaTime" Version="3.2.2" />
+      <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     </ItemGroup>
 
 </Project>

@@ -6,6 +6,9 @@ from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+)
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from tests import SPARK_CATALOG_NAME
 
@@ -30,7 +33,7 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="module")
 def metering_point_periods_table() -> MeteringPointPeriodsTable:
-    return MeteringPointPeriodsTable(catalog_name=SPARK_CATALOG_NAME)
+    return MeteringPointPeriodsTable(SPARK_CATALOG_NAME, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
 
 
 def test__when_invalid_contract__raises_with_useful_message(

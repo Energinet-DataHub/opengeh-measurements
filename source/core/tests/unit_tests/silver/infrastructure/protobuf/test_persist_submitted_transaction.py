@@ -35,7 +35,7 @@ def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
     assert actual_value[ValueColumnNames.end_datetime] is not None
     assert actual_value[ValueColumnNames.points] is not None
     actual_points = actual_value[ValueColumnNames.points]
-    assert len(actual_points) == 1
+    assert len(actual_points) == 24
     assert actual_points[0].position is not None
     assert actual_points[0].quantity is not None
     assert actual_points[0].quality is not None

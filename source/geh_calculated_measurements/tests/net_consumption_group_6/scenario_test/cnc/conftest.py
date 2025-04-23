@@ -13,7 +13,11 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
+<<<<<<< HEAD
 from geh_calculated_measurements.net_consumption_group_6.domain.cnc_logic import execute
+=======
+from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cnc_daily
+>>>>>>> jmk/cnc-with-simple-test
 
 
 @pytest.fixture(scope="module")
@@ -46,7 +50,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         scenario_parameters = yaml.safe_load(f)
 
     # Execute the logic
-    measurements = execute(
+    measurements = execute_cnc_daily(
         current_measurements=CurrentMeasurements(current_measurements),
         consumption_metering_point_periods=ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         child_metering_points=ChildMeteringPoints(child_metering_points),
@@ -56,6 +60,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     return TestCases(
         [
-            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements),
+            TestCase(expected_csv_path=f"{scenario_path}/then/measurements.csv", actual=measurements.df),
         ]
     )
