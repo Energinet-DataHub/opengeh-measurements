@@ -1,8 +1,6 @@
 import os
 import uuid
 
-import pytest
-
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
 from tests import create_job_environment_variables
 
