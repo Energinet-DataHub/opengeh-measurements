@@ -2,6 +2,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from geh_common.data_products.electricity_market_measurements_input import (
+    capacity_settlement_metering_point_periods_v1,
+    electrical_heating_child_metering_points_v1,
+    electrical_heating_consumption_metering_point_periods_v1,
     missing_measurements_log_metering_point_periods_v1,
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
@@ -27,6 +30,24 @@ class ExternalDataProducts:
         database_name=current.database_name,
         view_name=current.view_name,
         schema=current.schema,
+    )
+
+    CAPACITY_SETTLEMENT_METERING_POINT_PERIODS: DataProduct = DataProduct(
+        database_name=capacity_settlement_metering_point_periods_v1.database_name,
+        view_name=capacity_settlement_metering_point_periods_v1.view_name,
+        schema=capacity_settlement_metering_point_periods_v1.schema,
+    )
+
+    ELECTRICAL_HEATING_CHILD_METERING_POINTS: DataProduct = DataProduct(
+        database_name=electrical_heating_child_metering_points_v1.database_name,
+        view_name=electrical_heating_child_metering_points_v1.view_name,
+        schema=electrical_heating_child_metering_points_v1.schema,
+    )
+
+    ELECTRICAL_HEATING_CONSUMPTION_METERING_POINT_PERIODS: DataProduct = DataProduct(
+        database_name=electrical_heating_consumption_metering_point_periods_v1.database_name,
+        view_name=electrical_heating_consumption_metering_point_periods_v1.view_name,
+        schema=electrical_heating_consumption_metering_point_periods_v1.schema,
     )
 
     NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINTS: DataProduct = DataProduct(
