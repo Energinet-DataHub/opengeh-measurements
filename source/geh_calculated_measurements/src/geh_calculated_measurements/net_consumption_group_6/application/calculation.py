@@ -31,8 +31,7 @@ def execute_cenc_application(spark: SparkSession, args: NetConsumptionGroup6Args
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
-<<<<<<< HEAD
-    _, calculated_measurements_daily = execute_cenc(
+    _, calculated_measurements_daily = execute_cenc_daily(
         current_measurements,
         consumption_metering_point_periods,
         child_metering_points,
@@ -56,7 +55,9 @@ def execute_cenc_application(spark: SparkSession, args: NetConsumptionGroup6Args
 @use_span()
 def execute_cnc_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
+    electricity_market_repository = ElectricityMarketRepository(
+        spark, args.catalog_name, args.electricity_market_database_name
+    )
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
@@ -66,10 +67,7 @@ def execute_cnc_application(spark: SparkSession, args: NetConsumptionGroup6Args)
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
-    calculated_measurements_daily = execute_cnc(
-=======
     _, calculated_measurements_daily = execute_cenc_daily(
->>>>>>> jmk/cnc-with-simple-test
         current_measurements,
         consumption_metering_point_periods,
         child_metering_points,

@@ -1,42 +1,29 @@
 from datetime import datetime
 from typing import Tuple
 
+import pyspark.sql.functions as F
+import pyspark.sql.types as T
+from geh_common.domain.types import MeteringPointType
+from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
+from geh_common.testing.dataframes import testing
+from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
-    Cenc,
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain.cnc_logic import execute_logic
 
 
 @use_span()
-<<<<<<< HEAD:source/geh_calculated_measurements/src/geh_calculated_measurements/net_consumption_group_6/domain/cnc_calculation.py
-def execute(
-    current_measurements: CurrentMeasurements,
-=======
 @testing()
 def cnc(
->>>>>>> jmk/cnc-with-simple-test:source/geh_calculated_measurements/src/geh_calculated_measurements/net_consumption_group_6/domain/logic/cnc.py
+    current_measurements: CurrentMeasurements,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
     execution_start_datetime: datetime,
-<<<<<<< HEAD:source/geh_calculated_measurements/src/geh_calculated_measurements/net_consumption_group_6/domain/cnc_calculation.py
-) -> CalculatedMeasurementsDaily:
-    measurements = execute_logic(
-        current_measurements=current_measurements,
-        consumption_metering_point_periods=consumption_metering_point_periods,
-        child_metering_points=child_metering_points,
-        time_zone=time_zone,
-        execution_start_datetime=execution_start_datetime,
-    )
-
-    return CalculatedMeasurementsDaily(measurements)
-=======
 ) -> Tuple[DataFrame, DataFrame]:
     """Execute the calculation of net consumption for a group of metering points.
 
@@ -474,4 +461,3 @@ def _create_daily_quantity_per_period(
     )
 
     return periods_with_net_consumption
->>>>>>> jmk/cnc-with-simple-test:source/geh_calculated_measurements/src/geh_calculated_measurements/net_consumption_group_6/domain/logic/cnc.py
