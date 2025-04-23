@@ -1,6 +1,7 @@
 import abc
 import time
 from datetime import timedelta
+import uuid
 
 import pytest
 from azure.identity import DefaultAzureCredential
@@ -45,9 +46,9 @@ class JobTestFixture:
     def orchestration_instance_id(self) -> str:
         """Get the orchestration instance ID from the job parameters."""
         id = self.job_parameters.get("orchestration-instance-id")
-        if not isinstance(id, str):
+        if not isinstance(id, uuid.UUID):
             raise ValueError("The orchestration instance ID is not set or is not a string.")
-        return id
+        return str(id)
 
     def _get_job_by_name(self, job_name: str) -> BaseJob:
         jobs = list(self.ws.jobs.list(name=job_name))
