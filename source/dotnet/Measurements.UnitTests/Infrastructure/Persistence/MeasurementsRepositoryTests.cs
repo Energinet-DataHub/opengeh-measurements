@@ -91,7 +91,7 @@ public class MeasurementsRepositoryTests
         Assert.Equal("kWh", first.Units.Single());
         Assert.Equal("PT1H", first.Resolutions.Single());
         Assert.Equal("measured", first.Qualities.Single());
-        Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0), first.MinObservationTime);
+        Assert.Equal(Instant.FromUtc(2020, 12, 31, 23, 0), first.MinObservationTime);
         Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
     }
 
@@ -105,7 +105,7 @@ public class MeasurementsRepositoryTests
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByMonthQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByYearQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
@@ -122,7 +122,7 @@ public class MeasurementsRepositoryTests
         Assert.Equal("kWh", first.Units.Single());
         Assert.Equal("PT1H", first.Resolutions.Single());
         Assert.Equal("measured", first.Qualities.Single());
-        Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0), first.MinObservationTime);
+        Assert.Equal(Instant.FromUtc(2020, 12, 31, 23, 0), first.MinObservationTime);
         Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
     }
 
@@ -149,7 +149,7 @@ public class MeasurementsRepositoryTests
         {
             dynamic raw = new ExpandoObject();
             raw.min_observation_time = date;
-            raw.max_observation_time = date;
+            raw.max_observation_time = date.AddDays(1);
             raw.aggregated_quantity = 42;
             raw.qualities = new[] { "measured" };
             raw.resolutions = new[] { "PT1H" };
