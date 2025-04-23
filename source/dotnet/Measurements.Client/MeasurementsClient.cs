@@ -47,6 +47,16 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
     }
 
+    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByYear(
+        GetAggregatedByYearQuery query, CancellationToken cancellationToken = default)
+    {
+        var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
+    }
+
     private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
@@ -75,5 +85,10 @@ public class MeasurementsClient(
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, YearMonth yearMonth)
     {
         return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+    }
+
+    private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId, int year)
+    {
+        return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
     }
 }
