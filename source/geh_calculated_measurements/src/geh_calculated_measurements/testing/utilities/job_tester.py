@@ -1,7 +1,7 @@
 import abc
 import time
-from datetime import timedelta
 import uuid
+from datetime import timedelta
 
 import pytest
 from azure.identity import DefaultAzureCredential

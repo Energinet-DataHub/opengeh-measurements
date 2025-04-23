@@ -19,7 +19,6 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
     ]
 
 
-@pytest.mark.skip(reason="Test is incomplete. Skipped until fix is ready.")
 def test_execute(
     monkeypatch,
     dummy_logging: None,  # Used implicitly

@@ -89,7 +89,7 @@ def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     yield _spark
     _spark.stop()
-    shutil.rmtree(data_dir)
+    #shutil.rmtree(data_dir)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -158,18 +158,18 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def external_dataproducts_created(spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, worker_id) -> None:
+def external_dataproducts_created(
+    spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
+) -> None:
     """Create external dataproducts (databases, tables and views) as needed by tests."""
-    if worker_id == "master":
-        # not executing with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        return _create_dataproducts(spark)
+    _create_dataproducts(spark)
+    return
 
     # get the temp directory shared by all workers
     root_tmp_dir = tmp_path_factory.getbasetemp().parent
 
-    fn = root_tmp_dir / "data.txt"
-    with FileLock(str(fn) + ".lock"):
+    fn = root_tmp_dir / f"{testrun_uid}.txt"
+    with FileLock(str(fn)+ ".lock"):
         if fn.is_file():
             return
         else:

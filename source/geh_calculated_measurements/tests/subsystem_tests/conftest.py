@@ -27,20 +27,18 @@ def databricks_api_client() -> DatabricksApiClient:
 
 @pytest.fixture(scope="session")
 def electricity_market_data_products_created_as_tables(
-    spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, worker_id, databricks_api_client: DatabricksApiClient
+    spark: SparkSession,
+    tmp_path_factory: pytest.TempPathFactory,
+    databricks_api_client: DatabricksApiClient,
+    testrun_uid: str,
 ) -> None:
     """Create Electricity Market data products as tables.
 
     This enables subsystem tests to use these tables and seed them with data."""
-    if worker_id == "master":
-        # not executing with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        return _electricity_market_data_products_created_as_tables(spark, databricks_api_client)
-
     # get the temp directory shared by all workers
     root_tmp_dir = tmp_path_factory.getbasetemp().parent
 
-    fn = root_tmp_dir / "data.txt"
+    fn = root_tmp_dir / f"{testrun_uid}.txt"
     with FileLock(str(fn) + ".lock"):
         if fn.is_file():
             return
