@@ -11,7 +11,7 @@ using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Persistence;
+namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence;
 
 [UnitTest]
 public class MeasurementsRepositoryTests
