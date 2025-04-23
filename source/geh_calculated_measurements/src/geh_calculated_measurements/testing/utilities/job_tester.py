@@ -28,6 +28,7 @@ class JobTestFixture:
         self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
         self.job_name = job_name
         self.job_parameters = job_parameters
+        self.job_parameters.update({"electricity_market_database_name": self.config.electricity_market_database_name})
 
         # Configure Azure resources
         credentials = DefaultAzureCredential()
@@ -51,7 +52,6 @@ class JobTestFixture:
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        params = params.append(f"--electricity-market-database-name={self.config.electricity_market_database_name}")
         job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
         return job
 
