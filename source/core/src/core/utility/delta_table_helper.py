@@ -59,31 +59,28 @@ def append_if_not_exists(
 def get_target_filter_for_datetime_clustering_key(
     update_df: DataFrame, clustering_col: str, current_alias_table_name: str
 ) -> str:
-    dates_to_filter = [row[0] for row in update_df.select(col(clustering_col).cast("date")).distinct().collect()]
+    # We get and sort all dates for the clustering key in our input.
+    dates_to_filter = sorted(
+        [row[0] for row in update_df.select(col(clustering_col).cast("date")).distinct().collect()]
+    )
     if len(dates_to_filter) == 0:
         return "TRUE"
 
-    def generate_intervals(dates):
-        # Sort the dates
-        dates = sorted(dates)
+    # Find intervals of contiguous dates, to cut down on the number of filters needed.
+    intervals = []
+    start_date = dates_to_filter[0]
+    end_date = dates_to_filter[0]
 
-        intervals = []
-        start_date = dates[0]
-        end_date = dates[0]
+    for i in range(1, len(dates_to_filter)):
+        if dates_to_filter[i] == end_date + timedelta(days=1):
+            end_date = dates_to_filter[i]
+        else:
+            intervals.append((start_date, end_date))
+            start_date = dates_to_filter[i]
+            end_date = dates_to_filter[i]
+    intervals.append((start_date, end_date))
 
-        for i in range(1, len(dates)):
-            if dates[i] == end_date + timedelta(days=1):
-                end_date = dates[i]
-            else:
-                intervals.append((start_date, end_date))
-                start_date = dates[i]
-                end_date = dates[i]
-
-        intervals.append((start_date, end_date))
-        return intervals
-
-    # Example usage
-    intervals = generate_intervals(dates_to_filter)
+    # For each interval, we create the filter for our clustering column.
     filters = []
     for interval in intervals:
         if interval[0] == interval[1]:
@@ -95,5 +92,6 @@ def get_target_filter_for_datetime_clustering_key(
                 f"(CAST({current_alias_table_name}.{clustering_col} AS DATE) >= '{interval[0].strftime('%Y-%m-%d')}' AND CAST({current_alias_table_name}.{clustering_col} AS DATE) <= '{interval[1].strftime('%Y-%m-%d')}')"
             )
 
+    # If a row in our target satisfies any of our filters, we look at it during our merge.
     joined_string = " OR ".join(filters)
     return f"({joined_string})"
