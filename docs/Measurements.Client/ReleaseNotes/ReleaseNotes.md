@@ -2,7 +2,7 @@
 
 ## Version 3.1.0
 
-- Added CreatedByGridAccessProvider timestamp to MeasurementPointDto.
+- Added RegistrationTime to MeasurementPointDto.
 
 ## Version 3.0.0
 
