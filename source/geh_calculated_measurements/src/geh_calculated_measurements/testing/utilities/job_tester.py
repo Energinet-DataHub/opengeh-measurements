@@ -27,6 +27,7 @@ class JobTestFixture:
         self.config = environment_configuration
         self.ws = WorkspaceClient(host=self.config.workspace_url, token=self.config.databricks_token)
         self.job_name = job_name
+        self.job_parameters["electricity_market_database_name"] = self.config.electricity_market_database_name
         self.job_parameters = job_parameters
 
         # Configure Azure resources

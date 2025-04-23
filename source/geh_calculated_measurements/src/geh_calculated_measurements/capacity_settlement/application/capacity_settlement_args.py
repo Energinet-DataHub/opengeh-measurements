@@ -19,6 +19,5 @@ class CapacitySettlementArgs(ApplicationSettings):
     # for calculated measurements subsystem tests to create a "mock" of the Electricity Market data products.
     electricity_market_database_name: str = Field(
         init=False,
-        alias="ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME",
         default=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
     )
