@@ -37,7 +37,7 @@ public class MeasurementsForDayResponseParserTests
         Assert.Equal(Quality.Measured, actualPoint.Quality);
         Assert.Equal(Unit.kWh, actualPoint.Unit);
         Assert.Equal(Resolution.Hourly, actualPoint.Resolution);
-        Assert.Equal("2025-01-17T03:40:55Z", actualPoint.CreatedInDataHub.ToFormattedString());
+        Assert.Equal("2025-01-17T03:40:55Z", actualPoint.PersistedInDataHub.ToFormattedString());
         Assert.Equal("2025-01-15T03:40:55Z", actualPoint.CreatedByGridAccessProvider.ToFormattedString());
     }
 

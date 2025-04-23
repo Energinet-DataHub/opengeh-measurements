@@ -8,7 +8,7 @@
 /// <param name="Quality">Quality of measurement.</param>
 /// <param name="Unit">Unit of measurement.</param>
 /// <param name="Resolution">Resolution of measurement.</param>
-/// <param name="CreatedInDataHub">Timestamp defining when this point was created in DataHub.</param>
+/// <param name="PersistedInDataHub">Timestamp defining when this point was persisted in DataHub.</param>
 /// <param name="CreatedByGridAccessProvider">Timestamp defining when this point was created by Grid Access Provider.</param>
 public sealed record MeasurementPointDto(
     int Order,
@@ -16,5 +16,5 @@ public sealed record MeasurementPointDto(
     Quality Quality,
     Unit Unit,
     Resolution Resolution,
-    DateTimeOffset CreatedInDataHub,
+    DateTimeOffset PersistedInDataHub,
     DateTimeOffset CreatedByGridAccessProvider);

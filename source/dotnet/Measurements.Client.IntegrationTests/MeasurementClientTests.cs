@@ -41,7 +41,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
                 Assert.Equal(Resolution.Hourly, point.Resolution);
                 Assert.Equal(Unit.kWh, point.Unit);
                 Assert.Equal(pointIndex, point.Order);
-                Assert.Equal("2025-01-17T03:40:55Z", point.CreatedInDataHub.ToFormattedString());
+                Assert.Equal("2025-01-17T03:40:55Z", point.PersistedInDataHub.ToFormattedString());
                 Assert.Equal("2025-01-17T03:40:55Z", point.CreatedByGridAccessProvider.ToFormattedString());
             }
         }
