@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from typing import Any
 
+from geh_common.data_products.electricity_market_measurements_input import (
+    missing_measurements_log_metering_point_periods_v1,
+    net_consumption_group_6_child_metering_points_v1,
+    net_consumption_group_6_consumption_metering_point_periods_v1,
+)
 from geh_common.data_products.measurements_core.measurements_gold import current_v1 as current
 
 
@@ -22,6 +27,24 @@ class ExternalDataProducts:
         database_name=current.database_name,
         view_name=current.view_name,
         schema=current.schema,
+    )
+
+    NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINTS: DataProduct = DataProduct(
+        database_name=net_consumption_group_6_child_metering_points_v1.database_name,
+        view_name=net_consumption_group_6_child_metering_points_v1.view_name,
+        schema=net_consumption_group_6_child_metering_points_v1.schema,
+    )
+
+    NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS: DataProduct = DataProduct(
+        database_name=net_consumption_group_6_consumption_metering_point_periods_v1.database_name,
+        view_name=net_consumption_group_6_consumption_metering_point_periods_v1.view_name,
+        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
+    )
+
+    MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS: DataProduct = DataProduct(
+        database_name=missing_measurements_log_metering_point_periods_v1.database_name,
+        view_name=missing_measurements_log_metering_point_periods_v1.view_name,
+        schema=missing_measurements_log_metering_point_periods_v1.schema,
     )
 
     @staticmethod
