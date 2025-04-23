@@ -5,7 +5,7 @@ from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
-from pyspark.sql import Column, DataFrame
+from pyspark.sql import Column
 from pyspark.sql import types as T
 
 from geh_calculated_measurements.common.domain import (
