@@ -4,6 +4,9 @@ from geh_common.application.settings import ApplicationSettings
 from pydantic import Field, model_validator
 from pydantic_settings import SettingsConfigDict
 
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+)
 from tests import TESTS_ROOT
 
 
@@ -29,6 +32,7 @@ class EnvironmentConfiguration(ApplicationSettings):
     electricity_market_database_name: str = Field(
         init=False,
         alias="ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME",
+        default=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
     )
 
     # for performance test
