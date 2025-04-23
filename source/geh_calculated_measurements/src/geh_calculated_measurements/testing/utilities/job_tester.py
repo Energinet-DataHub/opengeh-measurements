@@ -51,7 +51,7 @@ class JobTestFixture:
     def start_job(self) -> Wait[Run]:
         base_job = self._get_job_by_name(self.job_name)
         params = [f"--{key}={value}" for key, value in self.job_parameters.items()]
-        params.append(f"--electricity-market-database-name={self.config.electricity_market_database_name}")
+        params = params.append(f"--electricity-market-database-name={self.config.electricity_market_database_name}")
         job = self.ws.jobs.run_now(job_id=base_job.job_id, python_params=params)
         return job
 
