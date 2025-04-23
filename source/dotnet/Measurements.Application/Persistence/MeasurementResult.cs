@@ -3,7 +3,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;
 
-public class MeasurementsResult(ExpandoObject raw)
+public class MeasurementResult(ExpandoObject raw)
 {
     private readonly dynamic _raw = raw;
 
@@ -15,5 +15,9 @@ public class MeasurementsResult(ExpandoObject raw)
 
     public string Quality => _raw.quality;
 
+    public string Resolution => _raw.resolution;
+
     public Instant Created => Instant.FromDateTimeOffset(_raw.created);
+
+    public Instant TransactionCreated => Instant.FromDateTimeOffset(_raw.transaction_creation_datetime);
 }

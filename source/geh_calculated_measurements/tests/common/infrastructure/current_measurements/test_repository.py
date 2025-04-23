@@ -9,11 +9,12 @@ from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
-from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
-def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsRepository:
+def current_measurements_repository(
+    spark: SparkSession, external_dataproducts_created: None
+) -> CurrentMeasurementsRepository:
     return CurrentMeasurementsRepository(
         spark=spark,
         catalog_name=spark.catalog.currentCatalog(),
