@@ -7,6 +7,7 @@ import geh_common.telemetry.logging_configuration
 import pytest
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
+from geh_common.testing.delta_lake import create_database
 from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
@@ -148,6 +149,10 @@ def external_dataproducts_created(
     spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
 ) -> None:
     """Create external data products (databases, tables and views) as needed by tests."""
+
+    for database_name in ExternalDataProducts.get_all_database_names():
+        create_database(spark, database_name)
+
     for dataproduct in ExternalDataProducts.get_all_data_products():
         create_table(
             spark,
