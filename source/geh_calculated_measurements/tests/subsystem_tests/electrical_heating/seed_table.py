@@ -8,10 +8,6 @@ from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
-# TODO Henrik: Do not hardcode these here
-database = "measurements_gold"
-table = "measurements"
-
 
 def seed_table(job_fixture: JobTestFixture) -> None:
     gold_table_rows = [

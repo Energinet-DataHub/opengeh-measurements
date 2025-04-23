@@ -1,12 +1,10 @@
 import os
-import shutil
 import sys
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from filelock import FileLock
 from geh_common.data_products.electricity_market_measurements_input import (
     missing_measurements_log_metering_point_periods_v1,
     net_consumption_group_6_child_metering_points_v1,
@@ -89,7 +87,7 @@ def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     yield _spark
     _spark.stop()
-    shutil.rmtree(data_dir)
+    # shutil.rmtree(data_dir)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -158,26 +156,10 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def external_dataproducts_created(spark: SparkSession, tmp_path_factory, worker_id) -> None:
+def external_dataproducts_created(
+    spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
+) -> None:
     """Create external dataproducts (databases, tables and views) as needed by tests."""
-    if worker_id == "master":
-        # not executing in with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        return _create_dataproducts(spark)
-
-    # get the temp directory shared by all workers
-    root_tmp_dir = tmp_path_factory.getbasetemp().parent
-
-    fn = root_tmp_dir / "data.txt"
-    with FileLock(str(fn) + ".lock"):
-        if fn.is_file():
-            return
-        else:
-            _create_dataproducts(spark)
-            fn.write_text("done", encoding="utf-8")
-
-
-def _create_dataproducts(spark):
     # Create measurements gold database and tables
     create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
     create_table(
