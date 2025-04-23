@@ -1,5 +1,6 @@
-from pytest_mock import MockerFixture
 import pytest
+from pytest_mock import MockerFixture
+
 import core.migrations.migrations_runner as sut
 
 
@@ -23,6 +24,7 @@ def test__migrate__calls_expected(mocker: MockerFixture):
     mock_configure_spark_sql_migrations.assert_called_once()
     mock_stop_job_runs.assert_called_once()
     mock_migrate_pipeline.assert_called_once()
+
 
 @pytest.skip("bug fixing")
 def test__stop_job_runs__calls_expected(mocker: MockerFixture):
