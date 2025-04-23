@@ -12,6 +12,9 @@ from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+)
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
@@ -46,7 +49,7 @@ def electricity_market_tables_seeded(spark: SparkSession) -> None:
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{net_consumption_group_6_consumption_metering_point_periods_v1.database_name}.{net_consumption_group_6_consumption_metering_point_periods_v1.view_name}"
+        f"{DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME}.{net_consumption_group_6_consumption_metering_point_periods_v1.view_name}"
     )
 
     # CHILDREN
@@ -77,5 +80,5 @@ def electricity_market_tables_seeded(spark: SparkSession) -> None:
         schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
     df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{net_consumption_group_6_consumption_metering_point_periods_v1.database_name}.{net_consumption_group_6_child_metering_points_v1.view_name}"
+        f"{DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME}.{net_consumption_group_6_child_metering_points_v1.view_name}"
     )

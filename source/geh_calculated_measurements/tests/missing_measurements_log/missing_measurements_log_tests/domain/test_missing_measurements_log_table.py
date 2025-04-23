@@ -15,7 +15,7 @@ from tests import SPARK_CATALOG_NAME, TIME_ZONE
 def test__when__(spark: SparkSession, external_dataproducts_created: None) -> None:
     # Arrange
     orchestration_instance_id = uuid.uuid4()
-    sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE, orchestration_instance_id)
+    sut = MissingMeasurementsLogTable(SPARK_CATALOG_NAME, TIME_ZONE, orchestration_instance_id, None)
 
     schema = StructType(
         [

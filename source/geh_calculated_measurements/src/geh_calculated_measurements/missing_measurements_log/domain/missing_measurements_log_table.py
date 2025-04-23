@@ -2,6 +2,7 @@ from uuid import UUID
 
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
+from geh_common.application import GridAreaCodes
 from geh_common.domain.types import MeteringPointResolution
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from pyspark.sql import DataFrame
@@ -16,10 +17,13 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure import 
 
 
 class MissingMeasurementsLogTable(Table):
-    def __init__(self, catalog_name: str, time_zone: str, orchestration_instance_id: UUID) -> None:
+    def __init__(
+        self, catalog_name: str, time_zone: str, orchestration_instance_id: UUID, grid_area_codes: GridAreaCodes | None
+    ) -> None:
         self.catalog_name = catalog_name
         self.time_zone = time_zone
         self.input_orchestration_instance_id = orchestration_instance_id
+        self.grid_area_codes = grid_area_codes
         self.fully_qualified_name = f"{catalog_name}.{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME}"
         super().__init__()
 
