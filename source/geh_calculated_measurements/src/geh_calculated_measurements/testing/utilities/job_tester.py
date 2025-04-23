@@ -135,7 +135,7 @@ class JobTestFixture:
         return LogsQueryError(**err)
 
     def wait_for_log_query_completion(
-        self, query: str, timeout_minutes: int = 5
+        self, query: str, timeout_minutes: int = 5, poll_interval_seconds: int = 10
     ) -> LogsQueryResult | LogsQueryPartialResult:
         """Execute a query and wait for its completion.
 
@@ -154,6 +154,7 @@ class JobTestFixture:
             response = self.azure_logs_query_client.query_workspace(
                 self.azure_log_analytics_workspace_id, query, timespan=timedelta(minutes=60)
             )
+            time.sleep(poll_interval_seconds)
             elapsed_time = time.time() - start_time
 
         error = self._error_from_response(response)
