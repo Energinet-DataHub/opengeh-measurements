@@ -96,5 +96,4 @@ def get_target_filter_for_datetime_clustering_key(
             )
 
     joined_string = " OR ".join(filters)
-    raise ValueError(joined_string)
     return f"({joined_string})"
