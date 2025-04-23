@@ -37,7 +37,7 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByMonth(
+    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByMonth(
         GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
@@ -47,7 +47,7 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByYear(
+    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByYear(
         GetAggregatedByYearQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
@@ -57,7 +57,7 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
+    private async Task<IEnumerable<MeasurementAggregationByDateDto>> ParseMeasurementAggregationResponseAsync(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound)
@@ -67,13 +67,13 @@ public class MeasurementsClient(
         return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationDto>> DeserializeMeasurementAggregationResponseStreamAsync(
+    private async Task<IEnumerable<MeasurementAggregationByDateDto>> DeserializeMeasurementAggregationResponseStreamAsync(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementAggregationDto>>(_jsonSerializerOptions)
+        return pointElement.Deserialize<IEnumerable<MeasurementAggregationByDateDto>>(_jsonSerializerOptions)
                ?? throw new InvalidOperationException();
     }
 
