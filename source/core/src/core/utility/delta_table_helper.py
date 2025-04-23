@@ -55,7 +55,6 @@ def append_if_not_exists(
     ).whenNotMatchedInsertAll().execute()
 
 
-# Get target filters
 def get_target_filter_for_datetime_clustering_key(
     update_df: DataFrame, clustering_col: str, current_alias_table_name: str
 ) -> str:

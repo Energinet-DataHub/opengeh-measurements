@@ -26,5 +26,5 @@ def test__get_target_filter_for_datetime_clustering_key__should_return_correctly
     # Act
     filter_statement = delta_table_helper.get_target_filter_for_datetime_clustering_key(df, clustering_col, alias)
 
-    # Assert
+    # Assert that our filter keeps all input rows, and does not raise an AnalysisException on a table/dataframe with the given alias.
     assert df.filter(filter_statement).count() == df.count()
