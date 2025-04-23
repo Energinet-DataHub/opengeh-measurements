@@ -7,8 +7,8 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
 )
 from tests.external_data_products import ExternalDataProducts
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
@@ -20,8 +20,11 @@ def seed(spark: SparkSession) -> None:
 
 
 def _seed_gold_table(spark: SparkSession) -> None:
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+    file_name = f"{get_test_files_folder_path()}/{database_name}-{table_name}.csv"
+    time_series_points = read_csv_path(spark, file_name, schema)
     time_series_points.write.saveAsTable(
         f"{database_name}.{table_name}",
         format="delta",
