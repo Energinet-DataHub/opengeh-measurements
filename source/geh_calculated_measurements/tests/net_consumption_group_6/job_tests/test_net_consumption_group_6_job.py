@@ -11,13 +11,12 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
 from tests import create_job_environment_variables
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests.conftest import seed
 
 
 def test_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
-    gold_table_seeded: None,  # Used implicitly
-    electricity_market_tables_seeded: None,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
@@ -26,6 +25,7 @@ def test_execute(
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
+    seed(spark)
 
     # Act
     execute()
