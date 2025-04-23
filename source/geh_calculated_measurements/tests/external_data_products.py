@@ -70,11 +70,13 @@ class ExternalDataProducts:
 
     @staticmethod
     def get_all_database_names() -> list[str]:
-        return [
-            getattr(getattr(ExternalDataProducts, attr), "database_name")
-            for attr in dir(ExternalDataProducts)
-            if isinstance(getattr(ExternalDataProducts, attr), DataProduct)
-        ]
+        return list(
+            set(
+                getattr(getattr(ExternalDataProducts, attr), "database_name")
+                for attr in dir(ExternalDataProducts)
+                if isinstance(getattr(ExternalDataProducts, attr), DataProduct)
+            )
+        )
 
     @staticmethod
     def get_all_data_products() -> list[DataProduct]:
