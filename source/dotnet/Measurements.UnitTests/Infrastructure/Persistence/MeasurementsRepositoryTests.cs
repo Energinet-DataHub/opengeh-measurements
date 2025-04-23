@@ -3,6 +3,8 @@ using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution.Formats;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Domain;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 using Microsoft.Extensions.Options;
@@ -62,6 +64,68 @@ public class MeasurementsRepositoryTests
         Assert.Equal(10, actual.Count);
     }
 
+    [Theory]
+    [InlineAutoData]
+    public async Task GetAggregatedByMonthAsync_WhenCalled_ReturnsMeasurement(
+        Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
+    {
+        // Arrange
+        const string meteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2021, 1);
+        var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
+        databricksSqlWarehouseQueryExecutorMock
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByMonthQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Returns(raw);
+        var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsync(meteringPointId, yearMonth).ToListAsync();
+        var first = actual.First();
+
+        // Assert
+        Assert.Equal(2, actual.Count);
+        Assert.Equal(1, first.PointCount);
+        Assert.Equal(2, first.ObservationUpdates);
+        Assert.Equal(42, first.Quantity);
+        Assert.Equal("kWh", first.Units.Single());
+        Assert.Equal("PT1H", first.Resolutions.Single());
+        Assert.Equal("measured", first.Qualities.Single());
+        Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0), first.MinObservationTime);
+        Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
+    }
+
+    [Theory]
+    [InlineAutoData]
+    public async Task GetAggregatedByYearAsync_WhenCalled_ReturnsMeasurement(
+        Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
+    {
+        // Arrange
+        const string meteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2021, 1);
+        var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
+        databricksSqlWarehouseQueryExecutorMock
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByMonthQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Returns(raw);
+        var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(meteringPointId, new Year(yearMonth.Year)).ToListAsync();
+        var first = actual.First();
+
+        // Assert
+        Assert.Equal(2, actual.Count);
+        Assert.Equal(1, first.PointCount);
+        Assert.Equal(2, first.ObservationUpdates);
+        Assert.Equal(42, first.Quantity);
+        Assert.Equal("kWh", first.Units.Single());
+        Assert.Equal("PT1H", first.Resolutions.Single());
+        Assert.Equal("measured", first.Qualities.Single());
+        Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0), first.MinObservationTime);
+        Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
+    }
+
     private static async IAsyncEnumerable<ExpandoObject> CreateMeasurementResults(int count)
     {
         for (var i = 0; i < count; i++)
@@ -74,6 +138,28 @@ public class MeasurementsRepositoryTests
             raw.quality = "Measured";
             await Task.Yield();
             yield return raw;
+        }
+    }
+
+    private static async IAsyncEnumerable<ExpandoObject> CreateAggregatedMeasurementResults(YearMonth yearMonth, int count)
+    {
+        var date = yearMonth.ToDateInterval().Start.ToDateTimeOffSet();
+
+        for (var i = 0; i < count; i++)
+        {
+            dynamic raw = new ExpandoObject();
+            raw.min_observation_time = date;
+            raw.max_observation_time = date;
+            raw.aggregated_quantity = 42;
+            raw.qualities = new[] { "measured" };
+            raw.resolutions = new[] { "PT1H" };
+            raw.units = new[] { "kWh" };
+            raw.point_count = 1;
+            raw.observation_updates = 2;
+            await Task.Yield();
+            yield return raw;
+
+            date = date.AddDays(1);
         }
     }
 }
