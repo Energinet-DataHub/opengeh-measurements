@@ -1,5 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Application.Requests;
-using Energinet.DataHub.Measurements.Domain;
+﻿using Energinet.DataHub.Measurements.Domain;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Persistence;

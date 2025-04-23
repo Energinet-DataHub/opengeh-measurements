@@ -2,7 +2,6 @@
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution.Formats;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Application.Persistence;
-using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 using Microsoft.Extensions.Options;
