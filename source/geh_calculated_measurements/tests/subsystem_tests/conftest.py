@@ -30,7 +30,6 @@ def electricity_market_data_products_created_as_tables(
     spark: SparkSession,
     tmp_path_factory: pytest.TempPathFactory,
     databricks_api_client: DatabricksApiClient,
-    testrun_uid: str,
 ) -> None:
     """Create Electricity Market data products as tables.
 
@@ -38,7 +37,7 @@ def electricity_market_data_products_created_as_tables(
     # get the temp directory shared by all workers
     root_tmp_dir = tmp_path_factory.getbasetemp().parent
 
-    fn = root_tmp_dir / f"{testrun_uid}.txt"
+    fn = root_tmp_dir / "fixture.electricity_market_data_products_created_as_tables.txt"
     with FileLock(str(fn) + ".lock"):
         if fn.is_file():
             return
