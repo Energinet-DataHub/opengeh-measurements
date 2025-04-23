@@ -126,6 +126,47 @@ public class MeasurementsControllerTests
     }
 
     [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByMonthAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByMonthRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+        GetAggregatedByMonthRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsync(request);
+
+        // Assert
+        Assert.IsType<ObjectResult>(actual);
+        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+    }
+
+    [Theory]
     [AutoData]
     public async Task GetAggregatedByYearAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByYearRequest request,
@@ -145,6 +186,47 @@ public class MeasurementsControllerTests
 
         // Assert
         Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(request);
+
+        // Assert
+        Assert.IsType<ObjectResult>(actual);
+        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
     }
 
     private static GetMeasurementResponse CreateMeasurementResponse()

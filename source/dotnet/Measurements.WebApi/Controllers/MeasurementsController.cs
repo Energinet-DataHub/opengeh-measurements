@@ -55,7 +55,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Could not get requested measurement");
+            logger.LogError(exception, "Could not get requested measurements");
 
             return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
         }
@@ -77,6 +77,12 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         {
             return NotFound(e.Message);
         }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Could not get requested measurements");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+        }
     }
 
     [MapToApiVersion(1.0)]
@@ -93,6 +99,12 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         catch (MeasurementsNotFoundDuringPeriodException e)
         {
             return NotFound(e.Message);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Could not get requested measurements");
+
+            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
         }
     }
 }
