@@ -6,7 +6,10 @@ import core.silver.entry_points as sut
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
-from core.contracts.process_manager.enums.resolution import Resolution
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    Quality,
+    Resolution,
+)
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.infrastructure.config.table_names import TableNames as SilverTableNames
@@ -114,7 +117,7 @@ def _(spark: SparkSession):
     # Insert into bronze submitted transactions table
     value = (
         ValueBuilder(spark)
-        .add_row(orchestration_instance_id=orchestration_instance_id, resolution=Resolution.R_PT1H.value)
+        .add_row(orchestration_instance_id=orchestration_instance_id, resolution=Resolution.R_PT1H)
         .build()
     )
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
@@ -151,7 +154,7 @@ def _(spark: SparkSession, field: str, value: str):
     parsers.parse("submitted transaction points where the quality has value {quality}"),
     target_fixture="identifier",
 )
-def _(spark: SparkSession, quality: str):
+def _(spark: SparkSession, quality: Quality):
     orchestration_instance_id = identifier_helper.generate_random_string()
     points = PointsBuilder(spark).add_row(quality=quality).build()
     value = ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()

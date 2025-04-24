@@ -6,7 +6,7 @@ from geh_common.domain.types.orchestration_type import OrchestrationType
 from geh_common.domain.types.quantity_unit import QuantityUnit
 
 import tests.helpers.datetime_helper as datetime_helper
-from core.contracts.process_manager.enums.quality import Quality
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import Quality
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
 
