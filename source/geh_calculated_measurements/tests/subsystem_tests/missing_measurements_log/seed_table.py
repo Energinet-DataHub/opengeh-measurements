@@ -56,3 +56,12 @@ def gold_table_statement(catalog_name: str) -> str:
         for i in range(24)
     ]
     return seed_gold_table.get_statement(catalog_name, gold_table_rows)
+
+
+def delete_seeded_data(job_fixture: JobTestFixture) -> None:
+    statement = f"""
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{missing_measurements_log_metering_point_periods_table_name}
+        WHERE metering_point_id = '{_METERING_POINT_ID}'
+    """
+
+    job_fixture.execute_statement(statement)
