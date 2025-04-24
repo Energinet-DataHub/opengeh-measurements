@@ -6,17 +6,17 @@ from geh_calculated_measurements.missing_measurements_log.application.missing_me
     MissingMeasurementsLogArgs,
 )
 from geh_calculated_measurements.missing_measurements_log.domain import execute
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
+from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsRepository
 
 
 @use_span()
 def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -> DataFrame:
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
-    metering_point_periods_table = MeteringPointPeriodsTable(args.catalog_name)
+    metering_point_periods_repository = MeteringPointPeriodsRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
-    metering_point_periods = metering_point_periods_table.read()
+    metering_point_periods = metering_point_periods_repository.read_metering_point_periods
 
     missing_measurements_log = execute(
         current_measurements=current_measurements,

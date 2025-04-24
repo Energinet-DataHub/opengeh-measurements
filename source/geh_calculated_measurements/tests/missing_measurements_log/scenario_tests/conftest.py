@@ -14,7 +14,7 @@ from geh_calculated_measurements.missing_measurements_log.application import (
     MissingMeasurementsLogArgs,
     execute_application,
 )
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
+from geh_calculated_measurements.missing_measurements_log.infrastructure import Repository
 
 
 @pytest.fixture(scope="module")
@@ -33,7 +33,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     consumption_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__missing_measurements_log/metering_point_periods_v1.csv",
-        MeteringPointPeriodsTable.schema,
+        Repository.schema,
     )
 
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
