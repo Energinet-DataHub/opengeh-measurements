@@ -64,7 +64,7 @@ class SilverMeasurementsBuilder:
             {
                 "position": position,
                 "quantity": Decimal(1.0),
-                "quality": Quality.Q_MEASURED.value,  # Quality is not transformed in the silver layer.
+                "quality": Quality.Q_MEASURED,  # Quality is not transformed in the silver layer.
             }
             for position in range(1, 25)
         ]
