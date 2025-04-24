@@ -15,66 +15,71 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>
 {
     [Fact]
-    public async Task GetMeasurementsAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
+    public async Task GetByPeriodAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-02T23:00:00Z";
-        const string endDate = "2022-01-03T23:00:00Z";
-        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
-
-        // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
-
-        // Assert
-        Assert.Equal(24, actual.Points.Count);
-        Assert.True(actual.Points.All(p => p.Unit == Unit.kWh));
-        Assert.True(actual.Points.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.Points.All(p => p.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture) == startDate));
-    }
-
-    [Fact]
-    public async Task GetMeasurementsAsync_WhenMultipleMeasurementsExistWithEqualObservationTime_ReturnsOnlyOnePerObservationTime()
-    {
-        // Arrange
-        const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts multiple measurements with the same observation time
-        const string endDate = "2022-01-03T23:00:00Z";
-        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
-
-        // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
-
-        // Assert
-        Assert.Equal(24, actual.Points.Count);
-    }
-
-    [Fact]
-    public async Task GetMeasurementsAsync_WhenCancelledMeasurementsExists_ReturnsNotFoundStatus()
-    {
-        // Arrange
-        const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-01T23:00:00Z";  // On this date, the fixture inserts both cancelled and non-cancelled measurements with the same observation time
+        const string startDate = "2022-01-01T23:00:00Z";
         const string endDate = "2022-01-02T23:00:00Z";
-        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
+        Assert.Equal(24, actual.Points.Count);
+        foreach (var point in actual.Points)
+        {
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Resolution.Hourly, point.Resolution);
+            Assert.Equal("2022-01-04T23:00:00Z", point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
+        }
     }
 
     [Fact]
-    public async Task GetMeasurementsAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
+    public async Task GetByPeriodAsyncV1_WhenMultipleObservations_ReturnsCurrentObservation()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts 2 measurements with the same observation time
+        const string endDate = "2022-01-03T23:00:00Z";
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(1, actual.Points.Count(p => p.ObservationTime.ToString().Equals(startDate)));
+    }
+
+    [Fact]
+    public async Task GetByPeriodAsync_WhenMultipleObservations_ReturnsAllObservations()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts 2 measurements with the same observation time
+        const string endDate = "2022-01-03T23:00:00Z";
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate, "v2/");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(2, actual.Points.Count(p => p.ObservationTime.ToString().Equals(startDate)));
+    }
+
+    [Fact]
+    public async Task GetByPeriodAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
         const string startDate = "2022-01-31T23:00:00Z";
         const string endDate = "2022-01-01T23:00:00Z";
-        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -84,13 +89,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetMeasurementsAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
+    public async Task GetByPeriodAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
         const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
         const string endDate = "2022-02-01T23:00:00Z";
-        var url = CreateUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -100,13 +105,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    public async Task GetAggregatedByMonthAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var expectedDate = Instant.FromUtc(2022, 1, 2, 23, 0, 0).ToDateOnly();
-        var yearMonth = new YearMonth(2022, 1);
-        var url = CreateUrl(expectedMeteringPointId, yearMonth);
+        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
+        var yearMonth = new YearMonth(2021, 2);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -116,18 +121,21 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
         Assert.Equal(2, actual.MeasurementAggregations.Count);
         Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
-        Assert.True(actual.MeasurementAggregations.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.MeasurementAggregations.All(p => p.Quantity == 285.6M));
-        Assert.False(actual.MeasurementAggregations.All(p => p.MissingValues));
+        foreach (var measurementAggregation in actual.MeasurementAggregations)
+        {
+            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
+            Assert.Equal(285.6M, measurementAggregation.Quantity);
+            Assert.False(measurementAggregation.MissingValues);
+        }
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
+    public async Task GetAggregatedByMonthAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
         const string expectedMeteringPointId = "not existing id";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateUrl(expectedMeteringPointId, yearMonth);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -141,8 +149,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var yearMonth = new YearMonth(2022, 1);
-        var url = CreateUrl(expectedMeteringPointId, yearMonth, "v1");
+        var yearMonth = new YearMonth(2021, 2);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v1/");
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -154,12 +162,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedMeasurementsAsync_WhenUsingExplicitVersionV2_ReturnsNotFound()
+    public async Task GetAggregatedMeasurementsAsync_WhenUsingExplicitVersionV3_ReturnsNotFound()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        var yearMonth = new YearMonth(2022, 1);
-        var url = CreateUrl(expectedMeteringPointId, yearMonth, "v2");
+        var yearMonth = new YearMonth(2021, 2);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, yearMonth, "v3/");
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -168,19 +176,14 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(HttpStatusCode.NotFound, actual.StatusCode);
     }
 
-    private static string CreateUrl(string expectedMeteringPointId, string startDate, string endDate)
+    private static string CreateGetMeasurementsForPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "")
     {
-        return $"measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
+        return $"{versionPrefix}measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
-    private static string CreateUrl(string expectedMeteringPointId, YearMonth yearMonth, string version)
+    private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, YearMonth yearMonth, string versionPrefix = "")
     {
-        return $"{version}/measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
-    }
-
-    private static string CreateUrl(string expectedMeteringPointId, YearMonth yearMonth)
-    {
-        return $"measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
+        return $"{versionPrefix}measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

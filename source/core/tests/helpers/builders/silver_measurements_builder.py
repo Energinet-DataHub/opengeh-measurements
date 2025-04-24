@@ -1,9 +1,12 @@
 from decimal import Decimal
 
+from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType
+from geh_common.domain.types.quantity_unit import QuantityUnit
 
 import tests.helpers.datetime_helper as datetime_helper
+from core.contracts.process_manager.enums.quality import Quality
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
 
@@ -11,17 +14,6 @@ class SilverMeasurementsBuilder:
     def __init__(self, spark_session):
         self.spark = spark_session
         self.data = []
-
-    @staticmethod
-    def _generate_default_points():
-        return [
-            {
-                "position": position,
-                "quantity": Decimal(1.0),
-                "quality": "measured",
-            }
-            for position in range(1, 25)
-        ]
 
     def add_row(
         self,
@@ -31,14 +23,16 @@ class SilverMeasurementsBuilder:
         transaction_id="5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime=datetime_helper.get_datetime(year=2020, month=1),
         metering_point_type=MeteringPointType.PRODUCTION.value,
-        unit="KWH",
-        resolution="PT1H",
+        unit=QuantityUnit.KWH.value,
+        resolution=MeteringPointResolution.HOUR.value,
         start_datetime=datetime_helper.get_datetime(year=2020, month=1),
         end_datetime=datetime_helper.get_datetime(year=2020, month=2),
-        points=_generate_default_points(),
+        points=None,
         is_cancelled=False,
         created=datetime_helper.get_datetime(year=2020, month=1, day=1),
     ):
+        if points is None:
+            points = self._generate_default_points()
         self.data.append(
             (
                 orchestration_type,
@@ -64,6 +58,16 @@ class SilverMeasurementsBuilder:
             "quantity": quantity,
             "quality": quality,
         }
+
+    def _generate_default_points(self):
+        return [
+            {
+                "position": position,
+                "quantity": Decimal(1.0),
+                "quality": Quality.Q_MEASURED.value,  # Quality is not transformed in the silver layer.
+            }
+            for position in range(1, 25)
+        ]
 
     def build(self):
         return self.spark.createDataFrame(self.data, schema=silver_measurements_schema)
