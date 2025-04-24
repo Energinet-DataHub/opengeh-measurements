@@ -713,7 +713,6 @@ metering_point_id;metering_point_type;quantity;quality;observation_time;#comment
 170000000000000209;consumption;0;measured;2024-03-01T17:45:00Z;Case 9: Day 6 (outside job parameter grid area)
 170000000001500210;consumption;0;measured;2024-02-29T17:30:00Z;Case 10: Day 5 (outside job parameter grid area)
 170000000001500210;consumption;0;measured;2024-03-01T17:45:00Z;Case 10: Day 6 (outside job parameter grid area)
-;consumption;0;;;
 170000000000000211;consumption;0;measured;2024-02-26T23:00:00Z;Case 11
 170000000000000211;consumption;0;measured;2024-02-26T23:15:00Z;Case 11
 170000000000000211;consumption;0;measured;2024-02-26T23:30:00Z;Case 11
