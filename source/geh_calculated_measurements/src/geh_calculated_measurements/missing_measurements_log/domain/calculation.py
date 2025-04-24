@@ -34,7 +34,7 @@ def execute(
     )
 
     return missing_measurements.withColumn(
-        ContractColumnNames.orchestration_instance_id, F.lit(orchestration_instance_id)
+        ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id))
     )
 
 

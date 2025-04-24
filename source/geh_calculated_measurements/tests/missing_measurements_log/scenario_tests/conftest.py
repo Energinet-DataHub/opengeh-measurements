@@ -45,7 +45,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
             return_value=consumption_metering_point_periods,
         ),
         mock.patch(
-            "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsRepository.read",
+            "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsRepository._read",
             return_value=current_measurements,
         ),
     ):
