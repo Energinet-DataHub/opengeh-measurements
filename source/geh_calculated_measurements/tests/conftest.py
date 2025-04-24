@@ -1,10 +1,14 @@
 import os
+import shutil
 import sys
+from collections import namedtuple
+from pathlib import Path
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from delta import configure_spark_with_delta_pip
 from geh_common.data_products.electricity_market_measurements_input import (
     missing_measurements_log_metering_point_periods_v1,
     net_consumption_group_6_child_metering_points_v1,
@@ -13,7 +17,7 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
-from geh_common.testing.spark.spark_test_session import get_spark_test_session
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.domain import CurrentMeasurements
@@ -34,6 +38,108 @@ from tests import (
 )
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+TestingContext = namedtuple("TestingContext", "data_dir")
+SparkTestingContext = namedtuple("SparkTestingContext", ["test_ctx", "spark"])
+
+delta_core_jar = str(Path(__file__).parent / "delta-core_2.13-3.3.0.jar")
+
+
+def mock_test_objects():
+    pass
+
+
+def prepare_data():
+    data_dir = Path(__file__).parent / "data"
+    return str(data_dir.resolve())
+
+
+def get_spark_session(tmp_path_factory, extra_packages: list[str] | None = None) -> SparkSession:
+    extra_java_options = [
+        # reduces the memory footprint by limiting the Delta log cache
+        "-Ddelta.log.cacheSize=3",
+        # allows the JVM garbage collector to remove unused classes that Spark generates a lot of dynamically
+        "-XX:+CMSClassUnloadingEnabled",
+        # tells JVM to use 32-bit addresses instead of 64 (If you’re not planning to use more than 32G of RAM)
+        "-XX:+UseCompressedOops",
+        # When running locally, Spark uses the Apache Derby database. This database uses RAM and the local disc to store files.
+        # Using the same metastore in all processes can lead to concurrent modifications of the same table metadata.
+        # This can lead to errors (e.g. unknown partitions) and undesired interference between tests.
+        # To avoid it, use a separate metastore in each process.
+        f"-Dderby.system.home={str(tmp_path_factory.mktemp('derby').resolve())}",
+    ]
+
+    config = {
+        "spark.driver.extraJavaOptions": " ".join(extra_java_options),
+        "spark.sql.shuffle.partitions": "1",
+        "spark.databricks.delta.snapshotPartitions": "2",
+        "spark.ui.showConsoleProgress": "false",
+        "spark.ui.enabled": "false",
+        "spark.ui.dagGraph.retainedRootRDDs": "1",
+        "spark.ui.retainedJobs": "1",
+        "spark.ui.retainedStages": "1",
+        "spark.ui.retainedTasks": "1",
+        "spark.sql.ui.retainedExecutions": "1",
+        "spark.worker.ui.retainedExecutors": "1",
+        "spark.worker.ui.retainedDrivers": "1",
+        "spark.driver.memory": "2g",
+        "spark.sql.session.timeZone": "UTC",
+        # Do not write Spark outputs from different processes to the same output folder,
+        # as this can lead to data races and test interference.
+        # Use tmp_path_factory to set up the output folder in the session-scoped fixture.
+        "spark.sql.warehouse.dir": str(tmp_path_factory.mktemp("warehouse").resolve()),
+        "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
+        "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+        # "spark.jars"  : f"file://{delta_core_jar}",
+    }
+
+    conf = SparkConf().setAll(pairs=[(k, v) for k, v in config.items()])
+
+    # Create the Spark session
+    builder = configure_spark_with_delta_pip(
+        SparkSession.Builder().master("local[1]").config(conf=conf), extra_packages=extra_packages
+    )
+    session = builder.getOrCreate()
+    session.sparkContext.setCheckpointDir(str(tmp_path_factory.mktemp("checkpoints").resolve()))
+    return session
+
+
+@pytest.fixture(scope="session", autouse=True)
+def testing_context(tmp_path_factory) -> Generator[TestingContext, None, None]:
+    mock_test_objects()
+    data_dir = tmp_path_factory.mktemp("data_dir")
+
+    yield TestingContext(str(data_dir.resolve()))
+    shutil.rmtree(data_dir)
+
+
+@pytest.fixture(scope="session")
+def spark_test_session(testing_context, tmp_path_factory):
+    spark = get_spark_session(tmp_path_factory)
+    yield SparkTestingContext(testing_context, spark)
+    spark.stop()
+
+
+@pytest.fixture(scope="session")
+def spark(spark_test_session) -> SparkSession:
+    """
+    Create a Spark session with Delta Lake enabled.
+    """
+    return spark_test_session.spark
+
+
+@pytest.fixture(scope="session", autouse=True)
+def fix_print():
+    """
+    pytest-xdist disables stdout capturing by default, which means that print() statements
+    are not captured and displayed in the terminal.
+    That's because xdist cannot support -s for technical reasons wrt the process execution mechanism
+    https://github.com/pytest-dev/pytest-xdist/issues/354
+    """
+    original_print = print
+    with mock.patch("builtins.print") as mock_print:
+        mock_print.side_effect = lambda *args, **kwargs: original_print(*args, **{"file": sys.stderr, **kwargs})
+        yield mock_print
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
@@ -72,36 +178,6 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     """
     yield
     spark.catalog.clearCache()
-
-
-# pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
-# Therefore, we need to create a global variable to store the Spark session and data directory.
-# This is a workaround to avoid creating a new Spark session for each test.
-_spark, data_dir = get_spark_test_session()
-
-
-@pytest.fixture(scope="session")
-def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
-    """
-    Create a Spark session with Delta Lake enabled.
-    """
-    yield _spark
-    _spark.stop()
-    # shutil.rmtree(data_dir)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def fix_print():
-    """
-    pytest-xdist disables stdout capturing by default, which means that print() statements
-    are not captured and displayed in the terminal.
-    That's because xdist cannot support -s for technical reasons wrt the process execution mechanism
-    https://github.com/pytest-dev/pytest-xdist/issues/354
-    """
-    original_print = print
-    with mock.patch("builtins.print") as mock_print:
-        mock_print.side_effect = lambda *args, **kwargs: original_print(*args, **{"file": sys.stderr, **kwargs})
-        yield mock_print
 
 
 @pytest.fixture(scope="session")
