@@ -301,7 +301,6 @@ dependencies = [
     { name = "geh-common" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
-    { name = "pytest-xdist" },
 ]
 
 [package.dev-dependencies]
@@ -317,6 +316,7 @@ dev = [
     { name = "pytest-bdd-report" },
     { name = "pytest-cov" },
     { name = "pytest-mock" },
+    { name = "pytest-xdist" },
     { name = "ruff" },
 ]
 
@@ -325,7 +325,6 @@ requires-dist = [
     { name = "geh-common", git = "https://github.com/Energinet-DataHub/opengeh-python-packages?subdirectory=source%2Fgeh_common&rev=geh_common_5.7.0" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
-    { name = "pytest-xdist", specifier = ">=3.6.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -341,6 +340,7 @@ dev = [
     { name = "pytest-bdd-report", specifier = ">=1.0.1" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "pytest-mock", specifier = ">=3.14.0" },
+    { name = "pytest-xdist", specifier = ">=3.6.1" },
     { name = "ruff", specifier = ">=0.9.1" },
 ]
 
