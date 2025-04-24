@@ -25,9 +25,9 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
                 datetime(2022, 1, 1, 1, tzinfo=ZoneInfo("Europe/Copenhagen")),
             ),
         ],
-        schema=ExternalDataProducts.MISSING,
+        schema=ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema,
     )
-    assert df.schema == ExternalDataProducts.MissingMeasurementsLogMeteringPointPeriods.schema
+    assert df.schema == ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema
     return df
 
 
@@ -77,7 +77,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = metering_point_periods_repository.read_metering_point_periods()
 
     # Assert
-    assert actual.schema == ExternalDataProducts.MissingMeasurementsLogMeteringPointPeriods.schema
-
-
-# TODO JMG : Contract test
+    assert actual.schema == ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema
