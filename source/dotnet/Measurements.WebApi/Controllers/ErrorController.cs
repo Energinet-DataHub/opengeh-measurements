@@ -32,12 +32,12 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
 
         logger.LogError(
             "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-            HttpContext.Request.Path,
+            Request.Path,
             queryString);
 
         return Problem(
             detail: "An unknown error occured.",
-            instance: HttpContext.Request.Path,
+            instance: Request.Path,
             statusCode: StatusCodes.Status500InternalServerError);
     }
 }
