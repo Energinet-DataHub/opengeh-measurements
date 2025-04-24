@@ -30,7 +30,7 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="module")
 def metering_point_periods_table() -> MeteringPointPeriodsTable:
-    return MeteringPointPeriodsTable(catalog_name=SPARK_CATALOG_NAME)
+    return MeteringPointPeriodsTable(SPARK_CATALOG_NAME)
 
 
 def test__when_invalid_contract__raises_with_useful_message(
@@ -75,3 +75,6 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
 
     # Assert
     assert actual.schema == MeteringPointPeriodsTable.schema
+
+
+# TODO JMG : Contract test

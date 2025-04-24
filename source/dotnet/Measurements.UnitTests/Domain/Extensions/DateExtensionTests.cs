@@ -2,9 +2,11 @@
 using Energinet.DataHub.Measurements.Application.Extensions;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Domain.Extensions;
 
+[UnitTest]
 public class InstantExtensionTests
 {
     [Theory]

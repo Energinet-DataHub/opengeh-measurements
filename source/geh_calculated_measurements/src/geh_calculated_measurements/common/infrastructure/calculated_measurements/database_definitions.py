@@ -9,6 +9,7 @@ class CalculatedMeasurementsInternalDatabaseDefinition:
     CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_TABLE_NAME = "capacity_settlement_ten_largest_quantities"
     CAPACITY_SETTLEMENT_CALCULATIONS_TABLE_NAME = "capacity_settlement_calculations"
     CALCULATED_ESTIMATED_ANNUAL_CONSUMPTION_TABLE_NAME = "calculated_estimated_annual_consumption"
+    MISSING_MEASUREMENTS_LOG_TABLE_NAME = "missing_measurements_log"
 
 
 class CalculatedMeasurementsDatabaseDefinition:
