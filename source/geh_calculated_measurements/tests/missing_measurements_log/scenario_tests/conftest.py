@@ -9,12 +9,12 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.missing_measurements_log.application import (
     MissingMeasurementsLogArgs,
     execute_application,
 )
-from geh_calculated_measurements.missing_measurements_log.infrastructure import Repository
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -28,12 +28,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
-    consumption_metering_point_periods = read_csv(
+    metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__missing_measurements_log/metering_point_periods_v1.csv",
-        Repository.schema,
+        ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema,
     )
 
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
@@ -42,7 +42,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with (
         mock.patch(
             "geh_calculated_measurements.missing_measurements_log.infrastructure.MeteringPointPeriodsTable.read",
-            return_value=consumption_metering_point_periods,
+            return_value=metering_point_periods,
         ),
         mock.patch(
             "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsRepository._read",

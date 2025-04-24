@@ -5,8 +5,10 @@ from geh_calculated_measurements.common.infrastructure import CurrentMeasurement
 from geh_calculated_measurements.missing_measurements_log.application.missing_measurements_log_args import (
     MissingMeasurementsLogArgs,
 )
-from geh_calculated_measurements.missing_measurements_log.domain import execute
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsRepository
+from geh_calculated_measurements.missing_measurements_log.domain.calculation import execute
+from geh_calculated_measurements.missing_measurements_log.infrastructure.repository import (
+    Repository as MeteringPointPeriodsRepository,
+)
 
 
 @use_span()
