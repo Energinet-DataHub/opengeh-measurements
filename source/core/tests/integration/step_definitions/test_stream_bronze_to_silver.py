@@ -154,9 +154,9 @@ def _(spark: SparkSession, field: str, value: str):
     parsers.parse("submitted transaction points where the quality has value {quality}"),
     target_fixture="identifier",
 )
-def _(spark: SparkSession, quality: Quality):
+def _(spark: SparkSession, value: Quality):
     orchestration_instance_id = identifier_helper.generate_random_string()
-    points = PointsBuilder(spark).add_row(quality=quality).build()
+    points = PointsBuilder(spark).add_row(quality=value).build()
     value = ValueBuilder(spark).add_row(points=points, orchestration_instance_id=orchestration_instance_id).build()
     submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
     table_helper.append_to_table(
