@@ -90,7 +90,7 @@ def get_spark_session(tmp_path_factory, extra_packages: list[str] | None = None)
         "spark.sql.warehouse.dir": str(tmp_path_factory.mktemp("warehouse").resolve()),
         "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
         "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        # "spark.jars"  : f"file://{delta_core_jar}",
+        "spark.jars": f"file://{delta_core_jar}",
     }
 
     conf = SparkConf().setAll(pairs=[(k, v) for k, v in config.items()])
