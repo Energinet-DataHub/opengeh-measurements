@@ -72,7 +72,7 @@ public class MeasurementsControllerTests
         // Arrange
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+            .ThrowsAsync(new MeasurementsNotFoundException());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
 
         // Act

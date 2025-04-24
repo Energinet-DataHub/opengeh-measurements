@@ -26,15 +26,9 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
 
             return Ok(result);
         }
-        catch (MeasurementsNotFoundDuringPeriodException e)
+        catch (MeasurementsNotFoundException e)
         {
             return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurement");
-
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
         }
     }
 
@@ -49,15 +43,9 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
 
             return Ok(result);
         }
-        catch (MeasurementsNotFoundDuringPeriodException e)
+        catch (MeasurementsNotFoundException e)
         {
             return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurement");
-
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
         }
     }
 
@@ -73,7 +61,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
 
             return Ok(result);
         }
-        catch (MeasurementsNotFoundDuringPeriodException e)
+        catch (MeasurementsNotFoundException e)
         {
             return NotFound(e.Message);
         }
