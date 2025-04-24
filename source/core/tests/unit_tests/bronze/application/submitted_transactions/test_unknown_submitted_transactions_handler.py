@@ -32,7 +32,7 @@ def test__handle__filters_submitted_transactions_by_version(mocker: MockerFixtur
     mock_protobuf_versions = mocker.patch(f"{sut.__name__}.protobuf_versions.get_versions")
     mock_protobuf_versions.return_value = ["1", "2", "3"]
     mocker_spark_functions = mocker.patch(f"{sut.__name__}.F")
-    mocker_test = ~mocker_spark_functions.col().isin()
+    mocker_test = ~mocker_spark_functions.col().isin() | mocker_spark_functions.col().isNull()
 
     # Act
     sut.handle(submitted_transactions)
