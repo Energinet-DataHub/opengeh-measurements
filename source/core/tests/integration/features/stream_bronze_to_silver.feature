@@ -20,6 +20,11 @@ Feature: Streaming from Bronze to Silver
     When streaming submitted transactions to the Silver layer
     Then submitted transaction is persisted into the invalid bronze submitted transaction table
 
+  Scenario: Processing submitted transactions with unknown version
+    Given submitted transactions with unknown version inserted into the bronze submitted table
+    When streaming submitted transactions to the Silver layer
+    Then submitted transaction is persisted into the invalid bronze submitted transaction table    
+
   Scenario Outline: Processing submitted transaction with unspecified <field>
     Given submitted transaction where the <field> has value <value>
     When streaming submitted transactions to the Silver layer
