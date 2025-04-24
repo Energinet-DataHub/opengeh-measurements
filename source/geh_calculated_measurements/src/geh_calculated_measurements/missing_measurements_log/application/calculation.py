@@ -10,7 +10,7 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure import 
 
 
 @use_span()
-def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -> DataFrame:
+def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -> None:
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
     metering_point_periods_repository = MeteringPointPeriodsRepository(spark, args.catalog_name)
 
@@ -25,4 +25,5 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         orchestration_instance_id=args.orchestration_instance_id,
         grid_area_codes=args.grid_area_codes,
     )
-    return missing_measurements_log
+
+    missing_measurements_log.df.show()  # TODO JMG : Write to table instead of show

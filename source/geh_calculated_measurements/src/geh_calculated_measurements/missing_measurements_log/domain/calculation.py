@@ -24,7 +24,7 @@ def execute(
 ) -> DataFrame:
     metering_point_periods_df = metering_point_periods.df
     if grid_area_codes is not None:
-        metering_point_periods_df = metering_point_periods.df.where(
+        metering_point_periods_df = metering_point_periods_df.where(
             F.col(ContractColumnNames.grid_area_code).isin(grid_area_codes)
         )
 
