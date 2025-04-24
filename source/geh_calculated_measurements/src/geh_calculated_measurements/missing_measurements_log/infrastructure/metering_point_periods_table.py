@@ -15,10 +15,8 @@ class MeteringPointPeriodsTable(Table):
     The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
     """
 
-    def __init__(self, catalog_name: str, database_name: str) -> None:
-        self.fully_qualified_name = (
-            f"{catalog_name}.{database_name}.{missing_measurements_log_metering_point_periods_v1.view_name}"
-        )
+    def __init__(self, catalog_name: str) -> None:
+        self.fully_qualified_name = f"{catalog_name}.{missing_measurements_log_metering_point_periods_v1.database_name}.{missing_measurements_log_metering_point_periods_v1.view_name}"
         super().__init__()
 
     metering_point_id = T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False)
