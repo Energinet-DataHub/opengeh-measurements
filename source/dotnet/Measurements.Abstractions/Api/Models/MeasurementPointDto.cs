@@ -8,5 +8,13 @@
 /// <param name="Quality">Quality of measurement.</param>
 /// <param name="Unit">Unit of measurement.</param>
 /// <param name="Resolution">Resolution of measurement.</param>
-/// <param name="Created">Timestamp defining when this point was created.</param>
-public sealed record MeasurementPointDto(int Order, decimal Quantity, Quality Quality, Unit Unit, Resolution Resolution, DateTimeOffset Created);
+/// <param name="PersistedTime">Timestamp defining when this point was persisted.</param>
+/// <param name="RegistrationTime">Timestamp defining when this point was registered.</param>
+public sealed record MeasurementPointDto(
+    int Order,
+    decimal Quantity,
+    Quality Quality,
+    Unit Unit,
+    Resolution Resolution,
+    DateTimeOffset PersistedTime,
+    DateTimeOffset RegistrationTime);
