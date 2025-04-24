@@ -100,7 +100,11 @@ def test__append_if_not_exists__when_multiple_clustering_columns_to_filter__call
     merge_columns = ["id"]
     clustering_columns_to_filter_specifically = ["clustering_column_1", "clustering_column_2"]
 
-    expected_condition = "current.id <=> update.id AND ((CAST(current.clustering_column_1 AS DATE) >= '2023-01-01' AND CAST(current.clustering_column_1 AS DATE) <= '2023-01-02')) AND (CAST(current.clustering_column_2 AS DATE) == '2023-01-02' OR CAST(current.clustering_column_2 AS DATE) == '2023-01-04')"
+    expected_condition = (
+        "current.id <=> update.id AND "
+        + "((CAST(current.clustering_column_1 AS DATE) >= '2023-01-01' AND CAST(current.clustering_column_1 AS DATE) <= '2023-01-02')) AND "
+        + "(CAST(current.clustering_column_2 AS DATE) == '2023-01-02' OR CAST(current.clustering_column_2 AS DATE) == '2023-01-04')"
+    )
 
     # Act
     sut.append_if_not_exists(
