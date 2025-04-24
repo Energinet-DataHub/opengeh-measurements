@@ -1,5 +1,3 @@
-from geh_calculated_measurements.missing_measurements_log.domain.missing_measurements_log_table import (
-    MissingMeasurementsLogTable,
-)
+from geh_calculated_measurements.missing_measurements_log.domain.calculation import execute
 
-__all__ = ["MissingMeasurementsLogTable"]
+__all__ = ["execute"]

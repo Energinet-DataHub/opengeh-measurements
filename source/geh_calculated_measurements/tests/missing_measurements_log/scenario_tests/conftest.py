@@ -9,8 +9,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsTable
+from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.missing_measurements_log.application import (
     MissingMeasurementsLogArgs,
     execute_application,
@@ -29,7 +28,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurementsTable.schema,
+        CurrentMeasurements.schema,
     )
     consumption_metering_point_periods = read_csv(
         spark,
@@ -46,7 +45,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
             return_value=consumption_metering_point_periods,
         ),
         mock.patch(
-            "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsTable.read",
+            "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsRepository._read",
             return_value=current_measurements,
         ),
     ):
