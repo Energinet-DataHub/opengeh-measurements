@@ -40,7 +40,7 @@ def append_if_not_exists(
 
     if clustering_columns_to_filter_specifically is not None:
         for clustering_key in clustering_columns_to_filter_specifically:
-            clustering_key_type = dict(dataframe.dtypes)[clustering_key]
+            clustering_key_type = dataframe.schema[clustering_key].dataType
             if isinstance(clustering_key_type, TimestampType) or isinstance(clustering_key_type, DateType):
                 extra_merge_check = get_target_filter_for_datetime_clustering_key(
                     dataframe, clustering_key, current_alias_table_name
@@ -50,7 +50,7 @@ def append_if_not_exists(
     merge_check = " AND ".join(merge_check_list)
 
     delta_table.alias(current_alias_table_name).merge(
-        dataframe.alias(update_alias_table_name), merge_check
+        dataframe.alias(update_alias_table_name), condition=merge_check
     ).whenNotMatchedInsertAll().execute()
 
 
@@ -61,5 +61,5 @@ def get_target_filter_for_datetime_clustering_key(
     if len(dates_to_filter) == 0:
         return "TRUE"
 
-    joined_string = ",".join([str(date) for date in dates_to_filter])
+    joined_string = ",".join([f"'{str(date)}'" for date in dates_to_filter])
     return f"CAST({current_alias_table_name}.{clustering_col} AS DATE) in ({joined_string})"
