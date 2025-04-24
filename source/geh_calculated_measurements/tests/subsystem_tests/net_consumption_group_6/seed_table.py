@@ -55,23 +55,6 @@ def gold_table_statement(catalog_name: str) -> str:
     return seed_gold_table.get_statement(catalog_name, gold_table_rows)
 
 
-def delete_seeded_data(job_fixture: JobTestFixture) -> None:
-    statements = []
-    # PARENT
-    statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{parent_table}
-        WHERE metering_point_id = '{parent_metering_point_id}'
-    """)
-    # CHILD
-    statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{child_table}
-        WHERE parent_metering_point_id = '{parent_metering_point_id}'
-    """)
-
-    for statement in statements:
-        job_fixture.execute_statement(statement)
-
-
 def electricity_market_tables_statements(catalog_name: str, database_name: str) -> list[str]:
     statements = []
     # PARENT
@@ -143,3 +126,20 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     """)
     return statements
+
+
+def delete_seeded_data(job_fixture: JobTestFixture) -> None:
+    statements = []
+    # PARENT
+    statements.append(f"""
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{parent_table}
+        WHERE metering_point_id = '{parent_metering_point_id}'
+    """)
+    # CHILD
+    statements.append(f"""
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{child_table}
+        WHERE parent_metering_point_id = '{parent_metering_point_id}'
+    """)
+
+    for statement in statements:
+        job_fixture.execute_statement(statement)
