@@ -10,14 +10,12 @@ from pyspark.sql.dataframe import DataFrame
 
 from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
 
 
 @pytest.fixture(scope="module")
-def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsRepository:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}")
+def current_measurements_repository(
+    spark: SparkSession, external_dataproducts_created: None
+) -> CurrentMeasurementsRepository:
     return CurrentMeasurementsRepository(
         spark=spark,
         catalog_name=spark.catalog.currentCatalog(),
