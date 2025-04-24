@@ -24,5 +24,5 @@ def test__append_if_not_exists__calls_expected(spark: SparkSession, mocker: Mock
     mocked_dataframe.dropDuplicates.assert_called_once_with(subset=merge_columns)
 
     mocked_delta_table.forName.assert_called_once_with(spark, table_name)
-    mocked_delta_table.forName().alias().merge.assert_called_once_with()
+    mocked_delta_table.forName().alias().merge.assert_called_once()
     mocked_delta_table.forName().alias().merge().whenNotMatchedInsertAll.assert_called_once()
