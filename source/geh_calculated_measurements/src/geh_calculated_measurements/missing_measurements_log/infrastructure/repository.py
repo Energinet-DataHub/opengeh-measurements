@@ -3,7 +3,7 @@ from geh_common.data_products.electricity_market_measurements_input import (
 )
 from pyspark.sql import DataFrame, SparkSession
 
-from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
+from geh_calculated_measurements.missing_measurements_log.domain import (
     MeteringPointPeriods,
 )
 
