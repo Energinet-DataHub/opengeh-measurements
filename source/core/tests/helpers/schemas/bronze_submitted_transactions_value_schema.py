@@ -23,7 +23,7 @@ bronze_submitted_transactions_value_schema = StructType(
         StructField(ValueColumnNames.metering_point_id, StringType(), True),
         StructField(ValueColumnNames.transaction_id, StringType(), True),
         StructField(ValueColumnNames.transaction_creation_datetime, TimestampType(), True),
-        StructField(ValueColumnNames.metering_point_type, IntegerType(), True),
+        StructField(ValueColumnNames.metering_point_type, StringType(), True),
         StructField(ValueColumnNames.unit, IntegerType(), True),
         StructField(ValueColumnNames.resolution, IntegerType(), True),
         StructField(ValueColumnNames.start_datetime, TimestampType(), True),

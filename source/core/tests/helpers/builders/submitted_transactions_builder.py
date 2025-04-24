@@ -60,7 +60,7 @@ class Value:
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: MeteringPointType = MeteringPointType.MPT_PRODUCTION,
+        metering_point_type: int = MeteringPointType.MPT_PRODUCTION,
         unit: Unit = Unit.U_KWH,
         resolution: Resolution = Resolution.R_PT15M,
         start_datetime: datetime = datetime_helper.get_datetime(year=2020, month=1),
@@ -69,13 +69,13 @@ class Value:
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id
-        self.orchestration_type = orchestration_type
+        self.orchestration_type = OrchestrationType.Name(int(orchestration_type))
         self.metering_point_id = metering_point_id
         self.transaction_id = transaction_id
         self.transaction_creation_datetime = transaction_creation_datetime
-        self.metering_point_type = metering_point_type
-        self.unit = unit
-        self.resolution = resolution
+        self.metering_point_type = MeteringPointType.Name(int(metering_point_type))
+        self.unit = Unit.Name(int(unit))
+        self.resolution = Resolution.Name(int(resolution))
         self.start_datetime = start_datetime
         self.end_datetime = end_datetime
         self.points = points
@@ -143,12 +143,17 @@ class ValueBuilder:
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
 
+        options = {
+            "enums.as.ints": "true",
+        }
+
         df_value = df_value.withColumn(
             BronzeSubmittedTransactionsColumnNames.value,
             to_protobuf(
                 BronzeSubmittedTransactionsColumnNames.value,
                 "PersistSubmittedTransaction",
                 descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
+                options=options,
             ),
         )
 

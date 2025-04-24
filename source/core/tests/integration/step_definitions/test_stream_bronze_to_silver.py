@@ -133,7 +133,7 @@ def _(spark: SparkSession):
     parsers.parse("submitted transaction where the {field} has value {value}"),
     target_fixture="identifier",
 )
-def _(spark: SparkSession, field: str, value: str):
+def _(spark: SparkSession, field: str, value: int):
     orchestration_instance_id = identifier_helper.generate_random_string()
     value = (
         ValueBuilder(spark).add_row(**{field: value}, orchestration_instance_id=orchestration_instance_id).build()  # type: ignore
