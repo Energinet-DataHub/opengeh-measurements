@@ -1,5 +1,5 @@
 from geh_common.telemetry.decorators import use_span
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
 from geh_calculated_measurements.missing_measurements_log.application.missing_measurements_log_args import (
@@ -16,7 +16,7 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
-    metering_point_periods = metering_point_periods_repository.read_metering_point_periods
+    metering_point_periods = metering_point_periods_repository.read_metering_point_periods()
 
     missing_measurements_log = execute(
         current_measurements=current_measurements,
@@ -26,4 +26,4 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         grid_area_codes=args.grid_area_codes,
     )
 
-    missing_measurements_log.df.show()  # TODO JMG : Write to table instead of show
+    missing_measurements_log.show()  # TODO JMG : Write to table instead of show
