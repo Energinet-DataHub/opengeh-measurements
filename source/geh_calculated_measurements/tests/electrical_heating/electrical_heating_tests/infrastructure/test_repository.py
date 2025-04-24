@@ -35,7 +35,8 @@ def _create_repository(spark: SparkSession) -> ElectricityMarketRepository:
 def test__when_consumption_missing_expected_column_raises_exception(spark: SparkSession, monkeypatch) -> None:
     with pytest.raises(ValueError, match=r"Column settlement_month not found in CSV"):
         _create_repository_with_missing_col(spark).read_consumption_metering_point_periods()
-        
+
+
 def test__when_child_missing_expected_column_raises_exception(spark: SparkSession, monkeypatch) -> None:
     with pytest.raises(ValueError, match=r"Column metering_point_sub_type not found in CSV"):
         _create_repository_with_missing_col(spark).read_child_metering_points()
