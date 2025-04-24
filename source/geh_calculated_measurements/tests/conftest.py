@@ -21,9 +21,6 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
     MeasurementsGoldDatabaseDefinition,
 )
-from geh_calculated_measurements.common.infrastructure.electricity_market import (
-    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-)
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
@@ -170,10 +167,10 @@ def external_dataproducts_created(
     )
 
     # Create missing measurements log database and tables
-    create_database(spark, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
+    create_database(spark, missing_measurements_log_metering_point_periods_v1.database_name)
     create_table(
         spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        database_name=missing_measurements_log_metering_point_periods_v1.database_name,
         table_name=missing_measurements_log_metering_point_periods_v1.view_name,
         schema=MeteringPointPeriodsTable.schema,
     )
@@ -181,13 +178,13 @@ def external_dataproducts_created(
     # Create net consumption group 6 database and tables
     create_table(
         spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        database_name=net_consumption_group_6_consumption_metering_point_periods_v1.database_name,
         table_name=net_consumption_group_6_consumption_metering_point_periods_v1.view_name,
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
     create_table(
         spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+        database_name=net_consumption_group_6_child_metering_points_v1.database_name,
         table_name=net_consumption_group_6_child_metering_points_v1.view_name,
         schema=net_consumption_group_6_child_metering_points_v1.schema,
     )

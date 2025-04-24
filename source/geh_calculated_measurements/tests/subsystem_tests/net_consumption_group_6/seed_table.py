@@ -1,10 +1,6 @@
 import random
 from datetime import datetime, timezone
 
-from geh_common.data_products.electricity_market_measurements_input import (
-    net_consumption_group_6_child_metering_points_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
-)
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
@@ -12,8 +8,8 @@ from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
-parent_table = net_consumption_group_6_consumption_metering_point_periods_v1.view_name
-child_table = net_consumption_group_6_child_metering_points_v1.view_name
+parent_table = "net_consumption_group_6_consumption_metering_point_periods"
+child_table = "net_consumption_group_6_child_metering_point"
 
 parent_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
 net_consumption_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
@@ -25,7 +21,7 @@ def seed_table(
     job_fixture: JobTestFixture,
 ) -> None:
     catalog_name = job_fixture.config.catalog_name
-    database_name = job_fixture.config.electricity_market_database_name
+    database_name = job_fixture.config.electricity_market_internal_database_name
     job_fixture.execute_statement(gold_table_statement(catalog_name))
     for statement in electricity_market_tables_statements(catalog_name, database_name):
         job_fixture.execute_statement(statement)
@@ -63,12 +59,12 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
     statements = []
     # PARENT
     statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{parent_table}
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{parent_table}
         WHERE metering_point_id = '{parent_metering_point_id}'
     """)
     # CHILD
     statements.append(f"""
-        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_database_name}.{child_table}
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{child_table}
         WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """)
 
