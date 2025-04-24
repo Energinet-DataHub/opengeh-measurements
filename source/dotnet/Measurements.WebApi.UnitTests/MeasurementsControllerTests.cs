@@ -22,8 +22,7 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetByPeriodAsyncV1_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
+        Mock<IMeasurementsHandler> measurementsHandler)
     {
         // Arrange
         var response = CreateResponse();
@@ -31,7 +30,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetByPeriodAsyncV1(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object);
 
         // Act
         var actual = (await sut.GetByPeriodAsyncV1(request) as OkObjectResult)!.Value!.ToString();
@@ -44,8 +43,7 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
+        Mock<IMeasurementsHandler> measurementsHandler)
     {
         // Arrange
         var response = CreateResponse();
@@ -53,7 +51,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object);
 
         // Act
         var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -66,14 +64,13 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetByPeriodRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
+        Mock<IMeasurementsHandler> measurementsHandler)
     {
         // Arrange
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundException());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
@@ -86,14 +83,13 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
         GetByPeriodRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
+        Mock<IMeasurementsHandler> measurementsHandler)
     {
         // Arrange
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);

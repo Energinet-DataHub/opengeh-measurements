@@ -12,7 +12,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiVersion(2.0)]
 [ApiController]
 [Authorize]
-public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
+public class MeasurementsController(IMeasurementsHandler measurementsHandler)
     : ControllerBase
 {
     [MapToApiVersion(1.0)]
