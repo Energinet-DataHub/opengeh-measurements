@@ -30,7 +30,10 @@ def test__append_if_not_exists__when_silver_to_gold__calls_expected(spark: Spark
         gold_measurements,
         GoldMeasurementsRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[sut.GoldMeasurementsColumnNames.transaction_creation_datetime],
+        clustering_columns_to_filter_specifically=[
+            sut.GoldMeasurementsColumnNames.transaction_creation_datetime,
+            sut.GoldMeasurementsColumnNames.observation_time,
+        ],
         target_filters={
             sut.GoldMeasurementsColumnNames.orchestration_type: [sut.GehCommonOrchestrationType.SUBMITTED.value]
         },
