@@ -63,7 +63,10 @@ def test__append_if_not_exists__when_migrations_to_gold__calls_expected(
         gold_measurements,
         GoldMeasurementsRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[sut.GoldMeasurementsColumnNames.transaction_creation_datetime],
+        clustering_columns_to_filter_specifically=[
+            sut.GoldMeasurementsColumnNames.transaction_creation_datetime,
+            sut.GoldMeasurementsColumnNames.observation_time,
+        ],
         target_filters={
             sut.GoldMeasurementsColumnNames.orchestration_type: [sut.GehCommonOrchestrationType.MIGRATION.value]
         },
@@ -95,7 +98,10 @@ def test__append_if_not_exists__when_calculated_to_gold__calls_expected(
         gold_measurements,
         GoldMeasurementsRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[sut.GoldMeasurementsColumnNames.transaction_creation_datetime],
+        clustering_columns_to_filter_specifically=[
+            sut.GoldMeasurementsColumnNames.transaction_creation_datetime,
+            sut.GoldMeasurementsColumnNames.observation_time,
+        ],
         target_filters={
             sut.GoldMeasurementsColumnNames.orchestration_type: [
                 sut.GehCommonOrchestrationType.CAPACITY_SETTLEMENT.value,
