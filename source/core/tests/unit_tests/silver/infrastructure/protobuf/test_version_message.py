@@ -8,7 +8,7 @@ from tests.helpers.builders.submitted_transactions_builder import SubmittedTrans
 def test__with_version__adds_version_column_to_dataframe(spark: SparkSession) -> None:
     # Arrange
     version = "1"
-    value = ValueBuilder(spark).build(version=version)
+    value = ValueBuilder(spark).add_row(version=version).build()
     protobuf_message = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
 
     # Act
