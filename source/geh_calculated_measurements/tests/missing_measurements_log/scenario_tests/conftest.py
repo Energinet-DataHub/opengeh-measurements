@@ -40,11 +40,6 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
-    # I want to patch two read methods in the class MissingMeasurementsLogTable:
-    #   current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
-    #   metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
-    #   How to do that?
-    # Patch the read methods to return the test data
     with (
         mock.patch(
             "geh_calculated_measurements.missing_measurements_log.infrastructure.MeteringPointPeriodsTable.read",
@@ -61,7 +56,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
             period_end_datetime=datetime.fromisoformat(str(scenario_parameters["period_end_datetime"])),
             grid_area_codes=scenario_parameters["grid_area_codes"],
             catalog_name="test_catalog",
-            time_zone="UTC",
+            time_zone="Europe/Copenhagen",
         )
 
         # Execute the logic

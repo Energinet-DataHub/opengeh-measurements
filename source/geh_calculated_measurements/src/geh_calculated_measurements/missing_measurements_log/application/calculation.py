@@ -13,6 +13,5 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         args.catalog_name, args.time_zone, args.orchestration_instance_id, args.grid_area_codes
     )
     df = missing_measurements_log_table.read()
-    df.show()
     # TODO JMG: missing_measurements_log_table.write(df)
     return df

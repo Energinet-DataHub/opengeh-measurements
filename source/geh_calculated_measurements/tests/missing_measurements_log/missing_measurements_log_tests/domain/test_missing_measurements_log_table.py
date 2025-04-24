@@ -4,6 +4,7 @@ from datetime import datetime
 from geh_common.data_products.electricity_market_measurements_input import (
     missing_measurements_log_metering_point_periods_v1,
 )
+from geh_common.testing.dataframes import assert_schema
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType, StructField, StructType, TimestampType
 
@@ -39,6 +40,22 @@ def test__when__(spark: SparkSession, external_dataproducts_created: None) -> No
     actual = sut.read()
 
     # Assert
-    actual.show(truncate=False)
     # TODO AJW: Add assertions to check the contents of the DataFrame
     assert actual is not None
+
+
+def test__schema_is_correct() -> None:
+    # Arrange
+    expected = StructType(
+        [
+            StructField(ContractColumnNames.orchestration_instance_id, StringType(), False),
+            StructField(ContractColumnNames.metering_point_id, StringType(), False),
+            StructField(ContractColumnNames.date, TimestampType(), False),
+        ]
+    )
+
+    # Act
+    actual = MissingMeasurementsLogTable.schema
+
+    # Assert
+    assert_schema(actual, expected)

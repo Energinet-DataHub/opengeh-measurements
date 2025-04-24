@@ -34,41 +34,36 @@ class MissingMeasurementsLogTable(Table):
     def _get_expected_measurement_counts(self, metering_point_periods: DataFrame) -> DataFrame:
         """Calculate the expected measurement counts grouped by metering point and date."""
         metering_point_periods_local_time = convert_from_utc(metering_point_periods, self.time_zone)
-        metering_point_periods_local_time.show(truncate=False)
-        expected_measurement_counts = (
-            metering_point_periods_local_time.withColumn(
-                "start_of_day",
-                F.explode(
-                    F.sequence(
-                        F.col(MeteringPointPeriodsTable.period_from_date.name),
-                        F.col(MeteringPointPeriodsTable.period_to_date.name),
-                        F.expr("INTERVAL 1 DAY"),
-                    )
-                ),
-            )
-            .where(
-                # to date is exclusive
-                F.col("start_of_day") < F.col(MeteringPointPeriodsTable.period_to_date.name)
-            )
-            .select(
-                F.col(MeteringPointPeriodsTable.metering_point_id.name),
-                F.col("start_of_day"),
-                (F.col("start_of_day") + F.expr("INTERVAL 1 DAY")).alias("end_of_day"),
-                (
-                    (F.unix_timestamp(F.col("end_of_day")) - F.unix_timestamp(F.col("start_of_day")))
-                    / F.when(
-                        F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.HOUR.value, 3600
-                    ).when(
-                        F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.QUARTER.value, 900
-                    )
-                    # 3600 seconds for 1 hour, 900 seconds for 15 minutes
-                ).alias("measurement_counts"),
-            )
-            .select(
-                F.col(MeteringPointPeriodsTable.metering_point_id.name),
-                F.col("start_of_day").alias(self.date.name),
-                F.col("measurement_counts"),
-            )
+
+        expected_measurement_counts = metering_point_periods_local_time.withColumn(
+            "start_of_day",
+            F.explode(
+                F.sequence(
+                    F.col(MeteringPointPeriodsTable.period_from_date.name),
+                    F.col(MeteringPointPeriodsTable.period_to_date.name),
+                    F.expr("INTERVAL 1 DAY"),
+                )
+            ),
+        ).where(
+            # to date is exclusive
+            F.col("start_of_day") < F.col(MeteringPointPeriodsTable.period_to_date.name)
+        )
+
+        expected_measurement_counts = expected_measurement_counts.select(
+            F.col(MeteringPointPeriodsTable.metering_point_id.name),
+            F.col("start_of_day"),
+            (F.col("start_of_day") + F.expr("INTERVAL 1 DAY")).alias("end_of_day"),
+            (
+                (F.unix_timestamp(F.col("end_of_day")) - F.unix_timestamp(F.col("start_of_day")))
+                / F.when(
+                    F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.HOUR.value, 3600
+                ).when(F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.QUARTER.value, 900)
+                # 3600 seconds for 1 hour, 900 seconds for 15 minutes
+            ).alias("measurement_counts"),
+        ).select(
+            F.col(MeteringPointPeriodsTable.metering_point_id.name),
+            F.col("start_of_day").alias(self.date.name),
+            F.col("measurement_counts"),
         )
 
         return convert_to_utc(expected_measurement_counts, self.time_zone)
@@ -77,9 +72,10 @@ class MissingMeasurementsLogTable(Table):
         """Calculate the actual measurement counts grouped by metering point and date."""
         current_measurements = current_measurements.where(
             F.col(CurrentMeasurementsTable.observation_time.name).isNotNull()
-        )
+        ).where(F.col(CurrentMeasurementsTable.quality.name) != "missing")  # TODO Use data type from common.
 
         current_measurements = convert_from_utc(current_measurements, self.time_zone)
+
         actual_measurement_counts = (
             current_measurements.withColumn(
                 self.date.name, F.to_date(F.col(CurrentMeasurementsTable.observation_time.name))
@@ -88,7 +84,7 @@ class MissingMeasurementsLogTable(Table):
             .agg(F.count("*").alias("measurement_counts"))
         ).select(
             F.col(CurrentMeasurementsTable.metering_point_id.name),
-            F.col(self.date.name),
+            F.col(self.date.name).cast(T.TimestampType()),
             F.col("measurement_counts"),
         )
 
@@ -115,6 +111,11 @@ class MissingMeasurementsLogTable(Table):
     def read(self) -> DataFrame:
         current_measurements = CurrentMeasurementsTable(self.catalog_name).read()
         metering_point_periods = MeteringPointPeriodsTable(self.catalog_name).read()
+
+        if self.grid_area_codes is not None:
+            metering_point_periods = metering_point_periods.where(
+                F.col(MeteringPointPeriodsTable.grid_area_code.name).isin(self.grid_area_codes)
+            )
 
         expected_measurement_counts = self._get_expected_measurement_counts(metering_point_periods)
         actual_measurement_counts = self._get_actual_measurement_counts(current_measurements)
