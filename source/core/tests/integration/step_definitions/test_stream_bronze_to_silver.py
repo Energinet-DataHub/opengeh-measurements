@@ -1,4 +1,3 @@
-import pyspark.sql.functions as F
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from pyspark.sql import SparkSession
 from pytest_bdd import given, parsers, scenarios, then, when
@@ -26,12 +25,14 @@ scenarios("../features/stream_bronze_to_silver.feature")
 
 @given(
     "valid submitted transactions inserted into the bronze submitted table",
-    target_fixture="expected_orchestration_id",
+    target_fixture="identifier",
 )
 def _(spark: SparkSession):
     orchestration_instance_id = identifier_helper.generate_random_string()
     value = ValueBuilder(spark).add_row(orchestration_instance_id=orchestration_instance_id).build()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value).build()
+    submitted_transaction = (
+        SubmittedTransactionsBuilder(spark).add_row(value=value, topic=orchestration_instance_id).build()
+    )
     table_helper.append_to_table(
         submitted_transaction,
         BronzeSettings().bronze_database_name,
@@ -42,7 +43,7 @@ def _(spark: SparkSession):
 
 @given(
     "duplicated valid submitted transactions inserted into the bronze submitted table",
-    target_fixture="expected_orchestration_id",
+    target_fixture="identifier",
 )
 def _(spark: SparkSession):
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -61,22 +62,40 @@ def _(spark: SparkSession):
     return orchestration_instance_id
 
 
-@given("invalid submitted transactions inserted into the bronze submitted table", target_fixture="key")
+@given("invalid submitted transactions inserted into the bronze submitted table", target_fixture="identifier")
 def _(spark: SparkSession):
-    key = identifier_helper.generate_random_binary()
-    value = identifier_helper.generate_random_binary()
-    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, key=key).build()
+    topic = identifier_helper.generate_random_string()
+    value = ValueBuilder(spark).add_row(version="-1").build()
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, topic=topic).build()
+
     table_helper.append_to_table(
         submitted_transaction,
         BronzeSettings().bronze_database_name,
         BronzeTableNames.bronze_submitted_transactions_table,
     )
-    return key
+    return topic
+
+
+@given(
+    "submitted transactions with unknown version inserted into the bronze submitted table", target_fixture="identifier"
+)
+def _(spark: SparkSession):
+    topic = identifier_helper.generate_random_string()
+    value = identifier_helper.generate_random_binary()
+
+    submitted_transaction = SubmittedTransactionsBuilder(spark).add_row(value=value, topic=topic).build()
+
+    table_helper.append_to_table(
+        submitted_transaction,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_submitted_transactions_table,
+    )
+    return topic
 
 
 @given(
     "valid submitted transactions inserted into the silver measurements table and the same submitted transactions inserted into the bronze submitted table",
-    target_fixture="expected_orchestration_id",
+    target_fixture="identifier",
 )
 def _(spark: SparkSession):
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -109,7 +128,7 @@ def _(spark: SparkSession):
 
 @given(
     parsers.parse("submitted transaction where the {field} has value {value}"),
-    target_fixture="expected_orchestration_id",
+    target_fixture="identifier",
 )
 def _(spark: SparkSession, field: str, value: str):
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -130,7 +149,7 @@ def _(spark: SparkSession, field: str, value: str):
 
 @given(
     parsers.parse("submitted transaction points where the quality has value {quality}"),
-    target_fixture="expected_orchestration_id",
+    target_fixture="identifier",
 )
 def _(spark: SparkSession, quality: str):
     orchestration_instance_id = identifier_helper.generate_random_string()
@@ -159,32 +178,43 @@ def _(mock_checkpoint_path):
 @then(
     "submitted transaction is persisted into the bronze quarantine table and are not available in the silver measurements table"
 )
-def _(spark: SparkSession, expected_orchestration_id: str):
+def _(spark: SparkSession, identifier: str):
     silver_table = spark.table(f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}").where(
-        f"orchestration_instance_id = '{expected_orchestration_id}'"
+        f"orchestration_instance_id = '{identifier}'"
     )
 
     bronze_quarantine_table = spark.table(
         f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_quarantined}"
-    ).where(f"orchestration_instance_id = '{expected_orchestration_id}'")
+    ).where(f"orchestration_instance_id = '{identifier}'")
 
     assert silver_table.count() == 0
     assert bronze_quarantine_table.count() == 1
 
 
 @then("submitted transaction is persisted into the invalid bronze submitted transaction table")
-def _(spark: SparkSession, key: str):
+def _(spark: SparkSession, identifier: str):
     bronze_invalid_table = spark.table(
         f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}"
-    ).where(F.col("key") == key)
+    ).where(f"topic = '{identifier}'")
 
     assert bronze_invalid_table.count() == 1
 
 
 @then("measurements are available in the silver measurements table")
-def _(spark: SparkSession, expected_orchestration_id: str):
+def _(spark: SparkSession, identifier: str):
     silver_table = spark.table(f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}").where(
-        f"orchestration_instance_id = '{expected_orchestration_id}'"
+        f"orchestration_instance_id = '{identifier}'"
     )
-
     assert silver_table.count() == 1
+
+    # Ensuring that the submitted transaction is not in the invalid table
+    bronze_invalid_table = spark.table(
+        f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}"
+    ).where(f"topic = '{identifier}'")
+    assert bronze_invalid_table.count() == 0
+
+    # Ensuring that the submitted transaction is not in the quarantine table
+    bronze_quarantine_table = spark.table(
+        f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_quarantined}"
+    ).where(f"orchestration_instance_id = '{identifier}'")
+    assert bronze_quarantine_table.count() == 0
