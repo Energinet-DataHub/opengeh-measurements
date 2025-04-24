@@ -41,6 +41,10 @@ class PointsBuilder:
         self.data.append(Point(position, quantity, quality))
         return self
 
+    @staticmethod
+    def generate_point() -> list[Point]:
+        return [Point(position, DecimalValue(1, 0), Quality.Q_MEASURED.value) for position in range(1, 25)]
+
     def build(self) -> list[Point]:
         return self.data
 
@@ -57,9 +61,9 @@ class Value:
         metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
         unit: str = Unit.U_KWH.value,
         resolution: str = Resolution.R_PT15M.value,
-        start_datetime: datetime = datetime_helper.random_datetime(),
-        end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list | None = [Point()],
+        start_datetime: datetime = datetime_helper.get_datetime(year=2020, month=1),
+        end_datetime: datetime = datetime_helper.get_datetime(year=2020, month=2),
+        points: list | None = PointsBuilder.generate_point(),
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id
@@ -87,13 +91,13 @@ class ValueBuilder:
         orchestration_type: str = OrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
-        transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
+        transaction_creation_datetime: datetime = datetime_helper.get_datetime(year=2020, month=1),
         metering_point_type: str = MeteringPointType.MPT_PRODUCTION.value,
         unit: str = Unit.U_KWH.value,
         resolution: str = Resolution.R_PT15M.value,
-        start_datetime: datetime = datetime_helper.random_datetime(),
-        end_datetime: datetime = datetime_helper.random_datetime(),
-        points: list = [Point()],
+        start_datetime: datetime = datetime_helper.get_datetime(year=2020, month=1),
+        end_datetime: datetime = datetime_helper.get_datetime(year=2020, month=2),
+        points: list = PointsBuilder.generate_point(),
     ) -> "ValueBuilder":
         self.data.append(
             Value(

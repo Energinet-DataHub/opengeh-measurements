@@ -54,8 +54,10 @@ addopts = [
     "-vv",
     "-s",
     # pytest-xdist options
+    # - loadfile is required when using both pytest-xdist and pytest-order
+    #   See https://pytest-order.readthedocs.io/en/stable/other_plugins.html#usage-with-pytest-xdist
     "-n=auto",
-    "--dist=load",
+    "--dist=loadfile",
 ]
 
 [tool.coverage.report]
