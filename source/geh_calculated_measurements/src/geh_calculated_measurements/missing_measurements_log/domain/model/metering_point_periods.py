@@ -19,3 +19,5 @@ class MeteringPointPeriods(DataFrameWrapper):
             # logically correct schema.
             ignore_nullability=True,
         )
+
+    schema = schema
