@@ -6,11 +6,11 @@ from geh_common.domain.types import MeteringPointResolution
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.infrastructure.electricity_market import (
-    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+from geh_calculated_measurements.missing_measurements_log.infrastructure import (
+    MeteringPointPeriodsRepository,
 )
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from tests import SPARK_CATALOG_NAME
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -25,20 +25,20 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
                 datetime(2022, 1, 1, 1, tzinfo=ZoneInfo("Europe/Copenhagen")),
             ),
         ],
-        schema=MeteringPointPeriodsTable.schema,
+        schema=ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema,
     )
-    assert df.schema == MeteringPointPeriodsTable.schema
+    assert df.schema == ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema
     return df
 
 
 @pytest.fixture(scope="module")
-def metering_point_periods_table() -> MeteringPointPeriodsTable:
-    return MeteringPointPeriodsTable(SPARK_CATALOG_NAME, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
+def metering_point_periods_repository(spark: SparkSession) -> MeteringPointPeriodsRepository:
+    return MeteringPointPeriodsRepository(spark, SPARK_CATALOG_NAME)
 
 
 def test__when_invalid_contract__raises_with_useful_message(
     valid_dataframe: DataFrame,
-    metering_point_periods_table: MeteringPointPeriodsTable,
+    metering_point_periods_repository: MeteringPointPeriodsRepository,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # Arrange
@@ -47,7 +47,7 @@ def test__when_invalid_contract__raises_with_useful_message(
     def mock_read_table(*args, **kwargs):
         return invalid_df
 
-    monkeypatch.setattr(metering_point_periods_table, "_read", mock_read_table)
+    monkeypatch.setattr(metering_point_periods_repository, "_read_table", mock_read_table)
 
     # Assert
     with pytest.raises(
@@ -55,12 +55,12 @@ def test__when_invalid_contract__raises_with_useful_message(
         match=r"The data source does not comply with the contract.*",
     ):
         # Act
-        metering_point_periods_table.read()
+        metering_point_periods_repository.read_metering_point_periods()
 
 
 def test__when_source_contains_unexpected_columns__returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
-    metering_point_periods_table: MeteringPointPeriodsTable,
+    metering_point_periods_repository: MeteringPointPeriodsRepository,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test that the table can handle columns being added as it is defined to _not_ be a breaking change.
@@ -71,10 +71,10 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     def mock_read_table(*args, **kwargs):
         return valid_df_with_extra_col
 
-    monkeypatch.setattr(metering_point_periods_table, "_read", mock_read_table)
+    monkeypatch.setattr(metering_point_periods_repository, "_read_table", mock_read_table)
 
     # Act
-    actual = metering_point_periods_table.read()
+    actual = metering_point_periods_repository.read_metering_point_periods()
 
     # Assert
-    assert actual.schema == MeteringPointPeriodsTable.schema
+    assert actual.schema == ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema

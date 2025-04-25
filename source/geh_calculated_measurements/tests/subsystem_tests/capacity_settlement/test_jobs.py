@@ -10,7 +10,7 @@ CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
 
 job_parameters = {
-    "orchestration-instance-id": str(uuid.uuid4()),
+    "orchestration-instance-id": uuid.uuid4(),
     "calculation-month": CALCULATION_MONTH,
     "calculation-year": CALCULATION_YEAR,
 }

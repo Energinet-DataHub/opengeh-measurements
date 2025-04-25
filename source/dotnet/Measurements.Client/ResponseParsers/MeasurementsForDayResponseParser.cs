@@ -45,7 +45,8 @@ public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParse
                     point.Quality,
                     point.Unit,
                     point.Resolution,
-                    point.Created))
+                    point.Created,
+                    point.TransactionCreated))
             .ToList();
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
@@ -18,10 +19,26 @@ public class MeasurementsForDayResponseParserTests
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
+        var actualPosition = actual.MeasurementPositions.First();
+        var actualPoint = actualPosition.MeasurementPoints.First();
 
-        // Assert
+        // Assert positions
         Assert.NotNull(actual);
         Assert.Equal(24, actual.MeasurementPositions.Count());
+
+        // Assert first position
+        Assert.Equal("2025-01-01T23:00:00Z", actualPosition.ObservationTime.ToFormattedString());
+        Assert.Single(actualPosition.MeasurementPoints);
+        Assert.Equal(1, actualPosition.Index);
+
+        // Assert first point
+        Assert.Equal(1, actualPoint.Order);
+        Assert.Equal(1.4m, actualPoint.Quantity);
+        Assert.Equal(Quality.Measured, actualPoint.Quality);
+        Assert.Equal(Unit.kWh, actualPoint.Unit);
+        Assert.Equal(Resolution.Hourly, actualPoint.Resolution);
+        Assert.Equal("2025-01-17T03:40:55Z", actualPoint.PersistedTime.ToFormattedString());
+        Assert.Equal("2025-01-15T03:40:55Z", actualPoint.RegistrationTime.ToFormattedString());
     }
 
     [Fact]

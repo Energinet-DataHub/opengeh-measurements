@@ -5,18 +5,17 @@ notes: |
 
                         |Feb. 25th          Feb. 26th           Feb. 27th           Feb. 28th           Feb. 29th           March. 1st
                         |-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
-  MP 7 period 1         |---------------------------------------|
-  MP 8 period 2                                                                                           |-------------------|
+  MP 7 period 1 (1h)    |---------------------------------------|                                       |-------------------|
+  MP 8 period 2 (15M)   |---------------------------------------|                                       |-------------------|
   Measurement data:     +++++++++++ +++++++++++++++++ ++++++++++++++++++++ ++++++++++++++++++ +++++++++++++++++++++++++++++ +++++++++ +++++++++++
   Missing:                         |                 |                    |                  |                             |         |
   Missing days:         |Feb. 25th          |Feb. 26th                                                  |Feb. 29th
 
   CASE 11
-  MP 11 Period 1 (1h):  |---------------------------------------|
-  MP 12 Period 2 (15M):                                         |-------------------|
-  Measurement data:                                             +++++ +++++++++++++++
+  MP 11 Period 1        |-----------------(1h)------------------|--------(15M)-------|
+  Measurement data:                                             +++++ ++++++++++++++++
   Missing:                                                           |
-  Missing days:         |Feb. 25th          |Feb. 26th          |Feb. 27th
+  Missing days:         |Feb. 25th          |Feb. 26th          |Feb. 27th          
 
   CASE 9/10: We also check that only MPs in grid area supplied with job_parameters are included in result.
 
@@ -35,4 +34,3 @@ cases_tested:
 
   "Grid Area Logic":
     - "GIVEN job parameters include MULTIPLE grid areas THEN only missing measurements from MPs in those grid areas should be in the result"
-
