@@ -230,6 +230,7 @@ def test__trasnform__should_transform_unit_to_expected(unit: Unit, expected_unit
         (Quality.Q_CALCULATED, GehCommonQuality.CALCULATED.value),
         (Quality.Q_ESTIMATED, GehCommonQuality.ESTIMATED.value),
         (Quality.Q_MEASURED, GehCommonQuality.MEASURED.value),
+        (Quality.Q_MISSING, GehCommonQuality.MISSING.value),
     ],
 )
 def test__trasnform__should_transform_quality_to_expected(

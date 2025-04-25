@@ -225,5 +225,9 @@ def _align_quality(quality: Column) -> Column:
             quality == Quality.Q_CALCULATED,
             GehCommonQuality.CALCULATED.value,
         )
+        .when(
+            quality == Quality.Q_MISSING,
+            GehCommonQuality.MISSING.value,
+        )
         .otherwise(quality)
     )

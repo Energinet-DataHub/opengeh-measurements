@@ -79,7 +79,7 @@ Scenario Outline: Processing submitted transaction with valid <field>
     | unit                | U_TONNE                        | 5      |
 
   Scenario Outline: Processing submitted transaction point with valid quality
-    Given submitted transaction points where the quality has value <quality>
+    Given submitted transaction points where the quality has value <value> translated to <quality>
     When streaming submitted transactions to the Silver layer
     Then measurements are available in the silver measurements table
 

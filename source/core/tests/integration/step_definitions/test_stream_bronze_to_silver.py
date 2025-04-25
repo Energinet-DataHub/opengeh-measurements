@@ -151,7 +151,7 @@ def _(spark: SparkSession, field: str, value: int):
 
 
 @given(
-    parsers.parse("submitted transaction points where the quality has value {quality}"),
+    parsers.parse("submitted transaction points where the quality has value {value} translated to <quality>"),
     target_fixture="identifier",
 )
 def _(spark: SparkSession, value: Quality):
