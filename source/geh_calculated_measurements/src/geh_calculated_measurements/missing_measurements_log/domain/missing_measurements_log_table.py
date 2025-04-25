@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 import pyspark.sql.functions as F
@@ -13,17 +14,26 @@ from geh_calculated_measurements.common.infrastructure import (
     CurrentMeasurementsTable,
     Table,
 )
+from geh_calculated_measurements.missing_measurements_log.domain.clamp import clamp_period
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 
 
 class MissingMeasurementsLogTable(Table):
     def __init__(
-        self, catalog_name: str, time_zone: str, orchestration_instance_id: UUID, grid_area_codes: GridAreaCodes | None
+        self,
+        catalog_name: str,
+        time_zone: str,
+        orchestration_instance_id: UUID,
+        grid_area_codes: GridAreaCodes | None,
+        period_start_date: datetime,
+        period_end_date: datetime,
     ) -> None:
         self.catalog_name = catalog_name
         self.time_zone = time_zone
         self.input_orchestration_instance_id = orchestration_instance_id
         self.grid_area_codes = grid_area_codes
+        self.period_start_date = period_start_date
+        self.period_end_date = period_end_date
         self.fully_qualified_name = f"{catalog_name}.{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME}"
         super().__init__()
 
@@ -33,6 +43,14 @@ class MissingMeasurementsLogTable(Table):
 
     def _get_expected_measurement_counts(self, metering_point_periods: DataFrame) -> DataFrame:
         """Calculate the expected measurement counts grouped by metering point and date."""
+        metering_point_periods = clamp_period(
+            metering_point_periods,
+            self.period_start_date,
+            self.period_end_date,
+            MeteringPointPeriodsTable.period_from_date.name,
+            MeteringPointPeriodsTable.period_to_date.name,
+        )
+
         metering_point_periods_local_time = convert_from_utc(metering_point_periods, self.time_zone)
 
         expected_measurement_counts = metering_point_periods_local_time.withColumn(
