@@ -30,11 +30,11 @@ Feature: Streaming from Bronze to Silver
     When streaming submitted transactions to the Silver layer
     Then submitted transaction is persisted into the bronze quarantine table and are not available in the silver measurements table
   Examples:
-    | field               | value            |
-    | resolution          | R_UNSPECIFIED    |
-    | metering_point_type | MPT_UNSPECIFIED  |
-    | unit                | U_UNSPECIFIED    |
-    | orchestration_type  | OT_UNSPECIFIED   |
+    | field               | meaning          | value    |
+    | resolution          | R_UNSPECIFIED    | 0        |
+    | metering_point_type | MPT_UNSPECIFIED  | 0        |
+    | unit                | U_UNSPECIFIED    | 0        |
+    | orchestration_type  | OT_UNSPECIFIED   | 0        |
 
 Scenario Outline: Processing submitted transaction with valid <field>
     Given submitted transaction where the <field> has value <value>
@@ -42,49 +42,49 @@ Scenario Outline: Processing submitted transaction with valid <field>
     Then measurements are available in the silver measurements table
 
   Examples:
-    | field               | value                          |
-    | metering_point_type | MPT_ANALYSIS                   |
-    | metering_point_type | MPT_CAPACITY_SETTLEMENT        |
-    | metering_point_type | MPT_COLLECTIVE_NET_CONSUMPTION |
-    | metering_point_type | MPT_COLLECTIVE_NET_PRODUCTION  |
-    | metering_point_type | MPT_CONSUMPTION                |
-    | metering_point_type | MPT_CONSUMPTION_FROM_GRID      |
-    | metering_point_type | MPT_ELECTRICAL_HEATING         |
-    | metering_point_type | MPT_EXCHANGE                   |
-    | metering_point_type | MPT_EXCHANGE_REACTIVE_ENERGY   |
-    | metering_point_type | MPT_INTERNAL_USE               |
-    | metering_point_type | MPT_NET_CONSUMPTION            |
-    | metering_point_type | MPT_NET_FROM_GRID              |
-    | metering_point_type | MPT_NET_LOSS_CORRECTION        |
-    | metering_point_type | MPT_NET_PRODUCTION             |
-    | metering_point_type | MPT_NET_TO_GRID                |
-    | metering_point_type | MPT_NOT_USED                   |
-    | metering_point_type | MPT_OTHER_CONSUMPTION          |
-    | metering_point_type | MPT_OTHER_PRODUCTION           |
-    | metering_point_type | MPT_OWN_PRODUCTION             |
-    | metering_point_type | MPT_PRODUCTION                 |
-    | metering_point_type | MPT_SUPPLY_TO_GRID             |
-    | metering_point_type | MPT_SURPLUS_PRODUCTION_GROUP_6 |
-    | metering_point_type | MPT_TOTAL_CONSUMPTION          |
-    | metering_point_type | MPT_VE_PRODUCTION              |
-    | metering_point_type | MPT_WHOLESALE_SERVICES_INFORMATION |
-    | resolution          | R_PT15M                        |
-    | resolution          | R_PT1H                         |
-    | orchestration_type  | OT_SUBMITTED_MEASURE_DATA      |
-    | unit                | U_KWH                          |
-    | unit                | U_KW                           |
-    | unit                | U_MWH                          |
-    | unit                | U_TONNE                        |
-    | unit                | U_KVARH                        |
+    | field               | meaning                        | value  |
+    | metering_point_type | MPT_CONSUMPTION                | 1      |
+    | metering_point_type | MPT_PRODUCTION                 | 2      |
+    | metering_point_type | MPT_EXCHANGE                   | 3      |
+    | metering_point_type | MPT_VE_PRODUCTION              | 4      |
+    | metering_point_type | MPT_ANALYSIS                   | 5      |
+    | metering_point_type | MPT_NOT_USED                   | 6      |
+    | metering_point_type | MPT_SURPLUS_PRODUCTION_GROUP_6 | 7      |
+    | metering_point_type | MPT_NET_PRODUCTION             | 8      |
+    | metering_point_type | MPT_SUPPLY_TO_GRID             | 9      |
+    | metering_point_type | MPT_CONSUMPTION_FROM_GRID      | 10     |
+    | metering_point_type | MPT_WHOLESALE_SERVICES_INFORMATION | 11 |
+    | metering_point_type | MPT_OWN_PRODUCTION             | 1      |
+    | metering_point_type | MPT_NET_FROM_GRID              | 1      |
+    | metering_point_type | MPT_NET_TO_GRID                | 1      |
+    | metering_point_type | MPT_TOTAL_CONSUMPTION          | 1      |
+    | metering_point_type | MPT_NET_LOSS_CORRECTION        | 1      |
+    | metering_point_type | MPT_NET_CONSUMPTION            | 1      |
+    | metering_point_type | MPT_ELECTRICAL_HEATING         | 1      |
+    | metering_point_type | MPT_OTHER_CONSUMPTION          | 1      |
+    | metering_point_type | MPT_OTHER_PRODUCTION           | 2      |
+    | metering_point_type | MPT_CAPACITY_SETTLEMENT        | 2      |
+    | metering_point_type | MPT_EXCHANGE_REACTIVE_ENERGY   | 2      |
+    | metering_point_type | MPT_COLLECTIVE_NET_PRODUCTION  | 2      |
+    | metering_point_type | MPT_COLLECTIVE_NET_CONSUMPTION | 2      |
+    | metering_point_type | MPT_INTERNAL_USE               | 2      |
+    | resolution          | R_PT15M                        | 1      |
+    | resolution          | R_PT1H                         | 2      |
+    | resolution          | R_P1M                          | 3      |
+    | orchestration_type  | OT_SUBMITTED_MEASURE_DATA      | 1      |
+    | unit                | U_KWH                          | 1      |
+    | unit                | U_KW                           | 2      |
+    | unit                | U_MWH                          | 4      |
+    | unit                | U_TONNE                        | 5      |
 
   Scenario Outline: Processing submitted transaction point with valid quality
-    Given submitted transaction points where the quality has value <quality>
+    Given submitted transaction points where the quality has value <value> (<quality>)
     When streaming submitted transactions to the Silver layer
     Then measurements are available in the silver measurements table
 
     Examples:
-    | quality |
-    | Q_MISSING     |
-    | Q_ESTIMATED   |
-    | Q_MEASURED    |
-    | Q_CALCULATED  |
+    | quality       | value |
+    | Q_MISSING     | 1     |
+    | Q_ESTIMATED   | 2     |
+    | Q_MEASURED    | 3     |
+    | Q_CALCULATED  | 4     |
