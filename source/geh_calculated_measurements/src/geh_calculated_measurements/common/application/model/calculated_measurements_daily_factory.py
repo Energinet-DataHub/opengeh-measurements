@@ -75,10 +75,6 @@ def _add_storage_columns(
     time_zone: str,
     transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
-    # TODO BJM: Update unit tests in test_calculated_measurements_factory.py and remove this temp workaround
-    df = measurements
-    if ContractColumnNames.observation_time not in measurements.columns:
-        df = df.withColumn(ContractColumnNames.observation_time, F.col(ContractColumnNames.date))
     df = measurements.withColumns(
         {
             ContractColumnNames.orchestration_instance_id: F.lit(str(orchestration_instance_id)),

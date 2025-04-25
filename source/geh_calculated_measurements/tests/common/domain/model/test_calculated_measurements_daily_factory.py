@@ -8,7 +8,7 @@ from pyspark.sql import Row, SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.application.model import (
-    calculated_measurements_factory,
+    calculated_measurements_daily_factory,
 )
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
@@ -71,7 +71,7 @@ class TestTransactionId:
             measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_daily_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
@@ -98,7 +98,7 @@ class TestTransactionId:
             measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_daily_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
@@ -130,7 +130,7 @@ class TestTransactionId:
             measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.create(
+            actual = calculated_measurements_daily_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
