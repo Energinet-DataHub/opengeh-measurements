@@ -21,7 +21,7 @@ class InvalidSubmittedTransactionsBuilder:
         version=None,
     ) -> "InvalidSubmittedTransactionsBuilder":
         if value is None:
-            value = ValueBuilder().build()
+            value = ValueBuilder(self.spark).build()
 
         self.data.append((key, value, topic, partition, offset, timestamp, timestampType, version))
 
