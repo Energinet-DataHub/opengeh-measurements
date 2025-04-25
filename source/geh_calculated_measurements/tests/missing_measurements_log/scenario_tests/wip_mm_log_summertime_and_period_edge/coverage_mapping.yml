@@ -1,6 +1,22 @@
 notes: |
   Summertime change + period edge tests
 
+  period start: 2024-03-29T23:00:00Z
+  period end: 2024-04-01T22:00:00Z
+
+                        | 1. Jan. 2024  |...| 30. Mar.  | 31. Mar.  | 1. Apr.       
+  MP 203 (1H)           |------------------------------------------------------
+  Measurement data:     |               |...| ++++++++++|+++++++++++|+++++++++ |
+  Missing:                                   |                                |
+  Missing days:         |                   | 30. Mar.  | 31. Mar.  | 1. Apr.  |
+
+
+                        | 1. Jan. 2024  |...| 30. Mar.  | 31. Mar.  | 1. Apr.  |       
+  MP 204 (15M)          |------------------------------------------------------
+  Measurement data:     |               |...| ++++++++++|+++++++++++|+++++++++ |
+  Missing:                                   |                                |       
+  Missing days:         |                   | 30. Mar.  |           | 1. Apr.  |
+
 cases_tested:
   "Missing Measurements Log Tests":
     - "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day with the missing quarter should be in the result"
@@ -12,8 +28,7 @@ cases_tested:
     - "First quarter of calculation period missing"
     - "Last quarter of calculation period missing"
 
-  "Summer/Wintertime handling":
-    "Calculation period covers wintertime change"
+  "Summer/Wintertime handling": "Calculation period covers wintertime change"
 
   "Grid Area Logic":
     - "GIVEN NO grid area job parameters are included THEN missing measurements from all MPs should be in the result"
