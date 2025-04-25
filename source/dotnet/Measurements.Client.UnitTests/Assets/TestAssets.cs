@@ -8,9 +8,9 @@ public static class TestAssets
 
     public static string MeasurementsForDayWithHistoricalObservations => GetJsonFile($"{nameof(MeasurementsForDayWithHistoricalObservations)}.json");
 
-    public static string MeasurementsAggregatedByDay => GetJsonFile($"{nameof(MeasurementsAggregatedByDay)}.json");
+    public static string MeasurementsAggregatedByDate => GetJsonFile($"{nameof(MeasurementsAggregatedByDate)}.json");
 
-    public static string MeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(MeasurementsAggregatedByDayMissingMeasurements)}.json");
+    public static string MeasurementsAggregatedByDateMissingMeasurements => GetJsonFile($"{nameof(MeasurementsAggregatedByDateMissingMeasurements)}.json");
 
     public static string MeasurementsAggregatedByMonth => GetJsonFile($"{nameof(MeasurementsAggregatedByMonth)}.json");
 

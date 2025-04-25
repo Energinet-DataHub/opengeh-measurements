@@ -64,7 +64,7 @@ public class MeasurementsClientTests
     {
         // Arrange
         var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2025, 3));
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDay);
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDate);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
@@ -90,7 +90,7 @@ public class MeasurementsClientTests
     {
         // Arrange
         var query = new GetAggregatedByMonthQuery("1234567890", new YearMonth(2024, 10));
-        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDayMissingMeasurements);
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDateMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
