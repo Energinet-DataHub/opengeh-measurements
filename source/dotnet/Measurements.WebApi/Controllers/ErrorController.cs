@@ -21,7 +21,7 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
             logger.LogError(
                 exception.Error,
                 "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-                exception.Path,
+                SanitizeRequestPath(exception.Path),
                 queryString);
 
             return Problem(
@@ -32,12 +32,19 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
 
         logger.LogError(
             "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-            Request.Path,
+            SanitizeRequestPath(Request.Path),
             queryString);
+
+        var requestPath = HttpContext.Request.Path.Value ?? throw new InvalidOperationException("Request path is null");
 
         return Problem(
             detail: "An unknown error occured.",
-            instance: Request.Path,
+            instance: SanitizeRequestPath(requestPath),
             statusCode: StatusCodes.Status500InternalServerError);
+    }
+
+    private static string SanitizeRequestPath(string requestPath)
+    {
+        return requestPath.Replace("\n", string.Empty).Replace("\r", string.Empty);
     }
 }
