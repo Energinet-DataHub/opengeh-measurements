@@ -10,12 +10,6 @@ from geh_calculated_measurements.missing_measurements_log.domain import (
 
 
 class Repository:
-    """Represents periods for metering points with physical status "connected" or "disconnected".
-
-    Includes all metering point types except those where subtype="calculated" or where type is "internal_use" (D99).
-    The periods must be non-overlapping for a given metering point, but their timeline can be split into multiple rows/periods.
-    """
-
     def __init__(
         self,
         spark: SparkSession,
@@ -30,6 +24,11 @@ class Repository:
         df = self._read_table(table_name)
         assert_contract(df.schema, missing_measurements_log_metering_point_periods_v1.schema)
         return MeteringPointPeriods(df)
+
+    def write_missing_measurements_log(self, df: DataFrame) -> None:
+        """Write the missing measurements log to the delta table."""
+        table_name = f"{self._catalog_name}.{CALCU}.{missing_measurements_log_metering_point_periods_v1.view_name}"
+        df.write.format("delta").mode("append").saveAsTable(table_name)
 
     def _read_table(self, table_name: str) -> DataFrame:
         return self._spark.table(table_name)
