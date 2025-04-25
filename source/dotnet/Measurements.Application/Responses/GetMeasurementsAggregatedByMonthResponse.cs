@@ -30,9 +30,7 @@ public class GetMeasurementsAggregatedByMonthResponse
                     SetYearMonth(measurement),
                     measurement.Quantity,
                     SetQuality(measurement),
-                    SetUnit(measurement),
-                    SetMissingValuesForAggregation(measurement),
-                    SetContainsUpdatedValues(measurement)))
+                    SetUnit(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -56,41 +54,5 @@ public class GetMeasurementsAggregatedByMonthResponse
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First()); // Todo
-    }
-
-    private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
-    {
-        var hours = GetHoursForAggregation(aggregatedMeasurements);
-
-        // All points for a month should have the same resolution
-        var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.First()); // Todo
-
-        var expectedPointCount = GetExpectedPointCount(resolution, hours);
-
-        return expectedPointCount - aggregatedMeasurements.PointCount != 0;
-    }
-
-    private static int GetHoursForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
-    {
-        var timeSpan = aggregatedMeasurements.MaxObservationTime - aggregatedMeasurements.MinObservationTime;
-        var hours = (int)timeSpan.TotalHours + 1;
-        return hours;
-    }
-
-    private static int GetExpectedPointCount(Resolution resolution, int hours)
-    {
-        var expectedPointCount = resolution switch
-        {
-            Resolution.QuarterHourly => hours * 4,
-            Resolution.Hourly => hours,
-            Resolution.Daily or Resolution.Monthly or Resolution.Yearly => 1,
-            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
-        };
-        return expectedPointCount;
-    }
-
-    private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
-    {
-        return aggregatedMeasurementsResult.ObservationUpdates > 1;
     }
 }

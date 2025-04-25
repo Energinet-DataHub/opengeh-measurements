@@ -157,8 +157,6 @@ public class MeasurementsHandlerTests
         Assert.Equal(42, actualAggregations.Quantity);
         Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
-        Assert.True(actualAggregations.MissingValues);
-        Assert.True(actualAggregations.ContainsUpdatedValues);
     }
 
     [Fact]

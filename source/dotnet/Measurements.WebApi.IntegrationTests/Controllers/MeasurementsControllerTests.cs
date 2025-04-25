@@ -167,9 +167,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(571.2M, measurementAggregation.Quantity);
-            Assert.False(measurementAggregation.MissingValues);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
-            Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
     }
 

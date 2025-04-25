@@ -57,8 +57,7 @@ public class GetMeasurementsAggregatedByDateResponse
 
         // All points for a day should have the same resolution
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-
-        var expectedPointCount = GetExpectedPointCount(resolution, hours);
+        var expectedPointCount = PointCountCalculator.GetExpectedPointCount(resolution, hours);
 
         return expectedPointCount - aggregatedMeasurements.PointCount != 0;
     }
@@ -68,18 +67,6 @@ public class GetMeasurementsAggregatedByDateResponse
         var timeSpan = aggregatedMeasurements.MaxObservationTime - aggregatedMeasurements.MinObservationTime;
         var hours = (int)timeSpan.TotalHours + 1;
         return hours;
-    }
-
-    private static int GetExpectedPointCount(Resolution resolution, int hours)
-    {
-        var expectedPointCount = resolution switch
-        {
-            Resolution.QuarterHourly => hours * 4,
-            Resolution.Hourly => hours,
-            Resolution.Daily or Resolution.Monthly or Resolution.Yearly => 1,
-            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
-        };
-        return expectedPointCount;
     }
 
     private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)

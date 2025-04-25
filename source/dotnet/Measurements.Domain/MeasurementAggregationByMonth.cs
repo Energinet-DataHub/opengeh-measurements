@@ -6,6 +6,4 @@ public record MeasurementAggregationByMonth(
     YearMonth YearMonth,
     decimal Quantity,
     Quality Quality,
-    Unit Unit,
-    bool MissingValues,
-    bool ContainsUpdatedValues);
+    Unit Unit);
