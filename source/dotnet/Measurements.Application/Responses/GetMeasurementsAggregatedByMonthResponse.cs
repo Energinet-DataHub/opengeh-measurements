@@ -53,6 +53,6 @@ public class GetMeasurementsAggregatedByMonthResponse
 
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
-        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First()); // Todo
+        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First());
     }
 }
