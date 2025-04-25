@@ -19,6 +19,7 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
+# TODO BJM: Rename module to calculated_measurements_daily_factory.py
 def create(
     measurements: CalculatedMeasurementsDaily,
     orchestration_instance_id: UUID,
@@ -27,6 +28,16 @@ def create(
     time_zone: str,
     transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
+    df = _explode_to_hour_values(measurements, time_zone)
+
+    df = _add_storage_columns(
+        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
+    )
+
+    return df
+
+
+def _explode_to_hour_values(measurements, time_zone):
     df = (
         # Explode the date column to create a row for each hour in the day
         measurements.df.withColumn(
@@ -53,13 +64,10 @@ def create(
         )
     )
 
-    # Add additional columns to the DataFrame
-    return deprecated_create(
-        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
-    )
+    return df
 
 
-def deprecated_create(
+def _add_storage_columns(
     measurements: DataFrame,
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
@@ -71,21 +79,20 @@ def deprecated_create(
     df = measurements
     if ContractColumnNames.observation_time not in measurements.columns:
         df = df.withColumn(ContractColumnNames.observation_time, F.col(ContractColumnNames.date))
-
-    df = df.withColumns(
+    df = measurements.withColumns(
         {
             ContractColumnNames.orchestration_instance_id: F.lit(str(orchestration_instance_id)),
             ContractColumnNames.orchestration_type: F.lit(orchestration_type.value),
             ContractColumnNames.metering_point_type: F.lit(metering_point_type.value),
             ContractColumnNames.transaction_creation_datetime: F.lit(transaction_creation_datetime),
-            ContractColumnNames.transaction_id: _add_transaction_id(orchestration_instance_id, time_zone),
+            ContractColumnNames.transaction_id: _create_transaction_id_column(orchestration_instance_id, time_zone),
         }
     )
 
     return CalculatedMeasurementsInternal(df)
 
 
-def _add_transaction_id(orchestration_instance_id: UUID, time_zone: str) -> Column:
+def _create_transaction_id_column(orchestration_instance_id: UUID, time_zone: str) -> Column:
     """Create a unique transaction id based on the orchestration instance id, metering point id. If there are gaps in the dates a new transaction id is created.
 
     The id is a UUID5 based on the transaction id string, which makes it deterministic.

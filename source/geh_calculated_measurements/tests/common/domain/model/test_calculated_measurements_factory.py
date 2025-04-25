@@ -3,13 +3,15 @@ from decimal import Decimal
 from uuid import UUID
 
 import pyspark.sql.types as T
-import pytest
 from geh_common.domain.types import MeteringPointType, OrchestrationType
-from pyspark.sql import DataFrame, Row, SparkSession
+from pyspark.sql import Row, SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_factory
+from geh_calculated_measurements.common.application.model import (
+    calculated_measurements_factory,
+)
 from geh_calculated_measurements.common.domain import ContractColumnNames
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
 DEFAULT_ORCHESTRATION_INSTANCE_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEFAULT_ORCHESTRATION_TYPE = OrchestrationType.ELECTRICAL_HEATING
@@ -21,7 +23,7 @@ DEFAULT_TIME_ZONE = "Europe/Copenhagen"
 DEFAULT_TRANSACTION_CREATION_DATETIME = datetime(2024, 3, 1, 23, 0)
 
 
-def create_row(
+def _create_daily_row(
     date: datetime = DEFAULT_DATE,
     quantity: int | Decimal = DEFAULT_QUANTITY,
     metering_point_id: str = DEFAULT_METERING_POINT_ID,
@@ -38,10 +40,10 @@ def create_row(
     return Row(**row)
 
 
-def create(spark: SparkSession, data: None | Row | list[Row] = None) -> DataFrame:
+def create_daily(spark: SparkSession, data: None | Row | list[Row] = None) -> CalculatedMeasurementsDaily:
     """If data is None, a single row with default values is created."""
     if data is None:
-        data = [create_row()]
+        data = [_create_daily_row()]
     elif isinstance(data, Row):
         data = [data]
 
@@ -53,57 +55,8 @@ def create(spark: SparkSession, data: None | Row | list[Row] = None) -> DataFram
         ]
     )
 
-    return spark.createDataFrame(data, schema=schema)
-
-
-class TestWhenValidInput:
-    def test_returns_expected_columns(self, spark: SparkSession) -> None:
-        # Arrange
-        expected_columns = [
-            ContractColumnNames.metering_point_id,
-            ContractColumnNames.observation_time,
-            ContractColumnNames.quantity,
-            ContractColumnNames.orchestration_instance_id,
-            ContractColumnNames.orchestration_type,
-            ContractColumnNames.metering_point_type,
-            ContractColumnNames.transaction_creation_datetime,
-            ContractColumnNames.transaction_id,
-        ]
-        df = create(spark)
-
-        # Act
-        actual = calculated_measurements_factory.deprecated_create(
-            df,
-            DEFAULT_ORCHESTRATION_INSTANCE_ID,
-            DEFAULT_ORCHESTRATION_TYPE,
-            DEFAULT_METERING_POINT_TYPE,
-            DEFAULT_TIME_ZONE,
-            DEFAULT_TRANSACTION_CREATION_DATETIME,
-        )
-
-        # Assert
-        assert set(actual.df.columns) == set(expected_columns)
-
-
-class TestWhenInputContainsIrrelevantColumn:
-    def test_returns_schema_without_irrelevant_column(self, spark: SparkSession) -> None:
-        # Arrange
-        df = create(spark)
-        irrelevant_column = "irrelevant_column"
-        df = df.withColumn(irrelevant_column, F.lit("test"))
-
-        # Act
-        actual = calculated_measurements_factory.deprecated_create(
-            df,
-            DEFAULT_ORCHESTRATION_INSTANCE_ID,
-            DEFAULT_ORCHESTRATION_TYPE,
-            DEFAULT_METERING_POINT_TYPE,
-            DEFAULT_TIME_ZONE,
-            DEFAULT_TRANSACTION_CREATION_DATETIME,
-        )
-
-        # Assert
-        assert irrelevant_column not in actual.df.columns
+    df = spark.createDataFrame(data, schema=schema)
+    return CalculatedMeasurementsDaily(df)
 
 
 class TestTransactionId:
@@ -111,14 +64,14 @@ class TestTransactionId:
         def test_returns_one_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
             ]
-            measurements = create(spark, data=rows)
+            measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.deprecated_create(
+            actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
@@ -134,18 +87,18 @@ class TestTransactionId:
         def test_returns_two_distinct_transaction_id(self, spark: SparkSession) -> None:
             # Arrange
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 3, 23, 0, tzinfo=timezone.utc)),
                 # Here is the gap
-                create_row(date=datetime(2024, 3, 5, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 6, 23, 0, tzinfo=timezone.utc)),
-                create_row(date=datetime(2024, 3, 7, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 5, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 6, 23, 0, tzinfo=timezone.utc)),
+                _create_daily_row(date=datetime(2024, 3, 7, 23, 0, tzinfo=timezone.utc)),
             ]
-            measurements = create(spark, data=rows)
+            measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.deprecated_create(
+            actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
@@ -162,60 +115,22 @@ class TestTransactionId:
             assert actual_transaction_ids[0][0] == actual_transaction_ids[1][0] == actual_transaction_ids[2][0]
             assert actual_transaction_ids[3][0] == actual_transaction_ids[4][0] == actual_transaction_ids[5][0]
 
-    class TestWhenPeriodCrossesDaylightSavingTime:
-        @pytest.mark.parametrize(
-            "dates",
-            [
-                (  # Entering DST
-                    [
-                        datetime(2024, 3, 30, 23, tzinfo=timezone.utc),
-                        datetime(2024, 3, 31, 22, tzinfo=timezone.utc),
-                        datetime(2024, 4, 1, 22, tzinfo=timezone.utc),
-                    ]
-                ),
-                (  # Exiting DST
-                    [
-                        datetime(2024, 10, 26, 22, tzinfo=timezone.utc),
-                        datetime(2024, 10, 27, 23, tzinfo=timezone.utc),
-                        datetime(2024, 10, 28, 23, tzinfo=timezone.utc),
-                    ]
-                ),
-            ],
-        )
-        def test_returns_one_transaction_id(self, spark: SparkSession, dates: list[datetime]) -> None:
-            # Arrange
-            rows = [create_row(date=date) for date in dates]
-            measurements = create(spark, data=rows)
-
-            # Act
-            actual = calculated_measurements_factory.deprecated_create(
-                measurements,
-                DEFAULT_ORCHESTRATION_INSTANCE_ID,
-                DEFAULT_ORCHESTRATION_TYPE,
-                DEFAULT_METERING_POINT_TYPE,
-                DEFAULT_TIME_ZONE,
-                DEFAULT_TRANSACTION_CREATION_DATETIME,
-            )
-
-            # Assert
-            assert actual.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
-
     class TestWhenMultipleMeteringPoints:
         def test_returns_one_transaction_id_for_each_metering_point(self, spark: SparkSession) -> None:
             # Arrange
             mp_id_1 = "1111111111111"
             mp_id_2 = "2222222222222"
             rows = [
-                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
-                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
-                create_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
-                create_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
+                _create_daily_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
+                _create_daily_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_1),
+                _create_daily_row(date=datetime(2024, 3, 1, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
+                _create_daily_row(date=datetime(2024, 3, 2, 23, 0, tzinfo=timezone.utc), metering_point_id=mp_id_2),
             ]
 
-            measurements = create(spark, data=rows)
+            measurements = create_daily(spark, data=rows)
 
             # Act
-            actual = calculated_measurements_factory.deprecated_create(
+            actual = calculated_measurements_factory.create(
                 measurements,
                 DEFAULT_ORCHESTRATION_INSTANCE_ID,
                 DEFAULT_ORCHESTRATION_TYPE,
@@ -240,37 +155,4 @@ class TestTransactionId:
                 .distinct()
                 .count()
                 == 1
-            )
-
-    class TestWhenMultipleOrchestrationInstanceIdsWithSameData:
-        def test_returns_different_transaction_ids(self, spark: SparkSession) -> None:
-            # Arrange
-            measurements = create(spark)
-            orchestration_instance_id_1 = UUID("00000000-0000-0000-0000-000000000001")
-            orchestration_instance_id_2 = UUID("00000000-0000-0000-0000-000000000002")
-
-            # Act
-            actual_1 = calculated_measurements_factory.deprecated_create(
-                measurements,
-                orchestration_instance_id_1,
-                DEFAULT_ORCHESTRATION_TYPE,
-                DEFAULT_METERING_POINT_TYPE,
-                DEFAULT_TIME_ZONE,
-                DEFAULT_TRANSACTION_CREATION_DATETIME,
-            )
-            actual_2 = calculated_measurements_factory.deprecated_create(
-                measurements,
-                orchestration_instance_id_2,
-                DEFAULT_ORCHESTRATION_TYPE,
-                DEFAULT_METERING_POINT_TYPE,
-                DEFAULT_TIME_ZONE,
-                DEFAULT_TRANSACTION_CREATION_DATETIME,
-            )
-
-            # Assert
-            assert actual_1.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
-            assert actual_2.df.select(ContractColumnNames.transaction_id).distinct().count() == 1
-            assert (
-                actual_1.df.collect()[0][ContractColumnNames.transaction_id]
-                != actual_2.df.collect()[0][ContractColumnNames.transaction_id]
             )
