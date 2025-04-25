@@ -12,11 +12,11 @@ from geh_calculated_measurements.missing_measurements_log.infrastructure import 
 @use_span()
 def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -> None:
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
-    metering_point_periods_repository = Repository(spark, args.catalog_name)
+    missing_measurements_log_repository = Repository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
-    metering_point_periods = metering_point_periods_repository.read_metering_point_periods()
+    metering_point_periods = missing_measurements_log_repository.read_metering_point_periods()
 
     missing_measurements_log = execute(
         current_measurements=current_measurements,
@@ -28,4 +28,4 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         period_end_datetime=args.period_end_datetime,
     )
 
-    missing_measurements_log.show()  # TODO JMG : Write to table instead of show
+    missing_measurements_log_repository.write_missing_measurements_log(missing_measurements_log)
