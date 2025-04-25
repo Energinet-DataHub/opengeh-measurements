@@ -66,24 +66,29 @@ def _get_expected_measurement_counts(
 
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
 
-    expected_measurement_counts = metering_point_periods_local_time.withColumn(
-        "start_of_day",
-        F.explode(
-            F.sequence(
-                F.col(ContractColumnNames.period_from_date),
-                F.col(ContractColumnNames.period_to_date),
-                F.expr("INTERVAL 1 DAY"),
-            )
-        ),
-    ).where(
-        # to date is exclusive
-        F.col("start_of_day") < F.col(ContractColumnNames.period_to_date)
+    metering_point_periods_daily = (
+        metering_point_periods_local_time.withColumn(
+            "start_of_day",
+            F.explode(
+                F.sequence(
+                    F.col(ContractColumnNames.period_from_date),
+                    F.col(ContractColumnNames.period_to_date),
+                    F.expr("INTERVAL 1 DAY"),
+                )
+            ),
+        )
+        .where(
+            # to date is exclusive
+            F.col("start_of_day") < F.col(ContractColumnNames.period_to_date)
+        )
+        .withColumn("end_of_day", F.col("start_of_day") + F.expr("INTERVAL 1 DAY"))
     )
 
-    expected_measurement_counts = expected_measurement_counts.select(
+    metering_point_periods_daily = convert_to_utc(metering_point_periods_daily, time_zone)
+
+    expected_measurement_counts = metering_point_periods_daily.select(
         F.col(ContractColumnNames.metering_point_id),
         F.col("start_of_day"),
-        (F.col("start_of_day") + F.expr("INTERVAL 1 DAY")).alias("end_of_day"),
         (
             (F.unix_timestamp(F.col("end_of_day")) - F.unix_timestamp(F.col("start_of_day")))
             / F.when(F.col(ContractColumnNames.resolution) == MeteringPointResolution.HOUR.value, 3600).when(
@@ -97,7 +102,7 @@ def _get_expected_measurement_counts(
         F.col("measurement_counts"),
     )
 
-    return convert_to_utc(expected_measurement_counts, time_zone)
+    return expected_measurement_counts
 
 
 def _get_actual_measurement_counts(current_measurements: CurrentMeasurements, time_zone: str) -> DataFrame:
