@@ -4,7 +4,6 @@ from core.bronze.domain.constants.column_names.migrations_silver_time_series_col
     MigrationsSilverTimeSeriesColumnNames,
 )
 from core.bronze.infrastructure.config.table_names import MigrationsTableNames
-from core.settings.migrations_settings import MigrationsSettings
 from tests.subsystem_tests.builders.migrated_measurements_row_builder import MigratedMeasurementsRow
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings
 
