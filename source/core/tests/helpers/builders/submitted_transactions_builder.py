@@ -26,7 +26,7 @@ class Point:
     def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: Quality = Quality.Q_MEASURED) -> None:
         self.position = position
         self.quantity = quantity
-        self.quality = quality
+        self.quality = Quality.Name(int(quality))
 
 
 class PointsBuilder:
@@ -69,13 +69,13 @@ class Value:
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id
-        self.orchestration_type = orchestration_type
+        self.orchestration_type = OrchestrationType.Name(int(orchestration_type))
         self.metering_point_id = metering_point_id
         self.transaction_id = transaction_id
         self.transaction_creation_datetime = transaction_creation_datetime
-        self.metering_point_type = metering_point_type
-        self.unit = unit
-        self.resolution = resolution
+        self.metering_point_type = MeteringPointType.Name(int(metering_point_type))
+        self.unit = Unit.Name(int(unit))
+        self.resolution = Resolution.Name(int(resolution))
         self.start_datetime = start_datetime
         self.end_datetime = end_datetime
         self.points = points

@@ -19,13 +19,13 @@ bronze_submitted_transactions_value_schema = StructType(
     [
         StructField(ValueColumnNames.version, StringType(), True),
         StructField(ValueColumnNames.orchestration_instance_id, StringType(), True),
-        StructField(ValueColumnNames.orchestration_type, IntegerType(), True),
+        StructField(ValueColumnNames.orchestration_type, StringType(), True),
         StructField(ValueColumnNames.metering_point_id, StringType(), True),
         StructField(ValueColumnNames.transaction_id, StringType(), True),
         StructField(ValueColumnNames.transaction_creation_datetime, TimestampType(), True),
         StructField(ValueColumnNames.metering_point_type, StringType(), True),
-        StructField(ValueColumnNames.unit, IntegerType(), True),
-        StructField(ValueColumnNames.resolution, IntegerType(), True),
+        StructField(ValueColumnNames.unit, StringType(), True),
+        StructField(ValueColumnNames.resolution, StringType(), True),
         StructField(ValueColumnNames.start_datetime, TimestampType(), True),
         StructField(ValueColumnNames.end_datetime, TimestampType(), True),
         StructField(
@@ -44,7 +44,7 @@ bronze_submitted_transactions_value_schema = StructType(
                             ),
                             True,
                         ),
-                        StructField(ValueColumnNames.Points.quality, IntegerType(), True),
+                        StructField(ValueColumnNames.Points.quality, StringType(), True),
                     ]
                 ),
                 True,
