@@ -99,7 +99,7 @@ public class MeasurementsHandlerTests
         var raw = CreateAggregatedMeasurementsRaw(yearMonth);
         var measurementResult = new AggregatedMeasurementsResult(raw);
         measurementRepositoryMock
-            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
@@ -123,7 +123,7 @@ public class MeasurementsHandlerTests
         var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
         var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
-            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
             .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
@@ -143,7 +143,7 @@ public class MeasurementsHandlerTests
         var raw = CreateAggregatedMeasurementsRaw(yearMonth);
         var measurementResult = new AggregatedMeasurementsResult(raw);
         measurementRepositoryMock
-            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
             .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
@@ -168,7 +168,7 @@ public class MeasurementsHandlerTests
         var request = new GetAggregatedByMonthRequest("123456789", 2021);
         var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
         measurementRepositoryMock
-            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
             .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 

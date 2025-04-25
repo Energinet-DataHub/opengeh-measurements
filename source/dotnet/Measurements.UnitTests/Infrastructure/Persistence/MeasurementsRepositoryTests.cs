@@ -80,7 +80,7 @@ public class MeasurementsRepositoryTests
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetAggregatedByMonthAsync(meteringPointId, yearMonth).ToListAsync();
+        var actual = await sut.GetAggregatedByDateAsync(meteringPointId, yearMonth).ToListAsync();
         var first = actual.First();
 
         // Assert
@@ -111,7 +111,7 @@ public class MeasurementsRepositoryTests
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
 
         // Act
-        var actual = await sut.GetAggregatedByYearAsync(meteringPointId, new Year(yearMonth.Year)).ToListAsync();
+        var actual = await sut.GetAggregatedByMonthAsync(meteringPointId, new Year(yearMonth.Year)).ToListAsync();
         var first = actual.First();
 
         // Assert

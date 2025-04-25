@@ -34,7 +34,7 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     {
         var yearMonth = new YearMonth(request.Year, request.Month);
         var aggregatedMeasurements = await measurementsRepository
-            .GetAggregatedByMonthAsync(request.MeteringPointId, yearMonth)
+            .GetAggregatedByDateAsync(request.MeteringPointId, yearMonth)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
@@ -44,7 +44,7 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     {
         var year = new Year(request.Year);
         var aggregatedMeasurements = await measurementsRepository
-            .GetAggregatedByYearAsync(request.MeteringPointId, year)
+            .GetAggregatedByMonthAsync(request.MeteringPointId, year)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
         return GetMeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
