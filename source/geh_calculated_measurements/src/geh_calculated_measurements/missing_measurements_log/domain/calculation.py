@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 import pyspark.sql.functions as F
@@ -9,6 +10,7 @@ from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
+from geh_calculated_measurements.missing_measurements_log.domain.clamp import clamp_period
 from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
     MeteringPointPeriods,
 )
@@ -21,6 +23,8 @@ def execute(
     grid_area_codes: GridAreaCodes | None,
     orchestration_instance_id: UUID,
     time_zone: str,
+    period_start_datetime: datetime,
+    period_end_datetime: datetime,
 ) -> DataFrame:
     metering_point_periods_df = metering_point_periods.df
     if grid_area_codes is not None:
@@ -28,7 +32,9 @@ def execute(
             F.col(ContractColumnNames.grid_area_code).isin(grid_area_codes)
         )
 
-    expected_measurement_counts = _get_expected_measurement_counts(metering_point_periods_df, time_zone)
+    expected_measurement_counts = _get_expected_measurement_counts(
+        metering_point_periods_df, time_zone, period_start_datetime, period_end_datetime
+    )
     actual_measurement_counts = _get_actual_measurement_counts(current_measurements, time_zone)
 
     missing_measurements = _get_missing_measurements(
@@ -41,8 +47,18 @@ def execute(
     )
 
 
-def _get_expected_measurement_counts(metering_point_periods: DataFrame, time_zone: str) -> DataFrame:
+def _get_expected_measurement_counts(
+    metering_point_periods: DataFrame, time_zone: str, period_start_datetime: datetime, period_end_datetime: datetime
+) -> DataFrame:
     """Calculate the expected measurement counts grouped by metering point and date."""
+    metering_point_periods = clamp_period(
+        metering_point_periods,
+        period_start_datetime,
+        period_end_datetime,
+        ContractColumnNames.period_from_date,
+        ContractColumnNames.period_to_date,
+    )
+
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
 
     expected_measurement_counts = metering_point_periods_local_time.withColumn(

@@ -24,6 +24,8 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         time_zone=args.time_zone,
         orchestration_instance_id=args.orchestration_instance_id,
         grid_area_codes=args.grid_area_codes,
+        period_start_datetime=args.period_start_datetime,
+        period_end_datetime=args.period_end_datetime,
     )
 
     missing_measurements_log.show()  # TODO JMG : Write to table instead of show
