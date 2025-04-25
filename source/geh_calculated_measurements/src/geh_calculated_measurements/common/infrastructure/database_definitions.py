@@ -1,6 +1,3 @@
-CALCULATED_MEASUREMENTS_INTERNAL_DATABASE_NAME = "measurements_calculated_internal"
-
-
 class CalculatedMeasurementsInternalDatabaseDefinition:
     """Database with internal tables for calculated measurements."""
 
