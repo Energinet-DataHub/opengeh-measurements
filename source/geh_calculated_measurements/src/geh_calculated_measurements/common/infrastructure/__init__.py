@@ -5,9 +5,6 @@ from geh_calculated_measurements.common.infrastructure.calculated_measurements.d
 from geh_calculated_measurements.common.infrastructure.calculated_measurements.repository import (
     Repository as CalculatedMeasurementsRepository,
 )
-from geh_calculated_measurements.common.infrastructure.current_measurements.current_meaurements_table import (
-    CurrentMeasurementsTable,
-)
 from geh_calculated_measurements.common.infrastructure.current_measurements.repository import (
     Repository as CurrentMeasurementsRepository,
 )
@@ -19,7 +16,6 @@ __all__ = [
     "CalculatedMeasurementsDatabaseDefinition",
     "CalculatedMeasurementsRepository",
     "CurrentMeasurementsRepository",
-    "CurrentMeasurementsTable",
     "initialize_spark",
     "Table",
 ]
