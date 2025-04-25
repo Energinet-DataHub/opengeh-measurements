@@ -20,7 +20,7 @@ def seed_gold(spark: SparkSession) -> None:
 
 def seed_electricity_market(spark: SparkSession) -> None:
     # consumption_metering_point_periods_v1
-    consumption_metering_point_periods = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS
+    consumption_metering_point_periods = ExternalDataProducts.ELECTRICAL_HEATING_CONSUMPTION_METERING_POINT_PERIODS
     file_path = f"{get_test_files_folder_path()}/{consumption_metering_point_periods.view_name}.csv"
     df = read_csv_path(spark=spark, path=file_path, schema=consumption_metering_point_periods.schema)
     df.write.format("delta").mode("append").saveAsTable(
