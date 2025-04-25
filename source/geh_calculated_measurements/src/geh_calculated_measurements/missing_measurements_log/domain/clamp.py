@@ -5,7 +5,6 @@ from pyspark.sql import DataFrame
 
 
 def clamp_period(
-    self,
     df: DataFrame,
     clamp_start_datetime: datetime,
     clamp_end_datetime: datetime,
