@@ -4,6 +4,9 @@ from geh_common.application.settings import ApplicationSettings
 from pydantic import Field, model_validator
 from pydantic_settings import SettingsConfigDict
 
+from geh_calculated_measurements.common.infrastructure.electricity_market import (
+    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
+)
 from tests import TESTS_ROOT
 
 
@@ -22,6 +25,14 @@ class EnvironmentConfiguration(ApplicationSettings):
     shared_keyvault_url: str = Field(init=False, default="", alias="SHARED_KEYVAULT_URL")
     azure_log_analytics_workspace_id_secret_name: str = Field(
         init=False, default="log-shared-workspace-id", alias="SHARED_AZURE_LOG_ANALYTICS_WORKSPACE_ID"
+    )
+
+    # For dev enviroments this is overriden by environment variable in dh3environments. It will be a name dedicated
+    # for calculated measurements subsystem tests to create a "mock" of the Electricity Market data products.
+    electricity_market_database_name: str = Field(
+        init=False,
+        alias="ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME",
+        default=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
     )
 
     # for performance test
