@@ -34,7 +34,7 @@ public class MeasurementsRepository(
 
     public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth)
     {
-        var statement = new GetAggregatedByMonthQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);
+        var statement = new GetAggregatedByDateQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);
         var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)
@@ -43,7 +43,7 @@ public class MeasurementsRepository(
 
     public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, Year year)
     {
-        var statement = new GetAggregatedByYearQuery(meteringPointId, year, databricksSchemaOptions.Value);
+        var statement = new GetAggregatedByMonthQuery(meteringPointId, year, databricksSchemaOptions.Value);
         var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)

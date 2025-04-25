@@ -1,29 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence.Queries;
 
 [UnitTest]
-public class GetAggregatedByYearQueryTests
+public class GetAggregatedByDateQueryTests
 {
     [Theory]
     [AutoData]
-    public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)] int testYear)
+    public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)] int year, [Range(1, 12)] int month)
     {
         // Arrange
-        var year = new Year(testYear);
+        var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expected = CreateExpectedQuery(databricksSchemaOptions);
-        var getAggregatedByYearQuery = new GetAggregatedByYearQuery(meteringPointId, year, databricksSchemaOptions);
+        var getAggregatedByMonthQuery = new GetAggregatedByDateQuery(meteringPointId, yearMonth, databricksSchemaOptions);
 
         // Act
-        var actual = getAggregatedByYearQuery.ToString();
+        var actual = getAggregatedByMonthQuery.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -62,6 +62,7 @@ public class GetAggregatedByYearQueryTests
 
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
                $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))";
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
+               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))";
     }
 }

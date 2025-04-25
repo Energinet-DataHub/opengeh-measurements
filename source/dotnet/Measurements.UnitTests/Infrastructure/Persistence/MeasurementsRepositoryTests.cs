@@ -74,7 +74,7 @@ public class MeasurementsRepositoryTests
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByMonthQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByDateQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
@@ -105,7 +105,7 @@ public class MeasurementsRepositoryTests
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
-            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByYearQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByMonthQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
             .Returns(raw);
         var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
         var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
