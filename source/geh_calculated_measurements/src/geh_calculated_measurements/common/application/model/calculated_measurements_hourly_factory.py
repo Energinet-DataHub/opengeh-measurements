@@ -19,7 +19,7 @@ This ensures that all UUIDs generated with this namespace and a given name are s
 produces the same output)."""
 
 
-# TODO BJM: Rename module to calculated_measurements_daily_factory.py
+# TODO BJM: Rename module to calculated_measurements_hourly_factory.py
 def create(
     measurements: CalculatedMeasurementsDaily,
     orchestration_instance_id: UUID,

@@ -2,7 +2,7 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_daily_factory
+from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,
@@ -39,7 +39,7 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
     )
 
     # Write the calculated measurements
-    calculated_measurements = calculated_measurements_daily_factory.create(
+    calculated_measurements = calculated_measurements_hourly_factory.create(
         measurements=calculated_measurements_daily,
         orchestration_instance_id=args.orchestration_instance_id,
         orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
