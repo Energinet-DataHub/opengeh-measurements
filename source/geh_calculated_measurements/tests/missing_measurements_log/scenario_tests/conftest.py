@@ -13,7 +13,7 @@ from geh_calculated_measurements.missing_measurements_log.application import (
     MissingMeasurementsLogArgs,
 )
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods, execute
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -27,12 +27,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
-    consumption_metering_point_periods = read_csv(
+    metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__missing_measurements_log/metering_point_periods_v1.csv",
-        MeteringPointPeriodsTable.schema,
+        ExternalDataProducts.MISSING_MEASUREMENTS_LOG_METERING_POINT_PERIODS.schema,
     )
 
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
@@ -50,7 +50,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     # Execute the logic
     actual = execute(
         CurrentMeasurements(current_measurements),
-        MeteringPointPeriods(consumption_metering_point_periods),
+        MeteringPointPeriods(metering_point_periods),
         args.grid_area_codes,
         args.orchestration_instance_id,
         args.time_zone,
