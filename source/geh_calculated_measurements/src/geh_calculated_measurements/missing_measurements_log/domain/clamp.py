@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame

@@ -1,4 +1,4 @@
-﻿from geh_common.data_products.electricity_market_measurements_input.missing_measurements_log_metering_point_periods_v1 import (
+from geh_common.data_products.electricity_market_measurements_input.missing_measurements_log_metering_point_periods_v1 import (
     schema,
 )
 from geh_common.pyspark.data_frame_wrapper import DataFrameWrapper
