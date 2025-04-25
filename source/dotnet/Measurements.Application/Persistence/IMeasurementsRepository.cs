@@ -19,12 +19,12 @@ public interface IMeasurementsRepository
     IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
 
     /// <summary>
-    /// Get aggregated measurements for a given metering point for a month defined by the yearMonth parameter.
+    /// Get measurements aggregated by date for a given metering point and month.
     /// </summary>
     IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth);
 
     /// <summary>
-    /// Get aggregated measurements for a given metering point for a year defined by the year parameter.
+    /// Get measurements aggregated by month for a given metering point and year.
     /// </summary>
     IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, Year year);
 }
