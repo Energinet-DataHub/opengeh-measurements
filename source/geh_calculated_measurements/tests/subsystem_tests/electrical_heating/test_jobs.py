@@ -15,7 +15,7 @@ class TestElectricalHeating(JobTest):
     """
 
     @pytest.fixture(scope="class")
-    def fixture(self, electricity_market_data_products_created_as_tables):
+    def fixture(self):
         config = EnvironmentConfiguration()
         fixture = JobTestFixture(
             environment_configuration=config,
