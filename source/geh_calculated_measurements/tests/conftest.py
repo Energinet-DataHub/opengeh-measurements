@@ -5,33 +5,22 @@ from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from geh_common.data_products.electricity_market_measurements_input import (
-    missing_measurements_log_metering_point_periods_v1,
-    net_consumption_group_6_child_metering_points_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
-)
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
-from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
+from geh_common.testing.delta_lake import create_database
+from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.common.infrastructure.electricity_market import (
-    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-)
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from tests import (
     SPARK_CATALOG_NAME,
     TESTS_ROOT,
     create_job_environment_variables,
 )
+from tests.external_data_products import ExternalDataProducts
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
 
@@ -159,35 +148,15 @@ def migrations_executed(spark: SparkSession) -> None:
 def external_dataproducts_created(
     spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
 ) -> None:
-    """Create external dataproducts (databases, tables and views) as needed by tests."""
-    # Create measurements gold database and tables
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
-        schema=CurrentMeasurements.schema,
-    )
+    """Create external data products (databases, tables and views) as needed by tests."""
 
-    # Create missing measurements log database and tables
-    create_database(spark, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=missing_measurements_log_metering_point_periods_v1.view_name,
-        schema=MeteringPointPeriodsTable.schema,
-    )
+    for database_name in ExternalDataProducts.get_all_database_names():
+        create_database(spark, database_name)
 
-    # Create net consumption group 6 database and tables
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=net_consumption_group_6_consumption_metering_point_periods_v1.view_name,
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
-    )
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=net_consumption_group_6_child_metering_points_v1.view_name,
-        schema=net_consumption_group_6_child_metering_points_v1.schema,
-    )
+    for dataproduct in ExternalDataProducts.get_all_data_products():
+        create_table(
+            spark,
+            database_name=dataproduct.database_name,
+            table_name=dataproduct.view_name,
+            schema=dataproduct.schema,
+        )
