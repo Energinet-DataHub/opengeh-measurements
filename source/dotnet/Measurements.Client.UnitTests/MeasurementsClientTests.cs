@@ -106,7 +106,7 @@ public class MeasurementsClientTests
 
     [Theory]
     [AutoMoqData]
-    public async Task GetAggregatedByYear_WhenCalledForHourlyMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
+    public async Task GetAggregatedByYear_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
