@@ -4,8 +4,12 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
 
+from geh_calculated_measurements.common.infrastructure.database_definitions import (
+    CalculatedMeasurementsInternalDatabaseDefinition,
+)
 from geh_calculated_measurements.missing_measurements_log.domain import (
     MeteringPointPeriods,
+    MissingMeasurementsLog,
 )
 
 
@@ -25,10 +29,10 @@ class Repository:
         assert_contract(df.schema, missing_measurements_log_metering_point_periods_v1.schema)
         return MeteringPointPeriods(df)
 
-    def write_missing_measurements_log(self, df: DataFrame) -> None:
+    def write_missing_measurements_log(self, missing_measurements_log: MissingMeasurementsLog) -> None:
         """Write the missing measurements log to the delta table."""
-        table_name = f"{self._catalog_name}.{CALCU}.{missing_measurements_log_metering_point_periods_v1.view_name}"
-        df.write.format("delta").mode("append").saveAsTable(table_name)
+        table_name = f"{self._catalog_name}.{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME}"
+        missing_measurements_log.df.write.format("delta").mode("append").saveAsTable(table_name)
 
     def _read_table(self, table_name: str) -> DataFrame:
         return self._spark.table(table_name)
