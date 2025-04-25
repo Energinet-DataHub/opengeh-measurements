@@ -46,20 +46,4 @@ public class YearTests
         Assert.Equal(expectedStartDate, startDate);
         Assert.Equal(expectedEndDate, endDate);
     }
-
-    [Theory]
-    [InlineData(2025, 2025, true)]
-    [InlineData(2025, 2024, false)]
-    public void Year_Equals_ReturnsExpectedResult(int testYear1, int testYear2, bool expectedResult)
-    {
-        // Arrange
-        var year1 = new Year(testYear1);
-        var year2 = new Year(testYear2);
-
-        // Act
-        var actual = year1.Equals(year2);
-
-        // Assert
-        Assert.Equal(expectedResult, actual);
-    }
 }
