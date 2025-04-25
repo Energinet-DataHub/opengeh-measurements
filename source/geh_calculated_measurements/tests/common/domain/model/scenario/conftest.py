@@ -9,7 +9,8 @@ from geh_common.testing.dataframes import read_csv
 from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_factory
+from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
 
@@ -27,7 +28,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
     calculated_measurements_daily = CalculatedMeasurementsDaily(daily)
 
     # Execute the logic to be tested
-    actual = calculated_measurements_factory.create(
+    actual = calculated_measurements_hourly_factory.create(
         calculated_measurements_daily,
         UUID("00000000-0000-0000-0000-000000000001"),
         OrchestrationType.ELECTRICAL_HEATING,
@@ -36,12 +37,18 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         datetime.fromisoformat("2025-03-31T12:34:56+00:00"),
     )
 
+    # Ensure consistency
+    actual = actual.df.orderBy(
+        ContractColumnNames.metering_point_id,
+        ContractColumnNames.observation_time,
+    )
+
     # Return test cases
     return TestCases(
         [
             TestCase(
                 expected_csv_path=f"{scenario_path}/then/calculated_measurements_hourly.csv",
-                actual=actual.df,
+                actual=actual,
             )
         ]
     )
