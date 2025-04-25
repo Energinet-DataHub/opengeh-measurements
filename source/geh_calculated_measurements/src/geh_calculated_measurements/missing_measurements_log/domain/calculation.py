@@ -10,11 +10,9 @@ from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
-from geh_calculated_measurements.missing_measurements_log.domain.model.missing_measurements_log import MissingMeasurementsLog
 from geh_calculated_measurements.missing_measurements_log.domain.clamp import clamp_period
-from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
-    MeteringPointPeriods,
-)
+from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import MeteringPointPeriods
+from geh_calculated_measurements.missing_measurements_log.domain.model.missing_measurements_log import MissingMeasurementsLog
 
 
 @use_span()
