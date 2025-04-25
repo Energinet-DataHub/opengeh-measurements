@@ -16,7 +16,7 @@ def test__with_version__adds_version_column_to_dataframe(spark: SparkSession) ->
 
     # Assert
     actual_row = actual.collect()[0]
-    assert actual_row["version"] == str(version)
+    assert actual_row["version"] == version
 
 
 def test__with_version__when_protobuf_message_cannot_be_parsed__returns_none_in_version(
