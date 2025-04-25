@@ -3,10 +3,10 @@ from decimal import Decimal
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType
+from geh_common.domain.types.quantity_quality import QuantityQuality
 from geh_common.domain.types.quantity_unit import QuantityUnit
 
 import tests.helpers.datetime_helper as datetime_helper
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import Quality
 from core.silver.domain.schemas.silver_measurements import silver_measurements_schema
 
 
@@ -64,7 +64,7 @@ class SilverMeasurementsBuilder:
             {
                 "position": position,
                 "quantity": Decimal(1.0),
-                "quality": Quality.Q_MEASURED,  # Quality is not transformed in the silver layer.
+                "quality": QuantityQuality.MEASURED.value,  # Quality is not transformed in the silver layer.
             }
             for position in range(1, 25)
         ]

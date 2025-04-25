@@ -19,7 +19,9 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Persis
     Resolution,
     Unit,
 )
-from tests.helpers.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
+from tests.helpers.schemas.bronze_submitted_transactions_value_schema import (
+    bronze_submitted_transactions_value_schema,
+)
 
 
 class Point:
@@ -143,17 +145,12 @@ class ValueBuilder:
             ).alias(BronzeSubmittedTransactionsColumnNames.value)
         )
 
-        options = {
-            "enums.as.ints": "true",
-        }
-
         df_value = df_value.withColumn(
             BronzeSubmittedTransactionsColumnNames.value,
             to_protobuf(
                 BronzeSubmittedTransactionsColumnNames.value,
                 "PersistSubmittedTransaction",
                 descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
-                options=options,
             ),
         )
 
