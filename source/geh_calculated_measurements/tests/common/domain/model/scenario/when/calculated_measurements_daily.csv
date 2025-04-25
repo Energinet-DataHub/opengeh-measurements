@@ -4,3 +4,9 @@ metering_point_id;date;quantity;#comment
 140000000000170201;2024-02-29 23:00:00Z;2.1;Leap year 2024
 140000000000170201;2025-10-25 22:00:00Z;2.1;Changing to wintertime
 140000000000170201;2025-10-26 23:00:00Z;2.1;Day after changing to wintertime 
+140000000000170202;2025-10-27 23:00:00Z;2.2;Two days without gap gets same transaction id for same metering point, but different id's for the two metering points
+140000000000170202;2025-10-28 23:00:00Z;2.2;Two days without gap gets same transaction id for same metering point, but different id's for the two metering points
+140000000000170203;2025-10-27 23:00:00Z;2.2;Two days without gap gets same transaction id for same metering point, but different id's for the two metering points
+140000000000170203;2025-10-28 23:00:00Z;2.2;Two days without gap gets same transaction id for same metering point, but different id's for the two metering points
+140000000000170204;2025-10-28 23:00:00Z;2.3;Two days with gap results in different transaction id
+140000000000170204;2025-10-30 23:00:00Z;2.3;Two days with gap results in different transaction id

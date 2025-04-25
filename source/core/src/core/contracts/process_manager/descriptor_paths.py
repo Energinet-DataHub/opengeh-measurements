@@ -7,17 +7,17 @@ class _DescriptorFileNames:
     VersionMessage = "VersionMessage.binpb"
 
 
+def protobuf_path(protobuf_file_name: str) -> str:
+    return f"core.contracts.process_manager.{protobuf_file_name}.generated"
+
+
 class DescriptorFilePaths:
     Brs021ForwardMeteredDataNotifyV1 = str(
-        files("core.contracts.process_manager.Brs021ForwardMeteredDataNotifyV1").joinpath(
+        files(protobuf_path("Brs021ForwardMeteredDataNotifyV1")).joinpath(
             _DescriptorFileNames.Brs021ForwardMeteredDataNotifyV1
         )
     )
     PersistSubmittedTransaction = str(
-        files("core.contracts.process_manager.PersistSubmittedTransaction").joinpath(
-            _DescriptorFileNames.PersistSubmittedTransaction
-        )
+        files(protobuf_path("PersistSubmittedTransaction")).joinpath(_DescriptorFileNames.PersistSubmittedTransaction)
     )
-    VersionMessage = str(
-        files("core.contracts.process_manager.VersionMessage").joinpath(_DescriptorFileNames.VersionMessage)
-    )
+    VersionMessage = str(files(protobuf_path("VersionMessage")).joinpath(_DescriptorFileNames.VersionMessage))
