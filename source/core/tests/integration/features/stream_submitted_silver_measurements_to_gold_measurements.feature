@@ -9,5 +9,3 @@ Feature: Streaming Submitted Silver Measurements to Gold Measurements
     Given valid measurements with an orchestration instance id inserted into the silver measurements table
     When streaming Silver measurements to the Gold layer
     Then a receipt entry is available in the process manager receipts table
-
-
