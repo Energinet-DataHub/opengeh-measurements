@@ -79,6 +79,8 @@ public class MeasurementsClientTests
         Assert.True(actual.Last().Date == new DateOnly(2025, 3, 31));
         Assert.False(actual.All(p => p.MissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
+        Assert.True(actual.All(p => p.Unit == Unit.kWh));
+        Assert.False(actual.All(p => p.ContainsUpdatedValues));
     }
 
     [Theory]
