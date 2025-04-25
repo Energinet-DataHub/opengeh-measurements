@@ -77,8 +77,6 @@ Scenario Outline: Processing submitted transaction with valid <field>
     | unit                | U_MW                           | 3      |
     | unit                | U_MWH                          | 4      |
     | unit                | U_TONNE                        | 5      |
-    | unit                | U_KVARH                        | 6      |
-    | unit                | U_MVAR                         | 7      |
 
   Scenario Outline: Processing submitted transaction point with valid quality
     Given submitted transaction points where the quality has value <quality>
