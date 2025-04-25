@@ -1,6 +1,6 @@
 ﻿namespace Energinet.DataHub.Measurements.Domain;
 
-public record MeasurementAggregationByDay(
+public record MeasurementAggregationByDate(
     DateOnly Date,
     decimal Quantity,
     Quality Quality,

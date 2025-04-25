@@ -10,13 +10,13 @@ namespace Energinet.DataHub.Measurements.Application.Responses;
 public class GetMeasurementsAggregatedByDateResponse
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregationByDay> MeasurementAggregations { get; init; } = [];
+    public IReadOnlyCollection<MeasurementAggregationByDate> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
     private GetMeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDay> measurementAggregations)
+    private GetMeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDate> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
@@ -25,7 +25,7 @@ public class GetMeasurementsAggregatedByDateResponse
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregationByDay(
+                new MeasurementAggregationByDate(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
                     SetQuality(measurement),
