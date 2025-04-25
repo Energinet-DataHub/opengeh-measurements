@@ -83,20 +83,17 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
         GetByPeriodRequest request,
+        Exception expectedException,
         Mock<IMeasurementsHandler> measurementsHandler)
     {
         // Arrange
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ThrowsAsync(new Exception());
+            .ThrowsAsync(expectedException);
         var sut = new MeasurementsController(measurementsHandler.Object);
 
-        // Act
-        var actual = await sut.GetByPeriodAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetByPeriodAsync(request));
     }
 
     private static GetMeasurementResponse CreateResponse()
