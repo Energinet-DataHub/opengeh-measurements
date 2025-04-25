@@ -1,6 +1,5 @@
 from datetime import datetime
 from pathlib import Path
-from unittest import mock
 
 import pytest
 import yaml
@@ -12,8 +11,8 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.missing_measurements_log.application import (
     MissingMeasurementsLogArgs,
-    execute_application,
 )
+from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods, execute
 from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 
 
@@ -39,30 +38,25 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
-    with (
-        mock.patch(
-            "geh_calculated_measurements.missing_measurements_log.infrastructure.MeteringPointPeriodsTable.read",
-            return_value=consumption_metering_point_periods,
-        ),
-        mock.patch(
-            "geh_calculated_measurements.common.infrastructure.CurrentMeasurementsRepository._read",
-            return_value=current_measurements,
-        ),
-    ):
-        args = MissingMeasurementsLogArgs.model_construct(
-            orchestration_instance_id=scenario_parameters["orchestration_instance_id"],
-            period_start_datetime=datetime.fromisoformat(str(scenario_parameters["period_start_datetime"])),
-            period_end_datetime=datetime.fromisoformat(str(scenario_parameters["period_end_datetime"])),
-            grid_area_codes=scenario_parameters["grid_area_codes"],
-            catalog_name="test_catalog",
-            time_zone="Europe/Copenhagen",
-        )
+    args = MissingMeasurementsLogArgs.model_construct(
+        orchestration_instance_id=scenario_parameters["orchestration_instance_id"],
+        period_start_datetime=datetime.fromisoformat(str(scenario_parameters["period_start_datetime"])),
+        period_end_datetime=datetime.fromisoformat(str(scenario_parameters["period_end_datetime"])),
+        grid_area_codes=scenario_parameters["grid_area_codes"],
+        catalog_name="test_catalog",
+        time_zone="Europe/Copenhagen",
+    )
 
-        # Execute the logic
-        actual = execute_application(
-            spark,
-            args,
-        )
+    # Execute the logic
+    actual = execute(
+        CurrentMeasurements(current_measurements),
+        MeteringPointPeriods(consumption_metering_point_periods),
+        args.grid_area_codes,
+        args.orchestration_instance_id,
+        args.time_zone,
+        args.period_start_datetime,
+        args.period_end_datetime,
+    )
 
     # Sort to make the tests deterministic
     actual_df = actual.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))

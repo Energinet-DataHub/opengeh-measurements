@@ -11,26 +11,29 @@ from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.missing_measurements_log.domain.clamp import clamp_period
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
+from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
+    MeteringPointPeriods,
+)
 
 
 @use_span()
 def execute(
     current_measurements: CurrentMeasurements,
-    metering_point_periods: DataFrame,
+    metering_point_periods: MeteringPointPeriods,
     grid_area_codes: GridAreaCodes | None,
     orchestration_instance_id: UUID,
     time_zone: str,
     period_start_datetime: datetime,
     period_end_datetime: datetime,
 ) -> DataFrame:
+    metering_point_periods_df = metering_point_periods.df
     if grid_area_codes is not None:
-        metering_point_periods = metering_point_periods.where(
-            F.col(MeteringPointPeriodsTable.grid_area_code.name).isin(grid_area_codes)
+        metering_point_periods_df = metering_point_periods_df.where(
+            F.col(ContractColumnNames.grid_area_code).isin(grid_area_codes)
         )
 
     expected_measurement_counts = _get_expected_measurement_counts(
-        metering_point_periods, time_zone, period_start_datetime, period_end_datetime
+        metering_point_periods_df, time_zone, period_start_datetime, period_end_datetime
     )
     actual_measurement_counts = _get_actual_measurement_counts(current_measurements, time_zone)
 
@@ -52,8 +55,8 @@ def _get_expected_measurement_counts(
         metering_point_periods,
         period_start_datetime,
         period_end_datetime,
-        MeteringPointPeriodsTable.period_from_date.name,
-        MeteringPointPeriodsTable.period_to_date.name,
+        ContractColumnNames.period_from_date,
+        ContractColumnNames.period_to_date,
     )
 
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
@@ -62,29 +65,29 @@ def _get_expected_measurement_counts(
         "start_of_day",
         F.explode(
             F.sequence(
-                F.col(MeteringPointPeriodsTable.period_from_date.name),
-                F.col(MeteringPointPeriodsTable.period_to_date.name),
+                F.col(ContractColumnNames.period_from_date),
+                F.col(ContractColumnNames.period_to_date),
                 F.expr("INTERVAL 1 DAY"),
             )
         ),
     ).where(
         # to date is exclusive
-        F.col("start_of_day") < F.col(MeteringPointPeriodsTable.period_to_date.name)
+        F.col("start_of_day") < F.col(ContractColumnNames.period_to_date)
     )
 
     expected_measurement_counts = expected_measurement_counts.select(
-        F.col(MeteringPointPeriodsTable.metering_point_id.name),
+        F.col(ContractColumnNames.metering_point_id),
         F.col("start_of_day"),
         (F.col("start_of_day") + F.expr("INTERVAL 1 DAY")).alias("end_of_day"),
         (
             (F.unix_timestamp(F.col("end_of_day")) - F.unix_timestamp(F.col("start_of_day")))
-            / F.when(F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.HOUR.value, 3600).when(
-                F.col(MeteringPointPeriodsTable.resolution.name) == MeteringPointResolution.QUARTER.value, 900
+            / F.when(F.col(ContractColumnNames.resolution) == MeteringPointResolution.HOUR.value, 3600).when(
+                F.col(ContractColumnNames.resolution) == MeteringPointResolution.QUARTER.value, 900
             )
             # 3600 seconds for 1 hour, 900 seconds for 15 minutes
         ).alias("measurement_counts"),
     ).select(
-        F.col(MeteringPointPeriodsTable.metering_point_id.name),
+        F.col(ContractColumnNames.metering_point_id),
         F.col("start_of_day").alias(ContractColumnNames.date),
         F.col("measurement_counts"),
     )
@@ -121,7 +124,7 @@ def _get_missing_measurements(
     return expected_measurement_counts.join(
         actual_measurement_counts,
         [
-            expected_measurement_counts[MeteringPointPeriodsTable.metering_point_id.name]
+            expected_measurement_counts[ContractColumnNames.metering_point_id]
             == actual_measurement_counts[ContractColumnNames.metering_point_id],
             expected_measurement_counts[ContractColumnNames.date]
             == actual_measurement_counts[ContractColumnNames.date],

@@ -25,6 +25,6 @@ def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -
         orchestration_instance_id=args.orchestration_instance_id,
         grid_area_codes=args.grid_area_codes,
         period_start_datetime=args.period_start_datetime,
-        period_end_datetimea=args.period_end_datetime,
+        period_end_datetime=args.period_end_datetime,
     )
     return missing_measurements_log
