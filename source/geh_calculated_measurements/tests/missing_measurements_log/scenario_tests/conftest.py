@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
+from geh_calculated_measurements.missing_measurements_log.application import (
+    MissingMeasurementsLogArgs,
+)
 from geh_calculated_measurements.missing_measurements_log.domain import MeteringPointPeriods, execute
 from tests.external_data_products import ExternalDataProducts
 
@@ -34,13 +38,24 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
+    args = MissingMeasurementsLogArgs.model_construct(
+        orchestration_instance_id=scenario_parameters["orchestration_instance_id"],
+        period_start_datetime=datetime.fromisoformat(str(scenario_parameters["period_start_datetime"])),
+        period_end_datetime=datetime.fromisoformat(str(scenario_parameters["period_end_datetime"])),
+        grid_area_codes=scenario_parameters["grid_area_codes"],
+        catalog_name="test_catalog",
+        time_zone="Europe/Copenhagen",
+    )
+
     # Execute the logic
     actual = execute(
-        current_measurements=CurrentMeasurements(current_measurements),
-        metering_point_periods=MeteringPointPeriods(metering_point_periods),
-        grid_area_codes=scenario_parameters["grid_area_codes"],
-        orchestration_instance_id=scenario_parameters["orchestration_instance_id"],
-        time_zone="Europe/Copenhagen",
+        CurrentMeasurements(current_measurements),
+        MeteringPointPeriods(metering_point_periods),
+        args.grid_area_codes,
+        args.orchestration_instance_id,
+        args.time_zone,
+        args.period_start_datetime,
+        args.period_end_datetime,
     )
 
     # Sort to make the tests deterministic
