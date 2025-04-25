@@ -21,10 +21,10 @@ public interface IMeasurementsRepository
     /// <summary>
     /// Get aggregated measurements for a given metering point for a month defined by the yearMonth parameter.
     /// </summary>
-    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, YearMonth yearMonth);
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, YearMonth yearMonth); // TODO rename to Date
 
     /// <summary>
     /// Get aggregated measurements for a given metering point for a year defined by the year parameter.
     /// </summary>
-    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByYearAsync(string meteringPointId, Year year);
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByYearAsync(string meteringPointId, Year year); // TODO rename to Month
 }

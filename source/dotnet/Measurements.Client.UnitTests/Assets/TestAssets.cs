@@ -8,11 +8,11 @@ public static class TestAssets
 
     public static string MeasurementsForDayWithHistoricalObservations => GetJsonFile($"{nameof(MeasurementsForDayWithHistoricalObservations)}.json");
 
-    public static string HourlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDay)}.json");
+    public static string MeasurementsAggregatedByDay => GetJsonFile($"{nameof(MeasurementsAggregatedByDay)}.json");
 
-    public static string HourlyMeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDayMissingMeasurements)}.json");
+    public static string MeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(MeasurementsAggregatedByDayMissingMeasurements)}.json");
 
-    public static string QuarterlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(QuarterlyMeasurementsAggregatedByDay)}.json");
+    public static string MeasurementsAggregatedByMonth => GetJsonFile($"{nameof(MeasurementsAggregatedByMonth)}.json");
 
     private static string GetJsonFile(string filename)
     {

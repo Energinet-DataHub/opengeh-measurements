@@ -1,10 +1,13 @@
-﻿using Asp.Versioning;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Asp.Versioning;
 using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using JsonSerializer = Energinet.DataHub.Measurements.Infrastructure.Serialization.JsonSerializer;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
@@ -15,6 +18,12 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
     : ControllerBase
 {
+    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter(), new YearMonthConverter() },
+    };
+
     [MapToApiVersion(1.0)]
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsyncV1([FromQuery] GetByPeriodRequest request)
@@ -64,11 +73,11 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
     [MapToApiVersion(1.0)]
     [MapToApiVersion(2.0)]
     [HttpGet("aggregatedByMonth")]
-    public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
+    public async Task<IActionResult> GetAggregatedByDateAsync([FromQuery] GetAggregatedByDateRequest request)
     {
         try
         {
-            var aggregatedByMonth = await measurementsHandler.GetAggregatedByMonthAsync(request);
+            var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsync(request);
             var result = new JsonSerializer().Serialize(aggregatedByMonth);
 
             return Ok(result);
@@ -87,11 +96,11 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
 
     [MapToApiVersion(1.0)]
     [HttpGet("aggregatedByYear")]
-    public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)
+    public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
     {
         try
         {
-            var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsync(request);
+            var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsync(request);
             var result = new JsonSerializer().Serialize(aggregatedByYear);
 
             return Ok(result);

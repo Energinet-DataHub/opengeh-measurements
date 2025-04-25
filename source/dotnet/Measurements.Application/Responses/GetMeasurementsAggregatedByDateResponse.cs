@@ -7,25 +7,25 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class GetAggregatedMeasurementsResponse
+public class GetMeasurementsAggregatedByDateResponse
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregation> MeasurementAggregations { get; init; } = [];
+    public IReadOnlyCollection<MeasurementAggregationByDay> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private GetAggregatedMeasurementsResponse() { } // Needed by System.Text.Json to deserialize
+    private GetMeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetAggregatedMeasurementsResponse(List<MeasurementAggregation> measurementAggregations)
+    private GetMeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDay> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static GetAggregatedMeasurementsResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static GetMeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregation(
+                new MeasurementAggregationByDay(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
                     SetQuality(measurement),
@@ -36,7 +36,7 @@ public class GetAggregatedMeasurementsResponse
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundDuringPeriodException()
-            : new GetAggregatedMeasurementsResponse(measurementAggregations);
+            : new GetMeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
     private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)

@@ -105,14 +105,77 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var response = CreateMeasurementsAggregatedByDateResponse();
+        var expected = CreateMeasurementsAggregatedByDateExpected();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = (await sut.GetAggregatedByDateAsync(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByDateAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByDateAsync(request);
+
+        // Assert
+        Assert.IsType<ObjectResult>(actual);
+        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+    }
+
+    [Theory]
+    [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var response = CreateAggregatedMeasurementsResponse();
-        var expected = CreateAggregatedMeasurementsExpected();
+        var response = CreateMeasurementsAggregatedByMonthResponse();
+        var expected = CreateMeasurementsAggregatedByMonthExpected();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(response);
@@ -166,69 +229,6 @@ public class MeasurementsControllerTests
         Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
     }
 
-    [Theory]
-    [AutoData]
-    public async Task GetAggregatedByYearAsync_WhenMeasurementsExists_ReturnValidJson(
-        GetAggregatedByYearRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
-    {
-        // Arrange
-        var response = CreateAggregatedMeasurementsResponse();
-        var expected = CreateAggregatedMeasurementsExpected();
-        measurementsHandler
-            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
-
-        // Act
-        var actual = (await sut.GetAggregatedByYearAsync(request) as OkObjectResult)!.Value!.ToString();
-
-        // Assert
-        Assert.Equal(expected, actual);
-    }
-
-    [Theory]
-    [AutoMoqData]
-    public async Task GetAggregatedByYearAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
-        GetAggregatedByYearRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
-    {
-        // Arrange
-        measurementsHandler
-            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
-
-        // Act
-        var actual = await sut.GetAggregatedByYearAsync(request);
-
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(actual);
-    }
-
-    [Theory]
-    [AutoData]
-    public async Task GetAggregatedByYearAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
-        GetAggregatedByYearRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
-    {
-        // Arrange
-        measurementsHandler
-            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
-
-        // Act
-        var actual = await sut.GetAggregatedByYearAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
-    }
-
     private static GetMeasurementResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
@@ -236,10 +236,17 @@ public class MeasurementsControllerTests
         return response;
     }
 
-    private static GetAggregatedMeasurementsResponse CreateAggregatedMeasurementsResponse()
+    private static GetMeasurementsAggregatedByDateResponse CreateMeasurementsAggregatedByDateResponse()
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
-        var response = GetAggregatedMeasurementsResponse.Create(measurements);
+        var response = GetMeasurementsAggregatedByDateResponse.Create(measurements);
+        return response;
+    }
+
+    private static GetMeasurementsAggregatedByMonthResponse CreateMeasurementsAggregatedByMonthResponse()
+    {
+        var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
+        var response = GetMeasurementsAggregatedByMonthResponse.Create(measurements);
         return response;
     }
 
@@ -248,9 +255,14 @@ public class MeasurementsControllerTests
         return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
     }
 
-    private static string CreateAggregatedMeasurementsExpected()
+    private static string CreateMeasurementsAggregatedByDateExpected()
     {
         return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
+    }
+
+    private static string CreateMeasurementsAggregatedByMonthExpected()
+    {
+        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()

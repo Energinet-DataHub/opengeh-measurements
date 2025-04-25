@@ -2,4 +2,4 @@
 
 namespace Energinet.DataHub.Measurements.Application.Requests;
 
-public record GetAggregatedByMonthRequest(string MeteringPointId, [Range(-9998, 9999)] int Year, [Range(1, 12)] int Month);
+public record GetAggregatedByMonthRequest(string MeteringPointId, [Range(-9998, 9999)] int Year);

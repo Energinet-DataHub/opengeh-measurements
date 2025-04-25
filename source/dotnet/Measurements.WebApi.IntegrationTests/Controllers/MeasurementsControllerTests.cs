@@ -115,7 +115,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetAggregatedMeasurementsResponse>(actualResponse);
+        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
@@ -126,6 +126,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(285.6M, measurementAggregation.Quantity);
             Assert.False(measurementAggregation.MissingValues);
+            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
+            Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
     }
 
@@ -145,6 +147,33 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
+        var expectedYearMonth = new YearMonth(expectedDate.Year, expectedDate.Month);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(expectedMeteringPointId, new Year(expectedYearMonth.Year));
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByMonthResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Single(actual.MeasurementAggregations);
+        Assert.Equal(expectedYearMonth, actual.MeasurementAggregations.First().YearMonth);
+        foreach (var measurementAggregation in actual.MeasurementAggregations)
+        {
+            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
+            Assert.Equal(571.2M, measurementAggregation.Quantity);
+            Assert.False(measurementAggregation.MissingValues);
+            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
+            Assert.False(measurementAggregation.ContainsUpdatedValues);
+        }
+    }
+
+    [Fact]
     public async Task GetAggregatedMeasurementsAsync_WhenUsingExplicitVersionV1_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -154,7 +183,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetAggregatedMeasurementsResponse>(actualResponse);
+        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
@@ -184,6 +213,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, YearMonth yearMonth, string versionPrefix = "")
     {
         return $"{versionPrefix}measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
+    }
+
+    private static string CreateGetAggregatedMeasurementsByYearUrl(string expectedMeteringPointId, Year year, string versionPrefix = "")
+    {
+        return $"{versionPrefix}measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}&year={year.GetYear()}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

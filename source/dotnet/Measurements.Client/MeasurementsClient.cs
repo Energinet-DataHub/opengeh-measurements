@@ -6,6 +6,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -20,7 +21,7 @@ public class MeasurementsClient(
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() },
+        Converters = { new JsonStringEnumConverter(), new YearMonthConverter() },
     };
 
     public async Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default)
@@ -44,37 +45,36 @@ public class MeasurementsClient(
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByDateDto>(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByYear(
+    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetAggregatedByYear(
         GetAggregatedByYearQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByMonthDto>(response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationByDateDto>> ParseMeasurementAggregationResponseAsync(
+    private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound)
             return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
+        return await DeserializeMeasurementAggregationResponseStreamAsync<T>(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationByDateDto>> DeserializeMeasurementAggregationResponseStreamAsync(
+    private async Task<IEnumerable<T>> DeserializeMeasurementAggregationResponseStreamAsync<T>(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementAggregationByDateDto>>(_jsonSerializerOptions)
-               ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<T>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

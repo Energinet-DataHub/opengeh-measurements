@@ -13,6 +13,7 @@ public class JsonSerializer
         {
             NodaConverters.InstantConverter,
             new JsonStringEnumConverter(),
+            new YearMonthConverter(),
         },
     };
 
