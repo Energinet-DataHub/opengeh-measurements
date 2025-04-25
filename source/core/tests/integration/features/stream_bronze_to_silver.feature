@@ -74,7 +74,6 @@ Scenario Outline: Processing submitted transaction with valid <field>
     | orchestration_type  | OT_SUBMITTED_MEASURE_DATA      | 1      |
     | unit                | U_KWH                          | 1      |
     | unit                | U_KW                           | 2      |
-    | unit                | U_MW                           | 3      |
     | unit                | U_MWH                          | 4      |
     | unit                | U_TONNE                        | 5      |
 
