@@ -15,7 +15,12 @@ def unpack(submitted_transactions) -> tuple[DataFrame, DataFrame]:
     """Return a tuple with the unpacked submitted transactions and the invalid ones."""
     message_name = "PersistSubmittedTransaction"
 
-    options = {"mode": "PERMISSIVE", "recursive.fields.max.depth": "3", "emit.default.values": "true"}
+    options = {
+        "mode": "PERMISSIVE",
+        "recursive.fields.max.depth": "3",
+        "emit.default.values": "true",
+        "enums.as.ints": "true",
+    }
 
     unpacked = submitted_transactions.select(
         from_protobuf(
