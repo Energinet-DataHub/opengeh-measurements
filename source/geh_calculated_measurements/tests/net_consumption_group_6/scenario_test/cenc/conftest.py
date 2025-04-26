@@ -14,12 +14,8 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
 )
-<<<<<<< HEAD:source/geh_calculated_measurements/tests/net_consumption_group_6/scenario_test/cenc/conftest.py
 from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cenc_daily
-=======
-from geh_calculated_measurements.net_consumption_group_6.domain.calculation import execute
 from tests.conftest import ExternalDataProducts
->>>>>>> 133393bde24719e8a1dbf457d671cf2bcc2fd3fc:source/geh_calculated_measurements/tests/net_consumption_group_6/scenario_tests/conftest.py
 
 
 @pytest.fixture(scope="module")
