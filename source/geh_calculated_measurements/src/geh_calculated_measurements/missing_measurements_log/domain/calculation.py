@@ -9,10 +9,10 @@ from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
-from geh_calculated_measurements.missing_measurements_log.domain.clamp import clamp_period
-from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
+from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements, clamp_period
+from geh_calculated_measurements.missing_measurements_log.domain import (
     MeteringPointPeriods,
+    MissingMeasurementsLog,
 )
 
 
@@ -25,7 +25,7 @@ def execute(
     time_zone: str,
     period_start_datetime: datetime,
     period_end_datetime: datetime,
-) -> DataFrame:
+) -> MissingMeasurementsLog:
     metering_point_periods_df = _get_metering_point_periods_from_grid_areas(metering_point_periods.df, grid_area_codes)
 
     expected_measurement_counts = _get_expected_measurement_counts(
@@ -38,9 +38,11 @@ def execute(
         actual_measurement_counts=actual_measurement_counts,
     )
 
-    return missing_measurements.withColumn(
+    missing_measurements = missing_measurements.withColumn(
         ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id))
     )
+
+    return MissingMeasurementsLog(missing_measurements)
 
 
 def _get_metering_point_periods_from_grid_areas(

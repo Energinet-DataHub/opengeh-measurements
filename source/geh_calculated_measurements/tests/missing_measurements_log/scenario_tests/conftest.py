@@ -59,7 +59,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     )
 
     # Sort to make the tests deterministic
-    actual_df = actual.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
+    actual_df = actual.df.orderBy(F.col(ContractColumnNames.metering_point_id), F.col(ContractColumnNames.date))
 
     # Return test cases
     return TestCases(

@@ -18,7 +18,7 @@ from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.common.infrastructure.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration

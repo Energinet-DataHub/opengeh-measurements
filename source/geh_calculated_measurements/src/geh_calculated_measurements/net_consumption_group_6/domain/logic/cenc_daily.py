@@ -13,9 +13,7 @@ from geh_calculated_measurements.common.domain import (
     CurrentMeasurements,
 )
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
-from geh_calculated_measurements.net_consumption_group_6.domain import (
-    Cenc,
-)
+from geh_calculated_measurements.net_consumption_group_6.domain import Cenc
 
 
 def days_in_year(year: Column, month: Column) -> Column:
