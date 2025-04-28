@@ -2,9 +2,9 @@
 using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using JsonSerializer = Energinet.DataHub.Measurements.Infrastructure.Serialization.JsonSerializer;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
@@ -12,7 +12,8 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiVersion(2.0)]
 [ApiController]
 [Authorize]
-public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
+public class MeasurementsController(
+    IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
 {
     [MapToApiVersion(1.0)]
@@ -22,7 +23,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         try
         {
             var measurement = await measurementsHandler.GetByPeriodAsyncV1(request);
-            var result = new JsonSerializer().Serialize(measurement);
+            var result = jsonSerializer.Serialize(measurement);
 
             return Ok(result);
         }
@@ -45,7 +46,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         try
         {
             var measurement = await measurementsHandler.GetByPeriodAsync(request);
-            var result = new JsonSerializer().Serialize(measurement);
+            var result = jsonSerializer.Serialize(measurement);
 
             return Ok(result);
         }
@@ -69,7 +70,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         try
         {
             var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedByMonth);
+            var result = jsonSerializer.Serialize(aggregatedByMonth);
 
             return Ok(result);
         }
@@ -92,7 +93,7 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         try
         {
             var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedByYear);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
 
             return Ok(result);
         }
