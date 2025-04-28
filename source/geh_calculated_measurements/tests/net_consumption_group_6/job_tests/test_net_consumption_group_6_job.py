@@ -17,8 +17,6 @@ from tests.net_consumption_group_6.job_tests.conftest import cenc_seed, cnc_seed
 def test_cenc_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
-    cenc_gold_table_seeded: None,  # Used implicitly
-    electricity_market_tables_seeded: None,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
@@ -42,8 +40,6 @@ def test_cenc_execute(
 def test_cnc_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
-    cnc_gold_table_seeded: None,  # Used implicitly
-    electricity_market_tables_seeded: None,  # Used implicitly
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
