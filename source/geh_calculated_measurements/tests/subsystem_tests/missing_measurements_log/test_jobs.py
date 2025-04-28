@@ -36,10 +36,10 @@ class TestMissingMeasurementsLog(JobTest):
 
         return base_job_fixture
 
-    def test__and_then_data_is_written_to_delta(self, job_fixture) -> None:
+    def test__and_then_data_is_written_to_delta(self, fixture) -> None:
         """
         Test that data is written to the delta table.
         """
         database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table_name = CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME
-        self.assert_data_written_to_delta(job_fixture, database_name, table_name)
+        self.assert_data_written_to_delta(fixture, database_name, table_name)
