@@ -43,13 +43,13 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
     seed_statement = f"""
       INSERT INTO {config.catalog_name}.{database_name}.{table_name} VALUES
       (
-        '{OrchestrationType.ELECTRICAL_HEATING}',
+        '{OrchestrationType.ELECTRICAL_HEATING.value}',
         '{orchestration_instance_id}',
         '{metering_point_id}',
-        '{uuid.uuid4()}', # transaction_id
-        '{datetime.now(UTC)}', # transaction_creation_datetime
-        '{MeteringPointType.ELECTRICAL_HEATING}',
-        '{datetime.now(UTC)}', # observation_time - make sure this is the newest value as current_v1 only selects the latest
+        '{uuid.uuid4()}', -- transaction_id
+        '{datetime.now(UTC)}', -- transaction_creation_datetime
+        '{MeteringPointType.ELECTRICAL_HEATING.value}',
+        '{datetime.now(UTC)}', -- observation_time - make sure this is the newest value as current_v1 only selects the latest
         {quantity}
       )
     """
