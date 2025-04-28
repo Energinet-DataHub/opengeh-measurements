@@ -29,7 +29,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var response = CreateMeasurementResponse();
-        var expected = CreateMeasurementsExpected();
+        var expected = CreateExpectedMeasurements();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsyncV1(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
@@ -52,7 +52,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var response = CreateMeasurementResponse();
-        var expected = CreateMeasurementsExpected();
+        var expected = CreateExpectedMeasurements();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
@@ -118,7 +118,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var response = CreateMeasurementsAggregatedByDateResponse();
-        var expected = CreateMeasurementsAggregatedByDateExpected();
+        var expected = CreateExpectedMeasurementsAggregatedByDate();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(response);
@@ -184,7 +184,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var response = CreateMeasurementsAggregatedByMonthResponse();
-        var expected = CreateMeasurementsAggregatedByMonthExpected();
+        var expected = CreateExpectedMeasurementsAggregatedByMonth();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(response);
@@ -261,17 +261,17 @@ public class MeasurementsControllerTests
         return response;
     }
 
-    private static string CreateMeasurementsExpected()
+    private static string CreateExpectedMeasurements()
     {
         return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
     }
 
-    private static string CreateMeasurementsAggregatedByDateExpected()
+    private static string CreateExpectedMeasurementsAggregatedByDate()
     {
         return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
-    private static string CreateMeasurementsAggregatedByMonthExpected()
+    private static string CreateExpectedMeasurementsAggregatedByMonth()
     {
         return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
     }
