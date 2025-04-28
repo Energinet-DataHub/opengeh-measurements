@@ -62,7 +62,11 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
         F.explode(
             F.sequence(
                 F.col("period_start_with_cut_off"),
+<<<<<<< HEAD
                 F.date_add(ContractColumnNames.period_to_date, -1),
+=======
+                F.date_add(F.col("period_end"), -1),
+>>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
                 F.expr("INTERVAL 1 DAY"),
             )
         ).alias(ContractColumnNames.date),

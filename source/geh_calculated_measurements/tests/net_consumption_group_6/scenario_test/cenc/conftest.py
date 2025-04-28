@@ -15,6 +15,10 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ConsumptionMeteringPointPeriods,
 )
 from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cenc_daily
+<<<<<<< HEAD
+=======
+from tests.conftest import ExternalDataProducts
+>>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
 
 
 @pytest.fixture(scope="module")
@@ -28,7 +32,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
 
     consumption_metering_point_periods = read_csv(

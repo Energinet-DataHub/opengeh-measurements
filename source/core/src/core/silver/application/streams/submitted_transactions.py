@@ -5,6 +5,7 @@ import core.silver.application.measurements.measurements_handler as measurements
 import core.silver.application.protobuf.protobuf_versions as protobuf_versions
 import core.silver.infrastructure.config.spark_session as spark_session
 import core.silver.infrastructure.protobuf.version_message as version_message
+from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import ValueColumnNames
 from core.bronze.infrastructure.repositories.invalid_submitted_transactions_repository import (
     InvalidSubmittedTransactionsRepository,
 )
@@ -26,7 +27,7 @@ def _batch_operation(submitted_transactions: DataFrame, batchId: int) -> None:
 
     for protobuf_message in protobuf_versions.protobuf_messages:
         protobuf_message = protobuf_message()
-        transactions = submitted_transactions.filter(f"version = {protobuf_message.version}")
+        transactions = submitted_transactions.filter(f"{ValueColumnNames.version} = '{protobuf_message.version}'")
         (valid_submitted_transactions, invalid_submitted_transactions) = protobuf_message.unpack(transactions)
         measurements_handler.handle(valid_submitted_transactions, protobuf_message)
         InvalidSubmittedTransactionsRepository().append(invalid_submitted_transactions)

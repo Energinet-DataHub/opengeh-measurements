@@ -21,7 +21,10 @@ class GoldMeasurementsRepository:
         :param gold_measurements: DataFrame containing the data to be appended.
         """
         orchestration_type_filters = self._get_possible_orchestration_types_for_stream(query_name)
-        clustering_keys_to_filter = [GoldMeasurementsColumnNames.transaction_creation_datetime]
+        clustering_keys_to_filter = [
+            GoldMeasurementsColumnNames.transaction_creation_datetime,
+            GoldMeasurementsColumnNames.observation_time,
+        ]
 
         delta_table_helper.append_if_not_exists(
             self.spark,
@@ -56,11 +59,11 @@ class GoldMeasurementsRepository:
         self,
         query_name: QueryNames,
     ) -> dict[str, list[str]]:
-        if query_name == QueryNames.SILVER_TO_GOLD.value:
+        if query_name == QueryNames.SILVER_TO_GOLD:
             return {GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.SUBMITTED.value]}
-        if query_name == QueryNames.MIGRATIONS_TO_GOLD.value:
+        if query_name == QueryNames.MIGRATIONS_TO_GOLD:
             return {GoldMeasurementsColumnNames.orchestration_type: [GehCommonOrchestrationType.MIGRATION.value]}
-        if query_name == QueryNames.CALCULATED_TO_GOLD.value:
+        if query_name == QueryNames.CALCULATED_TO_GOLD:
             return {
                 GoldMeasurementsColumnNames.orchestration_type: [
                     GehCommonOrchestrationType.CAPACITY_SETTLEMENT.value,
