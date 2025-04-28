@@ -13,13 +13,16 @@ from tests.subsystem_tests.fixtures.migrated_measurements_fixture import (
 scenarios("../features/streaming_of_migrated_measurements.feature")
 
 
-@given("a new valid migrated transaction", target_fixture="migrated_measurements_row")
+@given(
+    "a new valid migrated transaction inserted into the Migration Silver table",
+    target_fixture="migrated_measurements_row",
+)
 def _() -> MigratedMeasurementsRow:
     transaction_id = identifier_helper.generate_random_string()
     return MigratedMeasurementsRowBuilder().build(transaction_id=transaction_id)
 
 
-@when("inserted into the Migration silver table")
+@when("streaming from Migration silver to Measurements gold")
 def _(migrated_measurements_row: MigratedMeasurementsRow) -> None:
     migrated_measurements_fixture = MigratedMeasurementsFixture()
     migrated_measurements_fixture.insert_migrated_measurements(migrated_measurements_row)

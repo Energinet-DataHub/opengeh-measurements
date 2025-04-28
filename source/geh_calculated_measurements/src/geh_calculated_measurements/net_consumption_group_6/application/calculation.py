@@ -2,7 +2,7 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_factory
+from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,
@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
     NetConsumptionGroup6Args,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cenc_daily
 from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
     ElectricityMarketRepository,
 )
@@ -19,9 +19,7 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 @use_span()
 def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> None:
     # Create repositories to obtain data frames
-    electricity_market_repository = ElectricityMarketRepository(
-        spark, args.catalog_name, args.electricity_market_database_name
-    )
+    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
@@ -31,7 +29,7 @@ def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> 
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
-    _, calculated_measurements_daily = execute(
+    _, calculated_measurements_daily = execute_cenc_daily(
         current_measurements,
         consumption_metering_point_periods,
         child_metering_points,
@@ -40,7 +38,7 @@ def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> 
     )
 
     # Write the calculated measurements
-    calculated_measurements_hourly = calculated_measurements_factory.create(
+    calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
         calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.NET_CONSUMPTION,

@@ -7,7 +7,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.missing_measurements_log.infrastructure import (
-    MeteringPointPeriodsRepository,
+    Repository,
 )
 from tests import SPARK_CATALOG_NAME
 from tests.external_data_products import ExternalDataProducts
@@ -32,13 +32,13 @@ def valid_dataframe(spark: SparkSession) -> DataFrame:
 
 
 @pytest.fixture(scope="module")
-def metering_point_periods_repository(spark: SparkSession) -> MeteringPointPeriodsRepository:
-    return MeteringPointPeriodsRepository(spark, SPARK_CATALOG_NAME)
+def metering_point_periods_repository(spark: SparkSession) -> Repository:
+    return Repository(spark, SPARK_CATALOG_NAME)
 
 
 def test__when_invalid_contract__raises_with_useful_message(
     valid_dataframe: DataFrame,
-    metering_point_periods_repository: MeteringPointPeriodsRepository,
+    metering_point_periods_repository: Repository,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # Arrange
@@ -60,7 +60,7 @@ def test__when_invalid_contract__raises_with_useful_message(
 
 def test__when_source_contains_unexpected_columns__returns_data_without_unexpected_column(
     valid_dataframe: DataFrame,
-    metering_point_periods_repository: MeteringPointPeriodsRepository,
+    metering_point_periods_repository: Repository,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Test that the table can handle columns being added as it is defined to _not_ be a breaking change.
