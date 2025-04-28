@@ -205,10 +205,12 @@ class JobTest(abc.ABC):
 
     @pytest.mark.order(4)
     def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
-        # Arrange
-        catalog = fixture.config.catalog_name
         database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
         table = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
+        self.assert_data_written_to_delta(fixture, database, table)
+
+    def assert_data_written_to_delta(self, fixture: JobTestFixture, database: str, table: str) -> None:
+        catalog = fixture.config.catalog_name
         statement = f"""
             SELECT * 
             FROM {catalog}.{database}.{table} 
