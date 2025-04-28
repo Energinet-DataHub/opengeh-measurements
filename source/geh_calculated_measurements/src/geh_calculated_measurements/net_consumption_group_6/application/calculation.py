@@ -70,12 +70,12 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
-    _, calculated_measurements_daily = execute_cnc_daily(
-        current_measurements,
-        consumption_metering_point_periods,
-        child_metering_points,
-        args.time_zone,
-        args.execution_start_datetime,
+    calculated_measurements_daily = execute_cnc_daily(
+        current_measurements=current_measurements,
+        consumption_metering_point_periods=consumption_metering_point_periods,
+        child_metering_points=child_metering_points,
+        time_zone=args.time_zone,
+        execution_start_datetime=args.execution_start_datetime,
     )
 
     # Write the calculated measurements

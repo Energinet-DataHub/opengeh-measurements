@@ -15,15 +15,29 @@ from geh_calculated_measurements.common.infrastructure.current_measurements.data
 from geh_calculated_measurements.common.infrastructure.electricity_market import (
     DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
 )
-from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_path
+from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_path, get_cnc_test_files_folder_path
 
 
 @pytest.fixture(autouse=True)
-def gold_table_seeded(
+def cenc_gold_table_seeded(
     spark: SparkSession,
     external_dataproducts_created: None,  # Used implicitly
 ) -> None:
     file_name = f"{get_cenc_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
+    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+    time_series_points.write.saveAsTable(
+        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+        format="delta",
+        mode="overwrite",
+    )
+
+
+@pytest.fixture(autouse=True)
+def cnc_gold_table_seeded(
+    spark: SparkSession,
+    external_dataproducts_created: None,  # Used implicitly
+) -> None:
+    file_name = f"{get_cnc_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
     time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
     time_series_points.write.saveAsTable(
         f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
