@@ -42,7 +42,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         orchestration_instance_id=scenario_parameters["orchestration_instance_id"],
         period_start_datetime=datetime.fromisoformat(str(scenario_parameters["period_start_datetime"])),
         period_end_datetime=datetime.fromisoformat(str(scenario_parameters["period_end_datetime"])),
-        grid_area_codes=scenario_parameters["grid_area_codes"],
+        grid_area_codes=scenario_parameters.get("grid_area_codes", None),
         catalog_name="test_catalog",
         time_zone="Europe/Copenhagen",
     )
