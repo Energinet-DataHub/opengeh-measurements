@@ -14,6 +14,9 @@ from geh_calculated_measurements.missing_measurements_log.domain.clamp import cl
 from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
     MeteringPointPeriods,
 )
+from geh_calculated_measurements.missing_measurements_log.domain.model.missing_measurements_log import (
+    MissingMeasurementsLog,
+)
 
 
 @use_span()
@@ -25,7 +28,7 @@ def execute(
     time_zone: str,
     period_start_datetime: datetime,
     period_end_datetime: datetime,
-) -> DataFrame:
+) -> MissingMeasurementsLog:
     metering_point_periods_df = metering_point_periods.df
     if grid_area_codes is not None:
         metering_point_periods_df = metering_point_periods_df.where(
@@ -42,9 +45,11 @@ def execute(
         actual_measurement_counts=actual_measurement_counts,
     )
 
-    return missing_measurements.withColumn(
+    missing_measurements = missing_measurements.withColumn(
         ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id))
     )
+
+    return MissingMeasurementsLog(missing_measurements)
 
 
 def _get_expected_measurement_counts(
