@@ -18,10 +18,6 @@ from geh_calculated_measurements.net_consumption_group_6.domain.logic.cnc_daily 
 
 
 @use_span()
-<<<<<<< HEAD
-@testing()
-=======
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
 def execute_cenc_daily(
     current_measurements: CurrentMeasurements,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,

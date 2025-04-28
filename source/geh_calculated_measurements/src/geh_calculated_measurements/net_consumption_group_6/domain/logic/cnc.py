@@ -275,10 +275,6 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
             F.col("cut_off_date"),
         )
     )
-<<<<<<< HEAD
-
-=======
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
     return periods
 
 
@@ -426,11 +422,7 @@ def _create_daily_quantity_per_period(
         DataFrame with columns:
             - metering_point_id: ID of the metering point
             - period_start_with_cut_off: Start date of the period with cut off
-<<<<<<< HEAD
-            - period_to_date: End date of the period
-=======
             - period_end: End date of the period
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
             - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
     """
     periods_with_net_consumption = (
@@ -452,25 +444,14 @@ def _create_daily_quantity_per_period(
                 F.col("net_consumption") < 0,
                 F.lit(0),
             )
-<<<<<<< HEAD
-            .otherwise(
-                F.col("net_consumption")
-                / F.datediff(F.col(ContractColumnNames.period_to_date), F.col(ContractColumnNames.period_from_date))
-            )
-=======
             .otherwise(F.col("net_consumption") / F.datediff(F.col("mp.period_end"), F.col("mp.period_start")))
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
             .cast(T.DecimalType(18, 3))
             .alias("daily_quantity"),
         )
         .select(
             F.col(f"mp.{ContractColumnNames.metering_point_id}"),
             F.col("period_start_with_cut_off"),
-<<<<<<< HEAD
-            F.col(ContractColumnNames.period_to_date),
-=======
             F.col("mp.period_end"),
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
             F.col("daily_quantity"),
         )
     )

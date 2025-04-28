@@ -12,7 +12,7 @@ from geh_calculated_measurements.net_consumption_group_6.application.net_consump
 )
 
 
-# cnc
+# cenc
 def execute_cenc_daily() -> None:
     net_consumption_group_6_args = NetConsumptionGroup6Args()  # Retrieve calculation oriented settings / job arguments
     logging_settings = configure_logging(subsystem="measurements", cloud_role_name="dbr-net-consumption-group-6")
@@ -30,7 +30,7 @@ def orchestrate_cenc_business_logic(job_arguments: NetConsumptionGroup6Args, log
     execute_application_cenc_daily(spark, args=job_arguments)
 
 
-# cenc
+# cnc
 def execute_cnc_daily() -> None:
     net_consumption_group_6_args = NetConsumptionGroup6Args()  # Retrieve calculation oriented settings / job arguments
     logging_settings = configure_logging(subsystem="measurements", cloud_role_name="dbr-net-consumption-group-6")

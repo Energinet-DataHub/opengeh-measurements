@@ -7,55 +7,29 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
-<<<<<<< HEAD
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.common.infrastructure.electricity_market import (
-    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-)
-from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_path, get_cnc_test_files_folder_path
-
-
-@pytest.fixture(autouse=True)
-def cenc_gold_table_seeded(
-    spark: SparkSession,
-    external_dataproducts_created: None,  # Used implicitly
-) -> None:
-    file_name = f"{get_cenc_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
-    time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
-        format="delta",
-        mode="overwrite",
-    )
-
-
-@pytest.fixture(autouse=True)
-def cnc_gold_table_seeded(
-    spark: SparkSession,
-    external_dataproducts_created: None,  # Used implicitly
-) -> None:
-    file_name = f"{get_cnc_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
-=======
 from tests.external_data_products import ExternalDataProducts
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests import (
+    get_cenc_test_files_folder_path,
+    get_cnc_test_files_folder_path,
+)
 
 
-def seed(spark: SparkSession) -> None:
-    _seed_gold_table(spark)
+def cenc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cenc_test_files_folder_path())
     _seed_electricity_market_tables(spark)
 
 
-def _seed_gold_table(spark: SparkSession) -> None:
+def cnc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cnc_test_files_folder_path())
+    _seed_electricity_market_tables(spark)
+
+
+def _seed_gold_table(spark: SparkSession, file_path: str) -> None:
     database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
     table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
     schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
-    file_name = f"{get_test_files_folder_path()}/{database_name}-{table_name}.csv"
+    file_name = f"{file_path}/{database_name}-{table_name}.csv"
     time_series_points = read_csv_path(spark, file_name, schema)
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
     time_series_points.write.saveAsTable(
         f"{database_name}.{table_name}",
         format="delta",
