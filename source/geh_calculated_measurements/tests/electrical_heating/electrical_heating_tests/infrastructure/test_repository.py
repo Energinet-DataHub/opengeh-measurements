@@ -109,14 +109,8 @@ class TestReadChildMeteringPoints:
         # Arrange
         invalid_df = valid_dataframe.drop(F.col("metering_point_id"))
 
-<<<<<<< HEAD
-def test__when_consumption_missing_expected_column_raises_exception(spark: SparkSession, monkeypatch) -> None:
-    with pytest.raises(ValueError, match=r"Column settlement_month not found in CSV"):
-        _create_repository_with_missing_col(spark).read_consumption_metering_point_periods()
-=======
         def mock_read_table(*args, **kwargs):
             return invalid_df
->>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
 
         monkeypatch.setattr(electricity_market_repository, "_read_table", mock_read_table)
 

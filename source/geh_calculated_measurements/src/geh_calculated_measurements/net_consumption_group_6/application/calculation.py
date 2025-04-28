@@ -42,7 +42,6 @@ def execute_application_cenc_daily(spark: SparkSession, args: NetConsumptionGrou
 
     # Write the calculated measurements
     calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
-<<<<<<< HEAD
         calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.NET_CONSUMPTION,
@@ -77,8 +76,6 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
 
     # Write the calculated measurements
     calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
-=======
->>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
         calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.NET_CONSUMPTION,
