@@ -64,10 +64,14 @@ def _get_all_views_in_catalog(spark: SparkSession) -> list[str]:
     return all_views
 
 
-def test_all_created_views_are_expected_data_products(
+def test_all_created_views_are_in_expected_data_products(
     migrations_executed: None,  # Used implicitly
     spark: SparkSession,
 ) -> None:
+    """
+    This test ensures that all the views that we create are included in the expected data product list
+    """
+
     # Arrange
     actual_views = _get_all_views_in_catalog(spark)
     expected_views = [
