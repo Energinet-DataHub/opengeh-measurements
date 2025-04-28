@@ -6,9 +6,7 @@ from geh_calculated_measurements.testing.utilities.job_tester import JobTest, Jo
 from tests import create_random_metering_point_id
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import (
-    _seed_gold_table,
     delete_seeded_data,
-    seed_electricity_market_tables,
 )
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}

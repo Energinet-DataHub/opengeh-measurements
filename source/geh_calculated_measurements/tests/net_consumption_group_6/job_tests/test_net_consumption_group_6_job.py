@@ -30,6 +30,7 @@ def test_execute(
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
+    seed(spark)
 
     parent_metering_point_id = create_random_metering_point_id()
     child_consumption_from_grid_metering_point = create_random_metering_point_id()

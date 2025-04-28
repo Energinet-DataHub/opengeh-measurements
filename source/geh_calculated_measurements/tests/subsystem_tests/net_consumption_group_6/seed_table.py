@@ -3,18 +3,12 @@ from datetime import datetime, timezone
 
 from geh_common.domain.types import MeteringPointType
 
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
 from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
-database = ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME
-parent_table = (
-    ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS
-)
-child_table = ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT
+parent_table = "net_consumption_group_6_consumption_metering_point_periods"
+child_table = "net_consumption_group_6_child_metering_point"
 
 
 def _seed_gold_table(
@@ -85,7 +79,7 @@ def seed_electricity_market_tables(
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{parent_table} (
+    INSERT INTO {catalog_name}.{database_name}.{parent_table} (
         metering_point_id,
         has_electrical_heating,
         settlement_month,
@@ -104,7 +98,7 @@ def seed_electricity_market_tables(
     """)
     # CHILDREN
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -120,7 +114,7 @@ def seed_electricity_market_tables(
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -136,7 +130,7 @@ def seed_electricity_market_tables(
     )
     """)
     statements.append(f"""
-    INSERT INTO {job_fixture.config.catalog_name}.{database}.{child_table} (
+    INSERT INTO {catalog_name}.{database_name}.{child_table} (
         metering_point_id,
         metering_point_type,
         parent_metering_point_id,
@@ -150,6 +144,21 @@ def seed_electricity_market_tables(
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
     )
+    """)
+    return statements
+
+
+def delete_seeded_data(job_fixture: JobTestFixture) -> None:
+    statements = []
+    # PARENT
+    statements.append(f"""
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{parent_table}
+        WHERE metering_point_id = '{parent_metering_point_id}'
+    """)
+    # CHILD
+    statements.append(f"""
+        DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{child_table}
+        WHERE parent_metering_point_id = '{parent_metering_point_id}'
     """)
 
     for statement in statements:

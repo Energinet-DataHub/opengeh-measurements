@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
+﻿using Asp.Versioning.Conventions;
+using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
 using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 using NodaTime;
@@ -45,10 +46,30 @@ public class Startup(IConfiguration configuration)
 
         app.UseEndpoints(endpoints =>
         {
+            // Define an ApiVersionSet containing all API versions
+            var versionSet = endpoints.NewApiVersionSet()
+                .HasApiVersion(1.0)
+                .HasApiVersion(2.0)
+                .ReportApiVersions()
+                .Build();
+
+            endpoints
+                .MapGroup("v{version:apiVersion}/measurements")
+                .WithApiVersionSet(versionSet)
+                .HasApiVersion(1.0)
+                .HasApiVersion(2.0)
+                .MapControllers();
+
+            endpoints
+                .MapGroup("measurements")
+                .WithApiVersionSet(versionSet)
+                .HasApiVersion(1.0)
+                .WithTags("Default v1")
+                .MapControllers();
+
             endpoints.MapLiveHealthChecks();
             endpoints.MapReadyHealthChecks();
             endpoints.MapStatusHealthChecks();
-            endpoints.MapControllers();
         });
     }
 }
