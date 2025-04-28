@@ -1,6 +1,13 @@
 import random
+from datetime import datetime
+from decimal import Decimal
 from enum import IntEnum
 from pathlib import Path
+
+from geh_common.domain.types import MeteringPointType, QuantityQuality
+from pyspark.sql import SparkSession
+
+from tests.external_data_products import ExternalDataProducts
 
 PROJECT_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = PROJECT_ROOT / "tests"
@@ -37,3 +44,35 @@ def create_job_environment_variables(eletricity_market_path: str = "some_path") 
         "ELECTRICITY_MARKET_DATA_PATH": eletricity_market_path,
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "some_connection_string",
     }
+
+
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
+    )
+
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
+    )

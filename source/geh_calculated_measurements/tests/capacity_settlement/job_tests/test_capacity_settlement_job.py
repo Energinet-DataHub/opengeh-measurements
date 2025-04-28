@@ -1,25 +1,42 @@
 import os
 import sys
 import uuid
+from datetime import datetime, timezone
 
-from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from tests import create_job_environment_variables
+from tests import create_job_environment_variables, seed_current_measurements
 from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 from tests.external_data_products import ExternalDataProducts
 
+_METERING_POINT_ID = "170000000000000201"
+_PERIOD_START_DATETIME = datetime(2025, 1, 1, 22, 0, 0, tzinfo=timezone.utc)
+_PERIOD_END_DATETIME = datetime(2025, 1, 3, 22, 0, 0, tzinfo=timezone.utc)
 
-def _seed_gold_table(spark: SparkSession) -> None:
-    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
-    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
-    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
-    file_name = f"{TEST_FILES_FOLDER_PATH}/{database_name}-{table_name}.csv"
-    time_series_points = read_csv_path(spark, file_name, schema)
-    time_series_points.write.saveAsTable(
+
+def _seed_metering_point_periods(spark: SparkSession) -> None:
+    database_name = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS.database_name
+    table_name = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS.view_name
+    schema = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS.schema
+
+    df = spark.createDataFrame(
+        [
+            (
+                _METERING_POINT_ID,
+                _PERIOD_START_DATETIME,  # parent from datetime
+                _PERIOD_END_DATETIME,  # parent to datetime
+                "190000000000000001",  # child metering point id
+                _PERIOD_START_DATETIME,  # child from datetime
+                _PERIOD_END_DATETIME,  # child to datetime
+            )
+        ],
+        schema=schema,
+    )
+
+    df.write.saveAsTable(
         f"{database_name}.{table_name}",
         format="delta",
         mode="append",
@@ -46,7 +63,10 @@ def test_execute(
         ],
     )
     monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
-    _seed_gold_table(spark)
+    seed_current_measurements(
+        spark=spark, metering_point_id=_METERING_POINT_ID, observation_time=_PERIOD_START_DATETIME
+    )
+    _seed_metering_point_periods(spark)
 
     # Act
     execute()
