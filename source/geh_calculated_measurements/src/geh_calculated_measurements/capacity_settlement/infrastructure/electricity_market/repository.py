@@ -1,6 +1,6 @@
 from geh_common.data_products.electricity_market_measurements_input import capacity_settlement_metering_point_periods_v1
-from geh_common.pyspark.read_csv import read_csv_path
-from pyspark.sql import SparkSession
+from geh_common.testing.dataframes import assert_contract
+from pyspark.sql import DataFrame, SparkSession
 
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods
 
@@ -9,14 +9,16 @@ class Repository:
     def __init__(
         self,
         spark: SparkSession,
-        electricity_market_data_path: str,
+        catalog_name: str,
     ) -> None:
         self._spark = spark
-        self._electricity_market_data_path = electricity_market_data_path
+        self._catalog_name = catalog_name
 
     def read_metering_point_periods(self) -> MeteringPointPeriods:
-        file_path = f"{self._electricity_market_data_path}/metering_point_periods_v1.csv"
-        df = read_csv_path(
-            spark=self._spark, path=file_path, schema=capacity_settlement_metering_point_periods_v1.schema
-        )
+        table_name = f"{self._catalog_name}.{capacity_settlement_metering_point_periods_v1.database_name}.{capacity_settlement_metering_point_periods_v1.view_name}"
+        df = self._read_table(table_name)
+        assert_contract(df.schema, capacity_settlement_metering_point_periods_v1.schema)
         return MeteringPointPeriods(df)
+
+    def _read_table(self, table_name: str) -> DataFrame:
+        return self._spark.read.format("delta").table(table_name)
