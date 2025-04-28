@@ -5,19 +5,22 @@ import pytest
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution as GehCommonResolution
 from geh_common.domain.types.metering_point_type import MeteringPointType as GehCommonMeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
+from geh_common.domain.types.quantity_quality import QuantityQuality as GehCommonQuality
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
 import core.silver.domain.transformations.persist_submitted_transaction_transformation as sut
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType as CoreMeteringPointType
-from core.contracts.process_manager.enums.orchestration_type import OrchestrationType as CoreOrchestrationType
-from core.contracts.process_manager.enums.resolution import Resolution as CoreResolution
-from core.contracts.process_manager.enums.unit import Unit as CoreUnit
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+    OrchestrationType,
+    Quality,
+    Resolution,
+    Unit,
+)
 from tests.helpers.builders.submitted_transactions_value_builder import (
-    DecimalValue,
-    Point,
+    PointsBuilder,
     SubmittedTransactionsValueBuilder,
-    Value,
 )
 from tests.helpers.schemas.silver_measurements_schema import silver_measurements_schema
 
@@ -36,8 +39,9 @@ def test__create_by_submitted_transactions__should_return_expected_schema(spark:
 def test__create_by_submitted_transaction__should_return_correct_decimal_value(spark: SparkSession) -> None:
     # Arrange
     expected_decimal_value = Decimal(1.5)
-    point = Point(quantity=DecimalValue(units=1, nanos=500000000))
-    submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=[point]).build()
+    decimal_value = DecimalValue(units=1, nanos=500000000)
+    points = PointsBuilder().add_row(quantity=decimal_value).build()
+    submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
 
     # Act
     actual = sut.transform(submitted_transaction)
@@ -48,13 +52,16 @@ def test__create_by_submitted_transaction__should_return_correct_decimal_value(s
 
 def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> None:
     # Arrange
-    value = Value(
-        orchestration_type=CoreOrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
-        metering_point_type=CoreMeteringPointType.MPT_CONSUMPTION.value,
-        unit=CoreUnit.U_KWH.value,
-        resolution=CoreResolution.R_PT1H.value,
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=MeteringPointType.MPT_CONSUMPTION,
+            unit=Unit.U_KWH,
+            resolution=Resolution.R_PT1H,
+        )
+        .build()
     )
-    submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(value=value).build()
 
     # Act
     actual = sut.transform(submitted_transactions)
@@ -69,59 +76,62 @@ def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> Non
 @pytest.mark.parametrize(
     "metering_point_type, expected_metering_point_type",
     [
-        (CoreMeteringPointType.MPT_CONSUMPTION.value, GehCommonMeteringPointType.CONSUMPTION.value),
-        (CoreMeteringPointType.MPT_CONSUMPTION_FROM_GRID.value, GehCommonMeteringPointType.CONSUMPTION_FROM_GRID.value),
-        (CoreMeteringPointType.MPT_ELECTRICAL_HEATING.value, GehCommonMeteringPointType.ELECTRICAL_HEATING.value),
-        (CoreMeteringPointType.MPT_EXCHANGE.value, GehCommonMeteringPointType.EXCHANGE.value),
+        (MeteringPointType.MPT_CONSUMPTION, GehCommonMeteringPointType.CONSUMPTION.value),
+        (MeteringPointType.MPT_CONSUMPTION_FROM_GRID, GehCommonMeteringPointType.CONSUMPTION_FROM_GRID.value),
+        (MeteringPointType.MPT_ELECTRICAL_HEATING, GehCommonMeteringPointType.ELECTRICAL_HEATING.value),
+        (MeteringPointType.MPT_EXCHANGE, GehCommonMeteringPointType.EXCHANGE.value),
         (
-            CoreMeteringPointType.MPT_EXCHANGE_REACTIVE_ENERGY.value,
+            MeteringPointType.MPT_EXCHANGE_REACTIVE_ENERGY,
             GehCommonMeteringPointType.EXCHANGE_REACTIVE_ENERGY.value,
         ),
-        (CoreMeteringPointType.MPT_INTERNAL_USE.value, GehCommonMeteringPointType.INTERNAL_USE.value),
-        (CoreMeteringPointType.MPT_NET_CONSUMPTION.value, GehCommonMeteringPointType.NET_CONSUMPTION.value),
-        (CoreMeteringPointType.MPT_NET_FROM_GRID.value, GehCommonMeteringPointType.NET_FROM_GRID.value),
-        (CoreMeteringPointType.MPT_NET_LOSS_CORRECTION.value, GehCommonMeteringPointType.NET_LOSS_CORRECTION.value),
-        (CoreMeteringPointType.MPT_NET_PRODUCTION.value, GehCommonMeteringPointType.NET_PRODUCTION.value),
-        (CoreMeteringPointType.MPT_NET_TO_GRID.value, GehCommonMeteringPointType.NET_TO_GRID.value),
-        (CoreMeteringPointType.MPT_NOT_USED.value, GehCommonMeteringPointType.NOT_USED.value),
-        (CoreMeteringPointType.MPT_OTHER_CONSUMPTION.value, GehCommonMeteringPointType.OTHER_CONSUMPTION.value),
-        (CoreMeteringPointType.MPT_OTHER_PRODUCTION.value, GehCommonMeteringPointType.OTHER_PRODUCTION.value),
-        (CoreMeteringPointType.MPT_OWN_PRODUCTION.value, GehCommonMeteringPointType.OWN_PRODUCTION.value),
-        (CoreMeteringPointType.MPT_PRODUCTION.value, GehCommonMeteringPointType.PRODUCTION.value),
-        (CoreMeteringPointType.MPT_SUPPLY_TO_GRID.value, GehCommonMeteringPointType.SUPPLY_TO_GRID.value),
+        (MeteringPointType.MPT_INTERNAL_USE, GehCommonMeteringPointType.INTERNAL_USE.value),
+        (MeteringPointType.MPT_NET_CONSUMPTION, GehCommonMeteringPointType.NET_CONSUMPTION.value),
+        (MeteringPointType.MPT_NET_FROM_GRID, GehCommonMeteringPointType.NET_FROM_GRID.value),
+        (MeteringPointType.MPT_NET_LOSS_CORRECTION, GehCommonMeteringPointType.NET_LOSS_CORRECTION.value),
+        (MeteringPointType.MPT_NET_PRODUCTION, GehCommonMeteringPointType.NET_PRODUCTION.value),
+        (MeteringPointType.MPT_NET_TO_GRID, GehCommonMeteringPointType.NET_TO_GRID.value),
+        (MeteringPointType.MPT_NOT_USED, GehCommonMeteringPointType.NOT_USED.value),
+        (MeteringPointType.MPT_OTHER_CONSUMPTION, GehCommonMeteringPointType.OTHER_CONSUMPTION.value),
+        (MeteringPointType.MPT_OTHER_PRODUCTION, GehCommonMeteringPointType.OTHER_PRODUCTION.value),
+        (MeteringPointType.MPT_OWN_PRODUCTION, GehCommonMeteringPointType.OWN_PRODUCTION.value),
+        (MeteringPointType.MPT_PRODUCTION, GehCommonMeteringPointType.PRODUCTION.value),
+        (MeteringPointType.MPT_SUPPLY_TO_GRID, GehCommonMeteringPointType.SUPPLY_TO_GRID.value),
         (
-            CoreMeteringPointType.MPT_SURPLUS_PRODUCTION_GROUP_6.value,
+            MeteringPointType.MPT_SURPLUS_PRODUCTION_GROUP_6,
             GehCommonMeteringPointType.SURPLUS_PRODUCTION_GROUP_6.value,
         ),
-        (CoreMeteringPointType.MPT_TOTAL_CONSUMPTION.value, GehCommonMeteringPointType.TOTAL_CONSUMPTION.value),
-        (CoreMeteringPointType.MPT_VE_PRODUCTION.value, GehCommonMeteringPointType.VE_PRODUCTION.value),
+        (MeteringPointType.MPT_TOTAL_CONSUMPTION, GehCommonMeteringPointType.TOTAL_CONSUMPTION.value),
+        (MeteringPointType.MPT_VE_PRODUCTION, GehCommonMeteringPointType.VE_PRODUCTION.value),
         (
-            CoreMeteringPointType.MPT_WHOLESALE_SERVICES_INFORMATION.value,
+            MeteringPointType.MPT_WHOLESALE_SERVICES_INFORMATION,
             GehCommonMeteringPointType.WHOLESALE_SERVICES_INFORMATION.value,
         ),
-        (CoreMeteringPointType.MPT_ANALYSIS.value, GehCommonMeteringPointType.ANALYSIS.value),
-        (CoreMeteringPointType.MPT_CAPACITY_SETTLEMENT.value, GehCommonMeteringPointType.CAPACITY_SETTLEMENT.value),
+        (MeteringPointType.MPT_ANALYSIS, GehCommonMeteringPointType.ANALYSIS.value),
+        (MeteringPointType.MPT_CAPACITY_SETTLEMENT, GehCommonMeteringPointType.CAPACITY_SETTLEMENT.value),
         (
-            CoreMeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION.value,
+            MeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION,
             GehCommonMeteringPointType.COLLECTIVE_NET_CONSUMPTION.value,
         ),
         (
-            CoreMeteringPointType.MPT_COLLECTIVE_NET_PRODUCTION.value,
+            MeteringPointType.MPT_COLLECTIVE_NET_PRODUCTION,
             GehCommonMeteringPointType.COLLECTIVE_NET_PRODUCTION.value,
         ),
     ],
 )
 def test__transform__should_transform_metering_point_type_to_expected(
-    metering_point_type: str, expected_metering_point_type: str, spark: SparkSession
+    metering_point_type: MeteringPointType, expected_metering_point_type: str, spark: SparkSession
 ) -> None:
     # Arrange
-    value = Value(
-        orchestration_type=CoreOrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
-        metering_point_type=metering_point_type,
-        unit=CoreUnit.U_KWH.value,
-        resolution=CoreResolution.R_PT1H.value,
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=metering_point_type,
+            unit=Unit.U_KWH,
+            resolution=Resolution.R_PT1H,
+        )
+        .build()
     )
-    submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(value=value).build()
 
     # Act
     actual = sut.transform(submitted_transactions)
@@ -134,30 +144,33 @@ def test__transform__should_transform_metering_point_type_to_expected(
     "resolution, expected_resolution",
     [
         (
-            CoreResolution.R_PT1H.value,
+            Resolution.R_PT1H,
             GehCommonResolution.HOUR.value,
         ),
         (
-            CoreResolution.R_PT15M.value,
+            Resolution.R_PT15M,
             GehCommonResolution.QUARTER.value,
         ),
         (
-            CoreResolution.R_P1M.value,
+            Resolution.R_P1M,
             GehCommonResolution.MONTH.value,
         ),
     ],
 )
 def test__transform__should_transform_resolution_to_expected(
-    resolution: str, expected_resolution: str, spark: SparkSession
+    resolution: Resolution, expected_resolution: str, spark: SparkSession
 ) -> None:
     # Arrange
-    value = Value(
-        orchestration_type=CoreOrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
-        metering_point_type=CoreMeteringPointType.MPT_CONSUMPTION.value,
-        unit=CoreUnit.U_KWH.value,
-        resolution=resolution,
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=MeteringPointType.MPT_CONSUMPTION,
+            unit=Unit.U_KWH,
+            resolution=resolution,
+        )
+        .build()
     )
-    submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(value=value).build()
 
     # Act
     actual = sut.transform(submitted_transactions)
@@ -170,39 +183,73 @@ def test__transform__should_transform_resolution_to_expected(
     "unit, expected_unit",
     [
         (
-            CoreUnit.U_KWH.value,
+            Unit.U_KWH,
             GehCommonUnit.KWH.value,
         ),
         (
-            CoreUnit.U_KW.value,
+            Unit.U_KW,
             GehCommonUnit.KW.value,
         ),
         (
-            CoreUnit.U_MWH.value,
+            Unit.U_MWH,
             GehCommonUnit.MWH.value,
         ),
         (
-            CoreUnit.U_TONNE.value,
+            Unit.U_TONNE,
             GehCommonUnit.TONNE.value,
         ),
         (
-            CoreUnit.U_KVARH.value,
+            Unit.U_KVARH,
             GehCommonUnit.KVARH.value,
         ),
     ],
 )
-def test__trasnform__should_transform_unit_to_expected(unit: str, expected_unit: str, spark: SparkSession) -> None:
+def test__trasnform__should_transform_unit_to_expected(unit: Unit, expected_unit: str, spark: SparkSession) -> None:
     # Arrange
-    value = Value(
-        orchestration_type=CoreOrchestrationType.OT_SUBMITTED_MEASURE_DATA.value,
-        metering_point_type=CoreMeteringPointType.MPT_CONSUMPTION.value,
-        unit=CoreUnit.U_KWH.value,
-        resolution=CoreResolution.R_PT1H.value,
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=MeteringPointType.MPT_CONSUMPTION,
+            unit=unit,
+            resolution=Resolution.R_PT1H,
+        )
+        .build()
     )
-    submitted_transactions = SubmittedTransactionsValueBuilder(spark).add_row(value=value).build()
 
     # Act
     actual = sut.transform(submitted_transactions)
 
     # Assert
-    assert actual.collect()[0].unit == GehCommonUnit.KWH.value
+    assert actual.collect()[0].unit == expected_unit
+
+
+@pytest.mark.parametrize(
+    "quality, expected_quality",
+    [
+        (Quality.Q_CALCULATED, GehCommonQuality.CALCULATED.value),
+        (Quality.Q_ESTIMATED, GehCommonQuality.ESTIMATED.value),
+        (Quality.Q_MEASURED, GehCommonQuality.MEASURED.value),
+        (Quality.Q_MISSING, GehCommonQuality.MISSING.value),
+    ],
+)
+def test__trasnform__should_transform_quality_to_expected(
+    quality: Quality, expected_quality: str, spark: SparkSession
+) -> None:
+    # Arrange
+    submitted_transactions = (
+        SubmittedTransactionsValueBuilder(spark)
+        .add_row(
+            orchestration_type=OrchestrationType.OT_SUBMITTED_MEASURE_DATA,
+            metering_point_type=MeteringPointType.MPT_CONSUMPTION,
+            resolution=Resolution.R_PT1H,
+            points=PointsBuilder().add_row(quality=quality).build(),
+        )
+        .build()
+    )
+
+    # Act
+    actual = sut.transform(submitted_transactions)
+
+    # Assert
+    assert actual.collect()[0].points[0].quality == expected_quality

@@ -14,7 +14,7 @@
 | end_datetime | TimestampType | True | - | - |
 | points[*].position | StringType | True | - | - |
 | points[*].quantity | Decimal(18, 3) | True | The energy quantity. Negative values allowed. May be null when the quality is 'missing' | - |
-| points[*].quality | StringType | True | The quality of the energy quantity. | Transformation to e.g. "measured" will be handled towards gold |
+| points[*].quality | StringType | True | The quality of the energy quantity. | Valid [quality types](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/source/geh_common/src/geh_common/domain/types/quantity_quality.py) |
 | is_cancelled | BooleanType | True | Cancelled flag carried over from Migrations | "is_cancelled_is_not_null_chk" which checks is_cancelled is not null,  |
 | created | TimestampType | True | - | - |
 
