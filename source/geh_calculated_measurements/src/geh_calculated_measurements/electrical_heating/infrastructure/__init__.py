@@ -1,5 +1,5 @@
 from .repository import (
-    Repository as ElectricityMarketRepository,  # TODO JVM: Is the naming right? why not electrical heating?
+    Repository as ElectricityMarketRepository,
 )
 
 __all__ = [
