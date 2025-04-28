@@ -1,0 +1,7 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality
+170000000000000201;consumption;2024-01-14T23:00:00Z;1000;measured
+060000000000000201;supply_to_grid;2024-01-14T23:00:00Z;1000;measured
+070000000000000201;consumption_from_grid;2024-01-14T23:00:00Z;2000;measured
+170000000000000201;consumption;2024-02-14T23:00:00Z;500;measured
+060000000000000201;supply_to_grid;2024-02-14T23:00:00Z;500;measured
+070000000000000201;consumption_from_grid;2024-02-14T23:00:00Z;1000;measured

@@ -10,7 +10,7 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.net_consumption_group_6.application.net_consumption_group_6_args import (
     NetConsumptionGroup6Args,
 )
-from geh_calculated_measurements.net_consumption_group_6.domain import execute
+from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cenc_daily
 from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
     ElectricityMarketRepository,
 )
@@ -29,7 +29,7 @@ def execute_application(spark: SparkSession, args: NetConsumptionGroup6Args) -> 
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
 
-    _, calculated_measurements_daily = execute(
+    _, calculated_measurements_daily = execute_cenc_daily(
         current_measurements,
         consumption_metering_point_periods,
         child_metering_points,

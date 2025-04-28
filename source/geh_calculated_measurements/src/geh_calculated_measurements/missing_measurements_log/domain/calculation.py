@@ -64,8 +64,10 @@ def _get_expected_measurement_counts(
         ContractColumnNames.period_to_date,
     )
 
+    # Convert the period start and end dates to local time
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
 
+    # Create a new column called start_of_day and aor each period explode the sequence of days.
     metering_point_periods_daily = (
         metering_point_periods_local_time.withColumn(
             "start_of_day",
@@ -84,8 +86,10 @@ def _get_expected_measurement_counts(
         .withColumn("end_of_day", F.col("start_of_day") + F.expr("INTERVAL 1 DAY"))
     )
 
+    # Convert the start and end dates back to UTC
     metering_point_periods_daily = convert_to_utc(metering_point_periods_daily, time_zone)
 
+    # Calculate the expected hours/quaters per day measurement counts based on the resolution
     expected_measurement_counts = metering_point_periods_daily.select(
         F.col(ContractColumnNames.metering_point_id),
         F.col("start_of_day"),
