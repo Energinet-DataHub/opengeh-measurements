@@ -37,7 +37,7 @@ def test_execute_cenc_daily(
     assert actual_calculated_measurements.count() > 0
 
 
-def test_cnc_execute(
+def test_execute_cnc_daily(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
     migrations_executed: None,  # Used implicitly
