@@ -3,6 +3,7 @@ from geh_common.testing.dataframes import AssertDataframesConfiguration, assert_
 from geh_common.testing.scenario_testing import TestCases, get_then_names
 
 
+# Fails on my machine, but not on CI
 @pytest.mark.parametrize("name", get_then_names())
 def test_case(
     test_cases: TestCases,

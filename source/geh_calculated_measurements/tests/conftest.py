@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 from typing import Generator
 from unittest import mock
@@ -66,17 +67,18 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
 # pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
 # Therefore, we need to create a global variable to store the Spark session and data directory.
 # This is a workaround to avoid creating a new Spark session for each test.
-_spark, data_dir = get_spark_test_session()
+# _spark, data_dir = get_spark_test_session()
 
 
 @pytest.fixture(scope="session")
-def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
+def spark(tmp_path_factory) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
+    _spark, data_dir = get_spark_test_session(static_data_dir=tmp_path_factory.mktemp("data"))
     yield _spark
     _spark.stop()
-    # shutil.rmtree(data_dir)
+    shutil.rmtree(data_dir, ignore_errors=True)
 
 
 @pytest.fixture(scope="session", autouse=True)
