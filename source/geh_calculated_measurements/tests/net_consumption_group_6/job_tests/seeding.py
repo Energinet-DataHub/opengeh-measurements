@@ -1,10 +1,7 @@
 from datetime import datetime, timezone
-
-from geh_common.pyspark.read_csv import read_csv_path
-from pyspark.sql import functions as F
+from decimal import Decimal
 
 from tests.conftest import ExternalDataProducts
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
 def _seed_gold(
@@ -16,35 +13,42 @@ def _seed_gold(
 ) -> None:
     current_measurements = ExternalDataProducts.CURRENT_MEASUREMENTS
 
-    # Create dataframe from the random metering point ids
-    randomized_metering_point_id_df = spark.createDataFrame(
+    df = spark.createDataFrame(
         [
-            (parent_metering_point_id, "consumption"),
-            (child_consumption_from_grid_metering_point, "consumption_from_grid"),
-            (child_net_consumption_metering_point, "net_consumption"),
-            (child_supply_to_grid_metering_point, "supply_to_grid"),
+            (
+                parent_metering_point_id,
+                datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal(2000),
+                "measured",
+                "consumption",
+            ),
+            (
+                child_supply_to_grid_metering_point,
+                datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal(1000),
+                "measured",
+                "supply_to_grid",
+            ),
+            (
+                child_consumption_from_grid_metering_point,
+                datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal(2000),
+                "estimated",
+                "consumption_from_grid",
+            ),
+            (
+                child_net_consumption_metering_point,
+                datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal(3),
+                "calculated",
+                "net_consumption",
+            ),
         ],
-        schema=["new_metering_point_id", "metering_point_type"],
-    )
-
-    # Read test csv file
-    file_name = (
-        f"{get_test_files_folder_path()}/{current_measurements.database_name}-{current_measurements.view_name}.csv"
-    )
-    time_series_points = read_csv_path(spark, file_name, current_measurements.schema)
-
-    # Join the random metering points to the test data
-    time_series_points = time_series_points.join(randomized_metering_point_id_df, on="metering_point_type", how="left")
-    time_series_points = time_series_points.select(
-        F.col("new_metering_point_id").alias("metering_point_id"),
-        "metering_point_type",
-        "observation_time",
-        "quantity",
-        "quality",
+        schema=current_measurements.schema,
     )
 
     # Persist the data to the table
-    time_series_points.write.saveAsTable(
+    df.write.saveAsTable(
         f"{current_measurements.database_name}.{current_measurements.view_name}",
         format="delta",
         mode="append",
