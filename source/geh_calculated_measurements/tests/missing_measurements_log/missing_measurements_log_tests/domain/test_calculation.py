@@ -1,4 +1,4 @@
-from datetime import datetime
+﻿from datetime import datetime
 
 import pytest
 from geh_common.application import GridAreaCodes
