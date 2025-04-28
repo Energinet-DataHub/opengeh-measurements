@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from typing import Generator
 from unittest import mock
 
@@ -76,17 +77,15 @@ def _where(plugin: str) -> str:
 # pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
 # Therefore, we need to create a global variable to store the Spark session and data directory.
 # This is a workaround to avoid creating a new Spark session for each test.
-if os.getenv("IS_CI") == "true":
-    os.environ["JAVA_HOME"] = _where("java")
-    os.environ["SPARK_HOME"] = _where("spark")
+_worker_id = os.environ.get("PYTEST_XDIST_WORKER", "master")
+_spark, data_dir = get_spark_test_session(static_data_dir=tempfile.mkdtemp(_worker_id))
 
 
 @pytest.fixture(scope="session")
-def spark(tmp_path_factory) -> Generator[SparkSession, None, None]:
+def spark() -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
-    _spark, data_dir = get_spark_test_session(static_data_dir=tmp_path_factory.mktemp("data"))
     yield _spark
     _spark.stop()
     shutil.rmtree(data_dir, ignore_errors=True)
