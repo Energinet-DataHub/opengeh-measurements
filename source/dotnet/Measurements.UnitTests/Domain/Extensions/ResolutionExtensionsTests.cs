@@ -13,7 +13,7 @@ public class ResolutionExtensionsTests
     [InlineData(Resolution.Daily, 1)]
     [InlineData(Resolution.Monthly, 1)]
     [InlineData(Resolution.Yearly, 1)]
-    public void GetExpectedPointCount_ReturnsExpectedCount(Resolution resolution, int expectedPointCount)
+    public void GetExpectedPointCount_WhenValidMaxAndMinObservationTimes_ReturnsExpectedCount(Resolution resolution, int expectedPointCount)
     {
         // Arrange
         const int hours = 23;

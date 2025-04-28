@@ -24,7 +24,7 @@ public class YearTests
     [Theory]
     [InlineData(10000)]
     [InlineData(-9999)]
-    public void Year_Constructor_InvalidYear_ThrowsValidationException(int year)
+    public void Contructor_WhenInvalidYear_ThenThrowsValidationException(int year)
     {
         // Act & Assert
         var exception = Assert.Throws<ArgumentOutOfRangeException>(() => new Year(year));
@@ -32,7 +32,7 @@ public class YearTests
     }
 
     [Fact]
-    public void Year_ToDateInterval_ReturnsCorrectInterval()
+    public void ToDateInterval_WhenValidDates_ThenReturnsCorrectInterval()
     {
         // Arrange
         var year = new Year(2025);

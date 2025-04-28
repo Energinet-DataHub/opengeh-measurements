@@ -8,7 +8,7 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests;
 public class YearMonthConverterTests
 {
     [Fact]
-    public void Write_ShouldWriteCorrectFormat()
+    public void Write_WhenValidYearMonth_ThenConvertedToCorrectString()
     {
         // Arrange
         var yearMonth = new YearMonth(2025, 10);
@@ -27,7 +27,7 @@ public class YearMonthConverterTests
     }
 
     [Fact]
-    public void Read_ShouldReadCorrectFormat()
+    public void Read_WhenValidYearMonthInJson_ShouldReadCorrectFormat()
     {
         // Arrange
         const string json = "\"2025-10\"";
