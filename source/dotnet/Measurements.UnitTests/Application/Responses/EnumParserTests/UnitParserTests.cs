@@ -1,10 +1,9 @@
-﻿using Energinet.DataHub.Measurements.Application.Responses;
-using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
+﻿using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
+namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses.EnumParserTests;
 
 [UnitTest]
 public class UnitParserTests
