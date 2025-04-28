@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
-from geh_calculated_measurements.common.infrastructure.calculated_measurements.database_definitions import (
+from geh_calculated_measurements.common.infrastructure.database_definitions import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 
