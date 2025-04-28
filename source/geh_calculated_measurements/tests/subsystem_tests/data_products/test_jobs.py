@@ -21,7 +21,7 @@ def create_quantity(min=0.00, max=999999999999999.999) -> Decimal:
 
 
 def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) -> None:
-    """This test asserts that calculated measurements, which are provided by the data product will
+    """Assert that calculated measurements, which are provided by the data product will
     eventually be available in the core data product.
 
     Technically speaking, this implies that the data product supports streaming.
