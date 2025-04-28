@@ -64,9 +64,7 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
                   WHERE metering_point_id = '{metering_point_id}' and quantity = {quantity}
                   LIMIT 1
                 """
-    response = databricks_api_client.execute_statement(
-        statement=assert_statement, warehouse_id=config.warehouse_id
-    )
+    response = databricks_api_client.execute_statement(statement=assert_statement, warehouse_id=config.warehouse_id)
 
     # Assert
     assert response.status is not None, f"Expected statement to succeed, but got {response.status}"
