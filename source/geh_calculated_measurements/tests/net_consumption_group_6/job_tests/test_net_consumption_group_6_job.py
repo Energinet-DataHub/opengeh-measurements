@@ -10,15 +10,23 @@ from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute_cenc_daily, execute_cnc_daily
 from tests import create_job_environment_variables
+<<<<<<< HEAD
 from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_path, get_cnc_test_files_folder_path
 from tests.net_consumption_group_6.job_tests.conftest import cenc_seed, cnc_seed
+=======
+from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests.conftest import seed
+>>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
 
 
 def test_cenc_execute(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
+<<<<<<< HEAD
     cenc_gold_table_seeded: None,  # Used implicitly
     electricity_market_tables_seeded: None,  # Used implicitly
+=======
+>>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging: None,  # Used implicitly
@@ -26,8 +34,13 @@ def test_cenc_execute(
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
+<<<<<<< HEAD
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_cenc_test_files_folder_path()))
     cenc_seed(spark)
+=======
+    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
+    seed(spark)
+>>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
 
     # Act
     execute_cenc_daily()

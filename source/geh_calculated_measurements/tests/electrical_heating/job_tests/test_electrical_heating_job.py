@@ -13,6 +13,7 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.electrical_heating.entry_point import execute
 from tests import create_job_environment_variables
 from tests.electrical_heating.job_tests import get_test_files_folder_path
+<<<<<<< HEAD
 from tests.external_data_products import ExternalDataProducts
 
 
@@ -29,6 +30,9 @@ def _seed_gold_table(
         format="delta",
         mode="append",
     )
+=======
+from tests.electrical_heating.job_tests.seeding import seed_electricity_market, seed_gold
+>>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
 
 
 def test_execute(
@@ -43,6 +47,9 @@ def test_execute(
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
     monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
     _seed_gold_table(spark)
+
+    seed_gold(spark)
+    seed_electricity_market(spark)
 
     # Act
     execute()
