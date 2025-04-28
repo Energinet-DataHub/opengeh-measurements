@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 import sys
 from typing import Generator
 from unittest import mock
@@ -64,10 +65,20 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
+def _where(plugin: str) -> str:
+    """Get the path to the plugin."""
+    cmd = subprocess.run(["asdf", "where", plugin], capture_output=True, text=True)
+    if cmd.returncode != 0:
+        raise RuntimeError(f"Could not find {plugin} plugin. Please install it using asdf.")
+    return cmd.stdout.strip()
+
+
 # pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
 # Therefore, we need to create a global variable to store the Spark session and data directory.
 # This is a workaround to avoid creating a new Spark session for each test.
-# _spark, data_dir = get_spark_test_session()
+if os.getenv("IS_CI") == "true":
+    os.environ["JAVA_HOME"] = _where("java")
+    os.environ["SPARK_HOME"] = _where("spark")
 
 
 @pytest.fixture(scope="session")

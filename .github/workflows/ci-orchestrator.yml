@@ -18,6 +18,9 @@ permissions:
   issues: read
   pull-requests: write
 
+env:
+  IS_CI: true
+
 jobs:
   #
   # License and Markdown Check
