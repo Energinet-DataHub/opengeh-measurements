@@ -52,13 +52,13 @@ def _get_all_views_in_catalog(spark: SparkSession) -> list[str]:
     Retrieves all views from all databases in the catalog.
     Returns a list of strings in the format "{database_name}.{view_name}".
     """
-    databases = [row.databaseName for row in spark.sql(f"SHOW DATABASES IN {SPARK_CATALOG_NAME}").collect()]
+    all_databases = spark.sql(f"SHOW DATABASES IN {SPARK_CATALOG_NAME}").collect()
     all_views = []
-    for database_name in databases:
+    for database in all_databases:
+        database_name = database.namespace
         views = [
-            f"{database_name}.{row.tableName}"
-            for row in spark.sql(f"SHOW TABLES IN {SPARK_CATALOG_NAME}.{database_name}").collect()
-            if row.isTemporary is False
+            f"{database_name}.{row.viewName}"
+            for row in spark.sql(f"SHOW VIEWS IN {SPARK_CATALOG_NAME}.{database_name}").collect()
         ]
         all_views.extend(views)
     return all_views
@@ -76,8 +76,3 @@ def test_all_created_views_are_expected_data_products(
 
     # Assert
     assert set(actual_views) == set(expected_views)
-
-
-def test(spark):
-    databases = [row.databaseName for row in spark.sql(f"SHOW DATABASES IN {SPARK_CATALOG_NAME}").collect()]
-    print(databases)
