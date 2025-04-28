@@ -1,19 +1,9 @@
 from datetime import datetime, timezone
 
-from geh_common.data_products.electricity_market_measurements_input import (
-    net_consumption_group_6_child_metering_points_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
-)
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
+from tests.conftest import ExternalDataProducts
 from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
@@ -24,6 +14,8 @@ def _seed_gold(
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
 ) -> None:
+    current_measurements = ExternalDataProducts.CURRENT_MEASUREMENTS
+
     # Create dataframe from the random metering point ids
     randomized_metering_point_id_df = spark.createDataFrame(
         [
@@ -36,8 +28,10 @@ def _seed_gold(
     )
 
     # Read test csv file
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+    file_name = (
+        f"{get_test_files_folder_path()}/{current_measurements.database_name}-{current_measurements.view_name}.csv"
+    )
+    time_series_points = read_csv_path(spark, file_name, current_measurements.schema)
 
     # Join the random metering points to the test data
     time_series_points = time_series_points.join(randomized_metering_point_id_df, on="metering_point_type", how="left")
@@ -51,7 +45,7 @@ def _seed_gold(
 
     # Persist the data to the table
     time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+        f"{current_measurements.database_name}.{current_measurements.view_name}",
         format="delta",
         mode="append",
     )
@@ -64,7 +58,8 @@ def _seed_electricity_market(
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
 ) -> None:
-    # PARENT
+    # CONSUMPTION
+    consumption_metering_point_periods = ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS
     df = spark.createDataFrame(
         [
             (
@@ -76,13 +71,15 @@ def _seed_electricity_market(
                 False,
             )
         ],
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
-    )
-    df.write.format("delta").mode("append").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
+        schema=consumption_metering_point_periods.schema,
     )
 
-    # CHILDREN
+    df.write.format("delta").mode("append").saveAsTable(
+        f"{consumption_metering_point_periods.database_name}.{consumption_metering_point_periods.view_name}"
+    )
+
+    # CHILD
+    child_metering_points = ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINTS
     df = spark.createDataFrame(
         [
             (
@@ -90,53 +87,48 @@ def _seed_electricity_market(
                 "net_consumption",
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-                datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
             ),
             (
                 child_supply_to_grid_metering_point,
                 "supply_to_grid",
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-                datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
             ),
             (
                 child_consumption_from_grid_metering_point,
                 "consumption_from_grid",
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-                datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
             ),
         ],
-        schema=net_consumption_group_6_child_metering_points_v1.schema,
+        schema=child_metering_points.schema,
     )
     df.write.format("delta").mode("append").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
+        f"{child_metering_points.database_name}.{child_metering_points.view_name}"
     )
 
 
-def _remove_seeded_gold_data(
-    spark,
-    parent_metering_point_id,
-    child_consumption_from_grid_metering_point,
-    child_net_consumption_metering_point,
-    child_supply_to_grid_metering_point,
-) -> None:
-    pass
-
-
-def _remove_seeded_electricity_market_data(
+def seed(
     spark,
     parent_metering_point_id: str,
     child_consumption_from_grid_metering_point: str,
     child_net_consumption_metering_point: str,
     child_supply_to_grid_metering_point: str,
 ) -> None:
-    spark.sql(f"""
-                DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
-                WHERE metering_point_id = {parent_metering_point_id}
-            """)
-
-    spark.sql(f"""
-                DELETE FROM {ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}
-                WHERE metering_point_id IN ({child_net_consumption_metering_point}, {child_supply_to_grid_metering_point}, {child_consumption_from_grid_metering_point})
-            """)
+    _seed_gold(
+        spark,
+        parent_metering_point_id,
+        child_consumption_from_grid_metering_point,
+        child_net_consumption_metering_point,
+        child_supply_to_grid_metering_point,
+    )
+    _seed_electricity_market(
+        spark,
+        parent_metering_point_id,
+        child_consumption_from_grid_metering_point,
+        child_net_consumption_metering_point,
+        child_supply_to_grid_metering_point,
+    )
