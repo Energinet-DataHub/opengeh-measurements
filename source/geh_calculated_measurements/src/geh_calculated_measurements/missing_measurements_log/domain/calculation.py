@@ -14,6 +14,9 @@ from geh_calculated_measurements.missing_measurements_log.domain.clamp import cl
 from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
     MeteringPointPeriods,
 )
+from geh_calculated_measurements.missing_measurements_log.domain.model.missing_measurements_log import (
+    MissingMeasurementsLog,
+)
 
 
 @use_span()
@@ -25,7 +28,7 @@ def execute(
     time_zone: str,
     period_start_datetime: datetime,
     period_end_datetime: datetime,
-) -> DataFrame:
+) -> MissingMeasurementsLog:
     metering_point_periods_df = metering_point_periods.df
     if grid_area_codes is not None:
         metering_point_periods_df = metering_point_periods_df.where(
@@ -42,9 +45,11 @@ def execute(
         actual_measurement_counts=actual_measurement_counts,
     )
 
-    return missing_measurements.withColumn(
+    missing_measurements = missing_measurements.withColumn(
         ContractColumnNames.orchestration_instance_id, F.lit(str(orchestration_instance_id))
     )
+
+    return MissingMeasurementsLog(missing_measurements)
 
 
 def _get_expected_measurement_counts(
@@ -59,8 +64,10 @@ def _get_expected_measurement_counts(
         ContractColumnNames.period_to_date,
     )
 
+    # Convert the period start and end dates to local time
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
 
+    # Create a new column called start_of_day and aor each period explode the sequence of days.
     metering_point_periods_daily = (
         metering_point_periods_local_time.withColumn(
             "start_of_day",
@@ -79,8 +86,10 @@ def _get_expected_measurement_counts(
         .withColumn("end_of_day", F.col("start_of_day") + F.expr("INTERVAL 1 DAY"))
     )
 
+    # Convert the start and end dates back to UTC
     metering_point_periods_daily = convert_to_utc(metering_point_periods_daily, time_zone)
 
+    # Calculate the expected hours/quaters per day measurement counts based on the resolution
     expected_measurement_counts = metering_point_periods_daily.select(
         F.col(ContractColumnNames.metering_point_id),
         F.col("start_of_day"),
