@@ -54,6 +54,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.test-pytest
 cover/
 
 # Translations
@@ -143,6 +144,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*/pyvenv.cfg
 
 # Spyder project settings
 .spyderproject
@@ -249,3 +251,18 @@ __queuestorage__
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
