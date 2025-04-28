@@ -14,7 +14,7 @@ from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_p
 from tests.net_consumption_group_6.job_tests.conftest import cenc_seed, cnc_seed
 
 
-def test_cenc_execute(
+def test_execute_cenc_daily(
     spark: SparkSession,
     monkeypatch: pytest.MonkeyPatch,
     migrations_executed: None,  # Used implicitly
