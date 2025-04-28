@@ -9,13 +9,13 @@ from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
 from tests import create_job_environment_variables
-from tests.common.testing.test_job_tester import METERING_POINT_ID
 from tests.external_data_products import ExternalDataProducts
 from geh_common.domain.types import MeteringPointResolution, MeteringPointType, QuantityQuality
 
 _METERING_POINT_ID = "170000000000000201"
 _PERIOD_START_DATETIME = datetime(2025, 1, 1, 22, 0, 0, tzinfo=timezone.utc)
 _PERIOD_END_DATETIME = datetime(2025, 1, 3, 22, 0, 0, tzinfo=timezone.utc)
+
 
 def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
     return [
@@ -27,6 +27,7 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
         "--period-end-datetime",
         _PERIOD_END_DATETIME.strftime("%Y-%m-%d %H:%M:%S"),
     ]
+
 
 def _seed_current_measurements(spark: SparkSession) -> None:
     database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
@@ -78,7 +79,6 @@ def _seed_metering_point_periods(spark: SparkSession) -> None:
         format="delta",
         mode="append",
     )
-
 
 
 def test_execute(
