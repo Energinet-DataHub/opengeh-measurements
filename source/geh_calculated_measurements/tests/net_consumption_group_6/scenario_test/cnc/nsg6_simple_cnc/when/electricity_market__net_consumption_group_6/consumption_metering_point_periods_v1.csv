@@ -1,11 +1,3 @@
 metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in
-<<<<<<< HEAD
-<<<<<<< HEAD
 170000000000000201;false;1;2023-12-31T23:00:00Z;2024-12-31T23:00:00Z;false
-170000000000000201;false;1;2024-12-31T23:00:00Z;2025-12-31T23:00:00Z;false
-=======
-170000000000000201;false;2;2023-12-31T23:00:00Z;2024-12-31T23:00:00Z;false
->>>>>>> d008ab2dd989cc215919937c6807f4a6d5cfc650
-=======
-170000000000000201;false;2;2023-12-31T23:00:00Z;2024-12-31T23:00:00Z;false
->>>>>>> 7addf24b0f0bbbc82030b5cbc179aa71b6cf7e3f
+
