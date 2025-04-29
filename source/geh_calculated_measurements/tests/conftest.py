@@ -85,7 +85,8 @@ def spark(tmp_path_factory) -> Generator[SparkSession, None, None]:
     Create a Spark session with Delta Lake enabled.
     """
     print(  # noqa
-        f"Initializing Spark session with the following environment variables: JAVA_HOME: {JAVA_HOME} SPARK_HOME: {SPARK_HOME}"
+        f"Initializing Spark session with the following environment variables: JAVA_HOME: {JAVA_HOME} SPARK_HOME: {SPARK_HOME}",
+        file=sys.stderr,
     )
     os.environ["JAVA_HOME"] = JAVA_HOME
     os.environ["SPARK_HOME"] = SPARK_HOME
