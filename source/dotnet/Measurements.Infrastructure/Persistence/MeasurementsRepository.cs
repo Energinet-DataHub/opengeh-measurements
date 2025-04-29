@@ -13,15 +13,6 @@ public class MeasurementsRepository(
     IOptions<DatabricksSchemaOptions> databricksSchemaOptions)
     : IMeasurementsRepository
 {
-    public async IAsyncEnumerable<MeasurementResult> GetByPeriodAsyncV1(string meteringPointId, Instant from, Instant to)
-    {
-        var statement = new GetCurrentByPeriodQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
-        var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
-
-        await foreach (var row in rows)
-            yield return new MeasurementResult(row);
-    }
-
     public async IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to)
     {
         var statement = new GetByPeriodQuery(meteringPointId, from, to, databricksSchemaOptions.Value);

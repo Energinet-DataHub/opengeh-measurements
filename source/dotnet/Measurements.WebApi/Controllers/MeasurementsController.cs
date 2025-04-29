@@ -8,36 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
-[ApiVersion(1.0, Deprecated = true)]
+[Authorize]
 [ApiVersion(2.0)]
 [ApiController]
-[Authorize]
+[Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
     : ControllerBase
 {
-    [MapToApiVersion(1.0)]
-    [HttpGet("forPeriod")]
-    public async Task<IActionResult> GetByPeriodAsyncV1([FromQuery] GetByPeriodRequest request)
-    {
-        try
-        {
-            var measurement = await measurementsHandler.GetByPeriodAsyncV1(request);
-            var result = new JsonSerializer().Serialize(measurement);
-
-            return Ok(result);
-        }
-        catch (MeasurementsNotFoundDuringPeriodException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurement");
-
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
-        }
-    }
-
     [MapToApiVersion(2.0)]
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
@@ -61,7 +38,6 @@ public class MeasurementsController(IMeasurementsHandler measurementsHandler, IL
         }
     }
 
-    [MapToApiVersion(1.0)]
     [MapToApiVersion(2.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)

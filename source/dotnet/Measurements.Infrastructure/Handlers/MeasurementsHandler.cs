@@ -11,15 +11,6 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Handlers;
 public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     : IMeasurementsHandler
 {
-    public async Task<GetMeasurementResponse> GetByPeriodAsyncV1(GetByPeriodRequest request)
-    {
-        var foundMeasurements = await measurementsRepository
-            .GetByPeriodAsyncV1(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
-            .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
-
-        return GetMeasurementResponse.Create(foundMeasurements);
-    }
-
     public async Task<GetMeasurementResponse> GetByPeriodAsync(GetByPeriodRequest request)
     {
         var foundMeasurements = await measurementsRepository
