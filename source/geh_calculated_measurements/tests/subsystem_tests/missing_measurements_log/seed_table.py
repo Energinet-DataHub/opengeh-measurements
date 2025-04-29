@@ -10,7 +10,7 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 missing_measurements_log_metering_point_periods_table_name = "missing_measurements_log_metering_point_periods"
 
-_METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOGS)
+_METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOG)
 _GRID_AREA_CODE = "804"
 PERIOD_START = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
 PERIOD_END = datetime(2025, 1, 3, 23, 0, 0, tzinfo=timezone.utc)
