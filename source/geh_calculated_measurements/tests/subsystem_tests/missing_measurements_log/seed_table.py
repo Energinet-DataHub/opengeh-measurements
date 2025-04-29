@@ -13,7 +13,7 @@ missing_measurements_log_metering_point_periods_table_name = "missing_measuremen
 _METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOGS)
 _GRID_AREA_CODE = "804"
 PERIOD_START = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
-PERIOD_END = datetime(2025, 1, 2, 23, 0, 0, tzinfo=timezone.utc)
+PERIOD_END = datetime(2025, 1, 3, 23, 0, 0, tzinfo=timezone.utc)
 
 
 def seed_table(
