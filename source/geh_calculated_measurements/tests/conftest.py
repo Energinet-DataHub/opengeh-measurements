@@ -33,7 +33,7 @@ def pytest_sessionfinish(session, exitstatus):
     This is useful for the CI/CD pipeline to not fail if no tests are found.
 
     This is a long debated feature of pytest, and unfortunately it has been decided
-    to keep it as is. See dicussions here:
+    to keep it as is. See discussions here:
     - https://github.com/pytest-dev/pytest/issues/2393
     - https://github.com/pytest-dev/pytest/issues/812
     - https://github.com/pytest-dev/pytest/issues/500
