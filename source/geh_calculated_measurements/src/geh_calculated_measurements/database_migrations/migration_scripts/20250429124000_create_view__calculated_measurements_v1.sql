@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS {catalog_name}.{calculated_measurements_database}.hourly_calculated_measurements_v1
+DROP VIEW IF EXISTS {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1
 GO
 
 CREATE VIEW {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1 AS
