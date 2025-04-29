@@ -14,4 +14,6 @@ SELECT
   "kWh" as quantity_unit,
   "calculated" as quantity_quality,
   "PT1H" as resolution
-FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements 
+FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements
+WHERE observation_time >= current_timestamp() - INTERVAL '3' YEAR
+GO
