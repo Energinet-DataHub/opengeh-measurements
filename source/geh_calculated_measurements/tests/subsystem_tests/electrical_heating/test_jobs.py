@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.electrical_heating.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
