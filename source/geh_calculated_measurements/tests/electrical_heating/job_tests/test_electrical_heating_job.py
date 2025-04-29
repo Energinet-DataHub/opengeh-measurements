@@ -13,7 +13,6 @@ from geh_calculated_measurements.common.infrastructure import (
 from geh_calculated_measurements.electrical_heating.entry_point import execute
 from geh_calculated_measurements.testing import seed_current_measurements
 from tests import create_job_environment_variables
-from tests.electrical_heating.job_tests import get_test_files_folder_path
 from tests.electrical_heating.job_tests.seeding import seed_electricity_market
 
 _PARENT_METERING_POINT_ID = "170000000000000202"
