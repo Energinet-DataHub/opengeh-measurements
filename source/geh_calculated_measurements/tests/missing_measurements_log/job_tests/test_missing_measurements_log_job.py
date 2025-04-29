@@ -9,8 +9,8 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
+from geh_calculated_measurements.testing import seed_current_measurements
 from tests import CalculationType, create_job_environment_variables, create_random_metering_point_id
-from tests.conftest import seed_current_measurements
 from tests.external_data_products import ExternalDataProducts
 
 _METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOG)
