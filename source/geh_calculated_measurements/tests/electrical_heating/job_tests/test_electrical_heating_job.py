@@ -1,4 +1,3 @@
-import os
 import sys
 import uuid
 from typing import Any
@@ -10,8 +9,6 @@ from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.electrical_heating.entry_point import execute
-from tests import create_job_environment_variables
-from tests.electrical_heating.job_tests import get_test_files_folder_path
 from tests.electrical_heating.job_tests.seeding import seed_electricity_market, seed_gold
 
 
@@ -25,7 +22,6 @@ def test_execute(
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
     seed_gold(spark)
     seed_electricity_market(spark)
