@@ -1,35 +1,126 @@
-from geh_common.pyspark.read_csv import read_csv_path
+from datetime import datetime, timezone
+from decimal import Decimal
+
 from pyspark.sql import SparkSession
 
-from tests.electrical_heating.job_tests import get_test_files_folder_path
 from tests.external_data_products import ExternalDataProducts
 
 
 def seed_gold(spark: SparkSession) -> None:
-    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
-    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
-    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
-    file_name = f"{get_test_files_folder_path()}/{database_name}-{table_name}.csv"
-    time_series_points = read_csv_path(spark, file_name, schema)
-    time_series_points.write.saveAsTable(
-        f"{database_name}.{table_name}",
+    current_measurements = ExternalDataProducts.CURRENT_MEASUREMENTS
+
+    df = spark.createDataFrame(
+        [
+            (  # Jan. 1st. Should be added to D14
+                170000000000000201,
+                datetime(2024, 1, 1, 22, 45, 0, tzinfo=timezone.utc),
+                Decimal(3999.999),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 2nd. Limit hit
+                170000000000000201,
+                datetime(2024, 1, 1, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal(0.001),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 2nd. Even though total of 1.001 logged on parent, only 0.001 should be added to D14
+                170000000000000201,
+                datetime(2024, 1, 1, 23, 15, 0, tzinfo=timezone.utc),
+                Decimal(1),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 3rd. Nothing should be added to D14 now
+                170000000000000201,
+                datetime(2024, 1, 3, 15, 0, 0, tzinfo=timezone.utc),
+                Decimal(500),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 5th. Hit limit in one go. Only 4000 should be added to D14
+                170000000000000202,
+                datetime(2024, 1, 5, 17, 45, 0, tzinfo=timezone.utc),
+                Decimal(4000.001),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 5th. Hit limit exactly in one go
+                170000000000000203,
+                datetime(2024, 1, 5, 17, 45, 0, tzinfo=timezone.utc),
+                Decimal(4000),
+                "measured",
+                "consumption",
+            ),
+            (  # Jan. 6th.  Nothing should be added to D14 now
+                170000000000000203,
+                datetime(2024, 1, 6, 10, 30, 0, tzinfo=timezone.utc),
+                Decimal(0.001),
+                "measured",
+                "consumption",
+            ),
+        ],
+        schema=current_measurements.schema,
+    )
+
+    df.write.saveAsTable(
+        f"{current_measurements.database_name}.{current_measurements.view_name}",
         format="delta",
         mode="append",
     )
 
 
 def seed_electricity_market(spark: SparkSession) -> None:
-    # consumption_metering_point_periods_v1
+    # Consumption
     consumption_metering_point_periods = ExternalDataProducts.ELECTRICAL_HEATING_CONSUMPTION_METERING_POINT_PERIODS
-    file_path = f"{get_test_files_folder_path()}/{consumption_metering_point_periods.view_name}.csv"
-    df = read_csv_path(spark=spark, path=file_path, schema=consumption_metering_point_periods.schema)
+    df = spark.createDataFrame(
+        [
+            (170000000000000201, 2, 1, datetime(2024, 12, 31, 23, 0, 0, tzinfo=timezone.utc), None),
+            (170000000000000202, 2, 1, datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc), None),
+            (170000000000000203, 2, 1, datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc), None),
+        ],
+        schema=consumption_metering_point_periods.schema,
+    )
     df.write.format("delta").mode("append").saveAsTable(
         f"{consumption_metering_point_periods.database_name}.{consumption_metering_point_periods.view_name}"
     )
-    # child_metering_points_v1
+
+    # Child
     child_metering_points = ExternalDataProducts.ELECTRICAL_HEATING_CHILD_METERING_POINTS
-    file_path = f"{get_test_files_folder_path()}/{child_metering_points.view_name}.csv"
-    df = read_csv_path(spark=spark, path=file_path, schema=child_metering_points.schema)
+    df = spark.createDataFrame(
+        [
+            (
+                140000000000170201,
+                "electrical_heating",
+                "calculated",
+                "PT1H",
+                170000000000000201,
+                datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
+            ),
+            (
+                140000000000170202,
+                "electrical_heating",
+                "calculated",
+                "PT1H",
+                170000000000000202,
+                datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
+            ),
+            (
+                140000000000170203,
+                "electrical_heating",
+                "calculated",
+                "PT1H",
+                170000000000000203,
+                datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
+            ),
+        ],
+        schema=child_metering_points.schema,
+    )
+
     df.write.format("delta").mode("append").saveAsTable(
         f"{child_metering_points.database_name}.{child_metering_points.view_name}"
     )
