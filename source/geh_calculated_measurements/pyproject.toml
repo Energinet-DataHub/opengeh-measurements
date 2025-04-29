@@ -22,8 +22,9 @@ execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.e
 execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cenc_daily"
 execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
 
-g
-[build-system]migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
+migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
+
+[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
