@@ -7,6 +7,7 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from geh_calculated_measurements.net_consumption_group_6.entry_point import execute_cenc_daily, execute_cnc_daily
 from tests import CalculationType, create_random_metering_point_id
 from tests.net_consumption_group_6.job_tests.seeding import seed
 
@@ -14,10 +15,6 @@ parent_metering_point_id = create_random_metering_point_id(CalculationType.NET_C
 net_consumption_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
 consumption_from_grid_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
 supply_to_grid_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
-from geh_calculated_measurements.net_consumption_group_6.entry_point import execute_cenc_daily, execute_cnc_daily
-from tests import create_job_environment_variables
-from tests.net_consumption_group_6.job_tests import get_cenc_test_files_folder_path, get_cnc_test_files_folder_path
-from tests.net_consumption_group_6.job_tests.conftest import cenc_seed, cnc_seed
 
 
 def test_execute_cenc_daily(
@@ -30,8 +27,14 @@ def test_execute_cenc_daily(
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_cenc_test_files_folder_path()))
-    cenc_seed(spark)
+
+    seed(
+        spark,
+        parent_metering_point_id,
+        net_consumption_metering_point_id,
+        consumption_from_grid_metering_point_id,
+        supply_to_grid_metering_point_id,
+    )
 
     # Act
     execute_cenc_daily()
@@ -61,8 +64,6 @@ def test_execute_cnc_daily(
         net_consumption_metering_point_id,
         supply_to_grid_metering_point_id,
     )
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_cnc_test_files_folder_path()))
-    cnc_seed(spark)
 
     # Act
     execute_cnc_daily()
@@ -71,5 +72,4 @@ def test_execute_cnc_daily(
     actual_calculated_measurements = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
     ).where(F.col(ContractColumnNames.orchestration_instance_id) == orchestration_instance_id)
-    actual_calculated_measurements.show()
     assert actual_calculated_measurements.count() > 0
