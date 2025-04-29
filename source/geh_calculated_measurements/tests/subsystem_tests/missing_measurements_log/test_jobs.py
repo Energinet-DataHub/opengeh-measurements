@@ -4,7 +4,7 @@ from datetime import timedelta
 import pytest
 
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.missing_measurements_log.seed_table import PERIOD_START, delete_seeded_data, seed_table
 
