@@ -1,5 +1,5 @@
 metering_point_type;metering_point_id;date;quantity;#comment
-electrical_heating;140000000600170205;2024-02-28T23:00:00Z;400;Case 5
+electrical_heating;140000000600170205;2024-02-29T23:00:00Z;400;Case 5
 electrical_heating;140000000600170205;2024-03-31T22:00:00Z;400;Case 5
 electrical_heating;140000000600170205;2024-04-30T22:00:00Z;400;Case 5
 electrical_heating;140000000600170205;2024-05-31T22:00:00Z;400;Case 5
