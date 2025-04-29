@@ -7,7 +7,7 @@ from azure.monitor.query import LogsQueryResult, LogsQueryStatus
 from databricks.sdk.service.jobs import Run, RunResultState, RunState, Wait
 from databricks.sdk.service.sql import ResultData, StatementResponse, StatementState, StatementStatus
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000040000000201"
