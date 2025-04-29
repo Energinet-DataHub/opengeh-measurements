@@ -1,11 +1,11 @@
 ﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Domain;
 using Energinet.DataHub.Measurements.Infrastructure.Extensions;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetAggregatedByMonthQuery(string meteringPointId, Year year, DatabricksSchemaOptions databricksSchemaOptions)
+public class GetAggregatedByDateQuery(string meteringPointId, YearMonth yearMonth, DatabricksSchemaOptions databricksSchemaOptions)
     : DatabricksStatement
 {
     private const string EuropeCopenhagenTimeZone = "Europe/Copenhagen";
@@ -20,7 +20,7 @@ public class GetAggregatedByMonthQuery(string meteringPointId, Year year, Databr
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
     {
-        var (startDate, endDate) = year.ToDateInterval();
+        var (startDate, endDate) = yearMonth.ToDateInterval();
 
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, meteringPointId),
@@ -35,6 +35,7 @@ public class GetAggregatedByMonthQuery(string meteringPointId, Year year, Databr
     {
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
                $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
+               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
     }
 }
