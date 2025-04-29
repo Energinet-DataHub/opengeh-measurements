@@ -5,7 +5,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Requests;
 
 [UnitTest]
-public class GetAggregatedByMonthRequestTests
+public class GetAggregatedByDateRequestTests
 {
     [Fact]
     public void GetAggregatedByMonthRequest_WhenValid_ReturnsExpected()
@@ -16,7 +16,7 @@ public class GetAggregatedByMonthRequestTests
         const int month = 1;
 
         // Act
-        var actual = new GetAggregatedByMonthRequest(meteringPointId, year, month);
+        var actual = new GetAggregatedByDateRequest(meteringPointId, year, month);
 
         // Assert
         Assert.Equal(meteringPointId, actual.MeteringPointId);
