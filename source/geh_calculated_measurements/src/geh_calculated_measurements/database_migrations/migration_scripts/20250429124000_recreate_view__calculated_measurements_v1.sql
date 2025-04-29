@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1
-GO
-
-CREATE VIEW {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1 AS
+CREATE OR REPLACE VIEW {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1 AS
 SELECT 
   orchestration_type,
   orchestration_instance_id,
