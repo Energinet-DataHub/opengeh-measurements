@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 3.2.0
+
+- Minor API changes.
+
 ## Version 3.1.0
 
 - Added RegistrationTime to MeasurementPointDto.
