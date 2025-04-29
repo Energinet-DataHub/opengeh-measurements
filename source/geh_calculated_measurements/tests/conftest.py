@@ -25,6 +25,23 @@ from tests.subsystem_tests.environment_configuration import EnvironmentConfigura
 from tests.testsession_configuration import TestSessionConfiguration
 
 
+def pytest_sessionfinish(session, exitstatus):
+    """This hook is called after the test session has finished.
+
+    If no tests are found, pytest will exit with status code 5. This causes the
+    CI/CD pipeline to fail. This hook will set the exit status to 0 if no tests are found.
+    This is useful for the CI/CD pipeline to not fail if no tests are found.
+
+    This is a long debated feature of pytest, and unfortunately it has been decided
+    to keep it as is. See dicussions here:
+    - https://github.com/pytest-dev/pytest/issues/2393
+    - https://github.com/pytest-dev/pytest/issues/812
+    - https://github.com/pytest-dev/pytest/issues/500
+    """
+    if exitstatus == 5:
+        session.exitstatus = 0
+
+
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
 def pytest_collection_modifyitems(config, items) -> None:
     skip_subsystem_tests = pytest.mark.skip(
