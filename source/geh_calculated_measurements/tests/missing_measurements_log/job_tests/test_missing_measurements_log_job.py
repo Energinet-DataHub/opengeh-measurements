@@ -1,19 +1,19 @@
 import os
 import uuid
 from datetime import datetime, timezone
-from decimal import Decimal
 
-from geh_common.domain.types import MeteringPointResolution, MeteringPointType, QuantityQuality
+from geh_common.domain.types import MeteringPointResolution, MeteringPointType
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
-from tests import create_job_environment_variables
+from tests import CalculationType, create_job_environment_variables, create_random_metering_point_id
+from tests.conftest import seed_current_measurements
 from tests.external_data_products import ExternalDataProducts
 
-_METERING_POINT_ID = "170000000000000201"
+_METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOG)
 _PERIOD_START_DATETIME = datetime(2025, 1, 1, 22, 0, 0, tzinfo=timezone.utc)
 _PERIOD_END_DATETIME = datetime(2025, 1, 3, 22, 0, 0, tzinfo=timezone.utc)
 
@@ -28,33 +28,6 @@ def _create_job_arguments(orchestration_instance_id: uuid.UUID) -> list[str]:
         "--period-end-datetime",
         _PERIOD_END_DATETIME.strftime("%Y-%m-%d %H:%M:%S"),
     ]
-
-
-def _seed_current_measurements(spark: SparkSession) -> None:
-    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
-    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
-    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
-
-    observation_time = _PERIOD_START_DATETIME
-
-    measurements = spark.createDataFrame(
-        [
-            (
-                _METERING_POINT_ID,
-                observation_time,
-                Decimal("1.0"),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            )
-        ],
-        schema=schema,
-    )
-
-    measurements.write.saveAsTable(
-        f"{database_name}.{table_name}",
-        format="delta",
-        mode="append",
-    )
 
 
 def _seed_metering_point_periods(spark: SparkSession) -> None:
@@ -93,7 +66,12 @@ def test_execute(
     orchestration_instance_id = uuid.uuid4()
     monkeypatch.setattr("sys.argv", _create_job_arguments(orchestration_instance_id))
     monkeypatch.setattr(os, "environ", create_job_environment_variables())
-    _seed_current_measurements(spark)
+    seed_current_measurements(
+        spark=spark,
+        metering_point_id=_METERING_POINT_ID,
+        metering_point_type=MeteringPointType.CONSUMPTION,
+        observation_time=_PERIOD_START_DATETIME,
+    )
     _seed_metering_point_periods(spark)
 
     # Act
