@@ -2,7 +2,6 @@ import os
 import shutil
 import subprocess
 import sys
-import tempfile
 from typing import Generator
 from unittest import mock
 
@@ -66,26 +65,28 @@ def clear_cache(spark: SparkSession) -> Generator[None, None, None]:
     spark.catalog.clearCache()
 
 
-def _where(plugin: str) -> str:
-    """Get the path to the plugin."""
-    cmd = subprocess.run(["asdf", "where", plugin], capture_output=True, text=True)
-    if cmd.returncode != 0:
-        raise RuntimeError(f"Could not find {plugin} plugin. Please install it using asdf.")
-    return cmd.stdout.strip()
+def _where(exe: str) -> str:
+    output = subprocess.run(["asdf", "where", exe], capture_output=True, text=True)
+    if output.returncode != 0:
+        raise RuntimeError(f"Could not find {exe} in asdf. Please install it.")
+    return output.stdout.strip()
 
 
+JAVA_HOME = _where("java")
+SPARK_HOME = _where("spark")
 # pytest-xdist plugin does not work with SparkSession as a fixture. The session scope is not supported.
 # Therefore, we need to create a global variable to store the Spark session and data directory.
 # This is a workaround to avoid creating a new Spark session for each test.
-_worker_id = os.environ.get("PYTEST_XDIST_WORKER", "master")
-_spark, data_dir = get_spark_test_session(static_data_dir=tempfile.mkdtemp(_worker_id))
 
 
 @pytest.fixture(scope="session")
-def spark() -> Generator[SparkSession, None, None]:
+def spark(tmp_path_factory) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
+    os.environ["JAVA_HOME"] = JAVA_HOME
+    os.environ["SPARK_HOME"] = SPARK_HOME
+    _spark, data_dir = get_spark_test_session(static_data_dir=tmp_path_factory.mktemp("data"))
     yield _spark
     _spark.stop()
     shutil.rmtree(data_dir, ignore_errors=True)
