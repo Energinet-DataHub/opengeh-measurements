@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-from typing import Any
-
 from geh_common.data_products.electricity_market_measurements_input import (
     capacity_settlement_metering_point_periods_v1,
     electrical_heating_child_metering_points_v1,
@@ -11,12 +8,7 @@ from geh_common.data_products.electricity_market_measurements_input import (
 )
 from geh_common.data_products.measurements_core.measurements_gold import current_v1 as current
 
-
-@dataclass
-class DataProduct:
-    database_name: str
-    view_name: str
-    schema: Any
+from tests import DataProduct
 
 
 class ExternalDataProducts:
