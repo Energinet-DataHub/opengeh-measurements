@@ -73,7 +73,7 @@ def _seed_electricity_market(
                 False,
                 1,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
-                datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
                 False,
             )
         ],
