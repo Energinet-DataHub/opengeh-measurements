@@ -1,75 +1,9 @@
 from datetime import datetime, timezone
-from decimal import Decimal
 
-from geh_common.domain.types import MeteringPointSubType, MeteringPointType, QuantityQuality
+from geh_common.domain.types import MeteringPointSubType, MeteringPointType
 from pyspark.sql import SparkSession
 
 from tests.external_data_products import ExternalDataProducts
-
-
-def seed_gold(spark: SparkSession) -> None:
-    current_measurements = ExternalDataProducts.CURRENT_MEASUREMENTS
-
-    df = spark.createDataFrame(
-        [
-            (  # Jan. 1st. Should be added to D14
-                170000000000000201,
-                datetime(2024, 1, 1, 22, 45, 0, tzinfo=timezone.utc),
-                Decimal(3999.999),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 2nd. Limit hit
-                170000000000000201,
-                datetime(2024, 1, 1, 23, 0, 0, tzinfo=timezone.utc),
-                Decimal(0.001),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 2nd. Even though total of 1.001 logged on parent, only 0.001 should be added to D14
-                170000000000000201,
-                datetime(2024, 1, 1, 23, 15, 0, tzinfo=timezone.utc),
-                Decimal(1),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 3rd. Nothing should be added to D14 now
-                170000000000000201,
-                datetime(2024, 1, 3, 15, 0, 0, tzinfo=timezone.utc),
-                Decimal(500),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 5th. Hit limit in one go. Only 4000 should be added to D14
-                170000000000000202,
-                datetime(2024, 1, 5, 17, 45, 0, tzinfo=timezone.utc),
-                Decimal(4000.001),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 5th. Hit limit exactly in one go
-                170000000000000203,
-                datetime(2024, 1, 5, 17, 45, 0, tzinfo=timezone.utc),
-                Decimal(4000),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-            (  # Jan. 6th.  Nothing should be added to D14 now
-                170000000000000203,
-                datetime(2024, 1, 6, 10, 30, 0, tzinfo=timezone.utc),
-                Decimal(0.001),
-                QuantityQuality.MEASURED.value,
-                MeteringPointType.CONSUMPTION.value,
-            ),
-        ],
-        schema=current_measurements.schema,
-    )
-
-    df.write.saveAsTable(
-        f"{current_measurements.database_name}.{current_measurements.view_name}",
-        format="delta",
-        mode="append",
-    )
 
 
 def seed_electricity_market(spark: SparkSession) -> None:
