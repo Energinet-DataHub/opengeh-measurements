@@ -1,0 +1,76 @@
+{
+  "MeasurementAggregations": [
+    {
+      "YearMonth": "2025-01",
+      "Quantity": 0.1,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-02",
+      "Quantity": 0.2,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-03",
+      "Quantity": 0.3,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-04",
+      "Quantity": 0.4,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-05",
+      "Quantity": 0.5,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-06",
+      "Quantity": 0.6,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-07",
+      "Quantity": 0.7,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-08",
+      "Quantity": 0.8,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-09",
+      "Quantity": 0.9,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-10",
+      "Quantity": 1.0,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-11",
+      "Quantity": 1.1,
+      "Quality": "measured",
+      "Unit": "kWh"
+    },
+    {
+      "YearMonth": "2025-12",
+      "Quantity": 1.2,
+      "Quality": "measured",
+      "Unit": "kWh"
+    }
+  ]
+}

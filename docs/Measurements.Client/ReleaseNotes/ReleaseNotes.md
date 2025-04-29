@@ -1,5 +1,14 @@
 # Measurements.Client Release Notes
 
+## Version 3.3.0
+
+- Added method to get aggregated measurements for a year.
+- MeasurementAggregationDto renamed to MeasurementAggregationByDateDto.
+
+## Version 3.2.0
+
+- Minor API changes.
+
 ## Version 3.1.0
 
 - Added RegistrationTime to MeasurementPointDto.

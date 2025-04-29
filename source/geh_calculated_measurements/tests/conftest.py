@@ -1,10 +1,13 @@
 import os
 import sys
+from datetime import datetime
+from decimal import Decimal
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake import create_database
@@ -177,3 +180,35 @@ def external_dataproducts_created(
             table_name=dataproduct.view_name,
             schema=dataproduct.schema,
         )
+
+
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
+    )
+
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
+    )

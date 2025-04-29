@@ -1,4 +1,3 @@
-import os
 import sys
 import uuid
 from datetime import datetime
@@ -30,7 +29,6 @@ def test_execute(
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
     seed_current_measurements(
         spark=spark,
