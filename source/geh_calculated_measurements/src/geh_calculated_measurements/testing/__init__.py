@@ -1,3 +1,6 @@
-from .utilities.log_query_client_wrapper import LogQueryClientWrapper
+from geh_calculated_measurements.testing.job_test import JobTest, JobTestFixture
 
-__all__ = ["LogQueryClientWrapper"]
+__all__ = [
+    "JobTestFixture",
+    "JobTest",
+]
