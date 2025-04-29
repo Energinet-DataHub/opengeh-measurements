@@ -1,6 +1,8 @@
 import random
+from dataclasses import dataclass
 from enum import IntEnum
 from pathlib import Path
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = PROJECT_ROOT / "tests"
@@ -8,6 +10,13 @@ TESTS_ROOT = PROJECT_ROOT / "tests"
 SPARK_CATALOG_NAME = "spark_catalog"
 MEASUREMENTS_GOLD_TABLE_NAME = "measurements"
 TIME_ZONE = "Europe/Copenhagen"
+
+
+@dataclass
+class DataProduct:
+    database_name: str
+    view_name: str
+    schema: Any
 
 
 class CalculationType(IntEnum):
