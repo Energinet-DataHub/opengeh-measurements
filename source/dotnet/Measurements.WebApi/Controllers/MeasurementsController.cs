@@ -62,7 +62,7 @@ public class MeasurementsController(
         }
     }
 
-    [MapToApiVersion(1.0)]
+    [MapToApiVersion(2.0)]
     [HttpGet("aggregatedByYear")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
     {
