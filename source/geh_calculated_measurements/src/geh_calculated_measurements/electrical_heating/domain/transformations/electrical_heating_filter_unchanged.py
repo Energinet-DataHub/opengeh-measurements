@@ -8,7 +8,6 @@ def filter_unchanged_electrical_heating(
     newly_calculated_electrical_heating: DataFrame,
     electrical_heating_from_before: DataFrame,
 ) -> DataFrame:
-    # Changed from left_anti join to left join with filter
     joined_df = (
         newly_calculated_electrical_heating.alias("current")
         .join(
