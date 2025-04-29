@@ -8,19 +8,27 @@ from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
 from tests.external_data_products import ExternalDataProducts
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests.net_consumption_group_6.job_tests import (
+    get_cenc_test_files_folder_path,
+    get_cnc_test_files_folder_path,
+)
 
 
-def seed(spark: SparkSession) -> None:
-    _seed_gold_table(spark)
+def cenc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cenc_test_files_folder_path())
     _seed_electricity_market_tables(spark)
 
 
-def _seed_gold_table(spark: SparkSession) -> None:
+def cnc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cnc_test_files_folder_path())
+    _seed_electricity_market_tables(spark)
+
+
+def _seed_gold_table(spark: SparkSession, file_path: str) -> None:
     database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
     table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
     schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
-    file_name = f"{get_test_files_folder_path()}/{database_name}-{table_name}.csv"
+    file_name = f"{file_path}/{database_name}-{table_name}.csv"
     time_series_points = read_csv_path(spark, file_name, schema)
     time_series_points.write.saveAsTable(
         f"{database_name}.{table_name}",
