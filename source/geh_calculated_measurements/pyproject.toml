@@ -19,7 +19,7 @@ dependencies = [
 [project.scripts]
 execute_electrical_heating = "geh_calculated_measurements.electrical_heating.entry_point:execute"
 execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.entry_point:execute"
-execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute"
+execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cenc_daily"
 execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
 
 migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
