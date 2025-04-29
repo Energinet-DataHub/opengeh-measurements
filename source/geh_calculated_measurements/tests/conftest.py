@@ -84,6 +84,9 @@ def spark(tmp_path_factory) -> Generator[SparkSession, None, None]:
     """
     Create a Spark session with Delta Lake enabled.
     """
+    print(  # noqa
+        f"Initializing Spark session with the following environment variables: JAVA_HOME: {JAVA_HOME} SPARK_HOME: {SPARK_HOME}"
+    )
     os.environ["JAVA_HOME"] = JAVA_HOME
     os.environ["SPARK_HOME"] = SPARK_HOME
     _spark, data_dir = get_spark_test_session(static_data_dir=tmp_path_factory.mktemp("data"))
