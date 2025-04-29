@@ -24,16 +24,16 @@ public class MeasurementsControllerTests
     public async Task GetByPeriodAsyncV1_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         var response = CreateMeasurementResponse();
         var expected = CreateExpectedMeasurementsByDate();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsyncV1(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetByPeriodAsyncV1(request) as OkObjectResult)!.Value!.ToString();
@@ -47,16 +47,16 @@ public class MeasurementsControllerTests
     public async Task GetByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         var response = CreateMeasurementResponse();
         var expected = CreateExpectedMeasurementsByDate();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -70,14 +70,14 @@ public class MeasurementsControllerTests
     public async Task GetByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
@@ -91,14 +91,14 @@ public class MeasurementsControllerTests
     public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
@@ -113,16 +113,16 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByDateAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         var response = CreateMeasurementsAggregatedByDateResponse();
         var expected = CreateExpectedMeasurementsAggregatedByDate();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByDateAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -136,14 +136,14 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByDateAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
@@ -157,14 +157,14 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
@@ -179,16 +179,16 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         var response = CreateMeasurementsAggregatedByMonthResponse();
         var expected = CreateExpectedMeasurementsAggregatedByMonth();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByMonthAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -202,14 +202,14 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
@@ -223,14 +223,14 @@ public class MeasurementsControllerTests
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger,
-        Mock<IJsonSerializer> jsonSerializer)
+        Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
