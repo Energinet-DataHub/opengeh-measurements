@@ -1,4 +1,3 @@
-import os
 import sys
 import uuid
 
@@ -9,8 +8,7 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.net_consumption_group_6.entry_point import execute
-from tests import CalculationType, create_job_environment_variables, create_random_metering_point_id
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
+from tests import CalculationType, create_random_metering_point_id
 from tests.net_consumption_group_6.job_tests.seeding import seed
 
 parent_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
@@ -29,7 +27,6 @@ def test_execute(
     # Arrange
     orchestration_instance_id = str(uuid.uuid4())
     monkeypatch.setattr(sys, "argv", ["dummy_script_name", "--orchestration-instance-id", orchestration_instance_id])
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(get_test_files_folder_path()))
 
     seed(
         spark,

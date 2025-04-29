@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 
+from geh_calculated_measurements.common.domain import ContractColumnNames
 from tests.conftest import ExternalDataProducts
 
 
@@ -19,29 +20,29 @@ def _seed_gold(
                 parent_metering_point_id,
                 datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
                 Decimal(2000),
-                "measured",
-                "consumption",
+                ContractColumnNames.measured,
+                ContractColumnNames.consumption,
             ),
             (
                 child_supply_to_grid_metering_point,
                 datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
                 Decimal(1000),
-                "measured",
-                "supply_to_grid",
+                ContractColumnNames.measured,
+                ContractColumnNames.supply_to_grid,
             ),
             (
                 child_consumption_from_grid_metering_point,
                 datetime(2024, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
                 Decimal(2000),
-                "estimated",
-                "consumption_from_grid",
+                ContractColumnNames.estimated,
+                ContractColumnNames.consumption_from_grid,
             ),
             (
                 child_net_consumption_metering_point,
                 datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
                 Decimal(3),
-                "calculated",
-                "net_consumption",
+                ContractColumnNames.calculated,
+                ContractColumnNames.net_consumption,
             ),
         ],
         schema=current_measurements.schema,
@@ -88,21 +89,21 @@ def _seed_electricity_market(
         [
             (
                 child_net_consumption_metering_point,
-                "net_consumption",
+                ContractColumnNames.net_consumption,
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 None,
             ),
             (
                 child_supply_to_grid_metering_point,
-                "supply_to_grid",
+                ContractColumnNames.supply_to_grid,
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 None,
             ),
             (
                 child_consumption_from_grid_metering_point,
-                "consumption_from_grid",
+                ContractColumnNames.consumption_from_grid,
                 parent_metering_point_id,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 None,
