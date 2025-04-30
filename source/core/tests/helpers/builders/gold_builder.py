@@ -1,5 +1,5 @@
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
@@ -45,6 +45,29 @@ class GoldMeasurementsBuilder:
                 modified or datetime.now(),
             )
         )
+        return self
+
+    def add_24_hours_rows(
+        self,
+        metering_point_id: str | None = "502938475674839281",
+        orchestration_type: str = "submitted",
+        orchestration_instance_id: str = "123456",
+        start_time: datetime = datetime.now(),
+        metering_point_type: str | None = random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
+        transaction_id="",
+        transaction_creation_datetime=datetime.now(),
+    ):
+        for hour in range(24):
+            observation_time = start_time + timedelta(hours=hour)
+            self.add_row(
+                metering_point_id=metering_point_id,
+                orchestration_type=orchestration_type,
+                orchestration_instance_id=orchestration_instance_id,
+                observation_time=observation_time,
+                metering_point_type=metering_point_type,
+                transaction_id=transaction_id,
+                transaction_creation_datetime=transaction_creation_datetime,
+            )
         return self
 
     def build(self):
