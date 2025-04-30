@@ -78,13 +78,12 @@ public class MeasurementsController(
         }
         catch (MeasurementsNotFoundException e)
         {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurements");
+            logger.LogInformation(
+                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}",
+                request.MeteringPointId.Sanitize(),
+                request.Year);
 
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+            return NotFound(e.Message);
         }
     }
 
@@ -101,13 +100,13 @@ public class MeasurementsController(
         }
         catch (MeasurementsNotFoundException e)
         {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurements");
+            logger.LogInformation(
+                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
+                request.MeteringPointId.Sanitize(),
+                request.Year,
+                request.Month);
 
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+            return NotFound(e.Message);
         }
     }
 
