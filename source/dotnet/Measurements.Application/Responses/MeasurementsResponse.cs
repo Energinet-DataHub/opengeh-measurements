@@ -36,7 +36,7 @@ public class MeasurementsResponse
             .ToList();
 
         return points.Count <= 0
-            ? throw new MeasurementsNotFoundDuringPeriodException()
+            ? throw new MeasurementsNotFoundException()
             : new MeasurementsResponse(points);
     }
 }

@@ -7,6 +7,8 @@ startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
+app.UseExceptionHandler("/error");
+
 startup.Configure(app);
 
 app.Run();
