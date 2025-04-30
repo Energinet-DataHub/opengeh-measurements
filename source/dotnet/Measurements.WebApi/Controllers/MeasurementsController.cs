@@ -20,27 +20,23 @@ public class MeasurementsController(
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
-        await Task.CompletedTask;
+        try
+        {
+            var measurement = await measurementsHandler.GetByPeriodAsync(request);
+            var result = jsonSerializer.Serialize(measurement);
 
-        throw new Exception("Some error occurred");
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            logger.LogInformation(
+                "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
+                request.MeteringPointId,
+                request.StartDate,
+                request.EndDate);
 
-        // try
-        // {
-        //     var measurement = await measurementsHandler.GetByPeriodAsync(request);
-        //     var result = jsonSerializer.Serialize(measurement);
-        //
-        //     return Ok(result);
-        // }
-        // catch (MeasurementsNotFoundException e)
-        // {
-        //     logger.LogInformation(
-        //         "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
-        //         request.MeteringPointId,
-        //         request.StartDate,
-        //         request.EndDate);
-        //
-        //     return NotFound(e.Message);
-        // }
+            return NotFound(e.Message);
+        }
     }
 
     [MapToApiVersion(2.0)]

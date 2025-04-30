@@ -1,5 +1,4 @@
 ﻿using System.Dynamic;
-using System.Net;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Application.Exceptions;
