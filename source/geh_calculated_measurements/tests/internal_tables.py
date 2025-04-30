@@ -11,6 +11,10 @@ MEASUREMENTS_INTERNAL_DATABASE_NAME = "calculated_measurements_internal"
 
 
 class InternalTables:
+    """
+    Internal tables used in geh_calculated_measurements. The purpose of this class is to provide a single source of truth for the table names and database names used in tests.
+    """
+
     CALCULATED_MEASUREMENTS: Table = Table(
         database_name=MEASUREMENTS_INTERNAL_DATABASE_NAME,
         table_name="calculated_measurements",
