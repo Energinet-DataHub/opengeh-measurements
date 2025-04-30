@@ -43,14 +43,6 @@ def override_current_timestamp(spark: SparkSession, execution_datetime):
         spark: SparkSession
         execution_datetime: Datetime to use for current_timestamp()
     """
-    # Save original settings
-    original_configs = {}
-    try:
-        timezone = spark.conf.get("spark.sql.session.timeZone")
-        original_configs["spark.sql.session.timeZone"] = timezone
-    except Exception:
-        pass  # If setting doesn't exist, ignore
-
     # Ensure the timestamp has UTC timezone
     test_timestamp = execution_datetime
     if test_timestamp.tzinfo is None:
@@ -68,14 +60,7 @@ def override_current_timestamp(spark: SparkSession, execution_datetime):
 
     spark.udf.register("current_timestamp", fixed_timestamp, TimestampType())
 
-    yield test_timestamp_str
-
-    # Cleanup: restore original settings
-    for key, value in original_configs.items():
-        spark.conf.set(key, value)
-
-    # Drop the temporary function
-    spark.sql("DROP TEMPORARY FUNCTION IF EXISTS current_timestamp")
+    return test_timestamp_str
 
 
 @pytest.fixture(scope="module")
