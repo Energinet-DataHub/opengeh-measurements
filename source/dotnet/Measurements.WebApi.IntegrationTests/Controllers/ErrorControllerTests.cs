@@ -15,9 +15,9 @@ public class ErrorControllerTests(WebApiFixture fixture) : IClassFixture<WebApiF
         const string url = "/error";
 
         // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await fixture.Client.GetAsync(url);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, actual.StatusCode);
     }
 }
