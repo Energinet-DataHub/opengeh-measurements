@@ -7,6 +7,7 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
+from tests.conftest import MeteringPointType
 from tests.external_data_products import ExternalDataProducts
 from tests.net_consumption_group_6.job_tests import (
     get_cenc_test_files_folder_path,
@@ -38,7 +39,7 @@ def _seed_gold_table(spark: SparkSession, file_path: str) -> None:
 
 
 def _seed_electricity_market_tables(spark: SparkSession) -> None:
-    # PARENT
+    # Consumption
     df = spark.createDataFrame(
         [
             (
@@ -56,26 +57,26 @@ def _seed_electricity_market_tables(spark: SparkSession) -> None:
         f"{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS.database_name}.{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS.view_name}"
     )
 
-    # CHILDREN
+    # Child
     df = spark.createDataFrame(
         [
             (
                 150000001500170200,
-                "net_consumption",
+                MeteringPointType.NET_CONSUMPTION,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "060000001500170200",
-                "supply_to_grid",
+                MeteringPointType.SUPPLY_TO_GRID,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "070000001500170200",
-                "consumption_from_grid",
+                MeteringPointType.CONSUMPTION_FROM_GRID,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
