@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.capacity_settlement.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -10,7 +10,7 @@ CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
 
 job_parameters = {
-    "orchestration-instance-id": str(uuid.uuid4()),
+    "orchestration-instance-id": uuid.uuid4(),
     "calculation-month": CALCULATION_MONTH,
     "calculation-year": CALCULATION_YEAR,
 }
@@ -18,7 +18,7 @@ job_parameters = {
 
 class TestCapacitySettlement(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self, electricity_market_data_products_created_as_tables) -> JobTestFixture:
+    def fixture(self) -> JobTestFixture:
         config = EnvironmentConfiguration()
         fixture = JobTestFixture(
             environment_configuration=config,

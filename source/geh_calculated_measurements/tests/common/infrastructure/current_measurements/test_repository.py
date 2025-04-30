@@ -3,21 +3,18 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 import pytest
-from geh_common.data_products.measurements_core.measurements_gold.current_v1 import schema as current_v1
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
+from tests.conftest import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
-def current_measurements_repository(spark: SparkSession) -> CurrentMeasurementsRepository:
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS {MeasurementsGoldDatabaseDefinition.DATABASE_NAME}")
+def current_measurements_repository(
+    spark: SparkSession, external_dataproducts_created: None
+) -> CurrentMeasurementsRepository:
     return CurrentMeasurementsRepository(
         spark=spark,
         catalog_name=spark.catalog.currentCatalog(),
@@ -36,9 +33,9 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "consumption",
             )
         ],
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
-    assert df.schema == current_v1
+    assert df.schema == ExternalDataProducts.CURRENT_MEASUREMENTS.schema
     return df
 
 
@@ -83,4 +80,4 @@ def test__when_source_contains_unexpected_columns__returns_data_without_unexpect
     actual = current_measurements_repository.read_current_measurements()
 
     # Assert
-    assert actual.df.schema == current_v1
+    assert actual.df.schema == ExternalDataProducts.CURRENT_MEASUREMENTS.schema

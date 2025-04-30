@@ -7,7 +7,9 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     ValueColumnNames,
 )
 from tests.helpers.builders.submitted_transactions_builder import SubmittedTransactionsBuilder
-from tests.helpers.schemas.bronze_submitted_transactions_value_schema import bronze_submitted_transactions_value_schema
+from tests.helpers.schemas.bronze_submitted_transactions_value_schema import (
+    deserialized_bronze_submitted_transactions_value_schema,
+)
 
 
 def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
@@ -19,7 +21,7 @@ def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
 
     # Assert
     assert_schemas.assert_schema(
-        actual_valid.schema, bronze_submitted_transactions_value_schema, ignore_nullability=True
+        actual_valid.schema, deserialized_bronze_submitted_transactions_value_schema, ignore_nullability=True
     )
     actual_value = actual_valid.collect()[0]
     assert actual_value[ValueColumnNames.version] is not None
@@ -35,7 +37,7 @@ def test__unpack__should_return_expected_schema(spark: SparkSession) -> None:
     assert actual_value[ValueColumnNames.end_datetime] is not None
     assert actual_value[ValueColumnNames.points] is not None
     actual_points = actual_value[ValueColumnNames.points]
-    assert len(actual_points) == 1
+    assert len(actual_points) == 24
     assert actual_points[0].position is not None
     assert actual_points[0].quantity is not None
     assert actual_points[0].quality is not None

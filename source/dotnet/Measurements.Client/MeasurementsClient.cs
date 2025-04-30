@@ -6,6 +6,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -20,7 +21,7 @@ public class MeasurementsClient(
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() },
+        Converters = { new JsonStringEnumConverter(), new YearMonthConverter() },
     };
 
     public async Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default)
@@ -37,34 +38,43 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public async Task<IEnumerable<MeasurementAggregationDto>> GetAggregatedByMonth(
+    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByMonth(
         GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return await ParseMeasurementAggregationResponseAsync(response, cancellationToken);
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByDateDto>(response, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationDto>> ParseMeasurementAggregationResponseAsync(
+    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetAggregatedByYear(
+        GetAggregatedByYearQuery query, CancellationToken cancellationToken = default)
+    {
+        var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByMonthDto>(response, cancellationToken);
+    }
+
+    private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.StatusCode == HttpStatusCode.NotFound)
             return [];
 
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        return await DeserializeMeasurementAggregationResponseStreamAsync(stream, cancellationToken);
+        return await DeserializeMeasurementAggregationResponseStreamAsync<T>(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<MeasurementAggregationDto>> DeserializeMeasurementAggregationResponseStreamAsync(
+    private async Task<IEnumerable<T>> DeserializeMeasurementAggregationResponseStreamAsync<T>(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
 
-        return pointElement.Deserialize<IEnumerable<MeasurementAggregationDto>>(_jsonSerializerOptions)
-               ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<T>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
     }
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
@@ -74,6 +84,11 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, YearMonth yearMonth)
     {
-        return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+        return $"v2/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+    }
+
+    private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId, int year)
+    {
+        return $"v2/measurements/aggregatedByYear?MeteringPointId={meteringPointId}&Year={year}";
     }
 }

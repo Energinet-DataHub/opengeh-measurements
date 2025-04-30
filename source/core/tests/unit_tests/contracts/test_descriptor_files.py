@@ -42,7 +42,7 @@ def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
 )
 def test__persist_submitted_transaction_protobuf(protobuf_file_name: str) -> None:
     process_manager_path = "src/core/contracts/process_manager"
-    descriptor_file = f"{process_manager_path}/{protobuf_file_name}/{protobuf_file_name}.binpb"
+    descriptor_file = f"{process_manager_path}/{protobuf_file_name}/generated/{protobuf_file_name}.binpb"
     proto_file = f"{protobuf_file_name}.proto"
     proto_path = f"{process_manager_path}/{protobuf_file_name}"
 

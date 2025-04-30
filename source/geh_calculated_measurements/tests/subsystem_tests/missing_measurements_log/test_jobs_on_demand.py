@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000060000000201"
@@ -19,7 +19,7 @@ job_parameters = {
 
 class TestMissingMeasurementsLogOnDemand(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self, electricity_market_data_products_created_as_tables):
+    def fixture(self):
         config = EnvironmentConfiguration()
         return JobTestFixture(
             environment_configuration=config,

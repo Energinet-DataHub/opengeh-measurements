@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
@@ -26,6 +27,35 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         AssertAllPointsInPositionsEqualsExpected(measurements);
     }
 
+    [Fact]
+    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregatedByMonthQuery(
+            MeasurementsClientFixture.TestMeteringPointId,
+            new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregatedByMonth(query);
+
+        // Assert
+        Assert.Single(measurements);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregatedByYearQuery(
+            MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregatedByYear(query);
+
+        // Assert
+        Assert.Single(measurements);
+    }
+
     private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements)
     {
         for (var positionIndex = 1; positionIndex < measurements.MeasurementPositions.Count(); positionIndex++)
@@ -41,7 +71,8 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
                 Assert.Equal(Resolution.Hourly, point.Resolution);
                 Assert.Equal(Unit.kWh, point.Unit);
                 Assert.Equal(pointIndex, point.Order);
-                Assert.Equal("2025-01-17T03:40:55Z", point.Created.ToFormattedString());
+                Assert.Equal("2025-01-17T03:40:55Z", point.PersistedTime.ToFormattedString());
+                Assert.Equal("2025-01-17T03:40:55Z", point.RegistrationTime.ToFormattedString());
             }
         }
     }

@@ -8,7 +8,7 @@ def filter_unchanged_electrical_heating(
     newly_calculated_electrical_heating: DataFrame,
     electrical_heating_from_before: DataFrame,
 ) -> DataFrame:
-    return (
+    joined_df = (
         newly_calculated_electrical_heating.alias("current")
         .join(
             electrical_heating_from_before.alias("previous"),
@@ -23,7 +23,13 @@ def filter_unchanged_electrical_heating(
                     == F.col(f"previous.{ContractColumnNames.quantity}")
                 )
             ),
-            "left_anti",
+            "left",
+        )
+        .filter(
+            # Include rows that either:
+            # 1. Don't exist in previous data (unchanged behavior) OR
+            # 2. Have is_end_of_period = True (new behavior)
+            (F.col(f"previous.{ContractColumnNames.metering_point_id}").isNull()) | (F.col("current.is_end_of_period"))
         )
         .select(
             F.col(f"current.{ContractColumnNames.metering_point_id}"),
@@ -31,3 +37,5 @@ def filter_unchanged_electrical_heating(
             F.col(f"current.{ContractColumnNames.quantity}"),
         )
     )
+
+    return joined_df
