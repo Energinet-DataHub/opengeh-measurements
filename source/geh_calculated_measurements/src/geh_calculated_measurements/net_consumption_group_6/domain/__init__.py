@@ -4,10 +4,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain.model.consumptio
     ConsumptionMeteringPointPeriods,
 )
 
-from .calculation import execute
-
 __all__ = [
-    "execute",
     "Cenc",
     "ChildMeteringPoints",
     "ConsumptionMeteringPointPeriods",

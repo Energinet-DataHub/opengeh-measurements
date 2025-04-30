@@ -10,5 +10,5 @@ public enum Unit
     Tonne = 4,
     kVArh = 5,
     MVAr = 6,
-#pragma warning disable SA1300
+#pragma warning restore SA1300
 }

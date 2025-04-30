@@ -2,21 +2,19 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import (
-    _seed_gold_table,
     delete_seeded_data,
-    seed_electricity_market_tables,
+    seed_table,
 )
 
 job_parameters = {"orchestration-instance-id": uuid.uuid4()}
 
 
-@pytest.mark.skip(reason="The test is failing because the seeded data lacks the date prior the calculation date.")
 class TestNetConsumptionGroup6(JobTest):
     @pytest.fixture(scope="class")
-    def fixture(self, electricity_market_data_products_created_as_tables):
+    def fixture(self):
         config = EnvironmentConfiguration()
         # Construct fixture
         base_job_fixture = JobTestFixture(
@@ -28,11 +26,8 @@ class TestNetConsumptionGroup6(JobTest):
         # Remove previously inserted seeded data
         delete_seeded_data(base_job_fixture)
 
-        # Seed gold table
-        _seed_gold_table(base_job_fixture)
-
-        # Seed electricity market
-        seed_electricity_market_tables(base_job_fixture)
+        # Seed gold table and electricity market tables
+        seed_table(base_job_fixture)
 
         yield base_job_fixture
 

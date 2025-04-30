@@ -1,39 +1,48 @@
 import os
 import sys
+from datetime import datetime
+from decimal import Decimal
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from geh_common.data_products.electricity_market_measurements_input import (
-    missing_measurements_log_metering_point_periods_v1,
-    net_consumption_group_6_child_metering_points_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
-)
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
-from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
+from geh_common.testing.delta_lake import create_database
+from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.common.infrastructure.electricity_market import (
-    DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-)
 from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
 from tests import (
     SPARK_CATALOG_NAME,
     TESTS_ROOT,
     create_job_environment_variables,
 )
+from tests.external_data_products import ExternalDataProducts
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """This hook is called after the test session has finished.
+
+    If no tests are found, pytest will exit with status code 5. This causes the
+    CI/CD pipeline to fail. This hook will set the exit status to 0 if no tests are found.
+    This is useful for the CI/CD pipeline to not fail if no tests are found.
+
+    This is a long debated feature of pytest, and unfortunately it has been decided
+    to keep it as is. See discussions here:
+    - https://github.com/pytest-dev/pytest/issues/2393
+    - https://github.com/pytest-dev/pytest/issues/812
+    - https://github.com/pytest-dev/pytest/issues/500
+    """
+    if exitstatus == 5:
+        session.exitstatus = 0
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
@@ -159,35 +168,47 @@ def migrations_executed(spark: SparkSession) -> None:
 def external_dataproducts_created(
     spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
 ) -> None:
-    """Create external dataproducts (databases, tables and views) as needed by tests."""
-    # Create measurements gold database and tables
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
-        schema=CurrentMeasurements.schema,
+    """Create external data products (databases, tables and views) as needed by tests."""
+
+    for database_name in ExternalDataProducts.get_all_database_names():
+        create_database(spark, database_name)
+
+    for dataproduct in ExternalDataProducts.get_all_data_products():
+        create_table(
+            spark,
+            database_name=dataproduct.database_name,
+            table_name=dataproduct.view_name,
+            schema=dataproduct.schema,
+        )
+
+
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
     )
 
-    # Create missing measurements log database and tables
-    create_database(spark, DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=missing_measurements_log_metering_point_periods_v1.view_name,
-        schema=MeteringPointPeriodsTable.schema,
-    )
-
-    # Create net consumption group 6 database and tables
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=net_consumption_group_6_consumption_metering_point_periods_v1.view_name,
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
-    )
-    create_table(
-        spark,
-        database_name=DEFAULT_ELECTRICITY_MARKET_MEASUREMENTS_INPUT_DATABASE_NAME,
-        table_name=net_consumption_group_6_child_metering_points_v1.view_name,
-        schema=net_consumption_group_6_child_metering_points_v1.schema,
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
     )

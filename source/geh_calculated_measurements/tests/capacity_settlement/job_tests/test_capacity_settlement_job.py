@@ -1,29 +1,30 @@
 import os
 import sys
 import uuid
+from datetime import datetime, timedelta
 
-from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
-from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
+from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
 from tests import create_job_environment_variables
 from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 
+_METERING_POINT_ID = "170000000000000201"
+_PERIOD_START = datetime(2026, 1, 1, 22, 0, 0)
 
-def _seed_gold_table(spark: SparkSession) -> None:
-    file_name = f"{TEST_FILES_FOLDER_PATH}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
-    time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
-        format="delta",
-        mode="append",
-    )
+
+def _seed_current_measurements(spark: SparkSession) -> None:
+    """We need at least 10 measurements to get some output"""
+    rows = [
+        CurrentMeasurementsRow(
+            metering_point_id=_METERING_POINT_ID, observation_time=_PERIOD_START + timedelta(hours=i)
+        )
+        for i in range(10)
+    ]
+    seed_current_measurements_rows(spark, rows)
 
 
 def test_execute(
@@ -46,7 +47,7 @@ def test_execute(
         ],
     )
     monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
-    _seed_gold_table(spark)
+    _seed_current_measurements(spark)
 
     # Act
     execute()

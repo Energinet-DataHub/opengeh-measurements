@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.electrical_heating.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -15,7 +15,7 @@ class TestElectricalHeating(JobTest):
     """
 
     @pytest.fixture(scope="class")
-    def fixture(self, electricity_market_data_products_created_as_tables):
+    def fixture(self):
         config = EnvironmentConfiguration()
         fixture = JobTestFixture(
             environment_configuration=config,
