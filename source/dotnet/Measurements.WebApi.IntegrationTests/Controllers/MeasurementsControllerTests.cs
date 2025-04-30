@@ -82,9 +82,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
+        var actualContent = await actual.Content.ReadAsStringAsync();
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
+        Assert.Contains("An unknown error occured while handling request to the Measurements API. Try again later.", actualContent);
     }
 
     [Fact]

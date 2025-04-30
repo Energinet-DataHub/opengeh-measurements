@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Diagnostics;
+using System.Web;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -15,33 +16,20 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
     [Route("/error")]
     public IActionResult HandleError()
     {
-        var exception = HttpContext.Features.Get<IExceptionHandlerFeature>();
+        var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()
+                        ?? throw new InvalidOperationException("Exception feature is null");
         var queryString = HttpUtility.HtmlEncode(Request.QueryString);
-
-        if (exception != null)
-        {
-            logger.LogError(
-                exception.Error,
-                "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-                SanitizeRequestPath(exception.Path),
-                queryString);
-
-            return Problem(
-                detail: exception.Error.Message,
-                instance: exception.Path,
-                statusCode: StatusCodes.Status500InternalServerError);
-        }
-
-        logger.LogError(
-            "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-            SanitizeRequestPath(Request.Path),
-            queryString);
-
         var requestPath = HttpContext.Request.Path.Value ?? throw new InvalidOperationException("Request path is null");
 
+        logger.LogError(
+            exception.Error,
+            "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
+            SanitizeRequestPath(exception.Path),
+            queryString);
+
         return Problem(
-            detail: "An unknown error occured.",
-            instance: SanitizeRequestPath(requestPath),
+            detail: "An unknown error occured while handling request to the Measurements API. Try again later.",
+            instance: requestPath,
             statusCode: StatusCodes.Status500InternalServerError);
     }
 
