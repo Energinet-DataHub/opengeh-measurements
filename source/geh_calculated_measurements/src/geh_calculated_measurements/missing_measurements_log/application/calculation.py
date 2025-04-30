@@ -6,13 +6,13 @@ from geh_calculated_measurements.missing_measurements_log.application.missing_me
     MissingMeasurementsLogArgs,
 )
 from geh_calculated_measurements.missing_measurements_log.domain import execute
-from geh_calculated_measurements.missing_measurements_log.infrastructure import Repository
+from geh_calculated_measurements.missing_measurements_log.infrastructure import ElectricityMarketRepository
 
 
 @use_span()
 def execute_application(spark: SparkSession, args: MissingMeasurementsLogArgs) -> None:
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
-    missing_measurements_log_repository = Repository(spark, args.catalog_name)
+    missing_measurements_log_repository = ElectricityMarketRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
