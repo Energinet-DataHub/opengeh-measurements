@@ -1,0 +1,55 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
+060000000000000200;supply_to_grid;2024-01-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-01-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-02-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-02-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-03-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-03-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-04-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-04-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-05-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-05-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-06-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-06-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-07-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-07-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-08-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-08-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-09-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-09-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-10-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-10-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-11-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-11-15T12:45:00Z;20;measured;Case 0
+060000000000000200;supply_to_grid;2024-12-15T12:45:00Z;10;measured;Case 0
+070000000000000200;consumption_from_grid;2024-12-15T12:45:00Z;20;measured;Case 0
+060000000000000201;supply_to_grid;2024-02-15T23:00:00Z;100;;Case 1: Period 1
+070000000000000201;consumption_from_grid;2024-02-15T23:00:00Z;200;;Case 1: Period 1
+060000000000000201;supply_to_grid;2024-03-15T23:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-03-15T23:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-04-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-04-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-05-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-05-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-06-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-06-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-07-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-07-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-08-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-08-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-09-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-09-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-10-15T22:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-10-15T22:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-11-15T23:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-11-15T23:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2024-12-15T23:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2024-12-15T23:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2025-01-15T23:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2025-01-15T23:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2025-02-15T23:00:00Z;;;Case 1: Period 2
+070000000000000201;consumption_from_grid;2025-02-15T23:00:00Z;;;Case 1: Period 2
+060000000000000201;supply_to_grid;2025-03-15T23:00:00Z;;;Case 1: Period 3 (cenc)
+070000000000000201;consumption_from_grid;2025-03-15T23:00:00Z;;;Case 1: Period 3 (cenc)
+060000000000000201;supply_to_grid;2025-04-15T22:00:00Z;;;Case 1: Period 3 (cenc)
+070000000000000201;consumption_from_grid;2025-04-15T22:00:00Z;;;Case 1: Period 3 (cenc)

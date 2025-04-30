@@ -1,0 +1,44 @@
+notes: |
+  ## PURPOSE
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1:
+                                                          |today
+                          |2024___________________|2025___
+  smrd: 1
+  All MPs start/end:      |-----------------------|
+  Measurement data:        + + + + + + + + + + + +
+
+  CASE 2: Combined cnc and cenc calculation
+  smrd: 3
+                   |2024   |smrd      					       |2025   |smrd   |today
+                   |_______|___________________________________|_______|_______
+  All MPs start:	   |-------------------------------------------------------...
+  Measurement data:      +   +   +   +   +   +   +   +   +   +   +   +   +   +
+  Period 1 (cnc)   	   |---|
+  Period 2 (cnc)           |-------------------------------------------|
+  Period 3 (cenc)                                                      |-------|
+
+cases_tested:
+
+
+
+Cases
+
+dækket
+- Periode = 1 år
+ - Periode < 1 år
+ - smrd = 1
+ - smrd != 1
+ - Åben periode, der går henover smrd
+
+
+
+ - nettoforbrug aldrig < 0
+
+ - Vi har D06, men ikke D07 måledata for et time i perioden
+ - Vi har D07, men ikke D06 måledata for et time i perioden
+ - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
+ - filtrering
+	- skriver ned, selvom værdi er den samme som cenc
