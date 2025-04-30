@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
+using Energinet.DataHub.Measurements.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ public class MeasurementsController(
         {
             logger.LogInformation(
                 "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
-                request.MeteringPointId,
+                request.MeteringPointId.Sanitize(),
                 request.StartDate,
                 request.EndDate);
 
@@ -54,7 +55,7 @@ public class MeasurementsController(
         {
             logger.LogInformation(
                 "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-                request.MeteringPointId,
+                request.MeteringPointId.Sanitize(),
                 request.Year,
                 request.Month);
 
@@ -75,7 +76,10 @@ public class MeasurementsController(
         }
         catch (MeasurementsNotFoundException e)
         {
-            logger.LogInformation("Aggregation by year not found for metering point id {MeteringPointId} during {Year}", request.MeteringPointId, request.Year);
+            logger.LogInformation(
+                "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
+                request.MeteringPointId.Sanitize(),
+                request.Year);
 
             return NotFound(e.Message);
         }

@@ -1,11 +1,5 @@
-﻿using System.Globalization;
-using System.Net;
-using Energinet.DataHub.Measurements.Application.Extensions;
-using Energinet.DataHub.Measurements.Application.Responses;
-using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.Infrastructure.Serialization;
+﻿using System.Net;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
-using NodaTime;
 using Xunit;
 using Xunit.Categories;
 

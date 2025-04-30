@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.Web;
+﻿using System.Web;
 using Asp.Versioning;
+using Energinet.DataHub.Measurements.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -24,17 +24,12 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
         logger.LogError(
             exception.Error,
             "An unknown error has occured. \n Endpoint path: {}, \n Request: {}",
-            SanitizeRequestPath(exception.Path),
+            exception.Path.Sanitize(),
             queryString);
 
         return Problem(
             detail: "An unknown error occured while handling request to the Measurements API. Try again later.",
             instance: requestPath,
             statusCode: StatusCodes.Status500InternalServerError);
-    }
-
-    private static string SanitizeRequestPath(string requestPath)
-    {
-        return requestPath.Replace("\n", string.Empty).Replace("\r", string.Empty);
     }
 }
