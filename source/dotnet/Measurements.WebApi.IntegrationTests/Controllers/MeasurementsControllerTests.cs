@@ -25,7 +25,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsResponse>(actualResponse);
 
         // Assert
         Assert.Equal(24, actual.Points.Count);
@@ -49,7 +49,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsResponse>(actualResponse);
 
         // Assert
         Assert.Equal(2, actual.Points.Count(p => p.ObservationTime.ToString().Equals(startDate)));
@@ -98,7 +98,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByDateResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
@@ -140,7 +140,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByMonthResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByMonthResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
