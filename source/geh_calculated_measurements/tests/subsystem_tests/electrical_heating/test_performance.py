@@ -11,7 +11,7 @@ from geh_calculated_measurements.electrical_heating.domain.model.consumption_met
 from geh_calculated_measurements.electrical_heating.infrastructure.repository import (
     Repository as ElectricityMarketRepository,
 )
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 

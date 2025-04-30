@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.net_consumption_group_6.seed_table import (
     delete_seeded_data,

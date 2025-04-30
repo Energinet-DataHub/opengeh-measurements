@@ -17,6 +17,14 @@ public static class DateAndTimeExtensions
             .ToString(Format, CultureInfo.InvariantCulture);
     }
 
+    public static DateTimeOffset ToDateTimeOffSet(this LocalDate date)
+    {
+        return date
+            .AtMidnight()
+            .InZoneLeniently(_danishZone)
+            .ToDateTimeOffset();
+    }
+
     public static string ToUtcString(this Instant date)
     {
         var localDate = date.InUtc().Date;
