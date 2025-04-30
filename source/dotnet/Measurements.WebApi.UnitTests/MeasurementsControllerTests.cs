@@ -204,24 +204,24 @@ public class MeasurementsControllerTests
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
     }
 
-    private static GetMeasurementResponse CreateMeasurementResponse()
+    private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
-        var response = GetMeasurementResponse.Create(measurements);
+        var response = MeasurementsResponse.Create(measurements);
         return response;
     }
 
-    private static GetMeasurementsAggregatedByDateResponse CreateMeasurementsAggregatedByDateResponse()
+    private static MeasurementsAggregatedByDateResponse CreateMeasurementsAggregatedByDateResponse()
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
-        var response = GetMeasurementsAggregatedByDateResponse.Create(measurements);
+        var response = MeasurementsAggregatedByDateResponse.Create(measurements);
         return response;
     }
 
-    private static GetMeasurementsAggregatedByMonthResponse CreateMeasurementsAggregatedByMonthResponse()
+    private static MeasurementsAggregatedByMonthResponse CreateMeasurementsAggregatedByMonthResponse()
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
-        var response = GetMeasurementsAggregatedByMonthResponse.Create(measurements);
+        var response = MeasurementsAggregatedByMonthResponse.Create(measurements);
         return response;
     }
 

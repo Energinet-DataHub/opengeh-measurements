@@ -9,21 +9,21 @@ using Energinet.DataHub.Measurements.Domain.Extensions;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class GetMeasurementsAggregatedByDateResponse
+public class MeasurementsAggregatedByDateResponse
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
     public IReadOnlyCollection<MeasurementAggregationByDate> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private GetMeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDate> measurementAggregations)
+    private MeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDate> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static GetMeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -38,7 +38,7 @@ public class GetMeasurementsAggregatedByDateResponse
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundException()
-            : new GetMeasurementsAggregatedByDateResponse(measurementAggregations);
+            : new MeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
     private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
