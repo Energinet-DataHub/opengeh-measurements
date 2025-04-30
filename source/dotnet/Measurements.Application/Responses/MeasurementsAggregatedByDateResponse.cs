@@ -37,7 +37,7 @@ public class MeasurementsAggregatedByDateResponse
             .ToList();
 
         return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundDuringPeriodException()
+            ? throw new MeasurementsNotFoundException()
             : new MeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
