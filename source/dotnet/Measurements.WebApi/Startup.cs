@@ -39,7 +39,6 @@ public class Startup(IConfiguration configuration)
         app.UseRouting();
         app.UseSwaggerForWebApp();
         app.UseHttpsRedirection();
-        app.UseExceptionHandler("/error");
 
         app.UseAuthentication();
         app.UseAuthorization();

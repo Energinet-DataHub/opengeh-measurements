@@ -20,23 +20,27 @@ public class MeasurementsController(
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
-        try
-        {
-            var measurement = await measurementsHandler.GetByPeriodAsync(request);
-            var result = jsonSerializer.Serialize(measurement);
+        await Task.CompletedTask;
 
-            return Ok(result);
-        }
-        catch (MeasurementsNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurements");
+        throw new Exception("Some error occurred");
 
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
-        }
+        // try
+        // {
+        //     var measurement = await measurementsHandler.GetByPeriodAsync(request);
+        //     var result = jsonSerializer.Serialize(measurement);
+        //
+        //     return Ok(result);
+        // }
+        // catch (MeasurementsNotFoundException e)
+        // {
+        //     logger.LogInformation(
+        //         "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
+        //         request.MeteringPointId,
+        //         request.StartDate,
+        //         request.EndDate);
+        //
+        //     return NotFound(e.Message);
+        // }
     }
 
     [MapToApiVersion(2.0)]
@@ -52,13 +56,13 @@ public class MeasurementsController(
         }
         catch (MeasurementsNotFoundException e)
         {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurements");
+            logger.LogInformation(
+                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
+                request.MeteringPointId,
+                request.Year,
+                request.Month);
 
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+            return NotFound(e.Message);
         }
     }
 
@@ -75,13 +79,9 @@ public class MeasurementsController(
         }
         catch (MeasurementsNotFoundException e)
         {
-            return NotFound(e.Message);
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Could not get requested measurements");
+            logger.LogInformation("Aggregation by year not found for metering point id {MeteringPointId} during {Year}", request.MeteringPointId, request.Year);
 
-            return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
+            return NotFound(e.Message);
         }
     }
 }

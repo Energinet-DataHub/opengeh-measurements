@@ -77,12 +77,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetByPeriodAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetByPeriodAsync(request));
     }
 
     [Theory]
@@ -131,7 +127,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -143,12 +139,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetAggregatedByDateAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsync(request));
     }
 
     [Theory]
@@ -209,12 +201,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetAggregatedByMonthAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
     }
 
     private static GetMeasurementResponse CreateMeasurementResponse()
