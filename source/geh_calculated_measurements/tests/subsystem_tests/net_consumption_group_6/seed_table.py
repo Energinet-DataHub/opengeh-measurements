@@ -87,7 +87,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{net_consumption_metering_point_id}',
-        '{MeteringPointType.NET_CONSUMPTION}',
+        '{MeteringPointType.NET_CONSUMPTION.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
@@ -103,7 +103,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{supply_to_grid_metering_point_id}',
-        '{MeteringPointType.SUPPLY_TO_GRID}',
+        '{MeteringPointType.SUPPLY_TO_GRID.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
@@ -119,7 +119,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{consumption_from_grid_metering_point_id}',
-        '{MeteringPointType.CONSUMPTION_FROM_GRID}',
+        '{MeteringPointType.CONSUMPTION_FROM_GRID.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'

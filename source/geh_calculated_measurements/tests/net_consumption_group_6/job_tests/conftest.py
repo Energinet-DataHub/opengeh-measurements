@@ -62,21 +62,21 @@ def _seed_electricity_market_tables(spark: SparkSession) -> None:
         [
             (
                 150000001500170200,
-                MeteringPointType.NET_CONSUMPTION,
+                MeteringPointType.NET_CONSUMPTION.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "060000001500170200",
-                MeteringPointType.SUPPLY_TO_GRID,
+                MeteringPointType.SUPPLY_TO_GRID.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "070000001500170200",
-                MeteringPointType.CONSUMPTION_FROM_GRID,
+                MeteringPointType.CONSUMPTION_FROM_GRID.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
