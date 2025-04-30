@@ -5,14 +5,12 @@ from geh_calculated_measurements.common.infrastructure.current_measurements_repo
     CurrentMeasurementsRepository,
 )
 from geh_calculated_measurements.common.infrastructure.database_definitions import (
-    CalculatedMeasurementsDatabaseDefinition,
     CalculatedMeasurementsInternalDatabaseDefinition,
 )
 from geh_calculated_measurements.common.infrastructure.spark_initializor import initialize_spark
 
 __all__ = [
     "CalculatedMeasurementsInternalDatabaseDefinition",
-    "CalculatedMeasurementsDatabaseDefinition",
     "CalculatedMeasurementsRepository",
     "CurrentMeasurementsRepository",
     "initialize_spark",

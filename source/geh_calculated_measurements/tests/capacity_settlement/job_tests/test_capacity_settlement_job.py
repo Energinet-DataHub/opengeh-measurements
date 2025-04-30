@@ -7,10 +7,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsRepository
 from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
-from tests import create_job_environment_variables
+from tests import SPARK_CATALOG_NAME, create_job_environment_variables
 from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
+from tests.internal_tables import InternalTables
 
 _METERING_POINT_ID = "170000000000000201"
 _PERIOD_START = datetime(2026, 1, 1, 22, 0, 0)
@@ -54,7 +55,7 @@ def test_execute(
 
     # Assert
     actual_calculated_measurements = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
+        f"{InternalTables.CALCULATED_MEASUREMENTS.database_name}.{InternalTables.CALCULATED_MEASUREMENTS.table_name}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     actual_calculations = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_TABLE_NAME}"

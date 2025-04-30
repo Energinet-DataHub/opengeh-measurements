@@ -1,11 +1,12 @@
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure.database_definitions import (
-    CalculatedMeasurementsInternalDatabaseDefinition,
-)
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from geh_calculated_measurements.missing_measurements_log.domain import (
     MissingMeasurementsLog,
 )
+
+DATABASE_NAME = DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL
+TABLE_NAME = "missing_measurements_log"
 
 
 class MissingMeasurementsLogRepository:
@@ -19,5 +20,5 @@ class MissingMeasurementsLogRepository:
 
     def write_missing_measurements_log(self, missing_measurements_log: MissingMeasurementsLog) -> None:
         """Write the missing measurements log to the delta table."""
-        table_name = f"{self._catalog_name}.{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME}"
+        table_name = f"{self._catalog_name}.{DATABASE_NAME}.{TABLE_NAME}"
         missing_measurements_log.df.write.format("delta").mode("append").saveAsTable(table_name)
