@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 3.4.2
+
+- Renaming of response types - no functional changes.
+
 ## Version 3.4.1
 
 - Bugfix.

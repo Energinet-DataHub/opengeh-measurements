@@ -12,33 +12,33 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Handlers;
 public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     : IMeasurementsHandler
 {
-    public async Task<GetMeasurementResponse> GetByPeriodAsync(GetByPeriodRequest request)
+    public async Task<MeasurementsResponse> GetByPeriodAsync(GetByPeriodRequest request)
     {
         var foundMeasurements = await measurementsRepository
             .GetByPeriodAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
-        return GetMeasurementResponse.Create(foundMeasurements);
+        return MeasurementsResponse.Create(foundMeasurements);
     }
 
-    public async Task<GetMeasurementsAggregatedByDateResponse> GetAggregatedByDateAsync(GetAggregatedByDateRequest request)
+    public async Task<MeasurementsAggregatedByDateResponse> GetAggregatedByDateAsync(GetAggregatedByDateRequest request)
     {
         var yearMonth = new YearMonth(request.Year, request.Month);
         var aggregatedMeasurements = await measurementsRepository
             .GetAggregatedByDateAsync(request.MeteringPointId, yearMonth)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
-        return GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        return MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
     }
 
-    public async Task<GetMeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest request)
+    public async Task<MeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest request)
     {
         var year = new Year(request.Year);
         var aggregatedMeasurements = await measurementsRepository
             .GetAggregatedByMonthAsync(request.MeteringPointId, year)
             .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
 
-        return GetMeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
+        return MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
     }
 
     public Task<GetAggregatedMeasurementsResponse> GetAggregatedByPeriodAsync(GetAggregatedByPeriodRequest getAggregatedByPeriodRequest)
