@@ -12,11 +12,11 @@ def pytest_runtest_setup() -> None:
     environment_variables_helpers.set_subsystem_test_environment_variables()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def kafka_fixture() -> KafkaFixture:
     return KafkaFixture()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def gold_layer_fixture() -> GoldLayerFixture:
     return GoldLayerFixture()
