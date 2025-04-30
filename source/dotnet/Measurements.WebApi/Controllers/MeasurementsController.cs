@@ -91,8 +91,8 @@ public class MeasurementsController(
     {
         try
         {
-            var aggregatedByMonth = await measurementsHandler.GetAggregatedByPeriodAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedByMonth);
+            var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByPeriod);
 
             return Ok(result);
         }

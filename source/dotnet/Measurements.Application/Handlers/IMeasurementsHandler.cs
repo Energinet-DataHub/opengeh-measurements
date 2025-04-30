@@ -30,6 +30,6 @@ public interface IMeasurementsHandler
     /// Get aggregated measurements matching request attributes.
     /// </summary>
     /// <param name="getAggregatedByPeriodRequest"></param>
-    Task<GetAggregatedMeasurementsResponse> GetAggregatedByPeriodAsync(
+    Task<GetAggregatedByPeriodResponse> GetAggregatedByPeriodAsync(
         GetAggregatedByPeriodRequest getAggregatedByPeriodRequest);
 }
