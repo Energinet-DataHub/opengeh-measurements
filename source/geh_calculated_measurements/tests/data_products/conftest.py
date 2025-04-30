@@ -12,7 +12,6 @@ from geh_calculated_measurements.common.infrastructure import CalculatedMeasurem
 from tests import SPARK_CATALOG_NAME
 
 
-@pytest.fixture(scope="module")
 def execution_datetime(request: pytest.FixtureRequest):
     """Gets execution start datetime from scenario_parameters.yml if exist or defaults to datetime now."""
     scenario_path = str(Path(request.module.__file__).parent)
@@ -34,7 +33,7 @@ def execution_datetime(request: pytest.FixtureRequest):
 
 
 @pytest.fixture(scope="module")
-def override_current_timestamp(spark: SparkSession, execution_datetime):
+def override_current_timestamp(spark: SparkSession, request: pytest.FixtureRequest):
     """
     Override the current_timestamp function in Spark SQL to return a fixed timestamp.
     This allows for deterministic testing of time-dependent queries.
@@ -44,7 +43,7 @@ def override_current_timestamp(spark: SparkSession, execution_datetime):
         execution_datetime: Datetime to use for current_timestamp()
     """
     # Ensure the timestamp has UTC timezone
-    test_timestamp = execution_datetime
+    test_timestamp = execution_datetime(request)
     if test_timestamp.tzinfo is None:
         test_timestamp = test_timestamp.replace(tzinfo=UTC)
     test_timestamp_str = test_timestamp.strftime("%Y-%m-%d %H:%M:%S")
