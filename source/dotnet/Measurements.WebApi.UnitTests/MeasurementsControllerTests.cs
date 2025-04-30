@@ -64,7 +64,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -188,7 +188,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
