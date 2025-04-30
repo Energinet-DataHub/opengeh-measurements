@@ -1,7 +1,7 @@
-DROP VIEW IF EXISTS {catalog_name}.calculated_measurements.hourly_calculated_measurements_v1
+DROP VIEW IF EXISTS {catalog_name}.measurements_calculated.hourly_calculated_measurements_v1
 GO
 
-CREATE VIEW {catalog_name}.calculated_measurements.calculated_measurements_v1 AS
+CREATE VIEW {catalog_name}.measurements_calculated.calculated_measurements_v1 AS
 SELECT 
   orchestration_type,
   orchestration_instance_id,
