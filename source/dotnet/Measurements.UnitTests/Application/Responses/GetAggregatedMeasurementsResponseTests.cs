@@ -31,7 +31,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -58,7 +58,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().MissingValues);
@@ -118,7 +118,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().ContainsUpdatedValues);
