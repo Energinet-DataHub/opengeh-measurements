@@ -68,7 +68,6 @@ def test_cases(
     spark: SparkSession,
     request: pytest.FixtureRequest,
     migrations_executed: None,  # Used implicitly
-    execution_datetime,  # Use this instead of directly calculating it
     override_current_timestamp,  # This now depends on execution_datetime
 ) -> TestCases:
     # Get the path to the scenario
