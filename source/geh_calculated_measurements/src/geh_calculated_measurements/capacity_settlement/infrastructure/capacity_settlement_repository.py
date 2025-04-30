@@ -2,7 +2,6 @@ from pyspark.sql import DataFrame, SparkSession
 
 from geh_calculated_measurements.database_migrations import DatabaseNames
 
-DATABASE_NAME = DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL
 CALCULATIONS_TABLE_NAME = "capacity_settlement_calculations"
 TEN_LARGEST_QUANTITIES_TABLE_NAME = "capacity_settlement_ten_largest_quantities"
 
@@ -17,9 +16,8 @@ class CapacitySettlementRepository:
         self._catalog_name = catalog_name
 
     def _get_full_table_path(self, table_name: str) -> str:
-        database_name = DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL
         if self._catalog_name:
-            return f"{self._catalog_name}.{database_name}.{table_name}"
+            return f"{self._catalog_name}.{DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL}.{table_name}"
         return f"{database_name}.{table_name}"
 
     def write_calculations(self, df: DataFrame) -> None:
