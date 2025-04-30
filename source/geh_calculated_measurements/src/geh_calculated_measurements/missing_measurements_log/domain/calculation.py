@@ -5,11 +5,12 @@ import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from geh_common.application import GridAreaCodes
 from geh_common.domain.types import MeteringPointResolution, QuantityQuality
+from geh_common.pyspark.clamp import clamp_period_end, clamp_period_start
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from pyspark.sql import DataFrame
 
-from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements, clamp_period
+from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.missing_measurements_log.domain.model.metering_point_periods import (
     MeteringPointPeriods,
 )
@@ -62,14 +63,12 @@ def _get_expected_measurement_counts(
     metering_point_periods: DataFrame, time_zone: str, period_start_datetime: datetime, period_end_datetime: datetime
 ) -> DataFrame:
     """Calculate the expected measurement counts grouped by metering point and date."""
-    metering_point_periods = clamp_period(
-        metering_point_periods,
-        period_start_datetime,
-        period_end_datetime,
+    metering_point_periods = metering_point_periods.withColumn(
         ContractColumnNames.period_from_date,
-        ContractColumnNames.period_to_date,
+        clamp_period_start(ContractColumnNames.period_from_date, period_start_datetime),
+    ).withColumn(
+        ContractColumnNames.period_to_date, clamp_period_end(ContractColumnNames.period_to_date, period_end_datetime)
     )
-
     # Convert the period start and end dates to local time
     metering_point_periods_local_time = convert_from_utc(metering_point_periods, time_zone)
 
