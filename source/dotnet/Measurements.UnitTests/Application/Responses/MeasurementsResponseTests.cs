@@ -9,7 +9,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
-public class GetMeasurementResponseTests
+public class MeasurementsResponseTests
 {
     [Fact]
     public void Create_WhenMeasurementsExist_ThenReturnsGetMeasurementResponse()
@@ -24,7 +24,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(3, actual.Points.Count);
@@ -56,7 +56,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedUnit, actual.Points.Single().Unit);
@@ -73,7 +73,7 @@ public class GetMeasurementResponseTests
 
         // Act
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsResponse.Create(measurements));
     }
 
     [Theory]
@@ -90,7 +90,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedQuality, actual.Points.Single().Quality);
@@ -107,7 +107,7 @@ public class GetMeasurementResponseTests
 
         // Act
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsResponse.Create(measurements));
     }
 
     [Theory]
@@ -125,7 +125,7 @@ public class GetMeasurementResponseTests
         };
 
         // Act
-        var actual = GetMeasurementResponse.Create(measurements);
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedResolution, actual.Points.Single().Resolution);
@@ -142,7 +142,7 @@ public class GetMeasurementResponseTests
 
         // Act
         // Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetMeasurementResponse.Create(measurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsResponse.Create(measurements));
     }
 
     private static ExpandoObject CreateRaw(DateTimeOffset date, string resolution = "PT1H", string unit = "kwh", string quality = "measured")
