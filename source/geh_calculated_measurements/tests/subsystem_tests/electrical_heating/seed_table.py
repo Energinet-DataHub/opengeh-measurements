@@ -2,10 +2,10 @@ import random
 from datetime import datetime, timezone
 
 from geh_common.domain.types import (
-    ChargeQuality,
     MeteringPointSubType,
     MeteringPointType,
     OrchestrationType,
+    QuantityQuality,
 )
 
 from geh_calculated_measurements.testing import JobTestFixture
@@ -28,7 +28,7 @@ def _seed_gold(catalog_name):
             orchestration_type=OrchestrationType.ELECTRICAL_HEATING,
             observation_time=datetime(2023, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
-            quality=ChargeQuality.MEASURED,
+            quality=QuantityQuality.MEASURED,
         )
     ]
     return seed_gold_table.get_statement(catalog_name, gold_table_rows)
