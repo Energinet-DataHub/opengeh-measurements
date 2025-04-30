@@ -6,7 +6,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_na
 from pyspark.sql import SparkSession
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from tests import SPARK_CATALOG_NAME
 
 
@@ -39,9 +39,7 @@ def test_cases(
     test_cases = []
 
     for path_name in then_files:
-        actual = spark.sql(
-            f"SELECT * FROM {SPARK_CATALOG_NAME}.{CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME}.{path_name}"
-        )
+        actual = spark.sql(f"SELECT * FROM {SPARK_CATALOG_NAME}.{DatabaseNames.MEASUREMENTS_CALCULATED}.{path_name}")
 
         test_cases.append(
             TestCase(
