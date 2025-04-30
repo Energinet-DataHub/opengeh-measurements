@@ -1,8 +1,6 @@
-﻿using NodaTime;
-
-namespace Energinet.DataHub.Measurements.Abstractions.Api.Queries;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 
 /// <summary>
-/// Query for getting measurements aggregated by day for a metering point specified by year and month.
+/// Query for getting measurements aggregated by month for a metering point specified by year.
 /// </summary>
-public sealed record GetAggregatedByMonthQuery(string MeteringPointId, YearMonth YearMonth);
+public sealed record GetAggregatedByMonthQuery(string MeteringPointId, int Year);

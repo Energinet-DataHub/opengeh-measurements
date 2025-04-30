@@ -31,12 +31,12 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var query = new GetAggregatedByMonthQuery(
+        var query = new GetAggregatedByDateQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregatedByMonth(query);
+        var measurements = await measurementsClient.GetAggregatedByDate(query);
 
         // Assert
         Assert.Single(measurements);
@@ -46,11 +46,11 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var query = new GetAggregatedByYearQuery(
+        var query = new GetAggregatedByMonthQuery(
             MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregatedByYear(query);
+        var measurements = await measurementsClient.GetAggregatedByMonth(query);
 
         // Assert
         Assert.Single(measurements);
