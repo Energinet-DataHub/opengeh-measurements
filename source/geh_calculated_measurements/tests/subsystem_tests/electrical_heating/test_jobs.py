@@ -22,10 +22,5 @@ class TestElectricalHeating(JobTest):
             job_name="ElectricalHeating",
             job_parameters=job_parameters,
         )
-        seed_table(fixture)
+        seed_table(fixture, job_parameters.get("orchestration-instance-id"))
         return fixture
-
-    # TODO Henrik: Reenable this test when seeding is fixed
-    @pytest.mark.skip(reason="Reenable in PR #647 when seeding is fixed")
-    def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
-        pass

@@ -1,5 +1,4 @@
 ﻿using System.Dynamic;
-using System.Net;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Application.Exceptions;
@@ -53,7 +52,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+            .ThrowsAsync(new MeasurementsNotFoundException());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -65,7 +64,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -77,12 +76,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetByPeriodAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetByPeriodAsync(request));
     }
 
     [Theory]
@@ -119,7 +114,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+            .ThrowsAsync(new MeasurementsNotFoundException());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -131,7 +126,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -143,12 +138,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetAggregatedByDateAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsync(request));
     }
 
     [Theory]
@@ -185,7 +176,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundDuringPeriodException());
+            .ThrowsAsync(new MeasurementsNotFoundException());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -197,7 +188,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ReturnsInternalServerError(
+    public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -209,12 +200,8 @@ public class MeasurementsControllerTests
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
-        // Act
-        var actual = await sut.GetAggregatedByMonthAsync(request);
-
-        // Assert
-        Assert.IsType<ObjectResult>(actual);
-        Assert.Equivalent(HttpStatusCode.InternalServerError, ((ObjectResult)actual).StatusCode);
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
     }
 
     private static MeasurementsResponse CreateMeasurementResponse()
