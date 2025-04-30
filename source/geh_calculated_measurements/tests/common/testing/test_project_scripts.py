@@ -1,4 +1,5 @@
 import importlib
+import logging
 import tomllib
 
 from tests import PROJECT_ROOT
@@ -24,11 +25,11 @@ def test__entry_point_exists() -> None:
 
     # Report results
     if missing_scripts:
-        print("\nMissing script entry points:")
+        logging.warning("\nMissing script entry points:")
         for script in missing_scripts:
-            print(f"  - {script}")
+            logging.warning(f"  - {script}")
     else:
-        print("\nAll script entry points exist!")
+        logging.info("\nAll script entry points exist!")
 
     # Fail the test if any scripts are missing
     assert not missing_scripts, "Missing script entry points detected"
