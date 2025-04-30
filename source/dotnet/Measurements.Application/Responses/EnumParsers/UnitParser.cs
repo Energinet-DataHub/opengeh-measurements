@@ -1,8 +1,8 @@
 ﻿using Energinet.DataHub.Measurements.Domain;
 
-namespace Energinet.DataHub.Measurements.Application.Responses;
+namespace Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 
-public class UnitParser
+public static class UnitParser
 {
     public static Unit ParseUnit(string unit)
     {

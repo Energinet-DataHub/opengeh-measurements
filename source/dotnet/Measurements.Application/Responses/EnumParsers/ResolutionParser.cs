@@ -1,8 +1,8 @@
 ﻿using Energinet.DataHub.Measurements.Domain;
 
-namespace Energinet.DataHub.Measurements.Application.Responses;
+namespace Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 
-public sealed class ResolutionParser
+public static class ResolutionParser
 {
     public static Resolution ParseResolution(string resolution)
     {

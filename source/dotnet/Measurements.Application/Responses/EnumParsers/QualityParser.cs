@@ -1,8 +1,8 @@
 ﻿using Energinet.DataHub.Measurements.Domain;
 
-namespace Energinet.DataHub.Measurements.Application.Responses;
+namespace Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 
-public sealed class QualityParser
+public static class QualityParser
 {
     public static Quality ParseQuality(string quality)
     {

@@ -21,29 +21,6 @@ public class MeasurementsControllerTests
 {
     [Theory]
     [AutoMoqData]
-    public async Task GetByPeriodAsyncV1_WhenMeasurementsExists_ReturnValidJson(
-        GetByPeriodRequest request,
-        Mock<IMeasurementsHandler> measurementsHandler,
-        Mock<ILogger<MeasurementsController>> logger)
-    {
-        // Arrange
-        var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementResponse();
-        var expected = CreateExpectedMeasurementsByDate();
-        measurementsHandler
-            .Setup(x => x.GetByPeriodAsyncV1(It.IsAny<GetByPeriodRequest>()))
-            .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
-
-        // Act
-        var actual = (await sut.GetByPeriodAsyncV1(request) as OkObjectResult)!.Value!.ToString();
-
-        // Assert
-        Assert.Equal(expected, actual);
-    }
-
-    [Theory]
-    [AutoMoqData]
     public async Task GetByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
