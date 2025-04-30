@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
+using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
