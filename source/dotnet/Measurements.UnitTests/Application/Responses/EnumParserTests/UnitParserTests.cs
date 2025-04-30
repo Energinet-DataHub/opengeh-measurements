@@ -10,7 +10,10 @@ public class UnitParserTests
 {
     [Theory]
     [InlineData("kwh", Unit.kWh)]
+    [InlineData("KWH", Unit.kWh)]
+    [InlineData("kWh", Unit.kWh)]
     [InlineData("kw", Unit.kW)]
+    [InlineData("KW", Unit.kW)]
     [InlineData("mw", Unit.MW)]
     [InlineData("mwh", Unit.MWh)]
     [InlineData("tonne", Unit.Tonne)]
