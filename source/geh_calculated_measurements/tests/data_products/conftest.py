@@ -48,7 +48,7 @@ def override_current_timestamp(spark: SparkSession, execution_datetime):
     try:
         timezone = spark.conf.get("spark.sql.session.timeZone")
         original_configs["spark.sql.session.timeZone"] = timezone
-    except:
+    except Exception:
         pass  # If setting doesn't exist, ignore
 
     # Ensure the timestamp has UTC timezone
