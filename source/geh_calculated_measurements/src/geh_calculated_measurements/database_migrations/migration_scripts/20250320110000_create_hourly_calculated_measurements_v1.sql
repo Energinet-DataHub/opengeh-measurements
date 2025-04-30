@@ -12,7 +12,7 @@ WITH _input AS (
     metering_point_type,
     date,
     quantity
-  FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements 
+  FROM {catalog_name}.measurements_calculated_internal.calculated_measurements 
 ),
 _hours AS (
   SELECT 

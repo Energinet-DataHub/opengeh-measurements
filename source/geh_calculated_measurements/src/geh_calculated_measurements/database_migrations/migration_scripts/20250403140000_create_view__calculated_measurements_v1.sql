@@ -1,7 +1,7 @@
-DROP VIEW IF EXISTS {catalog_name}.{calculated_measurements_database}.hourly_calculated_measurements_v1
+DROP VIEW IF EXISTS {catalog_name}.calculated_measurements.hourly_calculated_measurements_v1
 GO
 
-CREATE VIEW {catalog_name}.{calculated_measurements_database}.calculated_measurements_v1 AS
+CREATE VIEW {catalog_name}.calculated_measurements.calculated_measurements_v1 AS
 SELECT 
   orchestration_type,
   orchestration_instance_id,
@@ -14,4 +14,4 @@ SELECT
   "kWh" as quantity_unit,
   "calculated" as quantity_quality,
   "PT1H" as resolution
-FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements 
+FROM {catalog_name}.measurements_calculated_internal.calculated_measurements 
