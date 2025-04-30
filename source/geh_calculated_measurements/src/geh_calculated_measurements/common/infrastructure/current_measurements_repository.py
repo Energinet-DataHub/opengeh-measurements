@@ -5,7 +5,7 @@ from pyspark.sql import DataFrame, SparkSession
 from geh_calculated_measurements.common.domain.model.current_measurements import CurrentMeasurements
 
 
-class Repository:
+class CurrentMeasurementsRepository:
     def __init__(
         self,
         spark: SparkSession,

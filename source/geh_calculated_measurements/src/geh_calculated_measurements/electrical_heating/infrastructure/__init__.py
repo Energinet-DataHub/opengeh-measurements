@@ -1,8 +1,7 @@
-from .repository import (
-    Repository as ElectricityMarketRepository,
+from geh_calculated_measurements.electrical_heating.infrastructure.electricity_market_repository import (
+    ElectricityMarketRepository,
 )
 
 __all__ = [
-    # Electricity market repository, types, and database definitions
     "ElectricityMarketRepository",
 ]
