@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 3.4.0
+
+- Removed support for V1 and unversioned API endpoints.
+
 ## Version 3.3.0
 
 - Added method to get aggregated measurements for a year.
