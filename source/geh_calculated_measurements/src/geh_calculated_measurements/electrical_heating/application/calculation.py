@@ -13,9 +13,7 @@ from geh_calculated_measurements.electrical_heating.application.electrical_heati
 from geh_calculated_measurements.electrical_heating.domain import (
     execute,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure import (
-    ElectricityMarketRepository,
-)
+from geh_calculated_measurements.electrical_heating.infrastructure import ElectricityMarketRepository
 
 
 @use_span()

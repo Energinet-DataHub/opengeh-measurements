@@ -5,7 +5,7 @@ from geh_calculated_measurements.common.infrastructure.database_definitions impo
 )
 
 
-class Repository:
+class CapacitySettlementRepository:
     def __init__(
         self,
         spark: SparkSession,
