@@ -1,6 +1,8 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+import yaml
 from geh_common.testing.dataframes import write_when_files_to_delta
 from geh_common.testing.scenario_testing import TestCase, TestCases, get_then_names
 from pyspark.sql import SparkSession
@@ -11,10 +13,78 @@ from tests import SPARK_CATALOG_NAME
 
 
 @pytest.fixture(scope="module")
+def execution_datetime(request: pytest.FixtureRequest):
+    """Gets execution start datetime from scenario_parameters.yml if exist or defaults to datetime now."""
+    scenario_path = str(Path(request.module.__file__).parent)
+
+    try:
+        with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
+            scenario_parameters = yaml.safe_load(f)
+
+        # Use parameter from config file if available
+        if scenario_parameters is not None and "execution_start_datetime" in scenario_parameters:
+            execution_start_datetime = scenario_parameters["execution_start_datetime"]
+        else:
+            execution_start_datetime = datetime.now(UTC)
+
+        return execution_start_datetime
+    except FileNotFoundError:
+        # Default if no config file exists
+        return datetime.now(UTC)
+
+
+@pytest.fixture(scope="module")
+def override_current_timestamp(spark: SparkSession, execution_datetime):
+    """
+    Override the current_timestamp function in Spark SQL to return a fixed timestamp.
+    This allows for deterministic testing of time-dependent queries.
+
+    Args:
+        spark: SparkSession
+        execution_datetime: Datetime to use for current_timestamp()
+    """
+    # Save original settings
+    original_configs = {}
+    try:
+        timezone = spark.conf.get("spark.sql.session.timeZone")
+        original_configs["spark.sql.session.timeZone"] = timezone
+    except:
+        pass  # If setting doesn't exist, ignore
+
+    # Ensure the timestamp has UTC timezone
+    test_timestamp = execution_datetime
+    if test_timestamp.tzinfo is None:
+        test_timestamp = test_timestamp.replace(tzinfo=UTC)
+    test_timestamp_str = test_timestamp.strftime("%Y-%m-%d %H:%M:%S")
+
+    # Set timezone to UTC
+    spark.conf.set("spark.sql.session.timeZone", "UTC")
+
+    # Register UDF that returns fixed timestamp
+    from pyspark.sql.types import TimestampType
+
+    def fixed_timestamp():
+        return test_timestamp
+
+    spark.udf.register("current_timestamp", fixed_timestamp, TimestampType())
+
+    yield test_timestamp_str
+
+    # Cleanup: restore original settings
+    for key, value in original_configs.items():
+        spark.conf.set(key, value)
+
+    # Drop the temporary function
+    spark.sql("DROP TEMPORARY FUNCTION IF EXISTS current_timestamp")
+
+
+@pytest.fixture(scope="module")
 def test_cases(
     spark: SparkSession,
     request: pytest.FixtureRequest,
     migrations_executed: None,  # Used implicitly
+    execution_datetime,  # Use this instead of directly calculating it
+    override_current_timestamp,  # This now depends on execution_datetime
 ) -> TestCases:
     # Get the path to the scenario
     scenario_path = str(Path(request.module.__file__).parent)

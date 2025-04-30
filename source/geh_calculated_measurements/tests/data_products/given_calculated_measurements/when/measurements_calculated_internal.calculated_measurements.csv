@@ -1,27 +1,28 @@
 orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_id;metering_point_type;observation_time;quantity;#comment
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-29 23:00:00Z;2.1;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 00:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 01:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 02:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 03:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 04:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 05:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 06:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 07:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 08:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 09:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 10:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 11:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 12:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 13:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 14:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 15:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 16:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 17:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 18:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 19:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 20:00:00Z;0;observation_time older than 3 year from current date
-electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 21:00:00Z;0;observation_time older than 3 year from current date
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-29 23:00:00Z;2.1;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 00:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 01:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 02:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 03:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 04:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 05:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 06:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 07:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 08:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 09:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 10:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 11:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 12:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 13:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 14:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 15:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 16:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 17:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 18:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 19:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 20:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 21:00:00Z;0;observation_time older than 3 year from current timestamp
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 22:00:00Z;0;observation_time not older than 3 year from current timestamp and should be included (current timestamp is 2025-03-30 21:30:00Z)
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-29 23:00:00Z;2.1;changing to summertime - 23 rows
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-30 00:00:00Z;0;changing to summertime
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-30 01:00:00Z;0;changing to summertime
