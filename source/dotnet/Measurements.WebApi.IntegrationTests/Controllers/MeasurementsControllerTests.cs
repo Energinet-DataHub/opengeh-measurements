@@ -180,7 +180,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByDateResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
@@ -222,7 +222,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<GetMeasurementsAggregatedByMonthResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByMonthResponse>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
