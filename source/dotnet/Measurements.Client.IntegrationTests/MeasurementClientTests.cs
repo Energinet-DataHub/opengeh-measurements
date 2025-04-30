@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.IntegrationTests.Fixture;
 using Microsoft.Extensions.DependencyInjection;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
@@ -24,6 +25,35 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         // Assert
         Assert.Equal(24, measurements.MeasurementPositions.Count());
         AssertAllPointsInPositionsEqualsExpected(measurements);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregatedByMonthQuery(
+            MeasurementsClientFixture.TestMeteringPointId,
+            new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregatedByMonth(query);
+
+        // Assert
+        Assert.Single(measurements);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregatedByYearQuery(
+            MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregatedByYear(query);
+
+        // Assert
+        Assert.Single(measurements);
     }
 
     private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements)
