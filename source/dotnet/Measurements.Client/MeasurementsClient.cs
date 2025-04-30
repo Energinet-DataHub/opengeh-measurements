@@ -89,6 +89,6 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId, int year)
     {
-        return $"/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
+        return $"/measurements/aggregatedByYear?MeteringPointId={meteringPointId}&Year={year}";
     }
 }
