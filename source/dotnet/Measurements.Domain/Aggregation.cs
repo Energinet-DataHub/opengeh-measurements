@@ -1,4 +1,4 @@
-namespace Energinet.DataHub.Measurements.Domain
+﻿namespace Energinet.DataHub.Measurements.Domain
 {
   public enum Aggregation
   {
