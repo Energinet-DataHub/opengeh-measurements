@@ -4,7 +4,7 @@ from geh_common.domain.types.metering_point_type import MeteringPointType
 from geh_common.domain.types.orchestration_type import OrchestrationType
 from geh_common.domain.types.quantity_quality import QuantityQuality
 from pyspark.sql import SparkSession
-from pytest_bdd import given, scenarios, then, when
+from pytest_bdd import given, parsers, scenarios, then, when
 
 import core.gold.application.streams.calculated_measurements_stream as sut
 import tests.helpers.datetime_helper as datetime_helper
@@ -119,9 +119,9 @@ def _(mock_checkpoint_path):
 # Then steps
 
 
-@then("one measurements row are available in the gold measurements table")
-def _(spark: SparkSession, expected_metering_point_id):
+@then(parsers.parse("{number_of_measurements_rows} measurements row(s) are available in the gold measurements table"))
+def _(spark: SparkSession, expected_metering_point_id, number_of_measurements_rows):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"metering_point_id = '{expected_metering_point_id}'"
     )
-    assert gold_measurements.count() == 1
+    assert gold_measurements.count() == int(number_of_measurements_rows)

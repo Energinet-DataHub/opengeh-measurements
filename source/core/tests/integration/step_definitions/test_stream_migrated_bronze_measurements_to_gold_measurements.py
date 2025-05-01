@@ -3,7 +3,7 @@ from datetime import datetime
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from geh_common.domain.types.orchestration_type import OrchestrationType
 from pyspark.sql import SparkSession
-from pytest_bdd import given, scenarios, then, when
+from pytest_bdd import given, parsers, scenarios, then, when
 from pytest_mock import MockerFixture
 
 import tests.helpers.datetime_helper as datetime_helper
@@ -149,18 +149,14 @@ def _(mock_checkpoint_path):
 # Then steps
 
 
-@then("24 migrated measurements rows are available in the gold measurements table")
-def _(spark: SparkSession, expected_transaction_id):
+@then(
+    parsers.parse(
+        "{number_of_measurements_rows} migrated measurements row(s) are available in the gold measurements table"
+    )
+)
+def _(spark: SparkSession, expected_transaction_id, number_of_measurements_rows):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"transaction_id = '{expected_transaction_id}'"
     )
 
-    assert gold_measurements.count() == 24
-
-
-@then("no measurements are available in the gold measurements table")
-def _(spark: SparkSession, expected_transaction_id):
-    gold_table = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
-        f"transaction_id = '{expected_transaction_id}'"
-    )
-    assert gold_table.count() == 0
+    assert gold_measurements.count() == int(number_of_measurements_rows)

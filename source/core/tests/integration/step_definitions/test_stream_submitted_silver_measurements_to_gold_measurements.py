@@ -1,6 +1,6 @@
 from geh_common.domain.types.orchestration_type import OrchestrationType
 from pyspark.sql import SparkSession
-from pytest_bdd import given, scenarios, then, when
+from pytest_bdd import given, parsers, scenarios, then, when
 
 import core.gold.application.streams.gold_measurements_stream as sut_gold
 import tests.helpers.datetime_helper as datetime_helper
@@ -119,12 +119,12 @@ def _(mock_checkpoint_path):
 # Then steps
 
 
-@then("24 measurements rows are available in the gold measurements table")
-def _(spark: SparkSession, expected_metering_point_id):
+@then(parsers.parse("{number_of_measurements_rows} measurements row(s) are available in the gold measurements table"))
+def _(spark: SparkSession, expected_metering_point_id, number_of_measurements_rows):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"metering_point_id = '{expected_metering_point_id}'"
     )
-    assert gold_measurements.count() == 24
+    assert gold_measurements.count() == int(number_of_measurements_rows)
 
 
 @then("a receipt entry is available in the process manager receipts table")
