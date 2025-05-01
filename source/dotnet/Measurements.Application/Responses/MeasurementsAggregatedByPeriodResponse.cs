@@ -14,10 +14,6 @@ public class MeasurementsAggregatedByPeriodResponse
 
   public static MeasurementsAggregatedByPeriodResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
   {
-    var measurementAggregations = measurements.ToList();
-
-    return measurementAggregations.Count <= 0
-      ? throw new MeasurementsNotFoundDuringPeriodException()
-      : new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
+    return new MeasurementsAggregatedByPeriodResponse(measurements.ToList());
   }
 }
