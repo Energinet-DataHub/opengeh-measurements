@@ -203,7 +203,7 @@ def _(spark: SparkSession, identifier: str):
     assert bronze_invalid_table.count() == 1
 
 
-@then("measurements are available in the silver measurements table")
+@then("one measurements row are available in the silver measurements table")
 def _(spark: SparkSession, identifier: str):
     silver_table = spark.table(f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}").where(
         f"orchestration_instance_id = '{identifier}'"

@@ -149,7 +149,7 @@ def _(mock_checkpoint_path):
 # Then steps
 
 
-@then("valid migrated transactions are available in the gold measurements table")
+@then("24 migrated measurements rows are available in the gold measurements table")
 def _(spark: SparkSession, expected_transaction_id):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"transaction_id = '{expected_transaction_id}'"

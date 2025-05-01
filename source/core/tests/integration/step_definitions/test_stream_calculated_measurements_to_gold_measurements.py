@@ -119,7 +119,7 @@ def _(mock_checkpoint_path):
 # Then steps
 
 
-@then("measurements are available in the gold measurements table")
+@then("one measurements row are available in the gold measurements table")
 def _(spark: SparkSession, expected_metering_point_id):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"metering_point_id = '{expected_metering_point_id}'"

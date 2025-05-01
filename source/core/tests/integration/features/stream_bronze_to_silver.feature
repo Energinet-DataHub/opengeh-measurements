@@ -3,17 +3,17 @@ Feature: Streaming from Bronze to Silver
   Scenario: Processing submitted transactions to Silver
     Given valid submitted transactions inserted into the bronze submitted table
     When streaming submitted transactions to the Silver layer
-    Then measurements are available in the silver measurements table
+    Then one measurements row are available in the silver measurements table
 
   Scenario: Processing duplicated submitted transactions to Silver
     Given duplicated valid submitted transactions inserted into the bronze submitted table
     When streaming submitted transactions to the Silver layer
-    Then measurements are available in the silver measurements table
+    Then one measurements row are available in the silver measurements table
 
   Scenario: Streaming duplicate rows to Silver ensures only one row exists
     Given valid submitted transactions inserted into the silver measurements table and the same submitted transactions inserted into the bronze submitted table
     When streaming submitted transactions to the Silver layer
-    Then measurements are available in the silver measurements table
+    Then one measurements row are available in the silver measurements table
 
   Scenario: Processing invalid submitted transactions
     Given invalid submitted transactions inserted into the bronze submitted table
@@ -39,7 +39,7 @@ Feature: Streaming from Bronze to Silver
 Scenario Outline: Processing submitted transaction with valid <field>
     Given submitted transaction where the <field> has value <value>
     When streaming submitted transactions to the Silver layer
-    Then measurements are available in the silver measurements table
+    Then one measurements row are available in the silver measurements table
 
   Examples:
     | field               | meaning                        | value  |
@@ -80,7 +80,7 @@ Scenario Outline: Processing submitted transaction with valid <field>
   Scenario Outline: Processing submitted transaction point with valid quality
     Given submitted transaction points where the quality has value <value> (<quality>)
     When streaming submitted transactions to the Silver layer
-    Then measurements are available in the silver measurements table
+    Then one measurements row are available in the silver measurements table
 
     Examples:
     | quality       | value |
