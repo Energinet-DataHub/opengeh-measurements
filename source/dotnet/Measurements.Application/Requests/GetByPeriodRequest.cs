@@ -1,3 +1,8 @@
-﻿namespace Energinet.DataHub.Measurements.Application.Requests;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record GetByPeriodRequest(string MeteringPointId, DateTimeOffset StartDate, DateTimeOffset EndDate);
+namespace Energinet.DataHub.Measurements.Application.Requests;
+
+public record GetByPeriodRequest(
+    [Required] [StringLength(13, ErrorMessage = "MeteringPointId must be a valid GLN number.")] string MeteringPointId,
+    [Required] DateTimeOffset StartDate,
+    [Required] DateTimeOffset EndDate);
