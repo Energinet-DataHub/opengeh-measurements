@@ -56,6 +56,19 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         Assert.Single(measurements);
     }
 
+    [Fact]
+    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregateByYearQuery(MeasurementsClientFixture.TestMeteringPointId);
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregateByYear(query);
+
+        // Assert
+        Assert.Single(measurements);
+    }
+
     private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements)
     {
         for (var positionIndex = 1; positionIndex < measurements.MeasurementPositions.Count(); positionIndex++)

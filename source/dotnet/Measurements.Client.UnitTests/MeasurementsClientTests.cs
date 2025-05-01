@@ -130,6 +130,31 @@ public class MeasurementsClientTests
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByYear_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+    {
+        // Arrange
+        var query = new GetAggregateByYearQuery("1234567890");
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByYear);
+        var httpClient = CreateHttpClient(response);
+        var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+
+        // Act
+        var actual = (await sut.GetAggregateByYear(query, CancellationToken.None)).ToList();
+
+        // Assert
+        Assert.NotNull(actual);
+        Assert.Equal(5, actual.Count);
+        Assert.Equal(2021, actual.First().Year);
+        Assert.Equal(2025, actual.Last().Year);
+        Assert.Equal(Quality.Measured, actual.First().Quality);
+        Assert.Equal(Quality.Estimated, actual.Last().Quality);
+        Assert.True(actual.All(p => p.Unit == Unit.kWh));
+    }
+
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
     {
         var httpClientFactoryMock = new Mock<IHttpClientFactory>();
