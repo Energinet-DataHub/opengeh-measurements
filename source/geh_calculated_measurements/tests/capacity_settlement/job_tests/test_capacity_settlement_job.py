@@ -1,4 +1,3 @@
-import os
 import sys
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -9,8 +8,6 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
-from tests import create_job_environment_variables
-from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
 from tests.conftest import ExternalDataProducts
 
 _METERING_POINT_ID = "170000000000000201"
@@ -67,7 +64,6 @@ def test_execute(
             "--calculation-month=1",
         ],
     )
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
     _seed_current_measurements(spark)
     _seed_electricity_market(spark)
 
