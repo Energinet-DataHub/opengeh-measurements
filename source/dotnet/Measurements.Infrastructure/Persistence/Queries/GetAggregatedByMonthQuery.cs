@@ -8,8 +8,6 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 public class GetAggregatedByMonthQuery(string meteringPointId, Year year, DatabricksSchemaOptions databricksSchemaOptions)
     : DatabricksStatement
 {
-    private const string EuropeCopenhagenTimeZone = "Europe/Copenhagen";
-
     protected override string GetSqlStatement()
     {
         return AggregateSqlStatement.GetAggregateSqlStatement(
@@ -34,7 +32,7 @@ public class GetAggregatedByMonthQuery(string meteringPointId, Year year, Databr
     private static string CreateGroupByStatement()
     {
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{EuropeCopenhagenTimeZone}'))";
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
     }
 }
