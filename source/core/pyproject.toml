@@ -34,6 +34,7 @@ dev = [
     "pytest-bdd>=8.1.0",
     "pytest-bdd-report>=1.0.1",
     "pytest-mock>=3.14.0",
+    "pytest-order>=1.3.0",
 ]
 
 [build-system]

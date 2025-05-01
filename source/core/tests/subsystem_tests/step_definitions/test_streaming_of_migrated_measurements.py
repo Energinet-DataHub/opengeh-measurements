@@ -1,5 +1,5 @@
-from pytest_bdd import given, scenarios, then, when
-
+from pytest_bdd import given, scenarios, then, when, scenario
+import pytest
 import tests.helpers.identifier_helper as identifier_helper
 from tests.subsystem_tests.builders.migrated_measurements_row_builder import (
     MigratedMeasurementsRow,
@@ -10,7 +10,11 @@ from tests.subsystem_tests.fixtures.migrated_measurements_fixture import (
     MigratedMeasurementsFixture,
 )
 
-scenarios("../features/streaming_of_migrated_measurements.feature")
+
+@pytest.mark.last
+@scenario("../features/streaming_of_migrated_measurements.feature", "Processing migrated transaction")
+def test_processing_migrated_transaction():
+    
 
 
 @given(
