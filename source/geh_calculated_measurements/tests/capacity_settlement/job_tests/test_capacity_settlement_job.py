@@ -62,6 +62,11 @@ def test_execute(
     actual_ten_largest_quantities = spark.read.table(
         f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_TABLE_NAME}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
+    # TODO REMOVE BELOW
+    actual_calculated_measurements.show()
+    actual_calculations.show()
+    actual_ten_largest_quantities.show()
+
     assert actual_calculated_measurements.count() > 0
     assert actual_calculations.count() > 0
     assert actual_ten_largest_quantities.count() > 0
