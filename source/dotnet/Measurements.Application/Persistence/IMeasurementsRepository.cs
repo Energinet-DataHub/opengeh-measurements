@@ -8,23 +8,23 @@ namespace Energinet.DataHub.Measurements.Application.Persistence;
 /// </summary>
 public interface IMeasurementsRepository
 {
-  /// <summary>
-  /// Get measurements for a given metering point in period defined by from and to timestamps.
-  /// </summary>
-  IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
+    /// <summary>
+    /// Get measurements for a given metering point in period defined by from and to timestamps.
+    /// </summary>
+    IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
 
-  /// <summary>
-  /// Get measurements aggregated by date for a given metering point and month.
-  /// </summary>
-  IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth);
+    /// <summary>
+    /// Get measurements aggregated by date for a given metering point and month.
+    /// </summary>
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth);
 
-  /// <summary>
-  /// Get measurements aggregated by month for a given metering point and year.
-  /// </summary>
-  IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, Year year);
+    /// <summary>
+    /// Get measurements aggregated by month for a given metering point and year.
+    /// </summary>
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByMonthAsync(string meteringPointId, Year year);
 
-  /// <summary>
-  /// Get measurements aggregated by period for a given metering point and year.
-  /// </summary>
-  IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(string meteringPointIds, Instant dateFrom, Instant dateTo, Aggregation aggregation);
+    /// <summary>
+    /// Get measurements aggregated by period for a given metering point and year.
+    /// </summary>
+    IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(string meteringPointIds, Instant dateFrom, Instant dateTo, Aggregation aggregation);
 }
