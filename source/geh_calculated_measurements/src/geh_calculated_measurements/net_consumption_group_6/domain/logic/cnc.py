@@ -7,7 +7,7 @@ from geh_common.domain.types import MeteringPointType
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
-from pyspark.sql import DataFrame, Window
+from pyspark.sql import Column, DataFrame, Window
 
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
@@ -53,7 +53,7 @@ def cnc(
     filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
-    parent_child_joined = close_open_period(parent_child_joined)
+    parent_child_joined = _close_open_period(parent_child_joined)
 
     metering_points = _filter_periods_by_cut_off(parent_child_joined)
 
@@ -155,7 +155,7 @@ def _join_child_to_consumption(
     return parent_child_joined
 
 
-def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
+def _close_open_period(parent_child_joined: DataFrame) -> DataFrame:
     """Close open periods in the parent-child joined DataFrame.
 
     This function closes open periods by setting the period_to_date to the execution_start_datetime
@@ -172,31 +172,34 @@ def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
             - period_to_date: End date of the period
     """
     return parent_child_joined.select(
+        "*",
+        F.when(
+            F.month(F.col("execution_start_datetime")) >= F.col(ContractColumnNames.settlement_month),
+            F.make_date(
+                F.year(F.col("execution_start_datetime")),
+                F.col(ContractColumnNames.settlement_month),
+                F.lit(1),
+            ),
+        )
+        .otherwise(
+            F.make_date(
+                F.year(F.col("execution_start_datetime")) - F.lit(1),
+                F.col(ContractColumnNames.settlement_month),
+                F.lit(1),
+            )
+        )
+        .alias("previous_settlement_date"),
+    ).select(
         F.col(f"{ContractColumnNames.metering_point_id}"),
         F.col(f"{ContractColumnNames.metering_point_type}"),
         F.col(f"{ContractColumnNames.parent_metering_point_id}"),
         F.col(f"{ContractColumnNames.period_from_date}"),
         F.col(f"{ContractColumnNames.settlement_month}"),
         F.col("execution_start_datetime"),
-        F.when(
-            F.col(ContractColumnNames.period_to_date).isNull(),
-            F.when(
-                F.month(F.col("execution_start_datetime")) >= F.col(ContractColumnNames.settlement_month),
-                F.make_date(
-                    F.year(F.col("execution_start_datetime")),
-                    F.col(ContractColumnNames.settlement_month),
-                    F.lit(1),
-                ),
-            ).otherwise(
-                F.make_date(
-                    F.year(F.col("execution_start_datetime")) - F.lit(1),
-                    F.col(ContractColumnNames.settlement_month),
-                    F.lit(1),
-                )
-            ),
-        )
-        .otherwise(F.col(ContractColumnNames.period_to_date))
-        .alias(ContractColumnNames.period_to_date),
+        _clamp_period_end(
+            F.col(ContractColumnNames.period_to_date),
+            F.col("previous_settlement_date"),
+        ).alias(ContractColumnNames.period_to_date),
     )
 
 
@@ -282,7 +285,7 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
                     F.lit(1),
                 )
             )
-            .alias("next_settlement_date"),
+            .alias("first_settlement"),
         )
         .select(
             "*",
@@ -290,7 +293,7 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
                 F.concat(
                     F.array(F.col(ContractColumnNames.period_from_date)),
                     F.sequence(
-                        F.col("next_settlement_date"),
+                        F.col("first_settlement"),
                         F.col(ContractColumnNames.period_to_date),
                         F.expr("INTERVAL 1 YEAR"),
                     ),
@@ -504,3 +507,10 @@ def _create_daily_quantity_per_period(
     )
 
     return periods_with_net_consumption
+
+
+def _clamp_period_end(col: str | Column, clamp_end_datetime: Column) -> Column:
+    """Clamp the end of a period to a given datetime."""
+    if isinstance(col, str):
+        col = F.col(col)
+    return F.when(col.isNull() | (col > clamp_end_datetime), clamp_end_datetime).otherwise(col)
