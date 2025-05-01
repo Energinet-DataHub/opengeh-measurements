@@ -38,8 +38,8 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByMonth(
-        GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDate(
+        GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
 
@@ -48,8 +48,8 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByDateDto>(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetAggregatedByYear(
-        GetAggregatedByYearQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetYearlyAggregateByMonth(
+        GetYearlyAggregateByMonthsQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
 
@@ -84,11 +84,11 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, YearMonth yearMonth)
     {
-        return $"v2/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+        return $"v3/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 
     private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId, int year)
     {
-        return $"v2/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
+        return $"v3/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
     }
 }

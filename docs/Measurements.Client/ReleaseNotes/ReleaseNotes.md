@@ -1,5 +1,17 @@
 # Measurements.Client Release Notes
 
+## Version 4.0.0
+
+- Aggregated Measurements endpoint routes renamed.
+
+## Version 3.4.2
+
+- Renaming of response types - no functional changes.
+
+## Version 3.4.1
+
+- Bugfix.
+
 ## Version 3.4.0
 
 - Removed support for V1 and unversioned API endpoints.

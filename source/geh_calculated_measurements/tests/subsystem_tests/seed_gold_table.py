@@ -19,7 +19,7 @@ class GoldTableRow:
     orchestration_instance_id: uuid.UUID = uuid.uuid4()
     observation_time: datetime = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc)
     quantity: float = 1.7
-    quality: str = QuantityQuality.MEASURED.value
+    quality: QuantityQuality = QuantityQuality.MEASURED
     transaction_id: uuid.UUID = uuid.uuid4()
 
 
@@ -30,11 +30,11 @@ def get_statement(catalog_name: str, rows: list[GoldTableRow]) -> str:
             (
                 '{row.metering_point_id}',
                 '{row.metering_point_type.value}',
-                '{row.orchestration_type}',
+                '{row.orchestration_type.value}',
                 '{str(row.orchestration_instance_id)}',
                 '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}',
                 '{format(row.quantity, ".3f")}',
-                '{row.quality}',
+                '{row.quality.value}',
                 '{QuantityUnit.KWH.value}',
                 '{MeteringPointResolution.HOUR.value}',
                 '{str(row.transaction_id)}',

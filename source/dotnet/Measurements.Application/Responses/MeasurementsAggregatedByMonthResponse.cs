@@ -9,21 +9,21 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class GetMeasurementsAggregatedByMonthResponse
+public class MeasurementsAggregatedByMonthResponse
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
     public IReadOnlyCollection<MeasurementAggregationByMonth> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private GetMeasurementsAggregatedByMonthResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByMonthResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementsAggregatedByMonthResponse(List<MeasurementAggregationByMonth> measurementAggregations)
+    private MeasurementsAggregatedByMonthResponse(List<MeasurementAggregationByMonth> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static GetMeasurementsAggregatedByMonthResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByMonthResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -35,8 +35,8 @@ public class GetMeasurementsAggregatedByMonthResponse
             .ToList();
 
         return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundDuringPeriodException()
-            : new GetMeasurementsAggregatedByMonthResponse(measurementAggregations);
+            ? throw new MeasurementsNotFoundException()
+            : new MeasurementsAggregatedByMonthResponse(measurementAggregations);
     }
 
     private static YearMonth SetYearMonth(AggregatedMeasurementsResult measurement)
