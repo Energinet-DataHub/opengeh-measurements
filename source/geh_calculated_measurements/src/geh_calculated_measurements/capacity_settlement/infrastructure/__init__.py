@@ -1,8 +1,9 @@
-from geh_calculated_measurements.capacity_settlement.infrastructure.repository import (
-    Repository as CapacitySettlementRepository,
+from geh_calculated_measurements.capacity_settlement.infrastructure.capacity_settlement_repository import (
+    CapacitySettlementRepository,
 )
-
-from .electricity_market.repository import Repository as ElectricityMarketRepository
+from geh_calculated_measurements.capacity_settlement.infrastructure.electricity_market_repository import (
+    ElectricityMarketRepository,
+)
 
 __all__ = [
     "CapacitySettlementRepository",

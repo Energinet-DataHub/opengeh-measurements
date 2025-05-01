@@ -58,7 +58,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetByPeriodAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetByPeriodAsync(request));
     }
 
     [Theory]
@@ -102,7 +102,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetAggregatedByDateAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsync(request));
     }
 
     [Theory]
@@ -145,7 +145,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetAggregatedByMonthAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsync(request));
     }
 
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)

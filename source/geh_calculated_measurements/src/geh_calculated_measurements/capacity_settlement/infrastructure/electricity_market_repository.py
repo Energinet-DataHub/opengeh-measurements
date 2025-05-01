@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 from geh_calculated_measurements.capacity_settlement.domain import MeteringPointPeriods
 
 
-class Repository:
+class ElectricityMarketRepository:
     def __init__(
         self,
         spark: SparkSession,

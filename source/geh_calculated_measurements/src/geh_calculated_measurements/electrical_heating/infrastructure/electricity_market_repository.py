@@ -11,7 +11,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
 )
 
 
-class Repository:
+class ElectricityMarketRepository:
     def __init__(
         self,
         spark: SparkSession,
