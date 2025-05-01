@@ -143,7 +143,7 @@ public class MeasurementsController(
 
             return Ok(result);
         }
-        catch (MeasurementsNotFoundDuringPeriodException e)
+        catch (MeasurementsNotFoundException e)
         {
             return NotFound(e.Message);
         }
