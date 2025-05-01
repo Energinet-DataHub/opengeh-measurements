@@ -9,7 +9,7 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from tests.internal_tables import InternalTables
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 orchestration_instance_id = uuid.uuid4()
@@ -36,8 +36,8 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
 
     databricks_api_client = DatabricksApiClient(config.databricks_token, config.workspace_url)
 
-    database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
-    table_name = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
+    database_name = InternalTables.CALCULATED_MEASUREMENTS.database_name
+    table_name = InternalTables.CALCULATED_MEASUREMENTS.table_name
     metering_point_id = 170000030000000201
 
     seed_statement = f"""
