@@ -1,12 +1,9 @@
-from geh_calculated_measurements.common.infrastructure import (
-    CalculatedMeasurementsDatabaseDefinition,
-    CalculatedMeasurementsInternalDatabaseDefinition,
-)
+from geh_calculated_measurements.database_migrations import DatabaseNames
 
 
 def substitutions(catalog_name: str) -> dict[str, str]:
     return {
-        "{calculated_measurements_internal_database}": CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME,
-        "{calculated_measurements_database}": CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        "{calculated_measurements_internal_database}": DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
+        "{calculated_measurements_database}": DatabaseNames.MEASUREMENTS_CALCULATED,
         "{catalog_name}": catalog_name,
     }

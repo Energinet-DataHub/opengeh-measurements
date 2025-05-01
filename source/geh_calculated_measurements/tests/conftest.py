@@ -15,8 +15,7 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from tests import (
     SPARK_CATALOG_NAME,
@@ -156,8 +155,8 @@ def migrations_executed(spark: SparkSession) -> None:
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
     for db in [
-        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
-        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        DatabaseNames.MEASUREMENTS_CALCULATED,
+        DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
     ]:
         spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
 
