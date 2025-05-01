@@ -1,17 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Energinet.DataHub.Measurements.Domain;
+﻿using Energinet.DataHub.Measurements.Domain;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Requests;
 
-public record GetAggregatedByPeriodRequest(
-    [property: Required] string MeteringPointIds,
-    [property: Required] DateTimeOffset DateFrom,
-    [property: Required] DateTimeOffset DateTo,
-    [property: Required] Aggregation Aggregation)
-{
-    public List<string> GetMeteringPointIds() =>
-        MeteringPointIds.Trim().Split(',').ToList();
-
-    public override string ToString() =>
-        $"MeteringPointIds: {MeteringPointIds}, DateFrom (UTC): {DateFrom:O}, DateTo (UTC): {DateTo:O}, Aggregation: {Aggregation}";
-}
+public record GetAggregatedByPeriodRequest(List<string> MeteringPointIds, Instant DateFrom, Instant DateTo, Aggregation Aggregation);
