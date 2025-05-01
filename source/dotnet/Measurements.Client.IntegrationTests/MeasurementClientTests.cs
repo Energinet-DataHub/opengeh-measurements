@@ -28,29 +28,29 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetAggregatedByDate_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var query = new GetAggregatedByMonthQuery(
+        var query = new GetMonthlyAggregateByDateQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregatedByMonth(query);
+        var measurements = await measurementsClient.GetMonthlyAggregateByDate(query);
 
         // Assert
         Assert.Single(measurements);
     }
 
     [Fact]
-    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var query = new GetAggregatedByYearQuery(
+        var query = new GetYearlyAggregateByMonthsQuery(
             MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregatedByYear(query);
+        var measurements = await measurementsClient.GetYearlyAggregateByMonth(query);
 
         // Assert
         Assert.Single(measurements);
