@@ -10,10 +10,10 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
-public class GetAggregatedMeasurementResponseTests
+public class AggregatedMeasurementsByDateResponseTests
 {
     [Fact]
-    public void Create_ValidInput_ReturnsExpectedResult()
+    public void Create_WhenValidInput_ReturnExpectedResult()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -43,7 +43,7 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     [Fact]
-    public void Create_MultipleResolutions_ShouldThrowException()
+    public void Create_WhenMultipleResolutions_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -62,7 +62,7 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     [Fact]
-    public void Create_MultipleUnits_ShouldThrowException()
+    public void Create_WhenMultipleUnits_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -81,7 +81,30 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     [Fact]
-    public void Create_DataContainsMissingValues_ShouldSetMissingValuesToTrue()
+    public void Create_WhenMultipleQualities_ThenLowestQualityIsReturned()
+    {
+        // Arrange
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
+        var qualities = new[] { "measured", "estimated", "calculated", "missing" };
+        var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        var firstAggregation = actual.MeasurementAggregations.First();
+        Assert.Equal(Quality.Missing, firstAggregation.Quality);
+    }
+
+    [Fact]
+    public void Create_WhenDataContainsMissingValues_ThenMissingValuesIsTrue()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -103,7 +126,7 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     [Fact]
-    public void Create_DataContainsInvalidQualities_ShouldThrowException()
+    public void Create_WhenDataContainsInvalidQualities_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -122,7 +145,7 @@ public class GetAggregatedMeasurementResponseTests
     }
 
     [Fact]
-    public void Create_DataContainsUpdatedObservations_ShouldSetContainsUpdatedValues()
+    public void Create_WhenDataContainsUpdatedObservations_ThenContainsUpdatedValuesIsTrue()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
