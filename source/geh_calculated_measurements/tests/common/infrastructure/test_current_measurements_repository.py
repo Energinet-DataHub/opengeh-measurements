@@ -8,7 +8,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.dataframe import DataFrame
 
 from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
-from tests.conftest import ExternalDataProducts
+from tests.conftest import ExternalDataProducts, MeteringPointType, QuantityQuality
 
 
 @pytest.fixture(scope="module")
@@ -29,8 +29,8 @@ def valid_df(spark: SparkSession) -> DataFrame:
                 "123456789012345678",
                 datetime.datetime(2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo("Europe/Copenhagen")),
                 Decimal("1.123"),
-                "measured",
-                "consumption",
+                QuantityQuality.MEASURED,
+                MeteringPointType.CONSUMPTION,
             )
         ],
         ExternalDataProducts.CURRENT_MEASUREMENTS.schema,

@@ -7,21 +7,21 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class GetMeasurementResponse
+public class MeasurementsResponse
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
     public IReadOnlyCollection<Point> Points { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private GetMeasurementResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsResponse() { } // Needed by System.Text.Json to deserialize
 
-    private GetMeasurementResponse(IReadOnlyCollection<Point> points)
+    private MeasurementsResponse(IReadOnlyCollection<Point> points)
     {
         Points = points;
     }
 
-    public static GetMeasurementResponse Create(IEnumerable<MeasurementResult> measurements)
+    public static MeasurementsResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var points = measurements
             .Select(measurement =>
@@ -36,7 +36,7 @@ public class GetMeasurementResponse
             .ToList();
 
         return points.Count <= 0
-            ? throw new MeasurementsNotFoundDuringPeriodException()
-            : new GetMeasurementResponse(points);
+            ? throw new MeasurementsNotFoundException()
+            : new MeasurementsResponse(points);
     }
 }
