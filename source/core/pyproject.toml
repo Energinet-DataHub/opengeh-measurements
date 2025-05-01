@@ -34,6 +34,7 @@ dev = [
     "pytest-bdd>=8.1.0",
     "pytest-bdd-report>=1.0.1",
     "pytest-mock>=3.14.0",
+    "pytest-xdist>=3.6.1",
 ]
 
 [build-system]
@@ -53,6 +54,9 @@ addopts = [
     "-ra",
     "-vv",
     "-s",
+    # pytest-xdist options
+    "-n=auto",
+    "--dist=load",
 ]
 
 [tool.coverage.report]
