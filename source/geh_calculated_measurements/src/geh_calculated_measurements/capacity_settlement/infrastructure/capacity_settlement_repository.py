@@ -18,7 +18,7 @@ class CapacitySettlementRepository:
     def _get_full_table_path(self, table_name: str) -> str:
         if self._catalog_name:
             return f"{self._catalog_name}.{DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL}.{table_name}"
-        return f"{database_name}.{table_name}"
+        return f"{DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL}.{table_name}"
 
     def write_calculations(self, df: DataFrame) -> None:
         table_name = CALCULATIONS_TABLE_NAME

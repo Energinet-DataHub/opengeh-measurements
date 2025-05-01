@@ -22,4 +22,6 @@ class CalculatedMeasurementsRepository:
 
     def write_calculated_measurements(self, data: CalculatedMeasurementsInternal) -> None:
         df = data.df
-        df.write.format("delta").mode("append").saveAsTable(self._get_full_table_path(DATABASE_NAME, TABLE_NAME))
+        df.write.format("delta").mode("append").saveAsTable(
+            self._get_full_table_path(DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL, TABLE_NAME)
+        )
