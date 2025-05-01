@@ -1,20 +1,34 @@
 import os
 import sys
 import uuid
-from typing import Any
+from datetime import datetime, timedelta
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
 from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
+from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
 from tests import create_job_environment_variables
 from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
+
+_METERING_POINT_ID = "170000000000000201"
+_PERIOD_START = datetime(2026, 1, 1, 22, 0, 0)
+
+
+def _seed_current_measurements(spark: SparkSession) -> None:
+    """We need at least 10 measurements to get some output"""
+    rows = [
+        CurrentMeasurementsRow(
+            metering_point_id=_METERING_POINT_ID, observation_time=_PERIOD_START + timedelta(hours=i)
+        )
+        for i in range(10)
+    ]
+    seed_current_measurements_rows(spark, rows)
 
 
 def test_execute(
     spark: SparkSession,
-    gold_table_seeded: Any,
     migrations_executed: None,  # Used implicitly
     external_dataproducts_created: None,  # Used implicitly
     dummy_logging,  # Used implicitly
@@ -33,6 +47,7 @@ def test_execute(
         ],
     )
     monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
+    _seed_current_measurements(spark)
 
     # Act
     execute()

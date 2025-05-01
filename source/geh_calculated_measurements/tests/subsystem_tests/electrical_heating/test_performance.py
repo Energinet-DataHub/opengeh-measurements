@@ -1,18 +1,15 @@
 import uuid
+from typing import Any
 
 import pytest
 
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
+from geh_calculated_measurements.common.infrastructure import CurrentMeasurementsRepository
 from geh_calculated_measurements.electrical_heating.domain.model.child_metering_points import ChildMeteringPoints
 from geh_calculated_measurements.electrical_heating.domain.model.consumption_metering_point_periods import (
     ConsumptionMeteringPointPeriods,
 )
-from geh_calculated_measurements.electrical_heating.infrastructure.repository import (
-    Repository as ElectricityMarketRepository,
-)
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.electrical_heating.infrastructure import ElectricityMarketRepository
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
@@ -29,21 +26,20 @@ class TestElectricalHeating(JobTest):
         return JobTestFixture(
             environment_configuration=config,
             job_name="ElectricalHeating",
-            job_job_parametereters={"orchestration-instance-id": uuid.uuid4()},
+            job_parameters={"orchestration-instance-id": uuid.uuid4()},
         )
 
     @pytest.fixture(autouse=True, scope="class")
-    def patch_repositories(self, fixture: JobTestFixture) -> None:
+    def patch_repositories(self, fixture: JobTestFixture) -> Any:
         with pytest.MonkeyPatch.context() as monkeypatch:
-            # Patch MeasurementsGoldDatabaseDefinition.TIME_SERIES_POINTS_NAME
             monkeypatch.setattr(
-                MeasurementsGoldDatabaseDefinition,
-                "DATABASE_NAME",
+                CurrentMeasurementsRepository,
+                "database_name",
                 fixture.config.schema_name,
             )
             monkeypatch.setattr(
-                MeasurementsGoldDatabaseDefinition,
-                "CURRENT_MEASUREMENTS",
+                CurrentMeasurementsRepository,
+                "table_name",
                 fixture.config.time_series_points_table,
             )
 

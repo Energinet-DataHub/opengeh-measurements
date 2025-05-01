@@ -7,7 +7,7 @@ from azure.monitor.query import LogsQueryResult, LogsQueryStatus
 from databricks.sdk.service.jobs import Run, RunResultState, RunState, Wait
 from databricks.sdk.service.sql import ResultData, StatementResponse, StatementState, StatementStatus
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000040000000201"
@@ -15,7 +15,7 @@ CALCULATION_YEAR = 2025
 CALCULATION_MONTH = 1
 
 job_parameters = {
-    "orchestration-instance-id": str(uuid.uuid4()),
+    "orchestration-instance-id": uuid.uuid4(),
     "calculation-month": CALCULATION_MONTH,
     "calculation-year": CALCULATION_YEAR,
 }
@@ -73,6 +73,12 @@ class TestRunnerWithCorrectImplementation(JobTest):
             mp.setattr(JobTestFixture, "start_job", lambda *args, **kwargs: 1)
             mp.setattr(JobTestFixture, "wait_for_job_completion", lambda *args, **kwargs: None)
             mp.setattr(JobTestFixture, "wait_for_log_query_completion", lambda *args, **kwargs: None)
+            mp.setattr(JobTestFixture, "orchestration_instance_id", str(uuid.uuid4()))
+            mp.setattr(
+                JobTestFixture,
+                "execute_statement",
+                lambda *args, **kwargs: StatementResponse(status=StatementStatus(state=StatementState.SUCCEEDED)),
+            )
             config = EnvironmentConfiguration()
             return JobTestFixture(
                 environment_configuration=config,

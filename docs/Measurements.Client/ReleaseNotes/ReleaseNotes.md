@@ -1,5 +1,42 @@
 # Measurements.Client Release Notes
 
+## Version 4.0.0
+
+- Aggregated Measurements endpoint routes renamed.
+
+## Version 3.4.2
+
+- Renaming of response types - no functional changes.
+
+## Version 3.4.1
+
+- Bugfix.
+
+## Version 3.4.0
+
+- Removed support for V1 and unversioned API endpoints.
+
+## Version 3.3.0
+
+- Added method to get aggregated measurements for a year.
+- MeasurementAggregationDto renamed to MeasurementAggregationByDateDto.
+
+## Version 3.2.0
+
+- Minor API changes.
+
+## Version 3.1.0
+
+- Added RegistrationTime to MeasurementPointDto.
+
+## Version 3.0.0
+
+- Include historical values in forPeriod.
+
+## Version 2.4.1
+
+- Renamed Method and Query names to be more extendable.
+
 ## Version 2.4.0
 
 - Unit added to MeasurementAggregationDto.

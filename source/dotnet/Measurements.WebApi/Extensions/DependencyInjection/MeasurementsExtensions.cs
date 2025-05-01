@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Handlers;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 
 namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 
@@ -22,6 +23,7 @@ public static class MeasurementsExtensions
         services.AddNodaTimeForApplication();
         services.AddScoped<IMeasurementsHandler, MeasurementsHandler>();
         services.AddScoped<IMeasurementsRepository, MeasurementsRepository>();
+        services.AddScoped<IJsonSerializer, JsonSerializer>();
 
         return services;
     }

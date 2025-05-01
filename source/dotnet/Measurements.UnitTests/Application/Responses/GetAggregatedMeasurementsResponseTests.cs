@@ -5,9 +5,11 @@ using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
 using NodaTime;
 using Xunit;
+using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
+[UnitTest]
 public class GetAggregatedMeasurementResponseTests
 {
     [Fact]
@@ -29,7 +31,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -56,7 +58,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -75,7 +77,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -94,7 +96,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().MissingValues);
@@ -116,7 +118,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -135,7 +137,7 @@ public class GetAggregatedMeasurementResponseTests
         };
 
         // Act
-        var actual = GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().ContainsUpdatedValues);

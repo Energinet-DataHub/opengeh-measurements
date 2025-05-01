@@ -24,6 +24,8 @@ class EnvironmentConfiguration(ApplicationSettings):
         init=False, default="log-shared-workspace-id", alias="SHARED_AZURE_LOG_ANALYTICS_WORKSPACE_ID"
     )
 
+    electricity_market_internal_database_name: str = "electricity_market_internal"
+
     # for performance test
 
     schema_name: str = Field(init=False, default="", alias="SHARED_SCHEMA_NAME")

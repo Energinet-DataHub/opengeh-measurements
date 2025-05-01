@@ -3,7 +3,9 @@ from pyspark.sql import SparkSession
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+)
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.silver_settings import SilverSettings
 from core.silver.application.streams import submitted_transactions as sut
@@ -21,7 +23,7 @@ def test__stream_submitted_transactions__when_invalid_should_save_in_bronze_subm
         ValueBuilder(spark)
         .add_row(
             orchestration_instance_id=expected_orchestration_id,
-            metering_point_type=MeteringPointType.MPT_UNSPECIFIED.value,
+            metering_point_type=MeteringPointType.MPT_UNSPECIFIED,
         )
         .build()
     )
