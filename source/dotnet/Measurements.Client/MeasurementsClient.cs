@@ -38,8 +38,8 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetAggregatedByDate(
-        GetAggregatedByDateQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDate(
+        GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
 
@@ -48,8 +48,8 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByDateDto>(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetAggregatedByMonth(
-        GetAggregatedByMonthQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetYearlyAggregateByMonth(
+        GetYearlyAggregateByMonthsQuery query, CancellationToken cancellationToken = default)
     {
         var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
 
