@@ -41,7 +41,7 @@ public class MeasurementsClient(
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDate(
         GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.YearMonth);
+        var url = CreateGetMeasurementsAggregatedByDateUrl(query.MeteringPointId, query.YearMonth);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
@@ -49,13 +49,22 @@ public class MeasurementsClient(
     }
 
     public async Task<IEnumerable<MeasurementAggregationByMonthDto>> GetYearlyAggregateByMonth(
-        GetYearlyAggregateByMonthsQuery query, CancellationToken cancellationToken = default)
+        GetYearlyAggregateByMonthQuery query, CancellationToken cancellationToken = default)
     {
-        var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId, query.Year);
+        var url = CreateGetMeasurementsAggregatedByMonthUrl(query.MeteringPointId, query.Year);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByMonthDto>(response, cancellationToken);
+    }
+
+    public async Task<IEnumerable<MeasurementAggregationByYearDto>> GetAggregateByYear(GetAggregateByYearQuery query, CancellationToken cancellationToken = default)
+    {
+        var url = CreateGetMeasurementsAggregatedByYearUrl(query.MeteringPointId);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
     }
 
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
@@ -82,13 +91,18 @@ public class MeasurementsClient(
         return $"v2/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 
-    private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, YearMonth yearMonth)
+    private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)
     {
         return $"v3/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 
-    private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId, int year)
+    private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, int year)
     {
         return $"v3/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
+    }
+
+    private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId)
+    {
+        return $"v3/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
     }
 }

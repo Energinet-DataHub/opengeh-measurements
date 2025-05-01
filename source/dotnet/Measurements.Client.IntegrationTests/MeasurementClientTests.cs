@@ -46,7 +46,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var query = new GetYearlyAggregateByMonthsQuery(
+        var query = new GetYearlyAggregateByMonthQuery(
             MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();

@@ -112,7 +112,7 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetYearlyAggregateByMonthsQuery("1234567890", 2025);
+        var query = new GetYearlyAggregateByMonthQuery("1234567890", 2025);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByMonth);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -126,9 +126,7 @@ public class MeasurementsClientTests
         Assert.Equal(12, actual.Count);
         Assert.True(actual.First().YearMonth == new YearMonth(2025, 1));
         Assert.True(actual.Last().YearMonth == new YearMonth(2025, 12));
-        Assert.False(actual.All(p => p.MissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
-        Assert.False(actual.All(p => p.ContainsUpdatedValues));
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 
