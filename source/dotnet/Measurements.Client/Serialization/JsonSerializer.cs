@@ -4,7 +4,7 @@ using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Measurements.Client.Serialization;
 
-public class MeasurementSerializer : IJsonSerializer
+public class JsonSerializer : IJsonSerializer
 {
     private readonly JsonSerializerOptions _options = new()
     {
@@ -19,11 +19,11 @@ public class MeasurementSerializer : IJsonSerializer
 
     public T Deserialize<T>(string value)
     {
-        return JsonSerializer.Deserialize<T>(value, _options)!;
+        return System.Text.Json.JsonSerializer.Deserialize<T>(value, _options)!;
     }
-}
 
-public interface IJsonSerializer
-{
-    T Deserialize<T>(string value);
+    public T Deserialize<T>(JsonElement jsonElement)
+    {
+        return jsonElement.Deserialize<T>(_options) ?? throw new InvalidOperationException();
+    }
 }

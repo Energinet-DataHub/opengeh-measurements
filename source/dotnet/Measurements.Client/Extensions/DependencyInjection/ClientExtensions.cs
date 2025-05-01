@@ -2,6 +2,7 @@
 using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -42,6 +43,7 @@ public static class ClientExtensions
 
         services.AddScoped<IMeasurementsForDayResponseParser, MeasurementsForDayResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
+        services.AddScoped<IJsonSerializer, JsonSerializer>();
 
         return services;
     }

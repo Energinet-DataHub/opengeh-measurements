@@ -3,6 +3,7 @@ using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
 using Moq;
 using Moq.Protected;
@@ -18,17 +19,18 @@ public class MeasurementsClientTests
     [AutoMoqData]
     public async Task GetByDayAsync_WhenCalledWithValidQuery_ReturnsMeasurement(
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer,
         MeasurementDto expectedMeasurementDto)
     {
         // Arrange
-        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890123", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         measurementsForDayResponseParser
             .Setup(x => x.ParseResponseMessage(response, CancellationToken.None))
             .ReturnsAsync(expectedMeasurementDto);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = await sut.GetByDayAsync(query, CancellationToken.None);
@@ -41,14 +43,15 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetByDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
-        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890123", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = (await sut.GetByDayAsync(query, CancellationToken.None)).MeasurementPositions;
@@ -60,14 +63,15 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByMonth_WhenCalled_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
-        var query = new GetMonthlyAggregateByDateQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDate);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
@@ -86,14 +90,15 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
-        var query = new GetMonthlyAggregateByDateQuery("1234567890", new YearMonth(2024, 10));
+        var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2024, 10));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDateMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
@@ -109,14 +114,15 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByMonth_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
-        var query = new GetYearlyAggregateByMonthsQuery("1234567890", 2025);
+        var query = new GetYearlyAggregateByMonthsQuery("1234567890123", 2025);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByMonth);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = (await sut.GetYearlyAggregateByMonth(query, CancellationToken.None)).ToList();

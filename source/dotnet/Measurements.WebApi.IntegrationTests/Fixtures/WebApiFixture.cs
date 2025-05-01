@@ -24,6 +24,10 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    public const string ValidMeteringPointId = "1234567890123";
+    public const string InvalidMeteringPointId = "invalid id";
+    public const string NotExistingMeteringPointId = "9988776655443";
+
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
@@ -123,7 +127,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
         var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
-            "'1234567890'",
+            "'1234567890123'",
             "'kwh'",
             $"'{FormatString(observationDateInstant.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",

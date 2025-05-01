@@ -1,8 +1,11 @@
 ﻿using System.Net;
+using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
+using Energinet.DataHub.Measurements.Client.Serialization;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
+using Moq;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests.ResponseParsers;
@@ -10,12 +13,14 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests.ResponseParsers;
 [UnitTest]
 public class MeasurementsForDayResponseParserTests
 {
-    [Fact]
-    public async Task ParseResponseMessage_WhenCalledWithValidResponse_ReturnsMeasurementDto()
+    [Theory]
+    [AutoMoqData]
+    public async Task ParseResponseMessage_WhenCalledWithValidResponse_ReturnsMeasurementDto(
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDayResponseParser(jsonSerializer.Object);
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
@@ -41,12 +46,14 @@ public class MeasurementsForDayResponseParserTests
         Assert.Equal("2025-01-15T03:40:55Z", actualPoint.RegistrationTime.ToFormattedString());
     }
 
-    [Fact]
-    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PositionIndexAreOrdered()
+    [Theory]
+    [AutoMoqData]
+    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PositionIndexAreOrdered(
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayWithHistoricalObservations);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDayResponseParser(jsonSerializer.Object);
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
@@ -59,12 +66,14 @@ public class MeasurementsForDayResponseParserTests
         Assert.NotNull(actual);
     }
 
-    [Fact]
-    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PointsAreOrderedCorrectly()
+    [Theory]
+    [AutoMoqData]
+    public async Task ParseResponseMessage_WhenResponseContainsHistoricalValues_PointsAreOrderedCorrectly(
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayWithHistoricalObservations);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDayResponseParser(jsonSerializer.Object);
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);

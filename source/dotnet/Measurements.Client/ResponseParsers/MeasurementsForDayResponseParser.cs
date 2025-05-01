@@ -3,14 +3,14 @@ using Energinet.DataHub.Measurements.Client.Serialization;
 
 namespace Energinet.DataHub.Measurements.Client.ResponseParsers;
 
-public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParser
+public class MeasurementsForDayResponseParser(IJsonSerializer jsonSerializer) : IMeasurementsForDayResponseParser
 {
     public async Task<MeasurementDto> ParseResponseMessage(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         var measurementPositions = new List<MeasurementPositionDto>();
 
         var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        var pointsDto = new MeasurementSerializer().Deserialize<PointsDto>(json);
+        var pointsDto = jsonSerializer.Deserialize<PointsDto>(json);
 
         var positions = pointsDto.Points
             .OrderBy(p => p.ObservationTime)
