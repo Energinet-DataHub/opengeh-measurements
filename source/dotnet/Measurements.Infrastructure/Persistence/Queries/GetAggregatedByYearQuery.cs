@@ -1,7 +1,5 @@
 ﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Infrastructure.Extensions;
-using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
@@ -13,6 +11,7 @@ public class GetAggregatedByYearQuery(string meteringPointId, DatabricksSchemaOp
         return AggregateSqlStatement.GetAggregateSqlStatement(
             databricksSchemaOptions.CatalogName,
             databricksSchemaOptions.SchemaName,
+            CreateWhereStatement(),
             CreateGroupByStatement());
     }
 
@@ -20,11 +19,14 @@ public class GetAggregatedByYearQuery(string meteringPointId, DatabricksSchemaOp
     {
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, meteringPointId),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, Instant.MinValue.ToUtcString()),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, Instant.MaxValue.ToUtcString())
         ];
 
         return parameters;
+    }
+
+    private static string CreateWhereStatement()
+    {
+        return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter}";
     }
 
     private static string CreateGroupByStatement()

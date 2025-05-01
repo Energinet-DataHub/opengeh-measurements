@@ -13,6 +13,7 @@ public class GetAggregatedByDateQuery(string meteringPointId, YearMonth yearMont
         return AggregateSqlStatement.GetAggregateSqlStatement(
             databricksSchemaOptions.CatalogName,
             databricksSchemaOptions.SchemaName,
+            CreateWhereStatement(),
             CreateGroupByStatement());
     }
 
@@ -27,6 +28,13 @@ public class GetAggregatedByDateQuery(string meteringPointId, YearMonth yearMont
         ];
 
         return parameters;
+    }
+
+    private static string CreateWhereStatement()
+    {
+        return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter}";
     }
 
     private static string CreateGroupByStatement()

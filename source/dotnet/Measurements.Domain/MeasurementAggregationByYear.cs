@@ -1,7 +1,7 @@
 ﻿namespace Energinet.DataHub.Measurements.Domain;
 
 public record MeasurementAggregationByYear(
-    Year Year,
+    int Year,
     decimal Quantity,
     Quality Quality,
     Unit Unit);

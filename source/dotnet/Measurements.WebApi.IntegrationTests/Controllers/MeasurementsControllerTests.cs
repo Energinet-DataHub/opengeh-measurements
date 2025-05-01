@@ -253,6 +253,48 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "1234567890";
+        var url = CreateGetAggregatedMeasurementsByYearUrl(expectedMeteringPointId);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByYearResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+
+        var firstMeasurementAggregation = actual.MeasurementAggregations.First();
+        Assert.Equal(2021, firstMeasurementAggregation.Year);
+        Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
+        Assert.Equal(571.2M, firstMeasurementAggregation.Quantity);
+        Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
+
+        var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
+        Assert.Equal(2022, lastMeasurementAggregation.Year);
+        Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
+        Assert.Equal(1142.4M, lastMeasurementAggregation.Quantity);
+        Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByYearAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "not existing id";
+        var url = CreateGetAggregatedMeasurementsByYearUrl(expectedMeteringPointId);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("v1")]
@@ -294,6 +336,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, Year year, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={year.GetYear()}";
+    }
+
+    private static string CreateGetAggregatedMeasurementsByYearUrl(string expectedMeteringPointId, string versionPrefix = "v3")
+    {
+        return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

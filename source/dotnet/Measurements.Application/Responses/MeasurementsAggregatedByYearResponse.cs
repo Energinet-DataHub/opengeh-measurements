@@ -38,10 +38,9 @@ public class MeasurementsAggregatedByYearResponse
             : new MeasurementsAggregatedByYearResponse(measurementAggregations);
     }
 
-    private static Year SetYear(AggregatedMeasurementsResult measurement)
+    private static int SetYear(AggregatedMeasurementsResult measurement)
     {
-        var dateOnly = measurement.MinObservationTime.ToDateOnly();
-        return new Year(dateOnly.Year);
+        return measurement.MinObservationTime.ToDateOnly().Year;
     }
 
     private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)

@@ -1,6 +1,4 @@
-﻿using NodaTime;
-
-namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 /// <summary>
 /// Represents measurement aggregation for a year.
