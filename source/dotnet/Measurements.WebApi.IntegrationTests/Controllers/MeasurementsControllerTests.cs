@@ -72,11 +72,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetByPeriodAsync_WhenMeasurementHasInvalidQuality_ReturnInternalServerError()
+    public async Task GetByPeriodAsync_WhenMeasurementHasInvalidResolution_ReturnInternalServerError()
     {
         // Arrange
         const string expectedMeteringPointId = "1234567890";
-        const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid quality
+        const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid resolution
         const string endDate = "2022-02-01T23:00:00Z";
         var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
 
@@ -277,7 +277,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
         Assert.Equal(2022, lastMeasurementAggregation.Year);
         Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
-        Assert.Equal(1142.4M, lastMeasurementAggregation.Quantity);
+        Assert.Equal(1428M, lastMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
     }
 
