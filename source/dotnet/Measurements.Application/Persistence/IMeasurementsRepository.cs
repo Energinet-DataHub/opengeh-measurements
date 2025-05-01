@@ -26,5 +26,5 @@ public interface IMeasurementsRepository
   /// <summary>
   /// Get measurements aggregated by period for a given metering point and year.
   /// </summary>
-  IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(List<string> meteringPointIds, Instant dateFrom, Instant dateTo, Aggregation aggregation);
+  IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(string meteringPointIds, Instant dateFrom, Instant dateTo, Aggregation aggregation);
 }
