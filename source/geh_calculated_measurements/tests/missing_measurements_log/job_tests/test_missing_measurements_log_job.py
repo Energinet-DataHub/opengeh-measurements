@@ -79,6 +79,6 @@ def test_execute(
 
     # Assert
     actual = spark.read.table(
-        f"{InternalTables.CALCULATED_MEASUREMENTS.database_name}.{InternalTables.CALCULATED_MEASUREMENTS.table_name}"
+        f"{InternalTables.CALCULATED_MEASUREMENTS.database_name}.{InternalTables.MISSING_MEASUREMENTS_LOG.table_name}"
     ).where(F.col(ContractColumnNames.orchestration_instance_id) == str(orchestration_instance_id))
     assert actual.count() > 0
