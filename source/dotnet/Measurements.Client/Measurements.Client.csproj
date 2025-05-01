@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
-        <PackageVersion>3.4.2$(VersionSuffix)</PackageVersion>
+        <PackageVersion>4.0.0$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Client library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>

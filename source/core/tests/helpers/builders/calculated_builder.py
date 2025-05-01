@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from geh_common.data_products.measurements_calculated.calculated_measurements_v1 import schema
+from geh_common.domain.types.orchestration_type import OrchestrationType
 
 
 class CalculatedMeasurementsBuilder:
@@ -12,7 +13,7 @@ class CalculatedMeasurementsBuilder:
 
     def add_row(
         self,
-        orchestration_type: str = "capacity_settlement",
+        orchestration_type: str = OrchestrationType.CAPACITY_SETTLEMENT.value,
         orchestration_instance_id: str = "123456",
         transaction_id="",
         transaction_creation_datetime=datetime.now(),
