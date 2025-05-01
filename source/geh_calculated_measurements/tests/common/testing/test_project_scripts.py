@@ -25,11 +25,11 @@ def test__entry_point_exists() -> None:
 
     # Report results
     if missing_scripts:
-        logging.warning("\nMissing script entry points:")
+        logging.warning("Missing script entry points:")
         for script in missing_scripts:
             logging.warning(f"  - {script}")
     else:
-        logging.info("\nAll script entry points exist!")
+        logging.info("All script entry points exist!")
 
     # Fail the test if any scripts are missing
     assert not missing_scripts, "Missing script entry points detected"
