@@ -56,6 +56,7 @@ class GoldMeasurementsBuilder:
         metering_point_type: str | None = random.choice(["E17", "E18", "E20", "D01", "D05", "D06", "D07", "D08"]),
         transaction_id="",
         transaction_creation_datetime=datetime.now(),
+        resolution: str = "PT1H",
     ):
         for hour in range(24):
             observation_time = start_time + timedelta(hours=hour)
@@ -67,6 +68,7 @@ class GoldMeasurementsBuilder:
                 metering_point_type=metering_point_type,
                 transaction_id=transaction_id,
                 transaction_creation_datetime=transaction_creation_datetime,
+                resolution=resolution,
             )
         return self
 

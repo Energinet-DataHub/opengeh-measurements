@@ -1,9 +1,12 @@
 from datetime import datetime
 
+from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
+from geh_common.domain.types.orchestration_type import OrchestrationType
 from pyspark.sql import SparkSession
 from pytest_bdd import given, scenarios, then, when
 from pytest_mock import MockerFixture
 
+import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
@@ -44,7 +47,6 @@ def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: Mo
 )
 def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: MockerFixture):
     mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
-
     expected_transaction_id = identifier_helper.generate_random_string()
     bronze_migrated_transactions = (
         MigratedTransactionsBuilder(spark)
@@ -70,7 +72,6 @@ def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: Mo
 )
 def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: MockerFixture):
     mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
-
     transaction_id = identifier_helper.generate_random_string()
     bronze_migrated_transactions = MigratedTransactionsBuilder(spark).add_row(transaction_id=transaction_id).build()
 
@@ -93,11 +94,22 @@ def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: Mo
 )
 def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: MockerFixture):
     mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
-
     transaction_id = identifier_helper.generate_random_string()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    start_time = datetime_helper.random_datetime()
 
     # Migratied transactions
-    bronze_migrated_transactions = MigratedTransactionsBuilder(spark).add_row(transaction_id=transaction_id).build()
+    bronze_migrated_transactions = (
+        MigratedTransactionsBuilder(spark)
+        .add_row(
+            transaction_id=transaction_id,
+            transaction_insert_date=start_time,
+            metering_point_id=metering_point_id,
+            valid_from_date=start_time,
+            resolution=MeteringPointResolution.HOUR.value,
+        )
+        .build()
+    )
     table_helper.append_to_table(
         bronze_migrated_transactions,
         BronzeSettings().bronze_database_name,
@@ -105,12 +117,24 @@ def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: Mo
     )
 
     # Gold measurements
-    gold_measurements = GoldMeasurementsBuilder(spark).add_row(transaction_id=transaction_id).build()
+    gold_measurements = (
+        GoldMeasurementsBuilder(spark)
+        .add_24_hours_rows(
+            transaction_id=transaction_id,
+            transaction_creation_datetime=start_time,
+            metering_point_id=metering_point_id,
+            start_time=start_time,
+            resolution=MeteringPointResolution.HOUR.value,
+            orchestration_type=OrchestrationType.MIGRATION.value,
+        )
+        .build()
+    )
     table_helper.append_to_table(
         gold_measurements,
         GoldSettings().gold_database_name,
         GoldTableNames.gold_measurements,
     )
+
     return transaction_id
 
 
@@ -130,6 +154,7 @@ def _(spark: SparkSession, expected_transaction_id):
     gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
         f"transaction_id = '{expected_transaction_id}'"
     )
+
     assert gold_measurements.count() == 24
 
 
