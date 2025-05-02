@@ -1,8 +1,0 @@
-metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
-170000000000000201;3999.999;measured;2024-01-01T22:45:00Z;consumption;Jan. 1st. Should be added to D14
-170000000000000201;0.001;measured;2024-01-01T23:00:00Z;consumption;Jan. 2nd. Limit hit
-170000000000000201;1;measured;2024-01-01T23:15:00Z;consumption;Jan. 2nd. Even though total of 1.001 logged on parent, only 0.001 should be added to D14
-170000000000000201;500;measured;2024-01-03T15:00:00Z;consumption;Jan. 3rd. Nothing should be added to D14 now
-170000000000000202;4000.001;measured;2024-01-05T17:45:00Z;consumption;Jan. 5th. Hit limit in one go. Only 4000 should be added to D14
-170000000000000203;4000;measured;2024-01-05T17:45:00Z;consumption;Jan. 5th. Hit limit exactly in one go
-170000000000000203;0.001;measured;2024-01-06T10:30:00Z;consumption;Jan. 6th.  Nothing should be added to D14 now

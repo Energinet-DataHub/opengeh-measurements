@@ -1,10 +1,13 @@
 import os
 import sys
+from datetime import datetime
+from decimal import Decimal
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake import create_database
@@ -12,8 +15,7 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from tests import (
     SPARK_CATALOG_NAME,
@@ -153,8 +155,8 @@ def migrations_executed(spark: SparkSession) -> None:
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
     for db in [
-        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
-        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        DatabaseNames.MEASUREMENTS_CALCULATED,
+        DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
     ]:
         spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
 
@@ -177,3 +179,35 @@ def external_dataproducts_created(
             table_name=dataproduct.view_name,
             schema=dataproduct.schema,
         )
+
+
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
+    )
+
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
+    )

@@ -9,7 +9,7 @@ dependencies = [
     "azure-monitor-opentelemetry==1.6.7",
     "configargparse==1.7.0",
     "delta-spark==3.3.0",
-    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.8.5#subdirectory=source/geh_common",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.8.9#subdirectory=source/geh_common",
     "pydantic-settings>=2.7.1",
     "pyspark==3.5.3",
     "python-dateutil==2.8.2",
@@ -19,7 +19,8 @@ dependencies = [
 [project.scripts]
 execute_electrical_heating = "geh_calculated_measurements.electrical_heating.entry_point:execute"
 execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.entry_point:execute"
-execute_net_consumption_group_6 = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute"
+execute_net_consumption_group_6_cenc = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cenc_daily"
+execute_net_consumption_group_6_cnc = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cnc_daily"
 execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
 
 migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
