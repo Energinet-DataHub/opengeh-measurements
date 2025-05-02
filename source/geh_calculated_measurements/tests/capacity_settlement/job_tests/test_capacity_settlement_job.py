@@ -6,9 +6,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
 from tests.conftest import ExternalDataProducts
+from tests.internal_tables import InternalTables
 
 _METERING_POINT_ID = "170000000000000201"
 _PERIOD_START = datetime(2026, 1, 1, 22, 0, 0)
@@ -26,7 +26,7 @@ def _seed_current_measurements(spark: SparkSession) -> None:
 
 
 def _seed_electricity_market(spark: SparkSession) -> None:
-    capacity_settlement_metering_point_periods = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS
+    capacity_settlement_metering_point_periods = InternalTables.CAPACITY_SETTLEMENT_CALCULATIONS
     df = spark.createDataFrame(
         [
             (
@@ -38,10 +38,10 @@ def _seed_electricity_market(spark: SparkSession) -> None:
                 None,
             ),
         ],
-        schema=capacity_settlement_metering_point_periods.schema,
+        schema=ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS.schema,
     )
     df.write.format("delta").mode("append").saveAsTable(
-        f"{capacity_settlement_metering_point_periods.database_name}.{capacity_settlement_metering_point_periods.view_name}"
+        f"{capacity_settlement_metering_point_periods.database_name}.{capacity_settlement_metering_point_periods.table_name}"
     )
 
 
@@ -71,16 +71,12 @@ def test_execute(
     execute()
 
     # Assert
-    actual_calculated_measurements = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
-    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
-    actual_calculations = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_CALCULATIONS_TABLE_NAME}"
-    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
-    actual_ten_largest_quantities = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES_TABLE_NAME}"
-    ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
-
-    assert actual_calculated_measurements.count() > 0
-    assert actual_calculations.count() > 0
-    assert actual_ten_largest_quantities.count() > 0
+    for table in [
+        InternalTables.CALCULATED_MEASUREMENTS,
+        InternalTables.CAPACITY_SETTLEMENT_CALCULATIONS,
+        InternalTables.CAPACITY_SETTLEMENT_TEN_LARGEST_QUANTITIES,
+    ]:
+        actual = spark.read.table(f"{table.database_name}.{table.table_name}").where(
+            F.col("orchestration_instance_id") == orchestration_instance_id
+        )
+        assert actual.count() > 0
