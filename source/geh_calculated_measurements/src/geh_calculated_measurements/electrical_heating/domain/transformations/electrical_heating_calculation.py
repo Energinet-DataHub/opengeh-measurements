@@ -19,6 +19,8 @@ def calculate_electrical_heating_in_local_time(
 ) -> DataFrame:
     execution_start_datetime_local_time = execution_start_datetime.astimezone(ZoneInfo(time_zone))
 
+    periods = _find_source_metering_point_for_energy(periods)
+
     periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
         periods,
         time_series_points_hourly,

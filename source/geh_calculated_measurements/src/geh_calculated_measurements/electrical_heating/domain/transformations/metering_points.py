@@ -66,7 +66,6 @@ def add_settlement_year_end_datetime(
         ).alias("settlement_year_end"),
     ).select(
         F.col("metering_point_id"),
-        F.col("has_electrical_heating"),
         F.col("net_settlement_group"),
         F.col("settlement_month"),
         F.col("period_from_date"),
