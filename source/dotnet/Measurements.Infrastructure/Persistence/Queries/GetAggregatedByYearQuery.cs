@@ -11,8 +11,8 @@ public class GetAggregatedByYearQuery(string meteringPointId, DatabricksSchemaOp
         return AggregateSqlStatement.GetAggregateSqlStatement(
             databricksSchemaOptions.CatalogName,
             databricksSchemaOptions.SchemaName,
-            CreateWhereStatement(),
-            CreateGroupByStatement());
+            FilterOnMeteringPoint(),
+            GroupByMeteringPointAndObservationTime());
     }
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
@@ -24,12 +24,12 @@ public class GetAggregatedByYearQuery(string meteringPointId, DatabricksSchemaOp
         return parameters;
     }
 
-    private static string CreateWhereStatement()
+    private static string FilterOnMeteringPoint()
     {
         return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter}";
     }
 
-    private static string CreateGroupByStatement()
+    private static string GroupByMeteringPointAndObservationTime()
     {
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
                $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
