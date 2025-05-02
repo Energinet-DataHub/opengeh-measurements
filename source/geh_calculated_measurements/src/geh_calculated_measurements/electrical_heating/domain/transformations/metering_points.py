@@ -93,7 +93,7 @@ def _join_children_to_parent_metering_point(
                 F.col(f"electrical_heating.{ContractColumnNames.parent_metering_point_id}")
                 == F.col(f"parent.{ContractColumnNames.metering_point_id}")
             )
-            & has_overlapping_period(
+            & _has_overlapping_period(
                 F.col(f"parent.{ContractColumnNames.period_from_date}"),
                 F.col(f"parent.{ContractColumnNames.period_to_date}"),
                 F.col(f"electrical_heating.{ContractColumnNames.coupled_date}"),
@@ -118,7 +118,7 @@ def _join_children_to_parent_metering_point(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
             )
-            & has_overlapping_period(
+            & _has_overlapping_period(
                 F.col(f"parent.{ContractColumnNames.period_from_date}"),
                 F.col(f"parent.{ContractColumnNames.period_to_date}"),
                 F.col(f"net_consumption.{ContractColumnNames.coupled_date}"),
@@ -143,7 +143,7 @@ def _join_children_to_parent_metering_point(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
             )
-            & has_overlapping_period(
+            & _has_overlapping_period(
                 F.col(f"parent.{ContractColumnNames.period_from_date}"),
                 F.col(f"parent.{ContractColumnNames.period_to_date}"),
                 F.col(f"consumption_from_grid.{ContractColumnNames.coupled_date}"),
@@ -168,7 +168,7 @@ def _join_children_to_parent_metering_point(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
             )
-            & has_overlapping_period(
+            & _has_overlapping_period(
                 F.col(f"parent.{ContractColumnNames.period_from_date}"),
                 F.col(f"parent.{ContractColumnNames.period_to_date}"),
                 F.col(f"supply_to_grid.{ContractColumnNames.coupled_date}"),
@@ -390,7 +390,7 @@ def _remove_net_settlement_group_2_up2end_without_netconsumption(
     )
 
 
-def has_overlapping_period(
+def _has_overlapping_period(
     period1_start: Column, period1_end: Column, period2_start: Column, period2_end: Column
 ) -> Column:
     return (period1_start < period2_end) & (period2_start < period1_end)
