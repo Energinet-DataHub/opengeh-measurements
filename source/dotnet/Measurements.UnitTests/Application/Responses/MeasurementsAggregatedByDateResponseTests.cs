@@ -10,7 +10,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
-public class AggregatedMeasurementsByDateResponseTests
+public class MeasurementsAggregatedByDateResponseTests
 {
     [Fact]
     public void Create_WhenValidInput_ReturnExpectedResult()
