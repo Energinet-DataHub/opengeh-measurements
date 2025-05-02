@@ -26,7 +26,7 @@ def _seed_current_measurements(spark: SparkSession) -> None:
 
 
 def _seed_electricity_market(spark: SparkSession) -> None:
-    capacity_settlement_metering_point_periods = InternalTables.CAPACITY_SETTLEMENT_CALCULATIONS
+    capacity_settlement_metering_point_periods = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS
     df = spark.createDataFrame(
         [
             (
@@ -38,10 +38,10 @@ def _seed_electricity_market(spark: SparkSession) -> None:
                 None,
             ),
         ],
-        schema=ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS.schema,
+        schema=capacity_settlement_metering_point_periods.schema,
     )
     df.write.format("delta").mode("append").saveAsTable(
-        f"{capacity_settlement_metering_point_periods.database_name}.{capacity_settlement_metering_point_periods.table_name}"
+        f"{capacity_settlement_metering_point_periods.database_name}.{capacity_settlement_metering_point_periods.view_name}"
     )
 
 
