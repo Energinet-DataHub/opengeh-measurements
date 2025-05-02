@@ -7,11 +7,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.missing_measurements_log.entry_point import execute
 from geh_calculated_measurements.testing import seed_current_measurements
 from tests import CalculationType, create_job_environment_variables, create_random_metering_point_id
 from tests.external_data_products import ExternalDataProducts
+from tests.internal_tables import InternalTables
 
 _METERING_POINT_ID = create_random_metering_point_id(CalculationType.MISSING_MEASUREMENTS_LOG)
 _PERIOD_START_DATETIME = datetime(2025, 1, 1, 22, 0, 0, tzinfo=timezone.utc)
@@ -79,6 +79,6 @@ def test_execute(
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME}"
+        f"{InternalTables.CALCULATED_MEASUREMENTS.database_name}.{InternalTables.MISSING_MEASUREMENTS_LOG.table_name}"
     ).where(F.col(ContractColumnNames.orchestration_instance_id) == str(orchestration_instance_id))
     assert actual.count() > 0
