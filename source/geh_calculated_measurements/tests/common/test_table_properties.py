@@ -5,7 +5,7 @@ from tests.testsession_configuration import TestSessionConfiguration
 
 
 @pytest.mark.parametrize(
-    ("fqn", "columns"),
+    ("fqn", "cluster_columns"),
     [
         # ("cat.measurements_calculated_internal.executed_migrations", ["col1", "col2"]),
         # (
