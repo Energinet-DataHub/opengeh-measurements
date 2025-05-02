@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.electrical_heating.seed_table import seed_table
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -22,5 +22,5 @@ class TestElectricalHeating(JobTest):
             job_name="ElectricalHeating",
             job_parameters=job_parameters,
         )
-        seed_table(fixture)
+        seed_table(fixture, job_parameters.get("orchestration-instance-id"))
         return fixture

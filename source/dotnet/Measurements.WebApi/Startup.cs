@@ -45,10 +45,11 @@ public class Startup(IConfiguration configuration)
 
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapControllers();
+
             endpoints.MapLiveHealthChecks();
             endpoints.MapReadyHealthChecks();
             endpoints.MapStatusHealthChecks();
-            endpoints.MapControllers();
         });
     }
 }

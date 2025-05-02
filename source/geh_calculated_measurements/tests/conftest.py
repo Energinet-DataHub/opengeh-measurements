@@ -1,42 +1,62 @@
 import os
-import shutil
 import sys
+from datetime import datetime
+from decimal import Decimal
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
-from filelock import FileLock
-from geh_common.data_products.electricity_market_measurements_input import (
-    net_consumption_group_6_child_metering_points_v1,
-    net_consumption_group_6_consumption_metering_point_periods_v1,
-)
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
-from geh_common.testing.delta_lake.delta_lake_operations import create_database, create_table
+from geh_common.testing.delta_lake import create_database
+from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
-)
-from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
-from geh_calculated_measurements.missing_measurements_log.infrastructure import MeteringPointPeriodsTable
-from geh_calculated_measurements.missing_measurements_log.infrastructure.database_definitions import (
-    MeteringPointPeriodsDatabaseDefinition,
-)
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
 from tests import (
     SPARK_CATALOG_NAME,
     TESTS_ROOT,
     create_job_environment_variables,
 )
+from tests.external_data_products import ExternalDataProducts
+from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """This hook is called after the test session has finished.
+
+    If no tests are found, pytest will exit with status code 5. This causes the
+    CI/CD pipeline to fail. This hook will set the exit status to 0 if no tests are found.
+    This is useful for the CI/CD pipeline to not fail if no tests are found.
+
+    This is a long debated feature of pytest, and unfortunately it has been decided
+    to keep it as is. See discussions here:
+    - https://github.com/pytest-dev/pytest/issues/2393
+    - https://github.com/pytest-dev/pytest/issues/812
+    - https://github.com/pytest-dev/pytest/issues/500
+    """
+    if exitstatus == 5:
+        session.exitstatus = 0
+
+
+# https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
+def pytest_collection_modifyitems(config, items) -> None:
+    skip_subsystem_tests = pytest.mark.skip(
+        reason="Skipping subsystem tests because environmental variables could not be set. See .sample.env file on how to set environmental variables locally"
+    )
+    try:
+        EnvironmentConfiguration()
+    except Exception:
+        for item in items:
+            if "subsystem_tests" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
+            if "integration" in item.nodeid:
+                item.add_marker(skip_subsystem_tests)
 
 
 @pytest.fixture(scope="module")
@@ -75,7 +95,7 @@ def spark(tmp_path_factory, worker_id) -> Generator[SparkSession, None, None]:
     """
     yield _spark
     _spark.stop()
-    shutil.rmtree(data_dir)
+    # shutil.rmtree(data_dir)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -135,8 +155,8 @@ def migrations_executed(spark: SparkSession) -> None:
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
     for db in [
-        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
-        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        DatabaseNames.MEASUREMENTS_CALCULATED,
+        DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
     ]:
         spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
 
@@ -144,59 +164,50 @@ def migrations_executed(spark: SparkSession) -> None:
 
 
 @pytest.fixture(scope="session")
-def external_dataproducts_created(spark: SparkSession, tmp_path_factory, worker_id) -> None:
-    """Create external dataproducts (databases, tables and views) as needed by tests."""
-    if worker_id == "master":
-        # not executing in with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        return _create_dataproducts(spark)
+def external_dataproducts_created(
+    spark: SparkSession, tmp_path_factory: pytest.TempPathFactory, testrun_uid: str
+) -> None:
+    """Create external data products (databases, tables and views) as needed by tests."""
 
-    # get the temp directory shared by all workers
-    root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    for database_name in ExternalDataProducts.get_all_database_names():
+        create_database(spark, database_name)
 
-    fn = root_tmp_dir / "data.txt"
-    with FileLock(str(fn) + ".lock"):
-        if fn.is_file():
-            return
-        else:
-            _create_dataproducts(spark)
-            fn.write_text("done", encoding="utf-8")
+    for dataproduct in ExternalDataProducts.get_all_data_products():
+        create_table(
+            spark,
+            database_name=dataproduct.database_name,
+            table_name=dataproduct.view_name,
+            schema=dataproduct.schema,
+        )
 
 
-def _create_dataproducts(spark):
-    # Create measurements gold database and tables
-    create_database(spark, MeasurementsGoldDatabaseDefinition.DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=MeasurementsGoldDatabaseDefinition.DATABASE_NAME,
-        table_name=MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS,
-        schema=CurrentMeasurements.schema,
-        # table_location=f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}/{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
     )
 
-    # Create missing measurements log database and tables
-    create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME,
-        table_name=MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS,
-        schema=MeteringPointPeriodsTable.schema,
-        # table_location=f"{MeteringPointPeriodsDatabaseDefinition.DATABASE_NAME}/{MeteringPointPeriodsDatabaseDefinition.METERING_POINT_PERIODS}",
-    )
-
-    # Create net consumption group 6 database and tables
-    # create_database(spark, ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME)
-    create_table(
-        spark,
-        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS,
-        schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
-        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}",
-    )
-    create_table(
-        spark,
-        database_name=ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME,
-        table_name=ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT,
-        schema=net_consumption_group_6_child_metering_points_v1.schema,
-        # table_location=f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}/{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}",
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
     )

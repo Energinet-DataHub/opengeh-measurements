@@ -1,6 +1,14 @@
 notes: |
   Simplest scenario
 
+                        | Jan. 15th  |       
+  MP 201 (1h)           |---------------------------------------
+  MP 202 (15M)          |---------------------------------------
+  MP 000                |---------------------------------------
+  Measurement data:     |+++++++++ ++| 
+  Missing:                        |                 
+  Missing days:         |  15th Jan. |
+
 cases_tested:
   "Missing Measurements Log Tests":
     - "GIVEN an MP with 15M resolution WHEN there is measurement missing for a quarter THEN the day of the quarter should be in the result"

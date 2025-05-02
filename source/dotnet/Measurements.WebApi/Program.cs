@@ -7,6 +7,8 @@ startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
+app.UseExceptionHandler("/error");
+
 startup.Configure(app);
 
 app.Run();
@@ -15,5 +17,5 @@ app.Run();
 namespace Energinet.DataHub.Measurements.WebApi
 {
     // ReSharper disable once PartialTypeWithSinglePart
-    public partial class Program { }
+    public abstract partial class Program { }
 }

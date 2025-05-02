@@ -6,18 +6,18 @@ from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
 from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
-from core.contracts.process_manager.enums.metering_point_type import MeteringPointType
-from core.contracts.process_manager.enums.orchestration_type import OrchestrationType
-from core.contracts.process_manager.enums.quality import Quality
-from core.contracts.process_manager.enums.resolution import Resolution
-from core.contracts.process_manager.enums.unit import Unit
 from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+    MeteringPointType,
+    OrchestrationType,
+    Quality,
+    Resolution,
+    Unit,
+)
 
 
 class Point:
-    def __init__(
-        self, position: int = 1, quantity=DecimalValue(1, 0), quality: str = Quality.Q_UNSPECIFIED.value
-    ) -> None:
+    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: int = Quality.Q_UNSPECIFIED) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = quality
@@ -31,13 +31,13 @@ class SubmittedTransactionsQuarantinedBuilder:
     def add_row(
         self,
         orchestration_instance_id: str = "60a518a2-7c7e-4aec-8332",
-        orchestration_type: str = OrchestrationType.OT_UNSPECIFIED.value,
+        orchestration_type: int = OrchestrationType.OT_UNSPECIFIED,
         metering_point_id: str = "503928175928475638",
         transaction_id: str = "5a76d246-ceae-459f-9e9f",
         transaction_creation_datetime: datetime = datetime_helper.random_datetime(),
-        metering_point_type: str = MeteringPointType.MPT_UNSPECIFIED.value,
-        unit: str = Unit.U_UNSPECIFIED.value,
-        resolution: str = Resolution.R_UNSPECIFIED.value,
+        metering_point_type: int = MeteringPointType.MPT_UNSPECIFIED,
+        unit: int = Unit.U_UNSPECIFIED,
+        resolution: int = Resolution.R_UNSPECIFIED,
         start_datetime: datetime = datetime_helper.random_datetime(),
         end_datetime: datetime = datetime_helper.random_datetime(),
         points=None,

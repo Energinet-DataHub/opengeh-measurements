@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,7 @@ from geh_calculated_measurements.electrical_heating.domain import (
     ConsumptionMeteringPointPeriods,
     execute,
 )
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -27,7 +29,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
     consumption_metering_point_periods = read_csv(
         spark,
@@ -43,13 +45,19 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     with open(f"{scenario_path}/when/scenario_parameters.yml") as f:
         scenario_parameters = yaml.safe_load(f)
 
+    # Use current time as default execution start datetime if not provided
+    if scenario_parameters is not None and "execution_start_datetime" in scenario_parameters:
+        execution_start_datetime = scenario_parameters["execution_start_datetime"]
+    else:
+        execution_start_datetime = datetime.now(UTC)
+
     # Execute the logic
     actual: CalculatedMeasurementsDaily = execute(
         CurrentMeasurements(current_measurements),
         ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
         ChildMeteringPoints(child_metering_point_periods),
         "Europe/Copenhagen",
-        scenario_parameters["execution_start_datetime"],
+        execution_start_datetime,
     )
 
     # Sort to make the tests deterministic
