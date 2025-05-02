@@ -98,23 +98,24 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            (new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false, "PT1H"),
-            (new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
-            (new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
-            (new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
-            (new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
+            ("1234567890", new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
+            ("1234567890", new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            ("1234567890", new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
+            ("9876543210", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
         };
 
         return [.. dates.SelectMany(CreateRow)];
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
-        (LocalDate ObservationTime, LocalDate TransactionCreated, string Quality, bool IsCancelled, string Resolution) values)
+        (string MeteringPointId, LocalDate ObservationTime, LocalDate TransactionCreated, string Quality, bool IsCancelled, string Resolution) values)
     {
         var observationDate = values.ObservationTime;
         var transactionCreated = values.TransactionCreated;
@@ -123,7 +124,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
         var rows = Enumerable.Range(0, 24).Select(i => new[]
         {
-            "'1234567890'",
+            $"'{values.MeteringPointId}'",
             "'kwh'",
             $"'{FormatString(observationDateInstant.Plus(Duration.FromHours(i)))}'",
             $"{i}.4",

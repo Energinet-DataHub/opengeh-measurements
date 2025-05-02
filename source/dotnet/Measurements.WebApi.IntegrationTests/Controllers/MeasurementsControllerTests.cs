@@ -72,6 +72,24 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetByPeriodAsync_WhenMeasurementHasInvalidUnit_ReturnInternalServerError()
+    {
+        // Arrange
+        const string expectedMeteringPointId = "9876543210";
+        const string startDate = "2022-06-14T22:00:00Z"; // On this date, the fixture inserts a measurement with invalid unit
+        const string endDate = "2022-06-15T22:00:00Z";
+        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+
+        // Act
+        var actual = await fixture.Client.GetAsync(url);
+        var actualContent = await actual.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
+        Assert.Contains("An unknown error occured while handling request to the Measurements API. Try again later.", actualContent);
+    }
+
+    [Fact]
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidResolution_ReturnInternalServerError()
     {
         // Arrange
