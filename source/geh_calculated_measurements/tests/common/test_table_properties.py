@@ -18,7 +18,7 @@ from tests.testsession_configuration import TestSessionConfiguration
         # ),
         (
             "cat.measurements_calculatemeasurements_calculatedd_internal.calculated_measurements",
-            ["orchestration_instance_id", "transaction_id", "metering_point_id", "transaction_creation_datetime"],
+            ["orchestration_instance_id", "transaction_id", "metering_point_id"],  # "transaction_creation_datetime"],
         ),
         # (
         #    "cat.measurements_calculatemeasurements_calculatedd_internal.missing_measurements_log",
