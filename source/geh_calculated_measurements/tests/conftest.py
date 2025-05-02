@@ -211,3 +211,72 @@ def seed_current_measurements(
         format="delta",
         mode="append",
     )
+
+
+@pytest.fixture(scope="session")
+def test_table_configuration(
+    spark: SparkSession,
+    migrations_executed: TestSessionConfiguration,
+) -> None:
+    """Ensures all tables is configured correctly. tests that all tables have:
+    - liquad clustering
+    - 30 days retention period
+    - is managed
+    - delta format
+    """
+    errors = []
+
+    # List all catalogs
+    catalogs = [row.catalog for row in spark.sql("SHOW CATALOGS").collect()]
+
+    for catalog in catalogs:
+        # List all schemas in the catalog
+        schemas = [row.namespace for row in spark.sql(f"SHOW SCHEMAS IN {catalog}").collect()]
+
+        for schema in schemas:
+            # List all tables in the schema
+            tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema}").collect()
+
+            for table in tables:
+                table_full_name = f"{catalog}.{schema}.{table.tableName}"
+
+                # Describe table details
+                try:
+                    desc = spark.sql(f"DESCRIBE TABLE EXTENDED {table_full_name}").collect()
+                except Exception as e:
+                    errors.append(f"Failed to describe table {table_full_name}: {e}")
+                    continue
+
+                # Extract key properties
+                properties = {
+                    row.col_name.strip(): row.data_type.strip() for row in desc if row.col_name and row.data_type
+                }
+
+                # Check format
+                if "Provider" not in properties or properties["Provider"].lower() != "delta":
+                    errors.append(f"{table_full_name} is not in Delta format.")
+
+                # Check managed table
+                if "Table Properties" in properties:
+                    if "'EXTERNAL'" in properties["Table Properties"]:
+                        errors.append(f"{table_full_name} is not a managed table.")
+                elif "Type" in properties and properties["Type"].lower() != "managed":
+                    errors.append(f"{table_full_name} is not a managed table.")
+
+                # Check retention period
+                retention = properties.get("Retention", "")
+                if retention != "30":
+                    errors.append(f"{table_full_name} does not have 30-day retention (found: {retention}).")
+
+                # Check liquid clustering
+                tbl_props_rows = [row for row in desc if row.col_name == "Table Properties"]
+                if tbl_props_rows:
+                    tbl_props_str = tbl_props_rows[0].data_type
+                    if "delta.feature.liquidClustering.enabled=true" not in tbl_props_str:
+                        errors.append(f" {table_full_name} does not have liquid clustering enabled.")
+                else:
+                    errors.append(f" {table_full_name} has no table properties set.")
+
+    if errors:
+        error_message = "\n".join(errors)
+        raise AssertionError(f"\n🔍 Table configuration issues found:\n{error_message}")
