@@ -36,7 +36,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetMonthlyAggregateByDate(query);
+        var measurements = await measurementsClient.GetMonthlyAggregateByDateAsync(query);
 
         // Assert
         Assert.Single(measurements);
@@ -50,7 +50,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             MeasurementsClientFixture.TestMeteringPointId, MeasurementsClientFixture.TestObservationDate.Year);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetYearlyAggregateByMonth(query);
+        var measurements = await measurementsClient.GetYearlyAggregateByMonthAsync(query);
 
         // Assert
         Assert.Single(measurements);
@@ -63,7 +63,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         var query = new GetAggregateByYearQuery(MeasurementsClientFixture.TestMeteringPointId);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregateByYear(query);
+        var measurements = await measurementsClient.GetAggregateByYearAsync(query);
 
         // Assert
         Assert.Single(measurements);

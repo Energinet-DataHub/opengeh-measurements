@@ -70,7 +70,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetMonthlyAggregateByDateAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -96,7 +96,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetMonthlyAggregateByDateAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -119,7 +119,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetYearlyAggregateByMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetYearlyAggregateByMonthAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -143,7 +143,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetAggregateByYear(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetAggregateByYearAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);

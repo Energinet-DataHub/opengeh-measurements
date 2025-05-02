@@ -16,15 +16,15 @@ public interface IMeasurementsClient
     /// <summary>
     /// Get measurements aggregated by date for a specified month.
     /// </summary>
-    Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDate(GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default);
+    Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get measurements aggregated by month for a specified year.
     /// </summary>
-    Task<IEnumerable<MeasurementAggregationByMonthDto>> GetYearlyAggregateByMonth(GetYearlyAggregateByMonthQuery query, CancellationToken cancellationToken = default);
+    Task<IEnumerable<MeasurementAggregationByMonthDto>> GetYearlyAggregateByMonthAsync(GetYearlyAggregateByMonthQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get measurements aggregated by year for all years.
     /// </summary>
-    Task<IEnumerable<MeasurementAggregationByYearDto>> GetAggregateByYear(GetAggregateByYearQuery query, CancellationToken cancellationToken = default);
+    Task<IEnumerable<MeasurementAggregationByYearDto>> GetAggregateByYearAsync(GetAggregateByYearQuery query, CancellationToken cancellationToken = default);
 }
