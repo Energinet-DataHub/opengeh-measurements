@@ -70,7 +70,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetMonthlyAggregateByDateAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -96,7 +96,7 @@ public class MeasurementsClientTests
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetMonthlyAggregateByDate(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetMonthlyAggregateByDateAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
@@ -112,23 +112,46 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetYearlyAggregateByMonthsQuery("1234567890", 2025);
+        var query = new GetYearlyAggregateByMonthQuery("1234567890", 2025);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByMonth);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
         var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
 
         // Act
-        var actual = (await sut.GetYearlyAggregateByMonth(query, CancellationToken.None)).ToList();
+        var actual = (await sut.GetYearlyAggregateByMonthAsync(query, CancellationToken.None)).ToList();
 
         // Assert
         Assert.NotNull(actual);
         Assert.Equal(12, actual.Count);
         Assert.True(actual.First().YearMonth == new YearMonth(2025, 1));
         Assert.True(actual.Last().YearMonth == new YearMonth(2025, 12));
-        Assert.False(actual.All(p => p.MissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
-        Assert.False(actual.All(p => p.ContainsUpdatedValues));
+        Assert.True(actual.All(p => p.Unit == Unit.kWh));
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByYear_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+    {
+        // Arrange
+        var query = new GetAggregateByYearQuery("1234567890");
+        var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByYear);
+        var httpClient = CreateHttpClient(response);
+        var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+
+        // Act
+        var actual = (await sut.GetAggregateByYearAsync(query, CancellationToken.None)).ToList();
+
+        // Assert
+        Assert.NotNull(actual);
+        Assert.Equal(5, actual.Count);
+        Assert.Equal(2021, actual.First().Year);
+        Assert.Equal(2025, actual.Last().Year);
+        Assert.Equal(Quality.Measured, actual.First().Quality);
+        Assert.Equal(Quality.Estimated, actual.Last().Quality);
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 

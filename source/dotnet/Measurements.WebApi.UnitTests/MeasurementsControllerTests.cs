@@ -89,7 +89,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementsAggregatedByDateResponse();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponse.Create);
         var expected = CreateExpectedMeasurementsAggregatedByDate();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
@@ -151,7 +151,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementsAggregatedByMonthResponse();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponse.Create);
         var expected = CreateExpectedMeasurementsAggregatedByMonth();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
@@ -204,6 +204,68 @@ public class MeasurementsControllerTests
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
     }
 
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponse.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByYear();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetAggregatedByYearAsync(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsUnknownError_ThrowsException(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsync(request));
+    }
+
     private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
@@ -211,18 +273,10 @@ public class MeasurementsControllerTests
         return response;
     }
 
-    private static MeasurementsAggregatedByDateResponse CreateMeasurementsAggregatedByDateResponse()
+    private static T CreateMeasurementsAggregatedResponse<T>(Func<List<AggregatedMeasurementsResult>, T> create)
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
-        var response = MeasurementsAggregatedByDateResponse.Create(measurements);
-        return response;
-    }
-
-    private static MeasurementsAggregatedByMonthResponse CreateMeasurementsAggregatedByMonthResponse()
-    {
-        var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
-        var response = MeasurementsAggregatedByMonthResponse.Create(measurements);
-        return response;
+        return create(measurements);
     }
 
     private static string CreateExpectedMeasurementsByDate()
@@ -238,6 +292,11 @@ public class MeasurementsControllerTests
     private static string CreateExpectedMeasurementsAggregatedByMonth()
     {
         return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYear()
+    {
+        return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()

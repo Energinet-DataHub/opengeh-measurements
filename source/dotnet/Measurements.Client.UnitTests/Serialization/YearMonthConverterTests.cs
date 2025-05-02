@@ -3,7 +3,7 @@ using System.Text.Json;
 using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
-namespace Energinet.DataHub.Measurements.Client.UnitTests;
+namespace Energinet.DataHub.Measurements.Client.UnitTests.Serialization;
 
 public class YearMonthConverterTests
 {
