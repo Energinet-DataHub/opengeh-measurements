@@ -1,11 +1,11 @@
-metering_point_id;metering_point_type;metering_point_sub_type;resolution;parent_metering_point_id;coupled_date;uncoupled_date;#comment
-140000000000170201;electrical_heating;calculated;PT1H;170000000000000201;2023-11-30T23:00:00Z;;Case 1
-140000000000170202;electrical_heating;calculated;PT1H;170000000000000202;2023-11-21T23:00:00Z;2024-02-29T23:00:00Z;Case 2
-140000000000170203;electrical_heating;calculated;PT1H;170000000000000203;2024-02-29T23:00:00Z;2024-03-01T23:00:00Z;Case 3
-140000000000170204;electrical_heating;calculated;PT1H;170000000000000204;2024-02-29T23:00:00Z;;Case 4
-140000000100170205;electrical_heating;calculated;PT1H;170000000000000205;2023-12-31T23:00:00Z;2024-02-29T23:00:00Z;Case 5
-140000000200170205;electrical_heating;calculated;PT1H;170000000000000205;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 5
-140000000000170206;electrical_heating;calculated;PT1H;170000000000000206;2023-12-31T23:00:00Z;2024-01-03T23:00:00Z;Case 6: EH consumption MP which does have an end date, even though parent MP has no end date for has_electrical_heating = true
-140000000000170208;electrical_heating;calculated;PT1H;170000000000000208;2022-12-31T23:00:00Z;;Case 8
-060000000000170208;supply_to_grid;physical;PT1H;170000000000000208;2023-08-31T22:00:00Z;;Case 8
-070000000000170208;consumption_from_grid;physical;PT1H;170000000000000208;2023-08-31T22:00:00Z;;Case 8
+metering_point_id;metering_point_type;metering_point_sub_type;parent_metering_point_id;coupled_date;uncoupled_date;#comment
+140000000000170201;electrical_heating;calculated;170000000000000201;2023-11-30T23:00:00Z;;Case 1
+140000000000170202;electrical_heating;calculated;170000000000000202;2023-11-21T23:00:00Z;2024-02-29T23:00:00Z;Case 2
+140000000000170203;electrical_heating;calculated;170000000000000203;2024-02-29T23:00:00Z;2024-03-01T23:00:00Z;Case 3
+140000000000170204;electrical_heating;calculated;170000000000000204;2024-02-29T23:00:00Z;;Case 4
+140000000100170205;electrical_heating;calculated;170000000000000205;2023-12-31T23:00:00Z;2024-02-29T23:00:00Z;Case 5
+140000000200170205;electrical_heating;calculated;170000000000000205;2024-04-30T22:00:00Z;2024-07-31T22:00:00Z;Case 5
+140000000000170206;electrical_heating;calculated;170000000000000206;2023-12-31T23:00:00Z;2024-01-03T23:00:00Z;Case 6: EH consumption MP which does have an end date, even though parent MP has no end date for has_electrical_heating = true
+140000000000170208;electrical_heating;calculated;170000000000000208;2022-12-31T23:00:00Z;;Case 8
+060000000000170208;supply_to_grid;physical;170000000000000208;2023-08-31T22:00:00Z;;Case 8
+070000000000170208;consumption_from_grid;physical;170000000000000208;2023-08-31T22:00:00Z;;Case 8

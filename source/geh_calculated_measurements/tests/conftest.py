@@ -1,10 +1,13 @@
 import os
 import sys
+from datetime import datetime
+from decimal import Decimal
 from typing import Generator
 from unittest import mock
 
 import geh_common.telemetry.logging_configuration
 import pytest
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.telemetry.logging_configuration import configure_logging
 from geh_common.testing.dataframes import AssertDataframesConfiguration, configure_testing
 from geh_common.testing.delta_lake import create_database
@@ -12,8 +15,7 @@ from geh_common.testing.delta_lake.delta_lake_operations import create_table
 from geh_common.testing.spark.spark_test_session import get_spark_test_session
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsDatabaseDefinition
-from geh_calculated_measurements.database_migrations import MeasurementsCalculatedInternalDatabaseDefinition
+from geh_calculated_measurements.database_migrations import DatabaseNames
 from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from tests import (
     SPARK_CATALOG_NAME,
@@ -23,6 +25,23 @@ from tests import (
 from tests.external_data_products import ExternalDataProducts
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.testsession_configuration import TestSessionConfiguration
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """This hook is called after the test session has finished.
+
+    If no tests are found, pytest will exit with status code 5. This causes the
+    CI/CD pipeline to fail. This hook will set the exit status to 0 if no tests are found.
+    This is useful for the CI/CD pipeline to not fail if no tests are found.
+
+    This is a long debated feature of pytest, and unfortunately it has been decided
+    to keep it as is. See discussions here:
+    - https://github.com/pytest-dev/pytest/issues/2393
+    - https://github.com/pytest-dev/pytest/issues/812
+    - https://github.com/pytest-dev/pytest/issues/500
+    """
+    if exitstatus == 5:
+        session.exitstatus = 0
 
 
 # https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_collection_modifyitems
@@ -136,8 +155,8 @@ def migrations_executed(spark: SparkSession) -> None:
     # Databases are created in dh3infrastructure using terraform
     # So we need to create them in test environment
     for db in [
-        MeasurementsCalculatedInternalDatabaseDefinition.measurements_calculated_internal_database,
-        CalculatedMeasurementsDatabaseDefinition.DATABASE_NAME,
+        DatabaseNames.MEASUREMENTS_CALCULATED,
+        DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
     ]:
         spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
 
@@ -160,3 +179,35 @@ def external_dataproducts_created(
             table_name=dataproduct.view_name,
             schema=dataproduct.schema,
         )
+
+
+def seed_current_measurements(
+    spark: SparkSession,
+    metering_point_id: str,
+    observation_time: datetime,
+    quantity: Decimal = Decimal("1.0"),
+    metering_point_type: MeteringPointType = MeteringPointType.CONSUMPTION,
+    quantity_quality: QuantityQuality = QuantityQuality.MEASURED,
+) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+
+    measurements = spark.createDataFrame(
+        [
+            (
+                metering_point_id,
+                observation_time,
+                quantity,
+                quantity_quality.value,
+                metering_point_type.value,
+            )
+        ],
+        schema=schema,
+    )
+
+    measurements.write.saveAsTable(
+        f"{database_name}.{table_name}",
+        format="delta",
+        mode="append",
+    )

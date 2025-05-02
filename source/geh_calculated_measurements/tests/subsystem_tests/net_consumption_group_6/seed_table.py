@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTestFixture
+from geh_calculated_measurements.testing import JobTestFixture
 from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
 from tests.subsystem_tests.seed_gold_table import GoldTableRow
@@ -87,7 +87,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{net_consumption_metering_point_id}',
-        'net_consumption',
+        '{MeteringPointType.NET_CONSUMPTION.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
@@ -103,7 +103,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{supply_to_grid_metering_point_id}',
-        'supply_to_grid',
+        '{MeteringPointType.SUPPLY_TO_GRID.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
@@ -119,7 +119,7 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     VALUES (
         '{consumption_from_grid_metering_point_id}',
-        'consumption_from_grid',
+        '{MeteringPointType.CONSUMPTION_FROM_GRID.value}',
         '{parent_metering_point_id}',
         '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
         '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'

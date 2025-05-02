@@ -13,14 +13,12 @@ public class GetAggregatedByMonthRequestTests
         // Arrange
         const string meteringPointId = "123456789";
         const int year = 2025;
-        const int month = 1;
 
         // Act
-        var actual = new GetAggregatedByMonthRequest(meteringPointId, year, month);
+        var actual = new GetAggregatedByMonthRequest(meteringPointId, year);
 
         // Assert
         Assert.Equal(meteringPointId, actual.MeteringPointId);
         Assert.Equal(year, actual.Year);
-        Assert.Equal(month, actual.Month);
     }
 }
