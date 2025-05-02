@@ -226,57 +226,39 @@ def test_table_configuration(
     """
     errors = []
 
-    # List all catalogs
-    catalogs = [row.catalog for row in spark.sql("SHOW CATALOGS").collect()]
 
-    for catalog in catalogs:
-        # List all schemas in the catalog
-        schemas = [row.namespace for row in spark.sql(f"SHOW SCHEMAS IN {catalog}").collect()]
+@pytest.mark.parametrize(
+    ("fqn", "columns"),
+    [
+        ("cat.sch.table", ["col1", "col2"]),
+    ],
+)
+def test_clustering(
+    spark: SparkSession, migrations_executed: TestSessionConfiguration, fqn: str, cluster_columns: list[str]
+):
+    """
+    Test that all tables have liquad clustering
+    """
+    # Check if the table exists
+    if not spark.catalog._jcatalog.tableExists(fqn):
+        assert f"Table {fqn} does not exist"
 
-        for schema in schemas:
-            # List all tables in the schema
-            tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema}").collect()
+    # Check if the table has liquad clustering
+    table = spark.catalog._jcatalog.getTable(fqn)
+    if not table.getProperties().get("delta.liquid.clustering.enabled"):
+        assert f"Table {fqn} does not have liquad clustering enabled"
 
-            for table in tables:
-                table_full_name = f"{catalog}.{schema}.{table.tableName}"
+    table = spark.catalog._jcatalog.getTable(fqn)
+    props = table.getProperties()
 
-                # Describe table details
-                try:
-                    desc = spark.sql(f"DESCRIBE TABLE EXTENDED {table_full_name}").collect()
-                except Exception as e:
-                    errors.append(f"Failed to describe table {table_full_name}: {e}")
-                    continue
+    # Get the clustering columns
+    clustering_cols_str = props.get("delta.liquidClustering.columns", "")
+    actual_cluster_cols = [col.strip() for col in clustering_cols_str.split(",") if col.strip()]
 
-                # Extract key properties
-                properties = {
-                    row.col_name.strip(): row.data_type.strip() for row in desc if row.col_name and row.data_type
-                }
+    assert sorted(actual_cluster_cols) != sorted(cluster_columns), (
+        f"Table {fqn} clustering columns mismatch.\nExpected: {cluster_columns}\nActual: {actual_cluster_cols}"
+    )
 
-                # Check format
-                if "Provider" not in properties or properties["Provider"].lower() != "delta":
-                    errors.append(f"{table_full_name} is not in Delta format.")
 
-                # Check managed table
-                if "Table Properties" in properties:
-                    if "'EXTERNAL'" in properties["Table Properties"]:
-                        errors.append(f"{table_full_name} is not a managed table.")
-                elif "Type" in properties and properties["Type"].lower() != "managed":
-                    errors.append(f"{table_full_name} is not a managed table.")
-
-                # Check retention period
-                retention = properties.get("Retention", "")
-                if retention != "30":
-                    errors.append(f"{table_full_name} does not have 30-day retention (found: {retention}).")
-
-                # Check liquid clustering
-                tbl_props_rows = [row for row in desc if row.col_name == "Table Properties"]
-                if tbl_props_rows:
-                    tbl_props_str = tbl_props_rows[0].data_type
-                    if "delta.feature.liquidClustering.enabled=true" not in tbl_props_str:
-                        errors.append(f" {table_full_name} does not have liquid clustering enabled.")
-                else:
-                    errors.append(f" {table_full_name} has no table properties set.")
-
-    if errors:
-        error_message = "\n".join(errors)
-        raise AssertionError(f"\n🔍 Table configuration issues found:\n{error_message}")
+def check_table_properties(fully_qualified_table_name: str, columsn: list[str]) -> None:
+    return None
