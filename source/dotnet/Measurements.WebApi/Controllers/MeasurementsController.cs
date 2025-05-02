@@ -131,4 +131,25 @@ public class MeasurementsController(
             return NotFound(e.Message);
         }
     }
+
+    [MapToApiVersion(3.0)]
+    [HttpGet("aggregatedByYear")]
+    public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)
+    {
+        try
+        {
+            var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsync(request);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            logger.LogInformation(
+                "Aggregation by year not found for metering point id {MeteringPointId} for all years",
+                request.MeteringPointId.Sanitize());
+
+            return NotFound(e.Message);
+        }
+    }
 }

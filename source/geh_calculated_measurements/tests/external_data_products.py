@@ -13,7 +13,7 @@ from tests import DataProduct
 
 class ExternalDataProducts:
     """
-    This class contains all external data products used in the project.
+    This class contains all external data products used in the `geh_calculated_measurements` package.
 
     The intention is to have all data product dependencies defined in one place in the test code. This way, it is easier to bump for instance the version of a data product.
     """

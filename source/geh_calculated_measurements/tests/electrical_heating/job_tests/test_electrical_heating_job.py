@@ -7,12 +7,10 @@ from geh_common.domain.types import MeteringPointSubType, MeteringPointType
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-from geh_calculated_measurements.common.infrastructure import (
-    CalculatedMeasurementsInternalDatabaseDefinition,
-)
 from geh_calculated_measurements.electrical_heating.entry_point import execute
 from geh_calculated_measurements.testing import seed_current_measurements
 from tests.conftest import ExternalDataProducts
+from tests.internal_tables import InternalTables
 
 _PARENT_METERING_POINT_ID = "170000000000000202"
 _CHILD_METERING_POINT_ID = "140000000000170202"
@@ -77,6 +75,6 @@ def test_execute(
 
     # Assert
     actual = spark.read.table(
-        f"{CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME}.{CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME}"
+        f"{InternalTables.CALCULATED_MEASUREMENTS.database_name}.{InternalTables.CALCULATED_MEASUREMENTS.table_name}"
     ).where(F.col("orchestration_instance_id") == orchestration_instance_id)
     assert actual.count() > 0
