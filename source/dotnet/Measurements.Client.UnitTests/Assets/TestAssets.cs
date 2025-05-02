@@ -6,13 +6,15 @@ public static class TestAssets
 {
     public static string MeasurementsForSingleDay => GetJsonFile($"{nameof(MeasurementsForSingleDay)}.json");
 
-    public static string MeasurementsForMultipleDays => GetJsonFile($"{nameof(MeasurementsForMultipleDays)}.json");
+    public static string MeasurementsForDayWithHistoricalObservations => GetJsonFile($"{nameof(MeasurementsForDayWithHistoricalObservations)}.json");
 
-    public static string HourlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDay)}.json");
+    public static string MeasurementsAggregatedByDate => GetJsonFile($"{nameof(MeasurementsAggregatedByDate)}.json");
 
-    public static string HourlyMeasurementsAggregatedByDayMissingMeasurements => GetJsonFile($"{nameof(HourlyMeasurementsAggregatedByDayMissingMeasurements)}.json");
+    public static string MeasurementsAggregatedByDateMissingMeasurements => GetJsonFile($"{nameof(MeasurementsAggregatedByDateMissingMeasurements)}.json");
 
-    public static string QuarterlyMeasurementsAggregatedByDay => GetJsonFile($"{nameof(QuarterlyMeasurementsAggregatedByDay)}.json");
+    public static string MeasurementsAggregatedByMonth => GetJsonFile($"{nameof(MeasurementsAggregatedByMonth)}.json");
+
+    public static string MeasurementsAggregatedByYear => GetJsonFile($"{nameof(MeasurementsAggregatedByYear)}.json");
 
     private static string GetJsonFile(string filename)
     {

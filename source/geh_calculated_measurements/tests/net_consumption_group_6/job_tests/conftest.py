@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 
-import pytest
 from geh_common.data_products.electricity_market_measurements_input import (
     net_consumption_group_6_child_metering_points_v1,
     net_consumption_group_6_consumption_metering_point_periods_v1,
@@ -8,33 +7,39 @@ from geh_common.data_products.electricity_market_measurements_input import (
 from geh_common.pyspark.read_csv import read_csv_path
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.infrastructure.current_measurements.database_definitions import (
-    MeasurementsGoldDatabaseDefinition,
+from tests.conftest import MeteringPointType
+from tests.external_data_products import ExternalDataProducts
+from tests.net_consumption_group_6.job_tests import (
+    get_cenc_test_files_folder_path,
+    get_cnc_test_files_folder_path,
 )
-from geh_calculated_measurements.net_consumption_group_6.infrastucture.database_definitions import (
-    ElectricityMarketMeasurementsInputDatabaseDefinition,
-)
-from tests.net_consumption_group_6.job_tests import get_test_files_folder_path
 
 
-@pytest.fixture(autouse=True)
-def gold_table_seeded(
-    spark: SparkSession,
-    external_dataproducts_created: None,  # Used implicitly
-) -> None:
-    file_name = f"{get_test_files_folder_path()}/{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}-{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}.csv"
-    time_series_points = read_csv_path(spark, file_name, CurrentMeasurements.schema)
+def cenc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cenc_test_files_folder_path())
+    _seed_electricity_market_tables(spark)
+
+
+def cnc_seed(spark: SparkSession) -> None:
+    _seed_gold_table(spark, get_cnc_test_files_folder_path())
+    _seed_electricity_market_tables(spark)
+
+
+def _seed_gold_table(spark: SparkSession, file_path: str) -> None:
+    database_name = ExternalDataProducts.CURRENT_MEASUREMENTS.database_name
+    table_name = ExternalDataProducts.CURRENT_MEASUREMENTS.view_name
+    schema = ExternalDataProducts.CURRENT_MEASUREMENTS.schema
+    file_name = f"{file_path}/{database_name}-{table_name}.csv"
+    time_series_points = read_csv_path(spark, file_name, schema)
     time_series_points.write.saveAsTable(
-        f"{MeasurementsGoldDatabaseDefinition.DATABASE_NAME}.{MeasurementsGoldDatabaseDefinition.CURRENT_MEASUREMENTS}",
+        f"{database_name}.{table_name}",
         format="delta",
-        mode="overwrite",
+        mode="append",
     )
 
 
-@pytest.fixture
-def electricity_market_tables_seeded(spark) -> None:
-    # PARENT
+def _seed_electricity_market_tables(spark: SparkSession) -> None:
+    # Consumption
     df = spark.createDataFrame(
         [
             (
@@ -48,30 +53,30 @@ def electricity_market_tables_seeded(spark) -> None:
         ],
         schema=net_consumption_group_6_consumption_metering_point_periods_v1.schema,
     )
-    df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS}"
+    df.write.format("delta").mode("append").saveAsTable(
+        f"{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS.database_name}.{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CONSUMPTION_METERING_POINT_PERIODS.view_name}"
     )
 
-    # CHILDREN
+    # Child
     df = spark.createDataFrame(
         [
             (
                 150000001500170200,
-                "net_consumption",
+                MeteringPointType.NET_CONSUMPTION.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "060000001500170200",
-                "supply_to_grid",
+                MeteringPointType.SUPPLY_TO_GRID.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
             ),
             (
                 "070000001500170200",
-                "consumption_from_grid",
+                MeteringPointType.CONSUMPTION_FROM_GRID.value,
                 170000050000000201,
                 datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
                 datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
@@ -79,6 +84,6 @@ def electricity_market_tables_seeded(spark) -> None:
         ],
         schema=net_consumption_group_6_child_metering_points_v1.schema,
     )
-    df.write.format("delta").mode("overwrite").saveAsTable(
-        f"{ElectricityMarketMeasurementsInputDatabaseDefinition.DATABASE_NAME}.{ElectricityMarketMeasurementsInputDatabaseDefinition.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINT}"
+    df.write.format("delta").mode("append").saveAsTable(
+        f"{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINTS.database_name}.{ExternalDataProducts.NET_CONSUMPTION_GROUP_6_CHILD_METERING_POINTS.view_name}"
     )

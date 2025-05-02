@@ -175,21 +175,21 @@ def _calculate_period_limit(
             )
             | ~F.col("is_end_of_period")
         )
-    )
+    ).withColumn("is_end_of_period", F.lit(False))
 
     nsg2_end_of_period = _calculate_period_limit__net_settlement_group_2_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_2)
             & F.col("is_end_of_period")
         )
-    )
+    ).withColumn("is_end_of_period", F.lit(True))
 
     nsg6_end_of_period = _calculate_period_limit__net_settlement_group_6_end_of_period(
         periods_with_hourly_energy.where(
             (F.col(ContractColumnNames.net_settlement_group) == NetSettlementGroup.NET_SETTLEMENT_GROUP_6)
             & F.col("is_end_of_period")
         )
-    )
+    ).withColumn("is_end_of_period", F.lit(True))
 
     periods_with_daily_energy_and_limit = no_nsg_or_up2end.union(nsg2_end_of_period).union(nsg6_end_of_period)
 
@@ -352,6 +352,7 @@ def _aggregate_quantity_over_period(time_series_points: DataFrame) -> DataFrame:
         F.col(ContractColumnNames.date),
         F.col(ContractColumnNames.quantity),
         F.col(EphemeralColumnNames.period_energy_limit),
+        F.col("is_end_of_period"),
     )
 
 
@@ -380,4 +381,5 @@ def _impose_period_quantity_limit(time_series_points: DataFrame) -> DataFrame:
         F.col(EphemeralColumnNames.electrical_heating_metering_point_id).alias(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
         F.col(EphemeralColumnNames.period_energy_limit),
+        F.col("is_end_of_period"),
     )

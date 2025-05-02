@@ -166,10 +166,6 @@ csharp_prefer_simple_default_expression = true:error
 csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
-# Code block preferences
-csharp_prefer_braces = when_multiline:error
-csharp_braces_for_ifelse = required_for_multiline_statement
-
 # Unused value preferences
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion

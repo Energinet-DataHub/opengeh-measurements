@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Application.Responses;
+using Energinet.DataHub.Measurements.Domain;
 using NodaTime;
 using NodaTime.Extensions;
 
@@ -11,22 +12,41 @@ namespace Energinet.DataHub.Measurements.Infrastructure.Handlers;
 public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
     : IMeasurementsHandler
 {
-    public async Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest request)
+    public async Task<MeasurementsResponse> GetByPeriodAsync(GetByPeriodRequest request)
     {
         var foundMeasurements = await measurementsRepository
-            .GetMeasurementsAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
-            .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
+            .GetByPeriodAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
 
-        return GetMeasurementResponse.Create(foundMeasurements);
+        return MeasurementsResponse.Create(foundMeasurements);
     }
 
-    public async Task<GetAggregatedMeasurementsResponse> GetAggregatedMeasurementsAsync(GetAggregatedMeasurementsForMonthRequest request)
+    public async Task<MeasurementsAggregatedByDateResponse> GetAggregatedByDateAsync(GetAggregatedByDateRequest request)
     {
         var yearMonth = new YearMonth(request.Year, request.Month);
         var aggregatedMeasurements = await measurementsRepository
-            .GetAggregatedMeasurementsAsync(request.MeteringPointId, yearMonth)
-            .ToListAsync() ?? throw new MeasurementsNotFoundDuringPeriodException();
+            .GetAggregatedByDateAsync(request.MeteringPointId, yearMonth)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
 
-        return GetAggregatedMeasurementsResponse.Create(aggregatedMeasurements);
+        return MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+    }
+
+    public async Task<MeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest request)
+    {
+        var year = new Year(request.Year);
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByMonthAsync(request.MeteringPointId, year)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+
+        return MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
+    }
+
+    public async Task<MeasurementsAggregatedByYearResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest request)
+    {
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByYearAsync(request.MeteringPointId)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+
+        return MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements);
     }
 }

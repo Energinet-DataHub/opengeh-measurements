@@ -1,4 +1,5 @@
 orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_id;metering_point_type;observation_time;quantity;quantity_unit;quantity_quality;resolution;#comment
+electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2022-03-29 23:00:00Z;140000000000170201;electrical_heating;2022-03-30 22:00:00Z;0;kWh;calculated;PT1H;
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-29 23:00:00Z;2.1;kWh;calculated;PT1H;changing to summertime
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-30 00:00:00Z;0;kWh;calculated;PT1H;changing to summertime
 electrical_heating;00000000-0000-0000-0000-000000000001;test_id;2025-03-29 23:00:00Z;140000000000170201;electrical_heating;2025-03-30 01:00:00Z;0;kWh;calculated;PT1H;changing to summertime

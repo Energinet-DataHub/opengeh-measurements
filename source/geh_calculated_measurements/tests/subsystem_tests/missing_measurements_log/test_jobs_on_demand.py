@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from geh_calculated_measurements.testing.utilities.job_tester import JobTest, JobTestFixture
+from geh_calculated_measurements.testing import JobTest, JobTestFixture
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 METERING_POINT_ID = "170000060000000201"

@@ -9,15 +9,26 @@ namespace Energinet.DataHub.Measurements.Application.Handlers;
 public interface IMeasurementsHandler
 {
     /// <summary>
-    /// Get measurement matching request attributes.
+    /// Get measurements matching request attributes.
     /// </summary>
-    /// <param name="getMeasurementRequest"></param>
-    Task<GetMeasurementResponse> GetMeasurementAsync(GetMeasurementRequest getMeasurementRequest);
+    /// <param name="getByPeriodRequest"></param>
+    Task<MeasurementsResponse> GetByPeriodAsync(GetByPeriodRequest getByPeriodRequest);
 
     /// <summary>
-    /// Get aggregated measurements matching request attributes.
+    /// Get measurements aggregated by date matching request attributes.
     /// </summary>
-    /// <param name="getAggregatedMeasurementsForMonthRequest"></param>
-    Task<GetAggregatedMeasurementsResponse> GetAggregatedMeasurementsAsync(
-        GetAggregatedMeasurementsForMonthRequest getAggregatedMeasurementsForMonthRequest);
+    /// <param name="getAggregatedByDateRequest"></param>
+    Task<MeasurementsAggregatedByDateResponse> GetAggregatedByDateAsync(GetAggregatedByDateRequest getAggregatedByDateRequest);
+
+    /// <summary>
+    /// Get measurements aggregated by month matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedByMonthRequest"></param>
+    Task<MeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest getAggregatedByMonthRequest);
+
+    /// <summary>
+    /// Get measurements aggregated by year matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedByYearRequest"></param>
+    Task<MeasurementsAggregatedByYearResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest getAggregatedByYearRequest);
 }
