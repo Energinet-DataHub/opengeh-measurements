@@ -1,7 +1,7 @@
 [project]
 name = "geh_calculated_measurements"
 version = "0.1.0"
-description = "A combined package for capacity settlement, electrical heating and missing measurements log."
+description = "A combined package for capacity settlement, electrical heating, missing measurements log and measurement report."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -22,6 +22,7 @@ execute_capacity_settlement = "geh_calculated_measurements.capacity_settlement.e
 execute_net_consumption_group_6_cenc = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cenc_daily"
 execute_net_consumption_group_6_cnc = "geh_calculated_measurements.net_consumption_group_6.entry_point:execute_cnc_daily"
 execute_missing_measurements_log = "geh_calculated_measurements.missing_measurements_log.entry_point:execute"
+execute_measurement_report = "geh_calculated_measurements.measurement_report.entry_point:execute"
 
 migrate = "geh_calculated_measurements.database_migrations.entry_point:migrate"
 
