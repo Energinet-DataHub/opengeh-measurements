@@ -10,4 +10,6 @@ TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,
     delta.deletedFileRetentionDuration = 'interval 30 days'
+    delta.isClusteredBy = true  -- Enable liquad clustering
 )
+CLUSTER BY (orchestration_instance_id, execution_time);  -- right columns?
