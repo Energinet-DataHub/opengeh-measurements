@@ -18,9 +18,7 @@ from databricks.sdk.service.jobs import BaseJob, Run, RunResultState, Wait
 from databricks.sdk.service.sql import StatementResponse, StatementState
 
 from geh_calculated_measurements.common.domain import ContractColumnNames
-from geh_calculated_measurements.common.infrastructure.database_definitions import (
-    CalculatedMeasurementsInternalDatabaseDefinition,
-)
+from tests.internal_tables import InternalTables
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
 
@@ -205,8 +203,8 @@ class JobTest(abc.ABC):
 
     @pytest.mark.order(4)
     def test__and_then_data_is_written_to_delta(self, fixture: JobTestFixture):
-        database = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
-        table = CalculatedMeasurementsInternalDatabaseDefinition.MEASUREMENTS_TABLE_NAME
+        database = InternalTables.CALCULATED_MEASUREMENTS.database_name
+        table = InternalTables.CALCULATED_MEASUREMENTS.table_name
         self.assert_data_written_to_delta(fixture, database, table)
 
     def assert_data_written_to_delta(self, fixture: JobTestFixture, database: str, table: str) -> None:

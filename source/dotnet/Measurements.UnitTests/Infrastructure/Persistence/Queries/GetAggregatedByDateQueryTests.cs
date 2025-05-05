@@ -58,11 +58,9 @@ public class GetAggregatedByDateQueryTests
 
     private static string CreateGroupByStatement()
     {
-        const string europeCopenhagenTimeZone = "Europe/Copenhagen";
-
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))" +
-               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{europeCopenhagenTimeZone}'))";
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
     }
 }

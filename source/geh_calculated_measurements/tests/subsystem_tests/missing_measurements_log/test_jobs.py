@@ -3,8 +3,8 @@ from datetime import timedelta
 
 import pytest
 
-from geh_calculated_measurements.common.infrastructure import CalculatedMeasurementsInternalDatabaseDefinition
 from geh_calculated_measurements.testing import JobTest, JobTestFixture
+from tests.internal_tables import InternalTables
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 from tests.subsystem_tests.missing_measurements_log.seed_table import PERIOD_START, delete_seeded_data, seed_table
 
@@ -40,6 +40,6 @@ class TestMissingMeasurementsLog(JobTest):
         """
         Test that data is written to the delta table.
         """
-        database_name = CalculatedMeasurementsInternalDatabaseDefinition.DATABASE_NAME
-        table_name = CalculatedMeasurementsInternalDatabaseDefinition.MISSING_MEASUREMENTS_LOG_TABLE_NAME
+        database_name = InternalTables.MISSING_MEASUREMENTS_LOG.database_name
+        table_name = InternalTables.MISSING_MEASUREMENTS_LOG.table_name
         self.assert_data_written_to_delta(fixture, database_name, table_name)

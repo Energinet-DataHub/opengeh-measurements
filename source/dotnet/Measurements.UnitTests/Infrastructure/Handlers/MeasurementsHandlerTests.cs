@@ -58,7 +58,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetByPeriodAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetByPeriodAsync(request));
     }
 
     [Theory]
@@ -102,7 +102,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetAggregatedByDateAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsync(request));
     }
 
     [Theory]
@@ -145,7 +145,50 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundDuringPeriodException>(() => sut.GetAggregatedByMonthAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsync(request));
+    }
+
+    [Theory]
+    [InlineAutoData]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        const int year = 2021;
+        var yearMonth = new YearMonth(year, 1);
+        var request = new GetAggregatedByYearRequest("123456789");
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(year, actualAggregations.Year);
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByYearRequest("123456789");
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByYearAsync(request));
     }
 
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)

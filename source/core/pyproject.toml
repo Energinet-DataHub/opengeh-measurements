@@ -6,9 +6,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings>=2.7.1",
-    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.7.0#subdirectory=source/geh_common",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.8.10#subdirectory=source/geh_common",
     "pydantic>=2.10.6",
-    "protobuf>=6.30.2",
+    "protobuf>=3.20,<6",
 ]
 
 [project.scripts]
@@ -33,7 +33,9 @@ dev = [
     "azure-eventhub>=5.14.0",
     "pytest-bdd>=8.1.0",
     "pytest-bdd-report>=1.0.1",
+    "protobuf>=3.20,<6",
     "pytest-mock>=3.14.0",
+    "pytest-xdist>=3.6.1",
 ]
 
 [build-system]
@@ -53,6 +55,9 @@ addopts = [
     "-ra",
     "-vv",
     "-s",
+    # pytest-xdist options
+    "-n=auto",
+    "--dist=load",
 ]
 
 [tool.coverage.report]
