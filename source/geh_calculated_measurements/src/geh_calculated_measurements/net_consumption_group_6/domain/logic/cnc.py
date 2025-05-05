@@ -287,14 +287,24 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
         .select(
             "*",
             F.posexplode(
-                F.concat(
-                    F.array(F.col(ContractColumnNames.period_from_date)),
-                    F.sequence(
-                        F.col("next_settlement_date"),
-                        F.col(ContractColumnNames.period_to_date),
-                        F.expr("INTERVAL 1 YEAR"),
+                F.when(
+                    F.col("next_settlement_date") < F.col(ContractColumnNames.period_to_date),
+                    # When condition is true, concatenate all three arrays
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.sequence(
+                            F.col("next_settlement_date"),
+                            F.col(ContractColumnNames.period_to_date),
+                            F.expr("INTERVAL 1 YEAR"),
+                        ),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
                     ),
-                    F.array(F.col(ContractColumnNames.period_to_date)),
+                ).otherwise(
+                    # Otherwise, just concatenate the period_from_date and period_to_date arrays
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
+                    )
                 )
             ).alias("index", "period_start"),
         )
