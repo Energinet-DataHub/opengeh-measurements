@@ -14,11 +14,26 @@ notes: |
   smrd: 3
                    |2024   |smrd      					           |2025   |smrd   |today
                    |_______|_______________________________________|_______|_______
-  All MPs start:	   |-------------------------------------------------------...
+  MPs period start:	   |-------------------------------------------------------...
   Measurement data:      +   +   +   +   +   +   +   +   +   +   +   +   +   +
   Period 1 (cnc)   	   |---|
-  Period 2 (cnc)           |-------------------------------------------|
-  Period 3 (cenc)                                                      |-------|
+  Period 2 (cnc)           |-----------------------------------------------|
+  Period 3 (cenc)                                                          |-------|
+
+  CASE 3:
+                          |2024                                     |smrd |2025           |today
+                          |_______________________________________________|_______________
+  smrd: 12
+  MP period 1:                                              |--|
+  MP period 2:                                                 |-----------------|
+  MP period 3 (cenc):                                                            |--------|
+  Period 1 (cnc)   	                                        |--|
+  Period 2 (cnc)                                               |----|
+  Period 3 (cnc)                                                    |------------|
+  Period 4 (cenc)                                                                |--------|
+  Measurement data:                                          +  ++    ++           ++
+
+
 
 cases_tested:
 - Periode = 1 år
@@ -26,11 +41,11 @@ cases_tested:
  - smrd = 1
  - smrd != 1
  - Åben periode, der går henover smrd
-
+ - nettoforbrug aldrig < 0
 
 Mangler dækning
 
- - nettoforbrug aldrig < 0
+
 
  - Vi har D06, men ikke D07 måledata for et time i perioden
  - Vi har D07, men ikke D06 måledata for et time i perioden
