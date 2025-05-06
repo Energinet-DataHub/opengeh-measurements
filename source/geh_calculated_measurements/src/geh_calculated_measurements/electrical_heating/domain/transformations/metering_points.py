@@ -23,14 +23,17 @@ def get_joined_metering_point_periods_in_local_time(
     execution_start_datetime: datetime,
 ) -> DataFrame:
     execution_start_datetime_local_time = execution_start_datetime.astimezone(ZoneInfo(time_zone))
+    # Convert to dataframes
+    consumption_metering_point_periods = consumption_metering_point_periods.df
+    child_metering_points = child_metering_points.df
 
-    consumption_metering_point_periods = add_settlement_year_end_datetime(
-        consumption_metering_point_periods.df,
+    consumption_metering_point_periods = metering_point_set_end_settlement_and_to_date(
+        consumption_metering_point_periods,
         execution_start_datetime_local_time,
     )
 
     metering_point_periods = _join_children_to_parent_metering_point(
-        child_metering_points.df,
+        child_metering_points,
         consumption_metering_point_periods,
     )
 
@@ -54,21 +57,21 @@ def get_joined_metering_point_periods_in_local_time(
     return metering_point_periods
 
 
-def add_settlement_year_end_datetime(
+def metering_point_set_end_settlement_and_to_date(
     metering_point_periods: DataFrame,
     execution_start_datetime_local_time: datetime,
 ) -> DataFrame:
-    """Add the settlement year end datetime to the metering point periods."""
+    """Add settlement year end and use it to clam period_to_date."""
     return metering_point_periods.select(
         "*",
         _settlement_year_end_datetime(
             F.col(ContractColumnNames.settlement_month), execution_start_datetime_local_time
         ).alias("settlement_year_end"),
     ).select(
-        F.col("metering_point_id"),
-        F.col("net_settlement_group"),
-        F.col("settlement_month"),
-        F.col("period_from_date"),
+        F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.net_settlement_group),
+        F.col(ContractColumnNames.settlement_month),
+        F.col(ContractColumnNames.period_from_date),
         F.col("settlement_year_end"),
         F.coalesce(
             F.col(ContractColumnNames.period_to_date),
