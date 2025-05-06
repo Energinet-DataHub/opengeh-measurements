@@ -2,7 +2,7 @@
 
 public static class AggregateSqlStatement
 {
-    public static string GetAggregateSqlStatement(string catalogName, string schemaName, string groupByStatement)
+    public static string GetAggregateSqlStatement(string catalogName, string schemaName, string whereStatement, string groupByStatement)
     {
         return
             $"with most_recent as (" +
@@ -10,9 +10,7 @@ public static class AggregateSqlStatement
             $"count(*) over (partition by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}) as row_count, " +
             $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
             $"from {catalogName}.{schemaName}.{MeasurementsGoldConstants.TableName} " +
-            $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
-            $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
+            $"{whereStatement} " +
             $") " +
             $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
             $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +

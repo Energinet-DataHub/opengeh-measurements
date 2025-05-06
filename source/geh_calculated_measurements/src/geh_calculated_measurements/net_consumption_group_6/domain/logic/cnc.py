@@ -53,6 +53,8 @@ def cnc(
     filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
+    parent_child_joined = close_open_period(parent_child_joined)
+
     metering_points = _filter_periods_by_cut_off(parent_child_joined)
 
     periods = _split_periods_by_settlement_month(metering_points)
@@ -151,6 +153,51 @@ def _join_child_to_consumption(
     )
 
     return parent_child_joined
+
+
+def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
+    """Close open periods in the parent-child joined DataFrame.
+
+    This function closes open periods by setting the period_to_date to the execution_start_datetime
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - metering_point_type: Type of the metering point
+            - parent_metering_point_id: ID of the parent metering point
+            - period_from_date: Start date of the period
+            - period_to_date: End date of the period
+            - settlement_month: Settlement month
+            - execution_start_datetime: Execution start date and time
+            - period_to_date: End date of the period
+    """
+    return parent_child_joined.select(
+        F.col(f"{ContractColumnNames.metering_point_id}"),
+        F.col(f"{ContractColumnNames.metering_point_type}"),
+        F.col(f"{ContractColumnNames.parent_metering_point_id}"),
+        F.col(f"{ContractColumnNames.period_from_date}"),
+        F.col(f"{ContractColumnNames.settlement_month}"),
+        F.col("execution_start_datetime"),
+        F.when(
+            F.col(ContractColumnNames.period_to_date).isNull(),
+            F.when(
+                F.month(F.col("execution_start_datetime")) >= F.col(ContractColumnNames.settlement_month),
+                F.make_date(
+                    F.year(F.col("execution_start_datetime")),
+                    F.col(ContractColumnNames.settlement_month),
+                    F.lit(1),
+                ),
+            ).otherwise(
+                F.make_date(
+                    F.year(F.col("execution_start_datetime")) - F.lit(1),
+                    F.col(ContractColumnNames.settlement_month),
+                    F.lit(1),
+                )
+            ),
+        )
+        .otherwise(F.col(ContractColumnNames.period_to_date))
+        .alias(ContractColumnNames.period_to_date),
+    )
 
 
 def _filter_periods_by_cut_off(parent_child_joined: DataFrame) -> DataFrame:
