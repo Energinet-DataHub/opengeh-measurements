@@ -1,0 +1,20 @@
+"Net Consumption Group 6 Tests":
+  "Period is 1 year": true
+  "Period is < 1 year": true
+  "Smrd is 1": true
+  "Smrd is not 1": true
+  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)": true
+  "Sum for D06 is aggregated, even if sum for D07 is missing": true
+  "Sum for D07 is aggregated, even if sum for D06 is missing": true
+
+  "cnc calculation":
+    "calculation is cnc": true
+
+  "cenc calculation":
+    "calculation is cenc": true
+
+
+Mangler dækning
+ - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
+ - filtrering
+	- skriver ned, selvom værdi er den samme som cenc

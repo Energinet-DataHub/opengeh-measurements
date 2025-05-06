@@ -1,0 +1,40 @@
+notes: |
+  ## PURPOSE
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 0:
+                                    |today
+                            |________
+  MP period 1:              |------|
+  MP period 3 (cenc):              |-
+  Existing D15 data:        +++++++
+  No new D15 data should be written...
+
+
+  CASE 1:
+                                           |today
+                            |_______________
+  MP period 1:              |------|
+  MP period 2:                     |------|
+  MP period 3 (cenc):                     |-
+  Existing D15 data:        +++++++++++++++
+  New D06/D07 data:            ++
+  New D15 data:             +++++++
+
+  CASE 2: Period change back in time
+                            |2024   |smrd    |2025          |today
+                            |_______|_______________________
+  Measurement data:              ++   ++             ++
+  Period 1 (cnc)               |----|
+  Old period 2 (cenc)               |----------------------_
+  Existing D15 values (cnc)    +++++
+  Existing D15 values (cenc)        ++++++++++++++++++++++++
+
+  New period 2 (cnc)                |--------------|
+  New period 2 (cenc)                              |--------
+  New D15 values                    +++++++++++++++
+
+
+cases_tested:
+

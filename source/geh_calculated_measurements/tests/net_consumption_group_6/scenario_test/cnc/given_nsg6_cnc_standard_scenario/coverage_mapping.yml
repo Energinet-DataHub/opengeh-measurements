@@ -3,15 +3,13 @@ notes: |
 
   ## DESIGN CONSIDERATIONS
 
-  CASE 1:
+  CASE 0:
                                                           |today
                           |2024___________________|2025___
-  smrd: 1
   All MPs start/end:      |-----------------------|
   Measurement data:        + + + + + + + + + + + +
 
-  CASE 2: Combined cnc and cenc calculation
-  smrd: 3
+  CASE 1: Combined cnc and cenc calculation
                    |2024   |smrd      					           |2025   |smrd   |today
                    |_______|_______________________________________|_______|_______
   MPs period start:	   |-------------------------------------------------------...
@@ -20,10 +18,9 @@ notes: |
   Period 2 (cnc)           |-----------------------------------------------|
   Period 3 (cenc)                                                          |-------|
 
-  CASE 3:
+  CASE 2:
                           |2024                                     |smrd |2025           |today
                           |_______________________________________________|_______________
-  smrd: 12
   MP period 1:                                              |--|
   MP period 2:                                                 |-----------------|
   MP period 3 (cenc):                                                            |--------|
@@ -33,22 +30,12 @@ notes: |
   Period 4 (cenc)                                                                |--------|
   Measurement data:                                          +  ++    ++           ++
 
-
-
 cases_tested:
-- Periode = 1 år
- - Periode < 1 år
- - smrd = 1
- - smrd != 1
- - Åben periode, der går henover smrd
- - nettoforbrug aldrig < 0
-
-Mangler dækning
-
-
-
- - Vi har D06, men ikke D07 måledata for et time i perioden
- - Vi har D07, men ikke D06 måledata for et time i perioden
- - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
- - filtrering
-	- skriver ned, selvom værdi er den samme som cenc
+  "Period is 1 year"
+  "Period is < 1 year"
+  "Smrd is 1"
+  "Smrd is not 1"
+  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
+  "Sum for D06 is aggregated, even if sum for D07 is missing"
+  "Sum for D07 is aggregated, even if sum for D06 is missing"
+  "calculation is cnc"
