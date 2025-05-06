@@ -5,15 +5,13 @@ using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
-using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
 
 public class MeasurementsClient(
     IHttpClientFactory httpClientFactory,
-    IMeasurementsForDayResponseParser measurementsForDayResponseParser,
-    IJsonSerializer jsonSerializer)
+    IMeasurementsForDayResponseParser measurementsForDayResponseParser)
     : IMeasurementsClient
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
@@ -76,8 +74,9 @@ public class MeasurementsClient(
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
+        var options = new Serialization.JsonSerializer().Options;
 
-        return jsonSerializer.Deserialize<IEnumerable<T>>(pointElement);
+        return pointElement.Deserialize<IEnumerable<T>>(options) ?? throw new InvalidOperationException();
     }
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)

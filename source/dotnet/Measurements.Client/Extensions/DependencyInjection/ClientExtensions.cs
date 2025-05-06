@@ -43,7 +43,6 @@ public static class ClientExtensions
 
         services.AddScoped<IMeasurementsForDayResponseParser, MeasurementsForDayResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
-        services.AddScoped<IJsonSerializer, JsonSerializer>();
 
         return services;
     }
