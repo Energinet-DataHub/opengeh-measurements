@@ -6,6 +6,7 @@ using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public const string ValidMeteringPointId = "1234567890123";
+    public const string ValidMeteringPointId = "123456789012345678";
     public const string InvalidMeteringPointId = "invalid metering point id";
     public const string NotExistingMeteringPointId = "9988776655443";
 
@@ -112,7 +113,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
-            ("9876543210123", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
+            ("987654321012345678", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
         };
 
         return [.. dates.SelectMany(CreateRow)];

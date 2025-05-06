@@ -87,7 +87,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidUnit_ReturnInternalServerError()
     {
         // Arrange
-        const string expectedMeteringPointId = "9876543210123";
+        const string expectedMeteringPointId = "987654321012345678";
         const string startDate = "2022-06-14T22:00:00Z"; // On this date, the fixture inserts a measurement with invalid unit
         const string endDate = "2022-06-15T22:00:00Z";
         var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
