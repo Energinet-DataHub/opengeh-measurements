@@ -49,4 +49,13 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
 
         return MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
     }
+
+    public async Task<MeasurementsAggregatedByYearResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest request)
+    {
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByYearAsync(request.MeteringPointId)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+
+        return MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements);
+    }
 }

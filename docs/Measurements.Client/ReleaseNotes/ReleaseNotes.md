@@ -1,5 +1,11 @@
 # Measurements.Client Release Notes
 
+## Version 5.0.0
+
+- Added method to get aggregated measurements for all years.
+- GetYearlyAggregateByMonthsQuery renamed to GetYearlyAggregateByMonthQuery.
+- Unused properties of MeasurementAggregationByMonthDto removed.
+
 ## Version 4.0.0
 
 - Aggregated Measurements endpoint routes renamed.
