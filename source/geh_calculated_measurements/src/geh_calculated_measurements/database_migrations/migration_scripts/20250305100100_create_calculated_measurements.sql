@@ -13,7 +13,5 @@ USING DELTA
 TBLPROPERTIES (
     delta.autoOptimize.optimizeWrite = true,
     delta.autoOptimize.autoCompact = false,
-    delta.deletedFileRetentionDuration = 'interval 30 days',
-    delta.isClusteredBy = true  -- Enable liquad clustering
+    delta.deletedFileRetentionDuration = 'interval 30 days'
 )
-CLUSTER BY (orchestration_instance_id, transaction_id, metering_point_id, transaction_creation_datetime)

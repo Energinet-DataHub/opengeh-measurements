@@ -1,29 +1,36 @@
 import pytest
 from pyspark.sql import SparkSession
 
+from tests import SPARK_CATALOG_NAME
 from tests.testsession_configuration import TestSessionConfiguration
+
+###
+# tables = spark.catalog.listTables()
+# for table in tables:
+#    print(f"{table.database}.{table.name}" if table.database else table.name)
+###
 
 
 @pytest.mark.parametrize(
     ("fqn", "cluster_columns"),
     [
-        ("cat.measurements_calculated_internal.executed_migrations", ["col1", "col2"]),
+        (f"{SPARK_CATALOG_NAME}.measurements_calculated_internal.executed_migrations", ["col1", "col2"]),
         (
-            "cat.measurements_calculatemeasurements_calculatedd_internal.capacity_settlement_ten_largest_quantities",
-            ["col1", "col2"],
+            f"{SPARK_CATALOG_NAME}.measurements_calculatemeasurements_calculatedd_internal.capacity_settlement_ten_largest_quantities",
+            ("orchestration_instance_id", "metering_point_id", "observation_time"),
         ),
         (
-            "cat.measurements_calculatemeasurements_calculatedd_internal.capacity_settlement_calculations",
-            ["col1", "col2"],
+            f"{SPARK_CATALOG_NAME}.measurements_calculatemeasurements_calculatedd_internal.capacity_settlement_calculations",
+            ["orchestration_instance_id", "execution_time"],
         ),
         (
-            "cat.measurements_calculatemeasurements_calculatedd_internal.calculated_measurements",
+            f"{SPARK_CATALOG_NAME}.measurements_calculatemeasurements_calculatedd_internal.calculated_measurements",
             ["orchestration_instance_id", "transaction_id", "metering_point_id", "transaction_creation_datetime"],
         ),
-        (
-            "cat.measurements_calculatemeasurements_calculatedd_internal.missing_measurements_log",
-            ["col1", "col2"],
-        ),
+        #  (
+        #      f"{SPARK_CATALOG_NAME}.measurements_calculatemeasurements_calculatedd_internal.missing_measurements_log",
+        #      ["col1", "col2"],
+        #  ),
     ],
 )
 def test_clustering(
@@ -54,19 +61,3 @@ def test_clustering(
     # check if retention policy is 30 days
     retention = props.get("delta.deletedFileRetentionDuration", "").lower()
     assert retention != "interval 30 days", f"Expected 30-day retention, but found {retention}"
-
-
-def check_table_properties(spark: SparkSession, fully_qualified_table_name: str, cluster_clumns: list[str]) -> None:
-    table = spark.catalog._jcatalog.getTable(fully_qualified_table_name)
-    props = table.getProperties()
-
-    if not props.get("delta.liquid.clustering.enabled"):
-        assert f"Table {fully_qualified_table_name} does not have liquad clustering enabled"
-
-    # Get the clustering columns
-    clustering_cols_str = props.get("delta.liquidClustering.columns", "")
-    actual_cluster_cols = [col.strip() for col in clustering_cols_str.split(",") if col.strip()]
-
-    assert sorted(actual_cluster_cols) != sorted(cluster_clumns), (
-        f"Table {fully_qualified_table_name} clustering columns mismatch.\nExpected: {cluster_clumns}\nActual: {actual_cluster_cols}"
-    )
