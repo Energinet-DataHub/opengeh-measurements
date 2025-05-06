@@ -12,4 +12,4 @@ TBLPROPERTIES (
     delta.deletedFileRetentionDuration = 'interval 30 days'
     delta.isClusteredBy = true  -- Enable liquad clustering
 )
-CLUSTER BY (orchestration_instance_id, observation_time);  -- right columns?
+CLUSTER BY (orchestration_instance_id, metering_point_id, observation_time);  -- right columns?
