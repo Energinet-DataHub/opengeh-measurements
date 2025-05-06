@@ -107,8 +107,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             ("1234567890", new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 31), new LocalDate(2022, 2, 1), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 2, 1), new LocalDate(2022, 2, 2), "measured", false, "PTUKNOWN"),
+            ("1234567890", new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
             ("9876543210", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
         };
 
