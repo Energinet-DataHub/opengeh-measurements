@@ -14,6 +14,11 @@ public interface IMeasurementsClient
     Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Get current measurements for a specified period.
+    /// </summary>
+    Task<CurrentMeasurementDto> GetByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Get measurements aggregated by date for a specified month.
     /// </summary>
     Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default);
@@ -27,4 +32,9 @@ public interface IMeasurementsClient
     /// Get measurements aggregated by year for all years.
     /// </summary>
     Task<IEnumerable<MeasurementAggregationByYearDto>> GetAggregateByYearAsync(GetAggregateByYearQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get measurements aggregated for a specified period.
+    /// </summary>
+    Task<MeasurementAggregationByPeriodDto> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default);
 }

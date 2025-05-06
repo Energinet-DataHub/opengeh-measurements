@@ -1,5 +1,10 @@
 # Measurements.Client Release Notes
 
+## Version 5.1.0
+
+- Added unimplemented method to get current measurements for a period.
+- Added unimplemented method to get aggregated measurements for a period.
+
 ## Version 5.0.0
 
 - Added method to get aggregated measurements for all years.
