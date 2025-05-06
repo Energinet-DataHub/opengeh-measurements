@@ -30,7 +30,7 @@ from geh_calculated_measurements.common.infrastructure import (
 def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> None:
     # Create repositories to obtain data frames
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
-    electricity_market_repository = ElectricityMarketRepository(spark, args.electricity_market_data_path)
+    electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
