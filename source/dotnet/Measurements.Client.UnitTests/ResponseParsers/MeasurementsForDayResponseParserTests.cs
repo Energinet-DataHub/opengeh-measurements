@@ -1,11 +1,8 @@
 ﻿using System.Net;
-using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
-using Energinet.DataHub.Measurements.Client.Serialization;
 using Energinet.DataHub.Measurements.Client.UnitTests.Assets;
-using Moq;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests.ResponseParsers;
