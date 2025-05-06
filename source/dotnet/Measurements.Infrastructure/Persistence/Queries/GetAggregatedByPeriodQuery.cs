@@ -6,18 +6,16 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
 
-public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, Instant to, DatabricksSchemaOptions databricksSchemaOptions)
+public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, DatabricksSchemaOptions databricksSchemaOptions)
     : DatabricksStatement
 {
-    private const string EuropeCopenhagenTimeZone = "Europe/Copenhagen";
-
     protected override string GetSqlStatement()
     {
         return AggregateSqlStatement.GetAggregateSqlStatement(
             databricksSchemaOptions.CatalogName,
             databricksSchemaOptions.SchemaName,
             CreateGroupByStatement(),
-            GroupByMeteringPointAndObservationTime());
+            GroupByMeteringPointAndObservationTime(aggregation));
     }
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
@@ -33,11 +31,30 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
 
     private static string CreateGroupByStatement()
     {
-        return $"select 42";
+        return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} in (:{QueryParameterConstants.MeteringPointIdParameter}) " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
+               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter}";
     }
 
-    private static string GroupByMeteringPointAndObservationTime()
+    private static string GroupByMeteringPointAndObservationTime(Aggregation aggregation)
     {
-        return "todo";
+        var windowTimeStatement = aggregation switch
+        {
+            Aggregation.Quarter => "15 MINUTES",
+            Aggregation.Hour => "1 HOUR",
+            _ => string.Empty,
+        };
+
+        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
+       $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+       (aggregation <= Aggregation.Month
+           ? $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
+           : string.Empty) +
+       (aggregation <= Aggregation.Day
+           ? $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
+           : string.Empty) +
+       (aggregation <= Aggregation.Hour
+           ? $", window(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{windowTimeStatement}')"
+           : string.Empty);
     }
 }
