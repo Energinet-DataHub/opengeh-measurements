@@ -16,7 +16,8 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
         return AggregateSqlStatement.GetAggregateSqlStatement(
             databricksSchemaOptions.CatalogName,
             databricksSchemaOptions.SchemaName,
-            CreateGroupByStatement());
+            CreateGroupByStatement(),
+            GroupByMeteringPointAndObservationTime());
     }
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
@@ -33,5 +34,12 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
     private static string CreateGroupByStatement()
     {
         return $"select 42";
+    }
+
+    private static string GroupByMeteringPointAndObservationTime()
+    {
+        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
     }
 }
