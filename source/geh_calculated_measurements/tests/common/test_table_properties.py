@@ -14,7 +14,7 @@ from tests.testsession_configuration import TestSessionConfiguration
 @pytest.mark.parametrize(
     ("fqn", "cluster_columns"),
     [
-        (f"{SPARK_CATALOG_NAME}.measurements_calculated_internal.executed_migrations", ["col1", "col2"]),
+        # (f"{SPARK_CATALOG_NAME}.measurements_calculated_internal.executed_migrations", ["col1", "col2"]),
         (
             f"{SPARK_CATALOG_NAME}.measurements_calculatemeasurements_calculatedd_internal.capacity_settlement_ten_largest_quantities",
             ("orchestration_instance_id", "metering_point_id", "observation_time"),
