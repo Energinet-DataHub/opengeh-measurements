@@ -3,4 +3,4 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Requests;
 
-public record GetAggregatedByPeriodRequest(string MeteringPointIds, Instant DateFrom, Instant DateTo, Aggregation Aggregation);
+public record GetAggregatedByPeriodRequest(string MeteringPointIds, Instant From, Instant To, Aggregation Aggregation);

@@ -41,9 +41,9 @@ public class MeasurementsRepository(
             yield return new AggregatedMeasurementsResult(row);
     }
 
-    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(string meteringPointId, Instant dateFrom, Instant dateTo, Aggregation aggregation)
+    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByPeriodAsync(string meteringPointId, Instant from, Instant to, Aggregation aggregation)
     {
-        var statement = new GetAggregatedByPeriodQuery(meteringPointId, dateFrom, dateTo, databricksSchemaOptions.Value);
+        var statement = new GetAggregatedByPeriodQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
         var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
 
         await foreach (var row in rows)
