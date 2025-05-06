@@ -39,8 +39,6 @@ public class GetAggregatedByMonthQuery(string meteringPointId, Year year, Databr
 
     private static string GroupByMeteringPointAndObservationTime()
     {
-        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
+        return "todo";
     }
 }
