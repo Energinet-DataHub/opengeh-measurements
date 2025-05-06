@@ -287,9 +287,11 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
         .select(
             "*",
             F.posexplode(
+                # Create settlement periods by exploding a sequence of settlement dates
                 F.when(
                     F.col("next_settlement_date") < F.col(ContractColumnNames.period_to_date),
-                    # When condition is true, concatenate all three arrays
+                    # When consumption metering point period overlaps with settlement date:
+                    # add seqence of settlement dates in between period_from_date and period_to_date
                     F.concat(
                         F.array(F.col(ContractColumnNames.period_from_date)),
                         F.sequence(
@@ -300,7 +302,7 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
                         F.array(F.col(ContractColumnNames.period_to_date)),
                     ),
                 ).otherwise(
-                    # Otherwise, just concatenate the period_from_date and period_to_date arrays
+                    # When consumption metering point period does not overlaps with settlement date:
                     F.concat(
                         F.array(F.col(ContractColumnNames.period_from_date)),
                         F.array(F.col(ContractColumnNames.period_to_date)),
