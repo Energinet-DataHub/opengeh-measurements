@@ -320,8 +320,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
-        var url = CreateGetAggregatedMeasurementsByYearUrl(expectedMeteringPointId);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(WebApiFixture.ValidMeteringPointId);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
@@ -139,14 +140,15 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByYear_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IJsonSerializer> jsonSerializer)
     {
         // Arrange
         var query = new GetAggregateByYearQuery("1234567890");
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByYear);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object);
+        var sut = new MeasurementsClient(httpClientFactoryMock.Object, measurementsForDayResponseParser.Object, jsonSerializer.Object);
 
         // Act
         var actual = (await sut.GetAggregateByYearAsync(query, CancellationToken.None)).ToList();
