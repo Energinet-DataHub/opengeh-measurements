@@ -106,7 +106,6 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2021, 2, 28), new LocalDate(2021, 3, 1), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),

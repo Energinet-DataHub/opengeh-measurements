@@ -24,7 +24,7 @@ public class GetAggregatedByDateQuery(string meteringPointId, YearMonth yearMont
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, meteringPointId),
             QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, startDate.ToUtcString()),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, endDate.PlusDays(1).ToUtcString())
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, endDate.ToUtcString())
         ];
 
         return parameters;
