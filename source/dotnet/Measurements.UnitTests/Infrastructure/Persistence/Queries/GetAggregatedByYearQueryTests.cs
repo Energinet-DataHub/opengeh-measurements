@@ -1,29 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence.Queries;
-using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.UnitTests.Infrastructure.Persistence.Queries;
 
 [UnitTest]
-public class GetAggregatedByDateQueryTests
+public class GetAggregatedByYearQueryTests
 {
     [Theory]
     [AutoData]
-    public void ToString_Returns_ExpectedResult(string meteringPointId, [Range(-9998, 9999)] int year, [Range(1, 12)] int month)
+    public void ToString_Returns_ExpectedResult(string meteringPointId)
     {
         // Arrange
-        var yearMonth = new YearMonth(year, month);
         var databricksSchemaOptions = new DatabricksSchemaOptions { CatalogName = "spark_catalog", SchemaName = "schema_name" };
         var expected = CreateExpectedQuery(databricksSchemaOptions);
-        var getAggregatedByMonthQuery = new GetAggregatedByDateQuery(meteringPointId, yearMonth, databricksSchemaOptions);
+        var getAggregatedByYearQuery = new GetAggregatedByYearQuery(meteringPointId, databricksSchemaOptions);
 
         // Act
-        var actual = getAggregatedByMonthQuery.ToString();
+        var actual = getAggregatedByYearQuery.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -37,8 +34,6 @@ public class GetAggregatedByDateQueryTests
                $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, {MeasurementsGoldConstants.UnitColumnName}, {MeasurementsGoldConstants.ObservationTimeColumnName}, {MeasurementsGoldConstants.QuantityColumnName}, {MeasurementsGoldConstants.QualityColumnName}, {MeasurementsGoldConstants.ResolutionColumnName}, {MeasurementsGoldConstants.IsCancelledColumnName} " +
                $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsGoldConstants.TableName} " +
                $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter} " +
-               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
-               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter} " +
                $") " +
                $"select {MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
                $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
@@ -59,8 +54,6 @@ public class GetAggregatedByDateQueryTests
     private static string CreateGroupByStatement()
     {
         return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
-               $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
-               $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
+               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
     }
 }

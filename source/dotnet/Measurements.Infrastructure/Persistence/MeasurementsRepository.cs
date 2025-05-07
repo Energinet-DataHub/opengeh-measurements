@@ -40,4 +40,13 @@ public class MeasurementsRepository(
         await foreach (var row in rows)
             yield return new AggregatedMeasurementsResult(row);
     }
+
+    public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByYearAsync(string meteringPointId)
+    {
+        var statement = new GetAggregatedByYearQuery(meteringPointId, databricksSchemaOptions.Value);
+        var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
+
+        await foreach (var row in rows)
+            yield return new AggregatedMeasurementsResult(row);
+    }
 }

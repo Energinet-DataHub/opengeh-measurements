@@ -20,11 +20,11 @@ public class MeasurementsRepositoryTests
 {
     [Theory]
     [InlineAutoData]
-    public async Task GetByPeriod_WhenCalled_ReturnsMeasurement(
+    public async Task GetByPeriod_WhenCalled_ReturnsMeasurements(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var from = Instant.FromUtc(2021, 1, 1, 0, 0);
         var to = Instant.FromUtc(2021, 1, 2, 0, 0);
         var raw = CreateMeasurementResults(10);
@@ -43,11 +43,11 @@ public class MeasurementsRepositoryTests
 
     [Theory]
     [InlineAutoData]
-    public async Task GetAggregatedByMonthAsync_WhenCalled_ReturnsMeasurement(
+    public async Task GetAggregatedByDateAsync_WhenCalled_ReturnsAggregatedMeasurements(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
@@ -74,11 +74,11 @@ public class MeasurementsRepositoryTests
 
     [Theory]
     [InlineAutoData]
-    public async Task GetAggregatedByYearAsync_WhenCalled_ReturnsMeasurement(
+    public async Task GetAggregatedByMonthAsync_WhenCalled_ReturnsAggregatedMeasurements(
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
@@ -89,6 +89,37 @@ public class MeasurementsRepositoryTests
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(meteringPointId, new Year(yearMonth.Year)).ToListAsync();
+        var first = actual.First();
+
+        // Assert
+        Assert.Equal(2, actual.Count);
+        Assert.Equal(1, first.PointCount);
+        Assert.Equal(2, first.ObservationUpdates);
+        Assert.Equal(42, first.Quantity);
+        Assert.Equal("kWh", first.Units.Single());
+        Assert.Equal("PT1H", first.Resolutions.Single());
+        Assert.Equal("measured", first.Qualities.Single());
+        Assert.Equal(Instant.FromUtc(2020, 12, 31, 23, 0), first.MinObservationTime);
+        Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
+    }
+
+    [Theory]
+    [InlineAutoData]
+    public async Task GetAggregatedByYearAsync_WhenCalled_ReturnsAggregatedMeasurements(
+        Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
+    {
+        // Arrange
+        const string meteringPointId = "1234567890";
+        var yearMonth = new YearMonth(2021, 1);
+        var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
+        databricksSqlWarehouseQueryExecutorMock
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByYearQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Returns(raw);
+        var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsync(meteringPointId).ToListAsync();
         var first = actual.First();
 
         // Assert
