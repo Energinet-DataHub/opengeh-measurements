@@ -1,43 +1,33 @@
 import logging
-from typing import Callable
+import os
 
 from pyspark.sql import SparkSession
 from pyspark.sql.catalog import Table
 
-from geh_calculated_measurements.database_migrations.migrations_runner import _migrate
 from tests import REQUIRED_DATABASES, SPARK_CATALOG_NAME
 
 
-def test_table_properties(spark):
+def test_table_properties(spark, migrations_executed):
     """
     Test the properties of tables in the specified databases after migration.
     This function creates the databases, runs the migration, and checks the properties of each table.
     """
-    _assert_migrations(
-        spark=spark,
-        migration_func=_migrate,
-        databases=REQUIRED_DATABASES,
-        spark_catalog_name=SPARK_CATALOG_NAME,
-    )
+    catalog = os.getenv("CATALOG_NAME", SPARK_CATALOG_NAME)
+    validate_table_properties(spark=spark, databases=[f"{catalog}.{db}" for db in REQUIRED_DATABASES])
 
 
 # TODO: Move the geh_common
-def _assert_migrations(
-    spark: SparkSession,
-    migration_func: Callable[[str], None],
-    databases: list[str],
-    spark_catalog_name: str = "spark_catalog",
-):
-    for db in databases:
-        spark.sql(f"CREATE DATABASE IF NOT EXISTS {db}")
-    migration_func(spark_catalog_name)
+def validate_table_properties(spark: SparkSession, databases: list[str] | None):
     tables: list[Table] = []
+    if databases is None:  # TODO: Check that this is correct
+        catalogDatabases = spark.catalog.listDatabases()
+        databases = [f"{db.catalog}.{db.name}" for db in catalogDatabases]
     for db in databases:
         tables += spark.catalog.listTables(db)
     for table in tables:
         if table.tableType == "VIEW":
             continue
-        fqn = f"{spark_catalog_name}.{table.database}.{table.name}"
+        fqn = f"{table.database}.{table.name}"
         assert table.tableType == "MANAGED", (
             f"Table {fqn}: expected table type to be 'MANAGED', got '{table.tableType}'"
         )
