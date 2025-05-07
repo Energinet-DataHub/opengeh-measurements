@@ -6,7 +6,6 @@ using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
-using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
