@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
-using Energinet.DataHub.Measurements.Client.Serialization;
 using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -17,12 +15,6 @@ public class MeasurementsClient(
     : IMeasurementsClient
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
-
-    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter(), new YearMonthConverter() },
-    };
 
     public async Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default)
     {
@@ -92,8 +84,9 @@ public class MeasurementsClient(
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
         var pointElement = jsonDocument.RootElement.GetProperty("MeasurementAggregations");
+        var options = new Serialization.JsonSerializer().Options;
 
-        return pointElement.Deserialize<IEnumerable<T>>(_jsonSerializerOptions) ?? throw new InvalidOperationException();
+        return pointElement.Deserialize<IEnumerable<T>>(options) ?? throw new InvalidOperationException();
     }
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
