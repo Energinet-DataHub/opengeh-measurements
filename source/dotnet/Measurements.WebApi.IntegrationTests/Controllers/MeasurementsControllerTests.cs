@@ -18,10 +18,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         const string startDate = "2022-01-01T23:00:00Z";
         const string endDate = "2022-01-02T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -42,10 +41,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMultipleObservations_ReturnsAllObservations()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts 2 measurements with the same observation time
         const string endDate = "2022-01-03T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -59,10 +57,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "not existing id";
         const string startDate = "2022-01-31T23:00:00Z";
         const string endDate = "2022-01-01T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.NotExistingMeteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -72,10 +69,25 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetByPeriodAsync_WhenInvalidMeteringPointId_ReturnBadRequest()
+    {
+        // Arrange
+        const string startDate = "2022-01-31T23:00:00Z";
+        const string endDate = "2022-01-01T23:00:00Z";
+        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.InvalidMeteringPointId, startDate, endDate);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidUnit_ReturnInternalServerError()
     {
         // Arrange
-        const string expectedMeteringPointId = "9876543210";
+        const string expectedMeteringPointId = "987654321012345678";
         const string startDate = "2022-06-14T22:00:00Z"; // On this date, the fixture inserts a measurement with invalid unit
         const string endDate = "2022-06-15T22:00:00Z";
         var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
@@ -93,10 +105,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidResolution_ReturnInternalServerError()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid resolution
         const string endDate = "2022-02-01T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -111,10 +122,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByMonthAsyncV2_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2021, 2);
-        var url = CreateGetAggregatedMeasurementsByMonthV2Url(expectedMeteringPointId, yearMonth);
+        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.ValidMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -138,9 +148,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByMonthAsyncV2_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "not existing id";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateGetAggregatedMeasurementsByMonthV2Url(expectedMeteringPointId, yearMonth);
+        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.NotExistingMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -150,13 +159,26 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetAggregatedByMonthAsyncV2_WhenInvalidMeteringPointId_ReturnBadRequest()
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.InvalidMeteringPointId, yearMonth);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAggregatedByYearAsyncV2_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
         var expectedYearMonth = new YearMonth(expectedDate.Year, expectedDate.Month);
-        var url = CreateGetAggregatedMeasurementsByYearV2Url(expectedMeteringPointId, new Year(expectedYearMonth.Year));
+        var url = CreateGetAggregatedMeasurementsByYearV2Url(WebApiFixture.ValidMeteringPointId, new Year(expectedYearMonth.Year));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -178,9 +200,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByYearAsyncV2_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "not existing id";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateGetAggregatedMeasurementsByYearV2Url(expectedMeteringPointId, new Year(yearMonth.Year));
+        var url = CreateGetAggregatedMeasurementsByYearV2Url(WebApiFixture.NotExistingMeteringPointId, new Year(yearMonth.Year));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -190,13 +211,26 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetAggregatedByYearAsyncV2_WhenInvalidMeteringPoint_ReturnBadRequest()
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByYearV2Url(WebApiFixture.InvalidMeteringPointId, new Year(yearMonth.Year));
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAggregatedByDateAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2021, 2);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(expectedMeteringPointId, yearMonth);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(WebApiFixture.ValidMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -220,9 +254,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByDateAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "not existing id";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(expectedMeteringPointId, yearMonth);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(WebApiFixture.NotExistingMeteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -232,13 +265,26 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetAggregatedByDateAsync_WhenInvalidMeteringPointId_ReturnBadRequest()
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(WebApiFixture.InvalidMeteringPointId, yearMonth);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAggregatedByMonthAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
         var expectedYearMonth = new YearMonth(expectedDate.Year, expectedDate.Month);
-        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, new Year(expectedYearMonth.Year));
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(WebApiFixture.ValidMeteringPointId, new Year(expectedYearMonth.Year));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -260,9 +306,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByMonthAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
-        const string expectedMeteringPointId = "not existing id";
         var yearMonth = new YearMonth(2022, 1);
-        var url = CreateGetAggregatedMeasurementsByMonthUrl(expectedMeteringPointId, new Year(yearMonth.Year));
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(WebApiFixture.NotExistingMeteringPointId, new Year(yearMonth.Year));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -275,8 +320,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
-        var url = CreateGetAggregatedMeasurementsByYearUrl(expectedMeteringPointId);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(WebApiFixture.ValidMeteringPointId);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -313,16 +357,29 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAggregatedByMonthAsync_WhenInvalidMeteringPointId_ReturnBadRequest()
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2022, 1);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(WebApiFixture.InvalidMeteringPointId, new Year(yearMonth.Year));
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("v1")]
     [InlineData("v4")]
-    public async Task GetAggregatedMeasurementsAsync_WhenTargetingUnsupportedVersion_ReturnsNotFound(string version)
+    public async Task GetAggregatedByMonthAsyncV2_WhenTargetingUnsupportedVersion_ReturnsNotFound(string version)
     {
         // Arrange
-        const string expectedMeteringPointId = "1234567890";
         var yearMonth = new YearMonth(2021, 2);
-        var url = CreateGetAggregatedMeasurementsByMonthV2Url(expectedMeteringPointId, yearMonth, version);
+        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.ValidMeteringPointId, yearMonth, version);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);

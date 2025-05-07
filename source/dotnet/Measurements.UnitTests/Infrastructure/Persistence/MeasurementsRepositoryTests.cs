@@ -24,7 +24,7 @@ public class MeasurementsRepositoryTests
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var from = Instant.FromUtc(2021, 1, 1, 0, 0);
         var to = Instant.FromUtc(2021, 1, 2, 0, 0);
         var raw = CreateMeasurementResults(10);
@@ -47,7 +47,7 @@ public class MeasurementsRepositoryTests
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
@@ -78,7 +78,7 @@ public class MeasurementsRepositoryTests
         Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
     {
         // Arrange
-        const string meteringPointId = "1234567890";
+        const string meteringPointId = "1234567890123";
         var yearMonth = new YearMonth(2021, 1);
         var raw = CreateAggregatedMeasurementResults(yearMonth, 2);
         databricksSqlWarehouseQueryExecutorMock
