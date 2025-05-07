@@ -38,7 +38,9 @@ def _assert_migrations(
         if table.tableType == "VIEW":
             continue
         fqn = f"{spark_catalog_name}.{table.database}.{table.name}"
-        assert table.tableType == "MANAGED", f"Table {fqn}: expected table type to be 'MANAGED', got {table.tableType}"
+        assert table.tableType == "MANAGED", (
+            f"Table {fqn}: expected table type to be 'MANAGED', got '{table.tableType}'"
+        )
         logging.info(f"Testing Table: {fqn}")
         _test_table(spark, fqn)
 
@@ -51,11 +53,11 @@ def _test_table(spark: SparkSession, fqn: str):
     table_clustering_columns = details.get("clusteringColumns", [])
     table_properties = details.get("properties", {})
     table_retention = table_properties.get("delta.deletedFileRetentionDuration", "")
-    assert table_format == "delta", f"Table {fqn}: expected format to be 'delta', got {table_format}"
-    assert table_location != "", f"Table {fqn}: expected location to be set, got {table_location}"
+    assert table_format == "delta", f"Table {fqn}: expected format to be 'delta', got '{table_format}'"
+    assert table_location != "", f"Table {fqn}: expected location to be set, got '{table_location}'"
     assert table_retention == "interval 30 days", (
-        f"Table {fqn}: expected retention to be 30 days, got {table_retention}"
+        f"Table {fqn}: expected retention to be 30 days, got '{table_retention}'"
     )
     assert len(table_clustering_columns) > 0, (
-        f"Table {fqn}: expected clustering columns to be set, got {table_clustering_columns}"
+        f"Table {fqn}: expected clustering columns to be set, got '{table_clustering_columns}'"
     )
