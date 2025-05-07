@@ -30,6 +30,11 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
+    public Task<CurrentMeasurementDto> GetByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(
         GetMonthlyAggregateByDateQuery query, CancellationToken cancellationToken = default)
     {
@@ -57,6 +62,11 @@ public class MeasurementsClient(
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
+    }
+
+    public Task<MeasurementAggregationByPeriodDto> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
