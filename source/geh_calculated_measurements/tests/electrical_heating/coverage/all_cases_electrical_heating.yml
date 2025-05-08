@@ -22,6 +22,7 @@
     "Electrical heating without net settlement group": true
     "Electrical heating with net settlement group 2 - WITH net consumption MP": true
     "Electrical heating with net settlement group 2 - WITHOUT net consumption MP": true
+    "Electrical heating with net settlement group 2 - Parent MP GAINS net consumption MP": true
     "Electrical heating with net settlement group 6": true
 
   "Settlement Group Calculation Type":

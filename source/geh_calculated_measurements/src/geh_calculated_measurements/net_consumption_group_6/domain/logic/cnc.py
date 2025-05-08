@@ -290,14 +290,26 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
         .select(
             "*",
             F.posexplode(
-                F.concat(
-                    F.array(F.col(ContractColumnNames.period_from_date)),
-                    F.sequence(
-                        F.col("next_settlement_date"),
-                        F.col(ContractColumnNames.period_to_date),
-                        F.expr("INTERVAL 1 YEAR"),
+                # Create settlement periods by exploding a sequence of settlement dates
+                F.when(
+                    F.col("next_settlement_date") < F.col(ContractColumnNames.period_to_date),
+                    # When consumption metering point period overlaps with settlement date:
+                    # add seqence of settlement dates in between period_from_date and period_to_date
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.sequence(
+                            F.col("next_settlement_date"),
+                            F.col(ContractColumnNames.period_to_date),
+                            F.expr("INTERVAL 1 YEAR"),
+                        ),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
                     ),
-                    F.array(F.col(ContractColumnNames.period_to_date)),
+                ).otherwise(
+                    # When consumption metering point period does not overlaps with settlement date:
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
+                    )
                 )
             ).alias("index", "period_start"),
         )
