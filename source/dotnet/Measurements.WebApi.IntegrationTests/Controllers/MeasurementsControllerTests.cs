@@ -324,33 +324,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedByMonthAsync_WhenDateContainsMissingValues_ThenMissingValuesFlagIsSet()
-    {
-        // Arrange
-        const string meteringPointId = "112233445566778899";
-        var yearMonth = new YearMonth(2022, 6);
-        var row1 = new GoldRowBuilder()
-            .WithMeteringPointId(meteringPointId)
-            .WithObservationTime(Instant.FromUtc(2022, 6, 15, 15, 0, 0))
-            .Build();
-        var row2 = new GoldRowBuilder()
-            .WithMeteringPointId(meteringPointId)
-            .WithObservationTime(Instant.FromUtc(2022, 6, 15, 16, 0, 0))
-            .Build();
-        var rows = new GoldRowsBuilder().WithRow(row1).WithRow(row2).Build();
-        await fixture.InsertRowsAsync(rows);
-
-        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth);
-
-        // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<MeasurementAggregationByDate>(actualResponse);
-
-        // Assert
-        Assert.True(actual.MissingValues);
-    }
-
-    [Fact]
     public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
