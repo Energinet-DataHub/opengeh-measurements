@@ -73,11 +73,25 @@ jobs:
     uses: ./.github/workflows/measurements-client-bundle-publish.yml
 
   #
+  # Covernator CI
+  #
+  covernator:
+    needs: changes
+    if: ${{ needs.changes.outputs.measurements == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Covernator
+        uses: Energinet-DataHub/.github/.github/actions/python-covernator-generate-files@v14
+        with:
+          project_name: geh-calculated-measurements
+          project_directory: source/geh_calculated_measurements
+
+  #
   # Branch policy status check
   #
   allow_merge_ci_orchestrator:
     runs-on: ubuntu-latest
-    needs: [ci_base, ci_reusable, ci_reusable_integration, ci_dotnet]
+    needs: [ci_base, ci_reusable, ci_reusable_integration, ci_dotnet, covernator]
     if: |
       always()
     steps:

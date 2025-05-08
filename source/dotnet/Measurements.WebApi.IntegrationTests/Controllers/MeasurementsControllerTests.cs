@@ -132,7 +132,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Equal(2, actual.MeasurementAggregations.Count);
+        Assert.Equal(3, actual.MeasurementAggregations.Count);
         Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
@@ -191,7 +191,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(571.2M, measurementAggregation.Quantity);
+            Assert.Equal(856.8M, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
         }
     }
@@ -235,7 +235,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .Build();
         await fixture.InsertRowsAsync(rows);
 
-        var expectedDate = Instant.FromUtc(2023, 2, 1, 23, 0, 0).ToDateOnly();
+        var expectedFirstDate = Instant.FromUtc(2021, 2, 2, 0, 0, 0).ToDateOnly();
+        var expectedLastDate = Instant.FromUtc(2021, 2, 28, 0, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2023, 2);
         var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth);
 
@@ -245,8 +246,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Equal(2, actual.MeasurementAggregations.Count);
-        Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
+        Assert.Equal(3, actual.MeasurementAggregations.Count);
+        Assert.Equal(expectedFirstDate, actual.MeasurementAggregations.First().Date);
+        Assert.Equal(expectedLastDate, actual.MeasurementAggregations.Last().Date);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
@@ -304,7 +306,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(571.2M, measurementAggregation.Quantity);
+            Assert.Equal(856.8M, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
         }
     }
@@ -340,7 +342,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var firstMeasurementAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(2021, firstMeasurementAggregation.Year);
         Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
-        Assert.Equal(571.2M, firstMeasurementAggregation.Quantity);
+        Assert.Equal(856.8M, firstMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
 
         var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
