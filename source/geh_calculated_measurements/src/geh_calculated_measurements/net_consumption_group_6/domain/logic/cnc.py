@@ -53,7 +53,7 @@ def cnc(
     filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
-    parent_child_joined = close_open_period(parent_child_joined)
+    parent_child_joined = _close_open_period(parent_child_joined)
 
     metering_points = _filter_periods_by_cut_off(parent_child_joined)
 
@@ -134,12 +134,17 @@ def _join_child_to_consumption(
             - execution_start_datetime: Execution start date and time
     """
     parent_child_joined = (
-        child_metering_points.df.alias("child")
+        child_metering_points.df.where(
+            F.col(f"child.{ContractColumnNames.metering_point_type}").isin(
+                MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
+            )
+        )
+        .alias("child")
         .join(
             consumption_metering_point_periods.df.alias("consumption"),
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}")
             == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
-            "left",
+            "inner",
         )
         .select(
             F.col(f"child.{ContractColumnNames.metering_point_id}"),
@@ -155,7 +160,7 @@ def _join_child_to_consumption(
     return parent_child_joined
 
 
-def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
+def _close_open_period(parent_child_joined: DataFrame) -> DataFrame:
     """Close open periods in the parent-child joined DataFrame.
 
     This function closes open periods by setting the period_to_date to the execution_start_datetime
@@ -178,8 +183,8 @@ def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
         F.col(f"{ContractColumnNames.period_from_date}"),
         F.col(f"{ContractColumnNames.settlement_month}"),
         F.col("execution_start_datetime"),
-        F.when(
-            F.col(ContractColumnNames.period_to_date).isNull(),
+        F.coalesce(
+            F.col(ContractColumnNames.period_to_date),
             F.when(
                 F.month(F.col("execution_start_datetime")) >= F.col(ContractColumnNames.settlement_month),
                 F.make_date(
@@ -194,9 +199,7 @@ def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
                     F.lit(1),
                 )
             ),
-        )
-        .otherwise(F.col(ContractColumnNames.period_to_date))
-        .alias(ContractColumnNames.period_to_date),
+        ).alias(ContractColumnNames.period_to_date),
     )
 
 
@@ -310,7 +313,7 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
             )
             .alias("period_end"),
         )
-        .where(F.datediff(F.col("period_end"), F.col("period_start")) > 1)
+        .where(F.datediff(F.col("period_end"), F.col("period_start")) > 0)
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
