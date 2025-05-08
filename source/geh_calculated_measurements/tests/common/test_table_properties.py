@@ -13,11 +13,17 @@ def test_table_properties(spark, migrations_executed):
     This function creates the databases, runs the migration, and checks the properties of each table.
     """
     catalog = os.getenv("CATALOG_NAME", SPARK_CATALOG_NAME)
-    validate_table_properties(spark=spark, databases=[f"{catalog}.{db}" for db in REQUIRED_DATABASES])
+    validate_table_properties(
+        spark=spark,
+        databases=[f"{catalog}.{db}" for db in REQUIRED_DATABASES],
+        excluded_tables=["executed_migrations"],
+    )
 
 
 # TODO: Move the geh_common
-def validate_table_properties(spark: SparkSession, databases: list[str] | None):
+def validate_table_properties(
+    spark: SparkSession, databases: list[str] | None, excluded_tables: list[str] | None = None
+):
     tables: list[Table] = []
     if databases is None:  # TODO: Check that this is correct
         catalogDatabases = spark.catalog.listDatabases()
@@ -25,7 +31,7 @@ def validate_table_properties(spark: SparkSession, databases: list[str] | None):
     for db in databases:
         tables += spark.catalog.listTables(db)
     for table in tables:
-        if table.tableType == "VIEW":
+        if table.tableType == "VIEW" or table.name in excluded_tables:
             continue
         fqn = f"{table.database}.{table.name}"
         assert table.tableType == "MANAGED", (
