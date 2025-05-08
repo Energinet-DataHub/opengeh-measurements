@@ -1,5 +1,4 @@
 import logging
-import os
 
 from pyspark.sql import SparkSession
 from pyspark.sql.catalog import Table
@@ -8,41 +7,41 @@ from tests import REQUIRED_DATABASES, SPARK_CATALOG_NAME
 
 
 def test_table_properties(spark, migrations_executed):
-    """
-    Test the properties of tables in the specified databases after migration.
-    This function creates the databases, runs the migration, and checks the properties of each table.
-    """
-    catalog = os.getenv("CATALOG_NAME", SPARK_CATALOG_NAME)
-    validate_table_properties(
+    """Test that the properties of the tables follow the general requirements for tables managed using Spark/Databricks."""
+    assert_table_properties(
         spark=spark,
-        databases=[f"{catalog}.{db}" for db in REQUIRED_DATABASES],
+        databases=[f"{SPARK_CATALOG_NAME}.{db}" for db in REQUIRED_DATABASES],
         excluded_tables=["executed_migrations"],
     )
 
 
 # TODO: Move the geh_common
-def validate_table_properties(
-    spark: SparkSession, databases: list[str] | None, excluded_tables: list[str] | None = None
+def assert_table_properties(
+    spark: SparkSession, databases: list[str] | None = None, excluded_tables: list[str] | None = None
 ):
+    """Assert table properties for all tables in the given databases.
+
+    Asserts that the properties of the tables follow the general requirements defined
+    in <ADD_LINK_TO_CONFLUENCE>.
+    """
     tables: list[Table] = []
     if databases is None:  # TODO: Check that this is correct
         catalogDatabases = spark.catalog.listDatabases()
         databases = [f"{db.catalog}.{db.name}" for db in catalogDatabases]
+        logging.info(f"Databases: {databases}")
     for db in databases:
         tables += spark.catalog.listTables(db)
     for table in tables:
-        if table.tableType == "VIEW" or table.name in excluded_tables:
-            continue
-        fqn = f"{table.database}.{table.name}"
-        assert table.tableType == "MANAGED", (
-            f"Table {fqn}: expected table type to be 'MANAGED', got '{table.tableType}'"
-        )
-        logging.info(f"Testing Table: {fqn}")
-        _test_table(spark, fqn)
+        _assert_table(spark, table, excluded_tables=excluded_tables)
 
 
 # TODO: Move the geh_common
-def _test_table(spark: SparkSession, fqn: str):
+def _assert_table(spark: SparkSession, table: Table, excluded_tables: list[str] | None = None):
+    if table.tableType == "VIEW" or table.name in excluded_tables:
+        return
+    fqn = f"{table.database}.{table.name}"
+    logging.info(f"Testing Table: {fqn}")
+    assert table.tableType == "MANAGED", f"Table {fqn}: expected table type to be 'MANAGED', got '{table.tableType}'"
     details = spark.sql(f"DESCRIBE DETAIL {fqn}").collect()[0].asDict()
     table_format = details.get("format", "")
     table_location = details.get("location", "")
