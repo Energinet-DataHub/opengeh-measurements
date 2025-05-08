@@ -18,6 +18,6 @@ class MissingMeasurementsLogRepository:
         self._catalog_name = catalog_name
 
     def write_missing_measurements_log(self, missing_measurements_log: MissingMeasurementsLog) -> None:
-        """Write the missing measurements log to the delta table."""
+        """Write the missing measurements log to the Databricks delta table."""
         table_name = f"{self._catalog_name}.{DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL}.{TABLE_NAME}"
         missing_measurements_log.df.write.format("delta").mode("append").saveAsTable(table_name)
