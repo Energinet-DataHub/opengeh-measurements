@@ -2,4 +2,6 @@
 
 namespace Energinet.DataHub.Measurements.Application.Requests;
 
-public record GetAggregatedByMonthRequest(string MeteringPointId, [Range(-9998, 9999)] int Year);
+public record GetAggregatedByMonthRequest(
+    [Required] [StringLength(18, ErrorMessage = "MeteringPointId must be a valid GLN number.")] string MeteringPointId,
+    [Required] [Range(1970, 9999)] int Year);
