@@ -135,7 +135,7 @@ def _join_child_to_consumption(
     """
     parent_child_joined = (
         child_metering_points.df.where(
-            F.col(f"child.{ContractColumnNames.metering_point_type}").isin(
+            F.col(f"{ContractColumnNames.metering_point_type}").isin(
                 MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
             )
         )
