@@ -4,10 +4,11 @@ notes: |
   ## DESIGN CONSIDERATIONS
 
   CASE 0:
-                                    |today
-                            |________
+                                   |smrd |today
+                            |______|_____
   MP period 1:              |------|
-  MP period 3 (cenc):              |-
+  MP period 2 (cenc):              |-----
+  Measurement data:           ++
   Existing D15 data:        +++++++
   No new D15 data should be written...
 
