@@ -106,6 +106,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 28), new LocalDate(2021, 3, 1), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
             (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
@@ -115,7 +116,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             ("987654321012345678", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
         };
 
-        return [.. dates.SelectMany(CreateRow)];
+        return dates.SelectMany(CreateRow).ToList();
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(
