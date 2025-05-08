@@ -64,6 +64,11 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         await DatabricksSchemaManager.DropSchemaAsync();
     }
 
+    public async Task InsertRowsAsync(List<List<string>> rows)
+    {
+        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WorkspaceUrl)}", IntegrationTestConfiguration.DatabricksSettings.WorkspaceUrl);
