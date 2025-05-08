@@ -228,9 +228,16 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByDateAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
-        var yearMonth = new YearMonth(2021, 2);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(WebApiFixture.ValidMeteringPointId, yearMonth);
+        const string meteringPointId = "123456789098765432";
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate($"{meteringPointId}", new LocalDate(2023, 2, 2))
+            .WithContinuesRowsForDate($"{meteringPointId}", new LocalDate(2023, 2, 3))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+
+        var expectedDate = Instant.FromUtc(2023, 2, 1, 23, 0, 0).ToDateOnly();
+        var yearMonth = new YearMonth(2023, 2);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -243,9 +250,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(285.6M, measurementAggregation.Quantity);
-            Assert.False(measurementAggregation.MissingValues);
+            Assert.Equal(24.0M, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
+            Assert.False(measurementAggregation.MissingValues);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
     }
@@ -314,6 +321,33 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByMonthAsync_WhenDateContainsMissingValues_ThenMissingValuesFlagIsSet()
+    {
+        // Arrange
+        const string meteringPointId = "112233445566778899";
+        var yearMonth = new YearMonth(2022, 6);
+        var row1 = new GoldRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime(Instant.FromUtc(2022, 6, 15, 15, 0, 0))
+            .Build();
+        var row2 = new GoldRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime(Instant.FromUtc(2022, 6, 15, 16, 0, 0))
+            .Build();
+        var rows = new GoldRowsBuilder().WithRow(row1).WithRow(row2).Build();
+        await fixture.InsertRowsAsync(rows);
+
+        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementAggregationByDate>(actualResponse);
+
+        // Assert
+        Assert.True(actual.MissingValues);
     }
 
     [Fact]
