@@ -11,8 +11,8 @@ public readonly struct Year([Range(-9998, 9999)] int year)
 
     private LocalDate EndDate { get; } = new(year, 12, 31);
 
-    public (LocalDate StartDate, LocalDate EndDate) ToDateInterval()
+    public (LocalDate StartDate, LocalDate EndDate) ToDateIntervalIncludingLastDay()
     {
-        return (StartDate, EndDate);
+        return (StartDate, EndDate.PlusDays(1));
     }
 }
