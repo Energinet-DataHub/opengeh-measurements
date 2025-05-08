@@ -23,11 +23,29 @@ def get_joined_metering_point_periods_in_local_time(
     execution_start_datetime: datetime,
 ) -> DataFrame:
     execution_start_datetime_local_time = execution_start_datetime.astimezone(ZoneInfo(time_zone))
-    metering_point_periods = _join_children_to_parent_metering_point(
-        child_metering_points.df, consumption_metering_point_periods.df
+    # Convert to dataframes
+    consumption_metering_point_periods = consumption_metering_point_periods.df
+    child_metering_points = child_metering_points.df
+
+    consumption_metering_point_periods = metering_point_set_end_settlement_and_to_date(
+        consumption_metering_point_periods,
+        execution_start_datetime_local_time,
     )
-    metering_point_periods = convert_from_utc(metering_point_periods, time_zone)
-    metering_point_periods = _close_open_ended_periods(metering_point_periods, execution_start_datetime_local_time)
+
+    metering_point_periods = _join_children_to_parent_metering_point(
+        child_metering_points,
+        consumption_metering_point_periods,
+    )
+
+    metering_point_periods = _close_open_ended_periods(
+        metering_point_periods,
+        execution_start_datetime_local_time,
+    )
+    metering_point_periods = convert_from_utc(
+        metering_point_periods,
+        time_zone,
+    )
+
     metering_point_periods = _find_parent_child_overlap_period(metering_point_periods)
     metering_point_periods = _split_period_by_settlement_year(
         metering_point_periods, execution_start_datetime_local_time
@@ -37,6 +55,29 @@ def get_joined_metering_point_periods_in_local_time(
     )
 
     return metering_point_periods
+
+
+def metering_point_set_end_settlement_and_to_date(
+    metering_point_periods: DataFrame,
+    execution_start_datetime_local_time: datetime,
+) -> DataFrame:
+    """Add settlement year end and use it to clam period_to_date."""
+    return metering_point_periods.select(
+        "*",
+        _settlement_year_end_datetime(
+            F.col(ContractColumnNames.settlement_month), execution_start_datetime_local_time
+        ).alias("settlement_year_end"),
+    ).select(
+        F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.net_settlement_group),
+        F.col(ContractColumnNames.settlement_month),
+        F.col(ContractColumnNames.period_from_date),
+        F.col("settlement_year_end"),
+        F.coalesce(
+            F.col(ContractColumnNames.period_to_date),
+            F.col("settlement_year_end"),
+        ).alias(ContractColumnNames.period_to_date),
+    )
 
 
 @testing()
@@ -51,8 +92,19 @@ def _join_children_to_parent_metering_point(
             child_metering_point_and_periods.where(
                 F.col(ContractColumnNames.metering_point_type) == MeteringPointType.ELECTRICAL_HEATING.value
             ).alias("electrical_heating"),
-            F.col(f"electrical_heating.{ContractColumnNames.parent_metering_point_id}")
-            == F.col(f"parent.{ContractColumnNames.metering_point_id}"),
+            (
+                F.col(f"electrical_heating.{ContractColumnNames.parent_metering_point_id}")
+                == F.col(f"parent.{ContractColumnNames.metering_point_id}")
+            )
+            & _has_overlapping_period(
+                F.col(f"parent.{ContractColumnNames.period_from_date}"),
+                F.col(f"parent.{ContractColumnNames.period_to_date}"),
+                F.col(f"electrical_heating.{ContractColumnNames.coupled_date}"),
+                F.coalesce(
+                    F.col(f"electrical_heating.{ContractColumnNames.uncoupled_date}"),
+                    F.col("parent.settlement_year_end"),
+                ),
+            ),
             "inner",
         )
         # Left join because there is - and need - not always be a net consumption metering point
@@ -68,6 +120,15 @@ def _join_children_to_parent_metering_point(
                 F.col(f"parent.{ContractColumnNames.net_settlement_group}").isin(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
+            )
+            & _has_overlapping_period(
+                F.col(f"parent.{ContractColumnNames.period_from_date}"),
+                F.col(f"parent.{ContractColumnNames.period_to_date}"),
+                F.col(f"net_consumption.{ContractColumnNames.coupled_date}"),
+                F.coalesce(
+                    F.col(f"net_consumption.{ContractColumnNames.uncoupled_date}"),
+                    F.col("settlement_year_end"),
+                ),
             ),
             "left",
         )
@@ -84,6 +145,15 @@ def _join_children_to_parent_metering_point(
                 F.col(f"parent.{ContractColumnNames.net_settlement_group}").isin(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
+            )
+            & _has_overlapping_period(
+                F.col(f"parent.{ContractColumnNames.period_from_date}"),
+                F.col(f"parent.{ContractColumnNames.period_to_date}"),
+                F.col(f"consumption_from_grid.{ContractColumnNames.coupled_date}"),
+                F.coalesce(
+                    F.col(f"consumption_from_grid.{ContractColumnNames.uncoupled_date}"),
+                    F.col("settlement_year_end"),
+                ),
             ),
             "left",
         )
@@ -100,6 +170,15 @@ def _join_children_to_parent_metering_point(
                 F.col(f"parent.{ContractColumnNames.net_settlement_group}").isin(
                     NetSettlementGroup.NET_SETTLEMENT_GROUP_2, NetSettlementGroup.NET_SETTLEMENT_GROUP_6
                 )
+            )
+            & _has_overlapping_period(
+                F.col(f"parent.{ContractColumnNames.period_from_date}"),
+                F.col(f"parent.{ContractColumnNames.period_to_date}"),
+                F.col(f"supply_to_grid.{ContractColumnNames.coupled_date}"),
+                F.coalesce(
+                    F.col(f"supply_to_grid.{ContractColumnNames.uncoupled_date}"),
+                    F.col("settlement_year_end"),
+                ),
             ),
             "left",
         )
@@ -152,12 +231,13 @@ def _join_children_to_parent_metering_point(
 
 
 def _close_open_ended_periods(
-    parent_and_child_metering_point_and_periods: DataFrame, execution_start_datetime_local_time: datetime
+    metering_point_periods: DataFrame,
+    execution_start_datetime_local_time: datetime,
 ) -> DataFrame:
     """Close open ended periods by setting the end date to the end of the current settlement year."""
     settlement_year_end = "settlement_year_end"
 
-    return parent_and_child_metering_point_and_periods.select(
+    return metering_point_periods.select(
         "*",
         _settlement_year_end_datetime(
             F.col(ContractColumnNames.settlement_month), execution_start_datetime_local_time
@@ -168,10 +248,7 @@ def _close_open_ended_periods(
         F.col(ContractColumnNames.net_settlement_group),
         F.col(ContractColumnNames.settlement_month),
         F.col(EphemeralColumnNames.parent_period_start),
-        F.coalesce(
-            F.col(EphemeralColumnNames.parent_period_end),
-            settlement_year_end,
-        ).alias(EphemeralColumnNames.parent_period_end),
+        F.col(EphemeralColumnNames.parent_period_end),
         # Electrical heating metering point
         F.col(EphemeralColumnNames.electrical_heating_period_start),
         F.coalesce(
@@ -314,3 +391,9 @@ def _remove_net_settlement_group_2_up2end_without_netconsumption(
             )
         )
     )
+
+
+def _has_overlapping_period(
+    period1_start: Column, period1_end: Column, period2_start: Column, period2_end: Column
+) -> Column:
+    return (period1_start < period2_end) & (period2_start < period1_end)
