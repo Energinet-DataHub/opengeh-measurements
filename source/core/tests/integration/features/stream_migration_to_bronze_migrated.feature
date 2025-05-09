@@ -1,11 +1,11 @@
-Feature: Stream Migration to Bronze Migrated
+Feature: Stream Migration from Silver to Bronze Measurements
 
-Scenario: Processing full load of migrations to Measurements
-  Given the measurements migrated bronze is empty and transactions available in the migration silver table
-  When streaming from Migration silver to Measurements
-  Then transactions are available in the bronze measurements migration table
+  Scenario: Daily Load: Migrate Transactions from Silver to Bronze Measurements
+    Given transactions available in the migration silver table
+    When streaming daily load from Migration silver to Measurements Bronze
+    Then between 1 and 1 transactions should be available in the bronze measurements migration table
 
-Scenario: Processing daily load of migration to measurements
-  Given the measurements migrated bronze has data and newer transaction are available in the migration silver table
-  When streaming from Migration silver to Measurements
-  Then transactions are available in the bronze measurements migration table
+  Scenario: Full Load: Migrate Transactions from Silver to Bronze Measurements
+    Given transactions available in the migration silver table
+    When streaming full load from Migration silver to Measurements Bronze
+    Then between 1 and 2 transactions should be available in the bronze measurements migration table
