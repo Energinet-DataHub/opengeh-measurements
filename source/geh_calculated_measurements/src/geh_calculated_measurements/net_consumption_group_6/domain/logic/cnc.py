@@ -45,12 +45,15 @@ def cnc(
       - DataFrame with periods and their calculated net consumption (converted to UTC)
       - DataFrame with periods and their corresponding time series data (converted to UTC)
     """
+    current_measurements = current_measurements.df
+    current_measurements = convert_from_utc(current_measurements, time_zone)
     filtered_time_series = _filter_and_aggregate_daily(current_measurements)
 
+    consumption_metering_point_periods = consumption_metering_point_periods.df
+    child_metering_points = child_metering_points.df
     parent_child_joined = _join_child_to_consumption(
         consumption_metering_point_periods, child_metering_points, execution_start_datetime
     )
-    filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
     parent_child_joined = _close_open_period(parent_child_joined)
@@ -73,7 +76,7 @@ def cnc(
     )
 
 
-def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> DataFrame:
+def _filter_and_aggregate_daily(current_measurements: DataFrame) -> DataFrame:
     """Filter and aggregate daily measurements.
 
     This function filters the current measurements data and aggregates it to daily observations.
@@ -85,13 +88,8 @@ def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> Da
             - date: Daily observation time
             - quantity: The quantity as DecimalType(18, 3)
     """
-    filtered_time_series = current_measurements.df.where(
-        F.col(ContractColumnNames.metering_point_type).isin(
-            MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
-        )
-    )
     filtered_time_series_daily = (
-        filtered_time_series.select(
+        current_measurements.select(
             "*",
             F.to_date(F.col(ContractColumnNames.observation_time)).alias(ContractColumnNames.date),
         )
@@ -115,8 +113,8 @@ def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> Da
 
 
 def _join_child_to_consumption(
-    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
-    child_metering_points: ChildMeteringPoints,
+    consumption_metering_point_periods: DataFrame,
+    child_metering_points: DataFrame,
     execution_start_datetime: datetime,
 ) -> DataFrame:
     """Join child metering points with consumption metering point periods.
@@ -134,14 +132,9 @@ def _join_child_to_consumption(
             - execution_start_datetime: Execution start date and time
     """
     parent_child_joined = (
-        child_metering_points.df.where(
-            F.col(f"{ContractColumnNames.metering_point_type}").isin(
-                MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
-            )
-        )
-        .alias("child")
+        child_metering_points.alias("child")
         .join(
-            consumption_metering_point_periods.df.alias("consumption"),
+            consumption_metering_point_periods.alias("consumption"),
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}")
             == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
             "inner",
@@ -403,8 +396,8 @@ def _join_metering_point_periods_to_time_series(
             on=[
                 F.col(f"mp.{ContractColumnNames.metering_point_id}")
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
-                (F.col(f"ts.{ContractColumnNames.date}") >= F.col("mp.period_start"))
-                & (F.col(f"ts.{ContractColumnNames.date}") <= F.col("mp.period_end")),
+                (F.col(f"ts.{ContractColumnNames.date}") >= F.to_date(F.col("mp.period_start")))
+                & (F.col(f"ts.{ContractColumnNames.date}") <= F.to_date(F.col("mp.period_end"))),
             ],
             how="left",
         )
@@ -435,7 +428,12 @@ def _sum_supply_and_consumption(periods_with_ts: DataFrame) -> DataFrame:
             - net_consumption: The calculated net consumption as DecimalType(18, 3)
     """
     net_consumption_over_ts = (
-        periods_with_ts.groupBy(
+        periods_with_ts.where(
+            F.col(ContractColumnNames.metering_point_type).isin(
+                MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
+            )
+        )
+        .groupBy(
             F.col(ContractColumnNames.parent_metering_point_id),
             F.col("period_start"),
             F.col("period_end"),

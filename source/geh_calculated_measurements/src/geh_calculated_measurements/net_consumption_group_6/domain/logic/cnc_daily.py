@@ -94,6 +94,7 @@ def _get_changed_cnc_daily_values(periods_with_ts: DataFrame, cnc_measurements: 
                 F.col(f"cnc.{ContractColumnNames.metering_point_id}")
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
                 F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
+                F.col("cnc.daily_quantity") == F.col(f"ts.{ContractColumnNames.quantity}"),
             ],
             how="left_anti",
         )
