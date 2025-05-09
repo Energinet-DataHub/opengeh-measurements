@@ -50,6 +50,24 @@ public class DateAndTimeExtensionsTests
     }
 
     [Theory]
+    [InlineData(2024, 10, "2024-09-30T22:00:00Z", "2024-10-31T23:00:00Z")]
+    [InlineData(2024, 12, "2024-11-30T23:00:00Z", "2024-12-31T23:00:00Z")]
+    [InlineData(2025, 3, "2025-02-28T23:00:00Z", "2025-03-31T22:00:00Z")]
+    public void ToDateIntervalIncludingLastDay_WhenCalledWithLocalDate_ReturnsDateInterval(
+        int year, int month, string expectedStart, string expectedEnd)
+    {
+        // Arrange
+        var yearMonth = new YearMonth(year, month);
+
+        // Act
+        var (actualStart, actualEnd) = yearMonth.ToDateIntervalIncludingLastDay();
+
+        // Assert
+        Assert.Equal(expectedStart, actualStart.ToUtcString());
+        Assert.Equal(expectedEnd, actualEnd.ToUtcString());
+    }
+
+    [Theory]
     [InlineData(2025, 3, 30, "2025-03-29T23:00:00Z")]
     [InlineData(2025, 3, 31, "2025-03-30T22:00:00Z")]
     [InlineData(2025, 4, 1, "2025-03-31T22:00:00Z")]

@@ -30,6 +30,13 @@ notes: |
   Days in period:                    | 213 days                                   |
   Measurement data:                   +                                          ++
 
+  CASE 6 (NSG2 metering point goes from without to with D15)
+                                     | Parent MP gets D15                         |
+                          |2024______|____________________________________________|_______...
+  Parent start/end:       |----------|--------------------------------------------|_______...
+  Days in period:         | 31 days  | 335 days                                   | (up to end)
+  Measurement data:        ++          ++                                           +++
+
 
 
 cases_tested:
@@ -49,6 +56,7 @@ cases_tested:
 
   "Net Settlement Groups":
     - "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
+    - "Electrical heating with net settlement group 2 - Parent MP GAINS net consumption MP"
 
   "Settlement Group Calculation Type":
     - "END OF PERIOD calculation"

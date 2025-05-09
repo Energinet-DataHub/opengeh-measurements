@@ -1,15 +1,13 @@
-import os
 import sys
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.capacity_settlement.entry_point import execute
 from geh_calculated_measurements.testing import CurrentMeasurementsRow, seed_current_measurements_rows
-from tests import create_job_environment_variables
-from tests.capacity_settlement.job_tests import TEST_FILES_FOLDER_PATH
+from tests.conftest import ExternalDataProducts
 from tests.internal_tables import InternalTables
 
 _METERING_POINT_ID = "170000000000000201"
@@ -25,6 +23,26 @@ def _seed_current_measurements(spark: SparkSession) -> None:
         for i in range(10)
     ]
     seed_current_measurements_rows(spark, rows)
+
+
+def _seed_electricity_market(spark: SparkSession) -> None:
+    capacity_settlement_metering_point_periods = ExternalDataProducts.CAPACITY_SETTLEMENT_METERING_POINT_PERIODS
+    df = spark.createDataFrame(
+        [
+            (
+                _METERING_POINT_ID,
+                datetime(2020, 1, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
+                900000000000000001,
+                datetime(2024, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+                None,
+            ),
+        ],
+        schema=capacity_settlement_metering_point_periods.schema,
+    )
+    df.write.format("delta").mode("append").saveAsTable(
+        f"{capacity_settlement_metering_point_periods.database_name}.{capacity_settlement_metering_point_periods.view_name}"
+    )
 
 
 def test_execute(
@@ -46,8 +64,8 @@ def test_execute(
             "--calculation-month=1",
         ],
     )
-    monkeypatch.setattr(os, "environ", create_job_environment_variables(str(TEST_FILES_FOLDER_PATH)))
     _seed_current_measurements(spark)
+    _seed_electricity_market(spark)
 
     # Act
     execute()
