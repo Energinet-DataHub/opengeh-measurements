@@ -3,6 +3,7 @@
 public static class QueryParameterConstants
 {
     public const string MeteringPointIdParameter = "meteringPointId";
+    public const string MeteringPointIdsParameter = "meteringPointIds";
     public const string ObservationTimeFromParameter = "observationTimeFrom";
     public const string ObservationTimeToParameter = "observationTimeTo";
 }

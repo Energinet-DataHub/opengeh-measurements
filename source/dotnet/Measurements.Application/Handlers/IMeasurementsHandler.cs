@@ -27,6 +27,13 @@ public interface IMeasurementsHandler
     Task<MeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest getAggregatedByMonthRequest);
 
     /// <summary>
+    /// Get aggregated measurements matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedByPeriodRequest"></param>
+    Task<MeasurementsAggregatedByPeriodResponse> GetAggregatedByPeriodAsync(
+        GetAggregatedByPeriodRequest getAggregatedByPeriodRequest);
+
+    /// <summary>
     /// Get measurements aggregated by year matching request attributes.
     /// </summary>
     /// <param name="getAggregatedByYearRequest"></param>
