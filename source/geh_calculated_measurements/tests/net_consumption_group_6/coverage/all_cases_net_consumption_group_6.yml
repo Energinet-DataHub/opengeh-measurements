@@ -15,6 +15,7 @@
 
 
 Mangler dækning
+ - to dage crap
  - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
  - filtrering
 	- skriver ned, selvom værdi er den samme som cenc
