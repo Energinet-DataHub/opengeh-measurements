@@ -396,8 +396,8 @@ def _join_metering_point_periods_to_time_series(
             on=[
                 F.col(f"mp.{ContractColumnNames.metering_point_id}")
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
-                (F.col(f"ts.{ContractColumnNames.date}") >= F.to_date(F.col("mp.period_start")))
-                & (F.col(f"ts.{ContractColumnNames.date}") <= F.to_date(F.col("mp.period_end"))),
+                (F.col(f"ts.{ContractColumnNames.date}") >= F.col("mp.period_start"))
+                & (F.col(f"ts.{ContractColumnNames.date}") <= F.col("mp.period_end")),
             ],
             how="left",
         )
