@@ -21,7 +21,7 @@ public class MeasurementsClientTests
         MeasurementDto expectedMeasurementDto)
     {
         // Arrange
-        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890123", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -44,7 +44,7 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetByDayQuery("1234567890", new LocalDate(1, 2, 3));
+        var query = new GetByDayQuery("1234567890123", new LocalDate(1, 2, 3));
         var response = CreateResponse(HttpStatusCode.NotFound, string.Empty);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -63,7 +63,7 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetMonthlyAggregateByDateQuery("1234567890", new YearMonth(2025, 3));
+        var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2025, 3));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDate);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -89,7 +89,7 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetMonthlyAggregateByDateQuery("1234567890", new YearMonth(2024, 10));
+        var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2024, 10));
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByDateMissingMeasurements);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);
@@ -112,7 +112,7 @@ public class MeasurementsClientTests
         Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
-        var query = new GetYearlyAggregateByMonthQuery("1234567890", 2025);
+        var query = new GetYearlyAggregateByMonthQuery("1234567890123", 2025);
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsAggregatedByMonth);
         var httpClient = CreateHttpClient(response);
         var httpClientFactoryMock = CreateHttpClientFactoryMock(httpClient);

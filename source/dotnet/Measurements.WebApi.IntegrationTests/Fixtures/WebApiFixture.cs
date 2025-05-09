@@ -24,6 +24,10 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    public const string ValidMeteringPointId = "123456789012345678";
+    public const string InvalidMeteringPointId = "invalid metering point id";
+    public const string NotExistingMeteringPointId = "9988776655443";
+
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
@@ -98,20 +102,21 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var dates = new[]
         {
-            ("1234567890", new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
-            ("1234567890", new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            ("1234567890", new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
-            ("9876543210", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2021, 2, 28), new LocalDate(2021, 3, 1), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
+            (ValidMeteringPointId, new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
+            ("987654321012345678", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
         };
 
-        return [.. dates.SelectMany(CreateRow)];
+        return dates.SelectMany(CreateRow).ToList();
     }
 
     private static IEnumerable<IEnumerable<string>> CreateRow(

@@ -19,7 +19,7 @@ public class GetAggregatedByMonthQuery(string meteringPointId, Year year, Databr
 
     protected override IReadOnlyCollection<QueryParameter> GetParameters()
     {
-        var (startDate, endDate) = year.ToDateInterval();
+        var (startDate, endDate) = year.ToDateIntervalIncludingLastDay();
 
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdParameter, meteringPointId),
