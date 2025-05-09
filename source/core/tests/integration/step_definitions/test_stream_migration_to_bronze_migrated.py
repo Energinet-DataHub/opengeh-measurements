@@ -1,9 +1,10 @@
 import datetime
 
 from pyspark.sql import SparkSession
-from pytest_bdd import given, parsers, scenarios, then, when
+from pytest_bdd import given, scenarios, then, when
 
 import core.bronze.application.batch_scripts.migrate_from_migrations as migrate_from_migrations
+import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.bronze.infrastructure.config.table_names import MigrationsTableNames as MigrationsSilverTableNames
@@ -23,15 +24,17 @@ scenarios("../features/stream_migration_to_bronze_migrated.feature")
 # Given steps
 
 
-@given("transactions available in the migration silver table")
+@given("transactions available in the migration silver table", target_fixture="expected_metering_point_id")
 def _(spark: SparkSession, create_external_resources, mock_checkpoint_path):
-    silver_transactions = MigrationsSilverTimeSeriesBuilder(spark).add_row().build()
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    silver_transactions = MigrationsSilverTimeSeriesBuilder(spark).add_row(metering_point_id=metering_point_id).build()
 
     table_helper.append_to_table(
         silver_transactions,
         MigrationsSettings().silver_database_name,
         MigrationsSilverTableNames.silver_time_series_table,
     )
+    return metering_point_id
 
 
 # # When steps
@@ -66,15 +69,11 @@ def _(spark: SparkSession, mock_checkpoint_path):
 # # Then steps
 
 
-@then(
-    parsers.parse(
-        "between {min_transactions:d} and {max_transactions:d} transactions should be available in the bronze measurements migration table"
+@then("transactions should be available in the bronze measurements migration table")
+def _(spark: SparkSession, expected_metering_point_id):
+    result = (
+        spark.table(f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}")
+        .filter(f"metering_point_id = '{expected_metering_point_id}'")
+        .count()
     )
-)
-def _(spark: SparkSession, min_transactions, max_transactions):
-    row_count = spark.table(
-        f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}"
-    ).count()
-    assert min_transactions <= row_count <= max_transactions, (
-        f"Expected between {min_transactions} and {max_transactions} transactions, but found {row_count}"
-    )
+    assert result > 0, f"Expected transactions for metering point id '{expected_metering_point_id}', but found none"
