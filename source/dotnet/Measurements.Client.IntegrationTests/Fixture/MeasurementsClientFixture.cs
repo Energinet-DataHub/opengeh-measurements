@@ -34,7 +34,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
         ServiceProvider = BuildServiceProvider();
     }
 
-    public static string TestMeteringPointId => "1234567890";
+    public static string TestMeteringPointId => "1234567890123";
 
     public static LocalDate TestObservationDate => new(2025, 1, 2);
 

@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 6.0.0
+
+- Upgrade to dotnet version 9.0
+
 ## Version 5.0.0
 
 - Added method to get aggregated measurements for all years.
