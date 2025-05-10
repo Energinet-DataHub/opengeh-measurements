@@ -1,0 +1,2 @@
+ALTER TABLE {catalog_name}.{calculated_measurements_internal_database}.capacity_settlement_ten_largest_quantities
+CLUSTER BY (orchestration_instance_id, metering_point_id, observation_time)
