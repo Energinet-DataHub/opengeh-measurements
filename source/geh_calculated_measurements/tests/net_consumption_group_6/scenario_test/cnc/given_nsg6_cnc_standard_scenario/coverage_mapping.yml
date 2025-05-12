@@ -1,0 +1,41 @@
+notes: |
+  ## PURPOSE
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 0:
+                                                          |today
+                          |2024___________________|2025___
+  All MPs start/end:      |-----------------------|
+  Measurement data:        + + + + + + + + + + + +
+
+  CASE 1: Combined cnc and cenc calculation
+                   |2024   |smrd      					           |2025   |smrd   |today
+                   |_______|_______________________________________|_______|_______
+  MPs period start:	   |-------------------------------------------------------...
+  Measurement data:      +   +   +   +   +   +   +   +   +   +   +   +   +   +
+  Period 1 (cnc)   	   |---|
+  Period 2 (cnc)           |-----------------------------------------------|
+  Period 3 (cenc)                                                          |-------|
+
+  CASE 2:
+                          |2024                                     |smrd |2025           |today
+                          |_______________________________________________|_______________
+  MP period 1:                                              |--|
+  MP period 2:                                                 |-----------------|
+  MP period 3 (cenc):                                                            |--------|
+  Period 1 (cnc)   	                                        |--|
+  Period 2 (cnc)                                               |----|
+  Period 3 (cnc)                                                    |------------|
+  Period 4 (cenc)                                                                |--------|
+  Measurement data:                                          +  ++    ++           ++
+
+cases_tested:
+  "Period is 1 year"
+  "Period is < 1 year"
+  "Smrd is 1"
+  "Smrd is not 1"
+  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
+  "Sum for D06 is aggregated, even if sum for D07 is missing"
+  "Sum for D07 is aggregated, even if sum for D06 is missing"
+  "calculation is cnc"
