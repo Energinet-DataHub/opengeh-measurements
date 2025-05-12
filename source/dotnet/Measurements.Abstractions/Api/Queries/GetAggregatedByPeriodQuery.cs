@@ -1,4 +1,4 @@
-using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 namespace Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 

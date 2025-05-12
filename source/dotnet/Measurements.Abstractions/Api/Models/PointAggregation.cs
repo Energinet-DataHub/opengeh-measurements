@@ -1,4 +1,4 @@
-namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 public record PointAggregation(
     long MinObservationTime,
