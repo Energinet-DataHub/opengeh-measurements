@@ -1,0 +1,32 @@
+notes: |
+  ## PURPOSE
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 0: smrd+2, no results generated
+                                                                                |Today
+                    |smrd-1_____________|smrd+0_____________|smrd+1_____________|smrd+2_____________
+  MP periods:       |-------------------|---------------------------------------_
+  Measurement data:        + +
+  No measurement data should be written to D15 ...
+
+  CASE 1: smrd+3, results generated
+                                                                                                    |Today
+                    |smrd-1_____________|smrd+0_____________|smrd+1_____________|smrd+2_____________|smrd+3_____________
+  MP periods:       |-------------------|---------------------------------------_
+  Measurement data:        + +
+  D15 (cnc) data:   ++++++++++++++++++++
+
+
+  CASE 2: 3 year limit - data updates
+  smrd 1                                                                                                                    |today
+                          2021___________________|2022___________________|2023___________________|2024___________________|2025___
+  All MPs start/end:      |-------------------------------------------------------------------------------------------------_
+  Measurement data:                  +                       +                       +                       +
+  Existing D15 data:      +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  New data 1 (outside 3 year limit)                 +
+  New data 2 (inside 3 year limit)                   +
+  New D15 data (based on new data 2):            ++++++++++++++++++++++++
+
+cases_tested:
