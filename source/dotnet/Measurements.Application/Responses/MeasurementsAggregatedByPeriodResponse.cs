@@ -14,5 +14,6 @@ public class MeasurementsAggregatedByPeriodResponse
     public static MeasurementsAggregatedByPeriodResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         return new MeasurementsAggregatedByPeriodResponse(measurements.ToList());
+        // The foreach row logic
     }
 }
