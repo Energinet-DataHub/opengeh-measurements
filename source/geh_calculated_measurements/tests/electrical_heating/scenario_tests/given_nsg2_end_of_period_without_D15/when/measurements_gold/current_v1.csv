@@ -746,3 +746,108 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000000000170204;1;measured;2024-10-27T00:00:00Z;supply_to_grid;Case 4 - winter time change
 060000000000170204;2;measured;2024-10-27T01:00:00Z;supply_to_grid;Case 4 - winter time change
 060000000000170204;2000;measured;2024-10-27T23:00:00Z;supply_to_grid;Case 4 - make sure we hit limit
+170000000000000206;20.616;measured;2023-12-31T23:00:00Z;consumption;Case 6 - period 1: Day 1, hour 1
+060000000000170206;14.992;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 1
+070000000000170206;20.616;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 1
+170000000000000206;24.942;measured;2023-12-31T23:15:00Z;consumption;Case 6 - period 1: Day 1, hour 1
+060000000000170206;13.177;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 1
+070000000000170206;24.942;measured;2023-12-31T23:15:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 1
+170000000000000206;20.875;measured;2023-12-31T23:30:00Z;consumption;Case 6 - period 1: Day 1, hour 1
+060000000000170206;4.488;measured;2023-12-31T23:30:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 1
+070000000000170206;20.875;measured;2023-12-31T23:30:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 1
+170000000000000206;7.254;measured;2023-12-31T23:45:00Z;consumption;Case 6 - period 1: Day 1, hour 1
+060000000000170206;6.933;measured;2023-12-31T23:45:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 1
+070000000000170206;7.254;measured;2023-12-31T23:45:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 1
+170000000000000206;2.391;measured;2024-01-01T00:00:00Z;consumption;Case 6 - period 1: Day 1, hour 2
+060000000000170206;14.429;measured;2024-01-01T00:00:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 2
+070000000000170206;2.391;measured;2024-01-01T00:00:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 2
+170000000000000206;2.619;measured;2024-01-01T00:15:00Z;consumption;Case 6 - period 1: Day 1, hour 2
+060000000000170206;17.045;measured;2024-01-01T00:15:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 2
+070000000000170206;2.619;measured;2024-01-01T00:15:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 2
+170000000000000206;19.446;measured;2024-01-01T00:30:00Z;consumption;Case 6 - period 1: Day 1, hour 2
+060000000000170206;6.184;measured;2024-01-01T00:30:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 2
+070000000000170206;19.446;measured;2024-01-01T00:30:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 2
+170000000000000206;5.373;measured;2024-01-01T00:45:00Z;consumption;Case 6 - period 1: Day 1, hour 2
+060000000000170206;13.322;measured;2024-01-01T00:45:00Z;supply_to_grid;Case 6 - period 1: Day 1, hour 2
+070000000000170206;5.373;measured;2024-01-01T00:45:00Z;consumption_from_grid;Case 6 - period 1: Day 1, hour 2
+170000000000000206;13.247;measured;2024-01-01T23:00:00Z;consumption;Case 6 - period 1: Day 2, hour 1
+060000000000170206;17.206;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 1
+070000000000170206;13.247;measured;2024-01-01T23:00:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 1
+170000000000000206;4.879;measured;2024-01-01T23:15:00Z;consumption;Case 6 - period 1: Day 2, hour 1
+060000000000170206;7.705;measured;2024-01-01T23:15:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 1
+070000000000170206;4.879;measured;2024-01-01T23:15:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 1
+170000000000000206;24.237;measured;2024-01-01T23:30:00Z;consumption;Case 6 - period 1: Day 2, hour 1
+060000000000170206;14.275;measured;2024-01-01T23:30:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 1
+070000000000170206;24.237;measured;2024-01-01T23:30:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 1
+170000000000000206;14.901;measured;2024-01-01T23:45:00Z;consumption;Case 6 - period 1: Day 2, hour 1
+060000000000170206;11.058;measured;2024-01-01T23:45:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 1
+070000000000170206;14.901;measured;2024-01-01T23:45:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 1
+170000000000000206;20.412;measured;2024-01-02T00:00:00Z;consumption;Case 6 - period 1: Day 2, hour 2
+060000000000170206;2.089;measured;2024-01-02T00:00:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 2
+070000000000170206;20.412;measured;2024-01-02T00:00:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 2
+170000000000000206;11.853;measured;2024-01-02T00:15:00Z;consumption;Case 6 - period 1: Day 2, hour 2
+060000000000170206;22.124;measured;2024-01-02T00:15:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 2
+070000000000170206;11.853;measured;2024-01-02T00:15:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 2
+170000000000000206;5.649;measured;2024-01-02T00:30:00Z;consumption;Case 6 - period 1: Day 2, hour 2
+060000000000170206;18.786;measured;2024-01-02T00:30:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 2
+070000000000170206;5.649;measured;2024-01-02T00:30:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 2
+170000000000000206;22.378;measured;2024-01-02T00:45:00Z;consumption;Case 6 - period 1: Day 2, hour 2
+060000000000170206;0.345;measured;2024-01-02T00:45:00Z;supply_to_grid;Case 6 - period 1: Day 2, hour 2
+070000000000170206;22.378;measured;2024-01-02T00:45:00Z;consumption_from_grid;Case 6 - period 1: Day 2, hour 2
+150000000000170206;273.062;measured;2024-01-31T23:00:00Z;net_consumption;Case 6 - period 2: Day 1, hour 1
+060000000000170206;49.532;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 1
+070000000000170206;273.062;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 1
+150000000000170206;232.383;measured;2024-01-31T23:15:00Z;net_consumption;Case 6 - period 2: Day 1, hour 1
+060000000000170206;46.798;measured;2024-01-31T23:15:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 1
+070000000000170206;232.383;measured;2024-01-31T23:15:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 1
+150000000000170206;249.152;measured;2024-01-31T23:30:00Z;net_consumption;Case 6 - period 2: Day 1, hour 1
+060000000000170206;41.107;measured;2024-01-31T23:30:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 1
+070000000000170206;249.152;measured;2024-01-31T23:30:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 1
+150000000000170206;84.722;measured;2024-01-31T23:45:00Z;net_consumption;Case 6 - period 2: Day 1, hour 1
+060000000000170206;34.705;measured;2024-01-31T23:45:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 1
+070000000000170206;84.722;measured;2024-01-31T23:45:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 1
+150000000000170206;119.303;measured;2024-02-01T00:00:00Z;net_consumption;Case 6 - period 2: Day 1, hour 2
+060000000000170206;83.154;measured;2024-02-01T00:00:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 2
+070000000000170206;119.303;measured;2024-02-01T00:00:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 2
+150000000000170206;263.245;measured;2024-02-01T00:15:00Z;net_consumption;Case 6 - period 2: Day 1, hour 2
+060000000000170206;116.072;measured;2024-02-01T00:15:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 2
+070000000000170206;263.245;measured;2024-02-01T00:15:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 2
+150000000000170206;166.611;measured;2024-02-01T00:30:00Z;net_consumption;Case 6 - period 2: Day 1, hour 2
+060000000000170206;245;measured;2024-02-01T00:30:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 2
+070000000000170206;166.611;measured;2024-02-01T00:30:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 2
+150000000000170206;209.717;measured;2024-02-01T00:45:00Z;net_consumption;Case 6 - period 2: Day 1, hour 2
+060000000000170206;108.941;measured;2024-02-01T00:45:00Z;supply_to_grid;Case 6 - period 2: Day 1, hour 2
+070000000000170206;209.717;measured;2024-02-01T00:45:00Z;consumption_from_grid;Case 6 - period 2: Day 1, hour 2
+150000000000170206;2.171;measured;2024-02-01T23:00:00Z;net_consumption;Case 6 - period 2: Day 2, hour 1
+060000000000170206;76.835;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 1
+070000000000170206;2.171;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 1
+150000000000170206;189.622;measured;2024-02-01T23:15:00Z;net_consumption;Case 6 - period 2: Day 2, hour 1
+060000000000170206;236.402;measured;2024-02-01T23:15:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 1
+070000000000170206;189.622;measured;2024-02-01T23:15:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 1
+150000000000170206;176.914;measured;2024-02-01T23:30:00Z;net_consumption;Case 6 - period 2: Day 2, hour 1
+060000000000170206;112.171;measured;2024-02-01T23:30:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 1
+070000000000170206;176.914;measured;2024-02-01T23:30:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 1
+150000000000170206;209.645;measured;2024-02-01T23:45:00Z;net_consumption;Case 6 - period 2: Day 2, hour 1
+060000000000170206;125.176;measured;2024-02-01T23:45:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 1
+070000000000170206;209.645;measured;2024-02-01T23:45:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 1
+150000000000170206;25.434;measured;2024-02-02T00:00:00Z;net_consumption;Case 6 - period 2: Day 2, hour 2
+060000000000170206;242.321;measured;2024-02-02T00:00:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 2
+070000000000170206;25.434;measured;2024-02-02T00:00:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 2
+150000000000170206;126.042;measured;2024-02-02T00:15:00Z;net_consumption;Case 6 - period 2: Day 2, hour 2
+060000000000170206;23.728;measured;2024-02-02T00:15:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 2
+070000000000170206;126.042;measured;2024-02-02T00:15:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 2
+150000000000170206;116.258;measured;2024-02-02T00:30:00Z;net_consumption;Case 6 - period 2: Day 2, hour 2
+060000000000170206;106.441;measured;2024-02-02T00:30:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 2
+070000000000170206;116.258;measured;2024-02-02T00:30:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 2
+150000000000170206;110.18;measured;2024-02-02T00:45:00Z;net_consumption;Case 6 - period 2: Day 2, hour 2
+060000000000170206;14.571;measured;2024-02-02T00:45:00Z;supply_to_grid;Case 6 - period 2: Day 2, hour 2
+070000000000170206;110.18;measured;2024-02-02T00:45:00Z;consumption_from_grid;Case 6 - period 2: Day 2, hour 2
+150000000000170206;1500;measured;2024-12-31T23:00:00Z;net_consumption;Case 6 - period 3 (up to end): Day 1
+060000000000170206;500;measured;2024-12-31T23:00:00Z;supply_to_grid;Case 6 - period 3 (up to end): Day 1
+070000000000170206;2000;measured;2024-12-31T23:00:00Z;consumption_from_grid;Case 6 - period 3 (up to end): Day 1
+150000000000170206;1500;measured;2025-01-15T23:00:00Z;net_consumption;Case 6 - period 3 (up to end): Day 2
+060000000000170206;500;measured;2025-01-15T23:00:00Z;supply_to_grid;Case 6 - period 3 (up to end): Day 2
+070000000000170206;2000;measured;2025-01-15T23:00:00Z;consumption_from_grid;Case 6 - period 3 (up to end): Day 2
+150000000000170206;1500;measured;2025-04-15T22:00:00Z;net_consumption;Case 6 - period 3 (up to end): Day 3
+060000000000170206;500;measured;2025-04-15T22:00:00Z;supply_to_grid;Case 6 - period 3 (up to end): Day 3
+070000000000170206;2000;measured;2025-04-15T22:00:00Z;consumption_from_grid;Case 6 - period 3 (up to end): Day 3

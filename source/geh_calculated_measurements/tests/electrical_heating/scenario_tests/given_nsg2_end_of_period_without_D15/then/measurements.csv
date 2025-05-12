@@ -23,3 +23,10 @@ electrical_heating;140000000000170203;2024-10-27T23:00:00Z;0;Case 3
 electrical_heating;140000000000170204;2024-03-30T23:00:00Z;1;Case 4 - summer time change
 electrical_heating;140000000000170204;2024-10-26T22:00:00Z;1;Case 4 - winter time change
 electrical_heating;140000000000170204;2024-10-27T23:00:00Z;321.869;Case 4 - make sure we hit limit
+electrical_heating;140000000000170206;2023-12-31T23:00:00Z;103.516;Case 6: Period 1, Day 1
+electrical_heating;140000000000170206;2024-01-01T23:00:00Z;72.275;Case 6: Period 1, Day 2
+electrical_heating;140000000000170206;2024-01-31T23:00:00Z;1598.195;Case 6: Period 2, Day 1
+electrical_heating;140000000000170206;2024-02-01T23:00:00Z;409.2;Case 6: Period 2, Day 2
+electrical_heating;140000000000170206;2024-12-31T23:00:00Z;1500;Case 6: Period 3, Day 1
+electrical_heating;140000000000170206;2025-01-15T23:00:00Z;1500;Case 6: Period 3, Day 2
+electrical_heating;140000000000170206;2025-04-15T22:00:00Z;1000;Case 6: Period 3, Day 3

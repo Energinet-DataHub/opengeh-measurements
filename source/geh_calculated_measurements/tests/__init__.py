@@ -4,12 +4,19 @@ from enum import IntEnum
 from pathlib import Path
 from typing import Any
 
+from geh_calculated_measurements.database_migrations.database_names import DatabaseNames
+
 PROJECT_ROOT = Path(__file__).parent.parent
 TESTS_ROOT = PROJECT_ROOT / "tests"
 
 SPARK_CATALOG_NAME = "spark_catalog"
 MEASUREMENTS_GOLD_TABLE_NAME = "measurements"
 TIME_ZONE = "Europe/Copenhagen"
+
+REQUIRED_DATABASES = [
+    DatabaseNames.MEASUREMENTS_CALCULATED,
+    DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL,
+]
 
 
 @dataclass
