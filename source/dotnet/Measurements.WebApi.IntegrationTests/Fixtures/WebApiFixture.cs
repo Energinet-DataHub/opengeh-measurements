@@ -24,6 +24,8 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private static Dictionary<string, (string DataType, bool IsNullable)> ColumnDefinitions => CreateMeasurementsColumnDefinitions();
+
     public const string ValidMeteringPointId = "123456789012345678";
     public const string InvalidMeteringPointId = "invalid metering point id";
     public const string NotExistingMeteringPointId = "9988776655443";
@@ -51,11 +53,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var columnDefinitions = CreateMeasurementsColumnDefinitions();
-
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
@@ -64,9 +62,19 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         await DatabricksSchemaManager.DropSchemaAsync();
     }
 
+    public async Task CreateTableAsync()
+    {
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, ColumnDefinitions);
+    }
+
     public async Task InsertRowsAsync(List<List<string>> rows)
     {
         await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+    }
+
+    public async Task DeleteTableAsync()
+    {
+        await DatabricksSchemaManager.DropTableAsync(MeasurementsGoldConstants.TableName);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

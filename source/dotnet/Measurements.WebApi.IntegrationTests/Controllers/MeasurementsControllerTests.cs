@@ -12,8 +12,18 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Controllers;
 
 [IntegrationTest]
-public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>
+public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<WebApiFixture>, IAsyncLifetime
 {
+    public async Task InitializeAsync()
+    {
+        await fixture.CreateTableAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await fixture.DeleteTableAsync();
+    }
+
     [Fact]
     public async Task GetByPeriodAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
@@ -122,9 +132,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByMonthAsyncV2_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
-        var yearMonth = new YearMonth(2021, 2);
-        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.ValidMeteringPointId, yearMonth);
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate($"{WebApiFixture.ValidMeteringPointId}", new LocalDate(2021, 2, 1))
+            .WithContinuesRowsForDate($"{WebApiFixture.ValidMeteringPointId}", new LocalDate(2021, 2, 2))
+            .WithContinuesRowsForDate($"{WebApiFixture.ValidMeteringPointId}", new LocalDate(2021, 2, 3))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByMonthV2Url(WebApiFixture.ValidMeteringPointId, new YearMonth(2021, 2));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -133,11 +147,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
         Assert.Equal(3, actual.MeasurementAggregations.Count);
-        Assert.Equal(expectedDate, actual.MeasurementAggregations.First().Date);
+        Assert.Equal(new DateOnly(2021, 2, 1), actual.MeasurementAggregations.First().Date);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(285.6M, measurementAggregation.Quantity);
+            Assert.Equal(24m, measurementAggregation.Quantity);
             Assert.False(measurementAggregation.MissingValues);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
@@ -235,8 +249,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .Build();
         await fixture.InsertRowsAsync(rows);
 
-        var expectedFirstDate = Instant.FromUtc(2021, 2, 2, 0, 0, 0).ToDateOnly();
-        var expectedLastDate = Instant.FromUtc(2021, 2, 28, 0, 0, 0).ToDateOnly();
         var yearMonth = new YearMonth(2023, 2);
         var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth);
 
@@ -246,9 +258,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Equal(3, actual.MeasurementAggregations.Count);
-        Assert.Equal(expectedFirstDate, actual.MeasurementAggregations.First().Date);
-        Assert.Equal(expectedLastDate, actual.MeasurementAggregations.Last().Date);
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+        Assert.Equal(new DateOnly(2023, 2, 2), actual.MeasurementAggregations.First().Date);
+        Assert.Equal(new DateOnly(2023, 2, 3), actual.MeasurementAggregations.Last().Date);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
