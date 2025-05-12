@@ -44,10 +44,7 @@ def _(spark: SparkSession, create_external_resources, mock_checkpoint_path):
 def _(spark: SparkSession, mock_checkpoint_path):
     migrated_transactions_repository = MigratedTransactionsRepository(spark)
     migrations_silver_time_series_repository = MigrationsSilverTimeSeriesRepository(spark)
-
-    latest_created_already_migrated = (
-        migrated_transactions_repository.calculate_latest_created_timestamp_that_has_been_migrated()
-    ) or datetime.datetime.min
+    latest_created_already_migrated = datetime.datetime.min
     migrate_from_migrations.daily_load_of_migrations_to_measurements(
         migrations_silver_time_series_repository,
         migrated_transactions_repository,
