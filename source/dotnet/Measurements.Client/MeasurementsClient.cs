@@ -59,6 +59,11 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
     }
 
+    public Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
