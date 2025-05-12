@@ -27,6 +27,7 @@ class ContractColumnNames:
     resolution = "resolution"
     settlement_month = "settlement_month"
     settlement_year = "settlement_year"
+    settlement_type = "settlement_type"
     transaction_creation_datetime = "transaction_creation_datetime"
     transaction_id = "transaction_id"
     uncoupled_date = "uncoupled_date"
