@@ -2,3 +2,5 @@ metering_point_id;has_electrical_heating;settlement_month;period_from_date;perio
 170000000000000200;false;4;2025-03-19T23:00:00Z;;false;Case 0
 170000000000000201;false;4;2025-01-31T23:00:00Z;2025-02-28T23:00:00Z;false;Case 1
 170000000000000201;false;4;2025-02-28T23:00:00Z;;false;Case 1
+170000000000000202;false;6;2024-05-10T22:00:00Z;2025-02-28T23:00:00Z;false;Case 2
+170000000000000202;false;6;2025-02-28T23:00:00Z;;false;Case 2 (new period back in time)

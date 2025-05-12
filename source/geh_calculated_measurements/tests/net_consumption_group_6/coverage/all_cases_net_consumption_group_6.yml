@@ -8,13 +8,18 @@
   "Sum for D07 is aggregated, even if sum for D06 is missing": true
 
   "cnc calculation":
-    "calculation is cnc": true
+    "Calculation is cnc": true
+    "If result is identical to existing cnc measurement result, no new result is generated": true
+    "When period goes from cenc to cnc, new results are always generated": true
 
   "cenc calculation":
-    "calculation is cenc": true
+    "Calculation is cenc": true
+
 
 
 Mangler dækning
+ -
+ - periodeskift mere end 3 år tilbage
  - to dage crap
  - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
  - filtrering

@@ -39,8 +39,13 @@ notes: |
   New period 2 (cenc)                              |--------
   New D15 values                    +++++++++++++++
 
-  CASE 3: New results for whole period when going from cenc to cnc
+"Net Consumption Group 6 Tests":
+  "Period is < 1 year"
+  "Smrd is not 1"
+  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
 
-
-cases_tested:
-
+  "cnc calculation":
+    "Calculation is cnc"
+    "If result is identical to existing cnc measurement result, no new result is generated"
+    "When period goes from cenc to cnc, new results are always generated"
+    
