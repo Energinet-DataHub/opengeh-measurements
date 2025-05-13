@@ -1,4 +1,5 @@
-﻿using NodaTime;
+﻿using System.Globalization;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 
@@ -16,15 +17,15 @@ public class GoldRowsBuilder
     {
         for (var i = 0; i < 24; i++)
         {
-            var observationTime = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, i, 0, 0).Plus(Duration.FromHours(-1));
-            var transactionCreated = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
+            var observationTime = Instant
+                .FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, i, 0, 0)
+                .Plus(Duration.FromHours(-1));
 
             var rowBuilder = new GoldRowBuilder();
             var row = rowBuilder
                 .WithMeteringPointId(meteringPointId)
-                .WithObservationTime(observationTime)
-                .WithCreated(transactionCreated)
-                .WithTransactionCreationDatetime(transactionCreated)
+                .WithObservationTime(FormatString(observationTime))
+                .WithCreated(FormatString(Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0)))
                 .Build();
 
             _rows.Add(row);
@@ -36,5 +37,10 @@ public class GoldRowsBuilder
     public List<List<string>> Build()
     {
         return _rows;
+    }
+
+    private static string FormatString(Instant date)
+    {
+        return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
     }
 }

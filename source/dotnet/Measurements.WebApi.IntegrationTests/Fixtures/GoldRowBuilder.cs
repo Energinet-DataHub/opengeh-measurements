@@ -1,19 +1,16 @@
-﻿using System.Globalization;
-using NodaTime;
-
-namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
+﻿namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 
 public class GoldRowBuilder
 {
-    private string _meteringPointId = "123456789012345678";
+    private string _meteringPointId = string.Empty;
     private string _unit = "kwh";
-    private Instant _observationTime;
+    private string _observationTime = "1970-01-01T00:00:00Z";
     private string _quantity = "1.0";
     private string _quality = "measured";
     private string _resolution = "PT1H";
     private string _isCancelled = "false";
-    private Instant _created;
-    private Instant _transactionCreationDatetime;
+    private string _created = "1970-01-01T00:00:00Z";
+    private string _transactionCreationDatetime = "1970-01-01T00:00:00Z";
 
     public GoldRowBuilder WithMeteringPointId(string meteringPointId)
     {
@@ -27,7 +24,7 @@ public class GoldRowBuilder
         return this;
     }
 
-    public GoldRowBuilder WithObservationTime(Instant observationTime)
+    public GoldRowBuilder WithObservationTime(string observationTime)
     {
         _observationTime = observationTime;
         return this;
@@ -57,13 +54,13 @@ public class GoldRowBuilder
         return this;
     }
 
-    public GoldRowBuilder WithCreated(Instant created)
+    public GoldRowBuilder WithCreated(string created)
     {
         _created = created;
         return this;
     }
 
-    public GoldRowBuilder WithTransactionCreationDatetime(Instant transactionCreationDatetime)
+    public GoldRowBuilder WithTransactionCreationDatetime(string transactionCreationDatetime)
     {
         _transactionCreationDatetime = transactionCreationDatetime;
         return this;
@@ -75,18 +72,13 @@ public class GoldRowBuilder
         [
             $"'{_meteringPointId}'",
             $"'{_unit}'",
-            $"'{FormatString(_observationTime)}'",
+            $"'{_observationTime}'",
             _quantity,
             $"'{_quality}'",
             $"'{_resolution}'",
             _isCancelled,
-            $"'{FormatString(_created)}'",
-            $"'{FormatString(_transactionCreationDatetime)}'",
+            $"'{_created}'",
+            $"'{(_transactionCreationDatetime == string.Empty ? _created : _transactionCreationDatetime)}'",
         ];
-    }
-
-    private static string FormatString(Instant date)
-    {
-        return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
     }
 }

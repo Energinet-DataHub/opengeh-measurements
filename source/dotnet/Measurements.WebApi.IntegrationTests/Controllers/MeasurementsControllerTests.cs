@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Net;
-using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 using NodaTime;
@@ -28,9 +28,14 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
-        const string startDate = "2022-01-01T23:00:00Z";
-        const string endDate = "2022-01-02T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
+        const string meteringPointId = "123456789012345678";
+        const string startDate = "2022-03-19T23:00:00Z";
+        const string endDate = "2022-03-20T23:00:00Z";
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 20))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetMeasurementsForPeriodUrl(meteringPointId, startDate, endDate);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -43,7 +48,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             Assert.Equal(Unit.kWh, point.Unit);
             Assert.Equal(Quality.Measured, point.Quality);
             Assert.Equal(Resolution.Hourly, point.Resolution);
-            Assert.Equal("2022-01-04T23:00:00Z", point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
+            Assert.Equal(endDate, point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
         }
     }
 
@@ -51,16 +56,25 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMultipleObservations_ReturnsAllObservations()
     {
         // Arrange
-        const string startDate = "2022-01-02T23:00:00Z"; // On this date, the fixture inserts 2 measurements with the same observation time
-        const string endDate = "2022-01-03T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
+        const string meteringPointId = "123456789012345678";
+        var startDate = new LocalDate(2022, 2, 15);
+        var endDate = new LocalDate(2022, 2, 16);
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, startDate)
+            .WithContinuesRowsForDate(meteringPointId, startDate)
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetMeasurementsForPeriodUrl(
+            meteringPointId,
+            startDate.ToUtcString(),
+            endDate.ToUtcString());
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
         var actual = await ParseResponseAsync<MeasurementsResponse>(actualResponse);
 
         // Assert
-        Assert.Equal(2, actual.Points.Count(p => p.ObservationTime.ToString().Equals(startDate)));
+        Assert.Equal(2, actual.Points.Count(p => p.ObservationTime.ToString().Equals(startDate.ToUtcString())));
     }
 
     [Fact]
@@ -97,10 +111,17 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidUnit_ReturnInternalServerError()
     {
         // Arrange
-        const string expectedMeteringPointId = "987654321012345678";
-        const string startDate = "2022-06-14T22:00:00Z"; // On this date, the fixture inserts a measurement with invalid unit
-        const string endDate = "2022-06-15T22:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(expectedMeteringPointId, startDate, endDate);
+        const string meteringPointId = "123456789012345678";
+        const string startDate = "2022-01-31T23:00:00Z";
+        const string endDate = "2022-02-01T23:00:00Z";
+        var invalidRow = new GoldRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime("2022-01-31T23:00:00Z")
+            .WithUnit("invalid unit")
+            .Build();
+        var rows = new GoldRowsBuilder().WithRow(invalidRow).Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetMeasurementsForPeriodUrl(meteringPointId, startDate, endDate);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -115,9 +136,17 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetByPeriodAsync_WhenMeasurementHasInvalidResolution_ReturnInternalServerError()
     {
         // Arrange
-        const string startDate = "2022-01-31T23:00:00Z"; // On this date, the fixture inserts a measurement with invalid resolution
+        const string meteringPointId = "123456789012345678";
+        const string startDate = "2022-01-31T23:00:00Z";
         const string endDate = "2022-02-01T23:00:00Z";
-        var url = CreateGetMeasurementsForPeriodUrl(WebApiFixture.ValidMeteringPointId, startDate, endDate);
+        var invalidRow = new GoldRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime("2022-01-31T23:00:00Z")
+            .WithResolution("invalid resolution")
+            .Build();
+        var rows = new GoldRowsBuilder().WithRow(invalidRow).Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetMeasurementsForPeriodUrl(meteringPointId, startDate, endDate);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -190,9 +219,15 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByYearAsyncV2_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
-        var expectedYearMonth = new YearMonth(expectedDate.Year, expectedDate.Month);
-        var url = CreateGetAggregatedMeasurementsByYearV2Url(WebApiFixture.ValidMeteringPointId, new Year(expectedYearMonth.Year));
+        const string meteringPointId = "123456789123456789";
+        const int year = 2021;
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(year, 2, 5))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(year, 3, 6))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(year, 3, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByYearV2Url(meteringPointId, new Year(year));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -200,14 +235,20 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Single(actual.MeasurementAggregations);
-        Assert.Equal(expectedYearMonth, actual.MeasurementAggregations.First().YearMonth);
-        foreach (var measurementAggregation in actual.MeasurementAggregations)
-        {
-            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(856.8M, measurementAggregation.Quantity);
-            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
-        }
+
+        var actualFirst = actual.MeasurementAggregations.First();
+        Assert.Equal(year, actualFirst.YearMonth.Year);
+        Assert.Equal(2, actualFirst.YearMonth.Month);
+        Assert.Equal(Quality.Measured, actualFirst.Quality);
+        Assert.Equal(24.0m, actualFirst.Quantity);
+        Assert.Equal(Unit.kWh, actualFirst.Unit);
+
+        var actualLast = actual.MeasurementAggregations.Last();
+        Assert.Equal(year, actualLast.YearMonth.Year);
+        Assert.Equal(3, actualLast.YearMonth.Month);
+        Assert.Equal(Quality.Measured, actualLast.Quality);
+        Assert.Equal(48.0m, actualLast.Quantity);
+        Assert.Equal(Unit.kWh, actualLast.Unit);
     }
 
     [Fact]
@@ -303,9 +344,14 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByMonthAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var expectedDate = Instant.FromUtc(2021, 2, 1, 23, 0, 0).ToDateOnly();
-        var expectedYearMonth = new YearMonth(expectedDate.Year, expectedDate.Month);
-        var url = CreateGetAggregatedMeasurementsByMonthUrl(WebApiFixture.ValidMeteringPointId, new Year(expectedYearMonth.Year));
+        var meteringPointId = "123456789123456789";
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 3, 6))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(2021));
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -313,12 +359,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Single(actual.MeasurementAggregations);
-        Assert.Equal(expectedYearMonth, actual.MeasurementAggregations.First().YearMonth);
+        Assert.All(actual.MeasurementAggregations, x => Assert.Equal(2021, x.YearMonth.Year));
+        Assert.Equal(3, actual.MeasurementAggregations.Count);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(856.8M, measurementAggregation.Quantity);
+            Assert.Equal(24.0m, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
         }
     }
@@ -341,7 +387,14 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
-        var url = CreateGetAggregatedMeasurementsByYearUrl(WebApiFixture.ValidMeteringPointId);
+        const string meteringPointId = "123456789123456789";
+        var rows = new GoldRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(meteringPointId);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -354,13 +407,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var firstMeasurementAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(2021, firstMeasurementAggregation.Year);
         Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
-        Assert.Equal(856.8M, firstMeasurementAggregation.Quantity);
+        Assert.Equal(24.0m, firstMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
 
         var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
         Assert.Equal(2022, lastMeasurementAggregation.Year);
         Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
-        Assert.Equal(1428M, lastMeasurementAggregation.Quantity);
+        Assert.Equal(48m, lastMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
     }
 
