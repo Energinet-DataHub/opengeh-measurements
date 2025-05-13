@@ -50,7 +50,8 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
         '{datetime.now(UTC)}', -- transaction_creation_datetime
         '{MeteringPointType.ELECTRICAL_HEATING.value}',
         '{datetime.now(UTC)}', -- observation_time - make sure this is the latest value as current_v1 only selects the latest
-        {quantity}
+        {quantity},
+        NULL -- settlement_type
       )
     """
     response_seed = databricks_api_client.execute_statement(statement=seed_statement, warehouse_id=config.warehouse_id)
