@@ -45,15 +45,18 @@ def cnc(
       - DataFrame with periods and their calculated net consumption (converted to UTC)
       - DataFrame with periods and their corresponding time series data (converted to UTC)
     """
+    current_measurements = current_measurements.df
+    current_measurements = convert_from_utc(current_measurements, time_zone)
     filtered_time_series = _filter_and_aggregate_daily(current_measurements)
 
+    consumption_metering_point_periods = consumption_metering_point_periods.df
+    child_metering_points = child_metering_points.df
     parent_child_joined = _join_child_to_consumption(
         consumption_metering_point_periods, child_metering_points, execution_start_datetime
     )
-    filtered_time_series = convert_from_utc(filtered_time_series, time_zone)
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
-    parent_child_joined = close_open_period(parent_child_joined)
+    parent_child_joined = _close_open_period(parent_child_joined)
 
     metering_points = _filter_periods_by_cut_off(parent_child_joined)
 
@@ -73,7 +76,7 @@ def cnc(
     )
 
 
-def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> DataFrame:
+def _filter_and_aggregate_daily(current_measurements: DataFrame) -> DataFrame:
     """Filter and aggregate daily measurements.
 
     This function filters the current measurements data and aggregates it to daily observations.
@@ -85,13 +88,8 @@ def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> Da
             - date: Daily observation time
             - quantity: The quantity as DecimalType(18, 3)
     """
-    filtered_time_series = current_measurements.df.where(
-        F.col(ContractColumnNames.metering_point_type).isin(
-            MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
-        )
-    )
     filtered_time_series_daily = (
-        filtered_time_series.select(
+        current_measurements.select(
             "*",
             F.to_date(F.col(ContractColumnNames.observation_time)).alias(ContractColumnNames.date),
         )
@@ -115,8 +113,8 @@ def _filter_and_aggregate_daily(current_measurements: CurrentMeasurements) -> Da
 
 
 def _join_child_to_consumption(
-    consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
-    child_metering_points: ChildMeteringPoints,
+    consumption_metering_point_periods: DataFrame,
+    child_metering_points: DataFrame,
     execution_start_datetime: datetime,
 ) -> DataFrame:
     """Join child metering points with consumption metering point periods.
@@ -134,12 +132,12 @@ def _join_child_to_consumption(
             - execution_start_datetime: Execution start date and time
     """
     parent_child_joined = (
-        child_metering_points.df.alias("child")
+        child_metering_points.alias("child")
         .join(
-            consumption_metering_point_periods.df.alias("consumption"),
+            consumption_metering_point_periods.alias("consumption"),
             F.col(f"child.{ContractColumnNames.parent_metering_point_id}")
             == F.col(f"consumption.{ContractColumnNames.metering_point_id}"),
-            "left",
+            "inner",
         )
         .select(
             F.col(f"child.{ContractColumnNames.metering_point_id}"),
@@ -155,7 +153,7 @@ def _join_child_to_consumption(
     return parent_child_joined
 
 
-def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
+def _close_open_period(parent_child_joined: DataFrame) -> DataFrame:
     """Close open periods in the parent-child joined DataFrame.
 
     This function closes open periods by setting the period_to_date to the execution_start_datetime
@@ -178,8 +176,8 @@ def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
         F.col(f"{ContractColumnNames.period_from_date}"),
         F.col(f"{ContractColumnNames.settlement_month}"),
         F.col("execution_start_datetime"),
-        F.when(
-            F.col(ContractColumnNames.period_to_date).isNull(),
+        F.coalesce(
+            F.col(ContractColumnNames.period_to_date),
             F.when(
                 F.month(F.col("execution_start_datetime")) >= F.col(ContractColumnNames.settlement_month),
                 F.make_date(
@@ -194,9 +192,7 @@ def close_open_period(parent_child_joined: DataFrame) -> DataFrame:
                     F.lit(1),
                 )
             ),
-        )
-        .otherwise(F.col(ContractColumnNames.period_to_date))
-        .alias(ContractColumnNames.period_to_date),
+        ).alias(ContractColumnNames.period_to_date),
     )
 
 
@@ -287,14 +283,26 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
         .select(
             "*",
             F.posexplode(
-                F.concat(
-                    F.array(F.col(ContractColumnNames.period_from_date)),
-                    F.sequence(
-                        F.col("next_settlement_date"),
-                        F.col(ContractColumnNames.period_to_date),
-                        F.expr("INTERVAL 1 YEAR"),
+                # Create settlement periods by exploding a sequence of settlement dates
+                F.when(
+                    F.col("next_settlement_date") < F.col(ContractColumnNames.period_to_date),
+                    # When consumption metering point period overlaps with settlement date:
+                    # add seqence of settlement dates in between period_from_date and period_to_date
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.sequence(
+                            F.col("next_settlement_date"),
+                            F.col(ContractColumnNames.period_to_date),
+                            F.expr("INTERVAL 1 YEAR"),
+                        ),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
                     ),
-                    F.array(F.col(ContractColumnNames.period_to_date)),
+                ).otherwise(
+                    # When consumption metering point period does not overlaps with settlement date:
+                    F.concat(
+                        F.array(F.col(ContractColumnNames.period_from_date)),
+                        F.array(F.col(ContractColumnNames.period_to_date)),
+                    )
                 )
             ).alias("index", "period_start"),
         )
@@ -310,7 +318,7 @@ def _split_periods_by_settlement_month(metering_points: DataFrame) -> DataFrame:
             )
             .alias("period_end"),
         )
-        .where(F.datediff(F.col("period_end"), F.col("period_start")) > 1)
+        .where(F.datediff(F.col("period_end"), F.col("period_start")) > 0)
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
@@ -420,7 +428,12 @@ def _sum_supply_and_consumption(periods_with_ts: DataFrame) -> DataFrame:
             - net_consumption: The calculated net consumption as DecimalType(18, 3)
     """
     net_consumption_over_ts = (
-        periods_with_ts.groupBy(
+        periods_with_ts.where(
+            F.col(ContractColumnNames.metering_point_type).isin(
+                MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
+            )
+        )
+        .groupBy(
             F.col(ContractColumnNames.parent_metering_point_id),
             F.col("period_start"),
             F.col("period_end"),

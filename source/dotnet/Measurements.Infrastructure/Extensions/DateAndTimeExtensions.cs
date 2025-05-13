@@ -25,6 +25,12 @@ public static class DateAndTimeExtensions
             .ToDateTimeOffset();
     }
 
+    public static (LocalDate Start, LocalDate End) ToDateIntervalIncludingLastDay(this YearMonth yearMonth)
+    {
+        var (start, end) = yearMonth.ToDateInterval();
+        return (start, end.PlusDays(1));
+    }
+
     public static string ToUtcString(this Instant date)
     {
         var localDate = date.InUtc().Date;

@@ -1,9 +1,13 @@
 # Measurements.Client Release Notes
 
-## Version 5.1.0
+## Version 6.1.0
 
 - Added unimplemented method to get current measurements for a period.
 - Added unimplemented method to get aggregated measurements for a period.
+
+## Version 6.0.0
+
+- Upgrade to dotnet version 9.0
 
 ## Version 5.0.0
 

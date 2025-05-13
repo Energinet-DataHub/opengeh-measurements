@@ -1,4 +1,0 @@
-metering_point_id;metering_point_type;parent_metering_point_id;coupled_date;uncoupled_date
-150000000000000201;net_consumption;170000000000000201;2023-12-31T23:00:00Z;
-060000000000000201;supply_to_grid;170000000000000201;2023-12-31T23:00:00Z;
-070000000000000201;consumption_from_grid;170000000000000201;2023-12-31T23:00:00Z;

@@ -1,4 +1,5 @@
 ﻿using Energinet.DataHub.Measurements.Domain;
+using Energinet.DataHub.Measurements.Infrastructure.Extensions;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;
@@ -36,14 +37,14 @@ public class YearTests
     {
         // Arrange
         var year = new Year(2025);
-        var expectedStartDate = new LocalDate(2025, 1, 1);
-        var expectedEndDate = new LocalDate(2025, 12, 31);
+        var expectedStartDate = new LocalDate(2025, 1, 1).ToUtcString();
+        var expectedEndDate = new LocalDate(2026, 1, 1).ToUtcString();
 
         // Act
-        var (startDate, endDate) = year.ToDateInterval();
+        var (actualStartDate, actualEndDate) = year.ToDateIntervalIncludingLastDay();
 
         // Assert
-        Assert.Equal(expectedStartDate, startDate);
-        Assert.Equal(expectedEndDate, endDate);
+        Assert.Equal(expectedStartDate, actualStartDate.ToUtcString());
+        Assert.Equal(expectedEndDate, actualEndDate.ToUtcString());
     }
 }
