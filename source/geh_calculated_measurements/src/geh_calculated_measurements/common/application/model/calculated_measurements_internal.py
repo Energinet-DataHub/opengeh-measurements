@@ -46,7 +46,7 @@ class CalculatedMeasurementsInternal(DataFrameWrapper):
             # The calculated quantity
             T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), not nullable),
             #
-            # Settlement type - used to determine if it is CENC or CNC
+            # Settlement type - "up_to_end_of_period" | "end_of_period"
             T.StructField(ContractColumnNames.settlement_type, T.StringType(), nullable),
         ]
     )
