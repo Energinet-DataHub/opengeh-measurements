@@ -1,0 +1,6 @@
+metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in;#comment
+170000000000000200;false;1;2023-12-31T23:00:00Z;2024-12-31T23:00:00Z;false;Case 0
+170000000000000201;false;3;2024-01-31T23:00:00Z;;false;Case 1
+170000000000000202;false;12;2024-10-15T22:00:00Z;2024-10-31T23:00:00Z;false;Case 2
+170000000000000202;false;12;2024-10-31T23:00:00Z;2025-01-31T23:00:00Z;true;Case 2
+170000000000000202;true;12;2025-01-31T23:00:00Z;;true;Case 2
