@@ -1,4 +1,5 @@
 import datetime
+from dataclasses import dataclass
 
 from pyspark.sql import SparkSession
 from pytest_bdd import given, parsers, scenarios, then, when
@@ -21,6 +22,12 @@ from tests.helpers.builders.migrations_silver_time_series_builder import Migrati
 scenarios("../features/stream_migration_to_bronze_migrated.feature")
 
 
+@dataclass
+class MeteringPointIds:
+    newer: str
+    older: str
+
+
 # Given steps
 
 
@@ -28,7 +35,7 @@ scenarios("../features/stream_migration_to_bronze_migrated.feature")
     parsers.parse(
         "a transaction created {older_days:d} days ago and another created {newer_days:d} days ago in the migration silver table"
     ),
-    target_fixture="expected_newer_metering_point_id",
+    target_fixture="expected_newer_and_older_metering_point_id",
 )
 def _(spark: SparkSession, create_external_resources, mock_checkpoint_path, older_days, newer_days):
     older_id = identifier_helper.create_random_metering_point_id()
@@ -56,7 +63,7 @@ def _(spark: SparkSession, create_external_resources, mock_checkpoint_path, olde
         MigrationsSilverTableNames.silver_time_series_table,
     )
 
-    return newer_id
+    return MeteringPointIds(newer=newer_id, older=older_id)
 
 
 @given("transactions available in the migration silver table", target_fixture="expected_metering_point_id")
@@ -102,12 +109,17 @@ def _(spark: SparkSession, mock_checkpoint_path):
 
 
 @then("only the newer transaction should be available in the bronze measurements migration table")
-def _(spark: SparkSession, expected_newer_metering_point_id):
+def _(spark: SparkSession, expected_newer_and_older_metering_point_id: MeteringPointIds):
+    newer_id = expected_newer_and_older_metering_point_id.newer
+    older_id = expected_newer_and_older_metering_point_id.older
+
     df = spark.table(f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}")
-    count = df.filter(f"metering_point_id = '{expected_newer_metering_point_id}'").count()
-    total = df.count()
-    assert count == 1, f"Expected newer transaction '{expected_newer_metering_point_id}' to be migrated"
-    assert total == 1, f"Expected only one transaction in the bronze table, but found {total}"
+
+    count_newer = df.filter(f"metering_point_id = '{newer_id}'").count()
+    count_older = df.filter(f"metering_point_id = '{older_id}'").count()
+
+    assert count_newer == 1, f"Expected newer transaction '{newer_id}' to be migrated"
+    assert count_older == 0, f"Did not expect older transaction '{older_id}' to be migrated"
 
 
 @then("transactions should be available in the bronze measurements migration table")
