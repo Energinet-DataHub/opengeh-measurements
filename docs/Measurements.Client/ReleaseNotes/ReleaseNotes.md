@@ -3,7 +3,6 @@
 ## Version 6.1.0
 
 - Added unimplemented method to get current measurements for a period.
-- Added unimplemented method to get aggregated measurements for a period.
 
 ## Version 6.0.0
 
