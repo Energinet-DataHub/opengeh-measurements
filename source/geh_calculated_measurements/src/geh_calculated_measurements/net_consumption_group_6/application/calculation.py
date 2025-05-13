@@ -1,8 +1,12 @@
+import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry.decorators import use_span
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession, Window
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
+from geh_calculated_measurements.common.application.model import (
+    calculated_measurements_hourly_factory,
+)
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,
@@ -17,6 +21,49 @@ from geh_calculated_measurements.net_consumption_group_6.domain.calculations imp
 from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
     ElectricityMarketRepository,
 )
+
+
+def get_current_with_settlement_type(spark: SparkSession, args: NetConsumptionGroup6Args) -> DataFrame:
+    current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
+    calculated_measurments_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
+
+    current_measurements = current_measurements_repository.read_current_measurements().df
+    calculated_measurments = calculated_measurments_repository.read_calculated_measurements().df
+
+    current_measurements = current_measurements.alias("ts")
+    calculated_measurments = calculated_measurments.alias("cmi")
+
+    calculated_measurements_ranked = calculated_measurments.withColumn(
+        "row_number",
+        F.row_number().over(
+            Window.partitionBy(
+                calculated_measurments[ContractColumnNames.metering_point_id],
+                calculated_measurments[ContractColumnNames.observation_time],
+            ).orderBy(F.desc(calculated_measurments.transaction_creation_datetime))
+        ),
+    )
+
+    calculated_measurements_filtered = calculated_measurements_ranked.filter(F.col("row_number") == 1).drop(
+        "row_number"
+    )
+
+    current_measurements_with_settlement_type = current_measurements.join(
+        calculated_measurements_filtered,
+        on=[
+            current_measurements[ContractColumnNames.metering_point_id]
+            == calculated_measurements_filtered[ContractColumnNames.metering_point_id],
+            current_measurements[ContractColumnNames.observation_time]
+            == calculated_measurements_filtered[ContractColumnNames.observation_time],
+        ],
+        how="left",
+    ).select(
+        "ts.*",
+        calculated_measurements_filtered[ContractColumnNames.settlement_type].alias(
+            ContractColumnNames.settlement_type
+        ),
+    )
+    current_measurements_with_settlement_type.show(1000, False)
+    return current_measurements_with_settlement_type
 
 
 @use_span()
