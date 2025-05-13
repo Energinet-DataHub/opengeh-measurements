@@ -5,11 +5,11 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 
 public class MeasurementsTableRowsBuilder
 {
-    private readonly List<List<string>> _measurements = [];
+    private readonly List<List<string>> _rows = [];
 
     public MeasurementsTableRowsBuilder WithRow(List<string> row)
     {
-        _measurements.Add(row);
+        _rows.Add(row);
         return this;
     }
 
@@ -28,7 +28,7 @@ public class MeasurementsTableRowsBuilder
                 .WithCreated(FormatString(Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0)))
                 .Build();
 
-            _measurements.Add(row);
+            _rows.Add(row);
         }
 
         return this;
@@ -36,7 +36,7 @@ public class MeasurementsTableRowsBuilder
 
     public List<List<string>> Build()
     {
-        return _measurements;
+        return _rows;
     }
 
     private static string FormatString(Instant date)
