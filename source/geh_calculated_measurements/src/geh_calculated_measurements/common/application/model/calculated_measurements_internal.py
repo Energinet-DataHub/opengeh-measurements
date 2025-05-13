@@ -46,7 +46,8 @@ class CalculatedMeasurementsInternal(DataFrameWrapper):
             # The calculated quantity
             T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), not nullable),
             #
-            # Settlement type - "up_to_end_of_period" | "end_of_period"
+            # Settlement type
+            # "up_to_end_of_period" | "end_of_period"
             T.StructField(ContractColumnNames.settlement_type, T.StringType(), nullable),
         ]
     )
