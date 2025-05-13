@@ -57,17 +57,17 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     public async Task CreateTableAsync()
     {
         var columnDefinitions = CreateMeasurementsColumnDefinitions();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsTableConstants.Name, columnDefinitions);
     }
 
-    public async Task InsertRowsAsync(List<List<string>> rows)
+    public async Task InsertRowsAsync(List<List<string>> measurements)
     {
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, rows);
+        await DatabricksSchemaManager.InsertAsync(MeasurementsTableConstants.Name, measurements);
     }
 
     public async Task DeleteTableAsync()
     {
-        await DatabricksSchemaManager.DropTableAsync(MeasurementsGoldConstants.TableName);
+        await DatabricksSchemaManager.DropTableAsync(MeasurementsTableConstants.Name);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -93,14 +93,14 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
         new()
         {
-            { MeasurementsGoldConstants.MeteringPointIdColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.UnitColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
-            { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
-            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsTableConstants.CreatedColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 }

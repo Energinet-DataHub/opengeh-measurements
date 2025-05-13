@@ -1,6 +1,6 @@
 ﻿namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 
-public class GoldRowBuilder
+public class MeasurementTableRowBuilder
 {
     private string _meteringPointId = string.Empty;
     private string _unit = "kwh";
@@ -12,55 +12,55 @@ public class GoldRowBuilder
     private string _created = "1970-01-01T00:00:00Z";
     private string _transactionCreationDatetime = "1970-01-01T00:00:00Z";
 
-    public GoldRowBuilder WithMeteringPointId(string meteringPointId)
+    public MeasurementTableRowBuilder WithMeteringPointId(string meteringPointId)
     {
         _meteringPointId = meteringPointId;
         return this;
     }
 
-    public GoldRowBuilder WithUnit(string unit)
+    public MeasurementTableRowBuilder WithUnit(string unit)
     {
         _unit = unit;
         return this;
     }
 
-    public GoldRowBuilder WithObservationTime(string observationTime)
+    public MeasurementTableRowBuilder WithObservationTime(string observationTime)
     {
         _observationTime = observationTime;
         return this;
     }
 
-    public GoldRowBuilder WithQuantity(string quantity)
+    public MeasurementTableRowBuilder WithQuantity(string quantity)
     {
         _quantity = quantity;
         return this;
     }
 
-    public GoldRowBuilder WithQuality(string quality)
+    public MeasurementTableRowBuilder WithQuality(string quality)
     {
         _quality = quality;
         return this;
     }
 
-    public GoldRowBuilder WithResolution(string resolution)
+    public MeasurementTableRowBuilder WithResolution(string resolution)
     {
         _resolution = resolution;
         return this;
     }
 
-    public GoldRowBuilder WithIsCancelled(string isCancelled)
+    public MeasurementTableRowBuilder WithIsCancelled(string isCancelled)
     {
         _isCancelled = isCancelled;
         return this;
     }
 
-    public GoldRowBuilder WithCreated(string created)
+    public MeasurementTableRowBuilder WithCreated(string created)
     {
         _created = created;
         return this;
     }
 
-    public GoldRowBuilder WithTransactionCreationDatetime(string transactionCreationDatetime)
+    public MeasurementTableRowBuilder WithTransactionCreationDatetime(string transactionCreationDatetime)
     {
         _transactionCreationDatetime = transactionCreationDatetime;
         return this;
