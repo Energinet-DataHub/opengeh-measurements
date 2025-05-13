@@ -32,7 +32,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         const string startDate = "2022-03-19T23:00:00Z";
         const string endDate = "2022-03-20T23:00:00Z";
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2022, 3, 20))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2022, 3, 20))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetMeasurementsForPeriodUrl(meteringPointId, startDate, endDate);
@@ -60,8 +60,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var startDate = new LocalDate(2022, 2, 15);
         var endDate = new LocalDate(2022, 2, 16);
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, startDate)
-            .WithContinuesRowsForDay(meteringPointId, startDate)
+            .WithContinuousRowsForDay(meteringPointId, startDate)
+            .WithContinuousRowsForDay(meteringPointId, startDate)
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetMeasurementsForPeriodUrl(
@@ -159,9 +159,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Arrange
         const string meteringPointId = "123456789123456789";
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2021, 2, 1))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2021, 2, 2))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2021, 2, 3))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2021, 2, 1))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2021, 2, 2))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2021, 2, 3))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedMeasurementsByMonthV2Url(meteringPointId, new YearMonth(2021, 2));
@@ -219,9 +219,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         const string meteringPointId = "123456789123456789";
         const int year = 2021;
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 2, 5))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 3, 6))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 3, 7))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 2, 5))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 3, 6))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 3, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedMeasurementsByYearV2Url(meteringPointId, new Year(year));
@@ -282,8 +282,8 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Arrange
         const string meteringPointId = "123456789098765432";
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay($"{meteringPointId}", new LocalDate(2023, 2, 2))
-            .WithContinuesRowsForDay($"{meteringPointId}", new LocalDate(2023, 2, 3))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2023, 2, 2))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2023, 2, 3))
             .Build();
         await fixture.InsertRowsAsync(rows);
 
@@ -307,6 +307,26 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             Assert.False(measurementAggregation.MissingValues);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
+    }
+
+    [Fact]
+    public async Task GetAggregatedByDateAsync_WhenDateContainsMissingValues_TheFlagIsSetInResponse()
+    {
+        // Arrange
+        const string meteringPointId = "123456789098765432";
+        var date = new LocalDate(2023, 4, 5);
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuousRows(meteringPointId, date, 10)
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, new YearMonth(date.Year, date.Month));
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponse>(actualResponse);
+
+        // Assert
+        Assert.True(actual.MeasurementAggregations.First().MissingValues);
     }
 
     [Fact]
@@ -344,9 +364,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         const string meteringPointId = "123456789123456789";
         const int year = 2021;
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 2, 5))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 3, 6))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(year, 4, 7))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 2, 5))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 3, 6))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(year, 4, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(year));
@@ -387,9 +407,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Arrange
         const string meteringPointId = "123456789123456789";
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2021, 2, 5))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2022, 3, 6))
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(2022, 4, 7))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(2022, 4, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedMeasurementsByYearUrl(meteringPointId);
@@ -456,7 +476,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         const string meteringPointId = "123456789123456789";
         var yearMonth = new YearMonth(2021, 2);
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDay(meteringPointId, new LocalDate(yearMonth.Year, yearMonth.Month, 5))
+            .WithContinuousRowsForDay(meteringPointId, new LocalDate(yearMonth.Year, yearMonth.Month, 5))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedMeasurementsByMonthV2Url(meteringPointId, yearMonth, version);

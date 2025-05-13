@@ -13,25 +13,30 @@ public class MeasurementsTableRowsBuilder
         return this;
     }
 
-    public MeasurementsTableRowsBuilder WithContinuesRowsForDay(string meteringPointId, LocalDate observationDate)
+    public MeasurementsTableRowsBuilder WithContinuousRows(string meteringPointId, LocalDate startObservationDate, int numberOfObservations)
     {
-        for (var i = 0; i < 24; i++)
+        for (var i = 0; i < numberOfObservations; i++)
         {
             var observationTime = Instant
-                .FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, i, 0, 0)
+                .FromUtc(startObservationDate.Year, startObservationDate.Month, startObservationDate.Day, i, 0, 0)
                 .Plus(Duration.FromHours(-1));
 
             var rowBuilder = new MeasurementTableRowBuilder();
             var row = rowBuilder
                 .WithMeteringPointId(meteringPointId)
                 .WithObservationTime(FormatString(observationTime))
-                .WithCreated(FormatString(Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 23, 0, 0)))
+                .WithCreated(FormatString(Instant.FromUtc(startObservationDate.Year, startObservationDate.Month, startObservationDate.Day, 23, 0, 0)))
                 .Build();
 
             _rows.Add(row);
         }
 
         return this;
+    }
+
+    public MeasurementsTableRowsBuilder WithContinuousRowsForDay(string meteringPointId, LocalDate startObservationDate)
+    {
+        return WithContinuousRows(meteringPointId, startObservationDate, 24);
     }
 
     public List<List<string>> Build()
