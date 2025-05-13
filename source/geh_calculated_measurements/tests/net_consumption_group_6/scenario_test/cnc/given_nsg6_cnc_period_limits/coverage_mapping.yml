@@ -3,22 +3,28 @@ notes: |
 
   ## DESIGN CONSIDERATIONS
 
-  CASE 0: smrd+2, no results generated
-                                                                                |Today
-                    |smrd-1_____________|smrd+0_____________|smrd+1_____________|smrd+2_____________
-  MP periods:       |-------------------|---------------------------------------_
+  CASE 0.1: period end+0, no results generated
+                                                                              |Today
+                    |28.02______________|03.01_____________|03.02_____________|03.03
+  MP periods:       |---------------------------------------------------------|
   Measurement data:        + +
   No measurement data should be written to D15 ...
 
-  CASE 1: smrd+3, results generated
-                                                                                                    |Today
-                    |smrd-1_____________|smrd+0_____________|smrd+1_____________|smrd+2_____________|smrd+3_____________
-  MP periods:       |-------------------|---------------------------------------_
+  CASE 0.2: period end+1, no results generated
+                                                                              |Today
+                    |28.02______________|03.01_____________|03.02_____________|03.03
+  MP periods:       |--------------------------------------|
+  Measurement data:        + +
+  No measurement data should be written to D15 ...
+
+  CASE 0.3: period end+2, results generated
+                                                                              |Today
+                    |28.02______________|03.01_____________|03.02_____________|03.03
+  MP periods:       |-------------------|
   Measurement data:        + +
   D15 (cnc) data:   ++++++++++++++++++++
 
-
-  CASE 2: 3 year limit - data updates
+  CASE 1: 3 year limit - data updates
   smrd 1                                                                                                                        |today
                           2021___________________|2022__________________|2023__________________|2024__________________|2025_____
   All MPs start/end:      |-----------------------------------------------------------------------------------------------------_
@@ -31,3 +37,11 @@ notes: |
   New D15 data (based on new data 2):             ---++++++++++++++++++++
 
 cases_tested:
+  "Period is < 1 year"
+  "Smrd is 1"
+  "Smrd is not 1"
+
+  "cnc calculation":
+    "Calculation is cnc"
+    "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
+    "Results are not generated until +2 days after smrd"
