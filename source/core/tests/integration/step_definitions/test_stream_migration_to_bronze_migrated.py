@@ -37,7 +37,7 @@ def _(spark: SparkSession, create_external_resources, mock_checkpoint_path):
     return metering_point_id
 
 
-# # When steps
+# When steps
 
 
 @when("streaming daily load from Migration silver to Measurements Bronze")
@@ -63,7 +63,7 @@ def _(spark: SparkSession, mock_checkpoint_path):
     )
 
 
-# # Then steps
+# Then steps
 
 
 @then("transactions should be available in the bronze measurements migration table")
