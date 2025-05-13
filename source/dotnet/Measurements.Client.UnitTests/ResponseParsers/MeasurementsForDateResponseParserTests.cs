@@ -8,14 +8,14 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.Client.UnitTests.ResponseParsers;
 
 [UnitTest]
-public class MeasurementsForDayResponseParserTests
+public class MeasurementsForDateResponseParserTests
 {
     [Fact]
     public async Task ParseResponseMessage_WhenCalledWithValidResponse_ReturnsMeasurementDto()
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForSingleDay);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDateResponseParser();
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
@@ -46,7 +46,7 @@ public class MeasurementsForDayResponseParserTests
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayWithHistoricalObservations);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDateResponseParser();
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
@@ -64,7 +64,7 @@ public class MeasurementsForDayResponseParserTests
     {
         // Arrange
         var response = CreateResponse(HttpStatusCode.OK, TestAssets.MeasurementsForDayWithHistoricalObservations);
-        var sut = new MeasurementsForDayResponseParser();
+        var sut = new MeasurementsForDateResponseParser();
 
         // Act
         var actual = await sut.ParseResponseMessage(response, CancellationToken.None);
