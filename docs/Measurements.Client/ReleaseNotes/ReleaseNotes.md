@@ -1,8 +1,9 @@
 # Measurements.Client Release Notes
 
-## Version 6.1.0
+## Version 7.0.0
 
 - Added unimplemented method to get current measurements for a period.
+- `Quantity` property of `MeasurementPointDto` is changed to a nullable `decimal`
 
 ## Version 6.0.0
 
