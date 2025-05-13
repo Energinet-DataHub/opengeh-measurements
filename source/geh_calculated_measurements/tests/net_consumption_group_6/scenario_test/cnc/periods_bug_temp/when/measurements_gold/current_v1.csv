@@ -1,7 +1,0 @@
-metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
-060000000000000200;supply_to_grid;2024-12-02T16:00:00Z;20;measured;Case 0
-070000000000000200;consumption_from_grid;2024-12-02T16:00:00Z;10;measured;Case 0
-060000000000000201;supply_to_grid;2024-03-08T16:00:00Z;20;measured;Case 1
-070000000000000201;consumption_from_grid;2024-03-08T16:00:00Z;10;measured;Case 1
-060000000000000202;supply_to_grid;2024-10-26T16:00:00Z;20;measured;Case 2
-070000000000000202;consumption_from_grid;2024-10-26T16:00:00Z;10;measured;Case 2
