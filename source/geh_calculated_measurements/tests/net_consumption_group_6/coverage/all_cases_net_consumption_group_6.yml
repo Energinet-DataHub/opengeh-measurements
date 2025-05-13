@@ -3,17 +3,19 @@
   "Period is < 1 year": true
   "Smrd is 1": true
   "Smrd is not 1": true
-  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)": true
-  "Sum for D06 is aggregated, even if sum for D07 is missing": true
-  "Sum for D07 is aggregated, even if sum for D06 is missing": true
 
   "cnc calculation":
     "Calculation is cnc": true
+    "Net consumption is clamped to 0 if sum(D06) >= sum(D07)": true
+    "Sum for D06 is aggregated, even if sum for D07 is missing": true
+    "Sum for D07 is aggregated, even if sum for D06 is missing": true
     "If result is identical to existing cnc measurement result, no new result is generated": true
     "When period goes from cenc to cnc, new results are always generated": true
+    "Results are not generated until +2 days after smrd": true
 
   "cenc calculation":
     "Calculation is cenc": true
+    "When period goes from cnc to cenc, new results are always generated": true
 
 
 
