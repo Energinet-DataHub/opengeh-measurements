@@ -1,4 +1,0 @@
-metering_point_id;has_electrical_heating;settlement_month;period_from_date;period_to_date;move_in;#comment
-170000000000000200;false;1;2024-11-30T23:00:00Z;2024-12-30T23:00:00Z;false;Framework doesn't break with to_date = 2024-12-31T23:00:00Z
-170000000000000201;false;3;2024-02-29T23:00:00Z;2024-03-31T23:00:00Z;false;Framework doesn't break with from_date 2024-02-28T23:00:00Z for parent MP
-170000000000000202;false;3;2024-10-15T22:00:00Z;2024-10-31T23:00:00Z;false;Framework doesn't break if you delete the child MPs to this MP
