@@ -227,7 +227,7 @@ def _filter_periods_by_cut_off(parent_child_joined: DataFrame) -> DataFrame:
                 -THREE_YEARS_IN_MONTHS,
             ).alias("cut_off_date"),
         )
-        .where(F.col(ContractColumnNames.period_to_date) <= F.col("cut_off_date"))
+        .where(F.col(ContractColumnNames.period_to_date) >= F.col("cut_off_date"))
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
