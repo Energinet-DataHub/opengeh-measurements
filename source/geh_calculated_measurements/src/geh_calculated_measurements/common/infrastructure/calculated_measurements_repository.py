@@ -25,3 +25,9 @@ class CalculatedMeasurementsRepository:
         df.write.format("delta").mode("append").saveAsTable(
             self._get_full_table_path(DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL, TABLE_NAME)
         )
+
+    def read_calculated_measurements(self) -> CalculatedMeasurementsInternal:
+        table_name = self._get_full_table_path(DatabaseNames.MEASUREMENTS_CALCULATED_INTERNAL, TABLE_NAME)
+        df = self._spark.read.format("delta").table(table_name)
+
+        return CalculatedMeasurementsInternal(df)
