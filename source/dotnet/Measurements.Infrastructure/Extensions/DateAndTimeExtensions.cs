@@ -17,12 +17,20 @@ public static class DateAndTimeExtensions
             .ToString(Format, CultureInfo.InvariantCulture);
     }
 
-    public static DateTimeOffset ToDateTimeOffSet(this LocalDate date)
+    public static DateTimeOffset ToDateTimeOffSetAtMidnight(this LocalDate date)
     {
         return date
             .AtMidnight()
             .InZoneLeniently(_danishZone)
             .ToDateTimeOffset();
+    }
+
+    public static Instant ToInstantAtMidnight(this LocalDate date)
+    {
+        return date
+            .AtMidnight()
+            .InZoneLeniently(_danishZone)
+            .ToInstant();
     }
 
     public static (LocalDate Start, LocalDate End) ToDateIntervalIncludingLastDay(this YearMonth yearMonth)

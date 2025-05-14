@@ -78,7 +78,7 @@ public class MeasurementTableRowBuilder
             $"'{_resolution}'",
             _isCancelled,
             $"'{_created}'",
-            $"'{(_transactionCreationDatetime == string.Empty ? _created : _transactionCreationDatetime)}'",
+            $"'{_transactionCreationDatetime}'",
         ];
     }
 }
