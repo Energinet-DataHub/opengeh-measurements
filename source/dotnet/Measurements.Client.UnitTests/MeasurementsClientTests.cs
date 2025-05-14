@@ -17,7 +17,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetByDayAsync_WhenCalledWithValidQuery_ReturnsMeasurement(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser,
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser,
         MeasurementDto expectedMeasurementDto)
     {
         // Arrange
@@ -41,7 +41,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetByDayAsync_WhenCalledWithQueryWithNoMeasurements_ReturnsEmptyList(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
         var query = new GetByDayQuery("1234567890123", new LocalDate(1, 2, 3));
@@ -60,7 +60,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByMonth_WhenCalled_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
         var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2025, 3));
@@ -106,7 +106,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
         var query = new GetMonthlyAggregateByDateQuery("1234567890123", new YearMonth(2024, 10));
@@ -129,7 +129,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByMonth_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
         var query = new GetYearlyAggregateByMonthQuery("1234567890123", 2025);
@@ -153,7 +153,7 @@ public class MeasurementsClientTests
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedByYear_WhenCalledForMeasuredMeteringPoint_ReturnsListOfMeasurementAggregations(
-        Mock<IMeasurementsForDayResponseParser> measurementsForDayResponseParser)
+        Mock<IMeasurementsForDateResponseParser> measurementsForDayResponseParser)
     {
         // Arrange
         var query = new GetAggregateByYearQuery("1234567890");
