@@ -7,6 +7,7 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using NodaTime;
+using HttpRequestException = System.Net.Http.HttpRequestException;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -31,9 +32,15 @@ public class MeasurementsClient(
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
-    public Task<ReadOnlyCollection<MeasurementPointDto>> GetByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<ReadOnlyCollection<MeasurementPointDto>> GetCurrentByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var url = CreateGetCurrentMeasurementsUrl(query.MeteringPointId, query.From, query.To);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return new ReadOnlyCollection<MeasurementPointDto>(response.StatusCode == HttpStatusCode.Accepted
+            ? []
+            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}"));
     }
 
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(
@@ -100,6 +107,11 @@ public class MeasurementsClient(
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
         return $"v2/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
+    }
+
+    private static string CreateGetCurrentMeasurementsUrl(string meteringPointId, Instant fromDate, Instant toDate)
+    {
+        return $"v3/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
     }
 
     private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)

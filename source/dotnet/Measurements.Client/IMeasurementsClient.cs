@@ -17,7 +17,7 @@ public interface IMeasurementsClient
     /// <summary>
     /// Get current measurements for a specified period.
     /// </summary>
-    Task<ReadOnlyCollection<MeasurementPointDto>> GetByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default);
+    Task<ReadOnlyCollection<MeasurementPointDto>> GetCurrentByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get measurements aggregated by date for a specified month.

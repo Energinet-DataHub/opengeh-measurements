@@ -28,6 +28,22 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
+    public async Task GetByPeriod_WhenCalled_ReturnsEmptyList()
+    {
+        // Arrange
+        var query = new GetByPeriodQuery(
+            MeasurementsClientFixture.TestMeteringPointId,
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)));
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetCurrentByPeriodAsync(query);
+
+        // Assert
+        Assert.Empty(measurements);
+    }
+
+    [Fact]
     public async Task GetAggregatedByDate_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange

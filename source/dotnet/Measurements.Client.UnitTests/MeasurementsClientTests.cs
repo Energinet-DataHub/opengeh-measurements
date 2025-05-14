@@ -83,26 +83,6 @@ public class MeasurementsClientTests
         Assert.False(actual.All(p => p.ContainsUpdatedValues));
     }
 
-    [Fact]
-    public async Task GetByPeriodAsync_WhenCalled_ThrowsNotImplementedException()
-    {
-        // Arrange
-        var query = new GetByPeriodQuery(
-            "1234567890123",
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow));
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
-
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, new MeasurementsForDayResponseParser());
-
-        // Act
-        var exception = await Assert.ThrowsAsync<NotImplementedException>(
-            () => sut.GetByPeriodAsync(query, CancellationToken.None));
-
-        // Assert
-        Assert.Equal("The method or operation is not implemented.", exception.Message);
-    }
-
     [Theory]
     [AutoMoqData]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenCalledDataIsMissing_ReturnsCompleteListOfMeasurementAggregations(
