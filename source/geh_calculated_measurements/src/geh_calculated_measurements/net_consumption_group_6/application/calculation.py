@@ -68,7 +68,7 @@ def get_current_with_settlement_type(spark: SparkSession, args: NetConsumptionGr
             ContractColumnNames.settlement_type
         ),
     )
-    current_measurements_with_settlement_type.show(1000, False)
+
     return current_measurements_with_settlement_type
 
 
