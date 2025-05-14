@@ -42,6 +42,13 @@ public class MeasurementsController(
         }
     }
 
+    [MapToApiVersion(3.0)]
+    [HttpGet("currentForPeriod")]
+    public Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
+    {
+        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
+    }
+
     [MapToApiVersion(2.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByDateAsyncV2([FromQuery] GetAggregatedByDateRequest request)
@@ -151,5 +158,12 @@ public class MeasurementsController(
 
             return NotFound(e.Message);
         }
+    }
+
+    [MapToApiVersion(3.0)]
+    [HttpGet("aggregatedByPeriod")]
+    public Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
+    {
+        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
     }
 }
