@@ -62,6 +62,8 @@ def cnc(
 
     periods = _split_periods_by_settlement_month(metering_points)
 
+    print("passed here!")
+
     periods_with_cut_off = _determin_cut_off_for_periods(periods)
 
     periods_with_ts = _join_metering_point_periods_to_time_series(filtered_time_series, periods)
@@ -225,10 +227,7 @@ def _filter_periods_by_cut_off(parent_child_joined: DataFrame) -> DataFrame:
                 -THREE_YEARS_IN_MONTHS,
             ).alias("cut_off_date"),
         )
-        .where(
-            F.col(ContractColumnNames.period_to_date).isNotNull()
-            | (F.col(ContractColumnNames.period_to_date) <= F.col("cut_off_date"))
-        )
+        .where(F.col(ContractColumnNames.period_to_date) <= F.col("cut_off_date"))
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
