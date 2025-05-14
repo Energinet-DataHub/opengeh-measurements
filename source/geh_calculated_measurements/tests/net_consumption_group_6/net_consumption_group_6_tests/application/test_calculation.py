@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import SparkSession
@@ -22,7 +23,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp1",
             MeteringPointType.NET_CONSUMPTION.value,
             datetime(2023, 1, 1, 0, 0),
-            10.0,
+            Decimal(10.0),
             "up_to_end_of_period",
         ),  # Latest for mp1, obs1
         (
@@ -33,7 +34,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp1",
             MeteringPointType.NET_CONSUMPTION.value,
             datetime(2023, 1, 1, 0, 0),
-            5.0,
+            Decimal(5.0),
             "up_to_end_of_period",
         ),  # Older for mp1, obs1
         (
@@ -44,7 +45,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp1",
             MeteringPointType.NET_CONSUMPTION.value,
             datetime(2023, 1, 2, 0, 0),
-            15.0,
+            Decimal(15.0),
             "up_to_end_of_period",
         ),  # Only record for mp1, obs2
         (
@@ -55,7 +56,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp1",
             MeteringPointType.CONSUMPTION.value,
             datetime(2023, 1, 1, 0, 0),
-            20.0,
+            Decimal(20.0),
             "up_to_end_of_period",
         ),  # Different type
         (
@@ -66,7 +67,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp2",
             MeteringPointType.NET_CONSUMPTION.value,
             datetime(2023, 1, 1, 0, 0),
-            25.0,
+            Decimal(25.0),
             "up_to_end_of_period",
         ),  # Latest for mp2, obs1
         (
@@ -77,9 +78,20 @@ def test_get_current_calculated_measurements(spark: SparkSession):
             "mp2",
             MeteringPointType.NET_CONSUMPTION.value,
             datetime(2023, 1, 1, 0, 0),
-            20.0,
+            Decimal(20.0),
             "up_to_end_of_period",
         ),  # Older for mp2, obs1
+        (
+            OrchestrationType.CAPACITY_SETTLEMENT.value,
+            "1",
+            "1",
+            datetime(2023, 1, 1, 0, 0),
+            "mp2",
+            MeteringPointType.CAPACITY_SETTLEMENT.value,
+            datetime(2023, 1, 1, 0, 0),
+            Decimal(20.0),
+            "up_to_end_of_period",
+        ),  # Wrong metering point type
     ]
 
     df = spark.createDataFrame(data, schema=CalculatedMeasurementsInternal.schema)
@@ -121,14 +133,7 @@ def test_get_current_calculated_measurements_empty(spark: SparkSession):
     # Arrange
 
     # Create an empty DataFrame with the required schema
-    schema = [
-        "metering_point_id",
-        "observation_time",
-        "transaction_creation_datetime",
-        "metering_point_type",
-        "quantity",
-    ]
-    empty_df = spark.createDataFrame([], schema=schema)
+    empty_df = spark.createDataFrame([], schema=CalculatedMeasurementsInternal.schema)
 
     calculated_measurements = CalculatedMeasurementsInternal(df=empty_df)
 

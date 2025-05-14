@@ -38,7 +38,6 @@ def get_current_calculated_measurements(
     # Add row number and filter to keep only the newest record
     df_with_row_num = calculated_measurements_df.withColumn("row_num", F.row_number().over(window_spec))
     filtered_df = df_with_row_num.filter("row_num = 1").drop("row_num")
-    filtered_df.show()
 
     return filtered_df
 
