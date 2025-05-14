@@ -5,7 +5,6 @@ using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.Domain.Extensions;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
@@ -55,10 +54,18 @@ public class MeasurementsAggregatedByDateResponse
 
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
     {
-        // All points for a day should have the same resolution
-        var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-        var expectedPointCount = resolution.GetExpectedPointCount(
-            aggregatedMeasurements.MaxObservationTime, aggregatedMeasurements.MinObservationTime);
+        var resolutionValue = aggregatedMeasurements.Resolutions.Single().ToString()
+                              ?? throw new InvalidOperationException();
+        var resolution = ResolutionParser.ParseResolution(resolutionValue);
+
+        var expectedPointCount = resolution switch
+        {
+            Resolution.QuarterHourly => 96,
+            Resolution.Hourly => 24,
+            Resolution.Daily => 1,
+            Resolution.Monthly or Resolution.Yearly => 0,
+            _ => throw new ArgumentOutOfRangeException(nameof(aggregatedMeasurements), "Unsupported resolution in aggregate"),
+        };
 
         return expectedPointCount - aggregatedMeasurements.PointCount != 0;
     }
