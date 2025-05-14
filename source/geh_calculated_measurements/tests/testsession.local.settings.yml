@@ -1,0 +1,42 @@
+# ===============================================================================================
+# This file contains the configuration settings for test sessions.
+# Create a copy of this file and remove the .sample extension and update the values.
+# The content must match the implementation of the class `TestSessionConfiguration`.
+# ===============================================================================================
+
+scenario_tests:
+  # Use this setting to enable or disable showing the entire contents of the dataframes actual and expected in the test console.
+  # Options: True | False
+  # `False` is the default.
+  show_actual_and_expected: False
+
+  # Use this setting to enable or disable showing equal columns from actual and expected in the test console.
+  # Options: True | False
+  # `False` is the default.
+  show_columns_when_actual_and_expected_are_equal: False
+
+  # Use this setting to enable or disable showing the number of rows of the dataframes actual and expected in the test console.
+  # Options: True | False
+  # `False` is the default.
+  show_actual_and_expected_count: True
+
+  # This setting determines how extra columns in the actual dataframe are handled during comparison.
+  # If set to True, only the columns in the expected dataframe are asserted, and any additional columns
+  # in the actual dataframe are ignored. Columns explicitly marked as [IGNORED] in the expected dataframe
+  # are also excluded from the comparison. If set to False, all columns in both dataframes are asserted.
+  # Options: True | False
+  # `True` is the default.
+  ignore_extra_columns_in_actual: True
+
+  # Use this setting to enable the `geh_common.testing.dataframes` `@testing` decorator.
+  # When decorator is applied to a function and this is enabled then data frame returned by the function
+  # will be logged.
+  # Options: True | False
+  # `False` is the default.
+  testing_decorator_enabled: False
+
+  # Use this setting to set the maximum number of rows to display in the test console when using the
+  # `geh_common.testing.dataframes` `@testing` decorator.
+  # Options: Any integer value
+  # `50` is the default.
+  testing_decorator_max_rows: 1000

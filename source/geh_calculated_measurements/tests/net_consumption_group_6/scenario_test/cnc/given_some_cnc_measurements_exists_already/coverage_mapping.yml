@@ -13,13 +13,16 @@ notes: |
   No new D15 data should be written...
 
 
-  CASE 1:
-                                           |today
-                            |_______________
+  CASE 1: New data in one period
+                                          |smrd    |today
+                            |_____________|________
   MP period 1:              |------|
-  MP period 2:                     |------|
-  MP period 3 (cenc):                     |-
-  Existing D15 data:        +++++++++++++++
+  MP period 2:                     |---------------_
+
+  Period 1:                 |------|
+  Period 2:                        |------|
+  Period 3 (cenc):                        |--------_
+  Existing D15 data:        +++++++++++++++++++++++
   New D06/D07 data:            ++
   New D15 data:             +++++++
 
@@ -36,6 +39,13 @@ notes: |
   New period 2 (cenc)                              |--------
   New D15 values                    +++++++++++++++
 
+"Net Consumption Group 6 Tests":
+  "Period is < 1 year"
+  "Smrd is not 1"
+  "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
 
-cases_tested:
+  "cnc calculation":
+    "Calculation is cnc"
+    "If result is identical to existing cnc measurement result, no new result is generated"
+    "When period goes from cenc to cnc, new results are always generated"
 
