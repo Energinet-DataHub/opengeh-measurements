@@ -69,6 +69,23 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         Assert.Single(measurements);
     }
 
+    [Fact]
+    public async Task GetAggregatedByPeriod_WhenCalled_ReturnsEmptyList()
+    {
+        // Arrange
+        var query = new GetAggregateByPeriodQuery(
+            [MeasurementsClientFixture.TestMeteringPointId],
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)),
+            Aggregation.Hour);
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregateByPeriodAsync(query);
+
+        // Assert
+        Assert.Empty(measurements);
+    }
+
     private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements)
     {
         for (var positionIndex = 1; positionIndex < measurements.MeasurementPositions.Count(); positionIndex++)
