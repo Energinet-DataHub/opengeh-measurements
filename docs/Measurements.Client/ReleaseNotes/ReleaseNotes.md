@@ -2,7 +2,7 @@
 
 ## Version 7.0.0
 
-- Added unimplemented method to get current measurements for a period.
+- Added two new dummy methods to the MeasurementsClient, `GetByPeriodAsync` and `GetAggregateByPeriodAsync`.
 - `Quantity` property of `MeasurementPointDto` is changed to a nullable `decimal`
 
 ## Version 6.0.0
