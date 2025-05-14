@@ -157,9 +157,6 @@ public class MeasurementsController(
     [HttpGet("aggregatedByPeriod")]
     public Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
     {
-        logger.LogInformation(
-            "GetAggregatedByPeriodAsync called with request: {Request}",
-            request);
         return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
     }
 }
