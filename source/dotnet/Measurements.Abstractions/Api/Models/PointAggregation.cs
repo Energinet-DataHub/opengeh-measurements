@@ -3,7 +3,7 @@
 namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 public record PointAggregation(
-    Instant MinObservationTime,
-    Instant MaxObservationTime,
+    Instant From,
+    Instant To,
     decimal AggregatedQuantity,
     Quality Quality);
