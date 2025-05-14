@@ -2,7 +2,7 @@
 
 namespace Energinet.DataHub.Measurements.Client.ResponseParsers;
 
-public interface IMeasurementsForDayResponseParser
+public interface IMeasurementsForDateResponseParser
 {
     Task<MeasurementDto> ParseResponseMessage(HttpResponseMessage response, CancellationToken cancellationToken);
 }
