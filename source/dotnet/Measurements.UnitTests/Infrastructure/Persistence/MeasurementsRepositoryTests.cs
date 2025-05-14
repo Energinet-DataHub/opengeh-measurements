@@ -151,7 +151,7 @@ public class MeasurementsRepositoryTests
 
     private static async IAsyncEnumerable<ExpandoObject> CreateAggregatedMeasurementResults(YearMonth yearMonth, int count)
     {
-        var date = yearMonth.ToDateInterval().Start.ToDateTimeOffSet();
+        var date = yearMonth.ToDateInterval().Start.ToDateTimeOffSetAtMidnight();
 
         for (var i = 0; i < count; i++)
         {
