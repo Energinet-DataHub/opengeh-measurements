@@ -28,7 +28,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetByPeriod_WhenCalled_ReturnsEmptyList()
+    public async Task GetCurrentByPeriod_WhenCalled_ReturnsEmptyList()
     {
         // Arrange
         var query = new GetByPeriodQuery(
