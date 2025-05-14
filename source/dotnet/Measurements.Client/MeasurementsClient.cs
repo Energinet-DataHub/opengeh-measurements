@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.ObjectModel;
+using System.Net;
 using System.Text.Json;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
@@ -28,6 +29,11 @@ public class MeasurementsClient(
         var result = await measurementsForDayResponseParser.ParseResponseMessage(response, cancellationToken);
 
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
+    }
+
+    public Task<ReadOnlyCollection<MeasurementPointDto>> GetByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(
