@@ -12,7 +12,7 @@ namespace Energinet.DataHub.Measurements.Client;
 
 public class MeasurementsClient(
     IHttpClientFactory httpClientFactory,
-    IMeasurementsForDayResponseParser measurementsForDayResponseParser)
+    IMeasurementsForDateResponseParser measurementsForDateResponseParser)
     : IMeasurementsClient
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
@@ -26,7 +26,7 @@ public class MeasurementsClient(
         if (response.StatusCode == HttpStatusCode.NotFound)
             return new MeasurementDto([]);
 
-        var result = await measurementsForDayResponseParser.ParseResponseMessage(response, cancellationToken);
+        var result = await measurementsForDateResponseParser.ParseResponseMessage(response, cancellationToken);
 
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
