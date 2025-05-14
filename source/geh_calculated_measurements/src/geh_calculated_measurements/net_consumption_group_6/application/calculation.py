@@ -24,6 +24,12 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 
 
 def get_current_with_settlement_type(spark: SparkSession, args: NetConsumptionGroup6Args) -> DataFrame:
+    """Get current measurements with settlement type from the calculated measurements.
+
+    This function reads the current measurements and calculated measurements from the repository,
+    filters the calculated measurements to get the latest one for each metering point and observation time,
+    and joins it with the current measurements to get the settlement type.
+    """
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
     calculated_measurments_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
 
