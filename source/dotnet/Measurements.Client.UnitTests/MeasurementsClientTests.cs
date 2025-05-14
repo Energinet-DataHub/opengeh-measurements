@@ -155,18 +155,6 @@ public class MeasurementsClientTests
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 
-    [Fact]
-    public async Task GetAggregateByPeriodAsync_WhenCalled_ThrowsNotImplementedException()
-    {
-        // Arrange
-        var query = new GetAggregateByPeriodQuery(["1234567890"], Instant.MinValue, Instant.MaxValue, Aggregation.Quarter);
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
-        var sut = new MeasurementsClient(httpClientFactoryMock.Object, Mock.Of<IMeasurementsForDayResponseParser>());
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => sut.GetAggregateByPeriodAsync(query, CancellationToken.None));
-    }
-
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
     {
         var httpClientFactoryMock = new Mock<IHttpClientFactory>();
