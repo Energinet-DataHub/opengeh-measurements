@@ -1,7 +1,9 @@
-﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using NodaTime;
+
+namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 public record PointAggregation(
-    long MinObservationTime,
-    long MaxObservationTime,
+    Instant MinObservationTime,
+    Instant MaxObservationTime,
     decimal AggregatedQuantity,
     Quality Quality);
