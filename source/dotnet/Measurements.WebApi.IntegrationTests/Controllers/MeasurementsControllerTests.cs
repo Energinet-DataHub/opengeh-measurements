@@ -531,9 +531,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, Aggregation aggregation, string versionPrefix = "v3")
+    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, string from, string to, Aggregation aggregation, string versionPrefix = "v3")
     {
-        return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}&aggregation={aggregation}";
+        return $"{versionPrefix}/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
