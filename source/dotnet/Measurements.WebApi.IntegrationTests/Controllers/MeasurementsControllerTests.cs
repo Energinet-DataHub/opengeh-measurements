@@ -153,6 +153,21 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenValid_ReturnsAcceptedButNotImplementedResponse()
+    {
+        // Arrange
+        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
+        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
+        var url = CreateGetCurrentMeasurementsByPeriodUrl("123456789123456789", from, to);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Accepted, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAggregatedByMonthAsyncV2_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -435,6 +450,23 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    public async Task GetAggregatedByPeriodAsync_WhenValid_ReturnsAcceptedButNotImplementedResponse()
+    {
+        // Arrange
+        const string meteringPointId = "123456789123456789";
+        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
+        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
+        var url = CreateGetAggregatedMeasurementsByPeriodUrl(
+            meteringPointId, from, to, Aggregation.Day);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Accepted, actualResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAggregatedByYearAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
@@ -492,6 +524,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
+    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, string versionPrefix = "v3")
+    {
+        return $"{versionPrefix}/measurements/currentForPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
+    }
+
     private static string CreateGetAggregatedMeasurementsByMonthV2Url(string expectedMeteringPointId, YearMonth yearMonth, string versionPrefix = "v2")
     {
         return $"{versionPrefix}/measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
@@ -515,6 +552,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByYearUrl(string expectedMeteringPointId, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
+    }
+
+    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
+    {
+        return $"{versionPrefix}/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

@@ -1,5 +1,10 @@
 # Measurements.Client Release Notes
 
+## Version 7.0.0
+
+- Added two new dummy methods to the MeasurementsClient, `GetCurrentByPeriodAsync` and `GetAggregateByPeriodAsync`.
+- `Quantity` property of `MeasurementPointDto` is changed to a nullable `decimal`
+
 ## Version 6.0.0
 
 - Upgrade to dotnet version 9.0
