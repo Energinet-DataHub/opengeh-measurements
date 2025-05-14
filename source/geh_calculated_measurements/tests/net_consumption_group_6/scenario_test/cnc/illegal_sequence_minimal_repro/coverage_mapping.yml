@@ -1,0 +1,56 @@
+notes: |
+  ## PURPOSE
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 0.1: period end+0, no results generated
+                                                                              |Today
+                    |27.02______________|28.02_____________|03.01_____________|03.02
+  MP periods:       |---------------------------------------------------------|
+  Measurement data:        + +
+  No measurement data should be written to D15 ...
+
+  CASE 0.2: period end+1, no results generated
+                                                                              |Today
+                    |27.02______________|28.02_____________|03.01_____________|03.02
+  MP periods:       |--------------------------------------|
+  Measurement data:        +
+  No measurement data should be written to D15 ...
+
+  CASE 0.3: period end+2, results generated
+                                                                              |Today
+                    |27.02______________|28.02_____________|03.01_____________|03.02
+  MP periods:       |-------------------|
+  Measurement data:        +
+  D15 (cnc) data:   ++++++++++++++++++++
+
+  CASE 0.4: smrd+1, no results generated
+                                                           |smrd              |Today
+                    |27.02______________|28.02_____________|03.01_____________|03.02
+  MP periods:       |---------------------------------------------------------_
+  Period 1 (cnc):   |--------------------------------------|
+  Period 2 (cenc):                                         |------------------_
+  Measurement data:        +
+  No measurement data should be written to D15 ...
+
+  CASE 1: 3 year limit - data updates
+  smrd 1                                                                                                                        |today
+                          2021___________________|2022__________________|2023__________________|2024__________________|2025_____
+  All MPs start/end:      |-----------------------------------------------------------------------------------------------------_
+  Periods:                |----------------------|----------------------|----------------------|----------------------|---------
+  Measurement data:                  +                       +                       +                       +
+  Existing D15 data:      +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                                     |----------------------------------3 years---------------------------------|
+  New data 1 (outside 3 year limit)                 +
+  New data 2 (inside 3 year limit)                   +
+  New D15 data (based on new data 2):             ---++++++++++++++++++++
+
+cases_tested:
+  "Period is < 1 year"
+  "Smrd is 1"
+  "Smrd is not 1"
+
+  "cnc calculation":
+    "Calculation is cnc"
+    "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
+    "Results are not generated until +2 days after period end"
