@@ -156,8 +156,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     public async Task GetCurrentByPeriodAsync_WhenValid_ReturnsAcceptedButNotImplementedResponse()
     {
         // Arrange
-        var url = CreateGetCurrentMeasurementsByPeriodUrl(
-            "123456789123456789", "2022-03-19T23:00:00Z", "2022-03-20T23:00:00Z");
+        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
+        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
+        var url = CreateGetCurrentMeasurementsByPeriodUrl("123456789123456789", from, to);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -433,8 +434,10 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     {
         // Arrange
         const string meteringPointId = "123456789123456789";
+        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
+        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
         var url = CreateGetAggregatedMeasurementsByPeriodUrl(
-            meteringPointId, "2022-03-19T23:00:00Z", "2022-03-20T23:00:00Z", Aggregation.Day);
+            meteringPointId, from, to, Aggregation.Day);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -501,7 +504,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
-    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "v3")
+    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/currentForPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
@@ -531,7 +534,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, Aggregation aggregation, string versionPrefix = "v3")
+    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, Aggregation aggregation, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}&aggregation={aggregation}";
     }
