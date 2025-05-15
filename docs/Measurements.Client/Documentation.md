@@ -13,7 +13,6 @@ Contains queries and response models used by `Measurements.Client`.
 
 Contains methods to query the `Measurements.WebApi`. See [IMeasurementsClient](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/IMeasurementsClient.cs) for a description of each method.
 
-
 ### Registering Measurements.Client in Dependency Injection
 
 To use the `Measurements.Client` in your application, you need to register it in your dependency injection container. Follow these steps:
@@ -23,47 +22,48 @@ To use the `Measurements.Client` in your application, you need to register it in
 
    ```bash
    dotnet add package Energinet.DataHub.Measurements.Client
+   ```
 
 2. **Add the Registration Code**
-In your applications startup configuration (e.g., Startup.cs or Program.cs), register the `Measurements.Client` services. Use the provided extension method `AddMeasurementsClient` to simplify the registration process.
+   In your applications startup configuration (e.g., Startup.cs or Program.cs), register the `Measurements.Client` services. Use the provided extension method `AddMeasurementsClient` to simplify the registration process.
 
-```csharp
-using Measurements.Client;
+   ```csharp
+   using Measurements.Client;
 
-var builder = WebApplication.CreateBuilder(args);
+   var builder = WebApplication.CreateBuilder(args);
 
-// Register Measurements.Client
-builder.Services.AddMeasurementsClient();
+   // Register Measurements.Client
+   builder.Services.AddMeasurementsClient();
 
-var app = builder.Build();
+   var app = builder.Build();
 
-// ...existing code...
+   // ...existing code...
 
-app.Run();
-```
+   app.Run();
+   ```
 
 3. **Inject and Use the Client**
-Once registered, you can inject the `IMeasurementsClient` interface into your services or controllers and use it to interact with the `Measurements.WebApi`.
+   Once registered, you can inject the `IMeasurementsClient` interface into your services or controllers and use it to interact with the `Measurements.WebApi`.
 
-```csharp
-using Measurements.Client;
+   ```csharp
+   using Measurements.Client;
 
-public class YourService
-{
-    private readonly IMeasurementsClient _measurementsClient;
+   public class YourService
+   {
+       private readonly IMeasurementsClient _measurementsClient;
 
-    public YourService(IMeasurementsClient measurementsClient)
-    {
-        _measurementsClient = measurementsClient;
-    }
+       public YourService(IMeasurementsClient measurementsClient)
+       {
+           _measurementsClient = measurementsClient;
+       }
 
-    public async Task GetMeasurementsAsync()
-    {
-        var measurements = await _measurementsClient.GetByPeriodAsync();
-        // Process measurements...
-    }
-}
-```
+       public async Task GetMeasurementsAsync()
+       {
+           var measurements = await _measurementsClient.GetByPeriodAsync();
+           // Process measurements...
+       }
+   }
+   ```
 
 4. **Configure the application**
-Configure environment varibles corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)
+   Configure environment varibles corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)
