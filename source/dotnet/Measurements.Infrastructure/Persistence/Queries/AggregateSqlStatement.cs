@@ -32,7 +32,7 @@ public static class AggregateSqlStatement
     {
         return $"select " +
                $"{MeasurementsTableConstants.MeteringPointIdColumnName}, " +
-               $"({MeasurementsTableConstants.ResolutionColumnName}, " +
+               $"{MeasurementsTableConstants.ResolutionColumnName}, " +
                $"min({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
                $"max({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
                $"sum({MeasurementsTableConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
