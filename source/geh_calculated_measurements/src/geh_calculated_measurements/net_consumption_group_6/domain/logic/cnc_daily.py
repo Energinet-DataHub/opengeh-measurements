@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
@@ -15,6 +17,7 @@ def cnc_daily(
     periods_with_net_consumption: DataFrame,
     periods_with_ts: DataFrame,
     time_zone: str,
+    execution_start_datetime: datetime,
 ) -> CalculatedMeasurementsDaily:
     """Process net consumption data to calculate daily measurements and identify discrepancies.
 
@@ -39,7 +42,7 @@ def cnc_daily(
 
     cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
 
-    cnc_diff = _get_changed_cnc_daily_values(periods_with_ts, cnc_measurements)
+    cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements, execution_start_datetime)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
 
@@ -57,7 +60,9 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
             - date: Daily observation time
             - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
     """
-    cnc_measurements = periods_with_net_consumption.select(
+    cnc_measurements = periods_with_net_consumption.where(
+        F.col("period_end") >= F.date_add(F.lit(execution_start_datetime), 2)
+    ).select(
         "*",
         F.explode(
             F.sequence(
@@ -75,7 +80,9 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
     return cnc_measurements
 
 
-def _get_changed_cnc_daily_values(periods_with_ts: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
+def _cnc_diff_and_full_load_newly_closed_periods(
+    periods_with_ts: DataFrame, cnc_measurements: DataFrame, execution_start_datetime: datetime
+) -> DataFrame:
     """Get discrepancies between the calculated and the original CNC measurements.
 
     This function checks for discrepancies between the calculated CNC measurements and the original CNC measurements.
@@ -87,7 +94,9 @@ def _get_changed_cnc_daily_values(periods_with_ts: DataFrame, cnc_measurements: 
             - quantity: The calculated daily quantity as DecimalType(18, 3)
     """
     cnc_diff = (
-        cnc_measurements.alias("cnc")
+        cnc_measurements.where(
+        F.col("period_end") > F.date_add(F.lit(execution_start_datetime), 2)
+    ).alias("cnc")
         .join(
             periods_with_ts.alias("ts"),
             on=[
@@ -105,4 +114,14 @@ def _get_changed_cnc_daily_values(periods_with_ts: DataFrame, cnc_measurements: 
         )
     )
 
-    return cnc_diff
+    newly_closed_cnc_period = cnc_measurements.where(
+        F.col("period_end") == F.date_add(F.lit(execution_start_datetime), 2)
+    ).select(
+        F.col(ContractColumnNames.metering_point_id),
+        F.col(ContractColumnNames.date),
+        F.col("daily_quantity"),
+    )
+
+    cnc_diff_and_full_load = cnc_diff.union(newly_closed_cnc_period)
+
+    return cnc_diff_and_full_load
