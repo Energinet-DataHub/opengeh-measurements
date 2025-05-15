@@ -35,9 +35,9 @@ public class MeasurementsAggregatedByPeriodResponse
                 measurement.Quantity,
                 SetQuality(measurement));
 
-            var aggregationGroupKey =
-                new AggregationGroupCompositeKey(measurement.MeteringPoint, measurement.AggregationGroupKey);
             var resolution = ResolutionParser.ParseResolution(measurement.Resolution);
+            var aggregationGroupKey =
+                new AggregationGroupCompositeKey(measurement.MeteringPoint, measurement.AggregationGroupKey, resolution);
             var pointAggregationGroup = GetOrCreatePointAggregationGroup(
                 pointAggregationGroups,
                 aggregationGroupKey.Key,
@@ -47,7 +47,7 @@ public class MeasurementsAggregatedByPeriodResponse
 
             pointAggregationGroup.PointAggregations.Add(pointAggregation);
 
-            var measurementsAggregatedByPeriod = CreateMeasurementsAggregatedByPeriodIfNotExists(
+            var measurementsAggregatedByPeriod = GetOrCreateAggregationByPeriod(
                 measurementsAggregatedDtos,
                 measurement);
             measurementsAggregatedByPeriod.PointAggregationGroups[aggregationGroupKey.Key] = pointAggregationGroup;
@@ -62,7 +62,7 @@ public class MeasurementsAggregatedByPeriodResponse
             : new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
     }
 
-    private static MeasurementAggregationByPeriod CreateMeasurementsAggregatedByPeriodIfNotExists(
+    private static MeasurementAggregationByPeriod GetOrCreateAggregationByPeriod(
         Dictionary<string, MeasurementAggregationByPeriod> measurementsAggregatedDtos,
         AggregatedByPeriodMeasurementsResult measurement)
     {
@@ -83,12 +83,19 @@ public class MeasurementsAggregatedByPeriodResponse
         Instant maxObservationTime,
         Resolution resolution)
     {
-        if (pointAggregationGroups.TryGetValue(aggregationGroupKey, out var pointAggregationGroup))
+        if (pointAggregationGroups.TryGetValue(aggregationGroupKey, out var existing))
         {
-            return pointAggregationGroup;
+            existing = existing with
+            {
+                From = Instant.Min(existing.From, minObservationTime),
+                To = Instant.Max(existing.To, maxObservationTime),
+                Resolution = resolution,
+            };
+            pointAggregationGroups[aggregationGroupKey] = existing;
+            return existing;
         }
 
-        pointAggregationGroup = new PointAggregationGroup(
+        var pointAggregationGroup = new PointAggregationGroup(
             minObservationTime,
             maxObservationTime,
             resolution,
