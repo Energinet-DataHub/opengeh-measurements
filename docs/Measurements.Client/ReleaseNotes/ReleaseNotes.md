@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 7.0.1
+
+- fix link to documentation in package README
+
 ## Version 7.0.0
 
 - Added two new dummy methods to the MeasurementsClient, `GetCurrentByPeriodAsync` and `GetAggregateByPeriodAsync`.
