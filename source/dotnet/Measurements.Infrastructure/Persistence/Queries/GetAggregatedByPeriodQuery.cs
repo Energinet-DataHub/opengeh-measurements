@@ -46,9 +46,9 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
 
     private static string CreateWhereStatement()
     {
-        return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} in (:{QueryParameterConstants.MeteringPointIdsParameter}) " +
-               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
-               $"and {MeasurementsGoldConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter}";
+        return $"where {MeasurementsTableConstants.MeteringPointIdColumnName} in (:{QueryParameterConstants.MeteringPointIdsParameter}) " +
+               $"and {MeasurementsTableConstants.ObservationTimeColumnName} >= :{QueryParameterConstants.ObservationTimeFromParameter} " +
+               $"and {MeasurementsTableConstants.ObservationTimeColumnName} < :{QueryParameterConstants.ObservationTimeToParameter}";
     }
 
     private static string CreateGroupByStatement(Aggregation aggregation)
@@ -60,16 +60,16 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
             _ => string.Empty,
         };
 
-        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-       $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
+        return $"{MeasurementsTableConstants.MeteringPointIdColumnName}" +
+       $", year(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
        (aggregation <= Aggregation.Month
-           ? $", month(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
+           ? $", month(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
            : string.Empty) +
        (aggregation <= Aggregation.Day
-           ? $", dayofmonth(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
+           ? $", dayofmonth(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"
            : string.Empty) +
        (aggregation <= Aggregation.Hour
-           ? $", window(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{windowTimeStatement}')"
+           ? $", window(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{windowTimeStatement}')"
            : string.Empty);
     }
 }

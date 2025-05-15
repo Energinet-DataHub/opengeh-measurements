@@ -31,16 +31,16 @@ public static class AggregateSqlStatement
     public static string GetAggregatedByPeriodSqlStatement(string catalogName, string schemaName, string whereStatement, string aggregationGroupKeyStatement, string groupByStatement)
     {
         return $"select " +
-               $"{MeasurementsGoldConstants.MeteringPointIdColumnName}, " +
-               $"min({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
-               $"max({MeasurementsGoldConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
-               $"sum({MeasurementsGoldConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
-               $"array_agg(distinct({MeasurementsGoldConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
-               $"array_agg(distinct({MeasurementsGoldConstants.ResolutionColumnName})) as {AggregatedQueryConstants.Resolutions}, " +
+               $"{MeasurementsTableConstants.MeteringPointIdColumnName}, " +
+               $"min({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
+               $"max({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
+               $"sum({MeasurementsTableConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
+               $"array_agg(distinct({MeasurementsTableConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
+               $"array_agg(distinct({MeasurementsTableConstants.ResolutionColumnName})) as {AggregatedQueryConstants.Resolutions}, " +
                $"{aggregationGroupKeyStatement} as {AggregatedQueryConstants.AggregationGroupKey} " +
-               $"from {catalogName}.{schemaName}.{MeasurementsGoldConstants.TableName} " +
+               $"from {catalogName}.{schemaName}.{MeasurementsTableConstants.Name} " +
                $"where {whereStatement} " +
                $"group by {groupByStatement} " +
-               $"order by {MeasurementsGoldConstants.MeteringPointIdColumnName}, {AggregatedQueryConstants.MinObservationTime}";
+               $"order by {MeasurementsTableConstants.MeteringPointIdColumnName}, {AggregatedQueryConstants.MinObservationTime}";
     }
 }
