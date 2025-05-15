@@ -161,7 +161,7 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(3.0)]
-    [HttpGet("aggregateByPeriod")]
+    [HttpGet("aggregatedByPeriod")]
     public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
     {
         try
