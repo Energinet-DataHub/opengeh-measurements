@@ -79,9 +79,7 @@ public class MeasurementsClient(
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return response.StatusCode == HttpStatusCode.Accepted
-            ? []
-            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByPeriodDto>(response, cancellationToken);
     }
 
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(

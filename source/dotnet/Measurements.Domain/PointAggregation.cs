@@ -3,7 +3,7 @@
 namespace Energinet.DataHub.Measurements.Domain;
 
 public record PointAggregation(
-    Instant MinObservationTime,
-    Instant MaxObservationTime,
+    Instant From,
+    Instant To,
     decimal AggregatedQuantity,
     Quality Quality);

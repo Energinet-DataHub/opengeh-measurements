@@ -2,4 +2,4 @@
 
 namespace Energinet.DataHub.Measurements.Domain;
 
-public record PointAggregationGroup(Instant MinObservationTime, Instant MaxObservationTime, Resolution Resolution, List<PointAggregation> PointAggregations);
+public record PointAggregationGroup(Instant From, Instant To, Resolution Resolution, List<PointAggregation> PointAggregations);
