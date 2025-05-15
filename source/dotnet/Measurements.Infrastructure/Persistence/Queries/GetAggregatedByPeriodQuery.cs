@@ -23,8 +23,8 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
     {
         List<QueryParameter> parameters = [
             QueryParameter.Create(QueryParameterConstants.MeteringPointIdsParameter, meteringPointIds),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, from.ToUtcString()),
-            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, to.ToUtcString())
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeFromParameter, from.ToString()),
+            QueryParameter.Create(QueryParameterConstants.ObservationTimeToParameter, to.ToString())
         ];
 
         return parameters;
