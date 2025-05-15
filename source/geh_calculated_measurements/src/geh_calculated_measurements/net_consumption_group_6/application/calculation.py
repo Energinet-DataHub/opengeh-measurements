@@ -26,9 +26,8 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 def get_current_calculated_measurements(
     calculated_measurements: CalculatedMeasurementsInternal, metering_point_type: MeteringPointType
 ) -> CalculatedMeasurementsInternal:
-    calculated_measurements_df = calculated_measurements.df
-    calculated_measurements_df = calculated_measurements_df.filter(
-        calculated_measurements_df.metering_point_type == metering_point_type.value
+    calculated_measurements_df = calculated_measurements.df.filter(
+        calculated_measurements.df.metering_point_type == metering_point_type.value
     )
     # Define window specification to get the newest record per key combination
     window_spec = Window.partitionBy("metering_point_id", "observation_time").orderBy(
