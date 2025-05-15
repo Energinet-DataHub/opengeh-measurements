@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from geh_common.domain.types import MeteringPointType, QuantityQuality
+from geh_common.domain.types import MeteringPointType, OrchestrationType, QuantityQuality
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from tests.conftest import ExternalDataProducts
+from tests.internal_tables import InternalTables
 
 
 def _seed_gold(
@@ -117,6 +119,37 @@ def _seed_electricity_market(
     )
 
 
+def _seed_internal(
+    spark,
+    child_net_consumption_metering_point: str,
+) -> None:
+    calculated_measurements = InternalTables.CALCULATED_MEASUREMENTS
+
+    df = spark.createDataFrame(
+        [
+            (
+                OrchestrationType.NET_CONSUMPTION.value,
+                "1",
+                "1",
+                datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                child_net_consumption_metering_point,
+                MeteringPointType.NET_CONSUMPTION.value,
+                datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
+                Decimal("3"),
+                "up_to_end_of_period",
+            ),
+        ],
+        schema=CalculatedMeasurementsInternal.schema,
+    )
+
+    # Persist the data to the table
+    df.write.saveAsTable(
+        f"{calculated_measurements.database_name}.{calculated_measurements.table_name}",
+        format="delta",
+        mode="append",
+    )
+
+
 def seed(
     spark,
     parent_metering_point_id: str,
@@ -137,4 +170,8 @@ def seed(
         child_consumption_from_grid_metering_point,
         child_net_consumption_metering_point,
         child_supply_to_grid_metering_point,
+    )
+    _seed_internal(
+        spark,
+        child_net_consumption_metering_point,
     )
