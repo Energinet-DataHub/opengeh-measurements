@@ -1,6 +1,6 @@
 # Measurements - Bronze Submitted Transactions Table Definitions
 
-This tables contains submitted transactions from received from the ProcessManager through an eventhub.
+This table contains submitted transactions from received from the ProcessManager through an eventhub.
 
 | Column Name | Data type | Nullable | Description | Constraints |
 | ----------- | --------- | -------- | ----------- | ----------- |

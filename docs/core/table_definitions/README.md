@@ -14,3 +14,7 @@
 ## Gold Tables
 
 - [Measurements](./gold_measurements.md)
+
+## Measurements Internal Core Tables
+
+- [Process Manager Receipts](./process_manager_receipts.md)

@@ -1,6 +1,6 @@
 # Measurements - Bronze Submitted Transactions Table Definitions
 
-This tables contains quarantined transactions. The reason that a row have been quarantined can be found in the columns prefixed with: `validate_`. When the value is `false`, the validation failed.
+This table contains quarantined transactions. The reason that a row have been quarantined can be found in the columns prefixed with: `validate_`. When the value is `false`, the validation failed.
 
 | Column name | Data type | Nullable | Description | Constraints |
 | - | - | - | - | - |
