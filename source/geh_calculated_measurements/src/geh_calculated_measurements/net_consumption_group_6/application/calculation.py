@@ -1,6 +1,6 @@
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry.decorators import use_span
-from pyspark.sql import DataFrame, SparkSession, Window
+from pyspark.sql import SparkSession, Window
 from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.application.model import (
@@ -25,7 +25,7 @@ from geh_calculated_measurements.net_consumption_group_6.infrastucture import (
 
 def get_current_calculated_measurements(
     calculated_measurements: CalculatedMeasurementsInternal, metering_point_type: MeteringPointType
-) -> DataFrame:
+) -> CalculatedMeasurementsInternal:
     calculated_measurements_df = calculated_measurements.df
     calculated_measurements_df = calculated_measurements_df.filter(
         calculated_measurements_df.metering_point_type == metering_point_type.value
@@ -39,7 +39,7 @@ def get_current_calculated_measurements(
     df_with_row_num = calculated_measurements_df.withColumn("row_num", F.row_number().over(window_spec))
     filtered_df = df_with_row_num.filter("row_num = 1").drop("row_num")
 
-    return filtered_df
+    return CalculatedMeasurementsInternal(filtered_df)
 
 
 @use_span()
