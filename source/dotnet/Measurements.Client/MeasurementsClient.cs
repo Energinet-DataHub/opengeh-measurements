@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.ObjectModel;
+using System.Net;
 using System.Text.Json;
 using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
@@ -6,6 +7,7 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using NodaTime;
+using HttpRequestException = System.Net.Http.HttpRequestException;
 
 namespace Energinet.DataHub.Measurements.Client;
 
@@ -28,6 +30,17 @@ public class MeasurementsClient(
         var result = await measurementsForDateResponseParser.ParseResponseMessage(response, cancellationToken);
 
         return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
+    }
+
+    public async Task<ReadOnlyCollection<MeasurementPointDto>> GetCurrentByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        var url = CreateGetCurrentMeasurementsUrl(query.MeteringPointId, query.From, query.To);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return new ReadOnlyCollection<MeasurementPointDto>(response.StatusCode == HttpStatusCode.Accepted
+            ? []
+            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}"));
     }
 
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(
@@ -59,6 +72,18 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
     }
 
+    public async Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
+    {
+        var meteringPointIdsString = string.Join(",", query.MeteringPointIds);
+        var url = CreateGetMeasurementsAggregatedByPeriodUrl(meteringPointIdsString, query.From, query.To, query.Aggregation);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+
+        return response.StatusCode == HttpStatusCode.Accepted
+            ? []
+            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
+    }
+
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
         HttpResponseMessage response, CancellationToken cancellationToken)
     {
@@ -84,6 +109,11 @@ public class MeasurementsClient(
         return $"v2/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 
+    private static string CreateGetCurrentMeasurementsUrl(string meteringPointId, Instant fromDate, Instant toDate)
+    {
+        return $"v3/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
+    }
+
     private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)
     {
         return $"v3/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
@@ -97,5 +127,10 @@ public class MeasurementsClient(
     private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId)
     {
         return $"v3/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
+    }
+
+    private static string CreateGetMeasurementsAggregatedByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation)
+    {
+        return $"v3/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
     }
 }
