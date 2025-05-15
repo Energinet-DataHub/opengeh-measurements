@@ -1,5 +1,14 @@
 # Measurements.Client Release Notes
 
+## Version 7.1.0
+
+- **Renamed Method:**  
+  - `GetAggregateByPeriodAsync` is now **`GetAggregatedByPeriodAsync`** for consistency and clarity.
+
+- **New Endpoint Logic:**  
+  - Initial logic has been implemented for this method, providing early access to start exploring the new approach.
+  - **Note:** This is an early-stage release, so the endpoint is not yet heavily tested. Feedback is welcome as you begin migrating.
+
 ## Version 7.0.0
 
 - Added two new dummy methods to the MeasurementsClient, `GetCurrentByPeriodAsync` and `GetAggregateByPeriodAsync`.
