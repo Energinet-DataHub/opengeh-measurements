@@ -29,7 +29,7 @@ def get_current_calculated_measurements(
     calculated_measurements_df = calculated_measurements.df.filter(
         calculated_measurements.df.metering_point_type == metering_point_type.value
     )
-    # Define window specification to get the newest record per key combination
+    # Define a window specification to retrieve the most recent record for each key combination
     window_spec = Window.partitionBy("metering_point_id", "observation_time").orderBy(
         F.desc("transaction_creation_datetime")
     )
