@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using Azure.Core;
 using Azure.Identity;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
@@ -10,7 +9,6 @@ using Energinet.DataHub.Measurements.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using NodaTime;
 using Xunit;
 
 namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
@@ -24,10 +22,6 @@ namespace Energinet.DataHub.Measurements.WebApi.IntegrationTests.Fixtures;
 /// </summary>
 public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public const string ValidMeteringPointId = "123456789012345678";
-    public const string InvalidMeteringPointId = "invalid metering point id";
-    public const string NotExistingMeteringPointId = "9988776655443";
-
     private const string ApplicationIdUri = "https://management.azure.com";
     private const string Issuer = "https://sts.windows.net/f7619355-6c67-4100-9a78-1847f30742e2/";
     private const string CatalogName = "hive_metastore";
@@ -51,17 +45,29 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var columnDefinitions = CreateMeasurementsColumnDefinitions();
-
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, columnDefinitions);
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRows());
     }
 
     public new async Task DisposeAsync()
     {
         await base.DisposeAsync();
         await DatabricksSchemaManager.DropSchemaAsync();
+    }
+
+    public async Task CreateTableAsync()
+    {
+        var columnDefinitions = CreateMeasurementsColumnDefinitions();
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsTableConstants.Name, columnDefinitions);
+    }
+
+    public async Task InsertRowsAsync(List<List<string>> measurements)
+    {
+        await DatabricksSchemaManager.InsertAsync(MeasurementsTableConstants.Name, measurements);
+    }
+
+    public async Task DeleteTableAsync()
+    {
+        await DatabricksSchemaManager.DropTableAsync(MeasurementsTableConstants.Name);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -87,64 +93,14 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
         new()
         {
-            { MeasurementsGoldConstants.MeteringPointIdColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.UnitColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
-            { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
-            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsTableConstants.CreatedColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
-
-    private static List<IEnumerable<string>> CreateRows()
-    {
-        var dates = new[]
-        {
-            (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 2), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2021, 2, 1), new LocalDate(2021, 2, 3), "calculated", true, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2021, 2, 2), new LocalDate(2021, 2, 3), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2021, 2, 3), new LocalDate(2021, 2, 4), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2021, 2, 28), new LocalDate(2021, 3, 1), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 1, 1), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 1, 2), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 1, 3), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 1, 4), new LocalDate(2022, 1, 5), "measured", false, "PT1H"),
-            (ValidMeteringPointId, new LocalDate(2022, 2, 1), new LocalDate(2022, 1, 5), "measured", false, "PTUKNOWN"),
-            ("987654321012345678", new LocalDate(2022, 6, 15), new LocalDate(2022, 6, 17), "invalidQuality", false, "PT1H"),
-        };
-
-        return dates.SelectMany(CreateRow).ToList();
-    }
-
-    private static IEnumerable<IEnumerable<string>> CreateRow(
-        (string MeteringPointId, LocalDate ObservationTime, LocalDate TransactionCreated, string Quality, bool IsCancelled, string Resolution) values)
-    {
-        var observationDate = values.ObservationTime;
-        var transactionCreated = values.TransactionCreated;
-        var observationDateInstant = Instant.FromUtc(observationDate.Year, observationDate.Month, observationDate.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
-        var transactionCreatedInstant = Instant.FromUtc(transactionCreated.Year, transactionCreated.Month, transactionCreated.Day, 0, 0, 0).Plus(Duration.FromHours(-1));
-
-        var rows = Enumerable.Range(0, 24).Select(i => new[]
-        {
-            $"'{values.MeteringPointId}'",
-            "'kwh'",
-            $"'{FormatString(observationDateInstant.Plus(Duration.FromHours(i)))}'",
-            $"{i}.4",
-            $"'{values.Quality}'",
-            $"'{values.Resolution}'",
-            values.IsCancelled ? "true" : "false",
-            $"'{FormatString(transactionCreatedInstant)}'",
-            $"'{FormatString(transactionCreatedInstant)}'",
-        });
-
-        return rows;
-    }
-
-    private static string FormatString(Instant date)
-    {
-        return date.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture);
-    }
 }

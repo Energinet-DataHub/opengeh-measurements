@@ -3,7 +3,7 @@ using Energinet.DataHub.Measurements.Client.Serialization;
 
 namespace Energinet.DataHub.Measurements.Client.ResponseParsers;
 
-public class MeasurementsForDayResponseParser : IMeasurementsForDayResponseParser
+public class MeasurementsForDateResponseParser : IMeasurementsForDateResponseParser
 {
     public async Task<MeasurementDto> ParseResponseMessage(HttpResponseMessage response, CancellationToken cancellationToken)
     {

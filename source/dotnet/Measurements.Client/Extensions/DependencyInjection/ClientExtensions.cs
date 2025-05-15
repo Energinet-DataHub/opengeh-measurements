@@ -40,7 +40,7 @@ public static class ClientExtensions
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
         });
 
-        services.AddScoped<IMeasurementsForDayResponseParser, MeasurementsForDayResponseParser>();
+        services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
         return services;

@@ -1,4 +1,4 @@
-namespace Energinet.DataHub.Measurements.Domain;
+﻿namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 
 public enum Aggregation
 {
@@ -7,5 +7,4 @@ public enum Aggregation
     Day,
     Month,
     Year,
-  }
 }
