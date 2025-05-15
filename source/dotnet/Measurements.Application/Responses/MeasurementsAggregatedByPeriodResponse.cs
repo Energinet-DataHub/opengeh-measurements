@@ -89,7 +89,6 @@ public class MeasurementsAggregatedByPeriodResponse
             {
                 From = Instant.Min(existing.From, minObservationTime),
                 To = Instant.Max(existing.To, maxObservationTime),
-                Resolution = resolution,
             };
             pointAggregationGroups[aggregationGroupKey] = existing;
             return existing;
