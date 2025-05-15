@@ -18,9 +18,9 @@ This table contains quarantined transactions. The reason that a row have been qu
 | points[*].quantity | Decimal(18, 3) | True | The energy quantity. Negative values allowed. May be null when the quality is 'missing' | - |
 | points[*].quality | StringType | True | The quality of the energy quantity. | Valid [quality types](https://github.com/Energinet-DataHub/opengeh-python-packages/blob/main/source/geh_common/src/geh_common/domain/types/quantity_quality.py) |
 | is_cancelled | BooleanType | True | Cancelled flag carried over from Migrations | "is_cancelled_is_not_null_chk" which checks is_cancelled is not null,  |
-| created | TimestampType | True | - | - |
-| validate_orchestration_type_enum | BooleanType | True | - | - |
-| validate_quality_enum | BooleanType | True | - | - |
-| validate_metering_point_type_enum | BooleanType | True | - | - |
-| validate_unit_enum | BooleanType | True | - | - |
-| validate_resolution_enum | BooleanType | True | - | - |
+| created | TimestampType | False | - | - |
+| validate_orchestration_type_enum | BooleanType | False | - | - |
+| validate_quality_enum | BooleanType | False | - | - |
+| validate_metering_point_type_enum | BooleanType | False | - | - |
+| validate_unit_enum | BooleanType | False | - | - |
+| validate_resolution_enum | BooleanType | False | - | - |
