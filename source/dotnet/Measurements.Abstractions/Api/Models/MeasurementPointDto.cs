@@ -12,7 +12,7 @@
 /// <param name="RegistrationTime">Timestamp defining when this point was registered.</param>
 public sealed record MeasurementPointDto(
     int Order,
-    decimal Quantity,
+    decimal? Quantity,
     Quality Quality,
     Unit Unit,
     Resolution Resolution,
