@@ -140,23 +140,6 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(3.0)]
-    [HttpGet("aggregateByPeriod")]
-    public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
-    {
-        try
-        {
-            var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
-            var result = new JsonSerializer().Serialize(aggregatedByPeriod);
-
-            return Ok(result);
-        }
-        catch (MeasurementsNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-    }
-
-    [MapToApiVersion(3.0)]
     [HttpGet("aggregatedByYear")]
     public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)
     {
@@ -178,9 +161,19 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(3.0)]
-    [HttpGet("aggregatedByPeriod")]
-    public Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
+    [HttpGet("aggregateByPeriod")]
+    public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
     {
-        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
+        try
+        {
+            var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByPeriod);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }
