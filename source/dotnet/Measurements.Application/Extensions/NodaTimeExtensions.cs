@@ -17,7 +17,7 @@ public static class NodaTimeExtensions
         return date.InZone(_danishZone);
     }
 
-    public static ZonedDateTime ToZonedDateTime(this LocalDateTime instant)
+    public static ZonedDateTime ToDanishZonedDateTime(this LocalDateTime instant)
     {
         return instant.InZoneLeniently(_danishZone);
     }

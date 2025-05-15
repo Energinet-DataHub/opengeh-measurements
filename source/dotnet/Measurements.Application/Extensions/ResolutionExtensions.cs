@@ -12,8 +12,8 @@ public static class ResolutionExtensions
         var startOfDay = localDate.At(LocalTime.Midnight);
         var startOfNextDay = localDate.PlusDays(1).At(LocalTime.Midnight);
 
-        var zonedStart = startOfDay.ToZonedDateTime();
-        var zonedEnd = startOfNextDay.ToZonedDateTime();
+        var zonedStart = startOfDay.ToDanishZonedDateTime();
+        var zonedEnd = startOfNextDay.ToDanishZonedDateTime();
 
         var duration = zonedEnd.ToInstant() - zonedStart.ToInstant();
 
