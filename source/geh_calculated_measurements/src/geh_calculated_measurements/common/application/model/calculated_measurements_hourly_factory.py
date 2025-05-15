@@ -27,7 +27,11 @@ def create(
     time_zone: str,
     transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
-    df = _explode_to_hour_values(measurements, time_zone)
+    df = measurements.df.withColumn(
+        ContractColumnNames.transaction_id, _create_transaction_id_column(orchestration_instance_id, time_zone)
+    )
+
+    df = _explode_to_hour_values(df, time_zone)
 
     df = _add_storage_columns(
         df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
@@ -36,10 +40,10 @@ def create(
     return df
 
 
-def _explode_to_hour_values(measurements, time_zone):
+def _explode_to_hour_values(measurements: DataFrame, time_zone: str) -> DataFrame:
     df = (
         # Explode the date column to create a row for each hour in the day
-        measurements.df.withColumn(
+        measurements.withColumn(
             ContractColumnNames.observation_time,
             F.explode(
                 F.sequence(
@@ -80,7 +84,6 @@ def _add_storage_columns(
             ContractColumnNames.orchestration_type: F.lit(orchestration_type.value),
             ContractColumnNames.metering_point_type: F.lit(metering_point_type.value),
             ContractColumnNames.transaction_creation_datetime: F.lit(transaction_creation_datetime),
-            ContractColumnNames.transaction_id: _create_transaction_id_column(orchestration_instance_id, time_zone),
         }
     )
 

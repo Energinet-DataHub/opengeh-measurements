@@ -450,20 +450,28 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedByPeriodAsync_WhenValid_ReturnsAcceptedButNotImplementedResponse()
+    public async Task GetAggregatedByPeriodAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
         const string meteringPointId = "123456789123456789";
-        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
-        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
-        var url = CreateGetAggregatedMeasurementsByPeriodUrl(
-            meteringPointId, from, to, Aggregation.Day);
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedByPeriodMeasurementsUrl(
+            meteringPointId, Instant.FromUtc(2021, 2, 5, 0, 0), Instant.FromUtc(2022, 4, 7, 0, 0), Aggregation.Hour);
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByPeriodResponse>(actualResponse);
 
         // Assert
-        Assert.Equal(HttpStatusCode.Accepted, actualResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Single(actual.MeasurementAggregations);
+        Assert.Equal(meteringPointId, actual.MeasurementAggregations.First().MeteringPoint.Id);
+        Assert.Equal(3, actual.MeasurementAggregations.First().PointAggregationGroups.Count);
     }
 
     [Fact]
@@ -557,6 +565,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
+    }
+
+    private static string CreateGetAggregatedByPeriodMeasurementsUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
+    {
+        return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointIds={meteringPointIds}&from={from}&to={to}&aggregation={aggregation}";
     }
 
     private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

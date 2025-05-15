@@ -8,9 +8,9 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import Column
 from pyspark.sql import types as T
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
-    CurrentMeasurements,
 )
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.net_consumption_group_6.domain import Cenc
@@ -30,7 +30,7 @@ def days_in_year(year: Column, month: Column) -> Column:
 @use_span()
 @testing()
 def calculate_daily(
-    current_measurements: CurrentMeasurements,
+    calculated_measurements: CalculatedMeasurementsInternal,
     cenc: Cenc,
     time_zone: str,
     execution_start_datetime: datetime,
@@ -41,7 +41,7 @@ def calculate_daily(
         F.lit(execution_start_datetime).alias("execution_start_datetime"),
     )
 
-    time_series_points_df = current_measurements.df
+    time_series_points_df = calculated_measurements.df
 
     cenc_added_col = convert_from_utc(cenc_added_col, time_zone)
 

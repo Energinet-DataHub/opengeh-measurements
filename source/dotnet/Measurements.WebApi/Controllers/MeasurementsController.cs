@@ -162,8 +162,18 @@ public class MeasurementsController(
 
     [MapToApiVersion(3.0)]
     [HttpGet("aggregatedByPeriod")]
-    public Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
+    public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
     {
-        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
+        try
+        {
+            var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByPeriod);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }
