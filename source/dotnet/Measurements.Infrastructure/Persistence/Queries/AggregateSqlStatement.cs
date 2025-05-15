@@ -32,11 +32,11 @@ public static class AggregateSqlStatement
     {
         return $"select " +
                $"{MeasurementsTableConstants.MeteringPointIdColumnName}, " +
+               $"({MeasurementsTableConstants.ResolutionColumnName}, " +
                $"min({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
                $"max({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
                $"sum({MeasurementsTableConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
                $"array_agg(distinct({MeasurementsTableConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
-               $"array_agg(distinct({MeasurementsTableConstants.ResolutionColumnName})) as {AggregatedQueryConstants.Resolutions}, " +
                $"{aggregationGroupKeyStatement} as {AggregatedQueryConstants.AggregationGroupKey} " +
                $"from {catalogName}.{schemaName}.{MeasurementsTableConstants.Name} " +
                $"where {whereStatement} " +

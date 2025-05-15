@@ -61,6 +61,7 @@ public class GetAggregatedByPeriodQuery(string meteringPointIds, Instant from, I
         };
 
         return $"{MeasurementsTableConstants.MeteringPointIdColumnName}" +
+               $", {MeasurementsTableConstants.ResolutionColumnName}" +
        $", year(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))" +
        (aggregation <= Aggregation.Month
            ? $", month(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))"

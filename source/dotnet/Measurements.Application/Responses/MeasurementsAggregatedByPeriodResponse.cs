@@ -37,7 +37,7 @@ public class MeasurementsAggregatedByPeriodResponse
 
             var aggregationGroupKey =
                 new AggregationGroupCompositeKey(measurement.MeteringPoint, measurement.AggregationGroupKey);
-            var resolution = ResolutionParser.ParseResolution((string)measurement.Resolutions.Single()); // Todo: Could/Will make a problem when requesting on months and higher
+            var resolution = ResolutionParser.ParseResolution(measurement.Resolution);
             var pointAggregationGroup = GetOrCreatePointAggregationGroup(
                 pointAggregationGroups,
                 aggregationGroupKey.Key,
