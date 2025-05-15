@@ -19,13 +19,13 @@ Contains methods to query the `Measurements.WebApi`. See [IMeasurementsClient](h
 To use the `Measurements.Client` in your application, you need to register it in your dependency injection container. Follow these steps:
 
 1. **Install the NuGet Package**
-   Ensure you have installed the `Measurements.Client` NuGet package in your project. You can do this via the NuGet Package Manager or by running the following command in the terminal:
+   Ensure you have installed the `Measurements.Client` NuGet package in your project:
 
    ```bash
-   dotnet add package Measurements.Client
+   dotnet add package Energinet.DataHub.Measurements.Client
 
 2. **Add the Registration Code**
-In your application's startup configuration (e.g., Startup.cs or Program.cs), register the `Measurements.Client` services. Use the provided extension method `AddMeasurementsClient` to simplify the registration process.
+In your applications startup configuration (e.g., Startup.cs or Program.cs), register the `Measurements.Client` services. Use the provided extension method `AddMeasurementsClient` to simplify the registration process.
 
 ```csharp
 using Measurements.Client;
