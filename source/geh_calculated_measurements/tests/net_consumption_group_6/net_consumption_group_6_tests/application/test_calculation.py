@@ -99,7 +99,7 @@ def test_get_current_calculated_measurements(spark: SparkSession):
     calculated_measurements = CalculatedMeasurementsInternal(df)
 
     # Act
-    result = get_current_calculated_measurements(calculated_measurements, MeteringPointType.NET_CONSUMPTION)
+    result = get_current_calculated_measurements(calculated_measurements, MeteringPointType.NET_CONSUMPTION).df
 
     # Assert
     assert result.count() == 3  # 3 records after filtering and deduplication
@@ -141,7 +141,7 @@ def test_get_current_calculated_measurements_empty(spark: SparkSession):
     calculated_measurements = CalculatedMeasurementsInternal(df=empty_df)
 
     # Act
-    result = get_current_calculated_measurements(calculated_measurements, MeteringPointType.NET_CONSUMPTION)
+    result = get_current_calculated_measurements(calculated_measurements, MeteringPointType.NET_CONSUMPTION).df
 
     # Assert
     assert result.count() == 0
