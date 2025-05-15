@@ -455,9 +455,9 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         // Arrange
         const string meteringPointId = "123456789123456789";
         var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
         var url = CreateGetAggregatedByPeriodMeasurementsUrl(
