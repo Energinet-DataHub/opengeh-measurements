@@ -72,7 +72,7 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregatedByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var meteringPointIdsString = string.Join(",", query.MeteringPointIds);
         var url = CreateGetMeasurementsAggregatedByPeriodUrl(meteringPointIdsString, query.From, query.To, query.Aggregation);

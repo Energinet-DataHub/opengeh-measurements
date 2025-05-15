@@ -96,7 +96,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             Aggregation.Hour);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregateByPeriodAsync(query);
+        var measurements = await measurementsClient.GetAggregatedByPeriodAsync(query);
 
         // Assert
         Assert.Single(measurements);
