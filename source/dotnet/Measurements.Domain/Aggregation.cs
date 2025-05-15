@@ -7,5 +7,4 @@ public enum Aggregation
     Day,
     Month,
     Year,
-  }
 }
