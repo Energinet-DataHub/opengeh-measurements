@@ -12,3 +12,7 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000000000170203;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 3 (NSG2 with D15)
 070000000000170203;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 3 (NSG2 with D15)
 140000000000170203;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 3 (NSG2 with D15)
+150000000000170204;1000;measured;2023-12-31T23:00:00Z;net_consumption;Case 4 (NSG6)
+060000000000170204;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 4 (NSG6)
+070000000000170204;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 4 (NSG6)
+140000000000170204;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 4 (NSG6)
