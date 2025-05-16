@@ -27,4 +27,20 @@ public static class AggregateSqlStatement
             $"group by {groupByStatement} " +
             $"order by {AggregatedQueryConstants.MinObservationTime}";
     }
+
+    public static string GetAggregatedByPeriodSqlStatement(string catalogName, string schemaName, string whereStatement, string aggregationGroupKeyStatement, string groupByStatement)
+    {
+        return $"select " +
+               $"{MeasurementsTableConstants.MeteringPointIdColumnName}, " +
+               $"{MeasurementsTableConstants.ResolutionColumnName}, " +
+               $"min({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
+               $"max({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MaxObservationTime}, " +
+               $"sum({MeasurementsTableConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
+               $"array_agg(distinct({MeasurementsTableConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
+               $"{aggregationGroupKeyStatement} as {AggregatedQueryConstants.AggregationGroupKey} " +
+               $"from {catalogName}.{schemaName}.{MeasurementsTableConstants.Name} " +
+               $"where {whereStatement} " +
+               $"group by {groupByStatement} " +
+               $"order by {MeasurementsTableConstants.MeteringPointIdColumnName}, {AggregatedQueryConstants.MinObservationTime}";
+    }
 }
