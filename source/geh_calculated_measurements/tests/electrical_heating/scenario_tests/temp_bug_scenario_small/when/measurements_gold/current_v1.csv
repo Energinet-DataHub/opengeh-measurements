@@ -1,14 +1,14 @@
 metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
-170000030000000013;1000;measured;2023-12-31T23:00:00Z;consumption;Case 1
-060000030000000054;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 1
-070000030000000055;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 1
-140000030000000058;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 1
-150000031000000059;1000;measured;2023-12-31T23:00:00Z;net_consumption;Case 2
-060000031000000054;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 2
-070000031000000055;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 2
-140000031000000058;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 2
-170000032000000013;1000;measured;2023-12-31T23:00:00Z;consumption;Case 4
-140000032000000058;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 4
 170000000000000200;1;measured;2024-01-03T12:00:00Z;consumption;Case 0: Parent mp. Jan. 3rd
 170000000000000200;1;measured;2024-01-04T12:00:00Z;consumption;Case 0: Parent mp. Jan. 4th
 140000000000170200;1;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 0: Written to child mp by previous calculation for Jan. 3rd.
+170000000000000201;1000;measured;2023-12-31T23:00:00Z;consumption;Case 1 (regular EH that hits limit)
+140000000000170201;338.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 1 (regular EH that hits limit)
+170000000000000202;1000;measured;2023-12-31T23:00:00Z;consumption;Case 2 (NSG2 no D15)
+060000000000170202;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 2 (NSG2 no D15)
+070000000000170202;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 2 (NSG2 no D15)
+140000000000170202;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 2 (NSG2 no D15)
+150000000000170203;1000;measured;2023-12-31T23:00:00Z;net_consumption;Case 3 (NSG2 with D15)
+060000000000170203;20;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 3 (NSG2 with D15)
+070000000000170203;10;measured;2023-12-31T23:00:00Z;consumption_from_grid;Case 3 (NSG2 with D15)
+140000000000170203;328.798;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 3 (NSG2 with D15)
