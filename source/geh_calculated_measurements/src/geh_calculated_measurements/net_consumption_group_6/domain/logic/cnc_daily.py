@@ -7,6 +7,7 @@ from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
@@ -14,6 +15,7 @@ from geh_calculated_measurements.common.domain.model import CalculatedMeasuremen
 @use_span()
 @testing()
 def cnc_daily(
+    calculated_measurements: CalculatedMeasurementsInternal,
     periods_with_net_consumption: DataFrame,
     periods_with_ts: DataFrame,
     time_zone: str,
@@ -43,6 +45,7 @@ def cnc_daily(
     )
     periods_with_net_consumption = convert_from_utc(periods_with_net_consumption, time_zone)
     periods_with_ts = convert_from_utc(periods_with_ts, time_zone)
+    calculated_measurements_df = convert_from_utc(calculated_measurements.df, time_zone)
 
     CNC_WAITINIG_PERIOD_IN_DAYS = 2
     periods_with_net_consumption = periods_with_net_consumption.select(
@@ -51,6 +54,19 @@ def cnc_daily(
     )
 
     cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
+
+    cnc_measurements = (
+        cnc_measurements.alias("cm")
+        .join(
+            calculated_measurements_df.alias("calc"),
+            [
+                F.col("cm.metering_point_id") == F.col("calc.metering_point_id"),
+                F.col(f"cm.{ContractColumnNames.date}") == F.col(f"calc.{ContractColumnNames.observation_time}"),
+            ],
+            "left",
+        )
+        .select("cm.*", F.col("calc.settlement_type"))
+    )
 
     cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements)
 
@@ -87,6 +103,7 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
             F.col(ContractColumnNames.date),
             F.col("daily_quantity").cast(T.DecimalType(18, 3)),
             F.col("calculate_cnc_from"),
+            F.col("execution_start_datetime"),
         )
     )
 
@@ -114,6 +131,7 @@ def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
                 F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
                 F.col("cnc.daily_quantity") == F.col(f"ts.{ContractColumnNames.quantity}"),
+                F.col("cnc.settlement_type") != F.lit("up_to_end_of_period"),
             ],
             how="left_anti",
         )
