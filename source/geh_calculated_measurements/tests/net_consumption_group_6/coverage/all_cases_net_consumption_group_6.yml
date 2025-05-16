@@ -11,7 +11,7 @@
     "Sum for D07 is aggregated, even if sum for D06 is missing": true
     "If result is identical to existing cnc measurement result, no new result is generated": true
     "When period goes from cenc to cnc, new results are always generated": true
-    "Results are not generated until +2 days after smrd": true
+    "Results are not generated until +2 days after period end": true
 
   "cenc calculation":
     "Calculation is cenc": true
@@ -19,10 +19,8 @@
 
 
 
-Mangler dækning
- -
- - periodeskift mere end 3 år tilbage
- - to dage crap
- - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
- - filtrering
-	- skriver ned, selvom værdi er den samme som cenc
+  Mangler dækning   -
+   - periodeskift mere end 3 år tilbage
+   - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
+   - filtrering
+      - skriver ned, selvom værdi er den samme som cenc
