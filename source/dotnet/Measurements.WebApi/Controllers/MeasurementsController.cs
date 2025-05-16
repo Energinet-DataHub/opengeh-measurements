@@ -42,6 +42,13 @@ public class MeasurementsController(
         }
     }
 
+    [MapToApiVersion(3.0)]
+    [HttpGet("currentForPeriod")]
+    public Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
+    {
+        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
+    }
+
     [MapToApiVersion(2.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByDateAsyncV2([FromQuery] GetAggregatedByDateRequest request)
@@ -149,6 +156,23 @@ public class MeasurementsController(
                 "Aggregation by year not found for metering point id {MeteringPointId} for all years",
                 request.MeteringPointId.Sanitize());
 
+            return NotFound(e.Message);
+        }
+    }
+
+    [MapToApiVersion(3.0)]
+    [HttpGet("aggregatedByPeriod")]
+    public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
+    {
+        try
+        {
+            var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
+            var result = new JsonSerializer().Serialize(aggregatedByPeriod);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
             return NotFound(e.Message);
         }
     }
