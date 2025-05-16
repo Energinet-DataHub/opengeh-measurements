@@ -37,12 +37,22 @@ def cnc_daily(
     CalculatedMeasurementsDaily
       Object containing the calculated net consumption discrepancies in UTC.
     """
+    periods_with_net_consumption = periods_with_net_consumption.select(
+        "*",
+        F.lit(execution_start_datetime).alias("execution_start_datetime"),
+    )
     periods_with_net_consumption = convert_from_utc(periods_with_net_consumption, time_zone)
     periods_with_ts = convert_from_utc(periods_with_ts, time_zone)
 
+    CNC_WAITINIG_PERIOD_IN_DAYS = 2
+    periods_with_net_consumption = periods_with_net_consumption.select(
+        "*",
+        F.date_add(F.col("period_end"), CNC_WAITINIG_PERIOD_IN_DAYS).alias("calculate_cnc_from"),
+    )
+
     cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
 
-    cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements, execution_start_datetime)
+    cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
 
@@ -60,29 +70,30 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
             - date: Daily observation time
             - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
     """
-    cnc_measurements = periods_with_net_consumption.where(
-        F.col("period_end") >= F.date_add(F.lit(execution_start_datetime), 2)
-    ).select(
-        "*",
-        F.explode(
-            F.sequence(
-                F.col("period_start_with_cut_off"),
-                F.date_add(F.col("period_end"), -1),
-                F.expr("INTERVAL 1 DAY"),
-            )
-        ).alias(ContractColumnNames.date),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.date),
-        F.col("daily_quantity").cast(T.DecimalType(18, 3)),
+    cnc_measurements = (
+        periods_with_net_consumption.where(F.col("calculate_cnc_from") <= F.col("execution_start_datetime"))
+        .select(
+            "*",
+            F.explode(
+                F.sequence(
+                    F.col("period_start_with_cut_off"),
+                    F.date_add(F.col("period_end"), -1),
+                    F.expr("INTERVAL 1 DAY"),
+                )
+            ).alias(ContractColumnNames.date),
+        )
+        .select(
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.date),
+            F.col("daily_quantity").cast(T.DecimalType(18, 3)),
+            F.col("calculate_cnc_from"),
+        )
     )
 
     return cnc_measurements
 
 
-def _cnc_diff_and_full_load_newly_closed_periods(
-    periods_with_ts: DataFrame, cnc_measurements: DataFrame, execution_start_datetime: datetime
-) -> DataFrame:
+def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
     """Get discrepancies between the calculated and the original CNC measurements.
 
     This function checks for discrepancies between the calculated CNC measurements and the original CNC measurements.
@@ -94,9 +105,8 @@ def _cnc_diff_and_full_load_newly_closed_periods(
             - quantity: The calculated daily quantity as DecimalType(18, 3)
     """
     cnc_diff = (
-        cnc_measurements.where(
-        F.col("period_end") > F.date_add(F.lit(execution_start_datetime), 2)
-    ).alias("cnc")
+        cnc_measurements.where(F.col("calculate_cnc_from") < F.col("execution_start_datetime"))
+        .alias("cnc")
         .join(
             periods_with_ts.alias("ts"),
             on=[
@@ -115,7 +125,7 @@ def _cnc_diff_and_full_load_newly_closed_periods(
     )
 
     newly_closed_cnc_period = cnc_measurements.where(
-        F.col("period_end") == F.date_add(F.lit(execution_start_datetime), 2)
+        F.col("calculate_cnc_from") == F.col("execution_start_datetime")
     ).select(
         F.col(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
