@@ -9,7 +9,6 @@ from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
 
-from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
@@ -23,7 +22,6 @@ def cnc(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     current_measurements: CurrentMeasurements,
-    calculated_measurements: CalculatedMeasurementsInternal,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> Tuple[DataFrame, DataFrame]:
@@ -47,14 +45,15 @@ def cnc(
       - DataFrame with periods and their calculated net consumption (converted to UTC)
       - DataFrame with periods and their corresponding time series data (converted to UTC)
     """
-    current_measurements = current_measurements.df
-    current_measurements = convert_from_utc(current_measurements, time_zone)
-    filtered_time_series = _filter_and_aggregate_daily(current_measurements)
+    current_measurements_df = current_measurements.df
+    current_measurements_df = convert_from_utc(current_measurements_df, time_zone)
 
-    consumption_metering_point_periods = consumption_metering_point_periods.df
-    child_metering_points = child_metering_points.df
+    filtered_time_series = _filter_and_aggregate_daily(current_measurements_df)
+
+    consumption_metering_point_periods_df = consumption_metering_point_periods.df
+    child_metering_points_df = child_metering_points.df
     parent_child_joined = _join_child_to_consumption(
-        consumption_metering_point_periods, child_metering_points, execution_start_datetime
+        consumption_metering_point_periods_df, child_metering_points_df, execution_start_datetime
     )
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 

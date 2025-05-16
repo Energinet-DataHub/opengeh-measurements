@@ -58,11 +58,11 @@ def execute_cnc_daily(
         consumption_metering_point_periods,
         child_metering_points,
         current_measurements,
-        calculated_measurements,
         time_zone,
         execution_start_datetime,
     )
     measurements = cnc_daily(
+        calculated_measurements,
         periods_with_net_consumption,
         periods_with_ts,
         time_zone,
