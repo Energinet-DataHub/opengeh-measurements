@@ -72,16 +72,14 @@ public class MeasurementsClient(
         return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByYearDto>(response, cancellationToken);
     }
 
-    public async Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregatedByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default)
     {
         var meteringPointIdsString = string.Join(",", query.MeteringPointIds);
         var url = CreateGetMeasurementsAggregatedByPeriodUrl(meteringPointIdsString, query.From, query.To, query.Aggregation);
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return response.StatusCode == HttpStatusCode.Accepted
-            ? []
-            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
+        return await ParseMeasurementAggregationResponseAsync<MeasurementAggregationByPeriodDto>(response, cancellationToken);
     }
 
     private async Task<IEnumerable<T>> ParseMeasurementAggregationResponseAsync<T>(
