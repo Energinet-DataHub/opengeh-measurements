@@ -9,6 +9,7 @@ from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.net_consumption_group_6.domain import (
     ChildMeteringPoints,
@@ -22,6 +23,7 @@ def cnc(
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     current_measurements: CurrentMeasurements,
+    calculated_measurements: CalculatedMeasurementsInternal,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> Tuple[DataFrame, DataFrame]:
