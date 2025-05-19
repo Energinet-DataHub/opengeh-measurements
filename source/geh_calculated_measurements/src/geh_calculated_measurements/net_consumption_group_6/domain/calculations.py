@@ -47,9 +47,10 @@ def execute_cenc_daily(
 @use_span()
 @testing()
 def execute_cnc_daily(
+    current_measurements: CurrentMeasurements,
+    calculated_measurements: CalculatedMeasurementsInternal,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
-    current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> CalculatedMeasurementsDaily:
@@ -61,6 +62,7 @@ def execute_cnc_daily(
         execution_start_datetime,
     )
     measurements = cnc_daily(
+        calculated_measurements,
         periods_with_net_consumption,
         periods_with_ts,
         time_zone,
