@@ -1,6 +1,8 @@
 metering_point_id;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
 170000000000000200;0;1;2023-12-31T23:00:00Z;;Case 0
-170000000000000201;0;1;2024-02-01T23:00:00Z;;Case 1
+170000000000000201;0;1;2023-12-31T23:00:00Z;;Case 1
 170000000000000202;0;1;2023-12-31T23:00:00Z;;Case 2: Existing measurement data which changes because of changed measurement data
 170000000000000203;0;1;2023-12-31T23:00:00Z;2024-01-03T23:00:00Z;Case 3: Previously period_to_date was null here. Now there is a new period: Limit = 3/366*4000 = 32.786
 170000000000000203;0;1;2024-01-03T23:00:00Z;;Case 3: Limit for the rest of the year: 363/366*4000 = 3967.213
+170000000000000205;2;1;2023-12-31T23:00:00Z;2024-01-31T23:00:00Z;Case 5 (NSG2 no D15)
+170000000000000205;2;1;2024-01-31T23:00:00Z;;Case 5 (NSG2 no D15)

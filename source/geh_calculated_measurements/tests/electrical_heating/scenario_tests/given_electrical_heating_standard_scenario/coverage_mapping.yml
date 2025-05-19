@@ -15,14 +15,14 @@ notes: |
 
   CASE 1
                           |2024
-                          |______________________________|____________________________|_____________________________|___
-  Parent (E17) period:      |_____...
-  Child (D14) period:      |______________________________________________________________________________________|
-  E17 Measurement data:    ++                                                                                        +
-  Included:                 _
-  Not included:            _                                                                                         _
+                          |______________________________|
+  Parent (E17) period:    |______________________________...
+  Child (D14) period:     |______________________________|
+  E17 Measurement data:  ++                               +
+  Included:               _
+  Not included:          _                                _
 
-  CASE 3
+  CASE 2
                                   |2024
                                   |_____
   Parent (E17) period:            |_____...
@@ -31,7 +31,7 @@ notes: |
   Existing (different) D14 data:    + ++
   New D14 data                      ++++
 
-  CASE 4
+  CASE 3
                                         |2024
                                         |_____
   Parent (E17) periods (new):           |___|__...
@@ -40,14 +40,29 @@ notes: |
   Existing D14 data (from old periods): +++++++
   New D14 data:                           ++
 
+  CASE 4 (NSG2, no D15)                                                         |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Parent (E17) period 2:                                            |____________
+  Children periods:                  |___________________________________________
+  E17 Measurement data:              +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated
 
 
-  CASE 3 (summer/winter time)
-                                     |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
-                          |2024______|____________________________________________|_______|2025
-  Parent start/end:                  |--------------------------------------------|
-  Days in period:                    | 213 days                                   |
-  Measurement data:                  +++                                        +++
+
+
+
+
+
+
+
+
+
+
+
 
 cases_tested:
   "Electrical Heating Tests":
