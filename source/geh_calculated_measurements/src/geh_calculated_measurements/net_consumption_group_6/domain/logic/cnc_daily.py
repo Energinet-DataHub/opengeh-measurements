@@ -8,7 +8,6 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
-from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
@@ -16,7 +15,6 @@ from geh_calculated_measurements.common.domain.model import CalculatedMeasuremen
 @use_span()
 @testing()
 def cnc_daily(
-    calculated_measurements: CalculatedMeasurementsInternal,
     calculated_measurements: CalculatedMeasurementsInternal,
     periods_with_net_consumption: DataFrame,
     periods_with_ts: DataFrame,
