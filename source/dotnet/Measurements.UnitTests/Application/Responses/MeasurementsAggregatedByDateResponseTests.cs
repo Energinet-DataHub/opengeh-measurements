@@ -157,7 +157,7 @@ public class MeasurementsAggregatedByDateResponseTests
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 2L)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 24L, 2L)),
         };
 
         // Act
