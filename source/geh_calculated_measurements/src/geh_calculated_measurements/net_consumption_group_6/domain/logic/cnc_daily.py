@@ -8,6 +8,7 @@ from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 
@@ -15,6 +16,7 @@ from geh_calculated_measurements.common.domain.model import CalculatedMeasuremen
 @use_span()
 @testing()
 def cnc_daily(
+    calculated_measurements: CalculatedMeasurementsInternal,
     calculated_measurements: CalculatedMeasurementsInternal,
     periods_with_net_consumption: DataFrame,
     periods_with_ts: DataFrame,
@@ -131,6 +133,7 @@ def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc
                 == F.col(f"ts.{ContractColumnNames.metering_point_id}"),
                 F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
                 F.col("cnc.daily_quantity") == F.col(f"ts.{ContractColumnNames.quantity}"),
+                F.col("cnc.settlement_type") != F.lit("up_to_end_of_period"),
                 F.col("cnc.settlement_type") != F.lit("up_to_end_of_period"),
             ],
             how="left_anti",
