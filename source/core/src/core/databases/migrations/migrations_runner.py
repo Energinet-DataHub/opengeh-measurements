@@ -4,9 +4,9 @@ from geh_common.migrations import (
     migration_pipeline,
 )
 
-import core.migrations.substitutions as substitutions
-from core.migrations.database_names import DatabaseNames
-from core.migrations.table_names import TableNames
+import core.databases.migrations.substitutions as substitutions
+from core.databases.database_names import DatabaseNames
+from core.databases.table_names import TableNames
 from core.settings.catalog_settings import CatalogSettings
 from core.settings.databricks_settings import DatabricksSettings
 
@@ -25,7 +25,7 @@ def _configure_spark_sql_migrations() -> SparkSqlMigrationsConfiguration:
     return SparkSqlMigrationsConfiguration(
         migration_schema_name=DatabaseNames.measurements_internal_database,
         migration_table_name=TableNames.executed_migrations,
-        migration_scripts_folder_path="core.migrations.migration_scripts",
+        migration_scripts_folder_path="core.databases.migrations.migration_scripts",
         substitution_variables=substitution_variables,
         catalog_name=catalog_name,
     )
