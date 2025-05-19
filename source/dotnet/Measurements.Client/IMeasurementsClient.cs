@@ -37,5 +37,5 @@ public interface IMeasurementsClient
     /// <summary>
     /// Get measurements aggregated by period for a specified date range.
     /// </summary>
-    Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregateByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default);
+    Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregatedByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default);
 }
