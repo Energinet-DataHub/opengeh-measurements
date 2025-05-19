@@ -1,0 +1,97 @@
+metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
+170000000000000201;0;calculated;2024-01-29T23:00:00Z;consumption;Case 1 - day 1
+140000000000170201;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 1 - day 1 (up to end)
+060000000000170201;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 1 - day 1
+070000000000170201;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 1 - day 1
+170000000000000201;0;calculated;2024-01-30T23:00:00Z;consumption;Case 1 - day 2
+140000000000170201;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 1 - day 2 (up to end)
+060000000000170201;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 1 - day 2
+070000000000170201;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 1 - day 2
+170000000000000201;0;calculated;2024-01-31T23:00:00Z;consumption;Case 1 - day 3
+140000000000170201;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 1 - day 3 (up to end)
+060000000000170201;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 1 - day 3
+070000000000170201;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 1 - day 3
+170000000000000201;0;calculated;2024-02-01T23:00:00Z;consumption;Case 1 - day 4
+140000000000170201;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 1 - day 4 (up to end)
+060000000000170201;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 1 - day 4
+070000000000170201;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 1 - day 4
+170000000000000202;0;calculated;2024-01-29T23:00:00Z;consumption;Case 2 - day 1
+140000000000170202;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 2 - day 1 (end of period)
+060000000000170202;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 2 - day 1
+070000000000170202;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 2 - day 1
+170000000000000202;0;calculated;2024-01-30T23:00:00Z;consumption;Case 2 - day 2
+140000000000170202;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 2 - day 2 (end of period)
+060000000000170202;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 2 - day 2
+070000000000170202;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 2 - day 2
+170000000000000202;0;calculated;2024-01-31T23:00:00Z;consumption;Case 2 - day 3
+140000000000170202;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 2 - day 3 (up to end)
+060000000000170202;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 2 - day 3
+070000000000170202;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 2 - day 3
+170000000000000202;0;calculated;2024-02-01T23:00:00Z;consumption;Case 2 - day 4
+140000000000170202;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 2 - day 4 (up to end)
+060000000000170202;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 2 - day 4
+070000000000170202;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 2 - day 4
+150000000000170203;0;virtual;2024-01-29T23:00:00Z;net_consumption;Case 3 - day 1
+140000000000170203;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 3 - day 1 (up to end)
+060000000000170203;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 3 - day 1
+070000000000170203;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 3 - day 1
+150000000000170203;0;virtual;2024-01-30T23:00:00Z;net_consumption;Case 3 - day 2
+140000000000170203;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 3 - day 2 (up to end)
+060000000000170203;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 3 - day 2
+070000000000170203;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 3 - day 2
+150000000000170203;0;virtual;2024-01-31T23:00:00Z;net_consumption;Case 3 - day 3
+140000000000170203;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 3 - day 3 (up to end)
+060000000000170203;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 3 - day 3
+070000000000170203;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 3 - day 3
+150000000000170203;0;virtual;2024-02-01T23:00:00Z;net_consumption;Case 3 - day 4
+140000000000170203;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 3 - day 4 (up to end)
+060000000000170203;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 3 - day 4
+070000000000170203;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 3 - day 4
+150000000000170204;0;virtual;2024-01-29T23:00:00Z;net_consumption;Case 4 - day 1
+140000000000170204;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 4 - day 1 (end of period)
+060000000000170204;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 4 - day 1
+070000000000170204;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 4 - day 1
+150000000000170204;0;virtual;2024-01-30T23:00:00Z;net_consumption;Case 4 - day 2
+140000000000170204;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 4 - day 2 (end of period)
+060000000000170204;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 4 - day 2
+070000000000170204;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 4 - day 2
+150000000000170204;0;virtual;2024-01-31T23:00:00Z;net_consumption;Case 4 - day 3
+140000000000170204;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 4 - day 3 (up to end)
+060000000000170204;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 4 - day 3
+070000000000170204;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 4 - day 3
+150000000000170204;0;virtual;2024-02-01T23:00:00Z;net_consumption;Case 4 - day 4
+140000000000170204;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 4 - day 4 (up to end)
+060000000000170204;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 4 - day 4
+070000000000170204;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 4 - day 4
+150000000000170205;0;virtual;2024-01-29T23:00:00Z;net_consumption;Case 5 - day 1
+140000000000170205;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 5 - day 1 (up to end)
+060000000000170205;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 5 - day 1
+070000000000170205;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 5 - day 1
+150000000000170205;0;virtual;2024-01-30T23:00:00Z;net_consumption;Case 5 - day 2
+140000000000170205;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 5 - day 2 (up to end)
+060000000000170205;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 5 - day 2
+070000000000170205;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 5 - day 2
+150000000000170205;0;virtual;2024-01-31T23:00:00Z;net_consumption;Case 5 - day 3
+140000000000170205;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 5 - day 3 (up to end)
+060000000000170205;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 5 - day 3
+070000000000170205;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 5 - day 3
+150000000000170205;0;virtual;2024-02-01T23:00:00Z;net_consumption;Case 5 - day 4
+140000000000170205;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 5 - day 4 (up to end)
+060000000000170205;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 5 - day 4
+070000000000170205;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 5 - day 4
+150000000000170206;0;virtual;2024-01-29T23:00:00Z;net_consumption;Case 6 - day 1
+140000000000170206;0;calculated;2024-01-29T23:00:00Z;electrical_heating;Case 6 - day 1 (end of period)
+060000000000170206;0;measured;2024-01-29T23:00:00Z;supply_to_grid;Case 6 - day 1
+070000000000170206;0;measured;2024-01-29T23:00:00Z;consumption_from_grid;Case 6 - day 1
+150000000000170206;0;virtual;2024-01-30T23:00:00Z;net_consumption;Case 6 - day 2
+140000000000170206;0;calculated;2024-01-30T23:00:00Z;electrical_heating;Case 6 - day 2 (end of period)
+060000000000170206;0;measured;2024-01-30T23:00:00Z;supply_to_grid;Case 6 - day 2
+070000000000170206;0;measured;2024-01-30T23:00:00Z;consumption_from_grid;Case 6 - day 2
+150000000000170206;0;virtual;2024-01-31T23:00:00Z;net_consumption;Case 6 - day 3
+140000000000170206;0;calculated;2024-01-31T23:00:00Z;electrical_heating;Case 6 - day 3 (up to end)
+060000000000170206;0;measured;2024-01-31T23:00:00Z;supply_to_grid;Case 6 - day 3
+070000000000170206;0;measured;2024-01-31T23:00:00Z;consumption_from_grid;Case 6 - day 3
+150000000000170206;0;virtual;2024-02-01T23:00:00Z;net_consumption;Case 6 - day 4
+140000000000170206;0;calculated;2024-02-01T23:00:00Z;electrical_heating;Case 6 - day 4 (up to end)
+060000000000170206;0;measured;2024-02-01T23:00:00Z;supply_to_grid;Case 6 - day 4
+070000000000170206;0;measured;2024-02-01T23:00:00Z;consumption_from_grid;Case 6 - day 4

@@ -16,7 +16,8 @@
 
   "Results Filtering":
     "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day": true
-    "GIVEN the calculation type is end-of-period AND the previous result was up-to-end THEN we SHOULD ALWAYS generate a result for that MP/day": true
+    "GIVEN the previous daily result was up to end and the new result is end of period, we SHOULD ALWAYS generate a result for that MP/day, even if the result is the same": true
+    "GIVEN the previous daily result was end of period and the new result is up to end, we SHOULD ALWAYS generate a result for that MP/day, even if the result is the same": true
 
   "Net Settlement Groups":
     "Electrical heating without net settlement group": true
