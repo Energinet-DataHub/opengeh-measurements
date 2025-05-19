@@ -49,7 +49,18 @@ notes: |
   E17 Measurement data:              +
   Existing (end of period) D14 data: +
   Existing (up to end) D14 data:                                    +
-  No new D14 data should be generated
+  No new D14 data should be generated...
+
+  CASE 5 (NSG2, with D15)                                                       |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Parent (E17) period 2:                                            |____________
+  Children periods:                  |___________________________________________
+  E17 Measurement data:              +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
 
 
 
