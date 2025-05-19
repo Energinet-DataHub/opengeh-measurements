@@ -86,6 +86,7 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
@@ -93,9 +94,14 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
         electricity_market_repository.read_net_consumption_group_6_consumption_metering_point_periods()
     )
     child_metering_points = electricity_market_repository.read_net_consumption_group_6_child_metering_points()
+    calculated_measurements = calculated_measurements_repository.read_calculated_measurements()
+    current_calculated_measurements = get_current_calculated_measurements(
+        calculated_measurements, MeteringPointType.NET_CONSUMPTION
+    )
 
     calculated_measurements_daily = execute_cnc_daily(
         current_measurements=current_measurements,
+        calculated_measurements=current_calculated_measurements,
         consumption_metering_point_periods=consumption_metering_point_periods,
         child_metering_points=child_metering_points,
         time_zone=args.time_zone,
@@ -111,5 +117,4 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
         args.time_zone,
         transaction_creation_datetime=args.execution_start_datetime,
     )
-    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
