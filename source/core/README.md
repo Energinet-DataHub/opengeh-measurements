@@ -1,12 +1,12 @@
 # Measurements Core
 
-This python package handles streaming from the bronze layer to the gold layer.
+This python package handles streaming into the bronze layer and from there, via the silver layer to the gold layer.
 
 ## Layers
 
 ### Bronze
 
-TBD..
+See the [bronze module](src/core/bronze/README.md) for more information about the bronze layer.
 
 ### Silver
 
