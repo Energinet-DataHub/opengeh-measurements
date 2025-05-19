@@ -55,18 +55,7 @@ def cnc_daily(
 
     cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
 
-    cnc_measurements = (
-        cnc_measurements.alias("cm")
-        .join(
-            calculated_measurements_df.alias("calc"),
-            [
-                F.col("cm.metering_point_id") == F.col("calc.metering_point_id"),
-                F.col(f"cm.{ContractColumnNames.date}") == F.col(f"calc.{ContractColumnNames.observation_time}"),
-            ],
-            "left",
-        )
-        .select("cm.*", F.col("calc.settlement_type"))
-    )
+    cnc_measurements = merge_settlement_type(calculated_measurements_df, cnc_measurements)
 
     cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements)
 
@@ -108,6 +97,32 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
     )
 
     return cnc_measurements
+
+
+def merge_settlement_type(calculated_measurements_df, cnc_measurements) -> DataFrame:
+    """Merge settlement type into the calculated measurements DataFrame.
+
+    This function merges the settlement type from the calculated measurements DataFrame into the CNC measurements DataFrame.
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - date: Daily observation time
+            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
+            - settlement_type: Type of settlement
+    """
+    return (
+        cnc_measurements.alias("cm")
+        .join(
+            calculated_measurements_df.alias("calc"),
+            [
+                F.col("cm.metering_point_id") == F.col("calc.metering_point_id"),
+                F.col(f"cm.{ContractColumnNames.date}") == F.col(f"calc.{ContractColumnNames.observation_time}"),
+            ],
+            "left",
+        )
+        .select("cm.*", F.col("calc.settlement_type"))
+    )
 
 
 def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
