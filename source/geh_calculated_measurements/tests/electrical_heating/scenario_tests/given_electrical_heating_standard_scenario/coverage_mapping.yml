@@ -3,6 +3,52 @@ notes: |
   Standard simple scenario demonstrating that energy is added to electrical heating MP when limit is not exceeded.
   Includes MP that crosses summer and wintertime transition.
 
+  ## DESIGN CONSIDERATIONS
+  CASE 0
+                          |2024
+                          |_____
+  Parent (E17) period:    |_____
+  Child (D14) period:     |_____
+  E17 Measurement data:     ++
+  Existing D14 data         +
+  New D14 data               +
+
+  CASE 1
+                          |2024
+                          |______________________________|____________________________|_____________________________|___
+  Parent (E17) period:      |_____...
+  Child (D14) period:      |______________________________________________________________________________________|
+  E17 Measurement data:    ++                                                                                        +
+  Included:                 _
+  Not included:            _                                                                                         _
+
+  CASE 3
+                                  |2024
+                                  |_____
+  Parent (E17) period:            |_____...
+  Child (D14) period:             |_____...
+  E17 Measurement data:             ++++
+  Existing (different) D14 data:    + ++
+  New D14 data                      ++++
+
+  CASE 4
+                                        |2024
+                                        |_____
+  Parent (E17) periods (new):           |___|__...
+  Child (D14) period:                   |______...
+  E17 Measurement data:                 +++++++
+  Existing D14 data (from old periods): +++++++
+  New D14 data:                           ++
+
+
+
+  CASE 3 (summer/winter time)
+                                     |March 30th (1 day before summertime)        | October 28th (1 day after wintertime)
+                          |2024______|____________________________________________|_______|2025
+  Parent start/end:                  |--------------------------------------------|
+  Days in period:                    | 213 days                                   |
+  Measurement data:                  +++                                        +++
+
 cases_tested:
   "Electrical Heating Tests":
     - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
