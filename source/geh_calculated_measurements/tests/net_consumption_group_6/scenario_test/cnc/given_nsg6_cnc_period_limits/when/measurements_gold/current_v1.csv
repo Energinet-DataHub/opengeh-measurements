@@ -9,7 +9,7 @@ metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
 070000000000040200;consumption_from_grid;2025-02-27T12:00:00Z;10;measured;Case 0.4
 060000000000000201;supply_to_grid;2021-06-11T12:00:00Z;20;measured;Case 1 (year 1)
 070000000000000201;consumption_from_grid;2021-06-11T12:00:00Z;10;measured;Case 1 (year 1)
-060000000000000201;supply_to_grid;2022-06-11T12:00:00Z;20;measured;Case 1 (year 2)
+060000000000000201;supply_to_grid;2022-06-11T12:00:00Z;10;measured;Case 1 (year 2)
 070000000000000201;consumption_from_grid;2022-06-11T12:00:00Z;10;measured;Case 1 (year 2)
 060000000000000201;supply_to_grid;2023-06-11T12:00:00Z;20;measured;Case 1 (year 3)
 070000000000000201;consumption_from_grid;2023-06-11T12:00:00Z;10;measured;Case 1 (year 3)
