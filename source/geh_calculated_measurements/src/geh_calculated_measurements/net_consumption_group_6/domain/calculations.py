@@ -62,7 +62,6 @@ def execute_cnc_daily(
         execution_start_datetime=execution_start_datetime,
     )
     measurements = cnc_daily(
-        calculated_measurements,
         calculated_measurements=calculated_measurements,
         periods_with_net_consumption=periods_with_net_consumption,
         periods_with_ts=periods_with_ts,
