@@ -191,6 +191,36 @@ public class MeasurementsHandlerTests
         await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByYearAsync(request));
     }
 
+    [Fact]
+    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod()
+    {
+        // Arrange
+        var from = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var to = new DateTimeOffset(2021, 1, 2, 0, 0, 0, TimeSpan.Zero);
+        const string meteringPointIds = "123456789";
+        var request = new GetAggregatedByPeriodRequest(meteringPointIds, from.ToInstant(), to.ToInstant(), Aggregation.Day);
+        var raw = CreateAggregatedByPeriodMeasurementsRaw(from, to);
+        var measurementResult = new AggregatedByPeriodMeasurementsResult(raw);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>(), It.IsAny<Aggregation>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByPeriodAsync(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Single(actualAggregations.PointAggregationGroups);
+        Assert.Equal(from, actualAggregations.PointAggregationGroups.First().Value.From.ToDateTimeOffset());
+        Assert.Equal(to, actualAggregations.PointAggregationGroups.First().Value.To.ToDateTimeOffset());
+        Assert.Equal(Resolution.Hourly, actualAggregations.PointAggregationGroups.First().Value.Resolution);
+        Assert.Equal(Quality.Measured, actualAggregations.PointAggregationGroups.First().Value.PointAggregations.First().Quality);
+
+        Assert.Equal(meteringPointIds, actualAggregations.MeteringPoint.Id);
+    }
+
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)
     {
         dynamic raw = new ExpandoObject();
@@ -217,6 +247,19 @@ public class MeasurementsHandlerTests
         raw.units = new[] { "kWh" };
         raw.point_count = 1;
         raw.observation_updates = 2;
+        return raw;
+    }
+
+    private static dynamic CreateAggregatedByPeriodMeasurementsRaw(DateTimeOffset from, DateTimeOffset to)
+    {
+        dynamic raw = new ExpandoObject();
+        raw.metering_point_id = "123456789";
+        raw.min_observation_time = from;
+        raw.max_observation_time = to;
+        raw.aggregated_quantity = 42;
+        raw.qualities = new[] { "measured" };
+        raw.resolution = "PT1H";
+        raw.aggregation_group_key = "123456789";
         return raw;
     }
 }
