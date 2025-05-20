@@ -1,6 +1,5 @@
 import random
 from datetime import datetime, timezone
-from decimal import Decimal
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 
@@ -11,7 +10,6 @@ from tests.subsystem_tests.seed_gold_table import GoldTableRow
 
 parent_table = "net_consumption_group_6_consumption_metering_point_periods"
 child_table = "net_consumption_group_6_child_metering_point"
-calculated_measurements_internal_table = "calculated_measurements_internal"
 
 parent_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
 net_consumption_metering_point_id = create_random_metering_point_id(CalculationType.NET_CONSUMPTION)
@@ -24,7 +22,6 @@ def seed_table(
 ) -> None:
     catalog_name = job_fixture.config.catalog_name
     database_name = job_fixture.config.electricity_market_internal_database_name
-    measurements_calculated_internal_database_name = job_fixture.config.measurements_calculated_internal_database_name
     job_fixture.execute_statement(gold_table_statement(catalog_name))
     for statement in electricity_market_tables_statements(catalog_name, database_name):
         job_fixture.execute_statement(statement)
@@ -129,33 +126,6 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     )
     """)
     return statements
-
-
-def calculated_measurements_internal_statement(catalog_name: str, database_name: str) -> str:
-    return f"""
-    INSERT INTO {catalog_name}.{database_name}.{calculated_measurements_internal_table} (
-        orchestration_type,
-        orchestration_instance_id,
-        metering_point_id,
-        transaction_id,
-        transaction_creation_datetime,
-        metering_point_type,
-        observation_time,
-        quantity,
-        settlement_type
-    )
-    VALUES (
-        '{OrchestrationType.NET_CONSUMPTION.value}',
-        '1',
-        '{net_consumption_metering_point_id}',
-        '1',
-        '{datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        '{MeteringPointType.NET_CONSUMPTION.value}',
-        '{datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        {Decimal("3")},
-        'up_to_end_of_period'
-    )
-    """
 
 
 def delete_seeded_data(job_fixture: JobTestFixture) -> None:

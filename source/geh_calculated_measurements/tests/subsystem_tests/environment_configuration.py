@@ -25,7 +25,6 @@ class EnvironmentConfiguration(ApplicationSettings):
     )
 
     electricity_market_internal_database_name: str = "electricity_market_internal"
-    measurements_calculated_internal_database_name: str = "measurements_calculated_internal"
 
     # for performance test
 
