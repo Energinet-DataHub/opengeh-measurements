@@ -5,26 +5,26 @@ namespace Energinet.DataHub.Measurements.Application.Extensions;
 
 public static class ResolutionExtensions
 {
-    public static int GetExpectedPointCount(this Resolution resolution, Instant timestamp)
+    public static int GetExpectedPointsForPeriod(this Resolution resolution, Instant timestamp, int daysInPeriod)
     {
-        var localDate = timestamp.ToDanishZonedDateTime().Date;
+        var from = timestamp.AtStartOfLocaleDate();
+        var to = from.AddLocalDays(daysInPeriod);
 
-        var startOfDay = localDate.At(LocalTime.Midnight);
-        var startOfNextDay = localDate.PlusDays(1).At(LocalTime.Midnight);
+        var hours = GetHoursForAggregation(from, to);
 
-        var zonedStart = startOfDay.ToDanishZonedDateTime();
-        var zonedEnd = startOfNextDay.ToDanishZonedDateTime();
-
-        var duration = zonedEnd.ToInstant() - zonedStart.ToInstant();
-
-        return resolution switch
+        var expectedPointCount = resolution switch
         {
-            Resolution.Hourly => (int)duration.TotalHours,
-            Resolution.QuarterHourly => (int)(duration.TotalMinutes / 15),
-            Resolution.Daily => (int)duration.TotalDays,
-            Resolution.Monthly => 0,
-            Resolution.Yearly => 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(resolution), "Unsupported resolution"),
+            Resolution.QuarterHourly => hours * 4,
+            Resolution.Hourly => hours,
+            Resolution.Daily or Resolution.Monthly or Resolution.Yearly => 1,
+            _ => throw new ArgumentOutOfRangeException(resolution.ToString()),
         };
+        return expectedPointCount;
+    }
+
+    private static int GetHoursForAggregation(Instant from, Instant to)
+    {
+        var timeSpan = to - from;
+        return (int)timeSpan.TotalHours;
     }
 }
