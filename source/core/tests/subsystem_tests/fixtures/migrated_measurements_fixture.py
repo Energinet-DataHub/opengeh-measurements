@@ -70,5 +70,9 @@ class MigratedMeasurementsFixture:
         Starts the migration to measurements job and wait for it to finish.
         """
         job_id = self.databricks_api_client.get_job_id(self.MIGRATION_TO_MEASUREMENTS_JOB_NAME)
-        run_id = self.databricks_api_client.start_job(job_id)
-        self.databricks_api_client.wait_for_job_completion(run_id)
+
+        if job_id is None:
+            raise ValueError(f"Job '{self.MIGRATION_TO_MEASUREMENTS_JOB_NAME}' not found.")
+
+        run = self.databricks_api_client.start_job(job_id)
+        self.databricks_api_client.wait_for_job_completion(run.run_id)

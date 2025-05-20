@@ -1,6 +1,6 @@
 from pytest_mock import MockerFixture
 
-import core.migrations.migrations_runner as sut
+import core.databases.migrations.migrations_runner as sut
 
 
 def test__migrate__calls_expected(mocker: MockerFixture):
