@@ -1,3 +1,5 @@
+from databricks.sdk.runtime import display
+
 import core.databases.spark_session as spark_session
 
 
@@ -9,4 +11,4 @@ def optimize_table(database: str, table: str) -> None:
         table (str): The name of the table to optimize.
     """
     spark = spark_session.initialize_spark()
-    spark.sql(f"OPTIMIZE {database}.{table}")
+    display(spark.sql(f"OPTIMIZE {database}.{table}"))
