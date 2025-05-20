@@ -99,7 +99,7 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
     return cnc_measurements
 
 
-def merge_settlement_type(calculated_measurements_df, cnc_measurements) -> DataFrame:
+def merge_settlement_type(calculated_measurements_df: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
     """Merge settlement type into the calculated measurements DataFrame.
 
     This function merges the settlement type from the calculated measurements DataFrame into the CNC measurements DataFrame.
