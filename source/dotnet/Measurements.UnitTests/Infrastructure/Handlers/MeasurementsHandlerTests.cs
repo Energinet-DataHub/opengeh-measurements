@@ -221,6 +221,24 @@ public class MeasurementsHandlerTests
         Assert.Equal(meteringPointIds, actualAggregations.MeteringPoint.Id);
     }
 
+    [Fact]
+    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var from = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var to = new DateTimeOffset(2021, 1, 2, 0, 0, 0, TimeSpan.Zero);
+        const string meteringPointIds = "123456789";
+        var request = new GetAggregatedByPeriodRequest(meteringPointIds, from.ToInstant(), to.ToInstant(), Aggregation.Day);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>(), It.IsAny<Aggregation>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedByPeriodMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByPeriodAsync(request));
+    }
+
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)
     {
         dynamic raw = new ExpandoObject();
