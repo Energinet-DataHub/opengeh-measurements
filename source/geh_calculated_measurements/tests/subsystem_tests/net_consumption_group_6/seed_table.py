@@ -25,9 +25,6 @@ def seed_table(
     catalog_name = job_fixture.config.catalog_name
     database_name = job_fixture.config.electricity_market_internal_database_name
     measurements_calculated_internal_database_name = job_fixture.config.measurements_calculated_internal_database_name
-    job_fixture.execute_statement(
-        calculated_measurements_internal_statement(catalog_name, measurements_calculated_internal_database_name)
-    )
     job_fixture.execute_statement(gold_table_statement(catalog_name))
     for statement in electricity_market_tables_statements(catalog_name, database_name):
         job_fixture.execute_statement(statement)
