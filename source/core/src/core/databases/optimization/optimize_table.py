@@ -9,4 +9,5 @@ def optimize_table(database: str, table: str) -> None:
         table (str): The name of the table to optimize.
     """
     spark = spark_session.initialize_spark()
-    spark.sql(f"OPTIMIZE {database}.{table}")
+    result = spark.sql(f"OPTIMIZE {database}.{table}")
+    print(result)  # noqa: T201
