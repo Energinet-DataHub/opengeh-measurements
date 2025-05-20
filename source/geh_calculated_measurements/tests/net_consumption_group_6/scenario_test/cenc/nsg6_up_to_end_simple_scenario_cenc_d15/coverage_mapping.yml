@@ -6,13 +6,15 @@ notes: |
   ## DESIGN CONSIDERATIONS
 
   CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
-  Settlement month is January 1st.
-  Calculation period is from January 1st 2024 to December 31st 2024
-  The period being estimated is from January 1st 2025 to the December 31st 2025
-                        ______|2024________|2025________
-  settlement month:     ------|+-----------|+-----------|
-  calculation period:   ------|++++++++++++|------------|
-  estimation period:    ------|------------|++++++++++++|
+                                                                    |Today
+                  2024		                                     2025
+                  |----------------------------------------------|
+  Parent periods: |_____________________________________________...
+
+                  |_______________input to cenc__________________|
+  D06/D07 data:   +
+  Latest D15 existing measurement data:						     +
+  New D15 measurement data:										  ++
 
   consumption_from_grid (D07): 2000
   supply_to_grid (D06): 1000
@@ -20,18 +22,33 @@ notes: |
   Daily quantity of 1000 / 365 = 2.7397 rounded to 2.740
 
   CASE 2: consumption_from_grid (D07) is smaller than supply_to_grid (D06)
-  Settlement month is January 1st.
-  Calculation period is from January 1st 2024 to December 31st 2024
-  The period being estimated is from January 1st 2025 to the December 31st 2025
-                        ______|2024________|2025________
-  settlement month:     ------|+-----------|+-----------|
-  calculation period:   ------|++++++++++++|------------|
-  estimation period:    ------|------------|++++++++++++|
+                                                                    |Today
+                  2024		                                     2025
+                  |----------------------------------------------|
+  Parent periods: |_____________________________________________...
+
+                  |_______________input to cenc__________________|
+  D06/D07 data:   +
+  Latest D15 existing measurement data:						     +
+  New D15 measurement data:										  ++
 
   consumption_from_grid (D07): 1000
   supply_to_grid (D06): 2000
   net_consumption (D15): 1000 - 2000 = -1000 (net_consumption (D15) can be negative so is changed to 0)
   this wil result in a daily quantity of 0 / 365 = 0
+
+  Case 3
+                                                                                                                  |Today
+                  2023		smrd                               2024		   smrd                               2025
+                  |-----------|----------------------------------|-----------|----------------------------------|--------
+  Parent periods: |____________________________________________________|______________________________________...
+
+                              |____________input to cenc_____________________|
+  D06/D07 data: 		      +                                          +   +
+  Included in cenc:			  _                                          _
+  Not included in cenc:		      	   									     _
+  Latest D15 existing measurement data:													                     +
+  New D15 measurement data:																				      ++++
 
 cases_tested:
   "cenc calculation":
