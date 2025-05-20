@@ -4,7 +4,7 @@ from pytest_mock import MockerFixture
 
 import tests.helpers.environment_variables_helpers as environment_variables_helpers
 import tests.helpers.schema_helper as schema_helper
-from core.migrations import migrations_runner
+from core.databases.migrations import migrations_runner
 from tests.helpers.schema_helper import create_external_schemas, create_external_tables
 
 

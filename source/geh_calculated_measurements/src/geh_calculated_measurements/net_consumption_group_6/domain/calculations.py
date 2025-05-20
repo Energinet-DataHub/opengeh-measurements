@@ -4,6 +4,7 @@ from typing import Tuple
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import CurrentMeasurements
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.net_consumption_group_6.domain import (
@@ -20,6 +21,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain.logic.cnc_daily 
 @use_span()
 def execute_cenc_daily(
     current_measurements: CurrentMeasurements,
+    calculated_measurements: CalculatedMeasurementsInternal,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
@@ -33,7 +35,7 @@ def execute_cenc_daily(
         execution_start_datetime,
     )
     measurements = calculate_daily(
-        current_measurements=current_measurements,
+        calculated_measurements=calculated_measurements,
         cenc=cenc,
         time_zone=time_zone,
         execution_start_datetime=execution_start_datetime,
@@ -45,23 +47,26 @@ def execute_cenc_daily(
 @use_span()
 @testing()
 def execute_cnc_daily(
+    current_measurements: CurrentMeasurements,
+    calculated_measurements: CalculatedMeasurementsInternal,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
-    current_measurements: CurrentMeasurements,
     time_zone: str,
     execution_start_datetime: datetime,
 ) -> CalculatedMeasurementsDaily:
     periods_with_net_consumption, periods_with_ts = cnc(
-        consumption_metering_point_periods,
-        child_metering_points,
-        current_measurements,
-        time_zone,
-        execution_start_datetime,
+        consumption_metering_point_periods=consumption_metering_point_periods,
+        child_metering_points=child_metering_points,
+        current_measurements=current_measurements,
+        time_zone=time_zone,
+        execution_start_datetime=execution_start_datetime,
     )
     measurements = cnc_daily(
-        periods_with_net_consumption,
-        periods_with_ts,
-        time_zone,
+        calculated_measurements=calculated_measurements,
+        periods_with_net_consumption=periods_with_net_consumption,
+        periods_with_ts=periods_with_ts,
+        time_zone=time_zone,
+        execution_start_datetime=execution_start_datetime,
     )
 
     return measurements

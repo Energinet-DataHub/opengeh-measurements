@@ -45,14 +45,15 @@ def cnc(
       - DataFrame with periods and their calculated net consumption (converted to UTC)
       - DataFrame with periods and their corresponding time series data (converted to UTC)
     """
-    current_measurements = current_measurements.df
-    current_measurements = convert_from_utc(current_measurements, time_zone)
-    filtered_time_series = _filter_and_aggregate_daily(current_measurements)
+    current_measurements_df = current_measurements.df
+    current_measurements_df = convert_from_utc(current_measurements_df, time_zone)
 
-    consumption_metering_point_periods = consumption_metering_point_periods.df
-    child_metering_points = child_metering_points.df
+    filtered_time_series = _filter_and_aggregate_daily(current_measurements_df)
+
+    consumption_metering_point_periods_df = consumption_metering_point_periods.df
+    child_metering_points_df = child_metering_points.df
     parent_child_joined = _join_child_to_consumption(
-        consumption_metering_point_periods, child_metering_points, execution_start_datetime
+        consumption_metering_point_periods_df, child_metering_points_df, execution_start_datetime
     )
     parent_child_joined = convert_from_utc(parent_child_joined, time_zone)
 
@@ -225,10 +226,7 @@ def _filter_periods_by_cut_off(parent_child_joined: DataFrame) -> DataFrame:
                 -THREE_YEARS_IN_MONTHS,
             ).alias("cut_off_date"),
         )
-        .where(
-            F.col(ContractColumnNames.period_to_date).isNotNull()
-            | (F.col(ContractColumnNames.period_to_date) <= F.col("cut_off_date"))
-        )
+        .where(F.col(ContractColumnNames.period_to_date) >= F.col("cut_off_date"))
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
@@ -349,23 +347,27 @@ def _determin_cut_off_for_periods(periods: DataFrame) -> DataFrame:
             - period_end: End date of the period
             - period_start_with_cut_off: Start date of the period with cut off
     """
-    periods_w_cut_off = periods.select(
-        "*",
-        F.when(
-            F.col("period_start") < F.col("cut_off_date"),
-            F.col("cut_off_date"),
+    periods_w_cut_off = (
+        periods.where(F.col("period_end") > F.col("cut_off_date"))
+        .select(
+            "*",
+            F.when(
+                F.col("period_start") < F.col("cut_off_date"),
+                F.col("cut_off_date"),
+            )
+            .otherwise(F.col("period_start"))
+            .alias("period_start_with_cut_off"),
         )
-        .otherwise(F.col("period_start"))
-        .alias("period_start_with_cut_off"),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.metering_point_type),
-        F.col(ContractColumnNames.parent_metering_point_id),
-        F.col(ContractColumnNames.period_from_date),
-        F.col(ContractColumnNames.period_to_date),
-        F.col("period_start"),
-        F.col("period_end"),
-        F.col("period_start_with_cut_off"),
+        .select(
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.metering_point_type),
+            F.col(ContractColumnNames.parent_metering_point_id),
+            F.col(ContractColumnNames.period_from_date),
+            F.col(ContractColumnNames.period_to_date),
+            F.col("period_start"),
+            F.col("period_end"),
+            F.col("period_start_with_cut_off"),
+        )
     )
 
     return periods_w_cut_off

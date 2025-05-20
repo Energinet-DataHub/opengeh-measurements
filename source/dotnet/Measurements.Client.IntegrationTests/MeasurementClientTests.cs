@@ -28,6 +28,22 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
+    public async Task GetCurrentByPeriod_WhenCalled_ReturnsEmptyList()
+    {
+        // Arrange
+        var query = new GetByPeriodQuery(
+            MeasurementsClientFixture.TestMeteringPointId,
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
+            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)));
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetCurrentByPeriodAsync(query);
+
+        // Assert
+        Assert.Empty(measurements);
+    }
+
+    [Fact]
     public async Task GetAggregatedByDate_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -64,6 +80,23 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
         var measurements = await measurementsClient.GetAggregateByYearAsync(query);
+
+        // Assert
+        Assert.Single(measurements);
+    }
+
+    [Fact]
+    public async Task GetAggregatedByPeriod_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        var query = new GetAggregateByPeriodQuery(
+            [MeasurementsClientFixture.TestMeteringPointId],
+            Instant.FromDateTimeOffset(MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset()),
+            Instant.FromDateTimeOffset(MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset().AddDays(1)),
+            Aggregation.Hour);
+
+        var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        var measurements = await measurementsClient.GetAggregatedByPeriodAsync(query);
 
         // Assert
         Assert.Single(measurements);

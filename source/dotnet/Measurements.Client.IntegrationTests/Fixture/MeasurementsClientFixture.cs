@@ -49,8 +49,8 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await DatabricksSchemaManager.CreateSchemaAsync();
-        await DatabricksSchemaManager.CreateTableAsync(MeasurementsGoldConstants.TableName, CreateColumnDefinitions());
-        await DatabricksSchemaManager.InsertAsync(MeasurementsGoldConstants.TableName, CreateRow());
+        await DatabricksSchemaManager.CreateTableAsync(MeasurementsTableConstants.Name, CreateColumnDefinitions());
+        await DatabricksSchemaManager.InsertAsync(MeasurementsTableConstants.Name, CreateRow());
         await MeasurementsApiHost.StartAsync();
     }
 
@@ -103,15 +103,15 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateColumnDefinitions() =>
         new()
         {
-            { MeasurementsGoldConstants.MeteringPointIdColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.UnitColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
-            { MeasurementsGoldConstants.QualityColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.ResolutionColumnName, ("STRING", false) },
-            { MeasurementsGoldConstants.IsCancelledColumnName, ("BOOLEAN", true) },
-            { MeasurementsGoldConstants.CreatedColumnName, ("TIMESTAMP", false) },
-            { MeasurementsGoldConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
+            { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },
+            { MeasurementsTableConstants.CreatedColumnName, ("TIMESTAMP", false) },
+            { MeasurementsTableConstants.TransactionCreationDatetimeColumnName, ("TIMESTAMP", false) },
         };
 
     private static IEnumerable<IEnumerable<string>> CreateRow()

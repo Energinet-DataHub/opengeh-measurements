@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Measurements.Abstractions.Api.Models;
+﻿using System.Collections.ObjectModel;
+using Energinet.DataHub.Measurements.Abstractions.Api.Models;
 using Energinet.DataHub.Measurements.Abstractions.Api.Queries;
 
 namespace Energinet.DataHub.Measurements.Client;
@@ -9,9 +10,14 @@ namespace Energinet.DataHub.Measurements.Client;
 public interface IMeasurementsClient
 {
     /// <summary>
-    /// Get measurements for a specific day.
+    /// Get current and historic measurements for a specific day.
     /// </summary>
     Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get current measurements for a specified period.
+    /// </summary>
+    Task<ReadOnlyCollection<MeasurementPointDto>> GetCurrentByPeriodAsync(GetByPeriodQuery query, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get measurements aggregated by date for a specified month.
@@ -27,4 +33,9 @@ public interface IMeasurementsClient
     /// Get measurements aggregated by year for all years.
     /// </summary>
     Task<IEnumerable<MeasurementAggregationByYearDto>> GetAggregateByYearAsync(GetAggregateByYearQuery query, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Get measurements aggregated by period for a specified date range.
+    /// </summary>
+    Task<IEnumerable<MeasurementAggregationByPeriodDto>> GetAggregatedByPeriodAsync(GetAggregateByPeriodQuery query, CancellationToken cancellationToken = default);
 }

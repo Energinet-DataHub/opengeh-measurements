@@ -209,8 +209,8 @@ public class MeasurementsHandlerTests
         var (minObservationTime, maxObservationTime) = yearMonth.ToDateInterval();
 
         dynamic raw = new ExpandoObject();
-        raw.min_observation_time = minObservationTime.ToDateTimeOffSet();
-        raw.max_observation_time = maxObservationTime.ToDateTimeOffSet();
+        raw.min_observation_time = minObservationTime.ToDateTimeOffSetAtMidnight();
+        raw.max_observation_time = maxObservationTime.ToDateTimeOffSetAtMidnight();
         raw.aggregated_quantity = 42;
         raw.qualities = new[] { "measured" };
         raw.resolutions = new[] { "PT1H" };

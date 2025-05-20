@@ -10,4 +10,5 @@ public static class AggregatedQueryConstants
     public const string Units = "units";
     public const string PointCount = "point_count";
     public const string ObservationUpdates = "observation_updates";
+    public const string AggregationGroupKey = "aggregation_group_key";
 }

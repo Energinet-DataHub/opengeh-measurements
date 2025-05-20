@@ -26,12 +26,12 @@ public class GetAggregatedByYearQuery(string meteringPointId, DatabricksSchemaOp
 
     private static string FilterOnMeteringPoint()
     {
-        return $"where {MeasurementsGoldConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter}";
+        return $"where {MeasurementsTableConstants.MeteringPointIdColumnName} = :{QueryParameterConstants.MeteringPointIdParameter}";
     }
 
     private static string GroupByMeteringPointAndObservationTime()
     {
-        return $"{MeasurementsGoldConstants.MeteringPointIdColumnName}" +
-               $", year(from_utc_timestamp(cast({MeasurementsGoldConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
+        return $"{MeasurementsTableConstants.MeteringPointIdColumnName}" +
+               $", year(from_utc_timestamp(cast({MeasurementsTableConstants.ObservationTimeColumnName} as timestamp), '{TimeZoneConstants.EuropeCopenhagenTimeZone}'))";
     }
 }
