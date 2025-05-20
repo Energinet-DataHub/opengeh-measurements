@@ -150,6 +150,45 @@ public class MeasurementsAggregatedByPeriodResponseTests
     }
 
     [Fact]
+    public void Create_WhenRequestContainsMultipleMeteringPoints_MultipleAggregationsIsReturned()
+    {
+        // Arrange
+        const string meteringPoints1 = "123456789012345678";
+        const string meteringPoints2 = "123456789012345679";
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
+        const decimal aggregatedQuantity = 100.0m;
+        var qualities = new[] { "measured" };
+        const string resolution = "PT1H";
+        const string aggregationGroupKey = "12345678901234567890";
+        var aggregatedMeasurements = new List<AggregatedByPeriodMeasurementsResult>
+        {
+            new(CreateRaw(
+                meteringPoints1,
+                minObservationTime,
+                maxObservationTime,
+                aggregatedQuantity,
+                qualities,
+                resolution,
+                aggregationGroupKey)),
+            new(CreateRaw(
+                meteringPoints2,
+                minObservationTime.Plus(Duration.FromDays(1)),
+                maxObservationTime.Plus(Duration.FromDays(1)),
+                aggregatedQuantity * 2,
+                qualities,
+                resolution,
+                aggregationGroupKey)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+    }
+
+    [Fact]
     public void Create_WhenDataContainsMultipleRowsWithDifferentResolution_MultiplePointAggregationGroupsIsReturned()
     {
         // Arrange
