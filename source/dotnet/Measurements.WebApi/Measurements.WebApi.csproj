@@ -5,6 +5,12 @@
         <RootNamespace>Energinet.DataHub.Measurements.WebApi</RootNamespace>
     </PropertyGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="dotnet tool restore" />
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v3"
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+    </Target>
+
     <ItemGroup>
       <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.2.0" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
