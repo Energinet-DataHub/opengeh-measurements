@@ -26,6 +26,7 @@ def create(
     metering_point_type: MeteringPointType,
     time_zone: str,
     transaction_creation_datetime: datetime,
+    settlement_type: str | None = None,
 ) -> CalculatedMeasurementsInternal:
     df = measurements.df.withColumn(
         ContractColumnNames.transaction_id, _create_transaction_id_column(orchestration_instance_id, time_zone)
@@ -34,7 +35,13 @@ def create(
     df = _explode_to_hour_values(df, time_zone)
 
     df = _add_storage_columns(
-        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
+        df,
+        orchestration_instance_id,
+        orchestration_type,
+        metering_point_type,
+        time_zone,
+        transaction_creation_datetime,
+        settlement_type,
     )
 
     return df
@@ -77,6 +84,7 @@ def _add_storage_columns(
     metering_point_type: MeteringPointType,
     time_zone: str,
     transaction_creation_datetime: datetime,
+    settlement_type: str | None = None,
 ) -> CalculatedMeasurementsInternal:
     df = measurements.withColumns(
         {
@@ -84,6 +92,7 @@ def _add_storage_columns(
             ContractColumnNames.orchestration_type: F.lit(orchestration_type.value),
             ContractColumnNames.metering_point_type: F.lit(metering_point_type.value),
             ContractColumnNames.transaction_creation_datetime: F.lit(transaction_creation_datetime),
+            ContractColumnNames.settlement_type: F.lit(settlement_type),
         }
     )
 

@@ -76,6 +76,7 @@ def execute_application_cenc_daily(spark: SparkSession, args: NetConsumptionGrou
         MeteringPointType.NET_CONSUMPTION,
         args.time_zone,
         transaction_creation_datetime=args.execution_start_datetime,
+        settlement_type="up_to_end_of_period",
     )
 
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
@@ -116,5 +117,6 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
         MeteringPointType.NET_CONSUMPTION,
         args.time_zone,
         transaction_creation_datetime=args.execution_start_datetime,
+        settlement_type="end_of_period",
     )
     calculated_measurements_repository.write_calculated_measurements(calculated_measurements_hourly)
