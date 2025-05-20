@@ -5,10 +5,10 @@ notes: |
 
   ## DESIGN CONSIDERATIONS
 
-  CASE 1: consumption_from_grid (D07) is bigger than supply_to_grid (D06)
-  settlement month is the 1 of january
-  calculation period is from the 1 of january 2024 to the 31 of december 2024
-  the period being estimated is from the 1 of january 2025 to the 31 of december 2025
+  CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
+  Settlement month is January 1st.
+  Calculation period is from January 1st 2024 to December 31st 2024
+  The period being estimated is from January 1st 2025 to the December 31st 2025
                         ______|2024________|2025________
   settlement month:     ------|+-----------|+-----------|
   calculation period:   ------|++++++++++++|------------|
@@ -17,12 +17,12 @@ notes: |
   consumption_from_grid (D07): 2000
   supply_to_grid (D06): 1000
   net_consumption (D15): 2000 - 1000 = 1000
-  this wil result in a daily quantity of 1000 / 365 = 2.7397 rounded to 2.740
+  Daily quantity of 1000 / 365 = 2.7397 rounded to 2.740
 
   CASE 2: consumption_from_grid (D07) is smaller than supply_to_grid (D06)
-  settlement month is the 1 of january
-  calculation period is from the 1 of january 2024 to the 31 of december 2024
-  the period being estimated is from the 1 of january 2025 to the 31 of december 2025
+  Settlement month is January 1st.
+  Calculation period is from January 1st 2024 to December 31st 2024
+  The period being estimated is from January 1st 2025 to the December 31st 2025
                         ______|2024________|2025________
   settlement month:     ------|+-----------|+-----------|
   calculation period:   ------|++++++++++++|------------|
@@ -34,7 +34,6 @@ notes: |
   this wil result in a daily quantity of 0 / 365 = 0
 
 cases_tested:
-  "consumption_from_grid (D07) is bigger than supply_to_grid (D06)":
-    - "GIVEN (consumption_from_grid (D07) is 2000 and supply_to_grid (D06) is 1000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 1000 and daily quantity is 2.740)"
-  "consumption_from_grid (D07) is smaller than supply_to_grid (D06)":
-    - "GIVEN (consumption_from_grid (D07) is 1000 and supply_to_grid (D06) is 2000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 0 and daily quantity is 0)"
+  "cenc calculation":
+    "GIVEN (consumption_from_grid (D07) is 2000 and supply_to_grid (D06) is 1000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 1000 and daily quantity is 2.740)"
+    "GIVEN (consumption_from_grid (D07) is 1000 and supply_to_grid (D06) is 2000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 0 and daily quantity is 0)"
