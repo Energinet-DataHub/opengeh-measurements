@@ -226,10 +226,7 @@ def _filter_periods_by_cut_off(parent_child_joined: DataFrame) -> DataFrame:
                 -THREE_YEARS_IN_MONTHS,
             ).alias("cut_off_date"),
         )
-        .where(
-            F.col(ContractColumnNames.period_to_date).isNotNull()
-            | (F.col(ContractColumnNames.period_to_date) <= F.col("cut_off_date"))
-        )
+        .where(F.col(ContractColumnNames.period_to_date) >= F.col("cut_off_date"))
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col(ContractColumnNames.metering_point_type),
@@ -350,23 +347,27 @@ def _determin_cut_off_for_periods(periods: DataFrame) -> DataFrame:
             - period_end: End date of the period
             - period_start_with_cut_off: Start date of the period with cut off
     """
-    periods_w_cut_off = periods.select(
-        "*",
-        F.when(
-            F.col("period_start") < F.col("cut_off_date"),
-            F.col("cut_off_date"),
+    periods_w_cut_off = (
+        periods.where(F.col("period_end") > F.col("cut_off_date"))
+        .select(
+            "*",
+            F.when(
+                F.col("period_start") < F.col("cut_off_date"),
+                F.col("cut_off_date"),
+            )
+            .otherwise(F.col("period_start"))
+            .alias("period_start_with_cut_off"),
         )
-        .otherwise(F.col("period_start"))
-        .alias("period_start_with_cut_off"),
-    ).select(
-        F.col(ContractColumnNames.metering_point_id),
-        F.col(ContractColumnNames.metering_point_type),
-        F.col(ContractColumnNames.parent_metering_point_id),
-        F.col(ContractColumnNames.period_from_date),
-        F.col(ContractColumnNames.period_to_date),
-        F.col("period_start"),
-        F.col("period_end"),
-        F.col("period_start_with_cut_off"),
+        .select(
+            F.col(ContractColumnNames.metering_point_id),
+            F.col(ContractColumnNames.metering_point_type),
+            F.col(ContractColumnNames.parent_metering_point_id),
+            F.col(ContractColumnNames.period_from_date),
+            F.col(ContractColumnNames.period_to_date),
+            F.col("period_start"),
+            F.col("period_end"),
+            F.col("period_start_with_cut_off"),
+        )
     )
 
     return periods_w_cut_off

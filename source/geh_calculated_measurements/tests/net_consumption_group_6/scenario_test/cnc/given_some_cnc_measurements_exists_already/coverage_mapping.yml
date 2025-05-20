@@ -48,4 +48,3 @@ notes: |
     "Calculation is cnc"
     "If result is identical to existing cnc measurement result, no new result is generated"
     "When period goes from cenc to cnc, new results are always generated"
-
