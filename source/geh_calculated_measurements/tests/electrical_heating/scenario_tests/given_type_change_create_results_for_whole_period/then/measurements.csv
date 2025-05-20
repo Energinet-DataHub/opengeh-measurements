@@ -1,0 +1,13 @@
+metering_point_type;metering_point_id;date;quantity;#comment
+electrical_heating;140000000000170201;2025-01-29T23:00:00Z;0;Case 1 - new day 1 (end of period)
+electrical_heating;140000000000170201;2025-01-30T23:00:00Z;0;Case 1 - new day 2 (end of period)
+electrical_heating;140000000000170202;2025-01-29T23:00:00Z;0;Case 2 - new day 1 (up to end)
+electrical_heating;140000000000170202;2025-01-30T23:00:00Z;0;Case 2 - new day 2 (up to end)
+electrical_heating;140000000000170203;2025-01-29T23:00:00Z;0;Case 3 - new day 1 (end of period)
+electrical_heating;140000000000170203;2025-01-30T23:00:00Z;0;Case 3 - new day 2 (end of period)
+electrical_heating;140000000000170204;2025-01-29T23:00:00Z;0;Case 4 - new day 1 (up to end)
+electrical_heating;140000000000170204;2025-01-30T23:00:00Z;0;Case 4 - new day 2 (up to end)
+electrical_heating;140000000000170205;2025-01-29T23:00:00Z;0;Case 5 - new day 1 (end of period)
+electrical_heating;140000000000170205;2025-01-30T23:00:00Z;0;Case 5 - new day 2 (end of period)
+electrical_heating;140000000000170206;2025-01-29T23:00:00Z;0;Case 6 - new day 1 (up to end)
+electrical_heating;140000000000170206;2025-01-30T23:00:00Z;0;Case 6 - new day 2 (up to end)
