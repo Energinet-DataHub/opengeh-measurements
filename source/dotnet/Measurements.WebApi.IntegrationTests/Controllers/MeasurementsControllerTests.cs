@@ -430,31 +430,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedByPeriodAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
-    {
-        // Arrange
-        const string meteringPointId = "123456789123456789";
-        var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
-            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
-            .Build();
-        await fixture.InsertRowsAsync(rows);
-        var url = CreateGetAggregatedByPeriodMeasurementsUrl(
-            meteringPointId, Instant.FromUtc(2021, 2, 5, 0, 0), Instant.FromUtc(2022, 4, 7, 0, 0), Aggregation.Hour);
-
-        // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<MeasurementsAggregatedByPeriodResponse>(actualResponse);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Single(actual.MeasurementAggregations);
-        Assert.Equal(meteringPointId, actual.MeasurementAggregations.First().MeteringPoint.Id);
-        Assert.Equal(3, actual.MeasurementAggregations.First().PointAggregationGroups.Count);
-    }
-
-    [Fact]
     public async Task GetAggregatedByYearAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
     {
         // Arrange
@@ -507,6 +482,31 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(expectedStatusCode, actual.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAggregatedByPeriodAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string meteringPointId = "123456789123456789";
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuesRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByPeriodUrl(
+            meteringPointId, Instant.FromUtc(2021, 2, 5, 0, 0), Instant.FromUtc(2022, 4, 7, 0, 0), Aggregation.Hour);
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByPeriodResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Single(actual.MeasurementAggregations);
+        Assert.Equal(meteringPointId, actual.MeasurementAggregations.First().MeteringPoint.Id);
+        Assert.Equal(3, actual.MeasurementAggregations.First().PointAggregationGroups.Count);
+    }
+
     private static string CreateGetMeasurementsForPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
@@ -543,11 +543,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
-    {
-        return $"{versionPrefix}/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
-    }
-
-    private static string CreateGetAggregatedByPeriodMeasurementsUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
     {
         return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointIds={meteringPointIds}&from={from}&to={to}&aggregation={aggregation}";
     }
