@@ -54,7 +54,7 @@ public class MeasurementsForDateResponseParser : IMeasurementsForDateResponsePar
 
     private record PointDto(
         DateTimeOffset ObservationTime,
-        decimal Quantity,
+        decimal? Quantity,
         Quality Quality,
         Unit Unit,
         Resolution Resolution,

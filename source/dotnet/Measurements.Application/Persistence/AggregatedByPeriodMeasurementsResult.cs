@@ -14,7 +14,7 @@ public class AggregatedByPeriodMeasurementsResult(ExpandoObject raw)
 
     public Instant MaxObservationTime => Instant.FromDateTimeOffset(_raw.max_observation_time);
 
-    public decimal Quantity => _raw.aggregated_quantity;
+    public decimal? Quantity => _raw.aggregated_quantity;
 
     public object[] Qualities => _raw.qualities;
 
