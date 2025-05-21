@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.Configuration;
+﻿using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using AuthenticationOptions = Energinet.DataHub.Measurements.Application.Extensions.Options.AuthenticationOptions;
 
 namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
 
@@ -9,20 +8,31 @@ public static class AuthenticationExtensions
 {
     public static IServiceCollection AddAuthenticationForWebApp(this IServiceCollection services, IConfiguration configuration)
     {
-        var authenticationOptions = configuration
-            .GetSection(AuthenticationOptions.SectionName)
-            .Get<AuthenticationOptions>();
+        var entraAuthenticationOptions = configuration
+            .GetSection(EntraAuthenticationOptions.SectionName)
+            .Get<EntraAuthenticationOptions>();
+        var b2CAuthenticationOptions = configuration
+            .GetSection(B2CAuthenticationOptions.SectionName)
+            .Get<B2CAuthenticationOptions>();
+        var authority = $"https://login.microsoftonline.com/{b2CAuthenticationOptions?.TenantId}/v2.0";
 
-        services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            options.Authority = authenticationOptions?.Issuer;
-            options.Audience = authenticationOptions?.ApplicationIdUri;
-            options.TokenValidationParameters = new TokenValidationParameters
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-            };
-        });
+                options.Authority = entraAuthenticationOptions?.Issuer;
+                options.Audience = entraAuthenticationOptions?.ApplicationIdUri;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                };
+            })
+            .AddJwtBearer("B2C", options =>
+            {
+                options.Audience = b2CAuthenticationOptions?.ResourceId;
+                options.Authority = authority;
+            });
+
         return services;
     }
 }

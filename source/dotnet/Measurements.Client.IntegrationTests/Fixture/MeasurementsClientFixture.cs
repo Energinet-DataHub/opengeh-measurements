@@ -72,8 +72,8 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
                     [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
-                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
-                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}"] = Issuer,
+                    [$"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
+                    [$"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.Issuer)}"] = Issuer,
                 });
             })
             .UseStartup<Startup>()
