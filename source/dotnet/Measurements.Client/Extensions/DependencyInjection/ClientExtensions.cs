@@ -50,7 +50,6 @@ public static class ClientExtensions
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
-
         return services;
     }
 }
