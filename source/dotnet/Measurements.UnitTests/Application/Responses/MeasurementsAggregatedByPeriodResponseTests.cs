@@ -173,8 +173,8 @@ public class MeasurementsAggregatedByPeriodResponseTests
                 aggregationGroupKey)),
             new(CreateRaw(
                 meteringPoints2,
-                minObservationTime.Plus(Duration.FromDays(1)),
-                maxObservationTime.Plus(Duration.FromDays(1)),
+                minObservationTime,
+                maxObservationTime,
                 aggregatedQuantity * 2,
                 qualities,
                 resolution,

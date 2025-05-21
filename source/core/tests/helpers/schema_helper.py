@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-from core.migrations import MigrationDatabaseNames
+from core.databases import MigrationDatabaseNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.core_internal_settings import CoreInternalSettings
 from core.settings.gold_settings import GoldSettings

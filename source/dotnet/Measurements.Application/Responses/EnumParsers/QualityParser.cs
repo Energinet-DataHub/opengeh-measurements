@@ -10,8 +10,8 @@ public static class QualityParser
         {
             "missing" => Quality.Missing,
             "estimated" => Quality.Estimated,
-            "measured" => Quality.Measured,
             "calculated" => Quality.Calculated,
+            "measured" => Quality.Measured,
             _ => throw new ArgumentOutOfRangeException(nameof(quality)),
         };
     }
