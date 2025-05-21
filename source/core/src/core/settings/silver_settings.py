@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class SilverSettings(BaseSettings):
@@ -12,8 +12,7 @@ class SilverSettings(BaseSettings):
     silver_database_name (str): The name of the Silver database created in infrastructure.
     """
 
+    model_config = SettingsConfigDict(case_sensitive=False)
+
     silver_container_name: str = Field(init=False)
     silver_database_name: str = Field(init=False)
-
-    class Config:
-        case_sensitive = False
