@@ -29,7 +29,7 @@ public static class AuthenticationExtensions
             })
             .AddJwtBearer("AzureAD", options =>
             {
-                options.Audience = azureAdOptions?.Audience;
+                options.Audience = azureAdOptions?.ResourceId;
                 options.Authority = authority;
             });
 

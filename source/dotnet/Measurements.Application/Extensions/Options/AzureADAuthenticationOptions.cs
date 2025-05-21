@@ -14,5 +14,5 @@ public class AzureAdAuthenticationOptions
     public string TenantId { get; init; } = string.Empty;
 
     [Required(AllowEmptyStrings = false)]
-    public string Audience { get; init; } = string.Empty;
+    public string ResourceId { get; init; } = string.Empty;
 }
