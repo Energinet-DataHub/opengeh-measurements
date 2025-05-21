@@ -13,8 +13,6 @@ public static class AuthenticationExtensions
             .GetSection(AuthenticationOptions.SectionName)
             .Get<AuthenticationOptions>();
 
-        GuardAuthenticationOptions(authenticationOptions);
-
         services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
             options.Authority = authenticationOptions?.Issuer;
@@ -26,18 +24,5 @@ public static class AuthenticationExtensions
             };
         });
         return services;
-    }
-
-    private static void GuardAuthenticationOptions(AuthenticationOptions? authenticationOptions)
-    {
-        if (string.IsNullOrWhiteSpace(authenticationOptions?.ApplicationIdUri))
-        {
-            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.ApplicationIdUri)}'.");
-        }
-
-        if (string.IsNullOrWhiteSpace(authenticationOptions.Issuer))
-        {
-            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.Issuer)}'.");
-        }
     }
 }

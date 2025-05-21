@@ -5,15 +5,16 @@ description = "Streaming to the silver layer"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pydantic-settings>=2.7.1",
+    "pydantic-settings==2.9.1",
     "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.9.3#subdirectory=source/geh_common",
-    "pydantic>=2.10.6",
+    "pydantic==2.11.4",
     "protobuf>=6.30.2",
 ]
 
 [project.scripts]
 ingest_submitted_transactions = "core.bronze.entry_points:ingest_submitted_transactions"
-migrate = "core.entry_points:migrate"
+migrate = "core.databases.entry_points:migrate"
+optimize_table = "core.databases.entry_points:optimize_table"
 migrate_time_series_from_migrations = "core.bronze.entry_points:migrate_time_series_from_migrations_to_measurements"
 notify_transactions_persisted = "core.receipts.entry_points:notify_transactions_persisted"
 stream_calculated_to_gold_measurements = "core.gold.entry_points:stream_calculated_to_gold_measurements"
