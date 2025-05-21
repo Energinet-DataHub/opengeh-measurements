@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatabricksSettings(BaseSettings):
@@ -11,9 +11,8 @@ class DatabricksSettings(BaseSettings):
     databricks_jobs (str): The list of jobs in Databricks
     """
 
+    model_config = SettingsConfigDict(case_sensitive=False)
+
     databricks_workspace_url: str = Field(init=False)
     databricks_token: str = Field(init=False)
     databricks_jobs: str = Field(init=False)
-
-    class Config:
-        case_sensitive = False

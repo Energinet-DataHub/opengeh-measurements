@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # These settings are for the Migrations subsystem.
@@ -12,7 +12,6 @@ class MigrationsSettings(BaseSettings):
     silver_database_name (str): The name of the silver Migrations database that we should use.
     """
 
-    silver_database_name: str = Field(init=False)
+    model_config = SettingsConfigDict(case_sensitive=False)
 
-    class Config:
-        case_sensitive = False
+    silver_database_name: str = Field(init=False)
