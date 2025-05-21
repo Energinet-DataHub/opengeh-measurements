@@ -24,20 +24,24 @@ public static class ClientExtensions
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
-        services.AddSingleton<IAuthorizationHeaderProvider>(serviceProvider =>
+        if (b2CAuthorizationHeaderProvider != null)
         {
-            var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
-
-            return new AuthorizationHeaderProvider(new DefaultAzureCredential(), options.ApplicationIdUri);
-        });
+            services.AddSingleton<IAuthorizationHeaderProvider>(b2CAuthorizationHeaderProvider);
+        }
+        else
+        {
+            services.AddSingleton<IAuthorizationHeaderProvider>(serviceProvider =>
+            {
+                var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+                return new AuthorizationHeaderProvider(new DefaultAzureCredential(), options.ApplicationIdUri);
+            });
+        }
 
         services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = b2CAuthorizationHeaderProvider != null
-                ? b2CAuthorizationHeaderProvider.CreateAuthorizationHeader()
-                : authorizationHeaderProvider.CreateAuthorizationHeader();
+            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader();
 
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
@@ -45,6 +49,7 @@ public static class ClientExtensions
 
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
+
 
         return services;
     }
