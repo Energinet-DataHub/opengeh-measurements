@@ -8,14 +8,15 @@ notes: |
   CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
   Smrd: 1
                                                                     |Today (Jan. 2nd)
-                  2024		                                     2025
-                  |----------------------------------------------|
-  Parent periods: |______________________________________________...
+                  2011		     |2024                             2025
+                  |------...---------------------------------------|
+  Parent periods: |______..._____|_______________________________...
 
-                  |_______________input to cenc__________________|
-  D06/D07 data:   +
-  Latest D15 existing measurement data:						     +
-  New D15 measurement data:										  ++
+                                 |_______input to cenc_____________|
+  D06/D07 data:                 ++                                 +
+  Included in cenc:			     _
+  Not included in cenc:		    _  								   _
+  New D15 measurement data:										   ++
 
   consumption_from_grid (D07): 2000
   supply_to_grid (D06): 1000
@@ -25,14 +26,13 @@ notes: |
   CASE 2: consumption_from_grid (D07) is smaller than supply_to_grid (D06)
   Smrd: 1
                                                                     |Today (Jan. 2nd)
-                  2024		                                     2025
-                  |----------------------------------------------|
-  Parent periods: |_____________________________________________...
+                  2010		     |2024                             2025
+                  |------...---------------------------------------|
+  Parent periods: |______..._____|_______________________________...
 
-                  |_______________input to cenc__________________|
-  D06/D07 data:   +
-  Latest D15 existing measurement data:						     +
-  New D15 measurement data:										  ++
+                                 |_______input to cenc_____________|
+  D06/D07 data:                  +
+  New D15 measurement data:										   ++
 
   consumption_from_grid (D07): 1000
   supply_to_grid (D06): 2000
