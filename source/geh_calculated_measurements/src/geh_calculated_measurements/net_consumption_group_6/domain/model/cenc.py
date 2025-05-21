@@ -15,5 +15,6 @@ class Cenc(DataFrameWrapper):
             T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
             T.StructField(ContractColumnNames.settlement_year, T.IntegerType(), False),
             T.StructField(ContractColumnNames.settlement_month, T.IntegerType(), False),
+            # T.StructField("latest_closed_timestamp", T.TimestampType(), False),
         ]
     )
