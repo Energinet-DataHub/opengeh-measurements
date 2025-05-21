@@ -16,24 +16,21 @@ public static class AuthenticationExtensions
             .Get<AzureAdAuthenticationOptions>();
         var authority = $"https://login.microsoftonline.com/{azureAdOptions?.TenantId}/v2.0";
 
-        // Add authentication for Entra ID
-        services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            options.Authority = entraAuthenticationOptions?.Issuer;
-            options.Audience = entraAuthenticationOptions?.ApplicationIdUri;
-            options.TokenValidationParameters = new TokenValidationParameters
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-            };
-        });
-
-        // Add authentication for Azure AD
-        services.AddAuthentication()
-            .AddJwtBearer(x =>
+                options.Authority = entraAuthenticationOptions?.Issuer;
+                options.Audience = entraAuthenticationOptions?.ApplicationIdUri;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                };
+            })
+            .AddJwtBearer("AzureAD", options =>
             {
-                x.Audience = azureAdOptions?.Audience;
-                x.Authority = authority;
+                options.Audience = azureAdOptions?.Audience;
+                options.Authority = authority;
             });
 
         return services;
