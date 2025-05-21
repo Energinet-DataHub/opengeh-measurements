@@ -8,7 +8,7 @@ namespace Energinet.DataHub.Measurements.Application.Extensions.Options;
 /// </summary>
 public class AzureAdAuthenticationOptions
 {
-    public const string SectionName = "AzureAD";
+    public const string SectionName = "AzureAd";
 
     [Required(AllowEmptyStrings = false)]
     public string TenantId { get; init; } = string.Empty;
