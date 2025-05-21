@@ -99,7 +99,6 @@ def _(spark, column):
     kwargs = {
         "metering_point_id": mp_id,
         "observation_time": datetime.now(),
-        "quantity": Decimal(100),
         "quality": "some_quality",
         "metering_point_type": "some_type",
     }
