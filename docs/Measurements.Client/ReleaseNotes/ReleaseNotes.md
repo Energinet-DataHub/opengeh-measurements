@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 7.2.0
+
+- Added the possibility of Authorizing using B2C in MeasurementsApi.
+
 ## Version 7.1.1
 
 - fix link to documentation in package README
