@@ -43,7 +43,7 @@ public class MeasurementsAggregatedByDateResponseTests
     }
 
     [Fact]
-    public void Create_WhenMultipleResolutions_ThenThrowException()
+    public void Create_WhenDuplicateResolutions_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
