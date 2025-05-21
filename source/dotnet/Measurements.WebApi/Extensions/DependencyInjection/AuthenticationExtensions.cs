@@ -11,10 +11,10 @@ public static class AuthenticationExtensions
         var entraAuthenticationOptions = configuration
             .GetSection(EntraAuthenticationOptions.SectionName)
             .Get<EntraAuthenticationOptions>();
-        var azureAdOptions = configuration
+        var b2CAuthenticationOptions = configuration
             .GetSection(B2CAuthenticationOptions.SectionName)
             .Get<B2CAuthenticationOptions>();
-        var authority = $"https://login.microsoftonline.com/{azureAdOptions?.TenantId}/v2.0";
+        var authority = $"https://login.microsoftonline.com/{b2CAuthenticationOptions?.TenantId}/v2.0";
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -29,7 +29,7 @@ public static class AuthenticationExtensions
             })
             .AddJwtBearer("B2C", options =>
             {
-                options.Audience = azureAdOptions?.ResourceId;
+                options.Audience = b2CAuthenticationOptions?.ResourceId;
                 options.Authority = authority;
             });
 
