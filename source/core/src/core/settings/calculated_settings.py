@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CalculatedSettings(BaseSettings):
@@ -11,7 +11,6 @@ class CalculatedSettings(BaseSettings):
     calculated_database_name (str): The name of the Calculated database created in infrastructure.
     """
 
-    calculated_database_name: str = Field(init=False)
+    model_config = SettingsConfigDict(case_sensitive=False)
 
-    class Config:
-        case_sensitive = False
+    calculated_database_name: str = Field(init=False)
