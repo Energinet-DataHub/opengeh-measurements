@@ -44,7 +44,7 @@ def _stop_job_runs() -> None:
 
         job_id = databricks_api_client.get_job_id(job)
         if job_id is None:
-            print(f"Job {job} not found")
+            print(f"Job {job} not found")  # noqa: T201
             continue
 
         run_id = databricks_api_client.get_latest_job_run_id(job_id)
