@@ -2,7 +2,9 @@
 
 ## Version 8.0.0
 
-- `Quantity` and `AggregatedQuantity` are nullable decimal (`decimal?`)
+- In `MeasurementAggregationByDate`, ´MissingValues` is renamed to `ContainsMissingValues`
+- In `PointAggregation`, `AggregatedQuantity` is renamed to `Quantity`
+- `Quantity` is changed to nullable decimal (`decimal?`)
 
 ## Version 7.1.1
 

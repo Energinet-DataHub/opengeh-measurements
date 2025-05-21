@@ -286,7 +286,7 @@ public class MeasurementsControllerTests
 
     private static string CreateExpectedMeasurementsAggregatedByDate()
     {
-        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
+        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","ContainsMissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByMonth()

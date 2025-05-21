@@ -192,7 +192,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         {
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(24m, measurementAggregation.Quantity);
-            Assert.False(measurementAggregation.MissingValues);
+            Assert.False(measurementAggregation.ContainsMissingValues);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
@@ -318,7 +318,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(24.0M, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
-            Assert.False(measurementAggregation.MissingValues);
+            Assert.False(measurementAggregation.ContainsMissingValues);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
     }
@@ -398,7 +398,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
-        Assert.True(actual.MeasurementAggregations.First().MissingValues);
+        Assert.True(actual.MeasurementAggregations.First().ContainsMissingValues);
     }
 
     [Fact]

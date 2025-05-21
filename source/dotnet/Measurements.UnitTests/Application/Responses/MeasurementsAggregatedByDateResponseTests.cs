@@ -38,7 +38,7 @@ public class MeasurementsAggregatedByDateResponseTests
         Assert.Equal(expectedDate, firstAggregation.Date);
         Assert.Equal(100.0m, firstAggregation.Quantity);
         Assert.Equal(Quality.Measured, firstAggregation.Quality);
-        Assert.False(firstAggregation.MissingValues);
+        Assert.False(firstAggregation.ContainsMissingValues);
         Assert.False(firstAggregation.ContainsUpdatedValues);
     }
 
@@ -104,7 +104,7 @@ public class MeasurementsAggregatedByDateResponseTests
     }
 
     [Fact]
-    public void Create_WhenDataContainsMissingValues_ThenMissingValuesIsTrue()
+    public void Create_WhenDataContainsMissingValues_ThenContainsMissingValuesIsTrue()
     {
         // Arrange
         const long observationPointsCount = 15L;
@@ -123,7 +123,7 @@ public class MeasurementsAggregatedByDateResponseTests
         var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
-        Assert.True(actual.MeasurementAggregations.First().MissingValues);
+        Assert.True(actual.MeasurementAggregations.First().ContainsMissingValues);
     }
 
     [Fact]

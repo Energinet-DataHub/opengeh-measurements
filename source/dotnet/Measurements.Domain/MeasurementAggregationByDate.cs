@@ -5,5 +5,5 @@ public record MeasurementAggregationByDate(
     decimal? Quantity,
     Quality Quality,
     Unit Unit,
-    bool MissingValues,
+    bool ContainsMissingValues,
     bool ContainsUpdatedValues);
