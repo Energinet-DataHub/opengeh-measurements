@@ -134,6 +134,31 @@ public class MeasurementsRepositoryTests
         Assert.Equal(Instant.FromUtc(2021, 1, 1, 23, 0), first.MaxObservationTime);
     }
 
+    [Theory]
+    [InlineAutoData]
+    public async Task GetAggregatedByPeriodAsync_WhenCalled_ReturnsAggregatedMeasurements(
+        Mock<DatabricksSqlWarehouseQueryExecutor> databricksSqlWarehouseQueryExecutorMock)
+    {
+        // Arrange
+        const string meteringPointId = "1234567890";
+        var minObservationTime = Instant.FromUtc(2021, 1, 1, 0, 0);
+        var maxObservationTime = Instant.FromUtc(2021, 1, 2, 0, 0);
+        var raw = CreateAggregatedByPeriodMeasurementResults(meteringPointId, minObservationTime, maxObservationTime, 2);
+        databricksSqlWarehouseQueryExecutorMock
+            .Setup(x => x.ExecuteStatementAsync(It.IsAny<GetAggregatedByPeriodQuery>(), It.IsAny<Format>(), It.IsAny<CancellationToken>()))
+            .Returns(raw);
+        var options = Options.Create(new DatabricksSchemaOptions { CatalogName = "catalog", SchemaName = "schema" });
+        var sut = new MeasurementsRepository(databricksSqlWarehouseQueryExecutorMock.Object, options);
+
+        // Act
+        var actual = await sut.GetAggregatedByPeriodAsync(meteringPointId, minObservationTime, maxObservationTime, Aggregation.Hour).ToListAsync();
+        var first = actual.First();
+
+        // Assert
+        Assert.Equal(2, actual.Count);
+        Assert.Equal(42, first.Quantity);
+    }
+
     private static async IAsyncEnumerable<ExpandoObject> CreateMeasurementResults(int count)
     {
         for (var i = 0; i < count; i++)
@@ -168,6 +193,30 @@ public class MeasurementsRepositoryTests
             yield return raw;
 
             date = date.AddDays(1);
+        }
+    }
+
+    private static async IAsyncEnumerable<ExpandoObject> CreateAggregatedByPeriodMeasurementResults(
+        string meteringPoints,
+        Instant minObservationTime,
+        Instant maxObservationTime,
+        int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            dynamic raw = new ExpandoObject();
+            raw.metering_point_id = meteringPoints;
+            raw.min_observation_time = minObservationTime.ToDateTimeOffset();
+            raw.max_observation_time = maxObservationTime.ToDateTimeOffset();
+            raw.aggregated_quantity = 42;
+            raw.qualities = new[] { "measured" };
+            raw.resolution = "PT1H";
+            raw.aggregation_group_key = "12345678901234567890";
+            await Task.Yield();
+            yield return raw;
+
+            minObservationTime = minObservationTime.Plus(Duration.FromDays(1));
+            maxObservationTime = maxObservationTime.Plus(Duration.FromDays(1));
         }
     }
 }

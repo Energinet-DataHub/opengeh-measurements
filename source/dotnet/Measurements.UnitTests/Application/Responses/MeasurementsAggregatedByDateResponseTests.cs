@@ -16,8 +16,8 @@ public class MeasurementsAggregatedByDateResponseTests
     public void Create_WhenValidInput_ReturnExpectedResult()
     {
         // Arrange
-        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
-        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
+        var minObservationTime = Instant.FromUtc(2022, 2, 5, 23, 0, 0);
+        var maxObservationTime = Instant.FromUtc(2022, 2, 6, 22, 0, 0);
 
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
@@ -107,15 +107,16 @@ public class MeasurementsAggregatedByDateResponseTests
     public void Create_WhenDataContainsMissingValues_ThenMissingValuesIsTrue()
     {
         // Arrange
+        const long observationPointsCount = 15L;
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
-        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(24)); // 24 hours to simulate missing values
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(observationPointsCount));
         var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
         var units = new[] { "kWh" };
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, observationPointsCount)),
         };
 
         // Act
@@ -156,7 +157,7 @@ public class MeasurementsAggregatedByDateResponseTests
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 2L)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 24L, 2L)),
         };
 
         // Act
@@ -172,6 +173,7 @@ public class MeasurementsAggregatedByDateResponseTests
         string[] qualities,
         string[] resolutions,
         string[] units,
+        long pointCount = 24L,
         long observationUpdates = 1L)
     {
         dynamic raw = new ExpandoObject();
@@ -181,7 +183,7 @@ public class MeasurementsAggregatedByDateResponseTests
         raw.qualities = qualities;
         raw.resolutions = resolutions;
         raw.units = units;
-        raw.point_count = 24L;
+        raw.point_count = pointCount;
         raw.observation_updates = observationUpdates;
 
         return raw;

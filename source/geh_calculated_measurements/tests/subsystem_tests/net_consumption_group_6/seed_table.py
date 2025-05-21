@@ -41,14 +41,14 @@ def gold_table_statement(catalog_name: str) -> str:
             metering_point_id=consumption_from_grid_metering_point_id,
             metering_point_type=MeteringPointType.CONSUMPTION_FROM_GRID,
             orchestration_type=OrchestrationType.NET_CONSUMPTION,
-            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            observation_time=datetime(year, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         ),
         GoldTableRow(
             metering_point_id=supply_to_grid_metering_point_id,
             metering_point_type=MeteringPointType.SUPPLY_TO_GRID,
             orchestration_type=OrchestrationType.NET_CONSUMPTION,
-            observation_time=datetime(year, 12, 31, 23, 0, 0, tzinfo=timezone.utc),
+            observation_time=datetime(year, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
             quantity=random.uniform(0.1, 10.0),
         ),
     ]
