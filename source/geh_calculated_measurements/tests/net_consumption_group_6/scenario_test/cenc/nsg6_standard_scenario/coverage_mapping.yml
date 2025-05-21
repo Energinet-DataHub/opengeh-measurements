@@ -14,7 +14,7 @@ notes: |
 
                                  |_______input to cenc_____________|
   D06/D07 data:                  +
-  Latest D15 measurement data (today):		   						        +
+  Latest D15 measurement data (today):		   					    +
   No new results should be generated...
 
   CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
