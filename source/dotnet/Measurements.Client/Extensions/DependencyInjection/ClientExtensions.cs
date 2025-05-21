@@ -17,7 +17,7 @@ public static class ClientExtensions
     /// <summary>
     /// Register Measurement Client for use in the application.
     /// </summary>
-    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, AuthenticationHeaderValue? authenticationHeaderValue = null)
+    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, AuthorizationHeaderProvider? b2CAuthorizationHeaderProvider = null)
     {
         services
             .AddOptions<MeasurementHttpClientOptions>()
@@ -35,7 +35,9 @@ public static class ClientExtensions
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = authenticationHeaderValue ?? authorizationHeaderProvider.CreateAuthorizationHeader();
+            var authorizationHeader = b2CAuthorizationHeaderProvider != null
+                ? b2CAuthorizationHeaderProvider.CreateAuthorizationHeader()
+                : authorizationHeaderProvider.CreateAuthorizationHeader();
 
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
