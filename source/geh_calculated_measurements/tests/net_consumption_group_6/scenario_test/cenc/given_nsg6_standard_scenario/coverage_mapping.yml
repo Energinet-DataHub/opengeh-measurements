@@ -83,6 +83,10 @@ notes: |
 
 
 cases_tested:
+  "Smrd is 1"
+  "Smrd is not 1"
+
   "cenc calculation":
-    "GIVEN (consumption_from_grid (D07) is 2000 and supply_to_grid (D06) is 1000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 1000 and daily quantity is 2.740)"
-    "GIVEN (consumption_from_grid (D07) is 1000 and supply_to_grid (D06) is 2000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 0 and daily quantity is 0)"
+    "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year"
+    "GIVEN (consumption_from_grid (D07) < supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is capped to 0"
+    "D15 results should be generated up to latest either child D15 observation time, smrd date or parent period_to_date, whichever comes first"

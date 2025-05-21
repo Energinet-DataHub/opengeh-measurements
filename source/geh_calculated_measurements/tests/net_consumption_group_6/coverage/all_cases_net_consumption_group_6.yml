@@ -16,8 +16,9 @@
     "Results are not generated until +2 days after period end": true
 
   "cenc calculation":
-    "Calculation is cenc": true
-    "GIVEN (consumption_from_grid (D07) is 2000 and supply_to_grid (D06) is 1000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 1000 and daily quantity is 2.740)": true
-    "GIVEN (consumption_from_grid (D07) is 1000 and supply_to_grid (D06) is 2000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 0 and daily quantity is 0)": true
+    "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year": true
+    "GIVEN (consumption_from_grid (D07) < supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is capped to 0": true
+    "D15 results should be generated up to latest either child D15 observation time, smrd date or parent period_to_date, whichever comes first": true
     "When period goes from cnc to cenc, new results are always generated": true
-
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = false THEN default quantity value of 1800 for the settlement period and a daily quantity is 1800 / days in settlement year": true
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = true THEN default quantity value of 5600 for the settlement period and a daily quantity is 5600 / days in settlement year": true
