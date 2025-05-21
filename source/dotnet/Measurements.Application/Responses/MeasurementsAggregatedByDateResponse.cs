@@ -5,7 +5,7 @@ using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.Domain.Extensions;
+using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
@@ -55,10 +55,9 @@ public class MeasurementsAggregatedByDateResponse
 
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
     {
-        // All points for a day should have the same resolution
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-        var expectedPointCount = resolution.GetExpectedPointCount(
-            aggregatedMeasurements.MaxObservationTime, aggregatedMeasurements.MinObservationTime);
+
+        var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, 1);
 
         return expectedPointCount - aggregatedMeasurements.PointCount != 0;
     }
