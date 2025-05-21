@@ -29,10 +29,10 @@ public class MeasurementsAggregatedByDateResponse
                 new MeasurementAggregationByDate(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
-                    SetQuality(measurement),
-                    SetUnit(measurement),
-                    SetMissingValuesForAggregation(measurement),
-                    SetContainsUpdatedValues(measurement)))
+                    FindMinimumQuality(measurement),
+                    FindUnit(measurement),
+                    FindMissingValues(measurement),
+                    FindContainsUpdatedValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -40,23 +40,22 @@ public class MeasurementsAggregatedByDateResponse
             : new MeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
-    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return aggregatedMeasurementsResult.Qualities
             .Select(quality => QualityParser.ParseQuality((string)quality))
             .Min();
     }
 
-    private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static Unit FindUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 
-    private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
+    private static bool FindMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
     {
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-        var lowestQuality = aggregatedMeasurements.Qualities.Min() ?? throw new InvalidOperationException("Could not parse quality");
-        var quality = QualityParser.ParseQuality((string)lowestQuality);
+        var quality = FindMinimumQuality(aggregatedMeasurements);
         var measurementsContainMissingQualities = quality <= Quality.Missing;
 
         var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, 1);
@@ -65,7 +64,7 @@ public class MeasurementsAggregatedByDateResponse
                measurementsContainMissingQualities;
     }
 
-    private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static bool FindContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return aggregatedMeasurementsResult.ObservationUpdates > 1;
     }

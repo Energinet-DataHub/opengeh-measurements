@@ -105,10 +105,14 @@ public class MeasurementsAggregatedByDateResponseTests
 
     [Theory]
     [InlineData(15, Quality.Measured, true)]
+    [InlineData(15, Quality.Calculated, true)]
+    [InlineData(15, Quality.Estimated, true)]
     [InlineData(15, Quality.Missing, true)]
     [InlineData(24, Quality.Measured, false)]
+    [InlineData(24, Quality.Calculated, false)]
+    [InlineData(24, Quality.Estimated, false)]
     [InlineData(24, Quality.Missing, true)]
-    public void Create_WhenObservationsOrQualityIsMissing_ThenMissingValuesFlagIsSet(int observationPointsCount, Quality quality, bool expectedMissingValues)
+    public void Create_WhenObservationsOrQualityIsMissing_ThenMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -176,8 +180,8 @@ public class MeasurementsAggregatedByDateResponseTests
         string[] qualities,
         string[] resolutions,
         string[] units,
-        int pointCount = 24,
-        int observationUpdates = 1)
+        long pointCount = 24L,
+        long observationUpdates = 1L)
     {
         dynamic raw = new ExpandoObject();
         raw.min_observation_time = minObservationTime.ToDateTimeOffset();
