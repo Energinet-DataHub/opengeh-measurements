@@ -10,8 +10,8 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
     ValueColumnNames,
 )
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
+from core.contracts.process_manager.DecimalValue.decimal_value import DecimalValue
 from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
-from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,

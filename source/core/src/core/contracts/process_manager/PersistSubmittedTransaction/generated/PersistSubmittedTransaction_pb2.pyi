@@ -1,6 +1,7 @@
+import datetime
+from collections.abc import Iterable as _Iterable
+from collections.abc import Mapping as _Mapping
 from typing import ClassVar as _ClassVar
-from typing import Iterable as _Iterable
-from typing import Mapping as _Mapping
 from typing import Optional as _Optional
 from typing import Union as _Union
 
@@ -10,7 +11,7 @@ from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 
-import core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 as _DecimalValue_pb2
+import core.contracts.process_manager.DecimalValue.generated.DecimalValue_pb2 as _DecimalValue_pb2
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -166,9 +167,9 @@ class PersistSubmittedTransaction(_message.Message):
         orchestration_type: _Optional[_Union[OrchestrationType, str]] = ...,
         metering_point_id: _Optional[str] = ...,
         transaction_id: _Optional[str] = ...,
-        transaction_creation_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
-        start_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
-        end_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
+        transaction_creation_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
+        start_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
+        end_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
         metering_point_type: _Optional[_Union[MeteringPointType, str]] = ...,
         unit: _Optional[_Union[Unit, str]] = ...,
         resolution: _Optional[_Union[Resolution, str]] = ...,
