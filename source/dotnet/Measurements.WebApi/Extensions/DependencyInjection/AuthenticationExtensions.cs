@@ -27,7 +27,7 @@ public static class AuthenticationExtensions
                     ValidateIssuer = true,
                 };
             })
-            .AddJwtBearer("AzureAD", options =>
+            .AddJwtBearer("B2C", options =>
             {
                 options.Audience = azureAdOptions?.ResourceId;
                 options.Authority = authority;
