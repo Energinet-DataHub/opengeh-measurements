@@ -29,11 +29,12 @@ public static class AuthenticationExtensions
         });
 
         // Add authentication for Azure AD
-        services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            options.Authority = authority;
-            options.Audience = azureAdOptions?.Audience;
-        });
+        services.AddAuthentication()
+            .AddJwtBearer(x =>
+            {
+                x.Audience = azureAdOptions?.Audience;
+                x.Authority = authority;
+            });
 
         return services;
     }
