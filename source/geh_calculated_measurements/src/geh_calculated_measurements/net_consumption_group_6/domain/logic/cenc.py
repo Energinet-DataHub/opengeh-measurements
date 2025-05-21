@@ -3,6 +3,7 @@ from datetime import datetime
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from geh_common.domain.types import MeteringPointType
+from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
@@ -35,7 +36,6 @@ def calculate_cenc(
     parent_child_joined = _join_parent_child_with_consumption(
         child_metering_points, consumption_metering_point_periods, execution_start_datetime
     )
-
     # Add timestamp from settlement month
     parent_child_joined = _add_timestamp_from_settlement_month(parent_child_joined, execution_start_datetime, time_zone)
 
@@ -43,7 +43,7 @@ def calculate_cenc(
     net_consumption_metering_points = _get_net_consumption_metering_points(parent_child_joined)
 
     # Process time series data
-    metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series)
+    metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series, time_zone)
 
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
@@ -182,9 +182,11 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
     )
 
 
-def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
+def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame, time_zone: str) -> DataFrame:
     """Join metering point with time series and sum quantity for consumption_from_grid and supply_to_grid."""
     # Join and filter in one step
+    parent_child_df = convert_from_utc(parent_child_df, time_zone)
+    time_series_df = convert_from_utc(time_series_df, time_zone)
     joined_df = parent_child_df.join(
         time_series_df,
         on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
@@ -193,6 +195,8 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
         (F.col(ContractColumnNames.observation_time) >= F.add_months(F.col("settlement_date"), -12))
         & (F.col(ContractColumnNames.observation_time) < F.col("settlement_date"))
     )
+
+    joined_df = convert_to_utc(joined_df, time_zone)
 
     # Calculate consumption and supply directly in one groupBy operation
     return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
