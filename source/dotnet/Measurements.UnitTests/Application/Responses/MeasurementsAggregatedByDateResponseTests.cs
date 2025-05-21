@@ -108,7 +108,7 @@ public class MeasurementsAggregatedByDateResponseTests
     [InlineData(15, Quality.Missing, true)]
     [InlineData(24, Quality.Measured, false)]
     [InlineData(24, Quality.Missing, true)]
-    public void Create_WhenMeasurementIsMissingValues_ThenMissingValuesFlagIsSet(int observationPointsCount, Quality quality, bool expectedMissingValues)
+    public void Create_WhenObservationsOrQualityIsMissing_ThenMissingValuesFlagIsSet(int observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -127,51 +127,6 @@ public class MeasurementsAggregatedByDateResponseTests
 
         // Assert
         Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().MissingValues);
-    }
-
-    [Fact]
-    public void Create_WhenMeasurementContainsMissingObservations_ThenMissingValuesIsTrue()
-    {
-        // Arrange
-        const int observationPointsCount = 15;
-        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
-        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(observationPointsCount));
-        var qualities = new[] { "measured" };
-        var resolutions = new[] { "PT1H" };
-        var units = new[] { "kWh" };
-
-        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
-        {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, pointCount: observationPointsCount)),
-        };
-
-        // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
-
-        // Assert
-        Assert.True(actual.MeasurementAggregations.Single().MissingValues);
-    }
-
-    [Fact]
-    public void Create_WhenQualityIsQuantityMissing_ThenMissingValuesIsTrue()
-    {
-        // Arrange
-        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
-        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(24));
-        var qualities = new[] { "missing" };
-        var resolutions = new[] { "PT1H" };
-        var units = new[] { "kWh" };
-
-        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
-        {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
-        };
-
-        // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
-
-        // Assert
-        Assert.True(actual.MeasurementAggregations.Single().MissingValues);
     }
 
     [Fact]
