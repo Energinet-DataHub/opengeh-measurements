@@ -3,3 +3,5 @@ metering_point_id;has_electrical_heating;settlement_month;period_from_date;perio
 170000000000000202;false;1;2009-12-31T23:00:00Z;;false;Case 2
 170000000000000203;false;3;2022-12-31T23:00:00Z;2024-01-31T23:00:00Z;false;Case 3: Period 1 (this periodization should not affect cenc calculation)
 170000000000000203;false;3;2024-01-31T23:00:00Z;;false;Case 3: Period 2 (this periodization should not affect cenc calculation)
+170000000000000204;false;3;2022-12-31T23:00:00Z;2024-12-28T23:00:00Z;false;Case 4: Do not generate cenc data for ended period
+170000000000000204;false;3;2024-12-28T23:00:00Z;;false;Case 4: Generate cenc data back to this period_from_date
