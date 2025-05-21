@@ -13,7 +13,8 @@ dependencies = [
 
 [project.scripts]
 ingest_submitted_transactions = "core.bronze.entry_points:ingest_submitted_transactions"
-migrate = "core.entry_points:migrate"
+migrate = "core.databases.entry_points:migrate"
+optimize_table = "core.databases.entry_points:optimize_table"
 migrate_time_series_from_migrations = "core.bronze.entry_points:migrate_time_series_from_migrations_to_measurements"
 notify_transactions_persisted = "core.receipts.entry_points:notify_transactions_persisted"
 stream_calculated_to_gold_measurements = "core.gold.entry_points:stream_calculated_to_gold_measurements"

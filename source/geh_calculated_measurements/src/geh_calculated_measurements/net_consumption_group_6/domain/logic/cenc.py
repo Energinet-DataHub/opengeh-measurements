@@ -53,6 +53,7 @@ def calculate_cenc(
         ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
         net_consumption_metering_points,
         net_quantity,
+        time_zone,
     )
 
     return Cenc(result)
@@ -63,6 +64,7 @@ def prepare_cenc_with_move_in(
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
     net_consumption_metering_points,
     net_quantity,
+    time_zone,
 ) -> DataFrame:
     """Prepare CENC with move-in values."""
     return (
@@ -83,8 +85,10 @@ def prepare_cenc_with_move_in(
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
-            F.year(F.col("settlement_date")).alias("settlement_year"),
-            F.month(F.col("settlement_date")).alias(ContractColumnNames.settlement_month),
+            F.year(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias("settlement_year"),
+            F.month(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias(
+                ContractColumnNames.settlement_month
+            ),
         )
     )
 
@@ -144,13 +148,19 @@ def _add_timestamp_from_settlement_month(
         )
         .withColumn(
             "settlement_date",
-            F.make_date(
-                F.when(
-                    F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
-                    F.year(F.col("utc_local_time")),
-                ).otherwise(F.year(F.col("utc_local_time")) - 1),
-                F.col(ContractColumnNames.settlement_month),
-                F.lit(1),
+            F.to_utc_timestamp(
+                F.make_timestamp(
+                    F.when(
+                        F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
+                        F.year(F.col("utc_local_time")),
+                    ).otherwise(F.year(F.col("utc_local_time")) - 1),
+                    F.col(ContractColumnNames.settlement_month),
+                    F.lit(1),
+                    F.lit(0),
+                    F.lit(0),
+                    F.lit(0),
+                ),
+                time_zone,
             ),
         )
         .drop("utc_local_time")
@@ -180,9 +190,8 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
         on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
         how="left",
     ).filter(
-        F.col(ContractColumnNames.observation_time).between(
-            F.add_months(F.col("settlement_date"), -12), F.col("settlement_date")
-        )
+        (F.col(ContractColumnNames.observation_time) >= F.add_months(F.col("settlement_date"), -12))
+        & (F.col(ContractColumnNames.observation_time) < F.col("settlement_date"))
     )
 
     # Calculate consumption and supply directly in one groupBy operation
