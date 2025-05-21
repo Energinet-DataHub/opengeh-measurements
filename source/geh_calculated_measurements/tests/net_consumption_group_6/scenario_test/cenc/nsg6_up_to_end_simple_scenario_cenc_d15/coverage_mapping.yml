@@ -6,10 +6,11 @@ notes: |
   ## DESIGN CONSIDERATIONS
 
   CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
-                                                                    |Today
+  Smrd: 1
+                                                                    |Today (Jan. 2nd)
                   2024		                                     2025
                   |----------------------------------------------|
-  Parent periods: |_____________________________________________...
+  Parent periods: |______________________________________________...
 
                   |_______________input to cenc__________________|
   D06/D07 data:   +
@@ -22,7 +23,8 @@ notes: |
   Daily quantity of 1000 / 365 = 2.7397 rounded to 2.740
 
   CASE 2: consumption_from_grid (D07) is smaller than supply_to_grid (D06)
-                                                                    |Today
+  Smrd: 1
+                                                                    |Today (Jan. 2nd)
                   2024		                                     2025
                   |----------------------------------------------|
   Parent periods: |_____________________________________________...
@@ -38,14 +40,17 @@ notes: |
   this wil result in a daily quantity of 0 / 365 = 0
 
   Case 3
-                                                                                                                  |Today
-                  2023		smrd                               2024		   smrd                               2025
+  smrd: 3
+                                                                                                                   |Today (Jan. 2nd)
+                  2023		smrd                               2024		     smrd                               2025
                   |-----------|----------------------------------|-----------|----------------------------------|--------
-  Parent periods: |____________________________________________________|______________________________________...
+  Parent period 1:|____________________________________________________|
+  Parent period 2:                                                     |_______________________________________...
+  Periods:        |___________|________________________________________|_____|_________________________________...
 
-                              |____________input to cenc_____________________|
-  D06/D07 data: 		      +                                          +   +
-  Included in cenc:			  _                                          _
+                              |_______________input to cenc__________________|
+  D06/D07 data: 		      +                                        +     +
+  Included in cenc:			  _                                        _
   Not included in cenc:		      	   									     _
   Latest D15 existing measurement data:													                     +
   New D15 measurement data:																				      ++++
