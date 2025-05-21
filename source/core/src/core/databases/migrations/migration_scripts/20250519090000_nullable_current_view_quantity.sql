@@ -1,4 +1,5 @@
-DROP VIEW IF EXISTS {gold_database}.{gold_current_v1};
+DROP VIEW IF EXISTS {gold_database}.{gold_current_v1}
+GO
 
 CREATE VIEW {gold_database}.{gold_current_v1} AS
 WITH RankedRows AS (
