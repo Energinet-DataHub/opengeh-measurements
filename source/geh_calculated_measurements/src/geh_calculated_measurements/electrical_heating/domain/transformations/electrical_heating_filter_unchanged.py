@@ -23,13 +23,7 @@ def filter_unchanged_electrical_heating(
                     == F.col(f"previous.{ContractColumnNames.quantity}")
                 )
             ),
-            "left",
-        )
-        .filter(
-            # Include rows that either:
-            # 1. Don't exist in previous data (unchanged behavior) OR
-            # 2. Have is_end_of_period = True (new behavior)
-            (F.col(f"previous.{ContractColumnNames.metering_point_id}").isNull()) | (F.col("current.is_end_of_period"))
+            "left_anti",
         )
         .select(
             F.col(f"current.{ContractColumnNames.metering_point_id}"),
