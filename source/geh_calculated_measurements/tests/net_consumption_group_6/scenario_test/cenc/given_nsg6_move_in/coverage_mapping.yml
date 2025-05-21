@@ -1,0 +1,43 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test scenarios where there is a move in, in the middle of a period being used for estimation (cenc).
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1 (Move-in without electrical heating)
+  smrd 1
+
+                  |2023		                                     |2024		                                    |2025   |Today (Feb. 1st)
+                  |----------------------------------------------|----------------------------------------------|-------
+  Parent period 1:|___________________________________________________________________________________|
+  Parent period 2 (move-in):                                                                          |_______________...
+  Periods:        |______________________________________________|____________________________________|________________...
+  D06/D07 data (should be ignored for cenc due to move-in):            ++                                          +
+  Not included in cenc:		      	   								   __                                          _
+  Latest D15 existing measurement data:													                              +
+  New D15 measurement data:																				               +
+
+  A move in takes place in the middle of a period being used for estimation (cenc).
+  This will result in a default quantity value of 1800 for the settlement periods and a daily quantity of 1800 / 365 = 4.9315 rounded to 4.932.
+
+  CASE 2 (Move-in with electrical heating)
+  smrd 6
+
+                  |2023		            |smrd                    |2024		            |smrd                   |2025   |Today (Feb. 1st)
+                  |----------------------------------------------|----------------------------------------------|-------
+  Parent period 1:|___________________________________________________________________________________|
+  Parent period 2 (move-in):                                                                          |_______________...
+  Periods:        |_____________________|_______________________________________________|_____________|________________...
+  D06/D07 data (should be ignored for cenc due to move-in):            ++                     +                   +
+  Not included in cenc:		      	   								   __                     _                   _
+  Latest D15 existing measurement data:													                              +
+  New D15 measurement data:																				               +
+
+  A move in takes place in the middle of a period being used for estimation (cenc).
+  This will result in a default quantity value of 5600 for the settlement periods and a daily quantity of 5600 / 365 = 15.342.
+
+cases_tested:
+  "Move in in the middle of a period being used for estimation":
+    - "GIVEN (settlement month is the 1 of january) WHEN (move in takes place in november 2024) THEN (default quantity value of 1800 for the settlement periods and a daily quantity of 1800 / 365 = 4.9315 rounded to 4.932)"
+  "Move in with electrical heating":
+    - "GIVEN (settlement month is the 1 of january) WHEN (move in takes place in november 2024) THEN (default quantity value of 5600 for the settlement periods and a daily quantity of 5600 / 365 = 15.342)"

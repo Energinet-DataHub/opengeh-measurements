@@ -1,0 +1,38 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test scenario with leap year.
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1: Estimation period includes February in leap year 2024 settlement month is the 1st of january.
+  settlement month is the 1st of january.
+  Calculation period is from the 1st of january 2023 to the 31 of december 2023.
+  The period being estimated for is from the 1st of january 2024 to the 31 of december 2024.
+                        ______|2023________|2024________
+  settlement month:     ------|+-----------|+-----------|
+  calculation period:   ------|++++++++++++|------------|
+  estimation period:    ------|------------|++++++++++++|
+
+  execution_start_datetime: 2024-01-08T23:00:00Z
+
+  Since the estimation period includes February in leap year 2024, the days value is 366 days.
+  This means daily quantity will be 1000 / 366 = 2.732
+
+  CASE 2: Estimation period includes February in leap year 2024 settlement month is the 1st of march
+  settlement month is the 1st of march.
+  Calculation period is from the 1st of march 2023 to the 31 of december 2023.
+  The period being estimated for is from the 1st of march 2024 to the 31 of december 2024.
+                        2022________|2023________|2024________
+  settlement month:     --+---------|--+---------|--+---------|
+  calculation period:   --++++++++++|++----------|------------|
+  estimation period:    ------------|--++++++++++|++----------|
+
+  execution_start_datetime: 2024-01-08T23:00:00Z
+
+  Since the estimation period includes February in leap year 2024, the days value is 366 days.
+  This means daily quantity will be 3000 / 366 = 8.1967 rounded to 8.197
+
+cases_tested:
+  "Estimation period includes febuary in leap year 2024":
+    - "GIVEN (settlement month is the 1st of january) WHEN (Calculation period is from the 1st of january 2023 to the 31 of december 2023 AND the period being estimated for is from the 1st of january 2024 to the 31 of december 2024) THEN (daily quantity will be 1000 / 366 = 2.732)"
+    - "GIVEN (settlement month is the 1st of march) WHEN (Calculation period is from the 1st of march 2023 to the 31 of december 2023 AND the period being estimated for is from the 1st of march 2024 to the 31 of december 2024) THEN (daily quantity will be 3000 / 366 = 8.1967 rounded to 8.197)"
