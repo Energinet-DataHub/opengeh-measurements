@@ -108,5 +108,9 @@ def calculate_daily(
     )
 
     result_df = convert_to_utc(result_df, time_zone)
+    result_df = result_df.withColumn(
+        ContractColumnNames.settlement_type,
+        F.lit("up_to_end_of_period"),
+    )
 
     return CalculatedMeasurementsDaily(result_df)
