@@ -44,7 +44,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByDate_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetMonthlyAggregateByDateAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetMonthlyAggregateByDateQuery(
@@ -59,7 +59,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetYearlyAggregateByMonthAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetYearlyAggregateByMonthQuery(
@@ -73,7 +73,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetAggregateByYearAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetAggregateByYearQuery(MeasurementsClientFixture.TestMeteringPointId);
