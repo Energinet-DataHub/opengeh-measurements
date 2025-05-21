@@ -55,6 +55,21 @@ notes: |
   Latest D15 existing measurement data:													                     +
   New D15 measurement data:																				      ++++
 
+  Case 4: Only generate cenc data back to ended period which is after cenc
+  smrd: 3
+                                                                                                                   |Today (Jan. 2nd)
+                  2023		smrd                               2024		     smrd                               2025
+                  |-----------|----------------------------------|-----------|----------------------------------|--------
+  Parent period 1:|__________________________________________________________________________________________|
+  Parent period 2:                                                                                           |___...
+  Periods:        |___________|______________________________________________|_______________________________|____...
+
+                              |_______________input to cenc__________________|
+  D06/D07 data: 		      +                                             +
+  Included in cenc:			  _                                             _
+  New D15 measurement data:																				      ++++
+
+
 cases_tested:
   "cenc calculation":
     "GIVEN (consumption_from_grid (D07) is 2000 and supply_to_grid (D06) is 1000) WHEN (settlement month is the 1 of january) THEN (net_consumption (D15) is 1000 and daily quantity is 2.740)"

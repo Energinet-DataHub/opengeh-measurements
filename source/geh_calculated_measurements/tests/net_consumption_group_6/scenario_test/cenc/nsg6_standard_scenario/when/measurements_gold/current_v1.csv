@@ -13,4 +13,8 @@ metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
 070000001500170203;consumption_from_grid;2024-01-31T23:00:00Z;2000;measured;Case 3: Part of cenc calculation (parent period 2)
 060000001500170203;supply_to_grid;2024-02-29T23:00:00Z;1000;measured;Case 3: Not part of cenc calcuation (in current smrd period)
 070000001500170203;consumption_from_grid;2024-02-29T23:00:00Z;2000;measured;Case 3: Not part of cenc calcuation (in current smrd period)
-150000001500170203;net_consumption;2024-12-28T23:00:00Z;3;calculated;Case 2: Latest D15 measurement data
+150000001500170203;net_consumption;2024-12-28T23:00:00Z;3;calculated;Case 3: Latest D15 measurement data
+060000001500170204;supply_to_grid;2023-02-28T23:00:00Z;500;measured;Case 4: Part of cenc calculation (parent period 1)
+070000001500170204;consumption_from_grid;2023-02-28T23:00:00Z;1000;measured;Case 4: Part of cenc calculation (parent period 1)
+060000001500170204;supply_to_grid;2024-02-29T22:45:00Z;500;measured;Case 4: Part of cenc calculation (parent period 1)
+070000001500170204;consumption_from_grid;2024-02-29T22:45:00Z;1000;measured;Case 4: Part of cenc calculation (parent period 1)
