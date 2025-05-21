@@ -5,5 +5,5 @@ namespace Energinet.DataHub.Measurements.Domain;
 public record PointAggregation(
     Instant From,
     Instant To,
-    decimal? AggregatedQuantity,
+    decimal? Quantity,
     Quality Quality);
