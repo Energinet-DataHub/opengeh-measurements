@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.0.0
+
+- `Quantity` and `AggregatedQuantity` are nullable decimal (`decimal?`)
+
 ## Version 7.1.1
 
 - fix link to documentation in package README
