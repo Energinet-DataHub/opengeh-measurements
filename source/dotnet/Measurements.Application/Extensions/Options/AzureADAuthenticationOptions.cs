@@ -15,7 +15,4 @@ public class AzureAdAuthenticationOptions
 
     [Required(AllowEmptyStrings = false)]
     public string Audience { get; init; } = string.Empty;
-
-    [Required(AllowEmptyStrings = false)]
-    public string Authority { get; init; } = string.Empty;
 }

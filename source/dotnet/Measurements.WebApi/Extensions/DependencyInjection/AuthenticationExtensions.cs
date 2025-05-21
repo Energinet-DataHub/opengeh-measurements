@@ -14,6 +14,7 @@ public static class AuthenticationExtensions
         var azureAdOptions = configuration
             .GetSection(AzureAdAuthenticationOptions.SectionName)
             .Get<AzureAdAuthenticationOptions>();
+        var authority = $"https://login.microsoftonline.com/{azureAdOptions?.TenantId}/v2.0";
 
         // Add authentication for Entra ID
         services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -30,7 +31,7 @@ public static class AuthenticationExtensions
         // Add authentication for Azure AD
         services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            options.Authority = azureAdOptions?.Authority;
+            options.Authority = authority;
             options.Audience = azureAdOptions?.Audience;
         });
 
