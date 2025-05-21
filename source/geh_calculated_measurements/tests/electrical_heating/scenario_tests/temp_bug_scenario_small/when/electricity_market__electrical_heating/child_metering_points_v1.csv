@@ -1,0 +1,14 @@
+metering_point_id;metering_point_type;metering_point_sub_type;parent_metering_point_id;coupled_date;uncoupled_date;#comment
+140000000000170200;electrical_heating;calculated;170000000000000200;2023-12-31T23:00:00Z;;Case 0 (regular EH that does not hit limit
+140000000000170201;electrical_heating;calculated;170000000000000201;2023-12-31T23:00:00Z;;Case 1 (regular EH that hits limit)
+140000000000170202;electrical_heating;calculated;170000000000000202;2023-12-31T23:00:00Z;;Case 2 (NSG2 no D15)
+060000000000170202;supply_to_grid;physical;170000000000000202;2023-12-31T23:00:00Z;;Case 2 (NSG2 no D15)
+070000000000170202;consumption_from_grid;physical;170000000000000202;2023-12-31T23:00:00Z;;Case 2 (NSG2 no D15)
+150000000000170203;net_consumption;virtual;170000000000000203;2023-12-31T23:00:00Z;;Case 3 (NSG2 with D15)
+140000000000170203;electrical_heating;calculated;170000000000000203;2023-12-31T23:00:00Z;;Case 3 (NSG2 with D15)
+060000000000170203;consumption_from_grid;physical;170000000000000203;2023-12-31T23:00:00Z;;Case 3 (NSG2 with D15)
+070000000000170203;supply_to_grid;physical;170000000000000203;2023-12-31T23:00:00Z;;Case 3 (NSG2 with D15)
+150000000000170204;net_consumption;virtual;170000000000000204;2023-12-31T23:00:00Z;;Case 4 (NSG6)
+140000000000170204;electrical_heating;calculated;170000000000000204;2023-12-31T23:00:00Z;;Case 4 (NSG6)
+060000000000170204;consumption_from_grid;physical;170000000000000204;2023-12-31T23:00:00Z;;Case 4 (NSG6)
+070000000000170204;supply_to_grid;physical;170000000000000204;2023-12-31T23:00:00Z;;Case 4 (NSG6)
