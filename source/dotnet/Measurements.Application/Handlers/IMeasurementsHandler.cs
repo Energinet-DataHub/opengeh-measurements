@@ -18,6 +18,12 @@ public interface IMeasurementsHandler
     /// Get measurements aggregated by date matching request attributes.
     /// </summary>
     /// <param name="getAggregatedByDateRequest"></param>
+    Task<DeprecatedMeasurementsAggregatedByDateResponse> DeprecatedGetAggregatedByDateAsync(GetAggregatedByDateRequest getAggregatedByDateRequest);
+
+    /// <summary>
+    /// Get measurements aggregated by date matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedByDateRequest"></param>
     Task<MeasurementsAggregatedByDateResponse> GetAggregatedByDateAsync(GetAggregatedByDateRequest getAggregatedByDateRequest);
 
     /// <summary>

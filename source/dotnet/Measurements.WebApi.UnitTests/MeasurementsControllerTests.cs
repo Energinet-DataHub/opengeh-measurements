@@ -144,6 +144,68 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
+    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(DeprecatedMeasurementsAggregatedByDateResponse.Create);
+        var expected = DeprecatedCreateExpectedMeasurementsAggregatedByDate();
+        measurementsHandler
+            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetAggregatedByDateAsyncV3(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetAggregatedByDateAsyncV3(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsUnknownError_ThenThrowsException(
+        GetAggregatedByDateRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsyncV3(request));
+    }
+
+    [Theory]
+    [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -282,6 +344,11 @@ public class MeasurementsControllerTests
     private static string CreateExpectedMeasurementsByDate()
     {
         return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
+    }
+
+    private static string DeprecatedCreateExpectedMeasurementsAggregatedByDate()
+    {
+        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByDate()
