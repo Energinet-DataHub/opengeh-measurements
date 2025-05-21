@@ -43,7 +43,7 @@ public class MeasurementsAggregatedByDateResponseTests
     }
 
     [Fact]
-    public void Create_WhenMultipleResolutions_ThenThrowException()
+    public void Create_WhenDuplicateResolutions_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -103,14 +103,21 @@ public class MeasurementsAggregatedByDateResponseTests
         Assert.Equal(Quality.Missing, firstAggregation.Quality);
     }
 
-    [Fact]
-    public void Create_WhenDataContainsMissingValues_ThenContainsMissingValuesIsTrue()
+    [Theory]
+    [InlineData(15, Quality.Measured, true)]
+    [InlineData(15, Quality.Calculated, true)]
+    [InlineData(15, Quality.Estimated, true)]
+    [InlineData(15, Quality.Missing, true)]
+    [InlineData(24, Quality.Measured, false)]
+    [InlineData(24, Quality.Calculated, false)]
+    [InlineData(24, Quality.Estimated, false)]
+    [InlineData(24, Quality.Missing, true)]
+    public void Create_WhenObservationsOrQualityIsMissing_ThenContainsMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
-        const long observationPointsCount = 15L;
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(observationPointsCount));
-        var qualities = new[] { "measured" };
+        var qualities = new[] { quality.ToString() };
         var resolutions = new[] { "PT1H" };
         var units = new[] { "kWh" };
 
@@ -123,7 +130,7 @@ public class MeasurementsAggregatedByDateResponseTests
         var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
-        Assert.True(actual.MeasurementAggregations.First().ContainsMissingValues);
+        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().ContainsMissingValues);
     }
 
     [Fact]
@@ -157,7 +164,7 @@ public class MeasurementsAggregatedByDateResponseTests
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 24L, 2L)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, observationUpdates: 2)),
         };
 
         // Act
