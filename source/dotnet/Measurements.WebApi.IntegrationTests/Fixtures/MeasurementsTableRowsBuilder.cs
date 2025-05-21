@@ -14,11 +14,11 @@ public class MeasurementsTableRowsBuilder
         return this;
     }
 
-    public MeasurementsTableRowsBuilder WithContinuesRowsForDate(string meteringPointId, LocalDate observationDate)
+    public MeasurementsTableRowsBuilder WithContinuousRows(string meteringPointId, LocalDate observationDate, int numberOfObservations)
     {
         var startObservationTime = observationDate.ToInstantAtMidnight();
 
-        for (var i = 0; i < 24; i++)
+        for (var i = 0; i < numberOfObservations; i++)
         {
             var observationTime = startObservationTime.Plus(Duration.FromHours(i));
 
@@ -33,6 +33,11 @@ public class MeasurementsTableRowsBuilder
         }
 
         return this;
+    }
+
+    public MeasurementsTableRowsBuilder WithContinuousRowsForDate(string meteringPointId, LocalDate startObservationDate)
+    {
+        return WithContinuousRows(meteringPointId, startObservationDate, 24);
     }
 
     public List<List<string>> Build()
