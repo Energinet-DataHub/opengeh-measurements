@@ -56,10 +56,14 @@ public class MeasurementsAggregatedByDateResponse
     private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
     {
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
+        var lowestQuality = aggregatedMeasurements.Qualities.Min() ?? throw new InvalidOperationException("Could not parse quality");
+        var quality = QualityParser.ParseQuality((string)lowestQuality);
+        var measurementsContainMissingQualities = quality <= Quality.Missing;
 
         var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, 1);
 
-        return expectedPointCount - aggregatedMeasurements.PointCount != 0;
+        return expectedPointCount - aggregatedMeasurements.PointCount != 0 ||
+               measurementsContainMissingQualities;
     }
 
     private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)

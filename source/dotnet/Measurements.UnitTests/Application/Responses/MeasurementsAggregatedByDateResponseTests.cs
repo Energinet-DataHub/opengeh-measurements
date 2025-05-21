@@ -103,14 +103,17 @@ public class MeasurementsAggregatedByDateResponseTests
         Assert.Equal(Quality.Missing, firstAggregation.Quality);
     }
 
-    [Fact]
-    public void Create_WhenDataContainsMissingValues_ThenMissingValuesIsTrue()
+    [Theory]
+    [InlineData(15, Quality.Measured, true)]
+    [InlineData(15, Quality.Missing, true)]
+    [InlineData(24, Quality.Measured, false)]
+    [InlineData(24, Quality.Missing, true)]
+    public void Create_WhenMeasurementIsMissingValues_ThenMissingValuesFlagIsSet(int observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
-        const long observationPointsCount = 15L;
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(observationPointsCount));
-        var qualities = new[] { "measured" };
+        var qualities = new[] { quality.ToString() };
         var resolutions = new[] { "PT1H" };
         var units = new[] { "kWh" };
 
@@ -123,7 +126,52 @@ public class MeasurementsAggregatedByDateResponseTests
         var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
-        Assert.True(actual.MeasurementAggregations.First().MissingValues);
+        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().MissingValues);
+    }
+
+    [Fact]
+    public void Create_WhenMeasurementContainsMissingObservations_ThenMissingValuesIsTrue()
+    {
+        // Arrange
+        const int observationPointsCount = 15;
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(observationPointsCount));
+        var qualities = new[] { "measured" };
+        var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, pointCount: observationPointsCount)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        Assert.True(actual.MeasurementAggregations.Single().MissingValues);
+    }
+
+    [Fact]
+    public void Create_WhenQualityIsQuantityMissing_ThenMissingValuesIsTrue()
+    {
+        // Arrange
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(24));
+        var qualities = new[] { "missing" };
+        var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        Assert.True(actual.MeasurementAggregations.Single().MissingValues);
     }
 
     [Fact]
@@ -157,7 +205,7 @@ public class MeasurementsAggregatedByDateResponseTests
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, 24L, 2L)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, observationUpdates: 2)),
         };
 
         // Act
@@ -173,8 +221,8 @@ public class MeasurementsAggregatedByDateResponseTests
         string[] qualities,
         string[] resolutions,
         string[] units,
-        long pointCount = 24L,
-        long observationUpdates = 1L)
+        int pointCount = 24,
+        int observationUpdates = 1)
     {
         dynamic raw = new ExpandoObject();
         raw.min_observation_time = minObservationTime.ToDateTimeOffset();
