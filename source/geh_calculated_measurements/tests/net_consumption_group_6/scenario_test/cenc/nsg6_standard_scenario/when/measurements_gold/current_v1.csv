@@ -1,6 +1,6 @@
 metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
-060000001500170201;supply_to_grid;2023-12-20T22:45:00Z;1000;measured;Case 1: Outside cenc period
-070000001500170201;consumption_from_grid;2023-12-20T22:45:00Z;2000;measured;Case 1: Outside cenc period
+060000001500170201;supply_to_grid;2023-12-31T22:45:00Z;1000;measured;Case 1: Outside cenc period
+070000001500170201;consumption_from_grid;2023-12-31T22:45:00Z;2000;measured;Case 1: Outside cenc period
 060000001500170201;supply_to_grid;2023-12-31T23:00:00Z;1000;measured;Case 1: consumption_from_grid - supply_to_grid = 1000 / 365 = 2,740
 070000001500170201;consumption_from_grid;2023-12-31T23:00:00Z;2000;measured;Case 1
 060000001500170201;supply_to_grid;2024-12-31T23:00:00Z;1000;measured;Case 1: Outside cenc period
