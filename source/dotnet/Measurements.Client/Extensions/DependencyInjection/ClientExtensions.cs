@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using System.Net.Http.Headers;
+using Azure.Core;
 using Azure.Identity;
 using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
@@ -16,7 +17,7 @@ public static class ClientExtensions
     /// <summary>
     /// Register Measurement Client for use in the application.
     /// </summary>
-    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, TokenCredential? credential = null)
+    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, AuthenticationHeaderValue? authenticationHeaderValue = null)
     {
         services
             .AddOptions<MeasurementHttpClientOptions>()
@@ -27,14 +28,14 @@ public static class ClientExtensions
         {
             var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
 
-            return new AuthorizationHeaderProvider(credential ?? new DefaultAzureCredential(), options.ApplicationIdUri);
+            return new AuthorizationHeaderProvider(new DefaultAzureCredential(), options.ApplicationIdUri);
         });
 
         services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader();
+            var authorizationHeader = authenticationHeaderValue ?? authorizationHeaderProvider.CreateAuthorizationHeader();
 
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
