@@ -12,8 +12,8 @@ public static class AuthenticationExtensions
             .GetSection(EntraAuthenticationOptions.SectionName)
             .Get<EntraAuthenticationOptions>();
         var azureAdOptions = configuration
-            .GetSection(AzureAdAuthenticationOptions.SectionName)
-            .Get<AzureAdAuthenticationOptions>();
+            .GetSection(B2CAuthenticationOptions.SectionName)
+            .Get<B2CAuthenticationOptions>();
         var authority = $"https://login.microsoftonline.com/{azureAdOptions?.TenantId}/v2.0";
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
