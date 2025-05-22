@@ -21,19 +21,22 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
+    internal_calculated_measurements = calculated_measurements_repository.read_calculated_measurements()
 
     # Execute the domain logic
     calculated_measurements_daily = execute(
-        current_measurements,
-        consumption_metering_point_periods,
-        child_metering_point_periods,
-        args.time_zone,
-        args.execution_start_datetime,
+        current_measurements=current_measurements,
+        internal_calculated_measurements=internal_calculated_measurements,
+        consumption_metering_point_periods=consumption_metering_point_periods,
+        child_metering_point_periods=child_metering_point_periods,
+        time_zone=args.time_zone,
+        execution_start_datetime=args.execution_start_datetime,
     )
 
     # Write the calculated measurements

@@ -1,27 +1,4 @@
 notes: |
-  CASE 1 (NSG2, no D15 - up to end --> end of period)
-
-                                               |2025              |Feb               |Today
-                                               |__________________|__________________|
-
-  Old parent period:                           |___________________________________...
-  New parent period 1:                         |__________________|
-  New parent period 2 (up to end):                                |________________...
-  Measurement data:                                             ++++
-  Existing (up to end) D14 data:                                ++++
-  New (end of period) D14 data:                                 ++
-
-  CASE 2 (NSG2, no D15 - end of period --> up to end)
-
-                                               |2025                                 |Today
-                                               |__________________|__________________|
-  Old parent period:                           |__________________|________________...
-  New parent period:                           |___________________________________...
-  Measurement data:                                             ++++
-  Existing (end of period) D14 data:                            ++
-  Existing (up to end) D14 data:                                  ++
-  New (up to end) D14 data:                                     ++
-
   CASE 3 (NSG2, with D15 - up to end --> end of period)
 
                                                |2025              |Feb               |Today
@@ -30,9 +7,9 @@ notes: |
   Old parent period:                           |___________________________________...
   New parent period 1:                         |__________________|
   New parent period 2 (up to end):                                |________________...
-  Measurement data:                                             ++++
-  Existing (up to end) D14 data:                                ++++
-  New (end of period) D14 data:                                 ++
+  Measurement data:                                            +++++
+  Existing (up to end) D14 data:                               +++++
+  New (end of period) D14 data:                                +++
 
   CASE 4 (NSG2, with D15 - end of period --> up to end)
 
