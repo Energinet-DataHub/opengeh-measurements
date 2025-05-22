@@ -1,0 +1,61 @@
+notes: |
+  ## PURPOSE
+  Test the only scenario where cenc values should be updated back in time: When a period change is removed back in time.
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 1: Period change removed back in time
+                            |2024   |smrd    |2025          |today
+                            |_______|_______________________
+  Measurement data:              ++   ++             ++
+
+  Period 1 (cnc)               |----|
+  Old period 2 (cnc)                |--------------|
+  Old period 3 (cenc)                              |--------
+
+  New period 2 (cenc)               |----------------------_
+  Existing D15 values (cnc)    ++++++++++++++++++++
+  Existing D15 values (cenc)                       +++++++++
+
+  New D15 (cenc) values             +++++++++++++++++++++++++
+
+  CASE 2: Period change removed back in time (move in, no electrical heating)
+                            |2024   |smrd    |2025          |today
+                            |_______|_______________________
+  Measurement data:              ++   ++             ++
+
+  Period 1 (cnc)               |----|
+  Old period 2 (cnc)                |--------------|
+  Old period 3 (cenc)                              |--------
+
+  New period 2 (cenc)               |----------------------_
+  Existing D15 values (cnc)    ++++++++++++++++++++
+  Existing D15 values (cenc)                       +++++++++
+
+  New D15 (cenc) values             +++++++++++++++++++++++++
+
+  CASE 3: Period change removed back in time (move in, electrical heating)
+                            |2024   |smrd    |2025          |today
+                            |_______|_______________________
+  Measurement data:              ++   ++             ++
+
+  Period 1 (cnc)               |----|
+  Old period 2 (cnc)                |--------------|
+  Old period 3 (cenc)                              |--------
+
+  New period 2 (cenc)               |----------------------_
+  Existing D15 values (cnc)    ++++++++++++++++++++
+  Existing D15 values (cenc)                       +++++++++
+
+  New D15 (cenc) values             +++++++++++++++++++++++++
+
+
+
+cases_tested:
+  "Smrd is not 1"
+
+  "cenc calculation":
+    "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year"
+    "When period goes from cnc to cenc, new results are always generated"
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = false THEN default quantity value of 1800 for the settlement period and a daily quantity is 1800 / days in settlement year"
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = true THEN default quantity value of 5600 for the settlement period and a daily quantity is 5600 / days in settlement year"
