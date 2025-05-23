@@ -106,7 +106,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
             { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", true) },
             { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },

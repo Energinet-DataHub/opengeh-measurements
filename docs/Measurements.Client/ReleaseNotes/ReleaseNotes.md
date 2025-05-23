@@ -1,5 +1,11 @@
 # Measurements.Client Release Notes
 
+## Version 8.0.0
+
+- In `MeasurementAggregationByDate`, ´MissingValues` is renamed to `IsMissingValues`
+- In `PointAggregation`, `AggregatedQuantity` is renamed to `Quantity`
+- `Quantity` is changed to nullable decimal (`decimal?`)
+
 ## Version 7.1.1
 
 - fix link to documentation in package README

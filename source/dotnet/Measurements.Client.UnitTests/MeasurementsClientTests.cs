@@ -77,7 +77,7 @@ public class MeasurementsClientTests
         Assert.Equal(31, actual.Count);
         Assert.True(actual.First().Date == new DateOnly(2025, 3, 1));
         Assert.True(actual.Last().Date == new DateOnly(2025, 3, 31));
-        Assert.False(actual.All(p => p.MissingValues));
+        Assert.False(actual.All(p => p.IsMissingValues));
         Assert.True(actual.All(p => p.Quality == Quality.Measured));
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
         Assert.False(actual.All(p => p.ContainsUpdatedValues));
@@ -103,7 +103,7 @@ public class MeasurementsClientTests
         Assert.Equal(30, actual.Count);
         Assert.True(actual.First().Date == new DateOnly(2024, 10, 1));
         Assert.True(actual.Last().Date == new DateOnly(2024, 10, 31));
-        Assert.True(actual.Last().MissingValues);
+        Assert.True(actual.Last().IsMissingValues);
     }
 
     [Theory]
