@@ -38,7 +38,7 @@ public class MeasurementsAggregatedByDateResponseTests
         Assert.Equal(expectedDate, firstAggregation.Date);
         Assert.Equal(100.0m, firstAggregation.Quantity);
         Assert.Equal(Quality.Measured, firstAggregation.Quality);
-        Assert.False(firstAggregation.MissingValues);
+        Assert.False(firstAggregation.IsMissingValues);
         Assert.False(firstAggregation.ContainsUpdatedValues);
     }
 
@@ -104,6 +104,31 @@ public class MeasurementsAggregatedByDateResponseTests
     }
 
     [Theory]
+    [InlineData(null!)]
+    [InlineData(0)]
+    public void Create_WhenDataContainsQualityMissing_ThenQuantityCanBeZeroOrNull(int? quantity)
+    {
+        // Arrange
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
+        var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
+        var qualities = new[] { "measured", "missing" };
+        var resolutions = new[] { "PT1H" };
+        var units = new[] { "kWh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, quantity: quantity)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        var firstAggregation = actual.MeasurementAggregations.First();
+        Assert.Equal(quantity, firstAggregation.Quantity);
+    }
+
+    [Theory]
     [InlineData(15, Quality.Measured, true)]
     [InlineData(15, Quality.Calculated, true)]
     [InlineData(15, Quality.Estimated, true)]
@@ -112,7 +137,7 @@ public class MeasurementsAggregatedByDateResponseTests
     [InlineData(24, Quality.Calculated, false)]
     [InlineData(24, Quality.Estimated, false)]
     [InlineData(24, Quality.Missing, true)]
-    public void Create_WhenObservationsOrQualityIsMissing_ThenMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
+    public void Create_WhenObservationsOrQualityIsMissing_ThenIsMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -123,14 +148,14 @@ public class MeasurementsAggregatedByDateResponseTests
 
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, observationPointsCount)),
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, resolutions, units, pointCount: observationPointsCount)),
         };
 
         // Act
         var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
-        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().MissingValues);
+        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().IsMissingValues);
     }
 
     [Fact]
@@ -181,12 +206,13 @@ public class MeasurementsAggregatedByDateResponseTests
         string[] resolutions,
         string[] units,
         long pointCount = 24L,
-        long observationUpdates = 1L)
+        long observationUpdates = 1L,
+        decimal? quantity = 100.0m)
     {
         dynamic raw = new ExpandoObject();
         raw.min_observation_time = minObservationTime.ToDateTimeOffset();
         raw.max_observation_time = maxObservationTime.ToDateTimeOffset();
-        raw.aggregated_quantity = 100.0m;
+        raw.aggregated_quantity = quantity;
         raw.qualities = qualities;
         raw.resolutions = resolutions;
         raw.units = units;
