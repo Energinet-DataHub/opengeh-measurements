@@ -44,7 +44,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         Assert.Equal(meteringPoints, firstAggregation.MeteringPoint.Id);
         Assert.Equal(minObservationTime, firstAggregation.PointAggregationGroups.First().Value.From);
         Assert.Equal(maxObservationTime, firstAggregation.PointAggregationGroups.First().Value.To);
-        Assert.Equal(aggregatedQuantity, firstAggregation.PointAggregationGroups.First().Value.PointAggregations.First().AggregatedQuantity);
+        Assert.Equal(aggregatedQuantity, firstAggregation.PointAggregationGroups.First().Value.PointAggregations.First().Quantity);
         Assert.Equal(Quality.Measured, firstAggregation.PointAggregationGroups.First().Value.PointAggregations.First().Quality);
         Assert.Equal(Resolution.Hourly, firstAggregation.PointAggregationGroups.First().Value.Resolution);
     }

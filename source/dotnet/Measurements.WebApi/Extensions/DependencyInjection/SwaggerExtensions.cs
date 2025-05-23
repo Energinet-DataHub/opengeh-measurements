@@ -12,7 +12,7 @@ public static class SwaggerExtensions
             .AddSwaggerForWebApp(
                 executingAssembly: Assembly.GetExecutingAssembly(),
                 swaggerUITitle: "DataHub 3 Measurements API")
-            .AddApiVersioningForWebApp(new ApiVersion(1.0))
+            .AddApiVersioningForWebApp(new ApiVersion(4.0))
             .AddEndpointsApiExplorer();
     }
 }
