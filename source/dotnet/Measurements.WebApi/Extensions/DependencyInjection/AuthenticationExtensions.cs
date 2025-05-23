@@ -1,4 +1,5 @@
 ﻿using Energinet.DataHub.Measurements.Application.Extensions.Options;
+using Energinet.DataHub.Measurements.WebApi.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,7 +28,7 @@ public static class AuthenticationExtensions
                     ValidateIssuer = true,
                 };
             })
-            .AddJwtBearer("B2C", options =>
+            .AddJwtBearer(AuthenticationSchemas.B2C, options =>
             {
                 options.Audience = b2CAuthenticationOptions?.ResourceId;
                 options.Authority = authority;
