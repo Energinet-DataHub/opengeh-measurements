@@ -63,6 +63,35 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2021, 1);
+        var request = new GetAggregatedByDateRequest("123456789", yearMonth.Year, yearMonth.Month);
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByDateAsyncV3(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
+        Assert.True(actualAggregations.MissingValues);
+        Assert.True(actualAggregations.ContainsUpdatedValues);
+    }
+
+    [Theory]
+    [InlineAutoData]
     public async Task GetAggregatedByDateAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
@@ -85,8 +114,25 @@ public class MeasurementsHandlerTests
         Assert.Equal(42, actualAggregations.Quantity);
         Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
-        Assert.True(actualAggregations.MissingValues);
+        Assert.True(actualAggregations.IsMissingValues);
         Assert.True(actualAggregations.ContainsUpdatedValues);
+    }
+
+    [Fact]
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsyncV3(request));
     }
 
     [Fact]

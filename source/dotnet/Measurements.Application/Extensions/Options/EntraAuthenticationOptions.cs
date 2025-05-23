@@ -6,7 +6,7 @@ namespace Energinet.DataHub.Measurements.Application.Extensions.Options;
 /// Contains options for validating the JWT bearer tokens that must be sent as
 /// part of any http request for protected http endpoints.
 /// </summary>
-public class AuthenticationOptions
+public class EntraAuthenticationOptions
 {
     public const string SectionName = "Auth";
 
