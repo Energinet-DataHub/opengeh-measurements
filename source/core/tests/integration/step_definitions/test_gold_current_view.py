@@ -109,6 +109,22 @@ def _(spark, column):
     return mp_id
 
 
+@given("Given a gold measurement where quantity is null", target_fixture="metering_point_id")
+def _(spark, column):
+    mp_id = identifier_helper.create_random_metering_point_id()
+
+    kwargs = {
+        "metering_point_id": mp_id,
+        "observation_time": datetime.now(),
+        "quality": "some_quality",
+        "quantity": None,
+        "metering_point_type": "some_type",
+    }
+    data = GoldMeasurementsBuilder(spark).add_row(**kwargs).build()
+    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
+    return mp_id
+
+
 @when("accessing the current_v1 gold view", target_fixture="actual_schema")
 def _(spark):
     return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").schema
