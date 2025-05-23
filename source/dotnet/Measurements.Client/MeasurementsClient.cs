@@ -104,31 +104,31 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
-        return $"v2/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
+        return $"v4/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 
     private static string CreateGetCurrentMeasurementsUrl(string meteringPointId, Instant fromDate, Instant toDate)
     {
-        return $"v3/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
+        return $"v4/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
     }
 
     private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)
     {
-        return $"v3/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+        return $"v4/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, int year)
     {
-        return $"v3/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
+        return $"v4/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
     }
 
     private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId)
     {
-        return $"v3/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
+        return $"v4/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
     }
 
     private static string CreateGetMeasurementsAggregatedByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation)
     {
-        return $"v3/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
+        return $"v4/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
     }
 }

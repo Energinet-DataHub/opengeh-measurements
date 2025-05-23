@@ -4,6 +4,6 @@ namespace Energinet.DataHub.Measurements.Domain;
 
 public record MeasurementAggregationByMonth(
     YearMonth YearMonth,
-    decimal Quantity,
+    decimal? Quantity,
     Quality Quality,
     Unit Unit);
