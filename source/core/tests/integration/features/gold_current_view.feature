@@ -13,3 +13,15 @@ Feature: Current_v1 Gold View
     Given gold measurements with multiple transactions for the same metering point where the latest is cancelled
     When querying the current_v1 gold view for that metering point
     Then the result should contain 0 rows
+
+  Scenario Outline: A gold measurement with null <column> is excluded from current_v1 view
+    Given a gold measurement where <column> is null
+    When querying the current_v1 gold view for that metering point
+    Then the result should contain 0 rows
+
+    Examples:
+      | column              |
+      | metering_point_type |
+      | observation_time    |
+      | quantity            |
+      | quality             |
