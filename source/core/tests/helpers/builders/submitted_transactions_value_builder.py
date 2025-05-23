@@ -3,7 +3,7 @@ from datetime import datetime
 from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,
