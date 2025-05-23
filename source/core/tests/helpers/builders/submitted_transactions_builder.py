@@ -72,7 +72,7 @@ class Value:
         resolution: Resolution = Resolution.R_PT15M,
         start_datetime: datetime = datetime_helper.get_datetime(year=2020, month=1),
         end_datetime: datetime = datetime_helper.get_datetime(year=2020, month=2),
-        points: list = PointsBuilder.generate_point(),
+        points: list | None = PointsBuilder.generate_point(),
     ) -> None:
         self.version = version
         self.orchestration_instance_id = orchestration_instance_id

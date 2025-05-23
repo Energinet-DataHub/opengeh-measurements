@@ -109,7 +109,7 @@ def _(spark, column):
     return mp_id
 
 
-@given("Given a gold measurement where quantity is null", target_fixture="metering_point_id")
+@given("a gold measurement where quantity is null", target_fixture="metering_point_id")
 def _(spark, column):
     mp_id = identifier_helper.create_random_metering_point_id()
 
