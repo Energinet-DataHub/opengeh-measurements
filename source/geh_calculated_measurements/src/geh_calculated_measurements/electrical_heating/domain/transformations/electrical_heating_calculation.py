@@ -21,20 +21,10 @@ def calculate_electrical_heating_in_local_time(
 
     periods = _find_source_metering_point_for_energy(periods)
 
-    print("periods - table")
-    periods.show()
-    print("periods - schema")
-    periods.printSchema()
-
     periods_with_hourly_energy = _join_source_metering_point_periods_with_energy_hourly(
         periods,
         time_series_points_hourly,
     )
-
-    print("periods_with_hourly_energy - table")
-    periods_with_hourly_energy.show()
-    print("periods_with_hourly_energy - schema")
-    periods.printSchema()
 
     periods_with_daily_energy_and_limit = _calculate_period_limit(
         periods_with_hourly_energy, execution_start_datetime_local_time
@@ -107,11 +97,6 @@ def _join_source_metering_point_periods_with_energy_hourly(
             "inner",
         )
     )
-
-    print("merge_on_consumption - table")
-    merge_on_consumption.show()
-    print("merge_on_consumption - schema")
-    merge_on_consumption.printSchema()
 
     merge_on_grid_supply = merge_on_consumption.join(
         time_series_points_hourly.alias("supply_to_grid"),
