@@ -2,7 +2,7 @@
 
 ## Version 7.2.0
 
-- Added the possibility of Authorizing using B2C in MeasurementsApi.
+- Added the possibility of Authorizing using B2C in MeasurementsApi, by providing their own `AuthorizationHeaderProvider`.
 
 ## Version 7.1.1
 
