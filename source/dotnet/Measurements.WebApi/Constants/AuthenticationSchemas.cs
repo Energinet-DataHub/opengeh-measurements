@@ -1,6 +1,8 @@
-﻿namespace Energinet.DataHub.Measurements.WebApi.Constants;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-public class AuthenticationSchemas
+namespace Energinet.DataHub.Measurements.WebApi.Constants;
+
+public static class AuthenticationSchemas
 {
     public const string Default = JwtBearerDefaults.AuthenticationScheme;
 
