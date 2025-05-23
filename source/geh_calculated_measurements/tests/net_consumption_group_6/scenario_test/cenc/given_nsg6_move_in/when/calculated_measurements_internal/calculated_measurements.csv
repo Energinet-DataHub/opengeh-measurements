@@ -1,0 +1,3 @@
+orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_id;metering_point_type;observation_time;quantity;settlement_type;#comment
+net_consumption;1;1;2023-01-02 00:00:00;150000001500170201;net_consumption;2025-01-30T23:00:00Z;3;up_to_end_of_period;Case 1: Last net_consumption entry, 1 day before execution_start_datetime
+net_consumption;1;1;2023-01-02 00:00:00;150000001500170202;net_consumption;2025-01-30T23:00:00Z;3;up_to_end_of_period;Case 2: Last net_consumption entry, 1 day before execution_start_datetime

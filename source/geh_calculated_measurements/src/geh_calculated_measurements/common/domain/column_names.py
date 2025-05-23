@@ -31,3 +31,4 @@ class ContractColumnNames:
     transaction_creation_datetime = "transaction_creation_datetime"
     transaction_id = "transaction_id"
     uncoupled_date = "uncoupled_date"
+    start_date = "start_date"

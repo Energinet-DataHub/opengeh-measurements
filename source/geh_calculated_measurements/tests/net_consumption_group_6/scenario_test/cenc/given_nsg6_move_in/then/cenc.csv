@@ -1,0 +1,3 @@
+metering_point_id;quantity;settlement_year;settlement_month;start_date
+150000001500170201;1800;2025;1;2024-10-31T23:00:00Z
+150000001500170202;5600;2024;6;2024-10-31T23:00:00Z
