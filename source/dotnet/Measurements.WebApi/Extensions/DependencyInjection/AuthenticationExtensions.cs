@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using AuthenticationOptions = Energinet.DataHub.Measurements.Application.Extensions.Options.AuthenticationOptions;
 
@@ -10,15 +9,13 @@ public static class AuthenticationExtensions
     public static IServiceCollection AddAuthenticationForWebApp(this IServiceCollection services, IConfiguration configuration)
     {
         var authenticationOptions = configuration
-            .GetRequiredSection(AuthenticationOptions.SectionName)
+            .GetSection(AuthenticationOptions.SectionName)
             .Get<AuthenticationOptions>();
-
-        GuardAuthenticationOptions(authenticationOptions);
 
         services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            options.Authority = authenticationOptions!.Issuer;
-            options.Audience = authenticationOptions.ApplicationIdUri;
+            options.Authority = authenticationOptions?.Issuer;
+            options.Audience = authenticationOptions?.ApplicationIdUri;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = true,
@@ -26,18 +23,5 @@ public static class AuthenticationExtensions
             };
         });
         return services;
-    }
-
-    private static void GuardAuthenticationOptions(AuthenticationOptions? authenticationOptions)
-    {
-        if (string.IsNullOrWhiteSpace(authenticationOptions?.ApplicationIdUri))
-        {
-            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.ApplicationIdUri)}'.");
-        }
-
-        if (string.IsNullOrWhiteSpace(authenticationOptions.Issuer))
-        {
-            throw new InvalidConfigurationException($"Missing '{nameof(AuthenticationOptions.Issuer)}'.");
-        }
     }
 }

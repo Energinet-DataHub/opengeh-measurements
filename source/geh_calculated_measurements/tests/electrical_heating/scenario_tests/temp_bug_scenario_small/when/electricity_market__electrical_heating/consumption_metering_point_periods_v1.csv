@@ -1,0 +1,6 @@
+metering_point_id;net_settlement_group;settlement_month;period_from_date;period_to_date;#comment
+170000000000000200;0;1;2023-12-31T23:00:00Z;;Case 0 (regular EH that does not hit limit
+170000000000000201;;1;2023-12-31T23:00:00Z;2024-01-31T23:00:00Z;Case 1 (regular EH that hits limit)
+170000000000000202;2;1;2023-12-31T23:00:00Z;2024-01-31T23:00:00Z;Case 2 (NSG2 no D15)
+170000000000000203;2;1;2023-12-31T23:00:00Z;2024-01-31T23:00:00Z;Case 3 (NSG2 with D15)
+170000000000000204;6;1;2023-12-31T23:00:00Z;2024-01-31T23:00:00Z;Case 4 (NSG6)

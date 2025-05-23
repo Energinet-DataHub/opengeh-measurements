@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CatalogSettings(BaseSettings):
@@ -11,7 +11,6 @@ class CatalogSettings(BaseSettings):
     catalog_name (str): The name of the unity catalog created in infrastructure.
     """
 
-    catalog_name: str = Field(init=False)
+    model_config = SettingsConfigDict(case_sensitive=False)
 
-    class Config:
-        case_sensitive = False
+    catalog_name: str = Field(init=False)
