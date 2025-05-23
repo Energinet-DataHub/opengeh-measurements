@@ -1,5 +1,17 @@
 # Measurements.Client Release Notes
 
+## Version 8.1.0
+
+- Consumers can now pass a custom IAuthorizationHeaderProvider implementation when registering the Measurements Client, which can be used to enable B2C credentials.
+- If no custom provider is specified, a default implementation using Azure Entra credentials will be used.
+
+```csharp
+      services.AddMeasurementsClient(options =>
+   {
+      options.AuthorizationHeaderProvider = new B2CAuthorizationHeaderProvider();
+   });
+```
+
 ## Version 8.0.0
 
 - In `MeasurementAggregationByDate`, ´MissingValues` is renamed to `IsMissingValues`
