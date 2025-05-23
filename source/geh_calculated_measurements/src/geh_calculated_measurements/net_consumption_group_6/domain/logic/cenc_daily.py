@@ -60,7 +60,7 @@ def calculate_daily(
         .cast(T.DecimalType(18, 3))
         .alias(ContractColumnNames.quantity),
         F.col("execution_start_datetime"),
-        F.col("start_date"),
+        F.col(ContractColumnNames.start_date),
     )
 
     latest_measurements_date = (

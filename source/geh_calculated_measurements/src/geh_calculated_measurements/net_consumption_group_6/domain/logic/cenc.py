@@ -89,7 +89,7 @@ def prepare_cenc_with_move_in(
             F.month(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias(
                 ContractColumnNames.settlement_month
             ),
-            net_consumption_metering_points.period_from_date.alias("start_date"),
+            net_consumption_metering_points.period_from_date.alias(ContractColumnNames.start_date),
         )
     )
 
