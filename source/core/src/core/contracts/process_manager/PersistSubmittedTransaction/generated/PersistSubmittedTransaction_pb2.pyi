@@ -1,4 +1,3 @@
-import datetime
 from collections.abc import Iterable as _Iterable
 from collections.abc import Mapping as _Mapping
 from typing import ClassVar as _ClassVar
@@ -167,9 +166,9 @@ class PersistSubmittedTransaction(_message.Message):
         orchestration_type: _Optional[_Union[OrchestrationType, str]] = ...,
         metering_point_id: _Optional[str] = ...,
         transaction_id: _Optional[str] = ...,
-        transaction_creation_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
-        start_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
-        end_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...,
+        transaction_creation_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
+        start_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
+        end_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
         metering_point_type: _Optional[_Union[MeteringPointType, str]] = ...,
         unit: _Optional[_Union[Unit, str]] = ...,
         resolution: _Optional[_Union[Resolution, str]] = ...,
