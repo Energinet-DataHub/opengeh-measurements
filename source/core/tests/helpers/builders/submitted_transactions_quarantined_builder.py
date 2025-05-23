@@ -6,7 +6,7 @@ from pyspark.sql import DataFrame, SparkSession
 
 import tests.helpers.datetime_helper as datetime_helper
 from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
-from core.contracts.process_manager.DecimalValue.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
 from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
     MeteringPointType,
     OrchestrationType,

@@ -18,7 +18,7 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2  # noqa: E402, F401, I001
-import core.contracts.process_manager.DecimalValue.generated.DecimalValue_pb2 as _DecimalValue_pb2  # noqa: E402, F401
+import core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 as _DecimalValue_pb2  # noqa: E402, F401
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
