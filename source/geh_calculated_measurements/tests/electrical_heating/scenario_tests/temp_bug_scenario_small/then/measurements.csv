@@ -1,2 +1,2 @@
-metering_point_type;metering_point_id;date;quantity;settlement_type;#comment
-electrical_heating;140000000000170200;2024-01-03T23:00:00Z;1;;Case 0: We only write values for jan. 4th to child mp, because value for jan. 3rd is the same as exsting value
+metering_point_id;date;quantity;settlement_type;#comment
+140000000000170200;2024-01-03T23:00:00Z;1;;Case 0: We only write values for jan. 4th to child mp, because value for jan. 3rd is the same as exsting value
