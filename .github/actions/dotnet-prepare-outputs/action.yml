@@ -41,8 +41,3 @@ runs:
           --no-restore \
           --configuration Release \
           --output '${{ inputs.output_path }}\dotnet\measurementsapi'
-
-    - name: Publish Measurements API Swagger
-      shell: bash
-      run: |
-        cp "${{ github.workspace }}/source/dotnet/Measurements.WebApi/bin/Release/net9.0/swagger.json" "${{ inputs.OUTPUT_PATH }}"
