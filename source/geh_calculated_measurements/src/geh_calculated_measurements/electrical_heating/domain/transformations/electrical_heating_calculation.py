@@ -156,29 +156,27 @@ def _join_source_metering_point_periods_with_energy_hourly(
 
 
 @testing()
-def _calculate_period_limit(  # for nsg 2 and 6 we only lets end of period through
+def _calculate_period_limit(
     periods_with_hourly_energy: DataFrame, execution_start_datetime_local_time: datetime
 ) -> DataFrame:
     MONTHS_IN_YEAR = 12
     periods_with_hourly_energy = _calculate_base_period_limit(periods_with_hourly_energy)
 
-    periods_with_hourly_energy = (
-        periods_with_hourly_energy.select(  # should be if: the period is closed | in ended SMRD
-            "*",
+    periods_with_hourly_energy = periods_with_hourly_energy.select(
+        "*",
+        (
             (
-                (
-                    F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), MONTHS_IN_YEAR)
-                    <= F.lit(execution_start_datetime_local_time)
-                )
-                | (F.col(EphemeralColumnNames.parent_period_end) < F.lit(execution_start_datetime_local_time))
-            ).alias("is_end_of_period"),
-        )
+                F.add_months(F.col(EphemeralColumnNames.settlement_month_datetime), MONTHS_IN_YEAR)
+                <= F.lit(execution_start_datetime_local_time)
+            )
+            | (F.col(EphemeralColumnNames.parent_period_end) < F.lit(execution_start_datetime_local_time))
+        ).alias("is_end_of_period"),
     )
 
     # Prevent multiple evaluations of this expensive data frame
     periods_with_hourly_energy.cache()
 
-    no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(  # why we set non nsg 2 and 6 set to up to end? - but not relevant for this test
+    no_nsg_or_up2end = _calculate_period_limit__no_net_settlement_group_or_up2end(
         periods_with_hourly_energy.where(
             (
                 F.col(ContractColumnNames.net_settlement_group).isNull()
