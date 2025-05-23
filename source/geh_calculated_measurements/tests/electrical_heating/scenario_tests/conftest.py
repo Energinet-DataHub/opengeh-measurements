@@ -32,11 +32,16 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
         ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
-    calculated_measurements = read_csv(
-        spark,
-        f"{scenario_path}/when/calculated_measurements_internal/calculated_measurements.csv",
-        CalculatedMeasurementsInternal.schema,
-    )
+    calculated_measurements_path = f"{scenario_path}/when/calculated_measurements_internal/calculated_measurements.csv"
+    if Path(calculated_measurements_path).exists():
+        calculated_measurements = read_csv(
+            spark,
+            f"{scenario_path}/when/calculated_measurements_internal/calculated_measurements.csv",
+            CalculatedMeasurementsInternal.schema,
+        )
+    else:
+        calculated_measurements = spark.createDataFrame([], CalculatedMeasurementsInternal.schema)
+
     consumption_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__electrical_heating/consumption_metering_point_periods_v1.csv",
