@@ -60,6 +60,7 @@ def calculate_daily(
         .cast(T.DecimalType(18, 3))
         .alias(ContractColumnNames.quantity),
         F.col("execution_start_datetime"),
+        F.col("start_date"),
     )
 
     latest_measurements_date = (
@@ -81,9 +82,18 @@ def calculate_daily(
         .select(
             "cenc.*",
             F.when(
-                F.col("ts.latest_observation_date").isNull()
-                | (F.col("ts.latest_observation_date") < F.col("cenc.settlement_date")),
+                (F.col("ts.latest_observation_date") < F.col("cenc.settlement_date")),
                 F.date_add(F.col("cenc.settlement_date"), -1),
+            )
+            .when(
+                F.col("ts.latest_observation_date").isNull()
+                & (F.col("cenc.start_date") <= F.col("cenc.settlement_date")),
+                F.date_add(F.col("cenc.settlement_date"), -1),
+            )
+            .when(
+                F.col("ts.latest_observation_date").isNull()
+                & (F.col("cenc.start_date") > F.col("cenc.settlement_date")),
+                F.col("cenc.start_date"),
             )
             .otherwise(F.col("ts.latest_observation_date"))
             .alias("last_run"),
