@@ -24,10 +24,13 @@ class PointsBuilder:
     def add_row(
         self,
         position: int = 1,
-        quantity: DecimalValue = DecimalValue(units=1, nanos=0),
+        quantity: DecimalValue | None = DecimalValue(units=1, nanos=0),
         quality: Quality = Quality.Q_MEASURED,
     ) -> "PointsBuilder":
-        self.data.append((position, (quantity.units, quantity.nanos), quality))
+        if quantity:
+            self.data.append((position, (quantity.units, quantity.nanos), quality))
+        else:
+            self.data.append((position, None, quality))
         return self
 
     def build(self):

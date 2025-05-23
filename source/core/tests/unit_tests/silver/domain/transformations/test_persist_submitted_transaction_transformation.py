@@ -50,6 +50,20 @@ def test__create_by_submitted_transaction__should_return_correct_decimal_value(s
     assert actual.collect()[0].points[0].quantity == expected_decimal_value
 
 
+def test__create_by_submitted_transaction__should_return_default_decimal_value(spark: SparkSession) -> None:
+    # Arrange
+    expected_default_decimal_value = None
+    points = PointsBuilder().add_row(1, None, Quality.Q_MISSING).build()
+
+    submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
+
+    # Act
+    actual = sut.transform(submitted_transaction)
+
+    # Assert
+    assert actual.collect()[0].points[0].quantity == expected_default_decimal_value
+
+
 def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> None:
     # Arrange
     submitted_transactions = (

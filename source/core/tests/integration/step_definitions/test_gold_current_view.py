@@ -99,12 +99,27 @@ def _(spark, column):
     kwargs = {
         "metering_point_id": mp_id,
         "observation_time": datetime.now(),
-        "quantity": Decimal(100),
         "quality": "some_quality",
         "metering_point_type": "some_type",
     }
     kwargs[column] = None
 
+    data = GoldMeasurementsBuilder(spark).add_row(**kwargs).build()
+    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
+    return mp_id
+
+
+@given("a gold measurement where quantity is null", target_fixture="metering_point_id_and_quantity_is_null")
+def _(spark, column):
+    mp_id = identifier_helper.create_random_metering_point_id()
+
+    kwargs = {
+        "metering_point_id": mp_id,
+        "observation_time": datetime.now(),
+        "quality": "some_quality",
+        "quantity": None,
+        "metering_point_type": "some_type",
+    }
     data = GoldMeasurementsBuilder(spark).add_row(**kwargs).build()
     table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
     return mp_id
@@ -133,6 +148,17 @@ def _(spark, metering_point_id_and_expected_quantity):
     )
 
 
+@when(
+    "querying the current_v1 gold view for that metering point and quantity is null",
+    target_fixture="actual_result_with_quantity_is_null",
+)
+def _(spark, metering_point_id_and_quantity_is_null):
+    mp_id = metering_point_id_and_quantity_is_null
+    return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").where(
+        f"metering_point_id = '{mp_id}'"
+    )
+
+
 @then("the table schema should match the expected current_v1 schema")
 def _(actual_schema):
     assert_schemas.assert_schema(actual=actual_schema, expected=current_v1_schema, ignore_nullability=True)
@@ -149,3 +175,10 @@ def _(actual_result_with_quantity, metering_point_id_and_expected_quantity):
     rows = actual_result_with_quantity.collect()
     assert len(rows) == 1
     assert rows[0]["quantity"] == expected_quantity
+
+
+@then("the result should contain 1 row with the quantity is null")
+def _(actual_result_with_quantity_is_null, metering_point_id_and_expected_quantity):
+    rows = actual_result_with_quantity_is_null.collect()
+    assert len(rows) == 1
+    assert rows[0]["quantity"] is None
