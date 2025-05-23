@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using AuthenticationOptions = Energinet.DataHub.Measurements.Application.Extensions.Options.AuthenticationOptions;
 

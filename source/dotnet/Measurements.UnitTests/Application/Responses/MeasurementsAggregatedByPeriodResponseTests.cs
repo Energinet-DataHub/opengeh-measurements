@@ -1,5 +1,4 @@
 ﻿using System.Dynamic;
-using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses;
 using Energinet.DataHub.Measurements.Domain;
