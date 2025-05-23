@@ -8,27 +8,28 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class MeasurementsAggregatedByDateResponse
+[Obsolete("MeasurementsAggregatedByDateResponseV3 is deprecated. Use MeasurementsAggregatedByDateResponse instead.")]
+public class MeasurementsAggregatedByDateResponseV3
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregationByDate> MeasurementAggregations { get; init; } = [];
+    public List<MeasurementAggregationByDateV3> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private MeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByDateResponseV3() { } // Needed by System.Text.Json to deserialize
 
-    private MeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDate> measurementAggregations)
+    private MeasurementsAggregatedByDateResponseV3(List<MeasurementAggregationByDateV3> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponseV3 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregationByDate(
+                new MeasurementAggregationByDateV3(
                     measurement.MinObservationTime.ToDateOnly(),
-                    measurement.Quantity,
+                    measurement.Quantity ?? 0,
                     FindMinimumQuality(measurement),
                     FindUnit(measurement),
                     FindIsMissingValues(measurement),
@@ -37,7 +38,7 @@ public class MeasurementsAggregatedByDateResponse
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByDateResponse(measurementAggregations);
+            : new MeasurementsAggregatedByDateResponseV3(measurementAggregations);
     }
 
     private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
