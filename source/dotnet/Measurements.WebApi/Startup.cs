@@ -26,7 +26,11 @@ public class Startup(IConfiguration configuration)
             });
 
         // => Open API generation
-        services.AddSwagger();
+        services
+            .AddApiVersioning()
+            .AddApiExplorer();
+        services
+            .AddOpenApi();
 
         // => Authentication/authorization
         services

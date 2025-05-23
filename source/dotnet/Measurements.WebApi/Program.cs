@@ -7,6 +7,11 @@ startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
 app.UseExceptionHandler("/error");
 
 startup.Configure(app);

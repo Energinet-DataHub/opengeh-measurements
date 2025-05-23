@@ -5,11 +5,19 @@
         <RootNamespace>Energinet.DataHub.Measurements.WebApi</RootNamespace>
     </PropertyGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v3"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
-    </Target>
+    <PropertyGroup>
+        <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.2.0" />
