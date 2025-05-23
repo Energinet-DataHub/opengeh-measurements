@@ -12,6 +12,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Authorize(AuthenticationSchemes = $"{AuthenticationSchemas.Default},{AuthenticationSchemas.B2C}")]
+[ApiVersion(2.0, Deprecated = true)]
 [ApiVersion(3.0, Deprecated = true)]
 [ApiVersion(4.0)]
 [Route("v{v:apiVersion}/measurements")]
@@ -19,6 +20,7 @@ public class MeasurementsController(
     IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
 {
+    [MapToApiVersion(2.0)]
     [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("forPeriod")]
