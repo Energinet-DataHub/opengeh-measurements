@@ -23,5 +23,4 @@ Feature: Current_v1 Gold View
       | column              |
       | metering_point_type |
       | observation_time    |
-      | quantity            |
       | quality             |
