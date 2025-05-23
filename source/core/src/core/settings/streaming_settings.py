@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pyspark.sql.streaming.readwriter import DataStreamWriter
 
 
@@ -13,6 +13,8 @@ class StreamingSettings(BaseSettings):
     Attributes:
     continuous_streaming_enabled (bool): Indicates whether the continuous streaming is enabled. If false, the stream will stop when no more events are available.
     """
+
+    model_config = SettingsConfigDict(case_sensitive=False)
 
     continuous_streaming_enabled: bool = Field(init=False)
     maxFilesPerTrigger: Optional[int] = Field(default=None, init=False)
@@ -26,6 +28,3 @@ class StreamingSettings(BaseSettings):
         if self.maxBytesPerTrigger is not None:
             streaming_writer = streaming_writer.option("maxBytesPerTrigger", self.maxBytesPerTrigger)
         return streaming_writer
-
-    class Config:
-        case_sensitive = False

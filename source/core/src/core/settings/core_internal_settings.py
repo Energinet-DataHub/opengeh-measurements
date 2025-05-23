@@ -1,5 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CoreInternalSettings(BaseSettings):
@@ -12,8 +12,7 @@ class CoreInternalSettings(BaseSettings):
     core_internal_database_name (str): The name of the Core Internal database created in infrastructure.
     """
 
+    model_config = SettingsConfigDict(case_sensitive=False)
+
     core_internal_container_name: str = Field(init=False)
     core_internal_database_name: str = Field(init=False)
-
-    class Config:
-        case_sensitive = False
