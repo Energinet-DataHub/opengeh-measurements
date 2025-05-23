@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
@@ -17,23 +18,30 @@ public static class ClientExtensions
     /// <summary>
     /// Register Measurement Client for use in the application.
     /// </summary>
-    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, AuthorizationHeaderProvider? b2CAuthorizationHeaderProvider = null)
+    public static IServiceCollection AddMeasurementsClient(
+        this IServiceCollection services,
+        Action<MeasurementClientOptions>? configureOptions = null)
     {
+        // Configure options
+        var options = new MeasurementClientOptions();
+        configureOptions?.Invoke(options);
+
         services
             .AddOptions<MeasurementHttpClientOptions>()
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
-        if (b2CAuthorizationHeaderProvider != null)
+        // If no authorization header is provided, one for Entra is used
+        if (options.AuthorizationHeaderProvider != null)
         {
-            services.AddSingleton<IAuthorizationHeaderProvider>(b2CAuthorizationHeaderProvider);
+            services.AddSingleton(options.AuthorizationHeaderProvider);
         }
         else
         {
             services.AddSingleton<IAuthorizationHeaderProvider>(serviceProvider =>
             {
-                var options = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
-                return new AuthorizationHeaderProvider(new DefaultAzureCredential(), options.ApplicationIdUri);
+                var measurementsHttpOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+                return new AuthorizationHeaderProvider(new DefaultAzureCredential(), measurementsHttpOptions.ApplicationIdUri);
             });
         }
 

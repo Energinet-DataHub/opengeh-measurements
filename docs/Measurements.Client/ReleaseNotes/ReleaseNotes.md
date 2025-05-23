@@ -2,7 +2,15 @@
 
 ## Version 7.2.0
 
-- Added the possibility of Authorizing using B2C in MeasurementsApi, by providing their own `AuthorizationHeaderProvider`.
+- Consumers can now pass a custom IAuthorizationHeaderProvider implementation when registering the Measurements Client, which can be used to enable B2C credentials.
+- If no custom provider is specified, a default implementation using Azure Entra credentials will be used.
+
+```csharp
+      services.AddMeasurementsClient(options =>
+   {
+      options.AuthorizationHeaderProvider = new B2CAuthorizationHeaderProvider();
+   });
+```
 
 ## Version 7.1.1
 
