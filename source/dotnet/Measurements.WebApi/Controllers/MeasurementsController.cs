@@ -12,16 +12,12 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
 [Authorize(AuthenticationSchemes = $"{AuthenticationSchemas.Default},{AuthenticationSchemas.B2C}")]
-[ApiVersion(2.0, Deprecated = true)]
-[ApiVersion(3.0, Deprecated = true)]
 [ApiVersion(4.0)]
 [Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(
     IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
 {
-    [MapToApiVersion(2.0)]
-    [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
@@ -45,36 +41,11 @@ public class MeasurementsController(
         }
     }
 
-    [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("currentForPeriod")]
     public Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
         return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
-    }
-
-    [MapToApiVersion(3.0)]
-    [HttpGet("aggregatedByDate")]
-    [Obsolete("v4.0 is deprecated. Use v4.0 instead.")]
-    public async Task<IActionResult> GetAggregatedByDateAsyncV3([FromQuery] GetAggregatedByDateRequest request)
-    {
-        try
-        {
-            var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsyncV3(request);
-            var result = jsonSerializer.Serialize(aggregatedByMonth);
-
-            return Ok(result);
-        }
-        catch (MeasurementsNotFoundException e)
-        {
-            logger.LogInformation(
-                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-                request.MeteringPointId.Sanitize(),
-                request.Year,
-                request.Month);
-
-            return NotFound(e.Message);
-        }
     }
 
     [MapToApiVersion(4.0)]
@@ -100,7 +71,6 @@ public class MeasurementsController(
         }
     }
 
-    [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
@@ -123,7 +93,6 @@ public class MeasurementsController(
         }
     }
 
-    [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("aggregatedByYear")]
     public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)
@@ -145,7 +114,6 @@ public class MeasurementsController(
         }
     }
 
-    [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("aggregatedByPeriod")]
     public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
