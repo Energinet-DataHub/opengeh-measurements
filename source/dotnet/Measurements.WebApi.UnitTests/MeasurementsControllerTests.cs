@@ -144,17 +144,18 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsExists_ReturnValidJson(
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
         var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementsAggregatedResponse(DeprecatedMeasurementsAggregatedByDateResponse.Create);
-        var expected = DeprecatedCreateExpectedMeasurementsAggregatedByDate();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponseV3.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByDateV3();
         measurementsHandler
-            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .Setup(x => x.GetAggregatedByDateAsyncV3(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(response);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
@@ -167,7 +168,8 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoMoqData]
-    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -175,7 +177,7 @@ public class MeasurementsControllerTests
         // Arrange
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
-            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .Setup(x => x.GetAggregatedByDateAsyncV3(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new MeasurementsNotFoundException());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
@@ -188,7 +190,8 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsUnknownError_ThenThrowsException(
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
@@ -196,7 +199,7 @@ public class MeasurementsControllerTests
         // Arrange
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
-            .Setup(x => x.DeprecatedGetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
+            .Setup(x => x.GetAggregatedByDateAsyncV3(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
@@ -346,14 +349,14 @@ public class MeasurementsControllerTests
         return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
     }
 
-    private static string DeprecatedCreateExpectedMeasurementsAggregatedByDate()
+    private static string CreateExpectedMeasurementsAggregatedByDateV3()
     {
         return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByDate()
     {
-        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","ContainsMissingValues":true,"ContainsUpdatedValues":true}]}""";
+        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","IsMissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByMonth()

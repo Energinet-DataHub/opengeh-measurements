@@ -52,11 +52,12 @@ public class MeasurementsController(
 
     [MapToApiVersion(3.0)]
     [HttpGet("aggregatedByDate")]
+    [Obsolete("v4.0 is deprecated. Use v4.0 instead.")]
     public async Task<IActionResult> GetAggregatedByDateAsyncV3([FromQuery] GetAggregatedByDateRequest request)
     {
         try
         {
-            var aggregatedByMonth = await measurementsHandler.DeprecatedGetAggregatedByDateAsync(request);
+            var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsyncV3(request);
             var result = jsonSerializer.Serialize(aggregatedByMonth);
 
             return Ok(result);

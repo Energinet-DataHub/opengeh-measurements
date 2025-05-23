@@ -1,6 +1,7 @@
 ﻿namespace Energinet.DataHub.Measurements.Domain;
 
-public record DeprecatedMeasurementAggregationByDate(
+[Obsolete("MeasurementAggregationByDateV3 is deprecated. Use MeasurementAggregationByDate instead.")]
+public record MeasurementAggregationByDateV3(
     DateOnly Date,
     decimal Quantity,
     Quality Quality,

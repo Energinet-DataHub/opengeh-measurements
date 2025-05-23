@@ -168,6 +168,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
     public async Task GetAggregatedByDateAsyncV3_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -183,7 +184,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<DeprecatedMeasurementsAggregatedByDateResponse>(actualResponse);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponseV3>(actualResponse);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
@@ -228,7 +229,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(24.0M, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
-            Assert.False(measurementAggregation.ContainsMissingValues);
+            Assert.False(measurementAggregation.IsMissingValues);
             Assert.False(measurementAggregation.ContainsUpdatedValues);
         }
     }
@@ -292,7 +293,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetAggregatedByDateAsync_WhenDateContainsMissingValues_TheFlagIsSetInResponse()
+    public async Task GetAggregatedByDateAsync_WhenDateIsMissingValues_TheFlagIsSetInResponse()
     {
         // Arrange
         const string meteringPointId = "123456789098765432";
@@ -308,7 +309,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponse>(actualResponse);
 
         // Assert
-        Assert.True(actual.MeasurementAggregations.First().ContainsMissingValues);
+        Assert.True(actual.MeasurementAggregations.First().IsMissingValues);
     }
 
     [Fact]
@@ -463,7 +464,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v3")
+    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v4")
     {
         return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointIds={meteringPointIds}&from={from}&to={to}&aggregation={aggregation}";
     }

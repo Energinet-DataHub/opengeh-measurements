@@ -63,7 +63,8 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
-    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
         // Arrange
@@ -77,7 +78,7 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
-        var actual = await sut.DeprecatedGetAggregatedByDateAsync(request);
+        var actual = await sut.GetAggregatedByDateAsyncV3(request);
         var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
@@ -113,12 +114,13 @@ public class MeasurementsHandlerTests
         Assert.Equal(42, actualAggregations.Quantity);
         Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
-        Assert.True(actualAggregations.ContainsMissingValues);
+        Assert.True(actualAggregations.IsMissingValues);
         Assert.True(actualAggregations.ContainsUpdatedValues);
     }
 
     [Fact]
-    public async Task DeprecatedGetAggregatedByDateAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
+    public async Task GetAggregatedByDateAsyncV3_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
     {
         // Arrange
         var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
@@ -130,7 +132,7 @@ public class MeasurementsHandlerTests
 
         // Act
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.DeprecatedGetAggregatedByDateAsync(request));
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsyncV3(request));
     }
 
     [Fact]

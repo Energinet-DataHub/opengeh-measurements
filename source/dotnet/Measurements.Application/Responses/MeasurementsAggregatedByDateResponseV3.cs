@@ -8,36 +8,37 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class DeprecatedMeasurementsAggregatedByDateResponse
+[Obsolete("MeasurementsAggregatedByDateResponseV3 is deprecated. Use MeasurementsAggregatedByDateResponse instead.")]
+public class MeasurementsAggregatedByDateResponseV3
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public List<DeprecatedMeasurementAggregationByDate> MeasurementAggregations { get; init; } = [];
+    public List<MeasurementAggregationByDateV3> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private DeprecatedMeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByDateResponseV3() { } // Needed by System.Text.Json to deserialize
 
-    private DeprecatedMeasurementsAggregatedByDateResponse(List<DeprecatedMeasurementAggregationByDate> measurementAggregations)
+    private MeasurementsAggregatedByDateResponseV3(List<MeasurementAggregationByDateV3> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static DeprecatedMeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponseV3 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new DeprecatedMeasurementAggregationByDate(
+                new MeasurementAggregationByDateV3(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity ?? 0,
                     FindMinimumQuality(measurement),
                     FindUnit(measurement),
-                    FindContainsMissingValues(measurement),
+                    FindIsMissingValues(measurement),
                     FindContainsUpdatedValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundException()
-            : new DeprecatedMeasurementsAggregatedByDateResponse(measurementAggregations);
+            : new MeasurementsAggregatedByDateResponseV3(measurementAggregations);
     }
 
     private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
@@ -52,7 +53,7 @@ public class DeprecatedMeasurementsAggregatedByDateResponse
         return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 
-    private static bool FindContainsMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
+    private static bool FindIsMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
     {
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
         var quality = FindMinimumQuality(aggregatedMeasurements);

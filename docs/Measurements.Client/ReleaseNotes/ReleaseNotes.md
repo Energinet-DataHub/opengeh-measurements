@@ -2,7 +2,7 @@
 
 ## Version 8.0.0
 
-- In `MeasurementAggregationByDate`, ´MissingValues` is renamed to `ContainsMissingValues`
+- In `MeasurementAggregationByDate`, ´MissingValues` is renamed to `IsMissingValues`
 - In `PointAggregation`, `AggregatedQuantity` is renamed to `Quantity`
 - `Quantity` is changed to nullable decimal (`decimal?`)
 
