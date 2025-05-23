@@ -34,7 +34,7 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
         current_measurements=current_measurements,
         internal_calculated_measurements=internal_calculated_measurements,
         consumption_metering_point_periods=consumption_metering_point_periods,
-        child_metering_point_periods=child_metering_point_periods,
+        child_metering_points=child_metering_point_periods,
         time_zone=args.time_zone,
         execution_start_datetime=args.execution_start_datetime,
     )
