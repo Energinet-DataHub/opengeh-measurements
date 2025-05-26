@@ -31,7 +31,7 @@ public class MeasurementsAggregatedByDateResponse
                     measurement.Quantity,
                     FindMinimumQuality(measurement),
                     FindUnit(measurement),
-                    FindMissingValues(measurement),
+                    FindIsMissingValues(measurement),
                     FindContainsUpdatedValues(measurement)))
             .ToList();
 
@@ -52,7 +52,7 @@ public class MeasurementsAggregatedByDateResponse
         return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 
-    private static bool FindMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
+    private static bool FindIsMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
     {
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
         var quality = FindMinimumQuality(aggregatedMeasurements);

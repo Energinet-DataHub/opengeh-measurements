@@ -1,0 +1,29 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
+060000001500170201;supply_to_grid;2024-01-31T23:00:00Z;2000;estimated;Case 1
+070000001500170201;consumption_from_grid;2024-01-31T23:00:00Z;1000;measured;Case 1
+060000001500170201;supply_to_grid;2024-01-02T00:00:00Z;100;estimated;Case 1
+070000001500170201;consumption_from_grid;2024-01-02T00:00:00Z;50;measured;Case 1
+060000001500170201;supply_to_grid;2024-01-02T00:15:00Z;200;estimated;Case 1
+070000001500170201;consumption_from_grid;2024-01-02T00:15:00Z;100;measured;Case 1
+060000001500170201;supply_to_grid;2024-01-02T00:30:00Z;400;estimated;Case 1
+070000001500170201;consumption_from_grid;2024-01-02T00:30:00Z;300;measured;Case 1
+060000001500170201;supply_to_grid;2024-01-02T00:45:00Z;800;estimated;Case 1
+070000001500170201;consumption_from_grid;2024-01-02T00:45:00Z;400;measured;Case 1
+060000001500170201;supply_to_grid;2025-01-25T23:00:00Z;5000;estimated;Case 1
+070000001500170201;consumption_from_grid;2025-01-25T23:00:00Z;1000;measured;Case 1
+150000001500170201;net_consumption;2025-01-30T23:00:00Z;3;calculated;Case 1: Last net_consumption entry, 1 day before execution_start_datetime
+060000001500170202;supply_to_grid;2024-01-31T23:00:00Z;1000;measured;Case 2
+070000001500170202;consumption_from_grid;2024-01-31T23:00:00Z;2000;estimated;Case 2
+060000001500170202;supply_to_grid;2024-01-02T00:00:00Z;50;measured;Case 2
+070000001500170202;consumption_from_grid;2024-01-02T00:00:00Z;100;estimated;Case 2
+060000001500170202;supply_to_grid;2024-01-02T00:15:00Z;100;measured;Case 2
+070000001500170202;consumption_from_grid;2024-01-02T00:15:00Z;200;estimated;Case 2
+060000001500170202;supply_to_grid;2024-01-02T00:30:00Z;300;measured;Case 2
+070000001500170202;consumption_from_grid;2024-01-02T00:30:00Z;400;estimated;Case 2
+060000001500170202;supply_to_grid;2024-01-02T00:45:00Z;400;measured;Case 2
+070000001500170202;consumption_from_grid;2024-01-02T00:45:00Z;800;estimated;Case 2
+060000001500170202;supply_to_grid;2025-08-10T17:00:00Z;400;measured;Case 2
+070000001500170202;consumption_from_grid;2025-08-10T17:00:00Z;5000;estimated;Case 2
+060000001500170202;supply_to_grid;2025-01-25T23:00:00Z;1000;measured;Case 2
+070000001500170202;consumption_from_grid;2025-01-25T23:00:00Z;5000;estimated;Case 2
+150000001500170202;net_consumption;2025-01-30T23:00:00Z;3;calculated;Case 1: Last net_consumption entry, 1 day before execution_start_datetime
