@@ -59,7 +59,7 @@ def _(spark):
     target_fixture="metering_point_id",
 )
 def _(spark):
-    mp_id = identifier_helper.create_random_metering_point_id()
++    mp_id = identifier_helper.create_random_metering_point_id()
     obs_time = datetime_helper.get_datetime()
 
     data = (
@@ -109,8 +109,8 @@ def _(spark, column):
     return mp_id
 
 
-@given("a gold measurement where quantity is null", target_fixture="metering_point_id_and_quantity_is_null")
-def _(spark, column):
+@given("a gold measurement with quantity being null", target_fixture="metering_point_id_and_quantity_is_null")
+def _(spark):
     mp_id = identifier_helper.create_random_metering_point_id()
 
     kwargs = {
@@ -178,7 +178,7 @@ def _(actual_result_with_quantity, metering_point_id_and_expected_quantity):
 
 
 @then("the result should contain 1 row with the quantity is null")
-def _(actual_result_with_quantity_is_null, metering_point_id_and_expected_quantity):
+def _(actual_result_with_quantity_is_null):
     rows = actual_result_with_quantity_is_null.collect()
     assert len(rows) == 1
     assert rows[0]["quantity"] is None
