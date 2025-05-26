@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.2.0
+
+- Added `MissingValues` property to monthly aggregate.
+
 ## Version 8.1.0
 
 - Consumers can now pass a custom IAuthorizationHeaderProvider implementation when registering the Measurements Client, which can be used to enable B2C credentials.
