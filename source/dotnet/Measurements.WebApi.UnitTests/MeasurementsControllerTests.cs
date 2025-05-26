@@ -291,7 +291,7 @@ public class MeasurementsControllerTests
 
     private static string CreateExpectedMeasurementsAggregatedByMonth()
     {
-        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh","MissingValues":true}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByYear()

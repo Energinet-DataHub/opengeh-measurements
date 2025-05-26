@@ -101,11 +101,42 @@ public class MeasurementsAggregatedByMonthResponseTests
         Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements));
     }
 
+    [Theory]
+    [InlineData("2023-01-31T23:00:00Z", 300L, Quality.Missing, true)]
+    [InlineData("2023-01-31T23:00:00Z", 300L, Quality.Estimated, true)]
+    [InlineData("2023-01-31T23:00:00Z", 300L, Quality.Calculated, true)]
+    [InlineData("2023-01-31T23:00:00Z", 300L, Quality.Measured, true)]
+    [InlineData("2023-01-31T23:00:00Z", 672L, Quality.Missing, true)]
+    [InlineData("2023-01-31T23:00:00Z", 672L, Quality.Estimated, false)]
+    [InlineData("2023-01-31T23:00:00Z", 672L, Quality.Calculated, false)]
+    [InlineData("2023-01-31T23:00:00Z", 672L, Quality.Measured, false)]
+    public void Create_WhenObservationsOrQualityIsMissing_ThenMissingValuesFlagIsSet(
+        string timestamp, long observationPointsCount, Quality quality, bool expectedMissingValues)
+    {
+        // Arrange
+        var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.Parse(timestamp));
+        var maxObservationTime = minObservationTime.Plus(Duration.FromDays(observationPointsCount));
+        var qualities = new[] { quality.ToString() };
+        var units = new[] { "kWh" };
+
+        var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
+        {
+            new(CreateRaw(minObservationTime, maxObservationTime, qualities, units, observationPointsCount: observationPointsCount)),
+        };
+
+        // Act
+        var actual = MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
+
+        // Assert
+        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().MissingValues);
+    }
+
     private static ExpandoObject CreateRaw(
         Instant minObservationTime,
         Instant maxObservationTime,
         string[] qualities,
         string[] units,
+        long observationPointsCount = 744L,
         long observationUpdates = 1L)
     {
         dynamic raw = new ExpandoObject();
@@ -115,7 +146,7 @@ public class MeasurementsAggregatedByMonthResponseTests
         raw.qualities = qualities;
         raw.resolutions = new[] { "PT1H" };
         raw.units = units;
-        raw.point_count = 24L;
+        raw.point_count = observationPointsCount;
         raw.observation_updates = observationUpdates;
 
         return raw;
