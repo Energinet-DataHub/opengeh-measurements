@@ -13,7 +13,6 @@ def test_case(
     assert_dataframes_configuration: AssertDataframesConfiguration,
 ) -> None:
     test_case = test_cases[name]
-
     assert_dataframes_and_schemas(
         actual=test_case.actual,
         expected=test_case.expected,
