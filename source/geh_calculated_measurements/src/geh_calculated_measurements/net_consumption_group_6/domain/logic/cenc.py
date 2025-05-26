@@ -89,6 +89,7 @@ def prepare_cenc_with_move_in(
             F.month(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias(
                 ContractColumnNames.settlement_month
             ),
+            net_consumption_metering_points.period_from_date.alias(ContractColumnNames.start_date),
         )
     )
 
@@ -199,7 +200,9 @@ def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame
     joined_df = convert_to_utc(joined_df, time_zone)
 
     # Calculate consumption and supply directly in one groupBy operation
-    return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
+    return joined_df.groupBy(
+        ContractColumnNames.parent_metering_point_id, "settlement_date", ContractColumnNames.period_from_date
+    ).agg(
         F.sum(
             F.when(
                 F.col(ContractColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value,
