@@ -42,6 +42,15 @@ To use the `Measurements.Client` in your application, you need to register it in
    app.Run();
    ```
 
+   Notice, there is a `MeasurementClientOptions` class that can be given. This is to enable e.g., B2C authentication:
+
+   ```csharp
+      services.AddMeasurementsClient(options =>
+   {
+      options.AuthorizationHeaderProvider = new B2CAuthorizationHeaderProvider();
+   });
+   ```
+
 3. **Inject and Use the Client**
    Once registered, you can inject the `IMeasurementsClient` interface into your services or controllers and use it to interact with the `Measurements.WebApi`.
 

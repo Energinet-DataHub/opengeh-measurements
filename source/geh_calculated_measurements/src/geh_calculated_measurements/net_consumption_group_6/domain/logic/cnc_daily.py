@@ -60,6 +60,10 @@ def cnc_daily(
     cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
+    cnc_diff_utc = cnc_diff_utc.withColumn(
+        ContractColumnNames.settlement_type,
+        F.lit("end_of_period"),
+    )
 
     return CalculatedMeasurementsDaily(cnc_diff_utc)
 
