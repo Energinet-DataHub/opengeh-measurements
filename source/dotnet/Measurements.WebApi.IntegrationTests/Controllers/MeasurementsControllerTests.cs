@@ -168,40 +168,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    [Obsolete("Tests obsolete GetAggregatedByDateAsyncV3")]
-    public async Task GetAggregatedByDateAsyncV3_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
-    {
-        // Arrange
-        const string meteringPointId = "123456789098765432";
-        var rows = new MeasurementsTableRowsBuilder()
-            .WithContinuousRowsForDate($"{meteringPointId}", new LocalDate(2023, 2, 2))
-            .WithContinuousRowsForDate($"{meteringPointId}", new LocalDate(2023, 2, 3))
-            .Build();
-        await fixture.InsertRowsAsync(rows);
-
-        var yearMonth = new YearMonth(2023, 2);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth, versionPrefix: "v3");
-
-        // Act
-        var actualResponse = await fixture.Client.GetAsync(url);
-        var actual = await ParseResponseAsync<MeasurementsAggregatedByDateResponseV3>(actualResponse);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
-        Assert.Equal(2, actual.MeasurementAggregations.Count);
-        Assert.Equal(new DateOnly(2023, 2, 2), actual.MeasurementAggregations.First().Date);
-        Assert.Equal(new DateOnly(2023, 2, 3), actual.MeasurementAggregations.Last().Date);
-        foreach (var measurementAggregation in actual.MeasurementAggregations)
-        {
-            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
-            Assert.Equal(24.0M, measurementAggregation.Quantity);
-            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
-            Assert.False(measurementAggregation.MissingValues);
-            Assert.False(measurementAggregation.ContainsUpdatedValues);
-        }
-    }
-
-    [Fact]
     public async Task GetAggregatedByDateAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -392,7 +358,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     [InlineData("", HttpStatusCode.NotFound)]
     [InlineData("v1", HttpStatusCode.NotFound)]
     [InlineData("v2", HttpStatusCode.NotFound)]
-    [InlineData("v3", HttpStatusCode.OK)]
+    [InlineData("v3", HttpStatusCode.NotFound)]
     [InlineData("v4", HttpStatusCode.OK)]
     [InlineData("v5", HttpStatusCode.NotFound)]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenTargetingUnsupportedVersions_ReturnsNotFound(
