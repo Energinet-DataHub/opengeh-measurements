@@ -128,7 +128,7 @@ public class MeasurementsAggregatedByMonthResponseTests
         var actual = MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
 
         // Assert
-        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().MissingValues);
+        Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().IsMissingValues);
     }
 
     private static ExpandoObject CreateRaw(
