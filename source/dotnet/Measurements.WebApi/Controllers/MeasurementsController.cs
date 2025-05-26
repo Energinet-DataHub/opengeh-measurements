@@ -3,6 +3,7 @@ using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
+using Energinet.DataHub.Measurements.WebApi.Constants;
 using Energinet.DataHub.Measurements.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(AuthenticationSchemes = $"{AuthenticationSchemas.Default},{AuthenticationSchemas.B2C}")]
+[ApiVersion(2.0, Deprecated = true)]
 [ApiVersion(3.0, Deprecated = true)]
 [ApiVersion(4.0)]
 [Route("v{v:apiVersion}/measurements")]
@@ -18,6 +20,7 @@ public class MeasurementsController(
     IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
 {
+    [MapToApiVersion(2.0)]
     [MapToApiVersion(3.0)]
     [MapToApiVersion(4.0)]
     [HttpGet("forPeriod")]
