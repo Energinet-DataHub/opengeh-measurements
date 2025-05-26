@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
-        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+        <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using Energinet.DataHub.Core.App.WebApp.Extensions.Builder;
 using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
+using Microsoft.OpenApi;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -30,7 +31,10 @@ public class Startup(IConfiguration configuration)
             .AddApiVersioning()
             .AddApiExplorer();
         services
-            .AddOpenApi();
+            .AddOpenApi(options =>
+            {
+                options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
+            });
 
         // => Authentication/authorization
         services
