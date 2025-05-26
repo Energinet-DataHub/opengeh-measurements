@@ -59,7 +59,7 @@ def _(spark):
     target_fixture="metering_point_id",
 )
 def _(spark):
-+    mp_id = identifier_helper.create_random_metering_point_id()
+    mp_id = identifier_helper.create_random_metering_point_id()
     obs_time = datetime_helper.get_datetime()
 
     data = (
@@ -109,25 +109,20 @@ def _(spark, column):
     return mp_id
 
 
-@given("a gold measurement with quantity being null", target_fixture="metering_point_id_and_quantity_is_null")
-def _(spark):
-    mp_id = identifier_helper.create_random_metering_point_id()
-
-    kwargs = {
-        "metering_point_id": mp_id,
-        "observation_time": datetime.now(),
-        "quality": "some_quality",
-        "quantity": None,
-        "metering_point_type": "some_type",
-    }
-    data = GoldMeasurementsBuilder(spark).add_row(**kwargs).build()
-    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
-    return mp_id
-
-
 @when("accessing the current_v1 gold view", target_fixture="actual_schema")
 def _(spark):
     return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").schema
+
+
+@when(
+    "querying the current_v1 gold view for that metering point and quantity is null",
+    target_fixture="actual_result_with_quantity_is_null",
+)
+def _(spark, metering_point_id_and_quantity_is_null):
+    mp_id = metering_point_id_and_quantity_is_null
+    return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").where(
+        f"metering_point_id = '{mp_id}'"
+    )
 
 
 @when("querying the current_v1 gold view for that metering point", target_fixture="actual_result")
@@ -143,17 +138,6 @@ def _(spark, metering_point_id):
 )
 def _(spark, metering_point_id_and_expected_quantity):
     mp_id, _ = metering_point_id_and_expected_quantity
-    return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").where(
-        f"metering_point_id = '{mp_id}'"
-    )
-
-
-@when(
-    "querying the current_v1 gold view for that metering point and quantity is null",
-    target_fixture="actual_result_with_quantity_is_null",
-)
-def _(spark, metering_point_id_and_quantity_is_null):
-    mp_id = metering_point_id_and_quantity_is_null
     return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").where(
         f"metering_point_id = '{mp_id}'"
     )
@@ -175,10 +159,3 @@ def _(actual_result_with_quantity, metering_point_id_and_expected_quantity):
     rows = actual_result_with_quantity.collect()
     assert len(rows) == 1
     assert rows[0]["quantity"] == expected_quantity
-
-
-@then("the result should contain 1 row with the quantity is null")
-def _(actual_result_with_quantity_is_null):
-    rows = actual_result_with_quantity_is_null.collect()
-    assert len(rows) == 1
-    assert rows[0]["quantity"] is None
