@@ -31,10 +31,7 @@ public class Startup(IConfiguration configuration)
             .AddApiVersioning()
             .AddApiExplorer();
         services
-            .AddOpenApi(options =>
-            {
-                options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
-            });
+            .AddOpenApi("Measurements API");
 
         // => Authentication/authorization
         services
