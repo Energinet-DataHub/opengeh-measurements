@@ -2,7 +2,9 @@ notes: |
   CASE 3 (NSG2, with D15 - up to end --> end of period)
 
                                                |2025              |Feb               |Today
+                                               |2025              |Feb               |Today
                                                |__________________|__________________|
+
 
   Old parent period:                           |___________________________________...
   New parent period 1:                         |__________________|
@@ -25,9 +27,13 @@ notes: |
   CASE 5 (NSG6 - up to end --> end of period)
 
                                                |2025              |Feb               |Today
+                                               |2025              |Feb               |Today
                                                |__________________|__________________|
 
+
   Old parent period:                           |___________________________________...
+  New parent period 1:                         |__________________|
+  New parent period 2 (up to end):                                |________________...
   New parent period 1:                         |__________________|
   New parent period 2 (up to end):                                |________________...
   Measurement data:                                             ++++
