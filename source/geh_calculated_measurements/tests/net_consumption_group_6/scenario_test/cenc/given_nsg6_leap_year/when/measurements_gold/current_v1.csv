@@ -1,0 +1,7 @@
+metering_point_id;metering_point_type;observation_time;quantity;quality;#comment
+060000001500170201;supply_to_grid;2023-01-31T23:00:00Z;1000;measured;Case 1
+070000001500170201;consumption_from_grid;2023-01-31T23:00:00Z;2000;measured;Case 1: d07-d06 = 1000 / 366 = 2.732
+150000001500170201;net_consumption;2023-12-30T23:00:00Z;1;calculated;Case 1: Latest D15 data
+060000001500170202;supply_to_grid;2023-01-31T23:00:00Z;1000;measured;Case 2
+070000001500170202;consumption_from_grid;2023-01-31T23:00:00Z;4000;measured;Case 2: d07-d06 = 3000 / 366 = 8,196
+150000001500170202;net_consumption;2023-02-27T23:00:00Z;1;calculated;Case 2: Latest D15 data

@@ -1,0 +1,92 @@
+notes: |
+  ## PURPOSE
+  The purpose is to test a simple scenario that involves a case where consumption_from_grid (D07) is bigger that supply_to_grid (D06) resulting in a positive value for net_consumption (D15)
+  and a case where consumption_from_grid (D07) is smaller than supply_to_grid (D06) resulting in a negative value for net_consumption (D15), which will become 0 due to business rules.
+
+  ## DESIGN CONSIDERATIONS
+
+  CASE 0: (Latest run is current day)
+  Smrd: 1
+                                                                    |Today (Jan. 2nd)
+                  2009		     |2024                             2025
+                  |------...---------------------------------------|
+  Parent periods: |______..._____|_______________________________...
+
+                                 |_______input to cenc_____________|
+  D06/D07 data:                  +
+  Latest D15 measurement data (today):		   					    +
+  No new results should be generated...
+
+  CASE 1: (consumption_from_grid (D07) is bigger than supply_to_grid (D06))
+  Smrd: 1
+                                                                    |Today (Jan. 2nd)
+                  2011		     |2024                             2025
+                  |------...---------------------------------------|
+  Parent periods: |______..._____|_______________________________...
+
+                                 |_______input to cenc_____________|
+  D06/D07 data:                 ++                                 +
+  Included in cenc:			     _
+  Not included in cenc:		    _  								   _
+  New D15 measurement data:										   ++
+
+  consumption_from_grid (D07): 2000
+  supply_to_grid (D06): 1000
+  net_consumption (D15): 2000 - 1000 = 1000
+  Daily quantity of 1000 / 365 = 2.7397 rounded to 2.740
+
+  CASE 2: consumption_from_grid (D07) is smaller than supply_to_grid (D06)
+  Smrd: 1
+                                                                    |Today (Jan. 2nd)
+                  2010		     |2024                             2025
+                  |------...---------------------------------------|
+  Parent periods: |______..._____|_______________________________...
+
+                                 |_______input to cenc_____________|
+  D06/D07 data:                  +
+  New D15 measurement data:										   ++
+
+  consumption_from_grid (D07): 1000
+  supply_to_grid (D06): 2000
+  net_consumption (D15): 1000 - 2000 = -1000 (net_consumption (D15) can be negative so is changed to 0)
+  this wil result in a daily quantity of 0 / 365 = 0
+
+  Case 3
+  smrd: 3
+                                                                                                                   |Today (Jan. 2nd)
+                  2023		smrd                               2024		     smrd                               2025
+                  |-----------|----------------------------------|-----------|----------------------------------|--------
+  Parent period 1:|____________________________________________________|
+  Parent period 2:                                                     |_______________________________________...
+  Periods:        |___________|________________________________________|_____|_________________________________...
+
+                              |_______________input to cenc__________________|
+  D06/D07 data: 		      +                                        +     +
+  Included in cenc:			  _                                        _
+  Not included in cenc:		      	   									     _
+  Latest D15 existing measurement data:													                     +
+  New D15 measurement data:																				      ++++
+
+  Case 4: Only generate cenc data back to ended period which is after cenc
+  smrd: 3
+                                                                                                                   |Today (Jan. 2nd)
+                  2023		smrd                               2024		     smrd                               2025
+                  |-----------|----------------------------------|-----------|----------------------------------|--------
+  Parent period 1:|__________________________________________________________________________________________|
+  Parent period 2:                                                                                           |___...
+  Periods:        |___________|______________________________________________|_______________________________|____...
+
+                              |_______________input to cenc__________________|
+  D06/D07 data: 		      +                                             +
+  Included in cenc:			  _                                             _
+  New D15 measurement data:																				      ++++
+
+
+cases_tested:
+  "Smrd is 1"
+  "Smrd is not 1"
+
+  "cenc calculation":
+    "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year"
+    "GIVEN (consumption_from_grid (D07) < supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is capped to 0"
+    "D15 results should be generated up to latest either child D15 observation time, smrd date or parent period_to_date, whichever comes first"
