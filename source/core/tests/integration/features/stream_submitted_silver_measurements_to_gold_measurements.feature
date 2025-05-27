@@ -10,6 +10,11 @@ Feature: Streaming Submitted Silver Measurements to Gold Measurements
     When streaming Silver measurements to the Gold layer
     Then a receipt entry is available in the process manager receipts table
 
+  Scenario: Creating Measurements Series SAP during Silver to Gold streaming
+    Given valid measurements inserted into the silver measurements table
+    When streaming Silver measurements to the Gold layer
+    Then a transaction is available in the measurements series SAP table
+
   Scenario: Processing duplicated Silver measurements to Gold
     Given duplicated valid measurements inserted into the silver measurements table
     When streaming Silver measurements to the Gold layer

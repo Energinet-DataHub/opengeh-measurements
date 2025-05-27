@@ -5,6 +5,7 @@ from pytest_mock import MockFixture
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
+from core.gold.infrastructure.repositories.measurements_series_sap_repository import GoldMeasurementsSeriesSAPRepository
 from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
 
 
@@ -25,12 +26,16 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     receipts_repo_mock = Mock(spec=ReceiptsRepository)
+    series_sap_repo_mock = Mock(spec=GoldMeasurementsSeriesSAPRepository)
     transform_mock = Mock()
     transform_receipts_mock = Mock()
+    transform_series_sap_mock = Mock()
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
     mocker.patch.object(sut.transformations, "transform_silver_to_gold", transform_mock)
     mocker.patch.object(sut, "ReceiptsRepository", return_value=receipts_repo_mock)
     mocker.patch.object(sut.receipt_transformations, "transform", transform_receipts_mock)
+    mocker.patch.object(sut, "GoldMeasurementsSeriesSAPRepository", return_value=series_sap_repo_mock)
+    mocker.patch.object(sut.series_sap_transformations, "transform", transform_series_sap_mock)
     silver_measurements_mock = Mock()
 
     # Act
@@ -43,3 +48,5 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     )
     transform_receipts_mock.assert_called_once_with(ANY)
     receipts_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
+    transform_series_sap_mock.assert_called_once_with(ANY)
+    series_sap_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
