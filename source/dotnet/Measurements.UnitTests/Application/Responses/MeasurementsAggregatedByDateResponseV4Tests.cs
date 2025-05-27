@@ -10,9 +10,10 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
-public class MeasurementsAggregatedByDateResponseTests
+public class MeasurementsAggregatedByDateResponseV4Tests
 {
     [Fact]
+    [Obsolete("Obsolete")]
     public void Create_WhenValidInput_ReturnExpectedResult()
     {
         // Arrange
@@ -31,18 +32,19 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(expectedDate, firstAggregation.Date);
         Assert.Equal(100.0m, firstAggregation.Quantity);
-        Assert.Equal(Quality.Measured, firstAggregation.Qualities.Single());
+        Assert.Equal(Quality.Measured, firstAggregation.Quality);
         Assert.False(firstAggregation.IsMissingValues);
         Assert.False(firstAggregation.ContainsUpdatedValues);
     }
 
     [Fact]
+    [Obsolete("Obsolete")]
     public void Create_WhenDuplicateResolutions_ThenThrowException()
     {
         // Arrange
@@ -58,16 +60,17 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
+    [Obsolete("Obsolete")]
     public void Create_WhenMultipleUnits_ThenThrowException()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
-        var qualities = new[] { "measured" };
+        var qualities = new[] { "measured", "measured" };
         var resolutions = new[] { "PT1H" };
         var units = new[] { "kWh", "kVArh" };
 
@@ -77,11 +80,12 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
-    public void Create_WhenMultipleQualities_ThenAllQualitiesAreReturned()
+    [Obsolete("Obsolete")]
+    public void Create_WhenMultipleQualities_ThenLowestQualityIsReturned()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -96,19 +100,17 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
-        var aggregateQualities = actual.MeasurementAggregations.First().Qualities.ToList();
-        Assert.Contains(aggregateQualities, q => q == Quality.Missing);
-        Assert.Contains(aggregateQualities, q => q == Quality.Estimated);
-        Assert.Contains(aggregateQualities, q => q == Quality.Measured);
-        Assert.Contains(aggregateQualities, q => q == Quality.Calculated);
+        var firstAggregation = actual.MeasurementAggregations.First();
+        Assert.Equal(Quality.Missing, firstAggregation.Quality);
     }
 
     [Theory]
     [InlineData(null!)]
     [InlineData(0)]
+    [Obsolete("Obsolete")]
     public void Create_WhenDataContainsQualityMissing_ThenQuantityCanBeZeroOrNull(int? quantity)
     {
         // Arrange
@@ -124,7 +126,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -140,6 +142,7 @@ public class MeasurementsAggregatedByDateResponseTests
     [InlineData(24, Quality.Calculated, false)]
     [InlineData(24, Quality.Estimated, false)]
     [InlineData(24, Quality.Missing, true)]
+    [Obsolete("Obsolete")]
     public void Create_WhenObservationsOrQualityIsMissing_ThenIsMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
@@ -155,13 +158,14 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().IsMissingValues);
     }
 
     [Fact]
+    [Obsolete("Obsolete")]
     public void Create_WhenDataContainsInvalidQualities_ThenThrowException()
     {
         // Arrange
@@ -177,10 +181,11 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
+    [Obsolete("Obsolete")]
     public void Create_WhenDataContainsUpdatedObservations_ThenContainsUpdatedValuesIsTrue()
     {
         // Arrange
@@ -196,7 +201,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().ContainsUpdatedValues);

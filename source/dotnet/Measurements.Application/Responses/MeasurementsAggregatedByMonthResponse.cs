@@ -28,10 +28,11 @@ public class MeasurementsAggregatedByMonthResponse
         var measurementAggregations = measurements
             .Select(measurement =>
                 new MeasurementAggregationByMonth(
-                    SetYearMonth(measurement),
+                    FindYearMonth(measurement),
                     measurement.Quantity,
-                    SetQuality(measurement),
-                    SetUnit(measurement)))
+                    FindMinimumQuality(measurement),
+                    SetUnit(measurement),
+                    FindMissingValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -39,17 +40,31 @@ public class MeasurementsAggregatedByMonthResponse
             : new MeasurementsAggregatedByMonthResponse(measurementAggregations);
     }
 
-    private static YearMonth SetYearMonth(AggregatedMeasurementsResult measurement)
+    private static YearMonth FindYearMonth(AggregatedMeasurementsResult measurement)
     {
         var dateOnly = measurement.MinObservationTime.ToDateOnly();
         return new YearMonth(dateOnly.Year, dateOnly.Month);
     }
 
-    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return aggregatedMeasurementsResult.Qualities
             .Select(quality => QualityParser.ParseQuality((string)quality))
             .Min();
+    }
+
+    private static bool FindMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
+    {
+        var yearMonth = FindYearMonth(aggregatedMeasurements);
+        var daysInMonth = yearMonth.Calendar.GetDaysInMonth(yearMonth.Year, yearMonth.Month);
+        var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
+        var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, daysInMonth);
+
+        var quality = FindMinimumQuality(aggregatedMeasurements);
+        var measurementsContainMissingQualities = quality <= Quality.Missing;
+
+        return expectedPointCount - aggregatedMeasurements.PointCount != 0 ||
+               measurementsContainMissingQualities;
     }
 
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
