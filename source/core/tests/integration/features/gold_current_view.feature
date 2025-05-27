@@ -23,6 +23,10 @@ Feature: Current_v1 Gold View
       | column              |
       | metering_point_type |
       | observation_time    |
-      | quantity            |
       | quality             |
 
+  Scenario: A gold measurement with quantity being null is included in current_v1 view
+    Given a gold measurement where quantity is null
+    When querying the current_v1 gold view for that metering point
+    Then the result should contain 1 rows
+  

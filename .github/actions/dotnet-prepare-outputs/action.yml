@@ -46,3 +46,8 @@ runs:
       shell: bash
       run: |
         cp "${{ github.workspace }}/source/dotnet/Measurements.WebApi/bin/Release/net9.0/swagger.json" "${{ inputs.OUTPUT_PATH }}"
+
+    - name: Publish Measurements API Performance Tests
+      shell: bash
+      run: |
+        cp -r "${{ github.workspace }}/source/dotnet/Measurements.WebApi/Assets/PerformanceTests" "${{ inputs.OUTPUT_PATH }}/PerformanceTests"
