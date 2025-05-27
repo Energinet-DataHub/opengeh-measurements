@@ -89,7 +89,7 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponse.Create);
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponseV4.Create);
         var expected = CreateExpectedMeasurementsAggregatedByDate();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))

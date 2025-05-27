@@ -10,7 +10,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 
 [UnitTest]
-public class MeasurementsAggregatedByDateResponseTests
+public class MeasurementsAggregatedByDateResponseV4Tests
 {
     [Fact]
     public void Create_WhenValidInput_ReturnExpectedResult()
@@ -31,7 +31,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -58,7 +58,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -121,7 +121,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -152,7 +152,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         Assert.Equal(expectedMissingValues, actual.MeasurementAggregations.Single().IsMissingValues);
@@ -174,7 +174,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class MeasurementsAggregatedByDateResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByDateResponseV4.Create(aggregatedMeasurements);
 
         // Assert
         Assert.True(actual.MeasurementAggregations.First().ContainsUpdatedValues);
