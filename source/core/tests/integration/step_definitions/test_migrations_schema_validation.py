@@ -8,6 +8,7 @@ from core.bronze.domain.schemas.submitted_transactions import submitted_transact
 from core.bronze.domain.schemas.submitted_transactions_quarantined import submitted_transactions_quarantined_schema
 from core.bronze.infrastructure.config import BronzeTableNames
 from core.gold.domain.schemas.gold_measurements import gold_measurements_schema
+from core.gold.domain.schemas.gold_measurements_series_sap import gold_measurements_series_sap_schema
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
@@ -35,6 +36,7 @@ def _(spark: SparkSession, table_name: str):
     table_map = {
         "silver measurements": f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}",
         "gold measurements": f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}",
+        "gold measurements series SAP": f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_series_sap}",
         "bronze migrated transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}",
         "bronze submitted transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_table}",
         "bronze invalid submitted transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}",
@@ -76,6 +78,7 @@ def _(actual_schema, schema_type: str):
     schema_map = {
         "silver measurements": silver_measurements_schema,
         "gold measurements": gold_measurements_schema,
+        "gold measurements series SAP": gold_measurements_series_sap_schema,
         "bronze migrated transactions": migrated_transactions_schema,
         "bronze submitted transactions": submitted_transactions_schema,
         "bronze invalid submitted transactions": invalid_submitted_transactions_schema,
