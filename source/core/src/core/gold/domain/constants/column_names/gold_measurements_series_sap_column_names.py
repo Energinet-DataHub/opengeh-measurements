@@ -1,0 +1,12 @@
+class GoldMeasurementsSeriesSAPColumnNames:
+    serie_seq_no = "serie_seq_no"
+    orchestration_type = "orchestration_type"
+    metering_point_id = "metering_point_id"
+    transaction_id = "transaction_id"
+    transaction_creation_datetime = "transaction_creation_datetime"
+    start_time = "start_time"
+    end_time = "end_time"
+    unit = "unit"
+    resolution = "resolution"
+    is_cancelled = "is_cancelled"
+    created = "created"
