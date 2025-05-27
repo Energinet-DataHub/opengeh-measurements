@@ -99,7 +99,6 @@ def _(spark, column):
     kwargs = {
         "metering_point_id": mp_id,
         "observation_time": datetime.now(),
-        "quantity": Decimal(100),
         "quality": "some_quality",
         "metering_point_type": "some_type",
     }
@@ -113,6 +112,17 @@ def _(spark, column):
 @when("accessing the current_v1 gold view", target_fixture="actual_schema")
 def _(spark):
     return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").schema
+
+
+@when(
+    "querying the current_v1 gold view for that metering point and quantity is null",
+    target_fixture="actual_result_with_quantity_is_null",
+)
+def _(spark, metering_point_id_and_quantity_is_null):
+    mp_id = metering_point_id_and_quantity_is_null
+    return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_v1}").where(
+        f"metering_point_id = '{mp_id}'"
+    )
 
 
 @when("querying the current_v1 gold view for that metering point", target_fixture="actual_result")
