@@ -114,7 +114,7 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)
     {
-        return $"v4/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+        return $"v5/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, int year)
