@@ -1,8 +1,12 @@
 # Measurements.Client Release Notes
 
+## Version 8.3.0
+
+- Remove `MissingValues`, `Quality` and `ContainsUpdateValues` from monthly aggregate and above.
+
 ## Version 8.2.0
 
-- Added `MissingValues` property to monthly aggregate.
+- Converted quality for daily aggregate to a list of qualities present in the aggregate.
 
 ## Version 8.1.0
 
