@@ -1,10 +1,9 @@
 ﻿namespace Energinet.DataHub.Measurements.Domain;
 
-[Obsolete("Use MeasurementAggregationByDate instead. This will be removed in a future version.")]
-public record MeasurementAggregationByDateV4(
+public record MeasurementAggregationByDate(
     DateOnly Date,
     decimal? Quantity,
-    Quality Quality,
+    IEnumerable<Quality> Qualities,
     Unit Unit,
     bool IsMissingValues,
     bool ContainsUpdatedValues);
