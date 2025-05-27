@@ -18,4 +18,7 @@ are always up to date. There is a `test_descriptor_files.py` which tests exactly
 If we for some reason need to make changes in the protobuf files and then need to compile them, we have made it
 easy to do so right [here](./process_manager/scripts/compile_protobuf.py).
 
+In terminal execute the following command
+/workspace/source/core $ `python src/core/contracts/process_manager/scripts/compile_protobuf.py`
+
 If new protobuf files are added, they should be added to the script as well.

@@ -17,7 +17,12 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Persis
 
 
 class Point:
-    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: int = Quality.Q_UNSPECIFIED) -> None:
+    def __init__(
+        self,
+        position: int = 1,
+        quantity: DecimalValue | None = DecimalValue(1, 0),
+        quality: int = Quality.Q_UNSPECIFIED,
+    ) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = quality
