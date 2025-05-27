@@ -1,4 +1,6 @@
+from ctypes import pointer
 from datetime import datetime
+from decimal import Decimal
 
 from geh_common.domain.types.metering_point_resolution import MeteringPointResolution
 from geh_common.domain.types.orchestration_type import OrchestrationType
@@ -14,6 +16,7 @@ from core.gold.application.streams import migrated_transactions_stream as mit
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
+from core.silver.domain.constants.enums.quality_dh2_enum import Dh2QualityEnum
 from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
@@ -138,6 +141,28 @@ def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: Mo
     return transaction_id
 
 
+@given(
+    "migrated transactions with quality QM inserted into the bronze migrated transactions table",
+    target_fixture="expected_transaction_id",
+)
+def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: MockerFixture):
+    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    transaction_id = identifier_helper.generate_random_string()
+    points = [(i + 1, Dh2QualityEnum.missing.value, Decimal(0.00)) for i in range(24)]
+    bronze_migrated_transactions = (
+        MigratedTransactionsBuilder(spark)
+        .add_row(metering_point_id=metering_point_id, transaction_id=transaction_id, values=points)
+        .build()
+    )
+    table_helper.append_to_table(
+        bronze_migrated_transactions,
+        BronzeSettings().bronze_database_name,
+        BronzeTableNames.bronze_migrated_transactions_table,
+    )
+    return transaction_id
+
+
 # When steps
 
 
@@ -160,3 +185,15 @@ def _(spark: SparkSession, expected_transaction_id, number_of_measurements_rows)
     )
 
     assert gold_measurements.count() == int(number_of_measurements_rows)
+
+
+@then(
+    parsers.parse(
+        "{number_of_measurements_rows} migrated measurements row(s) are available in the gold measurements table with quantity = null"
+    )
+)
+def _(spark: SparkSession, expected_transaction_id, number_of_measurements_rows):
+    gold_measurements = spark.table(f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}").where(
+        f"transaction_id = '{expected_transaction_id}'"
+    )
+    assert gold_measurements.filter("quantity IS NULL").count() == int(number_of_measurements_rows)
