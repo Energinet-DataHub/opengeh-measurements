@@ -1,4 +1,3 @@
-from ctypes import pointer
 from datetime import datetime
 from decimal import Decimal
 

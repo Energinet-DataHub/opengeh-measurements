@@ -20,7 +20,6 @@ from core.contracts.process_manager.PersistSubmittedTransaction.generated.Persis
     Unit,
 )
 from core.silver.domain.constants.column_names.silver_measurements_column_names import SilverMeasurementsColumnNames
-from core.silver.domain.constants.enums.quality_dh2_enum import Dh2QualityEnum
 
 
 def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
