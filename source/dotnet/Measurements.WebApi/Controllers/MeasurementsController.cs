@@ -14,6 +14,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [Authorize(AuthenticationSchemes = $"{AuthenticationSchemas.Default},{AuthenticationSchemas.B2C}")]
 [ApiVersion(4.0)]
 [Route("v{v:apiVersion}/measurements")]
+[Route("/[controller]")]
 public class MeasurementsController(
     IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase

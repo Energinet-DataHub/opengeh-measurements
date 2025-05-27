@@ -355,14 +355,14 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Theory]
-    [InlineData("", HttpStatusCode.NotFound)]
+    [InlineData("", HttpStatusCode.OK)]
     [InlineData("v1", HttpStatusCode.NotFound)]
     [InlineData("v2", HttpStatusCode.NotFound)]
     [InlineData("v3", HttpStatusCode.NotFound)]
     [InlineData("v4", HttpStatusCode.OK)]
     [InlineData("v5", HttpStatusCode.NotFound)]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenTargetingUnsupportedVersions_ReturnsNotFound(
-        string version, HttpStatusCode expectedStatusCode)
+        string? version, HttpStatusCode expectedStatusCode)
     {
         // Arrange
         const string meteringPointId = "123456789123456789";
@@ -371,7 +371,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .WithContinuousRowsForDate(meteringPointId, new LocalDate(yearMonth.Year, yearMonth.Month, 5))
             .Build();
         await fixture.InsertRowsAsync(rows);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth, version);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth, version!);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -418,6 +418,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByDateUrl(string expectedMeteringPointId, YearMonth yearMonth, string versionPrefix = "v4")
     {
         return $"{versionPrefix}/measurements/aggregatedByDate?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
+    }
+
+    private static string CreateDefaultVersionGetAggregatedMeasurementsByDateUrl(string expectedMeteringPointId, YearMonth yearMonth)
+    {
+        return $"measurements/aggregatedByDate?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, Year year, string versionPrefix = "v4")
