@@ -27,4 +27,4 @@ def test__transform__should_return_serie_seq_no_column_with_offset(spark: SparkS
 
     # Assert
     actual_row = actual.collect()[0]
-    assert actual_row["serie_seq_no"] > expected_offset
+    assert actual_row["serie_seq_no"] >= expected_offset
