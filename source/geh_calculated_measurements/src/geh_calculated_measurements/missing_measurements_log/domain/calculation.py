@@ -34,7 +34,9 @@ def execute(
     expected_measurement_counts = _get_expected_measurement_counts(
         metering_point_periods_df, time_zone, period_start_datetime, period_end_datetime
     )
-    actual_measurement_counts = _get_actual_measurement_counts(current_measurements, time_zone)
+    actual_measurement_counts = _get_actual_measurement_counts(
+        current_measurements, period_start_datetime, period_end_datetime, time_zone
+    )
 
     missing_measurements = _get_missing_measurements(
         expected_measurement_counts=expected_measurement_counts,
