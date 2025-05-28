@@ -1,5 +1,5 @@
 import pyspark.sql.functions as F
-from pyspark.sql import Column, DataFrame
+from pyspark.sql import DataFrame
 
 from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
     GoldMeasurementsSeriesSAPColumnNames,
@@ -18,7 +18,6 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
     :return: DataFrame with transformed gold series SAP measurements.
     """
     return silver_measurements.select(
-        _get_serie_seq_no().cast("decimal(14, 0)").alias(GoldMeasurementsSeriesSAPColumnNames.serie_seq_no),
         F.col(SilverMeasurementsColumnNames.orchestration_type).alias(
             GoldMeasurementsSeriesSAPColumnNames.orchestration_type
         ),
@@ -35,8 +34,4 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
         F.col(SilverMeasurementsColumnNames.resolution).alias(GoldMeasurementsSeriesSAPColumnNames.resolution),
         F.col(SilverMeasurementsColumnNames.is_cancelled).alias(GoldMeasurementsSeriesSAPColumnNames.is_cancelled),
         F.current_timestamp().alias(GoldMeasurementsSeriesSAPColumnNames.created),
-    )
-
-
-def _get_serie_seq_no() -> Column:
-    return F.monotonically_increasing_id() + sap_seq_no_offset
+    ).withColumn(GoldMeasurementsSeriesSAPColumnNames.serie_seq_no, F.monotonically_increasing_id() + sap_seq_no_offset)
