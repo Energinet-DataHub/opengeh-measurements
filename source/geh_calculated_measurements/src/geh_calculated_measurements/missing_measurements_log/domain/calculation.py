@@ -114,11 +114,18 @@ def _get_expected_measurement_counts(
     return expected_measurement_counts
 
 
-def _get_actual_measurement_counts(current_measurements: CurrentMeasurements, time_zone: str) -> DataFrame:
+def _get_actual_measurement_counts(
+    current_measurements: CurrentMeasurements,
+    period_start_datetime: datetime,
+    period_end_datetime: datetime,
+    time_zone: str,
+) -> DataFrame:
     """Calculate the actual measurement counts grouped by metering point and date."""
-    current_measurements_df = current_measurements.df.where(
-        F.col(ContractColumnNames.observation_time).isNotNull()
-    ).where(F.col(ContractColumnNames.quality) != QuantityQuality.MISSING.value)
+    current_measurements_df = (
+        current_measurements.df.where(F.col(ContractColumnNames.observation_time) >= period_start_datetime)
+        .where(F.col(ContractColumnNames.observation_time) < period_end_datetime)
+        .where(F.col(ContractColumnNames.quality) != QuantityQuality.MISSING.value)
+    )
 
     current_measurements_df = convert_from_utc(current_measurements_df, time_zone)
 
