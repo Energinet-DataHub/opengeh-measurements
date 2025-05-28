@@ -6,6 +6,9 @@ import core.gold.application.streams.gold_measurements_stream as sut_gold
 import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
+from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
+    GoldMeasurementsSeriesSAPColumnNames,
+)
 from core.gold.infrastructure.config import GoldTableNames
 from core.receipts.infrastructure.config.table_names import CoreInternalTableNames
 from core.settings.core_internal_settings import CoreInternalSettings
@@ -169,5 +172,7 @@ def _(spark: SparkSession):
     print(test)  # noqa: T201
 
     total_count = measurements_serie_sap.count()
-    unique_count = measurements_serie_sap.select("serie_seq_no").distinct().count()
+    unique_count = (
+        measurements_serie_sap.select(GoldMeasurementsSeriesSAPColumnNames.dh3_serie_seq_no).distinct().count()
+    )
     assert total_count == unique_count
