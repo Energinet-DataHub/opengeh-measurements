@@ -13,7 +13,6 @@ This table contains measurements series for SAP. Each row represents 1 series (t
 | end_date | TimestampType | True | | - |
 | is_cancelled | BooleanType | True | Cancelled flag carried over from Migrations | "is_cancelled_is_not_null_chk" which checks is_cancelled is not null,  |
 | created | TimestampType | True | - | - |
-| modified | TimestampType | True | - | - |
 
 ## `series_seq_no`
 
