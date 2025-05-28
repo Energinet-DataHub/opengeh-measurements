@@ -1,5 +1,6 @@
 import pyspark.sql.functions as F
 from pyspark.sql import Column, DataFrame
+from pyspark.sql.window import Window
 
 from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
     GoldMeasurementsSeriesSAPColumnNames,
@@ -39,4 +40,11 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
 
 
 def _get_serie_seq_no() -> Column:
-    return F.monotonically_increasing_id()
+    window_spec = Window.partitionBy(
+        SilverMeasurementsColumnNames.orchestration_type,
+        SilverMeasurementsColumnNames.metering_point_id,
+        SilverMeasurementsColumnNames.transaction_id,
+    ).orderBy(
+        SilverMeasurementsColumnNames.metering_point_id,
+    )
+    return F.row_number().over(window_spec) + sap_seq_no_offset

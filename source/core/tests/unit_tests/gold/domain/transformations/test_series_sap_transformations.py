@@ -17,17 +17,17 @@ def test__transform__should_match_measurements_series_sap_schema(spark: SparkSes
     assert_schemas.assert_schema(actual.schema, gold_measurements_series_sap_schema, ignore_nullability=True)
 
 
-# def test__transform__should_return_serie_seq_no_column_with_offset(spark: SparkSession) -> None:
-#     # Arrange
-#     expected_offset = 200_000_000_000
-#     silver_measurements = SilverMeasurementsBuilder(spark).add_row().build()
+def test__transform__should_return_serie_seq_no_column_with_offset(spark: SparkSession) -> None:
+    # Arrange
+    expected_offset = 200_000_000_000
+    silver_measurements = SilverMeasurementsBuilder(spark).add_row().build()
 
-#     # Act
-#     actual = sut.transform(silver_measurements)
+    # Act
+    actual = sut.transform(silver_measurements)
 
-#     # Assert
-#     test = actual_row = actual.collect()
-#     print(test)  # noqa: T201
+    # Assert
+    test = actual_row = actual.collect()
+    print(test)  # noqa: T201
 
-#     actual_row = actual.collect()[0]
-#     assert actual_row["serie_seq_no"] >= expected_offset
+    actual_row = actual.collect()[0]
+    assert actual_row["serie_seq_no"] == (expected_offset + 1)
