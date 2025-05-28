@@ -39,4 +39,4 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
 
 
 def _get_serie_seq_no() -> Column:
-    return F.monotonically_increasing_id()
+    return F.monotonically_increasing_id() + sap_seq_no_offset
