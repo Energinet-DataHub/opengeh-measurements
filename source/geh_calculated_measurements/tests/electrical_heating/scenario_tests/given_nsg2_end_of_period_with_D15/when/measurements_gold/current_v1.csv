@@ -1,6 +1,6 @@
 metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000001500170200;1000;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 0 - day 1: min(D6,D7) = 1000
-060000001500170200;0;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 0 - day 1: null quantity check
+060000001500170200;;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 0 - day 1: null quantity check
 070000001500170200;2000;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 0 - day 1: min(D6,D7) = 1000
 150000001500170200;1000;calculated;2023-12-31T23:00:00Z;net_consumption;Case 0 - day 1: (D07-D06) = 1000
 060000001500170200;500;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 0 - day 2 min(D6,D7) = 500
@@ -11,7 +11,7 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 150000001500170200;500;calculated;2024-01-02T23:00:00Z;net_consumption;Case 0 - day 3: (D07-D06) = 500
 060000001500170200;50;measured;2024-12-27T23:00:00Z;supply_to_grid;Case 0 - day 4: min(D06,D07) = 25
 070000001500170200;25;estimated;2024-12-27T23:00:00Z;consumption_from_grid;Case 0 - day 4: min(D06,D07) = 25
-150000001500170200;0;calculated;2024-12-27T23:00:00Z;net_consumption;Case 0 - day 4: min(D06,D07) = 25
+150000001500170200;;calculated;2024-12-27T23:00:00Z;net_consumption;Case 0 - day 4: min(D06,D07) = 25
 060000001500170200;50;measured;2024-12-28T23:00:00Z;supply_to_grid;Case 0 - day 5: min(D06,D07) = 25
 070000001500170200;25;estimated;2024-12-28T23:00:00Z;consumption_from_grid;Case 0 - day 5: min(D06,D07) = 25
 060000001500170200;50;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 0 - day 6: min(D06,D07) = 25
