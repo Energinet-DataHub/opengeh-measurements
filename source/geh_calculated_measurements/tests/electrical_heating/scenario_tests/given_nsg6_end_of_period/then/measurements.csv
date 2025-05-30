@@ -1,6 +1,7 @@
 metering_point_type;metering_point_id;date;quantity;settlement_type;#comment
 electrical_heating;140000000600170200;2023-12-31T23:00:00Z;750;;Case 0 - Day 1: D15 quantity (750) added
 electrical_heating;140000000600170200;2024-01-01T23:00:00Z;250;;Case 0 - Day 2: Up to limit (4000-(min(3000,3750))=1000
+electrical_heating;140000000600170200;2024-12-27T23:00:00Z;0;;Case 0 - null check day
 electrical_heating;140000000600170200;2024-12-30T23:00:00Z;0;;Case 0 - Day 3: Limit hit
 electrical_heating;140000000600170201;2023-12-31T23:00:00Z;184.186;;Case 1
 electrical_heating;140000000600170201;2024-01-01T23:00:00Z;421.344;;Case 1

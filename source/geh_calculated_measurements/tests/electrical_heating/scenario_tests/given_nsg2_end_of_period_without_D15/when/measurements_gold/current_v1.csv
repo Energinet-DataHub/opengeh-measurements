@@ -1,14 +1,14 @@
 metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
-060000000000170200;1000;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 0: min(D6,D7) = 1000
-060000000000170200;0;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 0: Null quantity check
-070000000000170200;0;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 0: min(D6,D7) = 1000
+060000000000170200;1000;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 0: min(D06,D7) = 1000
+070000000000170200;2000;estimated;2023-12-31T23:00:00Z;consumption_from_grid;Case 0: min(D06,D7) = 1000
+070000000000170200;;estimated;2023-12-31T23:15:00Z;consumption_from_grid;Case 0: null check (D07)
 170000000000000200;2000;measured;2023-12-31T23:00:00Z;consumption;Case 0
 060000000000170200;1000;measured;2024-01-01T23:00:00Z;supply_to_grid;Case 0: min(D6,D7) = 1000
 070000000000170200;2000;estimated;2024-01-01T23:00:00Z;consumption_from_grid;Case 0: min(D6,D7) = 1000
 170000000000000200;2000;measured;2024-01-01T23:00:00Z;consumption;Case 0
-060000000000170200;50;measured;2024-12-27T23:00:00Z;supply_to_grid;Case 0: Null quantity check
-070000000000170200;25;estimated;2024-12-27T23:00:00Z;consumption_from_grid;Case 0: Null quantity check
-170000000000000200;0;measured;2024-12-27T23:00:00Z;consumption;Case 0: Null quantity check
+060000000000170200;50;measured;2024-12-27T23:00:00Z;supply_to_grid;Case 0: null check
+070000000000170200;0;estimated;2024-12-27T23:00:00Z;consumption_from_grid;Case 0: null check
+170000000000000200;;measured;2024-12-27T23:00:00Z;consumption;Case 0: null check (E17)
 060000000000170200;50;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 0: min(D6,D7) = 25
 070000000000170200;25;estimated;2024-12-31T22:45:00Z;consumption_from_grid;Case 0: min(D6,D7) = 25
 170000000000000200;25;measured;2024-12-31T22:45:00Z;consumption;Case 0

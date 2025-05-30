@@ -8,11 +8,15 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000201;888.888;measured;2024-01-31T23:00:00Z;consumption;Case 1: Ignored because the child metering point is decoupled at this time
 170000000000000202;10;measured;2024-01-02T23:00:00Z;consumption;Case 2: Parent mp. Jan. 3rd. This value has been updated since last EH calculation (was 1 before).
 170000000000000202;1;measured;2024-01-03T23:00:00Z;consumption;Case 2: Parent mp. Jan. 4th
-170000000000000202;0;measured;2024-01-04T23:00:00Z;consumption;Case 2: Parent mp. Jan. 5th. This value has been updated since last EH calculation (was 5 before).
+170000000000000202;0;measured;2024-01-04T23:00:00Z;consumption;Case 2: Parent mp. Jan. 5th. This value has been updated since last EH calculation (was 5 before). Null should be treated as 0.
 170000000000000202;5;measured;2024-01-05T23:00:00Z;consumption;Case 2: Parent mp. Jan. 6th. This value has been updated since last EH calculation (was 0 before).
+170000000000000202;0;measured;2024-01-06T23:00:00Z;consumption;Case 2: Parent mp. Jan. 7th (no new rows in output).
+170000000000000202;;measured;2024-01-07T23:00:00Z;consumption;Case 2: Parent mp. Jan. 8th (treat null as 0 - no new rows in output).
 140000000000170202;1;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 2: Written to child mp by previous calculation for Jan. 3rd.
 140000000000170202;5;calculated;2024-01-04T23:00:00Z;electrical_heating;Case 2: Written to child mp by previous calculation for Jan. 5th.
 140000000000170202;0;calculated;2024-01-05T23:00:00Z;electrical_heating;Case 2: Written to child mp by previous calculation for Jan. 6th.
+140000000000170202;0;calculated;2024-01-06T23:00:00Z;electrical_heating;Case 2: Written to child mp by previous calculation for Jan. 7th.
+140000000000170202;0;calculated;2024-01-07T23:00:00Z;electrical_heating;Case 2: Written to child mp by previous calculation for Jan. 8th.
 170000000000000203;20;measured;2023-12-31T23:00:00Z;consumption;Case 3: Parent mp. Jan. 1st
 170000000000000203;20;measured;2024-01-01T23:00:00Z;consumption;Case 3: Parent mp. Jan. 2nd
 170000000000000203;20;measured;2024-01-02T23:00:00Z;consumption;Case 3: Parent mp. Jan. 3rd

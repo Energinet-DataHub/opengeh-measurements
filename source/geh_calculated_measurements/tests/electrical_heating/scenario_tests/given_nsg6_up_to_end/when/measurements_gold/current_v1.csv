@@ -1,7 +1,10 @@
 metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
-170000000060000201;100;measured;2025-01-02T23:00:00Z;consumption;Case 1: nsg6 - simple
+060000000600170201;99;measured;2025-01-02T23:00:00Z;supply_to_grid;Case 1: nsg6 - simple
 070000000600170201;100;estimated;2025-01-02T23:00:00Z;consumption_from_grid;Case 1: nsg6 - simple
+070000000600170201;;estimated;2025-01-02T23:15:00Z;consumption_from_grid;Case 1: null quantity check
+170000000060000201;100;measured;2025-01-02T23:00:00Z;consumption;Case 1: nsg6 - simple
 150000000600170201;1;calculated;2025-01-02T23:00:00Z;net_consumption;Case 1: nsg6 - simple
+150000000600170201;;calculated;2025-01-03T23:00:00Z;net_consumption;Case 1: null quantity check
 150000000600170202;1;calculated;2025-03-28T23:00:00Z;net_consumption;Case 2: Summertime change
 150000000600170202;1;calculated;2025-03-29T00:00:00Z;net_consumption;Case 2: Summertime change
 150000000600170202;1;calculated;2025-03-29T01:00:00Z;net_consumption;Case 2: Summertime change
@@ -149,4 +152,3 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 150000000600170203;2000;calculated;2025-03-16T12:00:00Z;net_consumption;Case 3
 150000000600170203;2000;calculated;2025-03-17T12:00:00Z;net_consumption;Case 3
 150000000600170203;2000;calculated;2025-03-18T12:00:00Z;net_consumption;Case 3
-060000000600170201;99;measured;2025-01-02T23:00:00Z;supply_to_grid;Case 1: nsg6 - simple
