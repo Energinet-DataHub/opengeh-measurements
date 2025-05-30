@@ -4,7 +4,8 @@
   "Smrd is 1": true
   "Smrd is not 1": true
   "New daily results are not generated for days older than 3 years from today": true
-  "New results are only generated for days where both E17 and D06, D07 and D15 are or were all active": false
+  "New results are only generated for days where both E17 and D06, D07 and D15 are or were all active": true
+  "GIVEN there is a row in measurements data input table WHEN quantity is null THEN quantity should be treated as 0": true
 
   "cnc calculation":
     "Calculation is cnc": true
