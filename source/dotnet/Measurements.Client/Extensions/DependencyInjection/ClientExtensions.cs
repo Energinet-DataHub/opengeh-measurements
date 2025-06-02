@@ -49,7 +49,7 @@ public static class ClientExtensions
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader();
+            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeaderValue();
 
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;

@@ -7,7 +7,7 @@ namespace Energinet.DataHub.Measurements.Client.Authentication;
 public class AuthorizationHeaderProvider(TokenCredential credential, string applicationIdUri)
     : IAuthorizationHeaderProvider
 {
-    public AuthenticationHeaderValue CreateAuthorizationHeader()
+    public AuthenticationHeaderValue CreateAuthorizationHeaderValue()
     {
         var token = credential
             .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
@@ -16,7 +16,7 @@ public class AuthorizationHeaderProvider(TokenCredential credential, string appl
         return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
     }
 
-    public async Task<AuthenticationHeaderValue> CreateAuthorizationHeaderAsync()
+    public async Task<AuthenticationHeaderValue> CreateAuthorizationHeaderValueAsync()
     {
         var accessToken = await credential
             .GetTokenAsync(new TokenRequestContext([applicationIdUri]), CancellationToken.None);

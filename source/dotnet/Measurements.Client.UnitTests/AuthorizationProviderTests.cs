@@ -19,7 +19,7 @@ public class AuthorizationProviderTests
         IAuthorizationHeaderProvider provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
 
         // Act
-        var actual = provider.CreateAuthorizationHeader();
+        var actual = provider.CreateAuthorizationHeaderValue();
 
         // Assert
         Assert.NotNull(actual);
@@ -38,7 +38,7 @@ public class AuthorizationProviderTests
         IAuthorizationHeaderProvider provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
 
         // Act
-        var actual = await provider.CreateAuthorizationHeaderAsync();
+        var actual = await provider.CreateAuthorizationHeaderValueAsync();
 
         // Assert
         Assert.NotNull(actual);
