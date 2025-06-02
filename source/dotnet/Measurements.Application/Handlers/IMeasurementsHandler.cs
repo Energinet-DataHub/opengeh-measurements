@@ -51,5 +51,12 @@ public interface IMeasurementsHandler
     /// Get measurements aggregated by year matching request attributes.
     /// </summary>
     /// <param name="getAggregatedByYearRequest"></param>
+    [Obsolete("Use GetAggregatedByYearAsync instead.")]
+    Task<MeasurementsAggregatedByYearResponseV4> GetAggregatedByYearAsyncV4(GetAggregatedByYearRequest getAggregatedByYearRequest);
+
+    /// <summary>
+    /// Get measurements aggregated by year matching request attributes.
+    /// </summary>
+    /// <param name="getAggregatedByYearRequest"></param>
     Task<MeasurementsAggregatedByYearResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest getAggregatedByYearRequest);
 }

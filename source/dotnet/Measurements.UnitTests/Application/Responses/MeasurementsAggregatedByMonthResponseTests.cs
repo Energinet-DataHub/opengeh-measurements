@@ -53,18 +53,13 @@ public class MeasurementsAggregatedByMonthResponseTests
     private static ExpandoObject CreateRaw(
         Instant minObservationTime,
         Instant maxObservationTime,
-        string[] units,
-        long observationUpdates = 1L)
+        string[]? units = null)
     {
         dynamic raw = new ExpandoObject();
         raw.min_observation_time = minObservationTime.ToDateTimeOffset();
         raw.max_observation_time = maxObservationTime.ToDateTimeOffset();
         raw.aggregated_quantity = 100.0m;
-        raw.qualities = new[] { "measured" };
-        raw.resolutions = new[] { "PT1H" };
-        raw.units = units;
-        raw.point_count = 24L;
-        raw.observation_updates = observationUpdates;
+        raw.units = units ?? ["kwh"];
 
         return raw;
     }
