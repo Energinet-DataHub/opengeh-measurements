@@ -9,7 +9,7 @@ namespace Energinet.DataHub.Measurements.Client.UnitTests;
 public class AuthorizationProviderTests
 {
     [Fact]
-    public void CreateAuthorizationHeader_WhenCalled_ThenReturnsValidAuthorizationHeader()
+    public void CreateAuthenticationHeaderValue_WhenCalled_ThenReturnsValidAuthenticationHeaderValue()
     {
         // Arrange
         var credential = new Mock<TokenCredential>();
@@ -28,7 +28,7 @@ public class AuthorizationProviderTests
     }
 
     [Fact]
-    public async Task CreateAuthorizationHeaderAsync_WhenCalled_ThenReturnsValidAuthorizationHeader()
+    public async Task CreateAuthenticationHeaderValueAsync_WhenCalled_ThenReturnsValidAuthenticationHeaderValue()
     {
         // Arrange
         var credential = new Mock<TokenCredential>();
