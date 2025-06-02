@@ -18,11 +18,10 @@ public class MeasurementsAggregatedByMonthResponseTests
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
-        var units = new[] { "kWh" };
         var expectedYearMonth = new YearMonth(minObservationTime.ToDateOnly().Year, minObservationTime.ToDateOnly().Month);
         var aggregatedMeasurements = new List<AggregatedMeasurementsResult>
         {
-            new(CreateRaw(minObservationTime, maxObservationTime, units)),
+            new(CreateRaw(minObservationTime, maxObservationTime)),
         };
 
         // Act
