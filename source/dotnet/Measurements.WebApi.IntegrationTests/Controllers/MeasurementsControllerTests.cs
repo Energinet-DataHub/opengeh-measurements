@@ -303,7 +303,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 4, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
-        var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(year));
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(year), "v4");
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
@@ -417,7 +417,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
             .Build();
         await fixture.InsertRowsAsync(rows);
-        var url = CreateGetAggregatedMeasurementsByYearUrl(meteringPointId);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(meteringPointId, "v4");
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
