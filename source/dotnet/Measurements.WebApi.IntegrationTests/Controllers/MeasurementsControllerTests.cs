@@ -486,12 +486,12 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(3, actual.MeasurementAggregations.First().PointAggregationGroups.Count);
     }
 
-    private static string CreateGetMeasurementsForPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "v4")
+    private static string CreateGetMeasurementsForPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
-    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, string versionPrefix = "v4")
+    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/currentForPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
@@ -501,22 +501,22 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/aggregatedByDate?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, Year year, string versionPrefix = "v4")
+    private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, Year year, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/aggregatedByMonth?meteringPointId={expectedMeteringPointId}&year={year.GetYear()}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByYearUrl(string expectedMeteringPointId, string versionPrefix = "v4")
+    private static string CreateGetAggregatedMeasurementsByYearUrl(string expectedMeteringPointId, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/aggregatedByYear?meteringPointId={expectedMeteringPointId}";
     }
 
-    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v4")
+    private static string CreateGetAggregatedMeasurementsByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/aggregatedByPeriod?meteringPointIds={meteringPointIds}&from={from}&to={to}&aggregation={aggregation}";
     }
 
-    private async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
+    private static async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
         where T : class
     {
         response.EnsureSuccessStatusCode();
