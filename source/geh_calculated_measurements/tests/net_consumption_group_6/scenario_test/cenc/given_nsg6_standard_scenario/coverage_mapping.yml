@@ -85,7 +85,7 @@ notes: |
 cases_tested:
   "Smrd is 1"
   "Smrd is not 1"
-  "GIVEN there is a row in measurements data input table WHEN quantity is null THEN quantity should be treated as 0"
+  "GIVEN there is an observation time in measurements data input table WHEN quantity is null THEN we should treat the row with that observation_time as not existing"
 
   "cenc calculation":
     "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year"

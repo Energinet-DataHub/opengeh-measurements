@@ -7,13 +7,13 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000200;0.25;measured;2024-01-01T00:15:00Z;consumption;Case 0
 170000000000000200;0.25;measured;2024-01-01T01:30:00Z;consumption;Case 0
 170000000000000200;0.25;measured;2024-01-01T01:45:00Z;consumption;Case 0: Rows 1-9 will be aggregated to 1 row for Jan. 1st with 2 kWh in result
-170000000000000200;;missing;2024-01-01T02:00:00Z;consumption;Case 0: Null quantity check (should be treated as 0)
+170000000000000200;;missing;2024-01-01T02:00:00Z;consumption;Case 0: Null quantity check
 170000000000000200;0.001;measured;2024-01-01T23:30:00Z;consumption;Case 0
 170000000000000200;0.001;measured;2024-01-01T23:45:00Z;consumption;Case 0: Rows 10-11 will be aggregated to 1 row for Jan. 2nd with 0.002 kWh in result
 170000000000000200;1.5;measured;2024-01-03T15:00:00Z;consumption;Case 0
 170000000000000200;1.5;measured;2024-01-03T15:45:00Z;consumption;Case 0: Rows 12-13 will be aggregated to 1 row for Jan. 3rd with 3 kWh in result
 170000000000000200;5.111;measured;2024-01-04T21:45:00Z;consumption;Case 0: Row 14 will be aggregated to 1 row for Jan. 4th with 5.111 kWh in result
-170000000000000200;;missing;2024-01-05T21:45:00Z;consumption;Case 0: Null quantity check (should be treated as 0)
+170000000000000200;;missing;2024-01-05T21:45:00Z;consumption;Case 0: Null quantity check
 170000000000000201;3999.999;measured;2024-01-01T22:45:00Z;consumption;Case 1: Jan. 1st. Should be added to D14
 170000000000000201;0.001;measured;2024-01-01T23:00:00Z;consumption;Case 1: Jan. 2nd. Limit hit
 170000000000000201;1;measured;2024-01-01T23:15:00Z;consumption;Case 1: Jan. 2nd. Even though total of 1.001 logged on parent, only 0.001 should be added to D14

@@ -1,6 +1,5 @@
 metering_point_type;metering_point_id;date;quantity;settlement_type;#comment
 electrical_heating;140000001500170201;2025-01-02T23:00:00Z;1;;Case 1: nsg2 - no end date - with D15
-electrical_heating;140000001500170201;2025-01-03T23:00:00Z;0;;Case 1: Null check
 electrical_heating;140000001500170202;2025-03-28T23:00:00Z;24;;Case 2
 electrical_heating;140000001500170202;2025-03-29T23:00:00Z;23;;Case 2: Summertime change March 31st
 electrical_heating;140000001500170202;2025-03-30T22:00:00Z;24;;Case 2
