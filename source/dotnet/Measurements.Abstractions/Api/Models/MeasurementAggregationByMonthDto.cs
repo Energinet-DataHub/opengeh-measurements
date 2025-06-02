@@ -7,7 +7,5 @@ namespace Energinet.DataHub.Measurements.Abstractions.Api.Models;
 /// </summary>
 /// <param name="YearMonth">The month of aggregation.</param>
 /// <param name="Quantity">Quantity of aggregated measurement.</param>
-/// <param name="Quality">Value of lowest quality among measurements in aggregation.</param>
 /// <param name="Unit">Unit of aggregated measurement.</param>
-/// <param name="IsMissingValues">Indicates whether aggregate contains missing values during month of aggregation.</param>
-public sealed record MeasurementAggregationByMonthDto(YearMonth YearMonth, decimal? Quantity, Quality Quality, Unit Unit, bool IsMissingValues);
+public sealed record MeasurementAggregationByMonthDto(YearMonth YearMonth, decimal? Quantity, Unit Unit);
