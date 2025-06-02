@@ -102,26 +102,39 @@ def calculate_daily(
             "cenc.*",
             F.when(
                 F.col("ts.latest_observation_date").isNull()
-                | (F.date_add(F.col("ts.latest_cnc_observation_date"), -1) != F.col("cenc.cenc_period_start_date")),
+                | (
+                    F.col("ts.latest_cnc_observation_date").isNotNull()
+                    & (F.date_add(F.col("ts.latest_cnc_observation_date"), 1) != F.col("cenc.cenc_period_start_date"))
+                ),
                 F.col("cenc.cenc_period_start_date"),
             )
             .otherwise(
-                F.date_add(F.col("ts.latest_observation_date"), -1),
+                F.date_add(F.col("ts.latest_observation_date"), 1),
             )
             .alias("fill_cenc_days_start_date"),
         )
     )
 
+    print("cenc_w_fill_cenc_days_start_date:")
+    cenc_w_fill_cenc_days_start_date.show()
+
     # Filter out rows where fill_cenc_days_start_date is >= execution_start_datetime
     filtered_cenc = cenc_w_fill_cenc_days_start_date.filter(
-        F.col("fill_cenc_days_start_date") < F.col("execution_start_datetime")
+        F.col("fill_cenc_days_start_date") <= F.col("execution_start_datetime")
+    ).select(
+        "*",
+        F.col("execution_start_datetime").cast(T.DateType()).alias("execution_start_date"),
     )
 
     # Process only valid date ranges
     df = filtered_cenc.select(
         "*",
         F.explode(
-            F.sequence(F.col("fill_cenc_days_start_date"), F.col("execution_start_datetime"), F.expr("INTERVAL 1 DAY"))
+            F.sequence(
+                F.col("fill_cenc_days_start_date"),
+                F.col("execution_start_datetime"),
+                F.expr("INTERVAL 1 DAY"),
+            )
         ).alias("date"),
     )
 
