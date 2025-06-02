@@ -7,7 +7,7 @@
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v4"
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v5"
               EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
     </Target>
 

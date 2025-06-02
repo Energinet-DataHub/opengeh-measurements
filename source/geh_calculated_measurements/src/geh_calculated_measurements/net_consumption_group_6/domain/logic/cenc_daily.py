@@ -115,9 +115,6 @@ def calculate_daily(
         )
     )
 
-    print("cenc_w_fill_cenc_days_start_date:")
-    cenc_w_fill_cenc_days_start_date.show()
-
     # Filter out rows where fill_cenc_days_start_date is >= execution_start_datetime
     filtered_cenc = cenc_w_fill_cenc_days_start_date.filter(
         F.col("fill_cenc_days_start_date") <= F.col("execution_start_datetime")
