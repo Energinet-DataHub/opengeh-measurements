@@ -8,7 +8,7 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-[Obsolete]
+[Obsolete("Use MeasurementsAggregatedByDateResponse instead.")]
 public class MeasurementsAggregatedByDateResponseV4
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
