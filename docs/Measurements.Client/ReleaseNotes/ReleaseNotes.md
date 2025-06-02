@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.3.0
+
+- CreateAuthorizationHeaderValueAsync is added to IAuthorizationHeaderProvider.
+
 ## Version 8.2.0
 
 - Converted quality for daily aggregate to a list of qualities present in the aggregate.
