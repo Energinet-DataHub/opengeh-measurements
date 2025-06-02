@@ -1,0 +1,15 @@
+version: v0.1
+testId: aggregatedByPeriodWithMonthlyAggregates
+displayName: aggregatedByPeriodWithMonthlyAggregates
+testPlan: aggregatedByPeriodWithMonthlyAggregates.jmx
+description: aggregatedByPeriodWithMonthlyAggregates
+engineInstances: 1
+configurationFiles:
+   - 'aggregatedByPeriodWithMonthlyAggregates.csv'
+failureCriteria:
+  - percentage(error) > 1
+  - p50(response_time_ms) > 1200
+autoStop:
+  errorPercentage: 80
+  timeWindow: 60
+

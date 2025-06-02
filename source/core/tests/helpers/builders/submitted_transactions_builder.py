@@ -25,7 +25,12 @@ from tests.helpers.schemas.bronze_submitted_transactions_value_schema import (
 
 
 class Point:
-    def __init__(self, position: int = 1, quantity=DecimalValue(1, 0), quality: Quality = Quality.Q_MEASURED) -> None:
+    def __init__(
+        self,
+        position: int = 1,
+        quantity: DecimalValue | None = DecimalValue(1, 0),
+        quality: Quality = Quality.Q_MEASURED,
+    ) -> None:
         self.position = position
         self.quantity = quantity
         self.quality = Quality.Name(int(quality))
@@ -39,7 +44,7 @@ class PointsBuilder:
     def add_row(
         self,
         position: int = 1,
-        quantity=DecimalValue(1, 0),
+        quantity: DecimalValue | None = DecimalValue(1, 0),
         quality: Quality = Quality.Q_MEASURED,
     ) -> "PointsBuilder":
         self.data.append(Point(position, quantity, quality))

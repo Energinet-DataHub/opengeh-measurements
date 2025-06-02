@@ -8,6 +8,7 @@ from geh_common.testing.scenario_testing import TestCase, TestCases
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
@@ -31,6 +32,17 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
         ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
+
+    calculated_measurements_path = f"{scenario_path}/when/calculated_measurements_internal/calculated_measurements.csv"
+    if Path(calculated_measurements_path).exists():
+        calculated_measurements = read_csv(
+            spark,
+            calculated_measurements_path,
+            CalculatedMeasurementsInternal.schema,
+        )
+    else:
+        calculated_measurements = spark.createDataFrame([], CalculatedMeasurementsInternal.schema)
+
     consumption_metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__electrical_heating/consumption_metering_point_periods_v1.csv",
@@ -53,11 +65,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     # Execute the logic
     actual: CalculatedMeasurementsDaily = execute(
-        CurrentMeasurements(current_measurements),
-        ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
-        ChildMeteringPoints(child_metering_point_periods),
-        "Europe/Copenhagen",
-        execution_start_datetime,
+        current_measurements=CurrentMeasurements(current_measurements),
+        internal_calculated_measurements=CalculatedMeasurementsInternal(calculated_measurements),
+        consumption_metering_point_periods=ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
+        child_metering_points=ChildMeteringPoints(child_metering_point_periods),
+        time_zone="Europe/Copenhagen",
+        execution_start_datetime=execution_start_datetime,
     )
 
     # Sort to make the tests deterministic

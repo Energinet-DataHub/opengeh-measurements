@@ -56,8 +56,15 @@ def _reorganize_values_array_to_match_measurements() -> Column:
         F.col(BronzeMigratedTransactionsColumnNames.values),
         lambda x: F.struct(
             x[BronzeMigratedTransactionsValuesFieldNames.position],
-            x[BronzeMigratedTransactionsValuesFieldNames.quantity]
-            .cast("Decimal(18,3)")
+            F.when(
+                _align_quality(x[BronzeMigratedTransactionsValuesFieldNames.quality]) == QuantityQuality.MISSING.value,
+                None,
+            )
+            .when(
+                x[BronzeMigratedTransactionsValuesFieldNames.quantity].isNotNull(),
+                x[BronzeMigratedTransactionsValuesFieldNames.quantity].cast("Decimal(18,3)"),
+            )
+            .otherwise(None)
             .alias(BronzeMigratedTransactionsValuesFieldNames.quantity),
             _align_quality(x[BronzeMigratedTransactionsValuesFieldNames.quality]).alias(
                 BronzeMigratedTransactionsValuesFieldNames.quality

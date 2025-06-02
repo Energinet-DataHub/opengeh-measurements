@@ -7,7 +7,7 @@
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v3"
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v4"
               EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
     </Target>
 
@@ -19,6 +19,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Measurements.Application\Measurements.Application.csproj" />
       <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\PerformanceTest\" />
     </ItemGroup>
 
 </Project>
