@@ -20,6 +20,7 @@ public class MeasurementsController(
     : ControllerBase
 {
     [MapToApiVersion(4.0)]
+    [MapToApiVersion(5.0)]
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
@@ -43,6 +44,7 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [MapToApiVersion(5.0)]
     [HttpGet("currentForPeriod")]
     public Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
@@ -97,6 +99,7 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
     {
@@ -119,6 +122,7 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByYear")]
     public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)
     {
@@ -140,6 +144,7 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByPeriod")]
     public async Task<IActionResult> GetAggregatedByPeriodAsync([FromQuery] GetAggregatedByPeriodRequest request)
     {
