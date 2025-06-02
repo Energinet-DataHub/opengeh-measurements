@@ -6,7 +6,7 @@ using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Energinet.DataHub.Measurements.WebApi.Constants;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -87,7 +87,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
             .Token;
 
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+        return new AuthenticationHeaderValue(AuthenticationSchemas.Default, token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>

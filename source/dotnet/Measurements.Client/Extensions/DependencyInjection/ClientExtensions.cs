@@ -1,11 +1,8 @@
-﻿using System.Net.Http.Headers;
-using Azure.Core;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Energinet.DataHub.Measurements.Client.Authentication;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
@@ -49,7 +46,7 @@ public static class ClientExtensions
         {
             var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
             var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeaderValue();
+            var authorizationHeader = authorizationHeaderProvider.CreateAuthenticationHeaderValue();
 
             httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
