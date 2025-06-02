@@ -6,8 +6,8 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 060000001500170201;99;measured;2025-01-02T23:00:00Z;supply_to_grid;Case 1: nsg2 - no end date - with D15
 070000001500170201;100;estimated;2025-01-02T23:00:00Z;consumption_from_grid;Case 1: nsg2 - no end date - with D15 - it should not use this quantity, but quantity from D15 instead
 150000001500170201;1;calculated;2025-01-02T23:00:00Z;net_consumption;Case 1: nsg2 - no end date - with D15
-150000001500170201;;calculated;2025-01-02T23:15:00Z;net_consumption;Case 1: Null quantity check
-150000001500170201;;calculated;2025-01-03T23:00:00Z;net_consumption;Case 1: Null quantity check
+150000001500170201;;missing;2025-01-02T23:15:00Z;net_consumption;Case 1: Null quantity check
+150000001500170201;;missing;2025-01-03T23:00:00Z;net_consumption;Case 1: Null quantity check
 150000001500170202;1;calculated;2025-03-28T23:00:00Z;net_consumption;Case 2: Summertime change
 150000001500170202;1;calculated;2025-03-29T00:00:00Z;net_consumption;Case 2: Summertime change
 150000001500170202;1;calculated;2025-03-29T01:00:00Z;net_consumption;Case 2: Summertime change

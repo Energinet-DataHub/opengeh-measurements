@@ -14,7 +14,7 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000201;;measured;2026-01-12T03:00:00Z;consumption;Null quantity (treat as 0, i.e. not in the 10 highest values)
 170000000000000201;2000;measured;2026-06-02T03:00:00Z;consumption;
 170000000000000201;2000;measured;2026-06-03T03:00:00Z;consumption;
-170000000000000202;20;measured;2025-04-02T03:00:00Z;consumption;
+170000000000000202;10;measured;2025-04-02T03:00:00Z;consumption;
 170000000000000202;10;measured;2025-05-03T03:00:00Z;consumption;
 170000000000000202;10;measured;2025-05-04T03:00:00Z;consumption;
 170000000000000202;10;measured;2025-05-12T03:00:00Z;consumption;
@@ -23,4 +23,4 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 170000000000000202;10;measured;2026-01-05T03:00:00Z;consumption;
 170000000000000202;10;measured;2026-01-08T03:00:00Z;consumption;
 170000000000000202;10;measured;2026-01-09T03:00:00Z;consumption;
-170000000000000202;;measured;2026-01-10T03:00:00Z;consumption;Null quantity (treat as 0, 0 in the 10 highest values)
+170000000000000202;;measured;2026-01-10T03:00:00Z;consumption;Null quantity
