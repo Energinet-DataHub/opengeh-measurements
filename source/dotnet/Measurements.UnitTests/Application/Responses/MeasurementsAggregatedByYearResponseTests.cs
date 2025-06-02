@@ -47,11 +47,7 @@ public class MeasurementsAggregatedByYearResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements);
-
-        // Assert
-        var firstAggregation = actual.MeasurementAggregations.First();
-        Assert.Equal(Unit.kWh, firstAggregation.Unit);
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements));
     }
 
     private static ExpandoObject CreateRaw(

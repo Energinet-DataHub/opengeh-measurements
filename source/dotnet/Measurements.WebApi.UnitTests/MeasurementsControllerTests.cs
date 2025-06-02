@@ -345,7 +345,7 @@ public class MeasurementsControllerTests
         // Arrange
         var jsonSerializer = new JsonSerializer();
         var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponseV4.Create);
-        var expected = CreateExpectedMeasurementsAggregatedByYear();
+        var expected = CreateExpectedMeasurementsAggregatedByYearV4();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(response);
@@ -499,9 +499,14 @@ public class MeasurementsControllerTests
         return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Unit":"kWh"}]}""";
     }
 
-    private static string CreateExpectedMeasurementsAggregatedByYear()
+    private static string CreateExpectedMeasurementsAggregatedByYearV4()
     {
         return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYear()
+    {
+        return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Unit":"kWh"}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()
