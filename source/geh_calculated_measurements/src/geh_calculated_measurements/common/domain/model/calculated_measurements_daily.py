@@ -20,6 +20,6 @@ class CalculatedMeasurementsDaily(DataFrameWrapper):
             T.StructField(ContractColumnNames.metering_point_id, T.StringType(), False),
             T.StructField(ContractColumnNames.date, T.TimestampType(), False),
             T.StructField(ContractColumnNames.quantity, T.DecimalType(18, 3), False),
-            T.StructField(ContractColumnNames.settlement_type, T.StringType(), True),
+            T.StructField(ContractColumnNames.settlement_type, T.StringType(), False),
         ]
     )
