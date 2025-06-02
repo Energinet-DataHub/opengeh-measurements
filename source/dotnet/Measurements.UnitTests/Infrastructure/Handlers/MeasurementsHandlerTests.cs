@@ -153,6 +153,34 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
+    [Obsolete("Obsolete")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2021, 1);
+        var request = new GetAggregatedByMonthRequest("123456789", yearMonth.Year);
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsyncV4(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
+        Assert.Equal(yearMonth.ToDateInterval().End, actualAggregations.YearMonth.ToDateInterval().End);
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
+    }
+
+    [Theory]
+    [InlineAutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
@@ -174,8 +202,24 @@ public class MeasurementsHandlerTests
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
         Assert.Equal(yearMonth.ToDateInterval().End, actualAggregations.YearMonth.ToDateInterval().End);
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
+    }
+
+    [Fact]
+    [Obsolete("Obsolete")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByMonthRequest("123456789", 2021);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsyncV4(request));
     }
 
     [Fact]

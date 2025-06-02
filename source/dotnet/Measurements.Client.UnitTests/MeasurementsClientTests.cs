@@ -126,7 +126,6 @@ public class MeasurementsClientTests
         Assert.Equal(12, actual.Count);
         Assert.True(actual.First().YearMonth == new YearMonth(2025, 1));
         Assert.True(actual.Last().YearMonth == new YearMonth(2025, 12));
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 

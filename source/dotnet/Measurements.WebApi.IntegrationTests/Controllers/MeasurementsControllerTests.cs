@@ -291,6 +291,37 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    [Obsolete("Obsolete")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string meteringPointId = "123456789123456789";
+        const int year = 2021;
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 2, 5))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 3, 6))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(year));
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByMonthResponseV4>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.All(actual.MeasurementAggregations, x => Assert.Equal(year, x.YearMonth.Year));
+        Assert.Equal(3, actual.MeasurementAggregations.Count);
+        foreach (var measurementAggregation in actual.MeasurementAggregations)
+        {
+            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
+            Assert.Equal(24.0m, measurementAggregation.Quantity);
+            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
+        }
+    }
+
+    [Fact]
     public async Task GetAggregatedByMonthAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -314,7 +345,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(3, actual.MeasurementAggregations.Count);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
-            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(24.0m, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
         }

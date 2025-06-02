@@ -99,6 +99,28 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [HttpGet("aggregatedByMonth")]
+    [Obsolete("Obsolete. Use GetAggregatedByMonthAsync instead.")]
+    public async Task<IActionResult> GetAggregatedByMonthAsyncV4([FromQuery] GetAggregatedByMonthRequest request)
+    {
+        try
+        {
+            var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsyncV4(request);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            logger.LogInformation(
+                "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
+                request.MeteringPointId.Sanitize(),
+                request.Year);
+
+            return NotFound(e.Message);
+        }
+    }
+
     [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
