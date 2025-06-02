@@ -16,7 +16,7 @@ public class AuthorizationProviderTests
         credential.Setup(tc => tc
             .GetToken(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>()))
             .Returns(new AccessToken("test", DateTimeOffset.UtcNow.AddHours(1)));
-        IAuthorizationHeaderProvider provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
+        var provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
 
         // Act
         var actual = provider.CreateAuthorizationHeaderValue();
@@ -35,7 +35,7 @@ public class AuthorizationProviderTests
         credential.Setup(tc => tc
                 .GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AccessToken("test", DateTimeOffset.UtcNow.AddHours(1)));
-        IAuthorizationHeaderProvider provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
+        var provider = new AuthorizationHeaderProvider(credential.Object, "https://example.com/applicationIdUri");
 
         // Act
         var actual = await provider.CreateAuthorizationHeaderValueAsync();
