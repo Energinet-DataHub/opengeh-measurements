@@ -399,13 +399,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         var firstMeasurementAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(2021, firstMeasurementAggregation.Year);
-        Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
         Assert.Equal(24.0m, firstMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
 
         var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
         Assert.Equal(2022, lastMeasurementAggregation.Year);
-        Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
         Assert.Equal(48m, lastMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
     }

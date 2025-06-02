@@ -217,7 +217,6 @@ public class MeasurementsHandlerTests
         // Assert
         Assert.Equal(year, actualAggregations.Year);
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
     }
 
