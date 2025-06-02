@@ -134,6 +134,8 @@ def calculate_daily(
             )
         ).alias("date"),
     )
+    print("df:")
+    df.show()
 
     result_df = df.select(
         F.col(ContractColumnNames.metering_point_id),
