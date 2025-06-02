@@ -30,9 +30,7 @@ public class MeasurementsAggregatedByMonthResponse
                 new MeasurementAggregationByMonth(
                     FindYearMonth(measurement),
                     measurement.Quantity,
-                    FindMinimumQuality(measurement),
-                    SetUnit(measurement),
-                    FindMissingValues(measurement)))
+                    SetUnit(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -46,29 +44,12 @@ public class MeasurementsAggregatedByMonthResponse
         return new YearMonth(dateOnly.Year, dateOnly.Month);
     }
 
-    private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
-    {
-        return aggregatedMeasurementsResult.Qualities
-            .Select(quality => QualityParser.ParseQuality((string)quality))
-            .Min();
-    }
-
-    private static bool FindMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
-    {
-        var yearMonth = FindYearMonth(aggregatedMeasurements);
-        var daysInMonth = yearMonth.Calendar.GetDaysInMonth(yearMonth.Year, yearMonth.Month);
-        var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-        var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, daysInMonth);
-
-        var quality = FindMinimumQuality(aggregatedMeasurements);
-        var measurementsContainMissingQualities = quality <= Quality.Missing;
-
-        return expectedPointCount - aggregatedMeasurements.PointCount != 0 ||
-               measurementsContainMissingQualities;
-    }
-
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
-        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First());
+        // From a single metering point of view only one unit is allowed.
+        // If unit should change then the metering point must be closed down and a new one created.
+        return aggregatedMeasurementsResult.Units.Length != 1
+            ? throw new InvalidOperationException("Aggregated measurements contains multiple units.")
+            : UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 }

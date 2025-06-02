@@ -174,7 +174,6 @@ public class MeasurementsHandlerTests
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
         Assert.Equal(yearMonth.ToDateInterval().End, actualAggregations.YearMonth.ToDateInterval().End);
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
     }
 
