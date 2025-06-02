@@ -82,7 +82,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -129,7 +129,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoMoqData]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -172,7 +172,7 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -209,6 +209,30 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByMonthRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponseV4.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByMonthV4();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetAggregatedByMonthAsyncV4(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -228,6 +252,28 @@ public class MeasurementsControllerTests
 
         // Assert
         Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByMonthRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsyncV4(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
     }
 
     [Theory]
@@ -253,6 +299,25 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsUnknownError_ThrowsException(
+        GetAggregatedByMonthRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsyncV4(request));
+    }
+
+    [Theory]
+    [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByMonthRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -267,6 +332,30 @@ public class MeasurementsControllerTests
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
+    }
+
+    [Theory]
+    [AutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponseV4.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByYearV4();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetAggregatedByYearAsyncV4(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
     }
 
     [Theory]
@@ -294,6 +383,28 @@ public class MeasurementsControllerTests
 
     [Theory]
     [AutoMoqData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new MeasurementsNotFoundException());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsyncV4(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
     public async Task GetAggregatedByYearAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByYearRequest request,
         Mock<IMeasurementsHandler> measurementsHandler,
@@ -311,6 +422,25 @@ public class MeasurementsControllerTests
 
         // Assert
         Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsUnknownError_ThrowsException(
+        GetAggregatedByYearRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsyncV4(request));
     }
 
     [Theory]
@@ -359,14 +489,24 @@ public class MeasurementsControllerTests
         return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Qualities":["Measured"],"Unit":"kWh","IsMissingValues":true,"ContainsUpdatedValues":true}]}""";
     }
 
-    private static string CreateExpectedMeasurementsAggregatedByMonth()
+    private static string CreateExpectedMeasurementsAggregatedByMonthV4()
     {
         return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
     }
 
-    private static string CreateExpectedMeasurementsAggregatedByYear()
+    private static string CreateExpectedMeasurementsAggregatedByMonth()
+    {
+        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYearV4()
     {
         return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYear()
+    {
+        return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Unit":"kWh"}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()

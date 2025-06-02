@@ -42,6 +42,17 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
         return MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
     }
 
+    [Obsolete("Use GetAggregatedByMonthAsync instead.")]
+    public async Task<MeasurementsAggregatedByMonthResponseV4> GetAggregatedByMonthAsyncV4(GetAggregatedByMonthRequest request)
+    {
+        var year = new Year(request.Year);
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByMonthAsync(request.MeteringPointId, year)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+
+        return MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements);
+    }
+
     public async Task<MeasurementsAggregatedByMonthResponse> GetAggregatedByMonthAsync(GetAggregatedByMonthRequest request)
     {
         var year = new Year(request.Year);
@@ -59,6 +70,16 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
             .ToListAsync() ?? throw new MeasurementsNotFoundException();
 
         return MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
+    }
+
+    [Obsolete("Use GetAggregatedByYearAsync instead.")]
+    public async Task<MeasurementsAggregatedByYearResponseV4> GetAggregatedByYearAsyncV4(GetAggregatedByYearRequest request)
+    {
+        var aggregatedMeasurements = await measurementsRepository
+            .GetAggregatedByYearAsync(request.MeteringPointId)
+            .ToListAsync() ?? throw new MeasurementsNotFoundException();
+
+        return MeasurementsAggregatedByYearResponseV4.Create(aggregatedMeasurements);
     }
 
     public async Task<MeasurementsAggregatedByYearResponse> GetAggregatedByYearAsync(GetAggregatedByYearRequest request)

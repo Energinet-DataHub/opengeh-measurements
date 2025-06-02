@@ -126,7 +126,6 @@ public class MeasurementsClientTests
         Assert.Equal(12, actual.Count);
         Assert.True(actual.First().YearMonth == new YearMonth(2025, 1));
         Assert.True(actual.Last().YearMonth == new YearMonth(2025, 12));
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 
@@ -150,8 +149,6 @@ public class MeasurementsClientTests
         Assert.Equal(5, actual.Count);
         Assert.Equal(2021, actual.First().Year);
         Assert.Equal(2025, actual.Last().Year);
-        Assert.Equal(Quality.Measured, actual.First().Quality);
-        Assert.Equal(Quality.Estimated, actual.Last().Quality);
         Assert.True(actual.All(p => p.Unit == Unit.kWh));
     }
 
