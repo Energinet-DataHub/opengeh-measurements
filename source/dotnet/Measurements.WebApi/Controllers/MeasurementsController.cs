@@ -28,9 +28,9 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
-            request.MeteringPointId.Sanitize(),
-            request.StartDate.Sanitize(),
-            request.EndDate.Sanitize());
+            request.MeteringPointId.ToSanitizedString(),
+            request.StartDate.ToSanitizedString(),
+            request.EndDate.ToSanitizedString());
 
         return NotFound("No measurements found for the specified period.");
     }
@@ -54,7 +54,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-            request.MeteringPointId.Sanitize(),
+            request.MeteringPointId.ToSanitizedString(),
             request.Year,
             request.Month);
 
@@ -71,7 +71,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-            request.MeteringPointId.Sanitize(),
+            request.MeteringPointId.ToSanitizedString(),
             request.Year,
             request.Month);
 
@@ -89,7 +89,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
-            request.MeteringPointId.Sanitize(),
+            request.MeteringPointId.ToSanitizedString(),
             request.Year);
 
         return NotFound("No aggregated measurements found for the specified month.");
@@ -105,7 +105,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
-            request.MeteringPointId.Sanitize(),
+            request.MeteringPointId.ToSanitizedString(),
             request.Year);
 
         return NotFound("No aggregated measurements found for the specified month.");
@@ -122,7 +122,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} for all years",
-            request.MeteringPointId.Sanitize());
+            request.MeteringPointId.ToSanitizedString());
 
         return NotFound("No aggregated measurements found for the specified year.");
     }
@@ -137,7 +137,7 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} for all years",
-            request.MeteringPointId.Sanitize());
+            request.MeteringPointId.ToSanitizedString());
 
         return NotFound("No aggregated measurements found for the specified year.");
     }
@@ -153,9 +153,9 @@ public class MeasurementsController(
 
         logger.LogInformation(
             "Aggregated measurements not found for metering point ids {MeteringPointIds} from {StartDate} to {EndDate} with aggregation {Aggregation}",
-            request.MeteringPointIds.Sanitize(),
-            request.From.Sanitize(),
-            request.To.Sanitize(),
+            request.MeteringPointIds.ToSanitizedString(),
+            request.From.ToSanitizedString(),
+            request.To.ToSanitizedString(),
             request.Aggregation);
 
         return NotFound("No aggregated measurements found for the specified period.");
