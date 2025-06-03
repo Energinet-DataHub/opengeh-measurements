@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
@@ -22,7 +21,7 @@ public class MeasurementsAggregatedByPeriodResponse
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByPeriodResponse Create(IEnumerable<AggregatedByPeriodMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByPeriodResponse? Create(IEnumerable<AggregatedByPeriodMeasurementsResult> measurements)
     {
         var measurementsAggregatedDtos = new Dictionary<string, MeasurementAggregationByPeriod>();
         var pointAggregationGroups = new Dictionary<string, PointAggregationGroup>();
@@ -58,8 +57,7 @@ public class MeasurementsAggregatedByPeriodResponse
             .ToList();
 
         return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
+            ? null : new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
     }
 
     private static MeasurementAggregationByPeriod GetOrCreateAggregationByPeriod(

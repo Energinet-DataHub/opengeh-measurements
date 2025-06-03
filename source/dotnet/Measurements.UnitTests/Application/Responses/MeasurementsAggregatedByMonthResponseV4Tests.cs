@@ -31,7 +31,7 @@ public class MeasurementsAggregatedByMonthResponseV4Tests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements)!;
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -55,7 +55,7 @@ public class MeasurementsAggregatedByMonthResponseV4Tests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements)!;
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -77,7 +77,7 @@ public class MeasurementsAggregatedByMonthResponseV4Tests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements);
+        var actual = MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements)!;
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -99,7 +99,7 @@ public class MeasurementsAggregatedByMonthResponseV4Tests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByMonthResponseV4.Create(aggregatedMeasurements)!);
     }
 
     private static ExpandoObject CreateRaw(

@@ -1,7 +1,6 @@
 ﻿using System.Dynamic;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
@@ -52,7 +51,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsResponse?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -139,7 +138,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByDateResponseV4?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -160,7 +159,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByDateResponse?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -266,7 +265,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByMonthResponseV4?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -287,7 +286,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByMonthResponse?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -393,7 +392,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByYearResponseV4?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -414,7 +413,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync((MeasurementsAggregatedByYearResponse?)null);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -464,8 +463,7 @@ public class MeasurementsControllerTests
     private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
-        var response = MeasurementsResponse.Create(measurements);
-        return response;
+        return MeasurementsResponse.Create(measurements)!;
     }
 
     private static T CreateMeasurementsAggregatedResponse<T>(Func<List<AggregatedMeasurementsResult>, T> create)

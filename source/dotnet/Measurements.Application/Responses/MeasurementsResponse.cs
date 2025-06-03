@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
@@ -21,7 +20,7 @@ public class MeasurementsResponse
         Points = points;
     }
 
-    public static MeasurementsResponse Create(IEnumerable<MeasurementResult> measurements)
+    public static MeasurementsResponse? Create(IEnumerable<MeasurementResult> measurements)
     {
         var points = measurements
             .Select(measurement =>
@@ -36,7 +35,6 @@ public class MeasurementsResponse
             .ToList();
 
         return points.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new MeasurementsResponse(points);
+            ? null : new MeasurementsResponse(points);
     }
 }

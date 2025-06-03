@@ -1,6 +1,5 @@
 ﻿using System.Dynamic;
 using AutoFixture.Xunit2;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Domain;
@@ -34,7 +33,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
-        var actualPoint = actual.Points.Single();
+        var actualPoint = actual!.Points.Single();
 
         // Assert
         Assert.Equal(date, actualPoint.ObservationTime.ToDateTimeOffset());
@@ -45,7 +44,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetByPeriodAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetByPeriodAsync_WhenMeasurementsNotExist_ThenReturnsNull()
     {
         // Arrange
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -57,8 +56,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetByPeriodAsync(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetByPeriodAsync(request));
+        Assert.Null(actual);
     }
 
     [Theory]
@@ -79,7 +80,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByDateAsyncV4(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
@@ -103,8 +104,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByDateAsyncV4(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsyncV4(request));
+        Assert.Null(actual);
     }
 
     [Theory]
@@ -124,7 +127,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
@@ -147,8 +150,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByDateAsync(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsync(request));
+        Assert.Null(actual);
     }
 
     [Theory]
@@ -169,7 +174,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsyncV4(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
@@ -196,7 +201,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
@@ -218,8 +223,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByMonthAsyncV4(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsyncV4(request));
+        Assert.Null(actual);
     }
 
     [Fact]
@@ -234,8 +241,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByMonthAsync(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsync(request));
+        Assert.Null(actual);
     }
 
     [Theory]
@@ -257,7 +266,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByYearAsyncV4(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(year, actualAggregations.Year);
@@ -284,7 +293,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByYearAsync(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(year, actualAggregations.Year);
@@ -305,8 +314,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByYearAsyncV4(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByYearAsyncV4(request));
+        Assert.Null(actual);
     }
 
     [Fact]
@@ -321,8 +332,10 @@ public class MeasurementsHandlerTests
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
         // Act
+        var actual = await sut.GetAggregatedByYearAsync(request);
+
         // Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByYearAsync(request));
+        Assert.Null(actual);
     }
 
     [Fact]
@@ -343,7 +356,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByPeriodAsync(request);
-        var actualAggregations = actual.MeasurementAggregations.Single();
+        var actualAggregations = actual!.MeasurementAggregations.Single();
 
         // Assert
         Assert.Single(actualAggregations.PointAggregationGroups);
@@ -369,8 +382,11 @@ public class MeasurementsHandlerTests
             .Returns(AsyncEnumerable.Empty<AggregatedByPeriodMeasurementsResult>());
         var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByPeriodAsync(request));
+        // Act
+        var actual = await sut.GetAggregatedByPeriodAsync(request);
+
+        // Assert
+        Assert.Null(actual);
     }
 
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
@@ -22,7 +21,7 @@ public class MeasurementsAggregatedByYearResponse
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByYearResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByYearResponse? Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -33,8 +32,7 @@ public class MeasurementsAggregatedByYearResponse
             .ToList();
 
         return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByYearResponse(measurementAggregations);
+            ? null : new MeasurementsAggregatedByYearResponse(measurementAggregations);
     }
 
     private static int SetYear(AggregatedMeasurementsResult measurement)

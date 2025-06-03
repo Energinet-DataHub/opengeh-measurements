@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
@@ -23,7 +22,7 @@ public class MeasurementsAggregatedByDateResponseV4
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByDateResponseV4 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponseV4? Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -37,8 +36,7 @@ public class MeasurementsAggregatedByDateResponseV4
             .ToList();
 
         return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByDateResponseV4(measurementAggregations);
+            ? null : new MeasurementsAggregatedByDateResponseV4(measurementAggregations);
     }
 
     private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
