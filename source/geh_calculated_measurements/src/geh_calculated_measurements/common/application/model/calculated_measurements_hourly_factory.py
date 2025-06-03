@@ -33,7 +33,7 @@ def create(
 
     df = _explode_to_hour_values(df, time_zone)
 
-    df = _create_transaction_time_column(df)
+    df = _create_transaction_time_column(df, MeteringPointResolution.HOUR)
 
     df = _add_storage_columns(
         df, orchestration_instance_id, orchestration_type, metering_point_type, transaction_creation_datetime
@@ -99,7 +99,7 @@ def _resolution_to_interval(resolution: Column) -> Column:
     )
 
 
-def _create_transaction_time_column(df) -> DataFrame:
+def _create_transaction_time_column(df, resolution: MeteringPointResolution) -> DataFrame:
     """Create transaction start and end time columns based on the observation time and resolution.
 
     This must be done after the transaction id column is created, as it uses the transaction id to group the data.
@@ -111,6 +111,10 @@ def _create_transaction_time_column(df) -> DataFrame:
     Returns:
         DataFrame: The DataFrame with the transaction start and end time columns added.
     """
+    if ContractColumnNames.resolution in df.columns:
+        resolution_col = F.col(ContractColumnNames.resolution)
+    else:
+        resolution_col = F.lit(resolution.value)
     w = Window.partitionBy(ContractColumnNames.transaction_id)
     df_with_start = df.withColumn(
         ContractColumnNames.transaction_start_time,
@@ -118,8 +122,7 @@ def _create_transaction_time_column(df) -> DataFrame:
     )
     df_with_end = df_with_start.withColumn(
         ContractColumnNames.transaction_end_time,
-        F.max(F.col(ContractColumnNames.observation_time)).over(w)
-        + _resolution_to_interval(F.col(ContractColumnNames.resolution)),
+        F.max(F.col(ContractColumnNames.observation_time)).over(w) + _resolution_to_interval(resolution_col),
     )
     return df_with_end
 
