@@ -29,8 +29,8 @@ public class MeasurementsController(
         logger.LogInformation(
             "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
             request.MeteringPointId.Sanitize(),
-            request.StartDate,
-            request.EndDate);
+            request.StartDate.Sanitize(),
+            request.EndDate.Sanitize());
 
         return NotFound("No measurements found for the specified period.");
     }
@@ -154,8 +154,8 @@ public class MeasurementsController(
         logger.LogInformation(
             "Aggregated measurements not found for metering point ids {MeteringPointIds} from {StartDate} to {EndDate} with aggregation {Aggregation}",
             request.MeteringPointIds.Sanitize(),
-            request.From,
-            request.To,
+            request.From.Sanitize(),
+            request.To.Sanitize(),
             request.Aggregation);
 
         return NotFound("No aggregated measurements found for the specified period.");
