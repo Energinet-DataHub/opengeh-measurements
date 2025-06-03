@@ -11,6 +11,6 @@ public static class ObjectExtensions
     {
         return string.IsNullOrWhiteSpace(input) ?
             string.Empty :
-            input.Replace("\n", string.Empty).Replace("\r", string.Empty);
+            input.Replace("\n", string.Empty).Replace("\r", string.Empty).Trim();
     }
 }
