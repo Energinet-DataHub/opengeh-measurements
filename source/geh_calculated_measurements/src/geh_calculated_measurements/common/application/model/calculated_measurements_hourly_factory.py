@@ -31,9 +31,9 @@ def create(
         ContractColumnNames.transaction_id, _create_transaction_id_column(orchestration_instance_id, time_zone)
     )
 
-    df = _create_transaction_time_column(df)
-
     df = _explode_to_hour_values(df, time_zone)
+
+    df = _create_transaction_time_column(df)
 
     df = _add_storage_columns(
         df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
