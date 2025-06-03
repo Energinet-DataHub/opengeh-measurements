@@ -36,7 +36,7 @@ def create(
     df = _create_transaction_time_column(df)
 
     df = _add_storage_columns(
-        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
+        df, orchestration_instance_id, orchestration_type, metering_point_type, transaction_creation_datetime
     )
 
     return df
@@ -77,7 +77,6 @@ def _add_storage_columns(
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
-    time_zone: str,
     transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
     df = measurements.withColumns(
