@@ -59,7 +59,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetByPeriodAsync(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.Points);
     }
 
     [Theory]
@@ -107,7 +107,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByDateAsyncV4(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Theory]
@@ -153,7 +153,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByDateAsync(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Theory]
@@ -226,7 +226,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByMonthAsyncV4(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Fact]
@@ -244,7 +244,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByMonthAsync(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Theory]
@@ -317,7 +317,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByYearAsyncV4(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Fact]
@@ -335,7 +335,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByYearAsync(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     [Fact]
@@ -386,7 +386,7 @@ public class MeasurementsHandlerTests
         var actual = await sut.GetAggregatedByPeriodAsync(request);
 
         // Assert
-        Assert.Null(actual);
+        Assert.Empty(actual.MeasurementAggregations);
     }
 
     private static dynamic CreateMeasurementsRaw(DateTimeOffset now)
