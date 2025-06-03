@@ -21,8 +21,4 @@
       <ProjectReference Include="..\Measurements.Infrastructure\Measurements.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Assets\PerformanceTest\" />
-    </ItemGroup>
-
 </Project>
