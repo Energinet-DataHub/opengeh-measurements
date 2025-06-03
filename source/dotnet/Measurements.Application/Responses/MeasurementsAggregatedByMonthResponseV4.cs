@@ -23,7 +23,7 @@ public class MeasurementsAggregatedByMonthResponseV4
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByMonthResponseV4? Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByMonthResponseV4 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -34,8 +34,7 @@ public class MeasurementsAggregatedByMonthResponseV4
                     SetUnit(measurement)))
             .ToList();
 
-        return measurementAggregations.Count <= 0
-            ? null : new MeasurementsAggregatedByMonthResponseV4(measurementAggregations);
+        return new MeasurementsAggregatedByMonthResponseV4(measurementAggregations);
     }
 
     private static YearMonth SetYearMonth(AggregatedMeasurementsResult measurement)

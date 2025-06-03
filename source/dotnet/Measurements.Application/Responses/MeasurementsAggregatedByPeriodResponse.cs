@@ -21,7 +21,7 @@ public class MeasurementsAggregatedByPeriodResponse
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByPeriodResponse? Create(IEnumerable<AggregatedByPeriodMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByPeriodResponse Create(IEnumerable<AggregatedByPeriodMeasurementsResult> measurements)
     {
         var measurementsAggregatedDtos = new Dictionary<string, MeasurementAggregationByPeriod>();
         var pointAggregationGroups = new Dictionary<string, PointAggregationGroup>();
@@ -56,8 +56,7 @@ public class MeasurementsAggregatedByPeriodResponse
             .Select(measurement => measurement.Value)
             .ToList();
 
-        return measurementAggregations.Count <= 0
-            ? null : new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
+        return new MeasurementsAggregatedByPeriodResponse(measurementAggregations);
     }
 
     private static MeasurementAggregationByPeriod GetOrCreateAggregationByPeriod(

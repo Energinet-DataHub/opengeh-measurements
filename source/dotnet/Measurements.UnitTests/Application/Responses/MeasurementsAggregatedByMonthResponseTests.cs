@@ -25,7 +25,7 @@ public class MeasurementsAggregatedByMonthResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -46,7 +46,7 @@ public class MeasurementsAggregatedByMonthResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements)!);
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByMonthResponse.Create(aggregatedMeasurements));
     }
 
     private static ExpandoObject CreateRaw(

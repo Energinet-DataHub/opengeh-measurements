@@ -33,7 +33,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
-        var actualPoint = actual!.Points.Single();
+        var actualPoint = actual.Points.Single();
 
         // Assert
         Assert.Equal(date, actualPoint.ObservationTime.ToDateTimeOffset());
@@ -80,7 +80,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByDateAsyncV4(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
@@ -127,7 +127,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
@@ -174,7 +174,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsyncV4(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
@@ -201,7 +201,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
@@ -266,7 +266,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByYearAsyncV4(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(year, actualAggregations.Year);
@@ -293,7 +293,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByYearAsync(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Equal(year, actualAggregations.Year);
@@ -356,7 +356,7 @@ public class MeasurementsHandlerTests
 
         // Act
         var actual = await sut.GetAggregatedByPeriodAsync(request);
-        var actualAggregations = actual!.MeasurementAggregations.Single();
+        var actualAggregations = actual.MeasurementAggregations.Single();
 
         // Assert
         Assert.Single(actualAggregations.PointAggregationGroups);

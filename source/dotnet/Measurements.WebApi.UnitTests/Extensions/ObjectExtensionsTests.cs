@@ -26,7 +26,7 @@ namespace Energinet.DataHub.Measurements.WebApi.UnitTests.Extensions
         public void ToSanitizedString_WithNonStringObject_CallsToStringAndSanitizes()
         {
             // Arrange
-            var number = 12345;
+            const int number = 12345;
 
             // Act
             var result = number.ToSanitizedString();

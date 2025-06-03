@@ -25,7 +25,7 @@ public class MeasurementsAggregatedByYearResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -47,7 +47,7 @@ public class MeasurementsAggregatedByYearResponseTests
         };
 
         // Act
-        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements)!);
+        Assert.Throws<InvalidOperationException>(() => MeasurementsAggregatedByYearResponse.Create(aggregatedMeasurements));
     }
 
     private static ExpandoObject CreateRaw(

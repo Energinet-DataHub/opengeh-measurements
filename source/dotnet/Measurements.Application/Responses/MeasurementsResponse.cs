@@ -20,7 +20,7 @@ public class MeasurementsResponse
         Points = points;
     }
 
-    public static MeasurementsResponse? Create(IEnumerable<MeasurementResult> measurements)
+    public static MeasurementsResponse Create(IEnumerable<MeasurementResult> measurements)
     {
         var points = measurements
             .Select(measurement =>
@@ -34,7 +34,6 @@ public class MeasurementsResponse
                     measurement.TransactionCreated))
             .ToList();
 
-        return points.Count <= 0
-            ? null : new MeasurementsResponse(points);
+        return new MeasurementsResponse(points);
     }
 }

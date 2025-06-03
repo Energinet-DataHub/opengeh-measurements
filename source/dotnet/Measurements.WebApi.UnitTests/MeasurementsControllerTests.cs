@@ -442,7 +442,7 @@ public class MeasurementsControllerTests
     private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
-        return MeasurementsResponse.Create(measurements)!;
+        return MeasurementsResponse.Create(measurements);
     }
 
     private static T CreateMeasurementsAggregatedResponse<T>(Func<List<AggregatedMeasurementsResult>, T> create)

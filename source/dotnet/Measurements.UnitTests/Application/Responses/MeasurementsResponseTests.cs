@@ -24,7 +24,7 @@ public class MeasurementsResponseTests
         };
 
         // Act
-        var actual = MeasurementsResponse.Create(measurements)!;
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(3, actual.Points.Count);
@@ -56,7 +56,7 @@ public class MeasurementsResponseTests
         };
 
         // Act
-        var actual = MeasurementsResponse.Create(measurements)!;
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedUnit, actual.Points.Single().Unit);
@@ -90,7 +90,7 @@ public class MeasurementsResponseTests
         };
 
         // Act
-        var actual = MeasurementsResponse.Create(measurements)!;
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedQuality, actual.Points.Single().Quality);
@@ -125,7 +125,7 @@ public class MeasurementsResponseTests
         };
 
         // Act
-        var actual = MeasurementsResponse.Create(measurements)!;
+        var actual = MeasurementsResponse.Create(measurements);
 
         // Assert
         Assert.Equal(expectedResolution, actual.Points.Single().Resolution);

@@ -24,7 +24,10 @@ public class MeasurementsController(
     {
         var measurement = await measurementsHandler.GetByPeriodAsync(request);
 
-        if (measurement is not null) return Ok(measurement);
+        if (measurement.Points.Count > 0)
+        {
+            return Ok(measurement);
+        }
 
         logger.LogInformation(
             "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
@@ -50,7 +53,10 @@ public class MeasurementsController(
     {
         var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsyncV4(request);
 
-        if (aggregatedByMonth is not null) return Ok(aggregatedByMonth);
+        if (aggregatedByMonth.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByMonth);
+        }
 
         logger.LogInformation(
             "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
@@ -67,7 +73,10 @@ public class MeasurementsController(
     {
         var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsync(request);
 
-        if (aggregatedByMonth is not null) return Ok(aggregatedByMonth);
+        if (aggregatedByMonth.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByMonth);
+        }
 
         logger.LogInformation(
             "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
@@ -85,7 +94,10 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsyncV4(request);
 
-        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
+        if (aggregatedByYear.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByYear);
+        }
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
@@ -101,7 +113,10 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsync(request);
 
-        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
+        if (aggregatedByYear.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByYear);
+        }
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
@@ -118,7 +133,10 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsyncV4(request);
 
-        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
+        if (aggregatedByYear.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByYear);
+        }
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} for all years",
@@ -133,7 +151,10 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsync(request);
 
-        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
+        if (aggregatedByYear.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByYear);
+        }
 
         logger.LogInformation(
             "Aggregation by year not found for metering point id {MeteringPointId} for all years",
@@ -149,7 +170,10 @@ public class MeasurementsController(
     {
         var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
 
-        if (aggregatedByPeriod is not null) return Ok(aggregatedByPeriod);
+        if (aggregatedByPeriod.MeasurementAggregations.Count > 0)
+        {
+            return Ok(aggregatedByPeriod);
+        }
 
         logger.LogInformation(
             "Aggregated measurements not found for metering point ids {MeteringPointIds} from {StartDate} to {EndDate} with aggregation {Aggregation}",

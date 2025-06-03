@@ -36,7 +36,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -74,7 +74,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
 
         // Assert
         var firstAggregation = actual.MeasurementAggregations.First();
@@ -106,7 +106,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!);
+        Assert.Throws<ArgumentOutOfRangeException>(() => MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements));
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.Equal(2, actual.MeasurementAggregations.First().PointAggregationGroups.First().Value.PointAggregations.Count);
@@ -181,7 +181,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.Equal(2, actual.MeasurementAggregations.Count);
@@ -221,7 +221,7 @@ public class MeasurementsAggregatedByPeriodResponseTests
         };
 
         // Act
-        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements)!;
+        var actual = MeasurementsAggregatedByPeriodResponse.Create(aggregatedMeasurements);
 
         // Assert
         Assert.Equal(2, actual.MeasurementAggregations.First().PointAggregationGroups.Count);

@@ -21,7 +21,7 @@ public class MeasurementsAggregatedByDateResponse
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByDateResponse? Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
@@ -34,8 +34,7 @@ public class MeasurementsAggregatedByDateResponse
                     FindContainsUpdatedValues(measurement)))
             .ToList();
 
-        return measurementAggregations.Count <= 0
-            ? null : new MeasurementsAggregatedByDateResponse(measurementAggregations);
+        return new MeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
     private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
