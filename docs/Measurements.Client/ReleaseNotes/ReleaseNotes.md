@@ -1,5 +1,17 @@
 # Measurements.Client Release Notes
 
+## Version 8.4.0
+
+- Remove quality and missing values indicator for monthly and yearly aggregates.
+
+## Version 8.3.0
+
+- CreateAuthorizationHeaderValueAsync is added to IAuthorizationHeaderProvider.
+
+## Version 8.2.0
+
+- Converted quality for daily aggregate to a list of qualities present in the aggregate.
+
 ## Version 8.1.0
 
 - Consumers can now pass a custom IAuthorizationHeaderProvider implementation when registering the Measurements Client, which can be used to enable B2C credentials.

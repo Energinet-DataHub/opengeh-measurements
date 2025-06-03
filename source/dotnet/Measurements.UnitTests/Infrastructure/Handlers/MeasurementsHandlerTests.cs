@@ -63,6 +63,52 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2021, 1);
+        var request = new GetAggregatedByDateRequest("123456789", yearMonth.Year, yearMonth.Month);
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByDateAsyncV4(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
+        Assert.True(actualAggregations.IsMissingValues);
+        Assert.True(actualAggregations.ContainsUpdatedValues);
+    }
+
+    [Fact]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<string>(), It.IsAny<YearMonth>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsyncV4(request));
+    }
+
+    [Theory]
+    [InlineAutoData]
     public async Task GetAggregatedByDateAsync_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
     {
@@ -83,7 +129,7 @@ public class MeasurementsHandlerTests
         // Assert
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.Date.ToLocalDate());
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Quality.Measured, actualAggregations.Qualities.Single());
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
         Assert.True(actualAggregations.IsMissingValues);
         Assert.True(actualAggregations.ContainsUpdatedValues);
@@ -103,6 +149,34 @@ public class MeasurementsHandlerTests
         // Act
         // Assert
         await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByDateAsync(request));
+    }
+
+    [Theory]
+    [InlineAutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        var yearMonth = new YearMonth(2021, 1);
+        var request = new GetAggregatedByMonthRequest("123456789", yearMonth.Year);
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByMonthAsyncV4(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
+        Assert.Equal(yearMonth.ToDateInterval().End, actualAggregations.YearMonth.ToDateInterval().End);
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
     }
 
     [Theory]
@@ -128,8 +202,24 @@ public class MeasurementsHandlerTests
         Assert.Equal(yearMonth.ToDateInterval().Start, actualAggregations.YearMonth.ToDateInterval().Start);
         Assert.Equal(yearMonth.ToDateInterval().End, actualAggregations.YearMonth.ToDateInterval().End);
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
+    }
+
+    [Fact]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByMonthRequest("123456789", 2021);
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<string>(), It.IsAny<Year>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsyncV4(request));
     }
 
     [Fact]
@@ -146,6 +236,34 @@ public class MeasurementsHandlerTests
         // Act
         // Assert
         await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByMonthAsync(request));
+    }
+
+    [Theory]
+    [InlineAutoData]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        const int year = 2021;
+        var yearMonth = new YearMonth(year, 1);
+        var request = new GetAggregatedByYearRequest("123456789");
+        var raw = CreateAggregatedMeasurementsRaw(yearMonth);
+        var measurementResult = new AggregatedMeasurementsResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetAggregatedByYearAsyncV4(request);
+        var actualAggregations = actual.MeasurementAggregations.Single();
+
+        // Assert
+        Assert.Equal(year, actualAggregations.Year);
+        Assert.Equal(42, actualAggregations.Quantity);
+        Assert.Equal(Quality.Measured, actualAggregations.Quality);
+        Assert.Equal(Unit.kWh, actualAggregations.Unit);
     }
 
     [Theory]
@@ -171,8 +289,24 @@ public class MeasurementsHandlerTests
         // Assert
         Assert.Equal(year, actualAggregations.Year);
         Assert.Equal(42, actualAggregations.Quantity);
-        Assert.Equal(Quality.Measured, actualAggregations.Quality);
         Assert.Equal(Unit.kWh, actualAggregations.Unit);
+    }
+
+    [Fact]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    {
+        // Arrange
+        var request = new GetAggregatedByYearRequest("123456789");
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<string>()))
+            .Returns(AsyncEnumerable.Empty<AggregatedMeasurementsResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        // Assert
+        await Assert.ThrowsAsync<MeasurementsNotFoundException>(() => sut.GetAggregatedByYearAsyncV4(request));
     }
 
     [Fact]

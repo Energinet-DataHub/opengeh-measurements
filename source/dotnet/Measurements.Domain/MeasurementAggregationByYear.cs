@@ -3,5 +3,4 @@
 public record MeasurementAggregationByYear(
     int Year,
     decimal? Quantity,
-    Quality Quality,
     Unit Unit);
