@@ -1,7 +1,6 @@
 ﻿using Asp.Versioning;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
-using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.Constants;
 using Energinet.DataHub.Measurements.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +14,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiVersion(5.0)]
 [Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(
-    IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
+    IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
     : ControllerBase
 {
     [MapToApiVersion(4.0)]
@@ -34,7 +33,6 @@ public class MeasurementsController(
             request.EndDate);
 
         return NotFound("No measurements found for the specified period.");
-
     }
 
     [MapToApiVersion(4.0)]
@@ -61,7 +59,6 @@ public class MeasurementsController(
             request.Month);
 
         return NotFound("No aggregated measurements found for the specified date.");
-
     }
 
     [MapToApiVersion(5.0)]
@@ -79,7 +76,6 @@ public class MeasurementsController(
             request.Month);
 
         return NotFound("No aggregated measurements found for the specified date.");
-
     }
 
     [MapToApiVersion(4.0)]
@@ -97,7 +93,6 @@ public class MeasurementsController(
             request.Year);
 
         return NotFound("No aggregated measurements found for the specified month.");
-
     }
 
     [MapToApiVersion(5.0)]
@@ -114,7 +109,6 @@ public class MeasurementsController(
             request.Year);
 
         return NotFound("No aggregated measurements found for the specified month.");
-
     }
 
     [MapToApiVersion(4.0)]
@@ -131,7 +125,6 @@ public class MeasurementsController(
             request.MeteringPointId.Sanitize());
 
         return NotFound("No aggregated measurements found for the specified year.");
-
     }
 
     [MapToApiVersion(5.0)]
@@ -147,7 +140,6 @@ public class MeasurementsController(
             request.MeteringPointId.Sanitize());
 
         return NotFound("No aggregated measurements found for the specified year.");
-
     }
 
     [MapToApiVersion(4.0)]
@@ -167,6 +159,5 @@ public class MeasurementsController(
             request.Aggregation);
 
         return NotFound("No aggregated measurements found for the specified period.");
-
     }
 }
