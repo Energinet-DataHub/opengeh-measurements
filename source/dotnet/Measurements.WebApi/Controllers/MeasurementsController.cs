@@ -25,20 +25,16 @@ public class MeasurementsController(
     {
         var measurement = await measurementsHandler.GetByPeriodAsync(request);
 
-        if (measurement is null)
-        {
-            logger.LogInformation(
-                "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
-                request.MeteringPointId.Sanitize(),
-                request.StartDate,
-                request.EndDate);
+        if (measurement is not null) return Ok(measurement);
 
-            return NotFound("No measurements found for the specified period.");
-        }
+        logger.LogInformation(
+            "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
+            request.MeteringPointId.Sanitize(),
+            request.StartDate,
+            request.EndDate);
 
-        var result = jsonSerializer.Serialize(measurement);
+        return NotFound("No measurements found for the specified period.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(4.0)]
@@ -56,20 +52,16 @@ public class MeasurementsController(
     {
         var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsyncV4(request);
 
-        if (aggregatedByMonth is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-                request.MeteringPointId.Sanitize(),
-                request.Year,
-                request.Month);
+        if (aggregatedByMonth is not null) return Ok(aggregatedByMonth);
 
-            return NotFound("No aggregated measurements found for the specified date.");
-        }
+        logger.LogInformation(
+            "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
+            request.MeteringPointId.Sanitize(),
+            request.Year,
+            request.Month);
 
-        var result = jsonSerializer.Serialize(aggregatedByMonth);
+        return NotFound("No aggregated measurements found for the specified date.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(5.0)]
@@ -78,20 +70,16 @@ public class MeasurementsController(
     {
         var aggregatedByMonth = await measurementsHandler.GetAggregatedByDateAsync(request);
 
-        if (aggregatedByMonth is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
-                request.MeteringPointId.Sanitize(),
-                request.Year,
-                request.Month);
+        if (aggregatedByMonth is not null) return Ok(aggregatedByMonth);
 
-            return NotFound("No aggregated measurements found for the specified date.");
-        }
+        logger.LogInformation(
+            "Aggregation by year and month not found for metering point id {MeteringPointId} during {Year}-{Month}",
+            request.MeteringPointId.Sanitize(),
+            request.Year,
+            request.Month);
 
-        var result = jsonSerializer.Serialize(aggregatedByMonth);
+        return NotFound("No aggregated measurements found for the specified date.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(4.0)]
@@ -101,19 +89,15 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsyncV4(request);
 
-        if (aggregatedByYear is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
-                request.MeteringPointId.Sanitize(),
-                request.Year);
+        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
 
-            return NotFound("No aggregated measurements found for the specified month.");
-        }
+        logger.LogInformation(
+            "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
+            request.MeteringPointId.Sanitize(),
+            request.Year);
 
-        var result = jsonSerializer.Serialize(aggregatedByYear);
+        return NotFound("No aggregated measurements found for the specified month.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(5.0)]
@@ -122,19 +106,15 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsync(request);
 
-        if (aggregatedByYear is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
-                request.MeteringPointId.Sanitize(),
-                request.Year);
+        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
 
-            return NotFound("No aggregated measurements found for the specified month.");
-        }
+        logger.LogInformation(
+            "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
+            request.MeteringPointId.Sanitize(),
+            request.Year);
 
-        var result = jsonSerializer.Serialize(aggregatedByYear);
+        return NotFound("No aggregated measurements found for the specified month.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(4.0)]
@@ -144,18 +124,14 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsyncV4(request);
 
-        if (aggregatedByYear is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year not found for metering point id {MeteringPointId} for all years",
-                request.MeteringPointId.Sanitize());
+        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
 
-            return NotFound("No aggregated measurements found for the specified year.");
-        }
+        logger.LogInformation(
+            "Aggregation by year not found for metering point id {MeteringPointId} for all years",
+            request.MeteringPointId.Sanitize());
 
-        var result = jsonSerializer.Serialize(aggregatedByYear);
+        return NotFound("No aggregated measurements found for the specified year.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(5.0)]
@@ -164,18 +140,14 @@ public class MeasurementsController(
     {
         var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsync(request);
 
-        if (aggregatedByYear is null)
-        {
-            logger.LogInformation(
-                "Aggregation by year not found for metering point id {MeteringPointId} for all years",
-                request.MeteringPointId.Sanitize());
+        if (aggregatedByYear is not null) return Ok(aggregatedByYear);
 
-            return NotFound("No aggregated measurements found for the specified year.");
-        }
+        logger.LogInformation(
+            "Aggregation by year not found for metering point id {MeteringPointId} for all years",
+            request.MeteringPointId.Sanitize());
 
-        var result = jsonSerializer.Serialize(aggregatedByYear);
+        return NotFound("No aggregated measurements found for the specified year.");
 
-        return Ok(result);
     }
 
     [MapToApiVersion(4.0)]
@@ -185,20 +157,16 @@ public class MeasurementsController(
     {
         var aggregatedByPeriod = await measurementsHandler.GetAggregatedByPeriodAsync(request);
 
-        if (aggregatedByPeriod is null)
-        {
-            logger.LogInformation(
-                "Aggregated measurements not found for metering point ids {MeteringPointIds} from {StartDate} to {EndDate} with aggregation {Aggregation}",
-                request.MeteringPointIds.Sanitize(),
-                request.From,
-                request.To,
-                request.Aggregation);
+        if (aggregatedByPeriod is not null) return Ok(aggregatedByPeriod);
 
-            return NotFound("No aggregated measurements found for the specified period.");
-        }
+        logger.LogInformation(
+            "Aggregated measurements not found for metering point ids {MeteringPointIds} from {StartDate} to {EndDate} with aggregation {Aggregation}",
+            request.MeteringPointIds.Sanitize(),
+            request.From,
+            request.To,
+            request.Aggregation);
 
-        var result = new JsonSerializer().Serialize(aggregatedByPeriod);
+        return NotFound("No aggregated measurements found for the specified period.");
 
-        return Ok(result);
     }
 }
