@@ -116,15 +116,13 @@ def _create_transaction_time_column(df, resolution: MeteringPointResolution) -> 
     else:
         resolution_col = F.lit(resolution.value)
     w = Window.partitionBy(ContractColumnNames.transaction_id)
-    df_with_start = df.withColumn(
-        ContractColumnNames.transaction_start_time,
-        F.min(F.col(ContractColumnNames.observation_time)).over(w),
+    df_with_time_columns = df.withColumns(
+        {
+            ContractColumnNames.transaction_start_time: F.min(F.col(ContractColumnNames.observation_time)).over(w),
+            ContractColumnNames.transaction_end_time: F.max(F.col(ContractColumnNames.observation_time)).over(w) + _resolution_to_interval(resolution_col),
+        }
     )
-    df_with_end = df_with_start.withColumn(
-        ContractColumnNames.transaction_end_time,
-        F.max(F.col(ContractColumnNames.observation_time)).over(w) + _resolution_to_interval(resolution_col),
-    )
-    return df_with_end
+    return df_with_time_columns
 
 
 def _create_transaction_id_column(orchestration_instance_id: UUID, time_zone: str) -> Column:
