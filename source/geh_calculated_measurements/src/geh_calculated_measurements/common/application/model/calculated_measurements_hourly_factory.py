@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from uuid import UUID
 
-from geh_common.domain.types import MeteringPointType, OrchestrationType
+from geh_common.domain.types import MeteringPointResolution, MeteringPointType, OrchestrationType
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
@@ -30,6 +30,8 @@ def create(
     df = measurements.df.withColumn(
         ContractColumnNames.transaction_id, _create_transaction_id_column(orchestration_instance_id, time_zone)
     )
+
+    df = _create_transaction_time_column(df)
 
     df = _explode_to_hour_values(df, time_zone)
 
@@ -88,6 +90,39 @@ def _add_storage_columns(
     )
 
     return CalculatedMeasurementsInternal(df)
+
+
+def _resolution_to_interval(resolution: Column) -> Column:
+    return (
+        F.when(resolution == F.lit(MeteringPointResolution.HOUR.value), F.expr("INTERVAL 1 HOUR"))
+        .when(resolution == F.lit(MeteringPointResolution.MONTH.value), F.expr("INTERVAL 1 MONTH"))
+        .when(resolution == F.lit(MeteringPointResolution.QUARTER.value), F.expr("INTERVAL 1 QUARTER"))
+    )
+
+
+def _create_transaction_time_column(df) -> DataFrame:
+    """Create transaction start and end time columns based on the observation time and resolution.
+
+    This must be done after the transaction id column is created, as it uses the transaction id to group the data.
+    The start time is the minimum observation time for each transaction, and the end time is the maximum observation time plus the resolution interval.
+
+    Args:
+        df (DataFrame): The DataFrame containing the measurements with a transaction_id column.
+
+    Returns:
+        DataFrame: The DataFrame with the transaction start and end time columns added.
+    """
+    w = Window.partitionBy(ContractColumnNames.transaction_id)
+    df_with_start = df.withColumn(
+        ContractColumnNames.transaction_start_time,
+        F.min(F.col(ContractColumnNames.observation_time)).over(w),
+    )
+    df_with_end = df_with_start.withColumn(
+        ContractColumnNames.transaction_end_time,
+        F.max(F.col(ContractColumnNames.observation_time)).over(w)
+        + _resolution_to_interval(F.col(ContractColumnNames.resolution)),
+    )
+    return df_with_end
 
 
 def _create_transaction_id_column(orchestration_instance_id: UUID, time_zone: str) -> Column:
