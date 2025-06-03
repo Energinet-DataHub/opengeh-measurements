@@ -1,3 +1,11 @@
-*                   @Energinet-DataHub/Volt @Energinet-DataHub/Mandalorian
-/.github/actions    @Energinet-DataHub/TeamFusion
-/.github/workflows  @Energinet-DataHub/TeamFusion
+* @Energinet-DataHub/Volt @Energinet-DataHub/Mandalorian
+
+/.github/actions @Energinet-DataHub/TeamFusion @Energinet-DataHub/Volt @Energinet-DataHub/Mandalorian
+/.github/workflows @Energinet-DataHub/TeamFusion @Energinet-DataHub/Volt @Energinet-DataHub/Mandalorian
+/.github/CODEOWNERS @Energinet-DataHub/TeamFusion
+/.github/workflows/ci-orchestrator.yml @Energinet-DataHub/TeamFusion
+/.github/workflows/cd.yml @Energinet-DataHub/TeamFusion
+
+/source/core @Energinet-DataHub/Volt
+/source/dotnet @Energinet-DataHub/Volt
+/source/geh_calculated_measurements @Energinet-DataHub/Mandalorian

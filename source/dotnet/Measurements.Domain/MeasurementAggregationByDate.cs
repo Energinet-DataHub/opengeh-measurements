@@ -2,8 +2,8 @@
 
 public record MeasurementAggregationByDate(
     DateOnly Date,
-    decimal Quantity,
-    Quality Quality,
+    decimal? Quantity,
+    IEnumerable<Quality> Qualities,
     Unit Unit,
-    bool MissingValues,
+    bool IsMissingValues,
     bool ContainsUpdatedValues);

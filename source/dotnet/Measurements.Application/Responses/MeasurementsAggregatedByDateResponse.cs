@@ -5,7 +5,6 @@ using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
 using Energinet.DataHub.Measurements.Domain;
-using Energinet.DataHub.Measurements.Domain.Extensions;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
@@ -30,10 +29,10 @@ public class MeasurementsAggregatedByDateResponse
                 new MeasurementAggregationByDate(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
-                    SetQuality(measurement),
-                    SetUnit(measurement),
-                    SetMissingValuesForAggregation(measurement),
-                    SetContainsUpdatedValues(measurement)))
+                    measurement.Qualities.Select(q => QualityParser.ParseQuality((string)q)),
+                    FindUnit(measurement),
+                    FindIsMissingValues(measurement),
+                    FindContainsUpdatedValues(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
@@ -41,29 +40,31 @@ public class MeasurementsAggregatedByDateResponse
             : new MeasurementsAggregatedByDateResponse(measurementAggregations);
     }
 
-    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return aggregatedMeasurementsResult.Qualities
             .Select(quality => QualityParser.ParseQuality((string)quality))
             .Min();
     }
 
-    private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static Unit FindUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 
-    private static bool SetMissingValuesForAggregation(AggregatedMeasurementsResult aggregatedMeasurements)
+    private static bool FindIsMissingValues(AggregatedMeasurementsResult aggregatedMeasurements)
     {
-        // All points for a day should have the same resolution
         var resolution = ResolutionParser.ParseResolution((string)aggregatedMeasurements.Resolutions.Single());
-        var expectedPointCount = resolution.GetExpectedPointCount(
-            aggregatedMeasurements.MaxObservationTime, aggregatedMeasurements.MinObservationTime);
+        var quality = FindMinimumQuality(aggregatedMeasurements);
+        var measurementsContainMissingQualities = quality <= Quality.Missing;
 
-        return expectedPointCount - aggregatedMeasurements.PointCount != 0;
+        var expectedPointCount = resolution.GetExpectedPointsForPeriod(aggregatedMeasurements.MinObservationTime, 1);
+
+        return expectedPointCount - aggregatedMeasurements.PointCount != 0 ||
+               measurementsContainMissingQualities;
     }
 
-    private static bool SetContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    private static bool FindContainsUpdatedValues(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         return aggregatedMeasurementsResult.ObservationUpdates > 1;
     }

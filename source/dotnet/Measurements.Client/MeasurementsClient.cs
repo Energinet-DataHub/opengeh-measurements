@@ -16,6 +16,7 @@ public class MeasurementsClient(
     IMeasurementsForDateResponseParser measurementsForDateResponseParser)
     : IMeasurementsClient
 {
+    private const string CurrentApiVersion = "v5";
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
 
     public async Task<MeasurementDto> GetByDayAsync(GetByDayQuery query, CancellationToken cancellationToken = default)
@@ -92,7 +93,8 @@ public class MeasurementsClient(
         return await DeserializeMeasurementAggregationResponseStreamAsync<T>(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<T>> DeserializeMeasurementAggregationResponseStreamAsync<T>(
+    private async Task<IEnumerable<T>
+    > DeserializeMeasurementAggregationResponseStreamAsync<T>(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
@@ -104,31 +106,31 @@ public class MeasurementsClient(
 
     private static string CreateGetMeasurementsForPeriodUrl(string meteringPointId, LocalDate fromDate, LocalDate toDate)
     {
-        return $"v2/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
+        return $"{CurrentApiVersion}/measurements/forPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate.ToUtcString()}&EndDate={toDate.ToUtcString()}";
     }
 
     private static string CreateGetCurrentMeasurementsUrl(string meteringPointId, Instant fromDate, Instant toDate)
     {
-        return $"v3/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
+        return $"{CurrentApiVersion}/measurements/currentForPeriod?MeteringPointId={meteringPointId}&StartDate={fromDate}&EndDate={toDate}";
     }
 
     private static string CreateGetMeasurementsAggregatedByDateUrl(string meteringPointId, YearMonth yearMonth)
     {
-        return $"v3/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
+        return $"{CurrentApiVersion}/measurements/aggregatedByDate?MeteringPointId={meteringPointId}&Year={yearMonth.Year}&Month={yearMonth.Month}";
     }
 
     private static string CreateGetMeasurementsAggregatedByMonthUrl(string meteringPointId, int year)
     {
-        return $"v3/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
+        return $"{CurrentApiVersion}/measurements/aggregatedByMonth?MeteringPointId={meteringPointId}&Year={year}";
     }
 
     private static string CreateGetMeasurementsAggregatedByYearUrl(string meteringPointId)
     {
-        return $"v3/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
+        return $"{CurrentApiVersion}/measurements/aggregatedByYear?MeteringPointId={meteringPointId}";
     }
 
     private static string CreateGetMeasurementsAggregatedByPeriodUrl(string meteringPointIds, Instant from, Instant to, Aggregation aggregation)
     {
-        return $"v3/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
+        return $"{CurrentApiVersion}/measurements/aggregatedByPeriod?MeteringPointIds={meteringPointIds}&From={from}&To={to}&Aggregation={aggregation}";
     }
 }

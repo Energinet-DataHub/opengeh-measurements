@@ -55,22 +55,15 @@ def cnc_daily(
 
     cnc_measurements = _generate_days_in_periods(periods_with_net_consumption)
 
-    cnc_measurements = (
-        cnc_measurements.alias("cm")
-        .join(
-            calculated_measurements_df.alias("calc"),
-            [
-                F.col("cm.metering_point_id") == F.col("calc.metering_point_id"),
-                F.col(f"cm.{ContractColumnNames.date}") == F.col(f"calc.{ContractColumnNames.observation_time}"),
-            ],
-            "left",
-        )
-        .select("cm.*", F.col("calc.settlement_type"))
-    )
+    cnc_measurements = merge_settlement_type(calculated_measurements_df, cnc_measurements)
 
     cnc_diff = _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts, cnc_measurements)
 
     cnc_diff_utc = convert_to_utc(cnc_diff, time_zone)
+    cnc_diff_utc = cnc_diff_utc.withColumn(
+        ContractColumnNames.settlement_type,
+        F.lit("end_of_period"),
+    )
 
     return CalculatedMeasurementsDaily(cnc_diff_utc)
 
@@ -110,6 +103,32 @@ def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFr
     return cnc_measurements
 
 
+def merge_settlement_type(calculated_measurements_df: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
+    """Merge settlement type into the calculated measurements DataFrame.
+
+    This function merges the settlement type from the calculated measurements DataFrame into the CNC measurements DataFrame.
+
+    Returns:
+        DataFrame with columns:
+            - metering_point_id: ID of the metering point
+            - date: Daily observation time
+            - daily_quantity: The calculated daily quantity as DecimalType(18, 3)
+            - settlement_type: Type of settlement
+    """
+    return (
+        cnc_measurements.alias("cm")
+        .join(
+            calculated_measurements_df.alias("calc"),
+            [
+                F.col("cm.metering_point_id") == F.col("calc.metering_point_id"),
+                F.col(f"cm.{ContractColumnNames.date}") == F.col(f"calc.{ContractColumnNames.observation_time}"),
+            ],
+            "left",
+        )
+        .select("cm.*", F.col("calc.settlement_type"))
+    )
+
+
 def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc_measurements: DataFrame) -> DataFrame:
     """Get discrepancies between the calculated and the original CNC measurements.
 
@@ -132,7 +151,6 @@ def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc
                 F.col(f"cnc.{ContractColumnNames.date}") == F.col(f"ts.{ContractColumnNames.date}"),
                 F.col("cnc.daily_quantity") == F.col(f"ts.{ContractColumnNames.quantity}"),
                 F.col("cnc.settlement_type") != F.lit("up_to_end_of_period"),
-                F.col("cnc.settlement_type") != F.lit("up_to_end_of_period"),
             ],
             how="left_anti",
         )
@@ -148,7 +166,7 @@ def _cnc_diff_and_full_load_newly_closed_periods(periods_with_ts: DataFrame, cnc
     ).select(
         F.col(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
-        F.col("daily_quantity"),
+        F.col("daily_quantity").alias(ContractColumnNames.quantity),
     )
 
     cnc_diff_and_full_load = cnc_diff.union(newly_closed_cnc_period)

@@ -3,6 +3,8 @@
   "Period is < 1 year": true
   "Smrd is 1": true
   "Smrd is not 1": true
+  "New daily results are not generated for days older than 3 years from today": true
+  "New results are only generated for days where both E17 and D06, D07 and D15 are or were all active": false
 
   "cnc calculation":
     "Calculation is cnc": true
@@ -11,18 +13,13 @@
     "Sum for D07 is aggregated, even if sum for D06 is missing": true
     "If result is identical to existing cnc measurement result, no new result is generated": true
     "When period goes from cenc to cnc, new results are always generated": true
-    "Results are not generated until +2 days after smrd": true
+    "Results are not generated until +2 days after period end": true
 
   "cenc calculation":
-    "Calculation is cenc": true
-    "When period goes from cnc to cenc, new results are always generated": true
-
-
-
-Mangler dækning
- -
- - periodeskift mere end 3 år tilbage
- - to dage crap
- - child (d06/d07/d15) perioder starter senere end parent perioder. Beregner kun perioder hvor både d06/d07/d15/e17 mp er aktive
- - filtrering
-	- skriver ned, selvom værdi er den samme som cenc
+    "GIVEN (consumption_from_grid (D07) > supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is (sum(consumption_from_grid) - sum(supply_to_grid)) / days in settlement year": true
+    "GIVEN (consumption_from_grid (D07) < supply_to_grid (D06) THEN (net_consumption (D15) daily quantity is capped to 0": true
+    "D15 results should be generated up to latest either child D15 observation time, smrd date or parent period_to_date, whichever comes first": true
+    "GIVEN period goes from cnc to cenc, THEN new results are always generated for the whole cenc period": true
+    "GIVEN a move-in period change is added in cenc period, THEN new results are always generated for the whole cenc period with default values": true
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = false THEN default quantity value of 1800 for the settlement period and a daily quantity is 1800 / days in settlement year": true
+    "GIVEN latest parent period is open WHEN this period is marked as move_in = true AND has_electrical_heating = true THEN default quantity value of 5600 for the settlement period and a daily quantity is 5600 / days in settlement year": true

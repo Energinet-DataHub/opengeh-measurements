@@ -53,8 +53,12 @@ def transform(unpacked_submitted_transactions: DataFrame) -> DataFrame:
             ValueColumnNames.points,
             lambda x: F.struct(
                 x.position.alias(SilverMeasurementsColumnNames.Points.position),
-                (x.quantity.units + (x.quantity.nanos / 1_000_000_000))
-                .cast(DecimalType(18, 3))
+                F.when(_align_quality(x.quality) == GehCommonQuality.MISSING.value, None)
+                .when(
+                    x.quantity.isNotNull(),
+                    (x.quantity.units + (x.quantity.nanos / 1_000_000_000)).cast(DecimalType(18, 3)),
+                )
+                .otherwise(None)
                 .alias(SilverMeasurementsColumnNames.Points.quantity),
                 _align_quality(x.quality).alias(SilverMeasurementsColumnNames.Points.quality),
             ),

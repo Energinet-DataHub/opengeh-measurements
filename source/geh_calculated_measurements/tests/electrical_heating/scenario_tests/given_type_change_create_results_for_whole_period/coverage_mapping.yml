@@ -1,0 +1,74 @@
+notes: |
+  CASE 3 (NSG2, with D15 - up to end --> end of period)
+
+                                               |2025              |Feb               |Today
+                                               |2025              |Feb               |Today
+                                               |__________________|__________________|
+
+
+  Old parent period:                           |___________________________________...
+  New parent period 1:                         |__________________|
+  New parent period 2 (up to end):                                |________________...
+  Measurement data:                                            +++++
+  Existing (up to end) D14 data:                               +++++
+  New (end of period) D14 data:                                +++
+
+  CASE 4 (NSG2, with D15 - end of period --> up to end)
+
+                                               |2025                                 |Today
+                                               |__________________|__________________|
+  Old parent period:                           |__________________|________________...
+  New parent period:                           |___________________________________...
+  Measurement data:                                             ++++
+  Existing (end of period) D14 data:                            ++
+  Existing (up to end) D14 data:                                  ++
+  New (up to end) D14 data:                                     ++
+
+  CASE 5 (NSG6 - up to end --> end of period)
+
+                                               |2025              |Feb               |Today
+                                               |2025              |Feb               |Today
+                                               |__________________|__________________|
+
+
+  Old parent period:                           |___________________________________...
+  New parent period 1:                         |__________________|
+  New parent period 2 (up to end):                                |________________...
+  New parent period 1:                         |__________________|
+  New parent period 2 (up to end):                                |________________...
+  Measurement data:                                             ++++
+  Existing (up to end) D14 data:                                ++++
+  New (end of period) D14 data:                                 ++
+
+  CASE 6 (NSG6 - end of period --> up to end)
+
+                                               |2025                                 |Today
+                                               |__________________|__________________|
+  Old parent period:                           |__________________|________________...
+  New parent period:                           |___________________________________...
+  Measurement data:                                             ++++
+  Existing (end of period) D14 data:                            ++
+  Existing (up to end) D14 data:                                  ++
+  New (up to end) D14 data:                                     ++
+
+cases_tested:
+  "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+  "GIVEN there is no active consumption MP OR there is no active electrical heating MP WHEN there is measurement data for the day THEN no energy is added to an electrical heating MP for the day"
+
+  "Period length and base period limit":
+    "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
+    "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
+
+  "Results Filtering":
+    "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day"
+    "GIVEN the previous daily result was UP TO END and the new result is END OF PERIOD, we SHOULD ALWAYS generate a result for that MP/day, even if the result is the same"
+    "GIVEN the previous daily result was END OF PERIOD and the new result is UP TO END, we SHOULD ALWAYS generate a result for that MP/day, even if the result is the same"
+
+  "Net Settlement Groups":
+    "Electrical heating with net settlement group 2 - WITH net consumption MP"
+    "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
+    "Electrical heating with net settlement group 6"
+
+  "Settlement Group Calculation Type":
+    "UP TO END of period calculation"
+    "END OF PERIOD calculation"

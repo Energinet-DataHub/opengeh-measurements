@@ -3,6 +3,7 @@ from datetime import datetime
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 from geh_common.domain.types import MeteringPointType
+from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame
@@ -35,7 +36,6 @@ def calculate_cenc(
     parent_child_joined = _join_parent_child_with_consumption(
         child_metering_points, consumption_metering_point_periods, execution_start_datetime
     )
-
     # Add timestamp from settlement month
     parent_child_joined = _add_timestamp_from_settlement_month(parent_child_joined, execution_start_datetime, time_zone)
 
@@ -43,7 +43,7 @@ def calculate_cenc(
     net_consumption_metering_points = _get_net_consumption_metering_points(parent_child_joined)
 
     # Process time series data
-    metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series)
+    metering_points_with_time_series = _join_and_sum_quantity(parent_child_joined, filtered_time_series, time_zone)
 
     net_quantity = _calculate_net_quantity(metering_points_with_time_series)
 
@@ -53,6 +53,7 @@ def calculate_cenc(
         ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
         net_consumption_metering_points,
         net_quantity,
+        time_zone,
     )
 
     return Cenc(result)
@@ -63,6 +64,7 @@ def prepare_cenc_with_move_in(
     ESTIMATED_CONSUMPTION_MOVE_IN_WITH_HEATING,
     net_consumption_metering_points,
     net_quantity,
+    time_zone,
 ) -> DataFrame:
     """Prepare CENC with move-in values."""
     return (
@@ -83,8 +85,11 @@ def prepare_cenc_with_move_in(
         .select(
             F.col(ContractColumnNames.metering_point_id),
             F.col("net_quantity").alias(ContractColumnNames.quantity).cast(T.DecimalType(18, 3)),
-            F.year(F.col("settlement_date")).alias("settlement_year"),
-            F.month(F.col("settlement_date")).alias(ContractColumnNames.settlement_month),
+            F.year(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias("settlement_year"),
+            F.month(F.from_utc_timestamp(F.col("settlement_date"), time_zone)).alias(
+                ContractColumnNames.settlement_month
+            ),
+            net_consumption_metering_points.period_from_date.alias(ContractColumnNames.start_date),
         )
     )
 
@@ -144,13 +149,19 @@ def _add_timestamp_from_settlement_month(
         )
         .withColumn(
             "settlement_date",
-            F.make_date(
-                F.when(
-                    F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
-                    F.year(F.col("utc_local_time")),
-                ).otherwise(F.year(F.col("utc_local_time")) - 1),
-                F.col(ContractColumnNames.settlement_month),
-                F.lit(1),
+            F.to_utc_timestamp(
+                F.make_timestamp(
+                    F.when(
+                        F.month(F.col("utc_local_time")) >= F.col(ContractColumnNames.settlement_month),
+                        F.year(F.col("utc_local_time")),
+                    ).otherwise(F.year(F.col("utc_local_time")) - 1),
+                    F.col(ContractColumnNames.settlement_month),
+                    F.lit(1),
+                    F.lit(0),
+                    F.lit(0),
+                    F.lit(0),
+                ),
+                time_zone,
             ),
         )
         .drop("utc_local_time")
@@ -172,21 +183,26 @@ def _get_net_consumption_metering_points(parent_child_df: DataFrame) -> DataFram
     )
 
 
-def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame) -> DataFrame:
+def _join_and_sum_quantity(parent_child_df: DataFrame, time_series_df: DataFrame, time_zone: str) -> DataFrame:
     """Join metering point with time series and sum quantity for consumption_from_grid and supply_to_grid."""
     # Join and filter in one step
+    parent_child_df = convert_from_utc(parent_child_df, time_zone)
+    time_series_df = convert_from_utc(time_series_df, time_zone)
     joined_df = parent_child_df.join(
         time_series_df,
         on=[ContractColumnNames.metering_point_id, ContractColumnNames.metering_point_type],
         how="left",
     ).filter(
-        F.col(ContractColumnNames.observation_time).between(
-            F.add_months(F.col("settlement_date"), -12), F.col("settlement_date")
-        )
+        (F.col(ContractColumnNames.observation_time) >= F.add_months(F.col("settlement_date"), -12))
+        & (F.col(ContractColumnNames.observation_time) < F.col("settlement_date"))
     )
 
+    joined_df = convert_to_utc(joined_df, time_zone)
+
     # Calculate consumption and supply directly in one groupBy operation
-    return joined_df.groupBy(ContractColumnNames.parent_metering_point_id, "settlement_date").agg(
+    return joined_df.groupBy(
+        ContractColumnNames.parent_metering_point_id, "settlement_date", ContractColumnNames.period_from_date
+    ).agg(
         F.sum(
             F.when(
                 F.col(ContractColumnNames.metering_point_type) == MeteringPointType.CONSUMPTION_FROM_GRID.value,

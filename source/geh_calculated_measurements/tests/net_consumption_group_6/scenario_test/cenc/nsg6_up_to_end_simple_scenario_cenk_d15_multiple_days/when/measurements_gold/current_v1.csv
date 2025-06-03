@@ -1,5 +1,0 @@
-metering_point_id;metering_point_type;observation_time;quantity;quality;#commentT
-170000000001500200;consumption;2024-01-31T23:00:00Z;2000;measured;
-060000001500170200;supply_to_grid;2024-01-31T23:00:00Z;1000;measured;d06-d07 = 1000 / 366 = 2.732
-070000001500170200;consumption_from_grid;2024-01-31T23:00:00Z;2000;estimated;
-150000001500170200;net_consumption;2024-12-28T23:00:00Z;3;calculated;
