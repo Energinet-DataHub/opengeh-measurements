@@ -4,4 +4,5 @@ from .current_measurements import CurrentMeasurements
 __all__ = [
     "CalculatedMeasurementsDaily",
     "CurrentMeasurements",
+    "CalculatedMeasurementsElectricalHeating",
 ]
