@@ -36,7 +36,7 @@ def filter_unchanged_electrical_heating(
             F.col(f"current.{ContractColumnNames.metering_point_id}"),
             F.col(f"current.{ContractColumnNames.date}"),
             F.col(f"current.{ContractColumnNames.quantity}"),
-            F.col("current.settlement_type")
+            F.col("current.settlement_type"),
         )
     )
 
