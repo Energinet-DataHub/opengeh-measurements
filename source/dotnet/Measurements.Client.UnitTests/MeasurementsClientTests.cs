@@ -77,10 +77,10 @@ public class MeasurementsClientTests
         Assert.Equal(31, actual.Count);
         Assert.True(actual.First().Date == new DateOnly(2025, 3, 1));
         Assert.True(actual.Last().Date == new DateOnly(2025, 3, 31));
-        Assert.False(actual.All(p => p.IsMissingValues));
-        Assert.True(actual.All(p => p.Quality == Quality.Measured));
-        Assert.True(actual.All(p => p.Unit == Unit.kWh));
-        Assert.False(actual.All(p => p.ContainsUpdatedValues));
+        Assert.All(actual, p => Assert.False(p.IsMissingValues));
+        Assert.All(actual, p => Assert.Contains(Quality.Measured, p.Qualities));
+        Assert.All(actual, p => Assert.Equal(Unit.kWh, p.Unit));
+        Assert.All(actual, p => Assert.False(p.ContainsUpdatedValues));
     }
 
     [Theory]
@@ -126,7 +126,7 @@ public class MeasurementsClientTests
         Assert.Equal(12, actual.Count);
         Assert.True(actual.First().YearMonth == new YearMonth(2025, 1));
         Assert.True(actual.Last().YearMonth == new YearMonth(2025, 12));
-        Assert.True(actual.All(p => p.Unit == Unit.kWh));
+        Assert.All(actual, p => Assert.Equal(Unit.kWh, p.Unit));
     }
 
     [Theory]
@@ -149,7 +149,7 @@ public class MeasurementsClientTests
         Assert.Equal(5, actual.Count);
         Assert.Equal(2021, actual.First().Year);
         Assert.Equal(2025, actual.Last().Year);
-        Assert.True(actual.All(p => p.Unit == Unit.kWh));
+        Assert.All(actual, p => Assert.Equal(Unit.kWh, p.Unit));
     }
 
     private static Mock<IHttpClientFactory> CreateHttpClientFactoryMock(HttpClient httpClient)
