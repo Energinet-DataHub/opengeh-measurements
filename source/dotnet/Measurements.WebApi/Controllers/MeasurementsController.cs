@@ -99,6 +99,28 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [HttpGet("aggregatedByMonth")]
+    [Obsolete("Obsolete. Use GetAggregatedByMonthAsync instead.")]
+    public async Task<IActionResult> GetAggregatedByMonthAsyncV4([FromQuery] GetAggregatedByMonthRequest request)
+    {
+        try
+        {
+            var aggregatedByYear = await measurementsHandler.GetAggregatedByMonthAsyncV4(request);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            logger.LogInformation(
+                "Aggregation by year not found for metering point id {MeteringPointId} during {Year}",
+                request.MeteringPointId.Sanitize(),
+                request.Year);
+
+            return NotFound(e.Message);
+        }
+    }
+
     [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByMonth")]
     public async Task<IActionResult> GetAggregatedByMonthAsync([FromQuery] GetAggregatedByMonthRequest request)
@@ -122,6 +144,27 @@ public class MeasurementsController(
     }
 
     [MapToApiVersion(4.0)]
+    [HttpGet("aggregatedByYear")]
+    [Obsolete("Use GetAggregatedByYearAsync instead.")]
+    public async Task<IActionResult> GetAggregatedByYearAsyncV4([FromQuery] GetAggregatedByYearRequest request)
+    {
+        try
+        {
+            var aggregatedByYear = await measurementsHandler.GetAggregatedByYearAsyncV4(request);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+
+            return Ok(result);
+        }
+        catch (MeasurementsNotFoundException e)
+        {
+            logger.LogInformation(
+                "Aggregation by year not found for metering point id {MeteringPointId} for all years",
+                request.MeteringPointId.Sanitize());
+
+            return NotFound(e.Message);
+        }
+    }
+
     [MapToApiVersion(5.0)]
     [HttpGet("aggregatedByYear")]
     public async Task<IActionResult> GetAggregatedByYearAsync([FromQuery] GetAggregatedByYearRequest request)

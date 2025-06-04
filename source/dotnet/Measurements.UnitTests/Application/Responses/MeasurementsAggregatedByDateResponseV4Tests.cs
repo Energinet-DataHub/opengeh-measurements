@@ -13,7 +13,7 @@ namespace Energinet.DataHub.Measurements.UnitTests.Application.Responses;
 public class MeasurementsAggregatedByDateResponseV4Tests
 {
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenValidInput_ReturnExpectedResult()
     {
         // Arrange
@@ -44,7 +44,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenDuplicateResolutions_ThenThrowException()
     {
         // Arrange
@@ -64,7 +64,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenMultipleUnits_ThenThrowException()
     {
         // Arrange
@@ -84,7 +84,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenMultipleQualities_ThenLowestQualityIsReturned()
     {
         // Arrange
@@ -110,7 +110,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     [Theory]
     [InlineData(null!)]
     [InlineData(0)]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenDataContainsQualityMissing_ThenQuantityCanBeZeroOrNull(int? quantity)
     {
         // Arrange
@@ -142,7 +142,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     [InlineData(24, Quality.Calculated, false)]
     [InlineData(24, Quality.Estimated, false)]
     [InlineData(24, Quality.Missing, true)]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenObservationsOrQualityIsMissing_ThenIsMissingValuesFlagIsSet(long observationPointsCount, Quality quality, bool expectedMissingValues)
     {
         // Arrange
@@ -165,7 +165,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenDataContainsInvalidQualities_ThenThrowException()
     {
         // Arrange
@@ -185,7 +185,7 @@ public class MeasurementsAggregatedByDateResponseV4Tests
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public void Create_WhenDataContainsUpdatedObservations_ThenContainsUpdatedValuesIsTrue()
     {
         // Arrange
