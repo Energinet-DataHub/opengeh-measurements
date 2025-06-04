@@ -8,31 +8,33 @@ using NodaTime;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class MeasurementsAggregatedByMonthResponse
+[Obsolete("Use MeasurementsAggregatedByMonthResponse instead.")]
+public class MeasurementsAggregatedByMonthResponseV4
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregationByMonth> MeasurementAggregations { get; init; } = [];
+    public IReadOnlyCollection<MeasurementAggregationByMonthV4> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private MeasurementsAggregatedByMonthResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByMonthResponseV4() { } // Needed by System.Text.Json to deserialize
 
-    private MeasurementsAggregatedByMonthResponse(List<MeasurementAggregationByMonth> measurementAggregations)
+    private MeasurementsAggregatedByMonthResponseV4(List<MeasurementAggregationByMonthV4> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByMonthResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByMonthResponseV4 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregationByMonth(
+                new MeasurementAggregationByMonthV4(
                     SetYearMonth(measurement),
                     measurement.Quantity,
+                    SetQuality(measurement),
                     SetUnit(measurement)))
             .ToList();
 
-        return new MeasurementsAggregatedByMonthResponse(measurementAggregations);
+        return new MeasurementsAggregatedByMonthResponseV4(measurementAggregations);
     }
 
     private static YearMonth SetYearMonth(AggregatedMeasurementsResult measurement)
@@ -41,12 +43,15 @@ public class MeasurementsAggregatedByMonthResponse
         return new YearMonth(dateOnly.Year, dateOnly.Month);
     }
 
+    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.Qualities
+            .Select(quality => QualityParser.ParseQuality((string)quality))
+            .Min();
+    }
+
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
-        // From a single metering point of view only one unit is allowed.
-        // If unit should change then the metering point must be closed down and a new one created.
-        return aggregatedMeasurementsResult.Units.Length != 1
-            ? throw new InvalidOperationException("Aggregated measurements contains multiple units.")
-            : UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
+        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First());
     }
 }
