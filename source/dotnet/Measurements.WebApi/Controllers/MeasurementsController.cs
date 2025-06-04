@@ -15,7 +15,7 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiVersion(5.0)]
 [Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(
-    IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger)
+    IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
 {
     [MapToApiVersion(4.0)]
@@ -56,7 +56,8 @@ public class MeasurementsController(
 
         if (aggregatedByMonth.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByMonth);
+            var result = jsonSerializer.Serialize(aggregatedByMonth);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -76,7 +77,8 @@ public class MeasurementsController(
 
         if (aggregatedByMonth.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByMonth);
+            var result = jsonSerializer.Serialize(aggregatedByMonth);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -97,7 +99,8 @@ public class MeasurementsController(
 
         if (aggregatedByYear.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByYear);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -116,7 +119,8 @@ public class MeasurementsController(
 
         if (aggregatedByYear.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByYear);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -136,7 +140,8 @@ public class MeasurementsController(
 
         if (aggregatedByYear.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByYear);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -154,7 +159,8 @@ public class MeasurementsController(
 
         if (aggregatedByYear.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByYear);
+            var result = jsonSerializer.Serialize(aggregatedByYear);
+            return Ok(result);
         }
 
         logger.LogInformation(
@@ -173,7 +179,8 @@ public class MeasurementsController(
 
         if (aggregatedByPeriod.MeasurementAggregations.Count > 0)
         {
-            return Ok(aggregatedByPeriod);
+            var result = jsonSerializer.Serialize(aggregatedByPeriod);
+            return Ok(result);
         }
 
         logger.LogInformation(
