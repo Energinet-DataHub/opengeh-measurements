@@ -147,4 +147,4 @@ def calculate_daily(
         F.lit("up_to_end_of_period"),
     )
 
-    return CalculatedMeasurementsDaily(result_df)
+    return CalculatedMeasurementsDaily(result_df, settlement_type_nullable=False)
