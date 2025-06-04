@@ -472,11 +472,6 @@ public class MeasurementsControllerTests
         return create(measurements);
     }
 
-    private static string CreateExpectedMeasurementsByDate()
-    {
-        return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
-    }
-
     private static string CreateExpectedMeasurementsAggregatedByDateV4()
     {
         return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","IsMissingValues":true,"ContainsUpdatedValues":true}]}""";

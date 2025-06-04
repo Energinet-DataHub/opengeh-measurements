@@ -93,7 +93,7 @@ public class MeasurementsHandlerTests
 
     [Fact]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
-    public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
@@ -139,7 +139,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetAggregatedByDateAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByDateAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByDateRequest("123456789", 2021, 1);
@@ -212,7 +212,7 @@ public class MeasurementsHandlerTests
 
     [Fact]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
-    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByMonthRequest("123456789", 2021);
@@ -230,7 +230,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetAggregatedByMonthAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByMonthAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByMonthRequest("123456789", 2021);
@@ -303,7 +303,7 @@ public class MeasurementsHandlerTests
 
     [Fact]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
-    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByYearRequest("123456789");
@@ -321,7 +321,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetAggregatedByYearAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByYearAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var request = new GetAggregatedByYearRequest("123456789");
@@ -369,7 +369,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsNotExist_ThenThrowsNotFoundException()
+    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var from = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
