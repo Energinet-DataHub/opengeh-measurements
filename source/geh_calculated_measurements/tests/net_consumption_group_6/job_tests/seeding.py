@@ -132,6 +132,8 @@ def _seed_internal(
                 "1",
                 "1",
                 datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
+                datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
                 child_net_consumption_metering_point,
                 MeteringPointType.NET_CONSUMPTION.value,
                 datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
