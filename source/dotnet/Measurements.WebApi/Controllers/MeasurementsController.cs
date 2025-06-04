@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
+using Energinet.DataHub.Measurements.Infrastructure.Serialization;
 using Energinet.DataHub.Measurements.WebApi.Constants;
 using Energinet.DataHub.Measurements.WebApi.Extensions;
 using Microsoft.AspNetCore.Authorization;

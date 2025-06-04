@@ -41,13 +41,6 @@ public class MeasurementsAggregatedByMonthResponse
         return new YearMonth(dateOnly.Year, dateOnly.Month);
     }
 
-    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
-    {
-        return aggregatedMeasurementsResult.Qualities
-            .Select(quality => QualityParser.ParseQuality((string)quality))
-            .Min();
-    }
-
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
         // From a single metering point of view only one unit is allowed.
