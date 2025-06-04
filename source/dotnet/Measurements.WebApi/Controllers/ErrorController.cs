@@ -30,7 +30,7 @@ public class ErrorController(ILogger<ErrorController> logger) : ControllerBase
         logger.LogError(
             exception.Error,
             "An unknown error has occured.\nEndpoint path: {},\nRequest: {}",
-            exception.Path.Sanitize(),
+            exception.Path.ToSanitizedString(),
             queryString);
 
         return Problem(
