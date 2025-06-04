@@ -168,7 +168,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -291,6 +291,37 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByMonthAsyncV4_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string meteringPointId = "123456789123456789";
+        const int year = 2021;
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 2, 5))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 3, 6))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(year, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByMonthUrl(meteringPointId, new Year(year), "v4");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByMonthResponseV4>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.All(actual.MeasurementAggregations, x => Assert.Equal(year, x.YearMonth.Year));
+        Assert.Equal(3, actual.MeasurementAggregations.Count);
+        foreach (var measurementAggregation in actual.MeasurementAggregations)
+        {
+            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
+            Assert.Equal(24.0m, measurementAggregation.Quantity);
+            Assert.Equal(Unit.kWh, measurementAggregation.Unit);
+        }
+    }
+
+    [Fact]
     public async Task GetAggregatedByMonthAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -314,14 +345,13 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         Assert.Equal(3, actual.MeasurementAggregations.Count);
         foreach (var measurementAggregation in actual.MeasurementAggregations)
         {
-            Assert.Equal(Quality.Measured, measurementAggregation.Quality);
             Assert.Equal(24.0m, measurementAggregation.Quantity);
             Assert.Equal(Unit.kWh, measurementAggregation.Unit);
         }
     }
 
     [Fact]
-    [Obsolete("Obsolete")]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenDateIsMissingValues_TheFlagIsSetInResponse()
     {
         // Arrange
@@ -376,6 +406,41 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
+    [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
+    public async Task GetAggregatedByYearAsyncV4_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
+    {
+        // Arrange
+        const string meteringPointId = "123456789123456789";
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2021, 2, 5))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 3, 6))
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 4, 7))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetAggregatedMeasurementsByYearUrl(meteringPointId, "v4");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsAggregatedByYearResponseV4>(actualResponse);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, actualResponse.StatusCode);
+        Assert.Equal(2, actual.MeasurementAggregations.Count);
+
+        var firstMeasurementAggregation = actual.MeasurementAggregations.First();
+        Assert.Equal(2021, firstMeasurementAggregation.Year);
+        Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
+        Assert.Equal(24.0m, firstMeasurementAggregation.Quantity);
+        Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
+
+        var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
+        Assert.Equal(2022, lastMeasurementAggregation.Year);
+        Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
+        Assert.Equal(48m, lastMeasurementAggregation.Quantity);
+        Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
+    }
+
+    [Fact]
     public async Task GetAggregatedByYearAsync_WhenMeteringPointExists_ReturnsValidAggregatedMeasurements()
     {
         // Arrange
@@ -398,13 +463,11 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
 
         var firstMeasurementAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(2021, firstMeasurementAggregation.Year);
-        Assert.Equal(Quality.Measured, firstMeasurementAggregation.Quality);
         Assert.Equal(24.0m, firstMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, firstMeasurementAggregation.Unit);
 
         var lastMeasurementAggregation = actual.MeasurementAggregations.Last();
         Assert.Equal(2022, lastMeasurementAggregation.Year);
-        Assert.Equal(Quality.Measured, lastMeasurementAggregation.Quality);
         Assert.Equal(48m, lastMeasurementAggregation.Quantity);
         Assert.Equal(Unit.kWh, lastMeasurementAggregation.Unit);
     }

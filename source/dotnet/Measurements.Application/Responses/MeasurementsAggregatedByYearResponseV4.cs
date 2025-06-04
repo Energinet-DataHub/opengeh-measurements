@@ -8,33 +8,35 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class MeasurementsAggregatedByYearResponse
+[Obsolete("Use MeasurementAggregationByYear instead.")]
+public class MeasurementsAggregatedByYearResponseV4
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregationByYear> MeasurementAggregations { get; init; } = [];
+    public IReadOnlyCollection<MeasurementAggregationByYearV4> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private MeasurementsAggregatedByYearResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByYearResponseV4() { } // Needed by System.Text.Json to deserialize
 
-    private MeasurementsAggregatedByYearResponse(List<MeasurementAggregationByYear> measurementAggregations)
+    private MeasurementsAggregatedByYearResponseV4(List<MeasurementAggregationByYearV4> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByYearResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByYearResponseV4 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregationByYear(
+                new MeasurementAggregationByYearV4(
                     SetYear(measurement),
                     measurement.Quantity,
+                    SetQuality(measurement),
                     SetUnit(measurement)))
             .ToList();
 
         return measurementAggregations.Count <= 0
             ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByYearResponse(measurementAggregations);
+            : new MeasurementsAggregatedByYearResponseV4(measurementAggregations);
     }
 
     private static int SetYear(AggregatedMeasurementsResult measurement)
@@ -42,12 +44,15 @@ public class MeasurementsAggregatedByYearResponse
         return measurement.MinObservationTime.ToDateOnly().Year;
     }
 
+    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
+    {
+        return aggregatedMeasurementsResult.Qualities
+            .Select(quality => QualityParser.ParseQuality((string)quality))
+            .Min();
+    }
+
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
-        // From a single metering point of view only one unit is allowed.
-        // If unit should change then the metering point must be closed down and a new one created.
-        return aggregatedMeasurementsResult.Units.Length != 1
-            ? throw new InvalidOperationException("Aggregated measurements contains multiple units.")
-            : UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
+        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First());
     }
 }
