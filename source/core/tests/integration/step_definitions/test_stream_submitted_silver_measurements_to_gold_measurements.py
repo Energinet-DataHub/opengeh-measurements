@@ -6,9 +6,6 @@ import core.gold.application.streams.gold_measurements_stream as sut_gold
 import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
-from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
-    GoldMeasurementsSeriesSAPColumnNames,
-)
 from core.gold.infrastructure.config import GoldTableNames
 from core.receipts.infrastructure.config.table_names import CoreInternalTableNames
 from core.settings.core_internal_settings import CoreInternalSettings
@@ -111,23 +108,6 @@ def _(spark: SparkSession, mock_checkpoint_path):
     return metering_point_id
 
 
-@given(
-    "multiple measurements inserted into the silver measurements table",
-)
-def _(spark: SparkSession, mock_checkpoint_path):
-    metering_point_id = identifier_helper.create_random_metering_point_id()
-    silver_measurements = SilverMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
-    table_helper.append_to_table(
-        silver_measurements, SilverSettings().silver_database_name, SilverTableNames.silver_measurements
-    )
-
-    metering_point_id = identifier_helper.create_random_metering_point_id()
-    silver_measurements = SilverMeasurementsBuilder(spark).add_row(metering_point_id=metering_point_id).build()
-    table_helper.append_to_table(
-        silver_measurements, SilverSettings().silver_database_name, SilverTableNames.silver_measurements
-    )
-
-
 # When steps
 
 
@@ -161,18 +141,3 @@ def _(spark: SparkSession, expected_metering_point_id):
         f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_series_sap}"
     ).where(f"metering_point_id = '{expected_metering_point_id}'")
     assert measurements_serie_sap.count() == 1
-
-
-@then("the gold measurements serie SAP table contains unique serie numbers")
-def _(spark: SparkSession):
-    measurements_serie_sap = spark.table(
-        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_series_sap}"
-    )
-    test = measurements_serie_sap.collect()
-    print(test)  # noqa: T201
-
-    total_count = measurements_serie_sap.count()
-    unique_count = (
-        measurements_serie_sap.select(GoldMeasurementsSeriesSAPColumnNames.dh3_serie_seq_no).distinct().count()
-    )
-    assert total_count == unique_count

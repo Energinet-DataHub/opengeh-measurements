@@ -18,7 +18,6 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
     :return: DataFrame with transformed gold series SAP measurements.
     """
     return silver_measurements.select(
-        F.lit(None).cast("decimal(14, 0)").alias(GoldMeasurementsSeriesSAPColumnNames.dh2_serie_seq_no),
         F.col(SilverMeasurementsColumnNames.orchestration_type).alias(
             GoldMeasurementsSeriesSAPColumnNames.orchestration_type
         ),

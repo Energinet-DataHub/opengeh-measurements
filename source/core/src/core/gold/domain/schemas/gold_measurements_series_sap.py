@@ -1,4 +1,4 @@
-from pyspark.sql.types import BooleanType, DecimalType, StringType, StructField, StructType, TimestampType
+from pyspark.sql.types import BooleanType, StringType, StructField, StructType, TimestampType
 
 from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
     GoldMeasurementsSeriesSAPColumnNames,
@@ -6,7 +6,6 @@ from core.gold.domain.constants.column_names.gold_measurements_series_sap_column
 
 gold_measurements_series_sap_schema = StructType(
     [
-        StructField(GoldMeasurementsSeriesSAPColumnNames.dh2_serie_seq_no, DecimalType(14, 0), True),
         StructField(GoldMeasurementsSeriesSAPColumnNames.orchestration_type, StringType(), True),
         StructField(GoldMeasurementsSeriesSAPColumnNames.metering_point_id, StringType(), True),
         StructField(GoldMeasurementsSeriesSAPColumnNames.transaction_id, StringType(), True),

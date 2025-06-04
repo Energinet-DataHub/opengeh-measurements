@@ -1,6 +1,4 @@
 class GoldMeasurementsSeriesSAPColumnNames:
-    dh3_serie_seq_no = "dh3_serie_seq_no"
-    dh2_serie_seq_no = "dh2_serie_seq_no"
     orchestration_type = "orchestration_type"
     metering_point_id = "metering_point_id"
     transaction_id = "transaction_id"
