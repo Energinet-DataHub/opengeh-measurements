@@ -148,7 +148,7 @@ public class MeasurementsController(
             "Aggregation by year not found for metering point id {MeteringPointId} for all years",
             request.MeteringPointId.ToSanitizedString());
 
-        return NotFound("No aggregated measurements found for the specified year.");
+        return NotFound("No aggregated measurements found.");
     }
 
     [MapToApiVersion(5.0)]
