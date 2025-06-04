@@ -87,7 +87,7 @@ public class MeasurementsController(
             request.Year,
             request.Month);
 
-        return NotFound("No aggregated measurements found for the specified date.");
+        return NotFound("No aggregated measurements found for the specified year and month.");
     }
 
     [MapToApiVersion(4.0)]
