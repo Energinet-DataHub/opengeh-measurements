@@ -87,7 +87,7 @@ public class MeasurementsController(
             request.Year,
             request.Month);
 
-        return NotFound("No aggregated measurements found for the specified date.");
+        return NotFound("No aggregated measurements found for the specified year and month.");
     }
 
     [MapToApiVersion(4.0)]
@@ -108,7 +108,7 @@ public class MeasurementsController(
             request.MeteringPointId.ToSanitizedString(),
             request.Year);
 
-        return NotFound("No aggregated measurements found for the specified month.");
+        return NotFound("No aggregated measurements found for the specified year.");
     }
 
     [MapToApiVersion(5.0)]
@@ -128,7 +128,7 @@ public class MeasurementsController(
             request.MeteringPointId.ToSanitizedString(),
             request.Year);
 
-        return NotFound("No aggregated measurements found for the specified month.");
+        return NotFound("No aggregated measurements found for the specified year.");
     }
 
     [MapToApiVersion(4.0)]
@@ -145,10 +145,10 @@ public class MeasurementsController(
         }
 
         logger.LogInformation(
-            "Aggregation by year not found for metering point id {MeteringPointId} for all years",
+            "Aggregation by year not found for metering point id {MeteringPointId} for any year",
             request.MeteringPointId.ToSanitizedString());
 
-        return NotFound("No aggregated measurements found for the specified year.");
+        return NotFound("No aggregated measurements found.");
     }
 
     [MapToApiVersion(5.0)]
