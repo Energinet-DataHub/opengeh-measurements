@@ -44,7 +44,7 @@ public class MeasurementsHandlerTests
     }
 
     [Fact]
-    public async Task GetByPeriodAsync_WhenMeasurementsNotExist_ThenReturnsNull()
+    public async Task GetByPeriodAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
     {
         // Arrange
         var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
