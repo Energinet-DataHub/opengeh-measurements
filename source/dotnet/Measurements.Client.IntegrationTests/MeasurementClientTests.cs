@@ -50,9 +50,8 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         var query = new GetMonthlyAggregateByDateQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
-
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        
+
         // Act
         var measurements = await measurementsClient.GetMonthlyAggregateByDateAsync(query);
 
