@@ -88,4 +88,7 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
+    print("changed_electrical_heating_in_utc:")
+    changed_electrical_heating_in_utc.show()
+
     return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc, settlement_type_nullable=True)
