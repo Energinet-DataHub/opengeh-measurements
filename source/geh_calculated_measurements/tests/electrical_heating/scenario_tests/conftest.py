@@ -10,8 +10,8 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
-from geh_calculated_measurements.common.domain.model.calculated_measurements_electrical_heating import (
-    CalculatedMeasurementsElectricalHeating,
+from geh_calculated_measurements.common.domain.model import (
+    CalculatedMeasurementsDaily,
 )
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
@@ -66,7 +66,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         execution_start_datetime = datetime.now(UTC)
 
     # Execute the logic
-    actual: CalculatedMeasurementsElectricalHeating = execute(
+    actual: CalculatedMeasurementsDaily = execute(
         current_measurements=CurrentMeasurements(current_measurements),
         internal_calculated_measurements=CalculatedMeasurementsInternal(calculated_measurements),
         consumption_metering_point_periods=ConsumptionMeteringPointPeriods(consumption_metering_point_periods),
