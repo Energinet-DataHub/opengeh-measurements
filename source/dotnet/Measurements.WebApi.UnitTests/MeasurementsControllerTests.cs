@@ -25,11 +25,12 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         var expected = CreateMeasurementResponse();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value;
@@ -46,10 +47,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(MeasurementsResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
@@ -66,10 +68,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetByPeriodAsync(request));
@@ -84,14 +87,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponseV4.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponseV4.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByDateV4();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByDateAsyncV4(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByDateAsyncV4(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -105,14 +110,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponse.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByDateResponse.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByDate();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByDateAsync(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByDateAsync(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -127,10 +134,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByDateResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsyncV4(request);
@@ -147,10 +155,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByDateResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
@@ -168,10 +177,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsyncV4(request));
@@ -185,10 +195,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsync(request));
@@ -203,14 +214,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponseV4.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponseV4.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByMonthV4();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByMonthAsyncV4(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByMonthAsyncV4(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -224,14 +237,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponse.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByMonthResponse.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByMonth();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByMonthAsync(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByMonthAsync(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -246,10 +261,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByMonthResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsyncV4(request);
@@ -266,10 +282,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByMonthResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
@@ -287,10 +304,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsyncV4(request));
@@ -304,10 +322,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
@@ -322,14 +341,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponseV4.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponseV4.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByYearV4();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByYearAsyncV4(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByYearAsyncV4(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -343,14 +364,16 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
-        var expected = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponse.Create);
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedResponse(MeasurementsAggregatedByYearResponse.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByYear();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetAggregatedByYearAsync(request) as OkObjectResult)!.Value;
+        var actual = (await sut.GetAggregatedByYearAsync(request) as OkObjectResult)!.Value!.ToString();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -365,10 +388,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByYearResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByYearAsyncV4(request);
@@ -385,10 +409,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByYearResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByYearAsync(request);
@@ -406,10 +431,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsyncV4(request));
@@ -423,10 +449,11 @@ public class MeasurementsControllerTests
         Mock<ILogger<MeasurementsController>> logger)
     {
         // Arrange
+        var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsync(request));
@@ -435,13 +462,49 @@ public class MeasurementsControllerTests
     private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
-        return MeasurementsResponse.Create(measurements);
+        var response = MeasurementsResponse.Create(measurements);
+        return response;
     }
 
     private static T CreateMeasurementsAggregatedResponse<T>(Func<List<AggregatedMeasurementsResult>, T> create)
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
         return create(measurements);
+    }
+
+    private static string CreateExpectedMeasurementsByDate()
+    {
+        return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByDateV4()
+    {
+        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Quality":"Measured","Unit":"kWh","IsMissingValues":true,"ContainsUpdatedValues":true}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByDate()
+    {
+        return """{"MeasurementAggregations":[{"Date":"2023-09-02","Quantity":42,"Qualities":["Measured"],"Unit":"kWh","IsMissingValues":true,"ContainsUpdatedValues":true}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByMonthV4()
+    {
+        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByMonth()
+    {
+        return """{"MeasurementAggregations":[{"YearMonth":"2023-09","Quantity":42,"Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYearV4()
+    {
+        return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Quality":"Measured","Unit":"kWh"}]}""";
+    }
+
+    private static string CreateExpectedMeasurementsAggregatedByYear()
+    {
+        return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Unit":"kWh"}]}""";
     }
 
     private static ExpandoObject CreateMeasurementResult()
