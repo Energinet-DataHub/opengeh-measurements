@@ -2,7 +2,9 @@
 
 namespace Energinet.DataHub.Measurements.Domain;
 
-public record MeasurementAggregationByMonth(
+[Obsolete("Use MeasurementAggregationByMonth instead.")]
+public record MeasurementAggregationByMonthV4(
     YearMonth YearMonth,
     decimal? Quantity,
+    Quality Quality,
     Unit Unit);

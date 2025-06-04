@@ -7,34 +7,35 @@ using Energinet.DataHub.Measurements.Domain;
 
 namespace Energinet.DataHub.Measurements.Application.Responses;
 
-public class MeasurementsAggregatedByDateResponse
+[Obsolete("Use MeasurementsAggregatedByDateResponse instead.")]
+public class MeasurementsAggregatedByDateResponseV4
 {
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - used by System.Text.Json
-    public IReadOnlyCollection<MeasurementAggregationByDate> MeasurementAggregations { get; init; } = [];
+    public IReadOnlyCollection<MeasurementAggregationByDateV4> MeasurementAggregations { get; init; } = [];
 
     [JsonConstructor]
     [Browsable(false)]
-    private MeasurementsAggregatedByDateResponse() { } // Needed by System.Text.Json to deserialize
+    private MeasurementsAggregatedByDateResponseV4() { } // Needed by System.Text.Json to deserialize
 
-    private MeasurementsAggregatedByDateResponse(List<MeasurementAggregationByDate> measurementAggregations)
+    private MeasurementsAggregatedByDateResponseV4(List<MeasurementAggregationByDateV4> measurementAggregations)
     {
         MeasurementAggregations = measurementAggregations;
     }
 
-    public static MeasurementsAggregatedByDateResponse Create(IEnumerable<AggregatedMeasurementsResult> measurements)
+    public static MeasurementsAggregatedByDateResponseV4 Create(IEnumerable<AggregatedMeasurementsResult> measurements)
     {
         var measurementAggregations = measurements
             .Select(measurement =>
-                new MeasurementAggregationByDate(
+                new MeasurementAggregationByDateV4(
                     measurement.MinObservationTime.ToDateOnly(),
                     measurement.Quantity,
-                    measurement.Qualities.Select(q => QualityParser.ParseQuality((string)q)),
+                    FindMinimumQuality(measurement),
                     FindUnit(measurement),
                     FindIsMissingValues(measurement),
                     FindContainsUpdatedValues(measurement)))
             .ToList();
 
-        return new MeasurementsAggregatedByDateResponse(measurementAggregations);
+        return new MeasurementsAggregatedByDateResponseV4(measurementAggregations);
     }
 
     private static Quality FindMinimumQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
