@@ -1,7 +1,6 @@
 ﻿using System.Dynamic;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
@@ -27,15 +26,14 @@ public class MeasurementsControllerTests
     {
         // Arrange
         var jsonSerializer = new JsonSerializer();
-        var response = CreateMeasurementResponse();
-        var expected = CreateExpectedMeasurementsByDate();
+        var expected = CreateMeasurementResponse();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ReturnsAsync(response);
+            .ReturnsAsync(expected);
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
-        var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value!.ToString();
+        var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value;
 
         // Assert
         Assert.Equal(expected, actual);
@@ -52,7 +50,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsResponse.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -139,7 +137,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByDateResponseV4.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -160,7 +158,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByDateResponse.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -266,7 +264,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByMonthResponseV4.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -287,7 +285,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByMonthResponse.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -393,7 +391,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByYearResponseV4.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -414,7 +412,7 @@ public class MeasurementsControllerTests
         var jsonSerializer = new JsonSerializer();
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
-            .ThrowsAsync(new MeasurementsNotFoundException());
+            .ReturnsAsync(MeasurementsAggregatedByYearResponse.Create([]));
         var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
@@ -472,11 +470,6 @@ public class MeasurementsControllerTests
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
         return create(measurements);
-    }
-
-    private static string CreateExpectedMeasurementsByDate()
-    {
-        return """{"Points":[{"ObservationTime":"2023-10-15T21:00:00Z","Quantity":42,"Quality":"Measured","Unit":"kWh","Resolution":"Hourly","Created":"2023-10-15T21:00:00Z","TransactionCreated":"2023-10-15T21:00:00Z"}]}""";
     }
 
     private static string CreateExpectedMeasurementsAggregatedByDateV4()
