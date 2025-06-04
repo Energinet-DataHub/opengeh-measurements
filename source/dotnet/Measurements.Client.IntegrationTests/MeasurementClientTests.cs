@@ -52,10 +52,12 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+        
+        // Act
         var measurements = await measurementsClient.GetMonthlyAggregateByDateAsync(query);
-        var actual = measurements.Single();
 
         // Assert
+        var actual = measurements.Single();
         Assert.Equal(MeasurementsClientFixture.TestObservationDate.Year, actual.Date.Year);
         Assert.Equal(MeasurementsClientFixture.TestObservationDate.Month, actual.Date.Month);
         Assert.False(actual.IsMissingValues);
