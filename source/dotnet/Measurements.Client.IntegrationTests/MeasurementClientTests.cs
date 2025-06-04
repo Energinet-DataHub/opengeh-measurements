@@ -50,12 +50,19 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
         var query = new GetMonthlyAggregateByDateQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
-
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+
+        // Act
         var measurements = await measurementsClient.GetMonthlyAggregateByDateAsync(query);
 
         // Assert
-        Assert.Single(measurements);
+        var actual = measurements.Single();
+        Assert.Equal(MeasurementsClientFixture.TestObservationDate.Year, actual.Date.Year);
+        Assert.Equal(MeasurementsClientFixture.TestObservationDate.Month, actual.Date.Month);
+        Assert.False(actual.IsMissingValues);
+        Assert.False(actual.ContainsUpdatedValues);
+        Assert.Contains(Quality.Measured, actual.Qualities);
+        Assert.Equal(285.6m, actual.Quantity);
     }
 
     [Fact]

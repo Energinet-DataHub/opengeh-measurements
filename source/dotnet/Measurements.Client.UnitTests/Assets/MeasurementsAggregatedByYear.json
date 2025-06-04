@@ -3,31 +3,26 @@
     {
       "Year": 2021,
       "Quantity": 2021.1,
-      "Quality": "measured",
       "Unit": "kWh"
     },
     {
       "Year": 2022,
       "Quantity": 2022.2,
-      "Quality": "measured",
       "Unit": "kWh"
     },
     {
       "Year": 2023,
       "Quantity": 2023.3,
-      "Quality": "measured",
       "Unit": "kWh"
     },
     {
       "Year": 2024,
       "Quantity": 2024.4,
-      "Quality": "measured",
       "Unit": "kWh"
     },
     {
       "Year": 2025,
       "Quantity": 2025.5,
-      "Quality": "estimated",
       "Unit": "kWh"
     }
   ]
