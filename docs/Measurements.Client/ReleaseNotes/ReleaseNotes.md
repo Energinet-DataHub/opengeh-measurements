@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.4.1
+
+- Bugfix.
+
 ## Version 8.4.0
 
 - Remove quality and missing values indicator for monthly and yearly aggregates.
