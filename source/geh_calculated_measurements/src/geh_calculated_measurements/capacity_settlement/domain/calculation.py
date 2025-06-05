@@ -75,9 +75,6 @@ def execute(
 
     time_series_points_within_child_period = _filter_date_within_child_period(time_series_points_exploded_to_daily)
 
-    print("time_series_points_within_child_period:")
-    time_series_points_within_child_period.show()
-
     measurements = time_series_points_within_child_period.select(
         F.col(ContractColumnNames.child_metering_point_id).alias(ContractColumnNames.metering_point_id),
         F.col(ContractColumnNames.date),
