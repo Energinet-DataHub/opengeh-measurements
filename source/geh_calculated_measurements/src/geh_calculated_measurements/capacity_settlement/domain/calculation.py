@@ -41,9 +41,6 @@ def execute(
 
     time_series_points_hourly = _transform_quarterly_time_series_to_hourly(current_measurements.df)
 
-    print("time_series_points_hourly:")
-    time_series_points_hourly.show()
-
     grouping = [
         ContractColumnNames.metering_point_id,
         EphemeralColumnNames.selection_period_start,
@@ -103,7 +100,6 @@ def _transform_quarterly_time_series_to_hourly(
     time_series_points = time_series_points.withColumn(
         ContractColumnNames.observation_time, F.date_trunc("hour", ContractColumnNames.observation_time)
     )
-    time_series_points = time_series_points.where(F.col(ContractColumnNames.quantity).isNotNull())
     # group by all columns except quantity and then sum the quantity
     group_by = [col for col in time_series_points.columns if col != ContractColumnNames.quantity]
     time_series_points = time_series_points.groupBy(group_by).agg(
