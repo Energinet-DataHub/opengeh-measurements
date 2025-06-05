@@ -1,0 +1,15 @@
+version: v0.1
+testId: aggregatedByPeriodWithYearlyAggregates
+displayName: aggregatedByPeriodWithYearlyAggregates
+testPlan: aggregatedByPeriodWithYearlyAggregates.jmx
+description: aggregatedByPeriodWithYearlyAggregates
+engineInstances: 1
+configurationFiles:
+   - 'aggregatedByPeriodWithYearlyAggregates.csv'
+failureCriteria:
+  - percentage(error) > 1
+  - p50(response_time_ms) > 800
+autoStop:
+  errorPercentage: 80
+  timeWindow: 60
+

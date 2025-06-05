@@ -98,3 +98,28 @@ def test__transform__should_return_correct_quality(
 
     # Assert
     assert actual.collect()[0].points[0].quality == expected_quality
+
+
+@pytest.mark.parametrize(
+    "dh2_quality, quantity, expected_quantity",
+    [
+        pytest.param(Dh2QualityEnum.missing.value, Decimal(1.5), None),
+        pytest.param(Dh2QualityEnum.missing.value, None, None),
+        pytest.param(Dh2QualityEnum.estimated.value, Decimal(1.0), Decimal(1.0)),
+    ],
+)
+def test__transform__should_set_quantity_none_when_quality_missing(
+    dh2_quality: str, quantity, expected_quantity, spark: SparkSession
+) -> None:
+    # Arrange
+    values = [(0, dh2_quality, quantity)]
+    migrated_transactions = MigratedTransactionsBuilder(spark).add_row(values=values).build()
+
+    # Act
+    actual = mit.transform(migrated_transactions)
+
+    # Assert
+    if expected_quantity is None:
+        assert actual.collect()[0].points[0].quantity is None
+    else:
+        assert actual.collect()[0].points[0].quantity == expected_quantity

@@ -37,7 +37,7 @@ public class MeasurementsAggregatedByDateResponseTests
         var firstAggregation = actual.MeasurementAggregations.First();
         Assert.Equal(expectedDate, firstAggregation.Date);
         Assert.Equal(100.0m, firstAggregation.Quantity);
-        Assert.Equal(Quality.Measured, firstAggregation.Quality);
+        Assert.Equal(Quality.Measured, firstAggregation.Qualities.Single());
         Assert.False(firstAggregation.IsMissingValues);
         Assert.False(firstAggregation.ContainsUpdatedValues);
     }
@@ -67,7 +67,7 @@ public class MeasurementsAggregatedByDateResponseTests
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
         var maxObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddHours(23));
-        var qualities = new[] { "measured", "measured" };
+        var qualities = new[] { "measured" };
         var resolutions = new[] { "PT1H" };
         var units = new[] { "kWh", "kVArh" };
 
@@ -81,7 +81,7 @@ public class MeasurementsAggregatedByDateResponseTests
     }
 
     [Fact]
-    public void Create_WhenMultipleQualities_ThenLowestQualityIsReturned()
+    public void Create_WhenMultipleQualities_ThenAllQualitiesAreReturned()
     {
         // Arrange
         var minObservationTime = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow);
@@ -99,8 +99,11 @@ public class MeasurementsAggregatedByDateResponseTests
         var actual = MeasurementsAggregatedByDateResponse.Create(aggregatedMeasurements);
 
         // Assert
-        var firstAggregation = actual.MeasurementAggregations.First();
-        Assert.Equal(Quality.Missing, firstAggregation.Quality);
+        var aggregateQualities = actual.MeasurementAggregations.First().Qualities.ToList();
+        Assert.Contains(aggregateQualities, q => q == Quality.Missing);
+        Assert.Contains(aggregateQualities, q => q == Quality.Estimated);
+        Assert.Contains(aggregateQualities, q => q == Quality.Measured);
+        Assert.Contains(aggregateQualities, q => q == Quality.Calculated);
     }
 
     [Theory]

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
-using Energinet.DataHub.Measurements.Application.Exceptions;
 using Energinet.DataHub.Measurements.Application.Extensions;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Responses.EnumParsers;
@@ -30,13 +29,10 @@ public class MeasurementsAggregatedByMonthResponse
                 new MeasurementAggregationByMonth(
                     SetYearMonth(measurement),
                     measurement.Quantity,
-                    SetQuality(measurement),
                     SetUnit(measurement)))
             .ToList();
 
-        return measurementAggregations.Count <= 0
-            ? throw new MeasurementsNotFoundException()
-            : new MeasurementsAggregatedByMonthResponse(measurementAggregations);
+        return new MeasurementsAggregatedByMonthResponse(measurementAggregations);
     }
 
     private static YearMonth SetYearMonth(AggregatedMeasurementsResult measurement)
@@ -45,15 +41,12 @@ public class MeasurementsAggregatedByMonthResponse
         return new YearMonth(dateOnly.Year, dateOnly.Month);
     }
 
-    private static Quality SetQuality(AggregatedMeasurementsResult aggregatedMeasurementsResult)
-    {
-        return aggregatedMeasurementsResult.Qualities
-            .Select(quality => QualityParser.ParseQuality((string)quality))
-            .Min();
-    }
-
     private static Unit SetUnit(AggregatedMeasurementsResult aggregatedMeasurementsResult)
     {
-        return UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.First());
+        // From a single metering point of view only one unit is allowed.
+        // If unit should change then the metering point must be closed down and a new one created.
+        return aggregatedMeasurementsResult.Units.Length != 1
+            ? throw new InvalidOperationException("Aggregated measurements contains multiple units.")
+            : UnitParser.ParseUnit((string)aggregatedMeasurementsResult.Units.Single());
     }
 }

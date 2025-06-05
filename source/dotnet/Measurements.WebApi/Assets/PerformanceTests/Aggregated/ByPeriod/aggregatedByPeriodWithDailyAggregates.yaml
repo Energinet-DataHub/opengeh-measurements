@@ -1,0 +1,15 @@
+version: v0.1
+testId: aggregatedByPeriodWithDailyAggregates
+displayName: aggregatedByPeriodWithDailyAggregates
+testPlan: aggregatedByPeriodWithDailyAggregates.jmx
+description: aggregatedByPeriodWithDailyAggregates
+engineInstances: 1
+configurationFiles:
+   - 'aggregatedByPeriodWithDailyAggregates.csv'
+failureCriteria:
+  - percentage(error) > 1
+  - p50(response_time_ms) > 800
+autoStop:
+  errorPercentage: 80
+  timeWindow: 60
+

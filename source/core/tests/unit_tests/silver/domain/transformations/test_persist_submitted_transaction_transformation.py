@@ -50,6 +50,20 @@ def test__create_by_submitted_transaction__should_return_correct_decimal_value(s
     assert actual.collect()[0].points[0].quantity == expected_decimal_value
 
 
+def test__create_by_submitted_transaction__should_return_default_decimal_value(spark: SparkSession) -> None:
+    # Arrange
+    expected_default_decimal_value = None
+    points = PointsBuilder().add_row(1, None, Quality.Q_MISSING).build()
+
+    submitted_transaction = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
+
+    # Act
+    actual = sut.transform(submitted_transaction)
+
+    # Assert
+    assert actual.collect()[0].points[0].quantity == expected_default_decimal_value
+
+
 def test__transform__should_align_values_to_geh_core(spark: SparkSession) -> None:
     # Arrange
     submitted_transactions = (
@@ -204,7 +218,7 @@ def test__transform__should_transform_resolution_to_expected(
         ),
     ],
 )
-def test__trasnform__should_transform_unit_to_expected(unit: Unit, expected_unit: str, spark: SparkSession) -> None:
+def test__transform__should_transform_unit_to_expected(unit: Unit, expected_unit: str, spark: SparkSession) -> None:
     # Arrange
     submitted_transactions = (
         SubmittedTransactionsValueBuilder(spark)
@@ -233,7 +247,7 @@ def test__trasnform__should_transform_unit_to_expected(unit: Unit, expected_unit
         (Quality.Q_MISSING, GehCommonQuality.MISSING.value),
     ],
 )
-def test__trasnform__should_transform_quality_to_expected(
+def test__transform__should_transform_quality_to_expected(
     quality: Quality, expected_quality: str, spark: SparkSession
 ) -> None:
     # Arrange
@@ -253,3 +267,25 @@ def test__trasnform__should_transform_quality_to_expected(
 
     # Assert
     assert actual.collect()[0].points[0].quality == expected_quality
+
+
+@pytest.mark.parametrize(
+    "quality, quantity, expected_quantity",
+    [
+        pytest.param(Quality.Q_MISSING, DecimalValue(units=1, nanos=0), None),
+        pytest.param(Quality.Q_MISSING, None, None),
+        pytest.param(Quality.Q_MEASURED, DecimalValue(units=1, nanos=500000000), Decimal(1.5)),
+    ],
+)
+def test__transform__should_set_quantity_none_when_quality_missing(
+    quality: Quality, quantity, expected_quantity, spark: SparkSession
+) -> None:
+    # Arrange
+    points = PointsBuilder().add_row(quality=quality, quantity=quantity).build()
+    migrated_transactions = SubmittedTransactionsValueBuilder(spark).add_row(points=points).build()
+
+    # Act
+    actual = sut.transform(migrated_transactions)
+
+    # Assert
+    assert actual.collect()[0].points[0].quantity == expected_quantity

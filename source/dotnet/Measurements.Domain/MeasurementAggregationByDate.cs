@@ -3,7 +3,7 @@
 public record MeasurementAggregationByDate(
     DateOnly Date,
     decimal? Quantity,
-    Quality Quality,
+    IEnumerable<Quality> Qualities,
     Unit Unit,
     bool IsMissingValues,
     bool ContainsUpdatedValues);

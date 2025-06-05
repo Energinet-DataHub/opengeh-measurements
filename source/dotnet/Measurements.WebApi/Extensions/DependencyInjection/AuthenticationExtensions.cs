@@ -1,6 +1,5 @@
 ﻿using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.WebApi.Constants;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Energinet.DataHub.Measurements.WebApi.Extensions.DependencyInjection;
@@ -17,7 +16,7 @@ public static class AuthenticationExtensions
             .Get<B2CAuthenticationOptions>();
         var authority = $"https://login.microsoftonline.com/{b2CAuthenticationOptions?.TenantId}/v2.0";
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(AuthenticationSchemas.Default)
             .AddJwtBearer(options =>
             {
                 options.Authority = entraAuthenticationOptions?.Issuer;
