@@ -25,7 +25,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest) -> TestCases
         f"{scenario_path}/when/calculated_measurements_daily.csv",
         CalculatedMeasurementsDaily.schema,
     )
-    calculated_measurements_daily = CalculatedMeasurementsDaily(daily)
+    calculated_measurements_daily = CalculatedMeasurementsDaily(daily, settlement_type_nullable=True)
 
     # Execute the logic to be tested
     actual = calculated_measurements_hourly_factory.create(

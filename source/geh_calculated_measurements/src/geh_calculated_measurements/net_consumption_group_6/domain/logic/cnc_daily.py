@@ -65,7 +65,7 @@ def cnc_daily(
         F.lit("end_of_period"),
     )
 
-    return CalculatedMeasurementsDaily(cnc_diff_utc)
+    return CalculatedMeasurementsDaily(cnc_diff_utc, settlement_type_nullable=False)
 
 
 def _generate_days_in_periods(periods_with_net_consumption: DataFrame) -> DataFrame:

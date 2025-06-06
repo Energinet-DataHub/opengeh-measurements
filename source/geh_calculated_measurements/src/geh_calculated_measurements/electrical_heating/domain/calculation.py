@@ -8,7 +8,9 @@ from geh_common.telemetry import use_span
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import (
+    CalculatedMeasurementsDaily,
+)
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -86,4 +88,4 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)
+    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc, settlement_type_nullable=True)
