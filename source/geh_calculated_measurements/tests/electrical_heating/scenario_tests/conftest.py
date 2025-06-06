@@ -10,9 +10,7 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
-from geh_calculated_measurements.common.domain.model import (
-    CalculatedMeasurementsDaily,
-)
+from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
