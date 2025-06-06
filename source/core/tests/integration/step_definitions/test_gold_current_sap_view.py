@@ -109,6 +109,31 @@ def _(spark, column):
     return mp_id
 
 
+@given(
+    "a gold {orchestration_type:d} measurements",
+    target_fixture="metering_point_id",
+)
+def _(spark, orchestration_type: str):
+    mp_id = identifier_helper.create_random_metering_point_id()
+    obs_time = datetime_helper.get_datetime()
+
+    data = (
+        GoldMeasurementsBuilder(spark)
+        .add_row(
+            orchestration_type=orchestration_type,
+            metering_point_id=mp_id,
+            observation_time=obs_time,
+            quantity=Decimal(100),
+            transaction_creation_datetime=datetime_helper.get_datetime(2021, 1, 1),
+            is_cancelled=False,
+        )
+        .build()
+    )
+
+    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
+    return mp_id
+
+
 @when("accessing the current_sap_v1 gold view", target_fixture="actual_schema")
 def _(spark):
     return spark.table(f"{GoldSettings().gold_database_name}.{GoldViewNames.current_sap_v1}").schema
