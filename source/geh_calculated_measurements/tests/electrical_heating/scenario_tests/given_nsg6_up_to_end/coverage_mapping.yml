@@ -4,20 +4,21 @@ notes: |
 
 cases_tested:
   "Electrical Heating Tests":
-    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
-    - "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
-    - "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+    "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
+    "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
+    "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+    "GIVEN there is an observation time in measurements data input table WHEN quantity is null THEN we should treat the row with that observation_time as not existing"
 
   "Period length and base period limit":
-    - "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
-    - "Settlement Month IS NOT January (NSG6 only)"
+    "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
+    "Settlement Month IS NOT January (NSG6 only)"
 
   "Summer/Wintertime handling":
-    - "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45"
-    - "GIVEN it is the day of winter daylight savings change THEN we should aggregate daily consumption for 25 hours AND last quarter of the day is UTC 22.45"
+    "GIVEN it is the day of summer daylight savings change THEN we should only aggregate daily consumption for 23 hours AND last quarter of the day is UTC 21.45"
+    "GIVEN it is the day of winter daylight savings change THEN we should aggregate daily consumption for 25 hours AND last quarter of the day is UTC 22.45"
 
   "Net Settlement Groups":
-    - "Electrical heating with net settlement group 6"
+    "Electrical heating with net settlement group 6"
 
   "Settlement Group Calculation Type":
-    - "UP TO END of period calculation"
+    "UP TO END of period calculation"

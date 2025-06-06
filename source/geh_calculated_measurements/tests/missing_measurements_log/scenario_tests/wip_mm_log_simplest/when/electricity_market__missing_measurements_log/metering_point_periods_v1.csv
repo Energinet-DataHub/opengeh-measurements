@@ -1,4 +1,5 @@
 metering_point_id;grid_area_code;resolution;period_from_date;period_to_date;#comment
 170000000000000201;001;PT1H;2023-12-31T23:00:00Z;;Case 1
 170000000001500202;001;PT15M;2023-12-31T23:00:00Z;;Case 2
-170000000000000000;999;PT15M;2023-12-31T23:00:00Z;;Case 3. Should not be in the result, because grid area is not in job parameters.
+170000000001500203;001;PT15M;2023-12-31T23:00:00Z;;Case 3
+170000000000000000;999;PT15M;2023-12-31T23:00:00Z;;Case 4. Should not be in the result, because grid area is not in job parameters.

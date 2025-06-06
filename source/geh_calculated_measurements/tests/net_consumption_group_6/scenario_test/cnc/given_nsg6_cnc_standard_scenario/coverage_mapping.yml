@@ -39,3 +39,4 @@ cases_tested:
   "Sum for D06 is aggregated, even if sum for D07 is missing"
   "Sum for D07 is aggregated, even if sum for D06 is missing"
   "calculation is cnc"
+  "GIVEN there is an observation time in measurements data input table WHEN quantity is null THEN we should treat the row with that observation_time as not existing"
