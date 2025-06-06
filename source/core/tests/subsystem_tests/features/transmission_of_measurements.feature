@@ -8,3 +8,6 @@ Feature: Transmission of measurements
 
   Scenario: Measurement transaction delivered to Gold Layer
     Then the measurement transaction is available in the Gold Layer
+
+  Scenario: Measurements transaction delivered to SAP Series Gold Table
+    Then the measurement transaction is available in the SAP Series Gold table
