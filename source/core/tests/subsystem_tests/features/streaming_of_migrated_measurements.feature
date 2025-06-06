@@ -4,3 +4,8 @@ Scenario: Processing migrated transaction
   Given a new valid migrated transaction inserted into the Migration Silver table
   When streaming from Migration silver to Measurements gold
   Then the migrated transaction is available in the Gold layer
+
+Scenario: Migrated transaction is appended to the Gold SAP series table
+  Given a new valid migrated transaction inserted into the Migration Silver table
+  When streaming from Migration silver to Measurements gold
+  Then the migrated transaction is available in the Gold SAP Series table
