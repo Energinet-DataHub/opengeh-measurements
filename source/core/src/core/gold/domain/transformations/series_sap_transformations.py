@@ -8,8 +8,6 @@ from core.silver.domain.constants.column_names.silver_measurements_column_names 
     SilverMeasurementsColumnNames,
 )
 
-sap_seq_no_offset = 200_000_000_000
-
 
 def transform(silver_measurements: DataFrame) -> DataFrame:
     """Transform silver measurements transactions to gold series SAP measurements.
