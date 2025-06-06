@@ -28,6 +28,7 @@ def substitutions() -> dict[str, str]:
         "{gold_electrical_heating_v1}": GoldViewNames.electrical_heating_v1,
         "{gold_capacity_settlement_v1}": GoldViewNames.capacity_settlement_v1,
         "{gold_current_v1}": GoldViewNames.current_v1,
+        "{gold_current_sap_v1}": GoldViewNames.current_sap_v1,
         "{core_internal_database}": core_internal_settings.core_internal_database_name,
         "{process_manager_receipts}": CoreInternalTableNames.process_manager_receipts,
     }
