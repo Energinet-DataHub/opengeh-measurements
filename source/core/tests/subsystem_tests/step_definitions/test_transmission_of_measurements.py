@@ -10,8 +10,9 @@ scenarios("../features/transmission_of_measurements.feature")
 
 
 class TestData:
-    def __init__(self, orchestration_instance_id: str, value: str) -> None:
+    def __init__(self, orchestration_instance_id: str, metering_point_id: str, value: str) -> None:
         self.orchestration_instance_id = orchestration_instance_id
+        self.metering_point_id = metering_point_id
         self.value = value
 
 
@@ -27,7 +28,7 @@ def _(spark: SparkSession, kafka_fixture: KafkaFixture) -> TestData:
         )
         .build()
     )
-    test_data = TestData(orchestration_instance_id, value)
+    test_data = TestData(orchestration_instance_id, metering_point_id, value)
     kafka_fixture.send_submitted_transactions_event(test_data.value)
     return test_data
 
@@ -40,3 +41,8 @@ def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
 @then("the measurement transaction is available in the Gold Layer")
 def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
     gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id)
+
+
+@then("the measurement transaction is available in the SAP Series Gold table")
+def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
+    gold_layer_fixture.assert_sap_series_persisted(test_data.metering_point_id)

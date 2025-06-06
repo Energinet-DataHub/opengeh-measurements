@@ -19,7 +19,8 @@ scenarios("../features/streaming_of_migrated_measurements.feature")
 )
 def _() -> MigratedMeasurementsRow:
     transaction_id = identifier_helper.generate_random_string()
-    return MigratedMeasurementsRowBuilder().build(transaction_id=transaction_id)
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    return MigratedMeasurementsRowBuilder().build(transaction_id=transaction_id, metering_point_id=metering_point_id)
 
 
 @when("streaming from Migration silver to Measurements gold")
@@ -32,3 +33,8 @@ def _(migrated_measurements_row: MigratedMeasurementsRow) -> None:
 @then("the migrated transaction is available in the Gold layer")
 def _(migrated_measurements_row: MigratedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
     gold_layer_fixture.assert_migrated_measurement_persisted(migrated_measurements_row.transaction_id)
+
+
+@then("the migrated transaction is available in the Gold SAP Series table")
+def _(migrated_measurements_row: MigratedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
+    gold_layer_fixture.assert_sap_series_persisted(migrated_measurements_row.metering_point_id)
