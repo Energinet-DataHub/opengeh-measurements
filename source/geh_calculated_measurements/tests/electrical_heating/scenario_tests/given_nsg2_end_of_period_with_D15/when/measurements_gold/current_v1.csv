@@ -11,12 +11,13 @@ metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 150000001500170200;500;calculated;2024-01-02T23:00:00Z;net_consumption;Case 0 - day 3: (D07-D06) = 500
 060000001500170200;50;measured;2024-12-27T23:00:00Z;supply_to_grid;Case 0 - day 4: min(D06,D07) = 25
 070000001500170200;25;estimated;2024-12-27T23:00:00Z;consumption_from_grid;Case 0 - day 4: min(D06,D07) = 25
-150000001500170200;;calculated;2024-12-27T23:00:00Z;net_consumption;Case 0 - day 4: min(D06,D07) = 25
+150000001500170200;25;calculated;2024-12-27T23:00:00Z;net_consumption;Case 0 - day 4: min(D06,D07) = 25
 060000001500170200;50;measured;2024-12-28T23:00:00Z;supply_to_grid;Case 0 - day 5: min(D06,D07) = 25
 070000001500170200;25;estimated;2024-12-28T23:00:00Z;consumption_from_grid;Case 0 - day 5: min(D06,D07) = 25
+150000001500170200;25;calculated;2024-12-28T23:00:00Z;net_consumption;Case 0 - day 5: (D07-D06) = 25
 060000001500170200;50;measured;2024-12-31T22:45:00Z;supply_to_grid;Case 0 - day 6: min(D06,D07) = 25
 070000001500170200;25;estimated;2024-12-31T22:45:00Z;consumption_from_grid;Case 0 - day 6: min(D06,D07) = 25
-150000001500170200;0;calculated;2024-12-31T22:45:00Z;net_consumption;Case 0 - day 6: (D07-D06) = 25
+150000001500170200;25;calculated;2024-12-31T22:45:00Z;net_consumption;Case 0 - day 6: (D07-D06) = 25
 060000001500170201;132.888;measured;2023-12-31T23:00:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1
 060000001500170201;5.279;measured;2023-12-31T23:15:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1
 060000001500170201;234.592;measured;2023-12-31T23:30:00Z;supply_to_grid;Case 1: 2024 Day 1 - Hour 1

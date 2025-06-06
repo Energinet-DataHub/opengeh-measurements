@@ -1,9 +1,10 @@
 transaction_creation_datetime;transaction_id;orchestration_instance_id;orchestration_type;settlement_type;metering_point_id;quantity;quality;observation_time;metering_point_type;#comment
 2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170200;1;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 0: Written to child mp by previous calculation for Jan. 3rd.
-2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;10;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 3rd.
-2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;1;calculated;2024-01-03T23:00:00Z;electrical_heating;Case 2: New value for Jan. 4th.
-2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;0;calculated;2024-01-04T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 5th (was 5 previously).
-2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;5;calculated;2024-01-05T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 6th (was 0 previously).
+2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;1;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 3rd.
+2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;5;calculated;2024-01-04T23:00:00Z;electrical_heating;Case 2: New value for Jan. 4th.
+2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;0;calculated;2024-01-05T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 5th (was 5 previously).
+2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;0;calculated;2024-01-06T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 6th (was 0 previously).
+2024-01-31T23:00:00Z;transID;orchID;orch_type;up_to_end_of_period;140000000000170202;0;calculated;2024-01-07T23:00:00Z;electrical_heating;Case 2: Updated value for Jan. 6th (was 0 previously).
 2024-01-31T23:00:00Z;transID;orchID;orch_type;end_of_period;140000000000170203;20;calculated;2023-12-31T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 1st.
 2024-01-31T23:00:00Z;transID;orchID;orch_type;end_of_period;140000000000170203;20;calculated;2024-01-01T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 2nd.
 2024-01-31T23:00:00Z;transID;orchID;orch_type;end_of_period;140000000000170203;20;calculated;2024-01-02T23:00:00Z;electrical_heating;Case 3: Written to child mp by previous calculation for Jan. 3rd.
