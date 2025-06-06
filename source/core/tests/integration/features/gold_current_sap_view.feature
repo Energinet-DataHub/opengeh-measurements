@@ -29,3 +29,24 @@ Feature: Current_sap_v1 Gold View
     Given a gold measurement where quantity is null
     When querying the current_sap_v1 gold view for that metering point
     Then the result should contain 1 rows
+
+  Scenario: View returns migration measurements
+    Given a gold migration measurements
+    When querying the current_sap_v1 gold view for that metering point
+    Then the result should contain 1 rows
+
+  Scenario: View does not return submitted measurements
+    Given a gold submitted measurements
+    When querying the current_sap_v1 gold view for that metering point
+    Then the result should contain 0 rows
+
+  Scenario: View does not return electrical_heating measurements
+    Given a gold electrical_heating measurements
+    When querying the current_sap_v1 gold view for that metering point
+    Then the result should contain 0 rows
+
+  Scenario: View does not return capacity_settlement measurements
+    Given a gold capacity_settlement measurements
+    When querying the current_sap_v1 gold view for that metering point
+    Then the result should contain 0 rows    
+        

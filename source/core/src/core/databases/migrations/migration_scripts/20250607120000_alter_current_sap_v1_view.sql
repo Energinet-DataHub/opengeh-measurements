@@ -1,7 +1,3 @@
-DROP VIEW IF EXISTS {gold_database}.{gold_current_sap_v1}
-
-GO
-
 CREATE VIEW {gold_database}.{gold_current_sap_v1} AS
 WITH RankedRows AS (
     SELECT
@@ -9,8 +5,7 @@ WITH RankedRows AS (
         ROW_NUMBER() OVER (PARTITION BY metering_point_id, observation_time ORDER BY transaction_creation_datetime DESC) AS row_num
     FROM {gold_database}.{gold_measurements}
     WHERE
-        orchestration_type = "migration"
-        AND metering_point_id IS NOT NULL
+        metering_point_id IS NOT NULL
         AND observation_time IS NOT NULL
         AND quality IS NOT NULL    
         AND metering_point_type IS NOT NULL
