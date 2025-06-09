@@ -501,7 +501,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Theory]
-    [InlineData("", HttpStatusCode.OK)]
+    [InlineData("", HttpStatusCode.NotFound)]
     [InlineData("v1", HttpStatusCode.NotFound)]
     [InlineData("v2", HttpStatusCode.NotFound)]
     [InlineData("v3", HttpStatusCode.NotFound)]
