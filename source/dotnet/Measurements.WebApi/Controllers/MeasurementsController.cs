@@ -14,7 +14,6 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [ApiVersion(4.0)]
 [ApiVersion(5.0)]
 [Route("v{v:apiVersion}/measurements")]
-[Route("/[controller]")]
 public class MeasurementsController(
     IMeasurementsHandler measurementsHandler, ILogger<MeasurementsController> logger, IJsonSerializer jsonSerializer)
     : ControllerBase
