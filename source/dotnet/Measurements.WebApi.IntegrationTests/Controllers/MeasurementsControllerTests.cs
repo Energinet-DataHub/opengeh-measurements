@@ -509,7 +509,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     [InlineData("v5", HttpStatusCode.OK)]
     [InlineData("v6", HttpStatusCode.NotFound)]
     public async Task GetAggregatedMeasurementsByDateAsync_WhenTargetingUnsupportedVersions_ReturnsNotFound(
-        string? version, HttpStatusCode expectedStatusCode)
+        string version, HttpStatusCode expectedStatusCode)
     {
         // Arrange
         const string meteringPointId = "123456789123456789";
@@ -518,7 +518,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
             .WithContinuousRowsForDate(meteringPointId, new LocalDate(yearMonth.Year, yearMonth.Month, 5))
             .Build();
         await fixture.InsertRowsAsync(rows);
-        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth, version!);
+        var url = CreateGetAggregatedMeasurementsByDateUrl(meteringPointId, yearMonth, version);
 
         // Act
         var actual = await fixture.Client.GetAsync(url);
@@ -565,11 +565,6 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     private static string CreateGetAggregatedMeasurementsByDateUrl(string expectedMeteringPointId, YearMonth yearMonth, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/aggregatedByDate?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
-    }
-
-    private static string CreateDefaultVersionGetAggregatedMeasurementsByDateUrl(string expectedMeteringPointId, YearMonth yearMonth)
-    {
-        return $"measurements/aggregatedByDate?meteringPointId={expectedMeteringPointId}&year={yearMonth.Year}&month={yearMonth.Month}";
     }
 
     private static string CreateGetAggregatedMeasurementsByMonthUrl(string expectedMeteringPointId, Year year, string versionPrefix = "v5")
