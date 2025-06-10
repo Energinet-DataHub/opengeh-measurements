@@ -63,7 +63,7 @@ public class ClientExtensionsTests
         // Arrange
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>())
+            .AddInMemoryCollection([])
             .Build();
 
         services.AddScoped<IConfiguration>(_ => configuration);
