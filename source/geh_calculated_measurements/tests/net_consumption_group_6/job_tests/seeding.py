@@ -136,7 +136,7 @@ def _seed_internal(
                 ContractColumnNames.transaction_id: "1",
                 ContractColumnNames.transaction_creation_datetime: datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
                 ContractColumnNames.transaction_start_time: datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
-                ContractColumnNames.transaction_end_time: datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
+                ContractColumnNames.transaction_end_time: datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc),
                 ContractColumnNames.metering_point_id: child_net_consumption_metering_point,
                 ContractColumnNames.metering_point_type: MeteringPointType.NET_CONSUMPTION.value,
                 ContractColumnNames.observation_time: datetime(2024, 12, 30, 23, 0, 0, tzinfo=timezone.utc),
