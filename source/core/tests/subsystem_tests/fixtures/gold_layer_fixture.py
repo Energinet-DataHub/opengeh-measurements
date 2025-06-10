@@ -43,7 +43,7 @@ class GoldLayerFixture:
     def assert_sap_series_persisted(self, metering_point_id: str, timeout: int = 60, poll_interval: int = 5) -> None:
         query = f"""
                 SELECT COUNT(*) AS count
-                FROM {self.databricks_settings.catalog_name}.{self.gold_settings.gold_database_name}.{GoldTableNames.gold_measurements_series_sap}
+                FROM {self.databricks_settings.catalog_name}.{self.gold_settings.gold_database_name}.{GoldTableNames.gold_measurements_sap_series}
                 WHERE metering_point_id = '{metering_point_id}'
             """
 

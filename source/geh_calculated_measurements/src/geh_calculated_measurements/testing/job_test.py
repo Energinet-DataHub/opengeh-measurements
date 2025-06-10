@@ -29,7 +29,7 @@ class JobTestFixture:
         self.job_name = job_name
         self.job_parameters = job_parameters
 
-        # Configure Azure resources
+        # Configures Azure resources
         credentials = DefaultAzureCredential()
         secret_client = SecretClient(vault_url=self.config.shared_keyvault_url, credential=credentials)
         azure_log_analytics_workspace_id = secret_client.get_secret(
