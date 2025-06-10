@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS {gold_database}.{gold_measurements_series_sap};
+DROP TABLE IF EXISTS {gold_database}.{gold_measurements_sap_series};
 
 GO
 
-CREATE TABLE IF NOT EXISTS {gold_database}.{gold_measurements_series_sap}
+CREATE TABLE IF NOT EXISTS {gold_database}.{gold_measurements_sap_series}
 (
     orchestration_type STRING,
     metering_point_id STRING,
