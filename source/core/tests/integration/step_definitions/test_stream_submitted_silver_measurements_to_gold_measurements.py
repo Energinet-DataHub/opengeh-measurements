@@ -138,6 +138,6 @@ def _(spark: SparkSession, expected_orchestration_instance_id):
 @then("a transaction is available in the measurements series SAP table")
 def _(spark: SparkSession, expected_metering_point_id):
     measurements_serie_sap = spark.table(
-        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_series_sap}"
+        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}"
     ).where(f"metering_point_id = '{expected_metering_point_id}'")
     assert measurements_serie_sap.count() == 1
