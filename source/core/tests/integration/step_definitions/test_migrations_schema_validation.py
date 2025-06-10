@@ -36,7 +36,7 @@ def _(spark: SparkSession, table_name: str):
     table_map = {
         "silver measurements": f"{SilverSettings().silver_database_name}.{SilverTableNames.silver_measurements}",
         "gold measurements": f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements}",
-        "gold measurements series SAP": f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}",
+        "gold measurements SAP series": f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}",
         "bronze migrated transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_migrated_transactions_table}",
         "bronze submitted transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_submitted_transactions_table}",
         "bronze invalid submitted transactions": f"{BronzeSettings().bronze_database_name}.{BronzeTableNames.bronze_invalid_submitted_transactions}",
