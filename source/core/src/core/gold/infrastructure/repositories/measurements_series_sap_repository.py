@@ -37,5 +37,4 @@ class GoldMeasurementsSeriesSAPRepository:
             GoldMeasurementsSeriesSAPColumnNames.transaction_creation_datetime,
             GoldMeasurementsSeriesSAPColumnNames.start_time,
             GoldMeasurementsSeriesSAPColumnNames.resolution,
-            GoldMeasurementsSeriesSAPColumnNames.is_cancelled,
         ]
