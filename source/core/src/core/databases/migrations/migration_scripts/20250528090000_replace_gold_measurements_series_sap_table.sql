@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS {gold_database}.{gold_measurements_sap_series};
+DROP TABLE IF EXISTS {gold_database}.measurements_series_sap;
 
 GO
 
