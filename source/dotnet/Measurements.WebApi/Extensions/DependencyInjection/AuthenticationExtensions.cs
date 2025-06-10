@@ -1,5 +1,4 @@
 ﻿using Energinet.DataHub.Core.App.Common.Extensions.Options;
-using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.WebApi.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
