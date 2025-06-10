@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 
 [ApiController]
-[Authorize(AuthenticationSchemes = $"{AuthenticationSchemas.Default},{AuthenticationSchemas.B2C}")]
+[Authorize(AuthenticationSchemes = $"{AuthenticationSchemes.Default},{AuthenticationSchemes.B2C}")]
 [ApiVersion(4.0)]
 [ApiVersion(5.0)]
 [Route("v{v:apiVersion}/measurements")]
