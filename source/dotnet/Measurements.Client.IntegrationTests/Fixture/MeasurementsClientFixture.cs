@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using Energinet.DataHub.Core.App.Common.Extensions.Options;
+using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
@@ -72,8 +73,8 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
                     [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
-                    [$"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
-                    [$"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.Issuer)}"] = Issuer,
+                    [$"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
+                    [$"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.Issuer)}"] = Issuer,
                 });
             })
             .UseStartup<Startup>()
