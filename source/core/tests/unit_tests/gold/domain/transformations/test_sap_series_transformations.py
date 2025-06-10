@@ -1,7 +1,7 @@
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-import core.gold.domain.transformations.series_sap_transformations as sut
+import core.gold.domain.transformations.sap_series_transformations as sut
 from core.gold.domain.schemas.gold_measurements_sap_series import gold_measurements_sap_series_schema
 from tests.helpers.builders.silver_measurements_builder import SilverMeasurementsBuilder
 
