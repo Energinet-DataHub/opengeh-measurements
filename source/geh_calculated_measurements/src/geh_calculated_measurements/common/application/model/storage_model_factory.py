@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from uuid import UUID
 
-from geh_common.domain.types import MeteringPointResolution, MeteringPointType, OrchestrationType
+from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
@@ -33,7 +33,7 @@ def create(
 
     df = _explode_to_hour_values(df, time_zone)
 
-    df = _create_transaction_time_column(df, MeteringPointResolution.HOUR)
+    df = _create_transaction_time_column(df)
 
     df = _add_storage_columns(
         df, orchestration_instance_id, orchestration_type, metering_point_type, transaction_creation_datetime
@@ -91,15 +91,7 @@ def _add_storage_columns(
     return CalculatedMeasurementsInternal(df)
 
 
-def _resolution_to_interval(resolution: Column) -> Column:
-    return (
-        F.when(resolution == F.lit(MeteringPointResolution.HOUR.value), F.make_interval(hours=F.lit(1)))
-        .when(resolution == F.lit(MeteringPointResolution.MONTH.value), F.make_interval(months=F.lit(1)))
-        .when(resolution == F.lit(MeteringPointResolution.QUARTER.value), F.make_interval(mins=F.lit(3)))
-    )
-
-
-def _create_transaction_time_column(df, resolution: MeteringPointResolution) -> DataFrame:
+def _create_transaction_time_column(df) -> DataFrame:
     """Create transaction start and end time columns based on the observation time and resolution.
 
     This must be done after the transaction id column is created, as it uses the transaction id to group the data.
@@ -111,16 +103,12 @@ def _create_transaction_time_column(df, resolution: MeteringPointResolution) -> 
     Returns:
         DataFrame: The DataFrame with the transaction start and end time columns added.
     """
-    if ContractColumnNames.resolution in df.columns:
-        resolution_col = F.col(ContractColumnNames.resolution)
-    else:
-        resolution_col = F.lit(resolution.value)
     w = Window.partitionBy(ContractColumnNames.transaction_id)
     df_with_time_columns = df.withColumns(
         {
             ContractColumnNames.transaction_start_time: F.min(F.col(ContractColumnNames.observation_time)).over(w),
             ContractColumnNames.transaction_end_time: F.max(F.col(ContractColumnNames.observation_time)).over(w)
-            + _resolution_to_interval(resolution_col),
+            + F.make_interval(hours=F.lit(1)),
         }
     )
     return df_with_time_columns
