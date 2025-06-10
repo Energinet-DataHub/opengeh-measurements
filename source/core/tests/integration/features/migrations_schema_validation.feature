@@ -33,3 +33,4 @@ Feature: Schema validation for migrated tables after migration jobs
     When attempting to insert the row into the silver measurements table
     Then the insert should raise an exception
     And the number of rows in the silver measurements table should remain unchanged
+ 
