@@ -6,28 +6,21 @@
     </PropertyGroup>
 
     <Target Name="GenerateOpenApiMergeConfig" BeforeTargets="PostBuildEvent">
-        <WriteLinesToFile File="$(OutputPath)openapi-merge.json" Overwrite="true" Lines="
-        {
-          &quot;inputs&quot;: [
-            {&quot;inputFile&quot;: &quot;swagger_latest.json&quot;},
-            {&quot;inputFile&quot;: &quot;swagger_deprecated.json&quot;}
-          ],
-          &quot;output&quot;: &quot;swagger.json&quot;
-        } "/>
+        <WriteLinesToFile File="$(OutputPath)openapi-merge.json" Overwrite="true" Lines="&#xA;        {&#xA;          &quot;inputs&quot;: [&#xA;            {&quot;inputFile&quot;: &quot;swagger_latest.json&quot;},&#xA;            {&quot;inputFile&quot;: &quot;swagger_deprecated.json&quot;}&#xA;          ],&#xA;          &quot;output&quot;: &quot;swagger.json&quot;&#xA;        } " />
     </Target>
     
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_deprecated.json $(OutputPath)$(AssemblyName).dll v4"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_latest.json $(OutputPath)$(AssemblyName).dll v5"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_deprecated.json $(OutputPath)$(AssemblyName).dll v4" EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor" />
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_latest.json $(OutputPath)$(AssemblyName).dll v5" EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor" />
         <Exec Command="npm install -g openapi-merge-cli" />
         <Exec Command="openapi-merge-cli --config $(OutputPath)openapi-merge.json" />
     </Target>
 
     <ItemGroup>
-      <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.2.0" />
+      <PackageReference Include="Azure.Identity" Version="1.14.0" />
+      <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.6.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     </ItemGroup>
 
