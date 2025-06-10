@@ -29,6 +29,8 @@ public class Startup(IConfiguration configuration)
         services.AddSwagger();
 
         // => Authentication/authorization
+        // TODO: When support for B2C authentication is removed, the 'AddAuthenticationForWebApp' must be replaced
+        // with 'AddSubsystemAuthenticationForWebApp' from Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection
         services
             .AddAuthenticationForWebApp(configuration)
             .AddAuthorizationForWebApp();

@@ -1,4 +1,7 @@
-﻿using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+﻿using System.Net.Http.Headers;
+using Azure.Core;
+using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +27,6 @@ public class ClientExtensionsTests
         AddInMemoryConfiguration(services, configurations);
 
         // Act
-        services.AddTokenCredentialProvider();
         services.AddMeasurementsClient();
 
         // Assert
@@ -32,29 +34,6 @@ public class ClientExtensionsTests
             .BuildServiceProvider()
             .GetRequiredService<IMeasurementsClient>();
         Assert.IsType<MeasurementsClient>(actual);
-    }
-
-    [Fact]
-    public void AddMeasurementsClient_WhenTokenCredentialIsNotRegisteredAndOptionsAreConfigured_ThenExceptionIsThrownWhenRequestingClient()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-        var configurations = new Dictionary<string, string?>
-        {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
-        };
-        AddInMemoryConfiguration(services, configurations);
-
-        // Act
-        services.AddMeasurementsClient();
-        var serviceProvider = services.BuildServiceProvider();
-        var exception = Assert.Throws<InvalidOperationException>(() => serviceProvider.GetRequiredService<IMeasurementsClient>());
-
-        // Assert
-        Assert.Contains(
-            "No service for type 'Energinet.DataHub.Core.App.Common.Identity.TokenCredentialProvider' has been registered.",
-            exception.Message);
     }
 
     [Fact]
@@ -80,6 +59,28 @@ public class ClientExtensionsTests
             exception.Message);
     }
 
+    [Fact]
+    public void AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var configurations = new Dictionary<string, string?>
+        {
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
+        };
+        AddInMemoryConfiguration(services, configurations);
+
+        // Act
+        services.AddMeasurementsClient(new AuthorizationHeaderProvider());
+
+        // Assert
+        var actual = services
+            .BuildServiceProvider()
+            .GetRequiredService<IMeasurementsClient>();
+        Assert.IsType<MeasurementsClient>(actual);
+    }
+
     private static void AddInMemoryConfiguration(IServiceCollection services, Dictionary<string, string?> configurations)
     {
         var configuration = new ConfigurationBuilder()
@@ -87,5 +88,13 @@ public class ClientExtensionsTests
             .Build();
 
         services.AddScoped<IConfiguration>(_ => configuration);
+    }
+
+    private class AuthorizationHeaderProvider : IAuthorizationHeaderProvider
+    {
+        public AuthenticationHeaderValue CreateAuthorizationHeader(string scope)
+        {
+            return new AuthenticationHeaderValue("Bearer", "test-token");
+        }
     }
 }

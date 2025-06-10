@@ -30,6 +30,7 @@ public static class ClientExtensions
         }
         else
         {
+            services.AddTokenCredentialProvider();
             services.AddAuthorizationHeaderProvider();
         }
 
