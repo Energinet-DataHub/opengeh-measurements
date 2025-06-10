@@ -1,5 +1,6 @@
 import core.gold.application.streams.calculated_measurements_stream as calculated_measurements_stream
 import core.gold.application.streams.gold_measurements_stream as gold_measurements_stream
+import core.gold.application.streams.migrated_sap_series_stream as migrated_sap_series_stream
 import core.gold.application.streams.migrated_transactions_stream as migrated_transactions_stream
 
 
@@ -13,3 +14,7 @@ def stream_calculated_to_gold_measurements() -> None:
 
 def stream_migrated_transactions_to_gold_measurements() -> None:
     migrated_transactions_stream.stream_migrated_transactions_to_gold()
+
+
+def stream_migrated_sap_series_to_gold_measurements() -> None:
+    migrated_sap_series_stream.stream_migrated_transactions_to_sap_series_gold()
