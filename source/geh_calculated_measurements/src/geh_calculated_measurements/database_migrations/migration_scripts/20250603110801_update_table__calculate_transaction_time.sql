@@ -4,7 +4,7 @@ SELECT
     metering_point_id,
     transaction_id,
     MIN(observation_time) OVER (PARTITION BY transaction_id) AS transaction_start_time,
-    MAX(observation_time) OVER (PARTITION BY transaction_id) + INTERVAL '1' HOUR  AS transaction_end_time
+    MAX(observation_time) OVER (PARTITION BY transaction_id) + INTERVAL '1' HOUR AS transaction_end_time
 FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements;
 GO
 

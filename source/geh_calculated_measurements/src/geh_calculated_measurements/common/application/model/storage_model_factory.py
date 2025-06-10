@@ -95,7 +95,7 @@ def _resolution_to_interval(resolution: Column) -> Column:
     return (
         F.when(resolution == F.lit(MeteringPointResolution.HOUR.value), F.make_interval(hours=F.lit(1)))
         .when(resolution == F.lit(MeteringPointResolution.MONTH.value), F.make_interval(months=F.lit(1)))
-        .when(resolution == F.lit(MeteringPointResolution.QUARTER.value), F.make_interval(months=F.lit(3)))
+        .when(resolution == F.lit(MeteringPointResolution.QUARTER.value), F.make_interval(mins=F.lit(3)))
     )
 
 
