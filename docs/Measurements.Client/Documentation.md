@@ -42,13 +42,10 @@ To use the `Measurements.Client` in your application, you need to register it in
    app.Run();
    ```
 
-   Notice, there is a `MeasurementClientOptions` class that can be given. This is to enable e.g., B2C authentication:
+   Notice, the `AddMeasurementsClient` takes an optional `AuthorizationHeaderProvider`, which must implement the `IAuthorizationHeaderProvider` interface from `Energinet.DataHub.Core.App.Common.Identity`. This is to enable creating a custom authentication header for the temporary B2C authentication model supporting ElOverblik and Energy Track & Trace:
 
    ```csharp
-      services.AddMeasurementsClient(options =>
-   {
-      options.AuthorizationHeaderProvider = new B2CAuthorizationHeaderProvider();
-   });
+      services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
    ```
 
 3. **Inject and Use the Client**

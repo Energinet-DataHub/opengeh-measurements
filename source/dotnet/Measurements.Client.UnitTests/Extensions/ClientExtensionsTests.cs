@@ -70,7 +70,7 @@ public class ClientExtensionsTests
         AddInMemoryConfiguration(services, configurations);
 
         // Act
-        services.AddMeasurementsClient(new AuthorizationHeaderProvider());
+        services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
 
         // Assert
         var actual = services
@@ -88,7 +88,7 @@ public class ClientExtensionsTests
         services.AddScoped<IConfiguration>(_ => configuration);
     }
 
-    private class AuthorizationHeaderProvider : IAuthorizationHeaderProvider
+    private class B2CAuthorizationHeaderProvider : IAuthorizationHeaderProvider
     {
         public AuthenticationHeaderValue CreateAuthorizationHeader(string scope)
         {
