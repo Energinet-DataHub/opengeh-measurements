@@ -22,7 +22,7 @@ scenarios("../features/stream_migrated_bronze_measurements_to_gold_measurements.
     target_fixture="expected_transaction_id",
 )
 def _(spark: SparkSession, mock_checkpoint_path, migrations_executed, mocker: MockerFixture):
-    mocker.patch(f"{mit.__name__}.spark_session.initialize_spark", return_value=spark)
+    mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
 
     transaction_id = identifier_helper.generate_random_string()
     bronze_migrated_transactions = MigratedTransactionsBuilder(spark).add_row(transaction_id=transaction_id)
