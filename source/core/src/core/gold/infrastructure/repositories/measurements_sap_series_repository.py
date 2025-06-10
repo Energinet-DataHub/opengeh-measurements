@@ -9,7 +9,7 @@ from core.settings.gold_settings import GoldSettings
 from core.utility import delta_table_helper
 
 
-class GoldMeasurementsSeriesSAPRepository:
+class GoldMeasurementsSAPSeriesRepository:
     def __init__(self) -> None:
         database_name = GoldSettings().gold_database_name
         self.table = f"{database_name}.{GoldTableNames.gold_measurements_sap_series}"
