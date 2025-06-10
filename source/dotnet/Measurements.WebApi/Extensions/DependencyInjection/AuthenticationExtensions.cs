@@ -1,4 +1,4 @@
-﻿using Energinet.DataHub.Core.App.Common.Extensions.Options;
+﻿using Energinet.DataHub.Core.App.WebApp.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.WebApi.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,17 +9,11 @@ public static class AuthenticationExtensions
 {
     public static IServiceCollection AddAuthenticationForWebApp(this IServiceCollection services, IConfiguration configuration)
     {
+        var isGeneratorToolBuild = Environment.GetEnvironmentVariable("GENERATOR_TOOL_BUILD") == "Yes";
+        if (isGeneratorToolBuild) return services;
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(AuthenticationSchemes.Default, options =>
-            {
-                var authenticationOptions = configuration
-                    .GetRequiredSection(SubsystemAuthenticationOptions.SectionName)
-                    .Get<SubsystemAuthenticationOptions>();
-
-                options.Audience = authenticationOptions?.ApplicationIdUri;
-                options.Authority = authenticationOptions?.Issuer;
-            })
             .AddJwtBearer(AuthenticationSchemes.B2C, options =>
             {
                 var b2CAuthenticationOptions = configuration
@@ -30,6 +24,8 @@ public static class AuthenticationExtensions
                 options.Audience = b2CAuthenticationOptions?.ResourceId;
                 options.Authority = authority;
             });
+
+        services.AddSubsystemAuthenticationForWebApp(configuration);
 
         return services;
     }

@@ -19,9 +19,9 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
         <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_deprecated.json $(OutputPath)$(AssemblyName).dll v4"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor;GENERATOR_TOOL_BUILD=Yes"/>
         <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_latest.json $(OutputPath)$(AssemblyName).dll v5"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor;GENERATOR_TOOL_BUILD=Yes"/>
         <Exec Command="npm install -g openapi-merge-cli" />
         <Exec Command="openapi-merge-cli --config $(OutputPath)openapi-merge.json" />
     </Target>
