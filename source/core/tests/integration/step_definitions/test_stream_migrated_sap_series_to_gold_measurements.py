@@ -11,7 +11,7 @@ from core.settings.bronze_settings import BronzeSettings
 from core.settings.gold_settings import GoldSettings
 from tests.helpers.builders.migrated_transactions_builder import MigratedTransactionsBuilder
 
-scenarios("../features/stream_migrated_bronze_measurements_to_gold_measurements.feature")
+scenarios("../features/stream_migrated_sap_series_to_gold_measurements.feature")
 
 
 # Given steps
