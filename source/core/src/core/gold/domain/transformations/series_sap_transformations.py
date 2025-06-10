@@ -30,6 +30,5 @@ def transform(silver_measurements: DataFrame) -> DataFrame:
         F.col(SilverMeasurementsColumnNames.end_datetime).alias(GoldMeasurementsSeriesSAPColumnNames.end_time),
         F.col(SilverMeasurementsColumnNames.unit).alias(GoldMeasurementsSeriesSAPColumnNames.unit),
         F.col(SilverMeasurementsColumnNames.resolution).alias(GoldMeasurementsSeriesSAPColumnNames.resolution),
-        F.col(SilverMeasurementsColumnNames.is_cancelled).alias(GoldMeasurementsSeriesSAPColumnNames.is_cancelled),
         F.current_timestamp().alias(GoldMeasurementsSeriesSAPColumnNames.created),
     )
