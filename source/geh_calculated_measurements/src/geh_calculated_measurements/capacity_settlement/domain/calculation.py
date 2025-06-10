@@ -93,6 +93,7 @@ def execute(
 def _transform_quarterly_time_series_to_hourly(
     time_series_points: DataFrame,
 ) -> DataFrame:
+    time_series_points = time_series_points.where(F.col(ContractColumnNames.quantity).isNotNull())
     # Reduces observation time to hour value
     time_series_points = time_series_points.withColumn(
         ContractColumnNames.observation_time, F.date_trunc("hour", ContractColumnNames.observation_time)
