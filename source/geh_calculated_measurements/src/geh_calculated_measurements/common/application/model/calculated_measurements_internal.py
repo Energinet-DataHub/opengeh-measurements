@@ -38,7 +38,7 @@ class CalculatedMeasurementsInternal(DataFrameWrapper):
             # A DateTime value indicating the first observation time for a transaction.
             T.StructField(ContractColumnNames.transaction_start_time, T.TimestampType(), not nullable),
             #
-            # A DateTime value indicating the last observation time for a transaction.
+            # A DateTime value indicating the end of the transaction (which equals the last observation time plus the resolution).
             T.StructField(ContractColumnNames.transaction_end_time, T.TimestampType(), not nullable),
             #
             # Metering point ID
