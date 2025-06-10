@@ -8,9 +8,9 @@ Feature: Schema validation for migrated tables after migration jobs
     When accessing the gold measurements table
     Then the table schema should match the expected gold measurements schema
 
-  Scenario: Gold measurements series SAP table is created with correct schema
-    When accessing the gold measurements series SAP table
-    Then the table schema should match the expected gold measurements series SAP schema    
+  Scenario: Gold measurements SAP series table is created with correct schema
+    When accessing the gold measurements SAP series table
+    Then the table schema should match the expected gold measurements SAP series schema    
 
   Scenario: Bronze migrated transactions table is created with correct schema
     When accessing the bronze migrated transactions table
@@ -33,3 +33,4 @@ Feature: Schema validation for migrated tables after migration jobs
     When attempting to insert the row into the silver measurements table
     Then the insert should raise an exception
     And the number of rows in the silver measurements table should remain unchanged
+ 
