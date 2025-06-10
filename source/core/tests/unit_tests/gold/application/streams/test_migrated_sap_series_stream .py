@@ -3,7 +3,7 @@ from unittest import mock
 from pytest_mock import MockerFixture
 
 from core.gold.application.streams import migrated_sap_series_stream as sut
-from core.gold.infrastructure.repositories.measurements_series_sap_repository import GoldMeasurementsSeriesSAPRepository
+from core.gold.infrastructure.repositories.measurements_sap_series_repository import GoldMeasurementsSAPSeriesRepository
 
 
 def test__migrated_transactions__should_call_expected(
@@ -52,7 +52,7 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
         f"{sut.__name__}.silver_migrations_transformations.transform",
         return_value=mock_transformed_to_silver_transactions,
     )
-    series_sap_repo_mock = mock.Mock(spec=GoldMeasurementsSeriesSAPRepository)
+    series_sap_repo_mock = mock.Mock(spec=GoldMeasurementsSAPSeriesRepository)
     mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
 
     mocker.patch.object(sut, "GoldMeasurementsSeriesSAPRepository", return_value=series_sap_repo_mock)

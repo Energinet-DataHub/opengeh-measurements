@@ -4,7 +4,6 @@ from pytest_mock import MockerFixture
 
 from core.gold.application.streams import migrated_transactions_stream as sut
 from core.gold.domain.constants.streaming.query_names import QueryNames
-from core.gold.infrastructure.repositories.measurements_series_sap_repository import GoldMeasurementsSeriesSAPRepository
 
 
 def test__migrated_transactions__should_call_expected(
@@ -45,7 +44,6 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     mock_filtered = mock.Mock()
     mock_transformed_to_silver_transactions = mock.Mock()
     mock_transformed_to_gold_transactions = mock.Mock()
-    transform_series_sap_mock = mock.Mock()
     silver_mock_filter = mocker.patch(
         f"{sut.__name__}.silver_migrations_filters.filter_away_rows_older_than_2017",
         return_value=mock_filtered,
@@ -58,12 +56,8 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
         f"{sut.__name__}.gold_migrations_transformations.transform_silver_to_gold",
         return_value=mock_transformed_to_gold_transactions,
     )
-    series_sap_repo_mock = mock.Mock(spec=GoldMeasurementsSeriesSAPRepository)
     mock_append_if_not_exists = mocker.patch(f"{sut.__name__}.GoldMeasurementsRepository.append_if_not_exists")
     mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
-
-    mocker.patch.object(sut, "GoldMeasurementsSeriesSAPRepository", return_value=series_sap_repo_mock)
-    mocker.patch.object(sut.series_sap_transformations, "transform", transform_series_sap_mock)
 
     # Act
     sut._batch_operation(mock_migrated_transactions, batch_id)

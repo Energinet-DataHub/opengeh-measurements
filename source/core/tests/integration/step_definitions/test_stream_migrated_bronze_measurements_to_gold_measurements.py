@@ -201,6 +201,6 @@ def _(spark: SparkSession, expected_transaction_id, number_of_measurements_rows)
 @then(parsers.parse("the transaction is available in the gold SAP Series table"))
 def _(spark: SparkSession, expected_transaction_id):
     sap_series = spark.table(
-        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_series_sap}"
+        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}"
     ).where(f"transaction_id = '{expected_transaction_id}'")
     assert sap_series.count() == 1, "Expected exactly one row in the gold SAP Series table for the transaction"

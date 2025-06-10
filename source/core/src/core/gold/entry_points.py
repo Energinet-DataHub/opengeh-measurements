@@ -16,5 +16,5 @@ def stream_migrated_transactions_to_gold_measurements() -> None:
     migrated_transactions_stream.stream_migrated_transactions_to_gold()
 
 
-def stream_migrated_sap_series_to_gold_measurements() -> None:
+def stream_migrated_to_gold_sap_series() -> None:
     migrated_sap_series_stream.stream_migrated_transactions_to_sap_series_gold()
