@@ -1,23 +1,23 @@
 from pyspark.sql.types import StringType, StructField, StructType, TimestampType
 
-from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
-    GoldMeasurementsSeriesSAPColumnNames,
+from core.gold.domain.constants.column_names.gold_measurements_sap_series_column_names import (
+    GoldMeasurementsSAPSeriesColumnNames,
 )
 
-gold_measurements_series_sap_schema = StructType(
+gold_measurements_sap_series_schema = StructType(
     [
-        StructField(GoldMeasurementsSeriesSAPColumnNames.orchestration_type, StringType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.metering_point_id, StringType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.transaction_id, StringType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.orchestration_type, StringType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.metering_point_id, StringType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.transaction_id, StringType(), True),
         StructField(
-            GoldMeasurementsSeriesSAPColumnNames.transaction_creation_datetime,
+            GoldMeasurementsSAPSeriesColumnNames.transaction_creation_datetime,
             TimestampType(),
             True,
         ),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.start_time, TimestampType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.end_time, TimestampType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.unit, StringType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.resolution, StringType(), True),
-        StructField(GoldMeasurementsSeriesSAPColumnNames.created, TimestampType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.start_time, TimestampType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.end_time, TimestampType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.unit, StringType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.resolution, StringType(), True),
+        StructField(GoldMeasurementsSAPSeriesColumnNames.created, TimestampType(), True),
     ]
 )

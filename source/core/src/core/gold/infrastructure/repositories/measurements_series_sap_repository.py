@@ -1,8 +1,8 @@
 from pyspark.sql import DataFrame
 
 import core.silver.infrastructure.config.spark_session as spark_session
-from core.gold.domain.constants.column_names.gold_measurements_series_sap_column_names import (
-    GoldMeasurementsSeriesSAPColumnNames,
+from core.gold.domain.constants.column_names.gold_measurements_sap_series_column_names import (
+    GoldMeasurementsSAPSeriesColumnNames,
 )
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.gold_settings import GoldSettings
@@ -12,7 +12,7 @@ from core.utility import delta_table_helper
 class GoldMeasurementsSeriesSAPRepository:
     def __init__(self) -> None:
         database_name = GoldSettings().gold_database_name
-        self.table = f"{database_name}.{GoldTableNames.gold_measurements_series_sap}"
+        self.table = f"{database_name}.{GoldTableNames.gold_measurements_sap_series}"
         self.spark = spark_session.initialize_spark()
 
     def append_if_not_exists(self, silver_measurements: DataFrame) -> None:
@@ -31,10 +31,10 @@ class GoldMeasurementsSeriesSAPRepository:
 
     def _merge_columns(self) -> list[str]:
         return [
-            GoldMeasurementsSeriesSAPColumnNames.orchestration_type,
-            GoldMeasurementsSeriesSAPColumnNames.metering_point_id,
-            GoldMeasurementsSeriesSAPColumnNames.transaction_id,
-            GoldMeasurementsSeriesSAPColumnNames.transaction_creation_datetime,
-            GoldMeasurementsSeriesSAPColumnNames.start_time,
-            GoldMeasurementsSeriesSAPColumnNames.resolution,
+            GoldMeasurementsSAPSeriesColumnNames.orchestration_type,
+            GoldMeasurementsSAPSeriesColumnNames.metering_point_id,
+            GoldMeasurementsSAPSeriesColumnNames.transaction_id,
+            GoldMeasurementsSAPSeriesColumnNames.transaction_creation_datetime,
+            GoldMeasurementsSAPSeriesColumnNames.start_time,
+            GoldMeasurementsSAPSeriesColumnNames.resolution,
         ]

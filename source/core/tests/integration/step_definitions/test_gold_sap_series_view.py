@@ -1,7 +1,7 @@
-from geh_common.data_products.measurements_core.measurements_gold.sap_delta_v1 import schema as sap_series_v1_schema
 from geh_common.testing.dataframes import assert_schemas
 from pytest_bdd import scenarios, then, when
 
+from core.contracts.sap.sap_series_v1 import schema as sap_series_v1_schema
 from core.gold.infrastructure.config import GoldViewNames
 from core.settings.gold_settings import GoldSettings
 
