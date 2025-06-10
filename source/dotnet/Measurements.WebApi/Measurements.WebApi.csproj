@@ -5,10 +5,25 @@
         <RootNamespace>Energinet.DataHub.Measurements.WebApi</RootNamespace>
     </PropertyGroup>
 
+    <Target Name="GenerateOpenApiMergeConfig" BeforeTargets="PostBuildEvent">
+        <WriteLinesToFile File="$(OutputPath)openapi-merge.json" Overwrite="true" Lines="
+        {
+          &quot;inputs&quot;: [
+            {&quot;inputFile&quot;: &quot;swagger_latest.json&quot;},
+            {&quot;inputFile&quot;: &quot;swagger_deprecated.json&quot;}
+          ],
+          &quot;output&quot;: &quot;swagger.json&quot;
+        } "/>
+    </Target>
+    
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json $(OutputPath)$(AssemblyName).dll v5"
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_deprecated.json $(OutputPath)$(AssemblyName).dll v4"
               EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+        <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_latest.json $(OutputPath)$(AssemblyName).dll v5"
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+        <Exec Command="npm install -g openapi-merge-cli" />
+        <Exec Command="openapi-merge-cli --config $(OutputPath)openapi-merge.json" />
     </Target>
 
     <ItemGroup>
