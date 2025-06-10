@@ -36,7 +36,13 @@ public class GetAggregatedByPeriodQueryTests
 
     private static string CreateExpectedQuery(DatabricksSchemaOptions databricksSchemaOptions, Aggregation aggregation)
     {
-        return $"select " +
+        return $"with most_recent as (" +
+               $"select row_number() over (partition by {MeasurementsTableConstants.MeteringPointIdColumnName}, {MeasurementsTableConstants.ObservationTimeColumnName} order by {MeasurementsTableConstants.TransactionCreationDatetimeColumnName} desc) as row, " +
+               $"{MeasurementsTableConstants.MeteringPointIdColumnName}, {MeasurementsTableConstants.ResolutionColumnName}, {MeasurementsTableConstants.ObservationTimeColumnName}, {MeasurementsTableConstants.QuantityColumnName}, {MeasurementsTableConstants.QualityColumnName}, {MeasurementsTableConstants.IsCancelledColumnName} " +
+               $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsTableConstants.Name} " +
+               $"{CreateWhereStatement()} " +
+               $") " +
+               $"select " +
                $"{MeasurementsTableConstants.MeteringPointIdColumnName}, " +
                $"{MeasurementsTableConstants.ResolutionColumnName}, " +
                $"min({MeasurementsTableConstants.ObservationTimeColumnName}) as {AggregatedQueryConstants.MinObservationTime}, " +
@@ -44,9 +50,10 @@ public class GetAggregatedByPeriodQueryTests
                $"sum({MeasurementsTableConstants.QuantityColumnName}) as {AggregatedQueryConstants.AggregatedQuantity}, " +
                $"array_agg(distinct({MeasurementsTableConstants.QualityColumnName})) as {AggregatedQueryConstants.Qualities}, " +
                $"{CreateAggregationGroupKeyStatement(aggregation)} as {AggregatedQueryConstants.AggregationGroupKey} " +
-               $"from {databricksSchemaOptions.CatalogName}.{databricksSchemaOptions.SchemaName}.{MeasurementsTableConstants.Name} " +
-               $"where {CreateWhereStatement()} " +
-               $"group by {CreateGroupKeyStatement(aggregation)} " +
+               $"from most_recent " +
+               $"where row = 1 " +
+               $"and not {MeasurementsTableConstants.IsCancelledColumnName} " +
+               $"group by {CreateGroupByStatement(aggregation)} " +
                $"order by {MeasurementsTableConstants.MeteringPointIdColumnName}, {AggregatedQueryConstants.MinObservationTime}";
     }
 
@@ -64,7 +71,7 @@ public class GetAggregatedByPeriodQueryTests
         };
     }
 
-    private static string CreateGroupKeyStatement(Aggregation aggregation)
+    private static string CreateGroupByStatement(Aggregation aggregation)
     {
         var windowTimeStatement = aggregation switch
         {
