@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from core.gold.domain.schemas.gold_measurements_sap_series import sap_series_schema
+from core.gold.domain.schemas.gold_measurements_sap_series import gold_measurements_sap_series_schema
 
 
 class SAPSeriesBuilder:
@@ -36,4 +36,4 @@ class SAPSeriesBuilder:
         return self
 
     def build(self):
-        return self.spark.createDataFrame(self.data, schema=sap_series_schema)
+        return self.spark.createDataFrame(self.data, schema=gold_measurements_sap_series_schema)
