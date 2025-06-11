@@ -56,7 +56,7 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     mocker.patch(f"{sut.__name__}.spark_session.initialize_spark", return_value=spark)
 
     mocker.patch.object(sut, "GoldMeasurementsSAPSeriesRepository", return_value=series_sap_repo_mock)
-    mocker.patch.object(sut.series_sap_transformations, "transform", transform_series_sap_mock)
+    mocker.patch.object(sut.sap_series_transformations, "transform", transform_series_sap_mock)
 
     # Act
     sut._batch_operation(mock_migrated_transactions, batch_id)
