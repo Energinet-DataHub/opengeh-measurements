@@ -39,12 +39,11 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             Instant.FromDateTimeOffset(toDateTimeOffset));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetCurrentByPeriodAsync(query);
+        var actual = await measurementsClient.GetCurrentByPeriodAsync(query);
 
         // Assert
-        // Assert
-        Assert.Equal(24, measurements.Count);
-        Assert.All(measurements, point =>
+        Assert.Equal(24, actual.Count);
+        Assert.All(actual, point =>
         {
             Assert.Equal(Quality.Measured, point.Quality);
             Assert.Equal(Resolution.Hourly, point.Resolution);
