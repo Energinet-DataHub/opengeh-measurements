@@ -78,4 +78,4 @@ To use the `Measurements.Client` in your application, you need to register it in
    Configure environment variables corresponding to the options contained in `MeasurementHttpClientOptions` ([MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs))
 
    - For clients authenticating as a service principal using Azure B2C:
-   Configure environment varibles corresponding to the options contained in `B2CAuthenticationOptions` ([B2CAuthenticationOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Application/Extensions/Options/B2CAuthenticationOptions.cs))
+   Configure environment variables corresponding to the options contained in `B2CAuthenticationOptions` ([B2CAuthenticationOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Application/Extensions/Options/B2CAuthenticationOptions.cs))
