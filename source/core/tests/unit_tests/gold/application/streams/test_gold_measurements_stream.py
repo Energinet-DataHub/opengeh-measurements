@@ -5,7 +5,7 @@ from pytest_mock import MockFixture
 import core.gold.application.streams.gold_measurements_stream as sut
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
-from core.gold.infrastructure.repositories.measurements_series_sap_repository import GoldMeasurementsSeriesSAPRepository
+from core.gold.infrastructure.repositories.measurements_sap_series_repository import GoldMeasurementsSAPSeriesRepository
 from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
 
 
@@ -26,7 +26,7 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     receipts_repo_mock = Mock(spec=ReceiptsRepository)
-    series_sap_repo_mock = Mock(spec=GoldMeasurementsSeriesSAPRepository)
+    series_sap_repo_mock = Mock(spec=GoldMeasurementsSAPSeriesRepository)
     transform_mock = Mock()
     transform_receipts_mock = Mock()
     transform_series_sap_mock = Mock()
