@@ -1,11 +1,12 @@
 -- Calculate transaction start and end times for each transaction
 CREATE TEMPORARY VIEW calculated_measurements_tmp AS
 SELECT 
-    metering_point_id,
+    metering_point_id, 
     transaction_id,
-    MIN(observation_time) OVER (PARTITION BY transaction_id) AS transaction_start_time,
-    MAX(observation_time) OVER (PARTITION BY transaction_id) + INTERVAL '1' HOUR AS transaction_end_time
-FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements;
+    MIN(observation_time) AS transaction_start_time,
+    MAX(observation_time) + INTERVAL '1' HOUR AS transaction_end_time
+FROM {catalog_name}.{calculated_measurements_internal_database}.calculated_measurements
+GROUP BY metering_point_id, transaction_id
 GO
 
 -- Update the calculated_measurements table with the transaction start and end times
