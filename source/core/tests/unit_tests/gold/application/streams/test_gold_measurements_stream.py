@@ -26,16 +26,16 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     # Arrange
     gold_repo_mock = Mock(spec=GoldMeasurementsRepository)
     receipts_repo_mock = Mock(spec=ReceiptsRepository)
-    series_sap_repo_mock = Mock(spec=GoldMeasurementsSAPSeriesRepository)
+    sap_series_repo_mock = Mock(spec=GoldMeasurementsSAPSeriesRepository)
     transform_mock = Mock()
     transform_receipts_mock = Mock()
-    transform_series_sap_mock = Mock()
+    transform_sap_series_mock = Mock()
     mocker.patch.object(sut, "GoldMeasurementsRepository", return_value=gold_repo_mock)
     mocker.patch.object(sut.transformations, "transform_silver_to_gold", transform_mock)
     mocker.patch.object(sut, "ReceiptsRepository", return_value=receipts_repo_mock)
     mocker.patch.object(sut.receipt_transformations, "transform", transform_receipts_mock)
-    mocker.patch.object(sut, "GoldMeasurementsSAPSeriesRepository", return_value=series_sap_repo_mock)
-    mocker.patch.object(sut.series_sap_transformations, "transform", transform_series_sap_mock)
+    mocker.patch.object(sut, "GoldMeasurementsSAPSeriesRepository", return_value=sap_series_repo_mock)
+    mocker.patch.object(sut.sap_series_transformations, "transform", transform_sap_series_mock)
     silver_measurements_mock = Mock()
 
     # Act
@@ -48,5 +48,5 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     )
     transform_receipts_mock.assert_called_once_with(ANY)
     receipts_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
-    transform_series_sap_mock.assert_called_once_with(ANY)
-    series_sap_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
+    transform_sap_series_mock.assert_called_once_with(ANY)
+    sap_series_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
