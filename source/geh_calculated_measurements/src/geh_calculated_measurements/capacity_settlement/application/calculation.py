@@ -16,7 +16,7 @@ from geh_calculated_measurements.capacity_settlement.infrastructure import (
     CapacitySettlementRepository,
     ElectricityMarketRepository,
 )
-from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
+from geh_calculated_measurements.common.application.model import storage_model_factory
 from geh_calculated_measurements.common.domain import (
     ContractColumnNames,
 )
@@ -51,7 +51,7 @@ def execute_application(spark: SparkSession, args: CapacitySettlementArgs) -> No
     )
 
     # Write the calculated measurements
-    calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
+    calculated_measurements_hourly = storage_model_factory.create(
         calculation_output.calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.CAPACITY_SETTLEMENT,
