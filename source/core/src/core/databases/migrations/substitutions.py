@@ -32,4 +32,6 @@ def substitutions() -> dict[str, str]:
         "{core_internal_database}": core_internal_settings.core_internal_database_name,
         "{process_manager_receipts}": CoreInternalTableNames.process_manager_receipts,
         "{gold_sap_series_v1}": GoldViewNames.sap_series_v1,
+        "{gold_sap_series_migrated_v1}": GoldViewNames.sap_series_migrated_v1,
+        "{gold_current_sap_migrated_v1}": GoldViewNames.current_sap_migrated_v1,
     }
