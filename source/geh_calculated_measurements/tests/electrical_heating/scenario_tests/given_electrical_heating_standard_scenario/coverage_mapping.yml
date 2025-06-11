@@ -2,8 +2,6 @@ notes: |
   ## PURPOSE
   Standard simple scenario demonstrating that energy is added to electrical heating MP when limit is not exceeded.
   Includes MP that crosses summer and wintertime transition.
-<<<<<<< HEAD
-
   ## DESIGN CONSIDERATIONS
   CASE 0
                           |2024
@@ -181,5 +179,3 @@ cases_tested:
   "Settlement Group Calculation Type":
     "UP TO END of period calculation"
     "END OF PERIOD calculation"
-=======
->>>>>>> 82cdb07bf8edf7ac2491e6e889a5727a0d35f594

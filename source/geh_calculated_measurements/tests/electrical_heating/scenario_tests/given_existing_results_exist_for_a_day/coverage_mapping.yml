@@ -154,7 +154,6 @@ notes: |
   No new D14 data should be generated...
 
 cases_tested:
-<<<<<<< HEAD
   "Electrical Heating Tests":
     "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
     "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
@@ -165,31 +164,9 @@ cases_tested:
   "Period length and base period limit":
     "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
     "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
-=======
-  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
-  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
-  "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
-
-  "Period length and base period limit":
-    "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
-    "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
-    "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
-    "Settlement Month IS NOT January (NSG6 only)"
->>>>>>> 82cdb07bf8edf7ac2491e6e889a5727a0d35f594
 
   "Results Filtering":
     "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day"
 
   "Net Settlement Groups":
     "Electrical heating without net settlement group"
-<<<<<<< HEAD
-=======
-    "Electrical heating with net settlement group 2 - WITH net consumption MP"
-    "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
-    "Electrical heating with net settlement group 2 - Parent MP GAINS net consumption MP"
-    "Electrical heating with net settlement group 6"
-
-  "Settlement Group Calculation Type":
-    "UP TO END of period calculation"
-    "END OF PERIOD calculation"
->>>>>>> 82cdb07bf8edf7ac2491e6e889a5727a0d35f594
