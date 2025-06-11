@@ -94,8 +94,13 @@ def _add_storage_columns(
 def _create_transaction_time_column(df) -> DataFrame:
     """Create transaction start and end time columns based on the observation time and resolution.
 
-    This must be done after the transaction id column is created, as it uses the transaction id to group the data.
-    The start time is the minimum observation time for each transaction, and the end time is the maximum observation time plus the resolution interval.
+    This must be done after the `transaction_id` column is created, as it uses the
+    `transaction_id` column to group the data.
+
+    This code groups the DataFrame by `transaction_id` and calculates the start and
+    end time of each transaction based on the `observation_time` column.
+    The `transaction_start_time` is the earliest observation time in each group,
+    and the `transaction_end_time` is the latest observation time plus 1 hour.
 
     Args:
         df (DataFrame): The DataFrame containing the measurements with a transaction_id column.
