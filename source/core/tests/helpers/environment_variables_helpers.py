@@ -39,7 +39,6 @@ def set_test_environment_variables() -> None:
     os.environ["DATABRICKS_WORKSPACE_URL"] = "workspace-url"
     os.environ["DATABRICKS_TOKEN"] = "token"
     os.environ["DATABRICKS_JOBS"] = "job1,job2"
-    os.environ["STREAM_SUBMITTED_TO_SAP_SERIES"] = "true"
 
 
 def set_subsystem_test_environment_variables() -> None:
