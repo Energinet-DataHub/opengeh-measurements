@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 
 from geh_calculated_measurements.common.application.model import (
     CalculatedMeasurementsInternal,
-    calculated_measurements_hourly_factory,
+    storage_model_factory,
 )
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
@@ -69,7 +69,7 @@ def execute_application_cenc_daily(spark: SparkSession, args: NetConsumptionGrou
     )
 
     # Write the calculated measurements
-    calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
+    calculated_measurements_hourly = storage_model_factory.create(
         calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.NET_CONSUMPTION,
@@ -109,7 +109,7 @@ def execute_application_cnc_daily(spark: SparkSession, args: NetConsumptionGroup
     )
 
     # Write the calculated measurements
-    calculated_measurements_hourly = calculated_measurements_hourly_factory.create(
+    calculated_measurements_hourly = storage_model_factory.create(
         calculated_measurements_daily,
         args.orchestration_instance_id,
         OrchestrationType.NET_CONSUMPTION,
