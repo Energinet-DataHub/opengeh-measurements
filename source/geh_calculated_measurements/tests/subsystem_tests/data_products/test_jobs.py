@@ -48,6 +48,8 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
         '{metering_point_id}',
         '{uuid.uuid4()}', -- transaction_id
         '{datetime.now(UTC)}', -- transaction_creation_datetime
+        '{datetime.now(UTC)}', -- transaction_start_time
+        '{datetime.now(UTC)}', -- transaction_end_time
         '{MeteringPointType.ELECTRICAL_HEATING.value}',
         '{datetime.now(UTC)}', -- observation_time - make sure this is the latest value as current_v1 only selects the latest
         {quantity},
