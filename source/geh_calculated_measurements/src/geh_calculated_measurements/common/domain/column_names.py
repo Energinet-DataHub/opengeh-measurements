@@ -32,3 +32,5 @@ class ContractColumnNames:
     transaction_id = "transaction_id"
     uncoupled_date = "uncoupled_date"
     start_date = "start_date"
+    transaction_start_time = "transaction_start_time"
+    transaction_end_time = "transaction_end_time"

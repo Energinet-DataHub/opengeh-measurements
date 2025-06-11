@@ -24,4 +24,3 @@ Feature: Streaming Migrated Bronze Measurements to Gold Measurements
     Given migrated transactions with quality QM inserted into the bronze migrated transactions table
     When streaming migrated transactions to the Gold layer
     Then 24 migrated measurements row(s) are available in the gold measurements table with quantity = null
-
