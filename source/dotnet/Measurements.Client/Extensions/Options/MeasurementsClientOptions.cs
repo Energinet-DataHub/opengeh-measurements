@@ -1,4 +1,4 @@
-﻿using Energinet.DataHub.Measurements.Client.Authentication;
+﻿using Energinet.DataHub.Core.App.Common.Identity;
 
 namespace Energinet.DataHub.Measurements.Client.Extensions.Options;
 

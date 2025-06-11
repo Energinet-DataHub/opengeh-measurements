@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.4.2
+
+- Refactor B2C authentication.
+
 ## Version 8.4.1
 
 - Bugfix.
