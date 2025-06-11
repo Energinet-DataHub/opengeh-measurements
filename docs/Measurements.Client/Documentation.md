@@ -73,4 +73,4 @@ To use the `Measurements.Client` in your application, you need to register it in
    ```
 
 4. **Configure the application**
-    Configure environment varibles corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)
+   Configure environment variables corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)
