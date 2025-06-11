@@ -19,15 +19,15 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="dotnet tool restore" />
         <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_deprecated.json $(OutputPath)$(AssemblyName).dll v4"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor;GENERATOR_TOOL_BUILD=Yes"/>
         <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger_latest.json $(OutputPath)$(AssemblyName).dll v5"
-              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor"/>
+              EnvironmentVariables="DOTNET_ROLL_FORWARD=LatestMajor;GENERATOR_TOOL_BUILD=Yes"/>
         <Exec Command="npm install -g openapi-merge-cli" />
         <Exec Command="openapi-merge-cli --config $(OutputPath)openapi-merge.json" />
     </Target>
 
     <ItemGroup>
-      <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.2.0" />
+      <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.6.1" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     </ItemGroup>
 
