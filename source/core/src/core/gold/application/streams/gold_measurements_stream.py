@@ -9,7 +9,6 @@ from core.gold.infrastructure.repositories.gold_measurements_repository import G
 from core.gold.infrastructure.repositories.measurements_sap_series_repository import GoldMeasurementsSAPSeriesRepository
 from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
 from core.receipts.infrastructure.repositories.receipts_repository import ReceiptsRepository
-from core.settings.sap_streaming_settings import SAPStreamingSettings
 from core.silver.infrastructure.repositories.silver_measurements_repository import SilverMeasurementsRepository
 
 
@@ -27,6 +26,5 @@ def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
     receipts = receipt_transformations.transform(gold_measurements)
     ReceiptsRepository().append_if_not_exists(receipts)
 
-    if SAPStreamingSettings().stream_submitted_to_sap_series:
-        series_sap = sap_series_transformations.transform(silver_measurements)
-        GoldMeasurementsSAPSeriesRepository().append_if_not_exists(series_sap)
+    sap_series = sap_series_transformations.transform(silver_measurements)
+    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
