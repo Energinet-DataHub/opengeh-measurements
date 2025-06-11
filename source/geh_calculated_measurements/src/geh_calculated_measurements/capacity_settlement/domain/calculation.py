@@ -82,7 +82,7 @@ def execute(
     )
 
     calculation_output = CalculationOutput(
-        calculated_measurements_daily=CalculatedMeasurementsDaily(measurements),
+        calculated_measurements_daily=CalculatedMeasurementsDaily(measurements, settlement_type_nullable=True),
         ten_largest_quantities=ten_largest_quantities,
     )
 
