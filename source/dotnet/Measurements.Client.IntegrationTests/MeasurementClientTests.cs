@@ -28,19 +28,31 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetCurrentByPeriod_WhenCalled_ReturnsEmptyList()
+    public async Task GetCurrentByPeriod_WhenCalled_ReturnsValidMeasurement()
     {
         // Arrange
+        var fromDateTimeOffset = DateTimeOffset.UtcNow;
+        var toDateTimeOffset = DateTimeOffset.UtcNow.AddDays(1);
         var query = new GetByPeriodQuery(
             MeasurementsClientFixture.TestMeteringPointId,
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)));
+            Instant.FromDateTimeOffset(fromDateTimeOffset),
+            Instant.FromDateTimeOffset(toDateTimeOffset));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
         var measurements = await measurementsClient.GetCurrentByPeriodAsync(query);
 
         // Assert
-        Assert.Empty(measurements);
+        // Assert
+        Assert.Equal(24, measurements.Count);
+        Assert.All(measurements, point =>
+        {
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Resolution.Hourly, point.Resolution);
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.NotEqual(0, point.Order);
+            Assert.Equal(fromDateTimeOffset, point.PersistedTime);
+            Assert.Equal(toDateTimeOffset, point.RegistrationTime);
+        });
     }
 
     [Fact]
