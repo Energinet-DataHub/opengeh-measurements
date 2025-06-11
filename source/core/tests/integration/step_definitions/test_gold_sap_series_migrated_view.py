@@ -1,16 +1,13 @@
-from decimal import Decimal
-
 from geh_common.domain.types.orchestration_type import OrchestrationType as GehCommonOrchestrationType
 from geh_common.testing.dataframes import assert_schemas
 from pytest_bdd import given, parsers, scenarios, then, when
 
-import tests.helpers.datetime_helper as datetime_helper
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.contracts.sap.sap_series_v1 import schema as sap_series_v1_schema
 from core.gold.infrastructure.config import GoldTableNames, GoldViewNames
 from core.settings.gold_settings import GoldSettings
-from tests.helpers.builders.gold_builder import GoldMeasurementsBuilder
+from tests.helpers.builders.sap_series_builder import SAPSeriesBuilder
 
 scenarios("../features/gold_sap_series_migrated_view.feature")
 
@@ -21,30 +18,21 @@ scenarios("../features/gold_sap_series_migrated_view.feature")
 )
 def _(spark):
     mp_id = identifier_helper.create_random_metering_point_id()
-    obs_time = datetime_helper.get_datetime()
 
     data = (
-        GoldMeasurementsBuilder(spark)
+        SAPSeriesBuilder(spark)
         .add_row(
-            metering_point_id=mp_id,
             orchestration_type=GehCommonOrchestrationType.MIGRATION.value,
-            observation_time=obs_time,
-            quantity=Decimal(100),
-            transaction_creation_datetime=datetime_helper.get_datetime(2021, 1, 1),
-            is_cancelled=False,
+            metering_point_id=mp_id,
         )
         .add_row(
-            metering_point_id=mp_id,
             orchestration_type=GehCommonOrchestrationType.SUBMITTED.value,
-            observation_time=obs_time,
-            quantity=Decimal(200),
-            transaction_creation_datetime=datetime_helper.get_datetime(2021, 1, 2),
-            is_cancelled=False,
+            metering_point_id=mp_id,
         )
         .build()
     )
 
-    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements)
+    table_helper.append_to_table(data, GoldSettings().gold_database_name, GoldTableNames.gold_measurements_sap_series)
     return mp_id
 
 
