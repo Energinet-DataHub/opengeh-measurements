@@ -41,20 +41,19 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
     metering_point_id = 170000030000000201
 
     seed_statement = f"""
-      INSERT INTO {config.catalog_name}.{database_name}.{table_name} VALUES
-      (
-        '{OrchestrationType.ELECTRICAL_HEATING.value}',
-        '{orchestration_instance_id}',
-        '{metering_point_id}',
-        '{uuid.uuid4()}', -- transaction_id
-        '{datetime.now(UTC)}', -- transaction_creation_datetime
-        '{datetime.now(UTC)}', -- transaction_start_time
-        '{datetime.now(UTC)}', -- transaction_end_time
-        '{MeteringPointType.ELECTRICAL_HEATING.value}',
-        '{datetime.now(UTC)}', -- observation_time - make sure this is the latest value as current_v1 only selects the latest
-        {quantity},
-        NULL -- settlement_type
-      )
+      INSERT INTO {config.catalog_name}.{database_name}.{table_name} BY NAME 
+      SELECT
+        '{OrchestrationType.ELECTRICAL_HEATING.value}' as orchestration_type,
+        '{orchestration_instance_id}' as orchestration_instance_id,
+        '{metering_point_id}' as metering_point_id,
+        '{uuid.uuid4()}' as transaction_id,
+        '{datetime.now(UTC)}' as transaction_creation_datetime,
+        '{MeteringPointType.ELECTRICAL_HEATING.value}' as metering_point_type,
+        '{datetime.now(UTC)}' as observation_time, -- make sure this is the latest value as current_v1 only selects the latest
+        {quantity} as quantity,
+        NULL as settlement_type,
+        '{datetime.now(UTC)}' as transaction_start_time,
+        '{datetime.now(UTC)}' as transaction_end_time;
     """
     response_seed = databricks_api_client.execute_statement(statement=seed_statement, warehouse_id=config.warehouse_id)
     assert response_seed.result is not None
