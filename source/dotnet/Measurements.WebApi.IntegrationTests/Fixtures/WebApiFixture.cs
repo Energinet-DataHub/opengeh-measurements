@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Azure.Core;
 using Azure.Identity;
+using Energinet.DataHub.Core.App.Common.Extensions.Options;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
@@ -77,8 +78,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", CatalogName);
-        builder.UseSetting($"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
-        builder.UseSetting($"{EntraAuthenticationOptions.SectionName}:{nameof(EntraAuthenticationOptions.Issuer)}", Issuer);
+        builder.UseSetting($"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
+        builder.UseSetting($"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.Issuer)}", Issuer);
     }
 
     private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = ApplicationIdUri)
@@ -87,7 +88,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
             .Token;
 
-        return new AuthenticationHeaderValue(AuthenticationSchemas.Default, token);
+        return new AuthenticationHeaderValue(AuthenticationSchemes.Default, token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
