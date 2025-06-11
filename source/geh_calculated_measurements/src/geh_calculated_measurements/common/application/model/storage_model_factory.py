@@ -33,8 +33,10 @@ def create(
 
     df = _explode_to_hour_values(df, time_zone)
 
+    df = _create_transaction_time_column(df)
+
     df = _add_storage_columns(
-        df, orchestration_instance_id, orchestration_type, metering_point_type, time_zone, transaction_creation_datetime
+        df, orchestration_instance_id, orchestration_type, metering_point_type, transaction_creation_datetime
     )
 
     return df
@@ -75,7 +77,6 @@ def _add_storage_columns(
     orchestration_instance_id: UUID,
     orchestration_type: OrchestrationType,
     metering_point_type: MeteringPointType,
-    time_zone: str,
     transaction_creation_datetime: datetime,
 ) -> CalculatedMeasurementsInternal:
     df = measurements.withColumns(
@@ -88,6 +89,34 @@ def _add_storage_columns(
     )
 
     return CalculatedMeasurementsInternal(df)
+
+
+def _create_transaction_time_column(df) -> DataFrame:
+    """Create transaction start and end time columns based on the observation time and resolution.
+
+    This must be done after the `transaction_id` column is created, as it uses the
+    `transaction_id` column to group the data.
+
+    This code groups the DataFrame by `transaction_id` and calculates the start and
+    end time of each transaction based on the `observation_time` column.
+    The `transaction_start_time` is the earliest observation time in each group,
+    and the `transaction_end_time` is the latest observation time plus 1 hour.
+
+    Args:
+        df (DataFrame): The DataFrame containing the measurements with a transaction_id column.
+
+    Returns:
+        DataFrame: The DataFrame with the transaction start and end time columns added.
+    """
+    w = Window.partitionBy(ContractColumnNames.transaction_id)
+    df_with_time_columns = df.withColumns(
+        {
+            ContractColumnNames.transaction_start_time: F.min(F.col(ContractColumnNames.observation_time)).over(w),
+            ContractColumnNames.transaction_end_time: F.max(F.col(ContractColumnNames.observation_time)).over(w)
+            + F.make_interval(hours=F.lit(1)),
+        }
+    )
+    return df_with_time_columns
 
 
 def _create_transaction_id_column(orchestration_instance_id: UUID, time_zone: str) -> Column:
