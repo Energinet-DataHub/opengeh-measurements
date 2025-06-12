@@ -52,8 +52,7 @@ public class ClientExtensionsTests
         // Assert
         var serviceProvider = services.BuildServiceProvider();
 
-        var exception =
-            Assert.Throws<OptionsValidationException>(() => serviceProvider.GetRequiredService<IMeasurementsClient>());
+        var exception = Assert.Throws<OptionsValidationException>(() => serviceProvider.GetRequiredService<IMeasurementsClient>());
         Assert.Contains(
             "DataAnnotation validation failed for 'MeasurementHttpClientOptions'",
             exception.Message);
@@ -68,10 +67,8 @@ public class ClientExtensionsTests
         AuthenticationHeaderValue? actualAuthenticationHeaderValue = null;
         var configurations = new Dictionary<string, string?>
         {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] =
-                "https://localhost",
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] =
-                "https://management.azure.com",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
         AddInMemoryConfiguration(services, configurations);
 
