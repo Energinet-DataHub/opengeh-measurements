@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="8.2.0" />
+        <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="8.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.4" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
         <PackageReference Include="xunit.categories" Version="3.0.1" />

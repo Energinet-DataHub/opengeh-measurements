@@ -70,7 +70,7 @@ public class ClientExtensionsTests
         AddInMemoryConfiguration(services, configurations);
 
         // Act
-        services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
+        services.AddMeasurementsClient();
 
         // Assert
         var actual = services
@@ -92,7 +92,7 @@ public class ClientExtensionsTests
     {
         public AuthenticationHeaderValue CreateAuthorizationHeader(string scope)
         {
-            return new AuthenticationHeaderValue("Bearer", "test-token");
+            return new AuthenticationHeaderValue("Bearer", "some token");
         }
     }
 }
