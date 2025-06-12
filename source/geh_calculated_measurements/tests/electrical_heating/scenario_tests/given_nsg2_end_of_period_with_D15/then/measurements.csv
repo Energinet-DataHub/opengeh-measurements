@@ -1,30 +1,30 @@
-metering_point_type;metering_point_id;date;quantity;settlement_type;#comment
-electrical_heating;140000001500170200;2023-12-31T23:00:00Z;1000;end_of_period;Case 0 - Day 1: D15 quantity (1000) added
-electrical_heating;140000001500170200;2024-01-01T23:00:00Z;500;end_of_period;Case 0 - Day 3: D15 quantity (500) added
-electrical_heating;140000001500170200;2024-01-02T23:00:00Z;425;end_of_period;Case 0 - Day 2: Up to limit (4000-(1000+1000+25))=1975
-electrical_heating;140000001500170200;2024-12-30T23:00:00Z;0;end_of_period;Case 0 - Day 3: Limit hit
-electrical_heating;140000001500170200;2024-12-27T23:00:00Z;0;end_of_period;Case 0 - Day 6: Limit hit
-electrical_heating;140000001500170200;2024-12-28T23:00:00Z;0;end_of_period;Case 0 - Day 6: Limit hit
-electrical_heating;140000001500170201;2023-12-31T23:00:00Z;466.754;end_of_period;Case 1
-electrical_heating;140000001500170201;2024-01-01T23:00:00Z;774.553;end_of_period;Case 1
-electrical_heating;140000001500170201;2024-12-30T23:00:00Z;8.91;end_of_period;Case 1
-electrical_heating;140000001500170202;2023-10-31T23:00:00Z;100.736;end_of_period;Case 2: Period 1, Day 304 (Nov. 1st)
-electrical_heating;140000001500170202;2023-11-01T23:00:00Z;18.601;end_of_period;Case 2: Period 1, Day 305
-electrical_heating;140000001500170202;2023-12-30T23:00:00Z;0;end_of_period;Case 2: Period 1, Day 365 (last day of 2023)
-electrical_heating;140000001500170202;2023-12-31T23:00:00Z;125.015;end_of_period;Case 2: Period 2, Day 01 (Jan. 1st. 2024)
-electrical_heating;140000001500170202;2024-01-01T23:00:00Z;6.749;end_of_period;Case 2: Period 2, Day 02
-electrical_heating;140000001500170202;2024-03-30T23:00:00Z;0;end_of_period;Case 2: Period 2, Day 91 (last day of March)
-electrical_heating;140000001500170202;2024-03-31T22:00:00Z;348.982;end_of_period;Case 2: Period 3, Day 92 (Apr. 1st. 2024)
-electrical_heating;140000001500170202;2024-04-01T22:00:00Z;44.213;end_of_period;Case 2: Period 3, Day 93 (Apr. 2nd. 2024)
-electrical_heating;140000001500170202;2024-12-30T23:00:00Z;0;end_of_period;Case 2: Period 3, Day 366 (last day of 2024)
-electrical_heating;140000001500170202;2024-12-31T23:00:00Z;2500;up_to_end_of_period;Case 2: Period 4, Day 1 (Up to end calculation)
-electrical_heating;140000001500170202;2025-01-01T23:00:00Z;1500;up_to_end_of_period;Case 2: Period 4, Day 2 (Up to end calculation)
-electrical_heating;140000001500170203;2024-03-29T23:00:00Z;101.594;end_of_period;Case 3
-electrical_heating;140000001500170203;2024-03-30T23:00:00Z;80.332;end_of_period;Case 3 (day of summertime change)
-electrical_heating;140000001500170203;2024-03-31T22:00:00Z;165.845;end_of_period;Case 3
-electrical_heating;140000001500170203;2024-10-25T22:00:00Z;134.789;end_of_period;Case 3 (up to limit 482.56)
-electrical_heating;140000001500170203;2024-10-26T22:00:00Z;0;end_of_period;Case 3 (day of wintertime change)
-electrical_heating;140000001500170203;2024-10-27T23:00:00Z;0;end_of_period;Case 3
-electrical_heating;140000001500170204;2024-03-30T23:00:00Z;1;end_of_period;Case 4 - summer time change
-electrical_heating;140000001500170204;2024-10-26T22:00:00Z;1;end_of_period;Case 4 - winter time change
-electrical_heating;140000001500170204;2024-10-27T23:00:00Z;321.869;end_of_period;Case 4 - make sure we hit limit
+metering_point_id;date;quantity;settlement_type;#comment
+140000001500170200;2023-12-31T23:00:00Z;1000;end_of_period;Case 0 - Day 1: D15 quantity (1000) added
+140000001500170200;2024-01-01T23:00:00Z;500;end_of_period;Case 0 - Day 3: D15 quantity (500) added
+140000001500170200;2024-01-02T23:00:00Z;425;end_of_period;Case 0 - Day 2: Up to limit (4000-(1000+1000+25))=1975
+140000001500170200;2024-12-30T23:00:00Z;0;end_of_period;Case 0 - Day 3: Limit hit
+140000001500170200;2024-12-27T23:00:00Z;0;end_of_period;Case 0 - Day 6: Limit hit
+140000001500170200;2024-12-28T23:00:00Z;0;end_of_period;Case 0 - Day 6: Limit hit
+140000001500170201;2023-12-31T23:00:00Z;466.754;end_of_period;Case 1
+140000001500170201;2024-01-01T23:00:00Z;774.553;end_of_period;Case 1
+140000001500170201;2024-12-30T23:00:00Z;8.91;end_of_period;Case 1
+140000001500170202;2023-10-31T23:00:00Z;100.736;end_of_period;Case 2: Period 1, Day 304 (Nov. 1st)
+140000001500170202;2023-11-01T23:00:00Z;18.601;end_of_period;Case 2: Period 1, Day 305
+140000001500170202;2023-12-30T23:00:00Z;0;end_of_period;Case 2: Period 1, Day 365 (last day of 2023)
+140000001500170202;2023-12-31T23:00:00Z;125.015;end_of_period;Case 2: Period 2, Day 01 (Jan. 1st. 2024)
+140000001500170202;2024-01-01T23:00:00Z;6.749;end_of_period;Case 2: Period 2, Day 02
+140000001500170202;2024-03-30T23:00:00Z;0;end_of_period;Case 2: Period 2, Day 91 (last day of March)
+140000001500170202;2024-03-31T22:00:00Z;348.982;end_of_period;Case 2: Period 3, Day 92 (Apr. 1st. 2024)
+140000001500170202;2024-04-01T22:00:00Z;44.213;end_of_period;Case 2: Period 3, Day 93 (Apr. 2nd. 2024)
+140000001500170202;2024-12-30T23:00:00Z;0;end_of_period;Case 2: Period 3, Day 366 (last day of 2024)
+140000001500170202;2024-12-31T23:00:00Z;2500;up_to_end_of_period;Case 2: Period 4, Day 1 (Up to end calculation)
+140000001500170202;2025-01-01T23:00:00Z;1500;up_to_end_of_period;Case 2: Period 4, Day 2 (Up to end calculation)
+140000001500170203;2024-03-29T23:00:00Z;101.594;end_of_period;Case 3
+140000001500170203;2024-03-30T23:00:00Z;80.332;end_of_period;Case 3 (day of summertime change)
+140000001500170203;2024-03-31T22:00:00Z;165.845;end_of_period;Case 3
+140000001500170203;2024-10-25T22:00:00Z;134.789;end_of_period;Case 3 (up to limit 482.56)
+140000001500170203;2024-10-26T22:00:00Z;0;end_of_period;Case 3 (day of wintertime change)
+140000001500170203;2024-10-27T23:00:00Z;0;end_of_period;Case 3
+140000001500170204;2024-03-30T23:00:00Z;1;end_of_period;Case 4 - summer time change
+140000001500170204;2024-10-26T22:00:00Z;1;end_of_period;Case 4 - winter time change
+140000001500170204;2024-10-27T23:00:00Z;321.869;end_of_period;Case 4 - make sure we hit limit
