@@ -10,6 +10,8 @@ def create_calculated_measurements_v1_query() -> str:
         orchestration_instance_id STRING NOT NULL,
         transaction_id STRING NOT NULL,
         transaction_creation_datetime TIMESTAMP NOT NULL,
+        transaction_start_time TIMESTAMP NOT NULL,
+        transaction_end_time TIMESTAMP NOT NULL,
         metering_point_id STRING NOT NULL,
         metering_point_type STRING NOT NULL,
         observation_time TIMESTAMP NOT NULL,
