@@ -27,6 +27,8 @@ class CalculatedMeasurementsFixture:
             metering_point_id,
             transaction_id,
             transaction_creation_datetime,
+            transaction_start_time,
+            transaction_end_time,
             metering_point_type,
             observation_time,
             quantity
@@ -36,6 +38,8 @@ class CalculatedMeasurementsFixture:
             '{row.orchestration_instance_id}',
             '{row.metering_point_id}',
             '{row.transaction_id}',
+            '{row.transaction_start_time}',
+            '{row.transaction_end_time}',
             GETDATE(),
             '{row.metering_point_type}',
             '{row.observation_time.strftime("%Y-%m-%d %H:%M:%S")}',
