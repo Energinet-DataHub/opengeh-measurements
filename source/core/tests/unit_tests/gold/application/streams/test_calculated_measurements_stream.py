@@ -56,7 +56,9 @@ def test__batch_operation__calls_append_to_gold_measurements(mocker: MockerFixtu
     )
 
     transform_sap_mock.assert_called_once_with(calculated_measurements_mock)
-    sap_series_repo_mock.append_if_not_exists.assert_called_once_with(transform_sap_mock.return_value)
+    sap_series_repo_mock.append_if_not_exists.assert_called_once_with(
+        transform_sap_mock.return_value, query_name=QueryNames.CALCULATED_TO_GOLD_SAP_SERIES
+    )
 
 
 def test__batch_operation__when_not_streaming_to_sap_series__should_not_append_to_sap_series(mocker: MockerFixture):
