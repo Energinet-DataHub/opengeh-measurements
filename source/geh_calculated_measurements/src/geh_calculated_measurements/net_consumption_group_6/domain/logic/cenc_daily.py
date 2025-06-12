@@ -47,6 +47,8 @@ def calculate_daily(
 
     time_series_points_df = convert_from_utc(time_series_points_df, time_zone)
 
+    time_series_points_df = time_series_points_df.where(F.col(ContractColumnNames.quantity).isNotNull())
+
     cenc_selected_col = cenc_added_col.select(  # selecting needed columns
         F.make_date(F.col("settlement_year"), F.col(ContractColumnNames.settlement_month), F.lit(1)).alias(
             "settlement_date"
