@@ -8,6 +8,7 @@ from core.gold.infrastructure.repositories.calculated_measurements_repository im
 from core.gold.infrastructure.repositories.gold_measurements_repository import GoldMeasurementsRepository
 from core.gold.infrastructure.repositories.measurements_sap_series_repository import GoldMeasurementsSAPSeriesRepository
 from core.gold.infrastructure.streams.gold_measurements_stream import GoldMeasurementsStream
+from core.settings.sap_stream_settings import SAPStreamSettings
 
 
 def stream_measurements_calculated_to_gold() -> None:
@@ -24,5 +25,6 @@ def _batch_operation(calculated_measurements: DataFrame, batch_id: int) -> None:
     gold_measurements = transformations.transform_calculated_to_gold(calculated_measurements)
     GoldMeasurementsRepository().append_if_not_exists(gold_measurements, query_name=QueryNames.CALCULATED_TO_GOLD)
 
-    sap_series = sap_series_transformations.transform_calculated(calculated_measurements)
-    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
+    if SAPStreamSettings().stream_calculated_to_sap_series:
+        sap_series = sap_series_transformations.transform_calculated(calculated_measurements)
+        GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
