@@ -1,10 +1,13 @@
 ﻿using System.Net.Http.Headers;
+using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
 using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Testing.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
@@ -23,6 +26,7 @@ public class ClientExtensionsTests
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
         AddInMemoryConfiguration(services, configurations);
+        services.AddTokenCredentialProvider();
 
         // Act
         services.AddMeasurementsClient();
@@ -51,32 +55,44 @@ public class ClientExtensionsTests
         // Assert
         var serviceProvider = services.BuildServiceProvider();
 
-        var exception = Assert.Throws<OptionsValidationException>(() => serviceProvider.GetRequiredService<IMeasurementsClient>());
+        var exception =
+            Assert.Throws<OptionsValidationException>(() => serviceProvider.GetRequiredService<IMeasurementsClient>());
         Assert.Contains(
             "DataAnnotation validation failed for 'MeasurementHttpClientOptions'",
             exception.Message);
     }
 
     [Fact]
-    public void AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
+    public async Task AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
     {
         // Arrange
         var services = new ServiceCollection();
+        var expectedAuthenticationHeaderValueParameter = "Bearer some-token";
+        AuthenticationHeaderValue? actualAuthenticationHeaderValue = null;
         var configurations = new Dictionary<string, string?>
         {
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
-            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] =
+                "https://localhost",
+            [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] =
+                "https://management.azure.com",
         };
         AddInMemoryConfiguration(services, configurations);
 
         // Act
-        services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
+        services.AddMeasurementsClient(new CustomAuthorizationHandler(async () =>
+        {
+            var authenticationHeaderValue = await MockedAuthenticationHeaderValue();
+            actualAuthenticationHeaderValue = authenticationHeaderValue;
+            return authenticationHeaderValue;
+        }));
 
         // Assert
-        var actual = services
-            .BuildServiceProvider()
-            .GetRequiredService<IMeasurementsClient>();
-        Assert.IsType<MeasurementsClient>(actual);
+        var serviceProvider = services.BuildServiceProvider();
+        var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+        var actual = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
+        await Assert.ThrowsAsync<HttpRequestException>(() => actual.GetAsync("https://localhost"));
+        Assert.NotNull(actualAuthenticationHeaderValue);
+        Assert.Equal(expectedAuthenticationHeaderValueParameter, actualAuthenticationHeaderValue.ToString());
     }
 
     private static void AddInMemoryConfiguration(IServiceCollection services, Dictionary<string, string?> configurations)
@@ -88,11 +104,8 @@ public class ClientExtensionsTests
         services.AddScoped<IConfiguration>(_ => configuration);
     }
 
-    private class B2CAuthorizationHeaderProvider : IAuthorizationHeaderProvider
+    private static async Task<AuthenticationHeaderValue> MockedAuthenticationHeaderValue()
     {
-        public AuthenticationHeaderValue CreateAuthorizationHeader(string scope)
-        {
-            return new AuthenticationHeaderValue("Bearer", "test-token");
-        }
+        return await Task.FromResult(new AuthenticationHeaderValue("Bearer", "some-token"));
     }
 }

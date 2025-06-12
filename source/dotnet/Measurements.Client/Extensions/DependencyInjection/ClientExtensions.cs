@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+﻿using System.Net.Http.Headers;
+using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
 using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
@@ -17,32 +18,38 @@ public static class ClientExtensions
     /// </summary>
     public static IServiceCollection AddMeasurementsClient(
         this IServiceCollection services,
-        IAuthorizationHeaderProvider? b2CAuthorizationHeaderProvider = null)
+        CustomAuthorizationHandler? customAuthorizationHandler = null)
     {
         services
             .AddOptions<MeasurementHttpClientOptions>()
             .BindConfiguration(MeasurementHttpClientOptions.SectionName)
             .ValidateDataAnnotations();
 
-        if (b2CAuthorizationHeaderProvider != null)
+        if (customAuthorizationHandler != null)
         {
-            services.AddSingleton(b2CAuthorizationHeaderProvider);
+            services
+                .AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
+                {
+                    var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+                    httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
+                })
+                .AddHttpMessageHandler(() => customAuthorizationHandler);
         }
         else
         {
             services.AddTokenCredentialProvider();
             services.AddAuthorizationHeaderProvider();
+
+            services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
+            {
+                var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
+                var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
+                var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader(measurementHttpClientOptions.ApplicationIdUri);
+
+                httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
+                httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
+            });
         }
-
-        services.AddHttpClient(MeasurementsHttpClientNames.MeasurementsApi, (serviceProvider, httpClient) =>
-        {
-            var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
-            var authorizationHeaderProvider = serviceProvider.GetRequiredService<IAuthorizationHeaderProvider>();
-            var authorizationHeader = authorizationHeaderProvider.CreateAuthorizationHeader(measurementHttpClientOptions.ApplicationIdUri);
-
-            httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
-            httpClient.DefaultRequestHeaders.Authorization = authorizationHeader;
-        });
 
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
