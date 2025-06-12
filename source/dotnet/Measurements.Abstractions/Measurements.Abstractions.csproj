@@ -40,6 +40,7 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="Energinet.DataHub.MarketParticipant.Authorization" Version="1.5.0" />
       <PackageReference Include="NodaTime" Version="3.2.2" />
     </ItemGroup>
 

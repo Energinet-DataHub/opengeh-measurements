@@ -28,6 +28,8 @@
 
     <ItemGroup>
       <PackageReference Include="Energinet.DataHub.Core.App.WebApp" Version="15.6.1" />
+      <PackageReference Include="Energinet.DataHub.MarketParticipant.Authorization" Version="1.5.0" />
+      <PackageReference Include="Energinet.DataHub.RevisionLog.Integration.WebApi" Version="1.2.0" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />
     </ItemGroup>
 
