@@ -1,7 +1,4 @@
 ﻿using Asp.Versioning;
-using Energinet.DataHub.MarketParticipant.Authorization.Http;
-using Energinet.DataHub.MarketParticipant.Authorization.Model;
-using Energinet.DataHub.MarketParticipant.Authorization.Model.AccessValidationRequests;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Requests;
 using Energinet.DataHub.Measurements.Infrastructure.Serialization;
@@ -19,7 +16,6 @@ namespace Energinet.DataHub.Measurements.WebApi.Controllers;
 [Route("v{v:apiVersion}/measurements")]
 public class MeasurementsController(
     IMeasurementsHandler measurementsHandler,
-    IEndpointAuthorizationContext endpointAuthorizationContext,
     ILogger<MeasurementsController> logger,
     IJsonSerializer jsonSerializer)
     : ControllerBase
@@ -29,19 +25,6 @@ public class MeasurementsController(
     [HttpGet("forPeriod")]
     public async Task<IActionResult> GetByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
-        var accessValidationRequest = new MeteringPointMeasurementDataAccessValidationRequest
-        {
-            ActorNumber = "actor number?",
-            MarketRole = EicFunction.SystemOperator,
-            MeteringPointId = request.MeteringPointId,
-            RequestedPeriod = new AccessPeriod(request.MeteringPointId, request.StartDate, request.EndDate),
-        };
-        var authorizationResult = await endpointAuthorizationContext.VerifyAsync(accessValidationRequest);
-        if (authorizationResult.Result != AuthorizationCode.Authorized)
-        {
-            return Forbid();
-        }
-
         var measurement = await measurementsHandler.GetByPeriodAsync(request);
 
         if (measurement.Points.Count > 0)

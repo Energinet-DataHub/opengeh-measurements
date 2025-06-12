@@ -1,9 +1,6 @@
 ﻿using System.Dynamic;
 using AutoFixture.Xunit2;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
-using Energinet.DataHub.MarketParticipant.Authorization.Http;
-using Energinet.DataHub.MarketParticipant.Authorization.Model;
-using Energinet.DataHub.MarketParticipant.Authorization.Model.AccessValidationRequests;
 using Energinet.DataHub.Measurements.Application.Handlers;
 using Energinet.DataHub.Measurements.Application.Persistence;
 using Energinet.DataHub.Measurements.Application.Requests;
@@ -24,7 +21,6 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
         GetByPeriodRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -34,7 +30,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(expected);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetByPeriodAsync(request) as OkObjectResult)!.Value;
@@ -47,7 +43,6 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetByPeriodRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -56,7 +51,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ReturnsAsync(MeasurementsResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetByPeriodAsync(request);
@@ -69,7 +64,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetByPeriodAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetByPeriodRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -78,7 +72,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetByPeriodAsync(request));
@@ -89,7 +83,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -100,7 +93,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByDateAsyncV4(request) as OkObjectResult)!.Value!.ToString();
@@ -113,7 +106,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByDateAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -124,10 +116,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(response);
-        endpointAuthorizationContext
-            .Setup(x => x.VerifyAsync(It.IsAny<MeteringPointMeasurementDataAccessValidationRequest>()))
-            .ReturnsAsync(new MockedAuthorizationSuccess());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByDateAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -141,7 +130,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -150,7 +138,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByDateResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsyncV4(request);
@@ -163,7 +151,6 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetAggregatedByDateAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -172,7 +159,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByDateResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByDateAsync(request);
@@ -186,7 +173,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -195,7 +181,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsyncV4(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsyncV4(request));
@@ -205,7 +191,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByDateAsync_WhenMeasurementsUnknownError_ThenThrowsException(
         GetAggregatedByDateRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -214,7 +199,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByDateAsync(It.IsAny<GetAggregatedByDateRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByDateAsync(request));
@@ -225,7 +210,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -236,7 +220,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByMonthAsyncV4(request) as OkObjectResult)!.Value!.ToString();
@@ -249,7 +233,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -260,7 +243,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByMonthAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -274,7 +257,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -283,7 +265,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByMonthResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsyncV4(request);
@@ -296,7 +278,6 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -305,7 +286,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByMonthResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByMonthAsync(request);
@@ -319,7 +300,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByMonthAsyncV4_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -328,7 +308,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsyncV4(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsyncV4(request));
@@ -338,7 +318,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByMonthAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByMonthRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -347,7 +326,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByMonthAsync(It.IsAny<GetAggregatedByMonthRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByMonthAsync(request));
@@ -358,7 +337,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -369,7 +347,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByYearAsyncV4(request) as OkObjectResult)!.Value!.ToString();
@@ -382,7 +360,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByYearAsync_WhenMeasurementsExists_ReturnValidJson(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -393,7 +370,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(response);
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = (await sut.GetAggregatedByYearAsync(request) as OkObjectResult)!.Value!.ToString();
@@ -407,7 +384,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -416,7 +392,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByYearResponseV4.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByYearAsyncV4(request);
@@ -429,7 +405,6 @@ public class MeasurementsControllerTests
     [AutoMoqData]
     public async Task GetAggregatedByYearAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -438,7 +413,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
             .ReturnsAsync(MeasurementsAggregatedByYearResponse.Create([]));
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act
         var actual = await sut.GetAggregatedByYearAsync(request);
@@ -452,7 +427,6 @@ public class MeasurementsControllerTests
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByYearAsyncV4_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -461,7 +435,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsyncV4(It.IsAny<GetAggregatedByYearRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsyncV4(request));
@@ -471,7 +445,6 @@ public class MeasurementsControllerTests
     [AutoData]
     public async Task GetAggregatedByYearAsync_WhenMeasurementsUnknownError_ThrowsException(
         GetAggregatedByYearRequest request,
-        Mock<IEndpointAuthorizationContext> endpointAuthorizationContext,
         Mock<IMeasurementsHandler> measurementsHandler,
         Mock<ILogger<MeasurementsController>> logger)
     {
@@ -480,7 +453,7 @@ public class MeasurementsControllerTests
         measurementsHandler
             .Setup(x => x.GetAggregatedByYearAsync(It.IsAny<GetAggregatedByYearRequest>()))
             .ThrowsAsync(new Exception());
-        var sut = new MeasurementsController(measurementsHandler.Object, endpointAuthorizationContext.Object, logger.Object, jsonSerializer);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
 
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsync(request));
@@ -560,6 +533,4 @@ public class MeasurementsControllerTests
         raw.observation_updates = 2;
         return raw;
     }
-
-    private class MockedAuthorizationSuccess() : AuthorizationResult(AuthorizationCode.Authorized);
 }
