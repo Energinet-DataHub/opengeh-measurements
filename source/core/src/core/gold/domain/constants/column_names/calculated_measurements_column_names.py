@@ -9,4 +9,6 @@ class CalculatedMeasurementsColumnNames:
     quantity_unit = "quantity_unit"
     resolution = "resolution"
     transaction_creation_datetime = "transaction_creation_datetime"
+    transaction_start_time = "transaction_start_time"
+    transaction_end_time = "transaction_end_time"
     transaction_id = "transaction_id"
