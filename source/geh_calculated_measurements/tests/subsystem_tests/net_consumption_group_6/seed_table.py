@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.testing import JobTestFixture
 from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
@@ -59,71 +60,42 @@ def electricity_market_tables_statements(catalog_name: str, database_name: str) 
     statements = []
     # PARENT
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{parent_table} (
-        metering_point_id,
-        has_electrical_heating,
-        settlement_month,
-        period_from_date,
-        period_to_date,
-        move_in
-    )
-    VALUES (
-        '{parent_metering_point_id}',
-        {False},
-        {1},
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        {False}
-    )
+    INSERT INTO {catalog_name}.{database_name}.{parent_table} BY NAME
+    SELECT
+        '{parent_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        {False} as {ContractColumnNames.has_electrical_heating},
+        {1} as {ContractColumnNames.settlement_month},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_from_date},
+        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_to_date},
+        {False} as {ContractColumnNames.move_in}
     """)
     # CHILDREN
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{child_table} (
-        metering_point_id,
-        metering_point_type,
-        parent_metering_point_id,
-        coupled_date,
-        uncoupled_date
-    )
-    VALUES (
-        '{net_consumption_metering_point_id}',
-        '{MeteringPointType.NET_CONSUMPTION.value}',
-        '{parent_metering_point_id}',
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
-        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
-    )
+    INSERT INTO {catalog_name}.{database_name}.{child_table} BY NAME
+    SELECT
+        '{net_consumption_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        '{MeteringPointType.NET_CONSUMPTION.value}' as {ContractColumnNames.metering_point_type},
+        '{parent_metering_point_id}' as {ContractColumnNames.parent_metering_point_id},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.coupled_date},
+        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.uncoupled_date}
     """)
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{child_table} (
-        metering_point_id,
-        metering_point_type,
-        parent_metering_point_id,
-        coupled_date,
-        uncoupled_date
-    )
-    VALUES (
-        '{supply_to_grid_metering_point_id}',
-        '{MeteringPointType.SUPPLY_TO_GRID.value}',
-        '{parent_metering_point_id}',
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
-        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
-    )
+    INSERT INTO {catalog_name}.{database_name}.{child_table} BY NAME
+    SELECT
+        '{supply_to_grid_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        '{MeteringPointType.SUPPLY_TO_GRID.value}' as {ContractColumnNames.metering_point_type},
+        '{parent_metering_point_id}' as {ContractColumnNames.parent_metering_point_id},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.coupled_date},
+        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.uncoupled_date}
     """)
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{child_table} (
-        metering_point_id,
-        metering_point_type,
-        parent_metering_point_id,
-        coupled_date,
-        uncoupled_date
-    )
-    VALUES (
-        '{consumption_from_grid_metering_point_id}',
-        '{MeteringPointType.CONSUMPTION_FROM_GRID.value}',
-        '{parent_metering_point_id}',
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
-        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}'
-    )
+    INSERT INTO {catalog_name}.{database_name}.{child_table} BY NAME
+    SELECT
+        '{consumption_from_grid_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        '{MeteringPointType.CONSUMPTION_FROM_GRID.value}' as {ContractColumnNames.metering_point_type},
+        '{parent_metering_point_id}' as {ContractColumnNames.parent_metering_point_id},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.coupled_date},
+        '{datetime(2025, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.uncoupled_date}
     """)
     return statements
 
@@ -133,12 +105,12 @@ def delete_seeded_data(job_fixture: JobTestFixture) -> None:
     # PARENT
     statements.append(f"""
         DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{parent_table}
-        WHERE metering_point_id = '{parent_metering_point_id}'
+        WHERE {ContractColumnNames.metering_point_id} = '{parent_metering_point_id}'
     """)
     # CHILD
     statements.append(f"""
         DELETE FROM {job_fixture.config.catalog_name}.{job_fixture.config.electricity_market_internal_database_name}.{child_table}
-        WHERE parent_metering_point_id = '{parent_metering_point_id}'
+        WHERE {ContractColumnNames.parent_metering_point_id} = '{parent_metering_point_id}'
     """)
 
     for statement in statements:
