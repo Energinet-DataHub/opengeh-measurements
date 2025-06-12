@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic-settings==2.9.1",
-    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.10.3#subdirectory=source/geh_common",
+    "geh_common @ git+https://git@github.com/Energinet-DataHub/opengeh-python-packages@geh_common_5.10.11#subdirectory=source/geh_common",
     "pydantic==2.11.4",
     "protobuf==6.31.0",
 ]
@@ -21,6 +21,7 @@ stream_calculated_to_gold_measurements = "core.gold.entry_points:stream_calculat
 stream_migrated_transactions_to_gold = "core.gold.entry_points:stream_migrated_transactions_to_gold_measurements"
 stream_silver_to_gold_measurements = "core.gold.entry_points:stream_silver_to_gold_measurements"
 stream_submitted_transactions_to_silver = "core.silver.entry_points:stream_submitted_transactions"
+stream_migrated_transactions_to_sap_series_gold = "core.gold.entry_points:stream_migrated_to_gold_sap_series"
 
 [dependency-groups]
 dev = [

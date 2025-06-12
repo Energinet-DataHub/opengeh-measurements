@@ -21,3 +21,4 @@ This strategy is about appending to a delta table, unless the rows already exist
 | | Measurements | Append If Not Exists |
 | **Gold** | | |
 | | Measurements | Append If Not Exists |
+| | Measurements SAP Series | Append If Not Exists |

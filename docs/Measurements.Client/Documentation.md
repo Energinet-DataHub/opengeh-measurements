@@ -42,10 +42,11 @@ To use the `Measurements.Client` in your application, you need to register it in
    app.Run();
    ```
 
-   Notice, the `AddMeasurementsClient` takes an optional `AuthorizationHeaderProvider`, which must implement the `IAuthorizationHeaderProvider` [IAuthorizationHeaderProvider](https://github.com/Energinet-DataHub/geh-core/blob/main/source/App/source/Common/Identity/IAuthorizationHeaderProvider.cs) interface. This is to enable creating a custom authentication header for the temporary B2C authentication model supporting ElOverblik and Energy Track & Trace:
+   Notice, the `AddMeasurementsClient` takes an optional implementation of the `IAuthorizationHeaderProvider` ([IAuthorizationHeaderProvider](https://github.com/Energinet-DataHub/geh-core/blob/main/source/App/source/Common/Identity/IAuthorizationHeaderProvider.cs)) interface to enable creating a custom authentication header for the temporary B2C authentication model supporting ElOverblik and Energy Track & Trace:
 
    ```csharp
-      services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
+      IAuthorizationHeaderProvider authorizationHeaderProvider = new YourB2CAuthorizationHeaderProvider()
+      services.AddMeasurementsClient(authorizationHeaderProvider);
    ```
 
 3. **Inject and Use the Client**
@@ -72,4 +73,4 @@ To use the `Measurements.Client` in your application, you need to register it in
    ```
 
 4. **Configure the application**
-   Configure environment varibles corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)
+   Configure environment variables corresponding to the options of [MeasurementHttpClientOptions](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/source/dotnet/Measurements.Client/Extensions/Options/MeasurementHttpClientOptions.cs)

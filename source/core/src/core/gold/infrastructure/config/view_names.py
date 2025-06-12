@@ -4,3 +4,5 @@ class ViewNames:
     current_v1 = "current_v1"
     sap_series_v1 = "sap_series_v1"
     current_sap_v1 = "current_sap_v1"
+    sap_series_migrated_v1 = "sap_series_migrated_v1"
+    current_sap_migrated_v1 = "current_sap_migrated_v1"
