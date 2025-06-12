@@ -16,7 +16,10 @@ scenarios("../features/streaming_of_calculated_measurements.feature")
 @given("new valid calculated measurements", target_fixture="calculated_measurements_row")
 def _() -> CalculatedMeasurementsRow:
     orchestration_instance_id = identifier_helper.generate_random_string()
-    return CalculatedMeasurementsRowBuilder().build(orchestration_instance_id=orchestration_instance_id)
+    metering_point_id = identifier_helper.create_random_metering_point_id()
+    return CalculatedMeasurementsRowBuilder().build(
+        orchestration_instance_id=orchestration_instance_id, metering_point_id=metering_point_id
+    )
 
 
 @when("inserted into the calculated measurements table")
