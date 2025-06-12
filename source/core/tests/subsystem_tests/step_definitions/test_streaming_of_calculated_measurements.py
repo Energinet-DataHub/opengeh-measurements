@@ -28,3 +28,8 @@ def _(calculated_measurements_row: CalculatedMeasurementsRow) -> None:
 @then("the calculated measurements are available in the Gold Layer")
 def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
     gold_layer_fixture.assert_measurement_persisted(calculated_measurements_row.orchestration_instance_id)
+
+
+@then("the calculated measurement transaction is available in the SAP Series Gold table")
+def _(calculated_measurements_row: CalculatedMeasurementsRow, gold_layer_fixture: GoldLayerFixture) -> None:
+    gold_layer_fixture.assert_sap_series_persisted(calculated_measurements_row.metering_point_id)
