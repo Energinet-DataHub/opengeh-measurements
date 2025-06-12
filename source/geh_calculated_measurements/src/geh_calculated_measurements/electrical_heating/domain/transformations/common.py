@@ -8,8 +8,7 @@ from geh_calculated_measurements.electrical_heating.domain.ephemeral_column_name
 def calculate_hourly_quantity(time_series_points: DataFrame) -> DataFrame:
     """Use observation_time from input DataFrame and returns a DataFrame with observation_time_hourly."""
     return (
-        time_series_points.where(F.col(ContractColumnNames.quantity).isNotNull())
-        .withColumn(
+        time_series_points.withColumn(
             EphemeralColumnNames.observation_time_hourly,
             F.date_trunc("hour", F.col(ContractColumnNames.observation_time)),
         )
