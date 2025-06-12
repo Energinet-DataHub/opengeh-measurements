@@ -1,5 +1,0 @@
-orchestration_type;orchestration_instance_id;transaction_id;transaction_creation_datetime;metering_point_id;metering_point_type;date;quantity;#comment
-net_consumption;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];150000001500170200;net_consumption;2024-12-31T23:00:00Z;2.740;CENC = calculated estimated netto consumption ( d07 - d06 / 365 = 2.740) 
-net_consumption;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];150000001500170200;net_consumption;2025-01-01T23:00:00Z;2.740;CENC = calculated estimated netto consumption ( d07 - d06 / 365 = 2.740) 
-net_consumption;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];150000001500170201;net_consumption;2024-12-31T23:00:00Z;0;CENC = calculated estimated netto consumption ( d07 - d06 / 365 = 0) 
-net_consumption;00000000-0000-0000-0000-000000000001;[IGNORED];[IGNORED];150000001500170201;net_consumption;2025-01-01T23:00:00Z;0;CENC = calculated estimated netto consumption ( d07 - d06 / 365 = 0) 

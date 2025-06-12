@@ -1,11 +1,9 @@
-import time
-
-from databricks.sdk.service.sql import StatementResponse
 from geh_common.databricks import DatabricksApiClient
 
 from core.gold.infrastructure.config import GoldTableNames
 from core.settings.gold_settings import GoldSettings
 from core.silver.domain.transformations.migrations_transformation import MIGRATION_ORCHESTRATION_INSTANCE_ID
+from tests.subsystem_tests.helpers.databricks_assertion_helper import DatabricksAssertionHelper
 from tests.subsystem_tests.settings.databricks_settings import DatabricksSettings
 
 
@@ -28,20 +26,7 @@ class GoldLayerFixture:
                 WHERE orchestration_instance_id = '{orchestration_instance_id}'
             """
 
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            result = self.databricks_api_client.execute_statement(
-                warehouse_id=self.databricks_settings.warehouse_id, statement=query
-            )
-
-            count = self._extract_count_from_result(result)
-
-            if count > 0:
-                return
-
-            time.sleep(poll_interval)
-
-        raise AssertionError(f"No measurement found with orchestration_instance_id: {orchestration_instance_id}")
+        DatabricksAssertionHelper().assert_row_persisted(query, timeout, poll_interval)
 
     def assert_migrated_measurement_persisted(
         self, transaction_id: str, timeout: int = 60, poll_interval: int = 5
@@ -51,29 +36,15 @@ class GoldLayerFixture:
                 FROM {self.databricks_settings.catalog_name}.{self.gold_table}
                 WHERE orchestration_instance_id = '{MIGRATION_ORCHESTRATION_INSTANCE_ID}'
                 AND transaction_id = '{transaction_id}'
-
             """
 
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            result = self.databricks_api_client.execute_statement(
-                warehouse_id=self.databricks_settings.warehouse_id, statement=query
-            )
+        DatabricksAssertionHelper().assert_row_persisted(query, timeout, poll_interval)
 
-            count = self._extract_count_from_result(result)
+    def assert_sap_series_persisted(self, metering_point_id: str, timeout: int = 60, poll_interval: int = 5) -> None:
+        query = f"""
+                SELECT COUNT(*) AS count
+                FROM {self.databricks_settings.catalog_name}.{self.gold_settings.gold_database_name}.{GoldTableNames.gold_measurements_sap_series}
+                WHERE metering_point_id = '{metering_point_id}'
+            """
 
-            if count > 0:
-                return
-
-            time.sleep(poll_interval)
-
-        raise AssertionError(
-            f"No measurement found with orchestration_instance_id: {MIGRATION_ORCHESTRATION_INSTANCE_ID} and transaction_id {transaction_id}"
-        )
-
-    def _extract_count_from_result(self, result: StatementResponse) -> int:
-        if not result.result or not result.result.data_array:
-            return 0
-        count_row = result.result.data_array[0]
-        count_value = count_row[0]
-        return int(count_value)
+        DatabricksAssertionHelper().assert_row_persisted(query, timeout, poll_interval)

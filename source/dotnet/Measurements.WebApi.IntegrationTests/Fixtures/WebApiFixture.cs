@@ -1,12 +1,13 @@
 ﻿using System.Net.Http.Headers;
 using Azure.Core;
 using Azure.Identity;
+using Energinet.DataHub.Core.App.Common.Extensions.Options;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
 using Energinet.DataHub.Measurements.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Energinet.DataHub.Measurements.WebApi.Constants;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -77,8 +78,8 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting($"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}", IntegrationTestConfiguration.DatabricksSettings.WarehouseId);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}", DatabricksSchemaManager.SchemaName);
         builder.UseSetting($"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}", CatalogName);
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
-        builder.UseSetting($"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}", Issuer);
+        builder.UseSetting($"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.ApplicationIdUri)}", ApplicationIdUri);
+        builder.UseSetting($"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.Issuer)}", Issuer);
     }
 
     private AuthenticationHeaderValue CreateAuthorizationHeader(string applicationIdUri = ApplicationIdUri)
@@ -87,7 +88,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             .GetToken(new TokenRequestContext([applicationIdUri]), CancellationToken.None)
             .Token;
 
-        return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+        return new AuthenticationHeaderValue(AuthenticationSchemes.Default, token);
     }
 
     private static Dictionary<string, (string DataType, bool IsNullable)> CreateMeasurementsColumnDefinitions() =>
@@ -96,7 +97,7 @@ public class WebApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
             { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
             { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", true) },
             { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },

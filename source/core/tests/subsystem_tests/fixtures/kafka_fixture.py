@@ -3,7 +3,7 @@ from threading import Timer
 from azure.eventhub import EventData, EventHubConsumerClient, EventHubProducerClient, PartitionContext
 from azure.identity import DefaultAzureCredential
 
-import core.contracts.process_manager.Brs021ForwardMeteredDataNotifyV1_pb2 as Brs021ForwardMeteredDataNotifyV1
+import core.contracts.process_manager.Brs021ForwardMeteredDataNotifyV1.generated.Brs021ForwardMeteredDataNotifyV1_pb2 as Brs021ForwardMeteredDataNotifyV1
 from tests.subsystem_tests.settings.kafka_settings import KafkaSettings
 
 

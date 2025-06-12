@@ -2,7 +2,7 @@ from geh_common.domain.types import MeteringPointType, OrchestrationType
 from geh_common.telemetry.decorators import use_span
 from pyspark.sql import SparkSession
 
-from geh_calculated_measurements.common.application.model import calculated_measurements_hourly_factory
+from geh_calculated_measurements.common.application.model import storage_model_factory
 from geh_calculated_measurements.common.infrastructure import (
     CalculatedMeasurementsRepository,
     CurrentMeasurementsRepository,
@@ -21,23 +21,26 @@ def execute_application(spark: SparkSession, args: ElectricalHeatingArgs) -> Non
     # Create repositories to obtain data frames
     electricity_market_repository = ElectricityMarketRepository(spark, args.catalog_name)
     current_measurements_repository = CurrentMeasurementsRepository(spark, args.catalog_name)
+    calculated_measurements_repository = CalculatedMeasurementsRepository(spark, args.catalog_name)
 
     # Read data frames
     current_measurements = current_measurements_repository.read_current_measurements()
     consumption_metering_point_periods = electricity_market_repository.read_consumption_metering_point_periods()
     child_metering_point_periods = electricity_market_repository.read_child_metering_points()
+    internal_calculated_measurements = calculated_measurements_repository.read_calculated_measurements()
 
     # Execute the domain logic
     calculated_measurements_daily = execute(
-        current_measurements,
-        consumption_metering_point_periods,
-        child_metering_point_periods,
-        args.time_zone,
-        args.execution_start_datetime,
+        current_measurements=current_measurements,
+        internal_calculated_measurements=internal_calculated_measurements,
+        consumption_metering_point_periods=consumption_metering_point_periods,
+        child_metering_points=child_metering_point_periods,
+        time_zone=args.time_zone,
+        execution_start_datetime=args.execution_start_datetime,
     )
 
     # Write the calculated measurements
-    calculated_measurements = calculated_measurements_hourly_factory.create(
+    calculated_measurements = storage_model_factory.create(
         measurements=calculated_measurements_daily,
         orchestration_instance_id=args.orchestration_instance_id,
         orchestration_type=OrchestrationType.ELECTRICAL_HEATING,

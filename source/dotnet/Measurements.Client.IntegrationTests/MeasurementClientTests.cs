@@ -44,22 +44,29 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByDate_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetMonthlyAggregateByDateAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetMonthlyAggregateByDateQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             new YearMonth(MeasurementsClientFixture.TestObservationDate.Year, MeasurementsClientFixture.TestObservationDate.Month));
-
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
+
+        // Act
         var measurements = await measurementsClient.GetMonthlyAggregateByDateAsync(query);
 
         // Assert
-        Assert.Single(measurements);
+        var actual = measurements.Single();
+        Assert.Equal(MeasurementsClientFixture.TestObservationDate.Year, actual.Date.Year);
+        Assert.Equal(MeasurementsClientFixture.TestObservationDate.Month, actual.Date.Month);
+        Assert.False(actual.IsMissingValues);
+        Assert.False(actual.ContainsUpdatedValues);
+        Assert.Contains(Quality.Measured, actual.Qualities);
+        Assert.Equal(285.6m, actual.Quantity);
     }
 
     [Fact]
-    public async Task GetAggregatedByMonth_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetYearlyAggregateByMonthAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetYearlyAggregateByMonthQuery(
@@ -73,7 +80,7 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByYear_WhenCalled_ThenReturnsValidAggregatedMeasurements()
+    public async Task GetAggregateByYearAsync_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetAggregateByYearQuery(MeasurementsClientFixture.TestMeteringPointId);
@@ -86,20 +93,20 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetAggregatedByPeriod_WhenCalled_ReturnsEmptyList()
+    public async Task GetAggregatedByPeriod_WhenCalled_ThenReturnsValidAggregatedMeasurements()
     {
         // Arrange
         var query = new GetAggregateByPeriodQuery(
             [MeasurementsClientFixture.TestMeteringPointId],
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)),
+            Instant.FromDateTimeOffset(MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset()),
+            Instant.FromDateTimeOffset(MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset().AddDays(1)),
             Aggregation.Hour);
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetAggregateByPeriodAsync(query);
+        var measurements = await measurementsClient.GetAggregatedByPeriodAsync(query);
 
         // Assert
-        Assert.Empty(measurements);
+        Assert.Single(measurements);
     }
 
     private static void AssertAllPointsInPositionsEqualsExpected(MeasurementDto measurements)

@@ -1,2 +1,0 @@
-metering_point_id;metering_point_type;date;quantity;#comment
-150000001500170200;net_consumption;2025-01-31T23:00:00Z;4.932;move_in - use standard for customer without electrical heating value 1800/year (365) = 4.932

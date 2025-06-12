@@ -1,4 +1,6 @@
-﻿using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
+﻿using Energinet.DataHub.Core.App.Common.Extensions.Options;
+using Energinet.DataHub.Core.App.Common.Identity;
+using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
 using Energinet.DataHub.Measurements.Application.Extensions.Options;
@@ -72,8 +74,8 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
                     [$"{DatabricksSqlStatementOptions.DatabricksOptions}:{nameof(DatabricksSqlStatementOptions.WarehouseId)}"] = IntegrationTestConfiguration.DatabricksSettings.WarehouseId,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.SchemaName)}"] = DatabricksSchemaManager.SchemaName,
                     [$"{DatabricksSchemaOptions.SectionName}:{nameof(DatabricksSchemaOptions.CatalogName)}"] = CatalogName,
-                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
-                    [$"{AuthenticationOptions.SectionName}:{nameof(AuthenticationOptions.Issuer)}"] = Issuer,
+                    [$"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.ApplicationIdUri)}"] = ApplicationIdUri,
+                    [$"{SubsystemAuthenticationOptions.SectionName}:{nameof(SubsystemAuthenticationOptions.Issuer)}"] = Issuer,
                 });
             })
             .UseStartup<Startup>()
@@ -83,7 +85,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
         return host;
     }
 
-    private static ServiceProvider BuildServiceProvider()
+    private static ServiceProvider BuildServiceProvider(IAuthorizationHeaderProvider? authorizationHeaderProvider = null)
     {
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
@@ -106,7 +108,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
             { MeasurementsTableConstants.MeteringPointIdColumnName, ("STRING", false) },
             { MeasurementsTableConstants.UnitColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ObservationTimeColumnName, ("TIMESTAMP", false) },
-            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", false) },
+            { MeasurementsTableConstants.QuantityColumnName, ("DECIMAL(18, 6)", true) },
             { MeasurementsTableConstants.QualityColumnName, ("STRING", false) },
             { MeasurementsTableConstants.ResolutionColumnName, ("STRING", false) },
             { MeasurementsTableConstants.IsCancelledColumnName, ("BOOLEAN", true) },

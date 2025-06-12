@@ -133,3 +133,11 @@ def _(spark: SparkSession, expected_orchestration_instance_id):
         f"{CoreInternalSettings().core_internal_database_name}.{CoreInternalTableNames.process_manager_receipts}"
     ).where(f"orchestration_instance_id = '{expected_orchestration_instance_id}'")
     assert receipts.count() == 1
+
+
+@then("a transaction is available in the measurements series SAP table")
+def _(spark: SparkSession, expected_metering_point_id):
+    measurements_serie_sap = spark.table(
+        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}"
+    ).where(f"metering_point_id = '{expected_metering_point_id}'")
+    assert measurements_serie_sap.count() == 1

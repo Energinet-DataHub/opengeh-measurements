@@ -7,19 +7,19 @@
 
     <PropertyGroup>
         <PackageId>Energinet.DataHub.Measurements.Client</PackageId>
-        <PackageVersion>7.0.0$(VersionSuffix)</PackageVersion>
+        <PackageVersion>8.4.2$(VersionSuffix)</PackageVersion>
         <Title>DH3 Measurements Client library</Title>
         <Company>Energinet-DataHub</Company>
         <Authors>Energinet-DataHub</Authors>
         <PackageProjectUrl>https://github.com/Energinet-DataHub</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Energinet-DataHub/opengeh-measurements</RepositoryUrl>
         <PackageReleaseNotes>
-            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
-            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/Documentation.md)
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/Documentation.md)
         </PackageReleaseNotes>
         <PackageDescription>
-            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
-            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/mmcore/add-measurements-client/docs/Measurements.Client/Documentation.md)
+            [Release Notes](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/ReleaseNotes/ReleaseNotes.md)
+            [Documentation](https://github.com/Energinet-DataHub/opengeh-measurements/blob/main/docs/Measurements.Client/Documentation.md)
         </PackageDescription>
         <Description>Library containing a client to communicate with the Measurements in Energinet DataHub.</Description>
         <PackageTags>energinet;datahub</PackageTags>
@@ -50,6 +50,7 @@
 
     <ItemGroup>
       <PackageReference Include="Azure.Identity" Version="1.13.2" />
+      <PackageReference Include="Energinet.DataHub.Core.App.Common" Version="15.6.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
       <PackageReference Include="NodaTime" Version="3.2.2" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.3.0" />

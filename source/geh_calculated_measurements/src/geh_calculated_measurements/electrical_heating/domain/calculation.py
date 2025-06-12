@@ -2,12 +2,15 @@ from datetime import datetime
 
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
-from geh_common.pyspark.transformations import convert_to_utc
+from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
+from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import CurrentMeasurements
-from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
+from geh_calculated_measurements.common.domain.model import (
+    CalculatedMeasurementsDaily,
+)
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
@@ -19,6 +22,7 @@ from geh_calculated_measurements.electrical_heating.domain.transformations.commo
 @use_span()
 def execute(
     current_measurements: CurrentMeasurements,
+    internal_calculated_measurements: CalculatedMeasurementsInternal,
     consumption_metering_point_periods: ConsumptionMeteringPointPeriods,
     child_metering_points: ChildMeteringPoints,
     time_zone: str,
@@ -50,9 +54,31 @@ def execute(
         time_series_points_hourly, metering_point_periods, time_zone, execution_start_datetime
     )
 
+    new_electrical_heating = new_electrical_heating.select(
+        "*",
+        F.when(F.col("is_end_of_period"), "end_of_period").otherwise("up_to_end_of_period").alias("settlement_type"),
+    )
+
     # Get old electrical heating in local time
     old_electrical_heating = trans.get_daily_energy_in_local_time(
         current_measurements.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
+    )
+
+    internal_calculated_measurements = convert_from_utc(internal_calculated_measurements.df, time_zone)
+
+    old_electrical_heating = (
+        old_electrical_heating.alias("external")
+        .join(
+            internal_calculated_measurements.alias("internal"),
+            (F.col("external.metering_point_id") == F.col("internal.metering_point_id"))
+            & (F.col("external.date") == F.col("internal.observation_time"))
+            & (F.col("external.quantity") == F.col("internal.quantity")),
+            "left",
+        )
+        .select(
+            "external.*",
+            F.col("internal.settlement_type").alias("settlement_type"),
+        )
     )
 
     # Filter out unchanged electrical heating
@@ -62,4 +88,4 @@ def execute(
 
     changed_electrical_heating_in_utc = convert_to_utc(changed_electrical_heating, time_zone)
 
-    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc)
+    return CalculatedMeasurementsDaily(changed_electrical_heating_in_utc, settlement_type_nullable=True)
