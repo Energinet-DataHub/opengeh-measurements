@@ -14,6 +14,11 @@ public interface IMeasurementsRepository
     IAsyncEnumerable<MeasurementResult> GetByPeriodAsync(string meteringPointId, Instant from, Instant to);
 
     /// <summary>
+    /// Get current measurements for a given metering point in period defined by from and to timestamps.
+    /// </summary>
+    IAsyncEnumerable<MeasurementResult> GetCurrentByPeriodAsync(string meteringPointId, Instant from, Instant to);
+
+    /// <summary>
     /// Get measurements aggregated by date for a given metering point and month.
     /// </summary>
     IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth);
