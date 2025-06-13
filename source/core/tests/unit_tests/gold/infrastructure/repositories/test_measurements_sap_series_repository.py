@@ -31,9 +31,6 @@ def test__append_if_not_exists__when_silver_to_gold__calls_expected(spark: Spark
         gold_measurements,
         GoldMeasurementsSAPSeriesRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[
-            sut.GoldMeasurementsSAPSeriesColumnNames.start_time,
-        ],
         target_filters={
             sut.GoldMeasurementsSAPSeriesColumnNames.orchestration_type: [
                 sut.GehCommonOrchestrationType.SUBMITTED.value
@@ -70,9 +67,6 @@ def test__append_if_not_exists__when_migrations_to_gold__calls_expected(
         gold_measurements,
         GoldMeasurementsSAPSeriesRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[
-            sut.GoldMeasurementsSAPSeriesColumnNames.start_time,
-        ],
         target_filters={
             sut.GoldMeasurementsSAPSeriesColumnNames.orchestration_type: [
                 sut.GehCommonOrchestrationType.MIGRATION.value
@@ -109,9 +103,6 @@ def test__append_if_not_exists__when_calculated_to_gold__calls_expected(
         gold_measurements,
         GoldMeasurementsSAPSeriesRepository().table,
         expected_merge_columns,
-        clustering_columns_to_filter_specifically=[
-            sut.GoldMeasurementsSAPSeriesColumnNames.start_time,
-        ],
         target_filters={
             sut.GoldMeasurementsSAPSeriesColumnNames.orchestration_type: [
                 sut.GehCommonOrchestrationType.CAPACITY_SETTLEMENT.value,

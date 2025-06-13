@@ -23,16 +23,12 @@ class GoldMeasurementsSAPSeriesRepository:
         :param silver_measurements: DataFrame containing the data to be appended.
         """
         orchestration_type_filters = self._get_possible_orchestration_types_for_stream(query_name)
-        clustering_keys_to_filter = [
-            GoldMeasurementsSAPSeriesColumnNames.start_time,
-        ]
 
         delta_table_helper.append_if_not_exists(
             self.spark,
             silver_measurements,
             self.table,
             self._merge_columns(),
-            clustering_columns_to_filter_specifically=clustering_keys_to_filter,
             target_filters=orchestration_type_filters,
         )
 
