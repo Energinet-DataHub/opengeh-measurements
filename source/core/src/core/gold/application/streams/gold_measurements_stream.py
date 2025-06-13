@@ -27,4 +27,4 @@ def _batch_operation(silver_measurements: DataFrame, batch_id: int) -> None:
     ReceiptsRepository().append_if_not_exists(receipts)
 
     sap_series = sap_series_transformations.transform(silver_measurements)
-    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
+    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series, QueryNames.SILVER_TO_GOLD_SAP_SERIES)

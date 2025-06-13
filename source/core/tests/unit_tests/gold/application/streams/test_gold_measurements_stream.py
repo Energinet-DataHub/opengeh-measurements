@@ -49,4 +49,6 @@ def test__pipeline_measurements_silver_to_gold__calls_append_to_gold_measurement
     transform_receipts_mock.assert_called_once_with(ANY)
     receipts_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
     transform_sap_series_mock.assert_called_once_with(ANY)
-    sap_series_repo_mock.append_if_not_exists.assert_called_once_with(ANY)
+    sap_series_repo_mock.append_if_not_exists.assert_called_once_with(
+        transform_sap_series_mock.return_value, QueryNames.SILVER_TO_GOLD_SAP_SERIES
+    )
