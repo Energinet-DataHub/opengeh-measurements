@@ -16,6 +16,8 @@ public static class TestAssets
 
     public static string MeasurementsAggregatedByYear => GetJsonFile($"{nameof(MeasurementsAggregatedByYear)}.json");
 
+    public static string MeasurementsAggregatedByPeriod => GetJsonFile($"{nameof(MeasurementsAggregatedByPeriod)}.json");
+
     private static string GetJsonFile(string filename)
     {
         var assembly = Assembly.GetExecutingAssembly();

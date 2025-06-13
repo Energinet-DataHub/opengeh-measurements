@@ -37,6 +37,7 @@ public static class ClientExtensions
         });
 
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
+        services.AddScoped<IMeasurementsForPeriodResponseParser, MeasurementsForPeriodResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
         return services;

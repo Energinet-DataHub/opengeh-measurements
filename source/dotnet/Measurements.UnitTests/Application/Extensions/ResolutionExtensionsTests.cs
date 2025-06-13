@@ -3,7 +3,7 @@ using Energinet.DataHub.Measurements.Domain;
 using NodaTime.Text;
 using Xunit;
 
-namespace Energinet.DataHub.Measurements.UnitTests.Domain.Extensions;
+namespace Energinet.DataHub.Measurements.UnitTests.Application.Extensions;
 
 public class ResolutionExtensionsTests
 {

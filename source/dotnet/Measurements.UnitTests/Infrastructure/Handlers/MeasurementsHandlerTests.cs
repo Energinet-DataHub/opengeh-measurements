@@ -64,6 +64,52 @@ public class MeasurementsHandlerTests
 
     [Theory]
     [InlineAutoData]
+    public async Task GetCurrentByPeriod_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
+        Mock<IMeasurementsRepository> measurementRepositoryMock)
+    {
+        // Arrange
+        var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetByPeriodRequest("123456789", date, date.AddDays(1));
+        var raw = CreateMeasurementsRaw(date);
+        var measurementResult = new MeasurementResult(raw);
+        measurementRepositoryMock
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Returns(AsyncEnumerable.Repeat(measurementResult, 1));
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetCurrentByPeriodAsync(request);
+        var actualPoint = actual.Points.Single();
+
+        // Assert
+        Assert.Equal(date, actualPoint.ObservationTime.ToDateTimeOffset());
+        Assert.Equal(42, actualPoint.Quantity);
+        Assert.Equal(Quality.Measured, actualPoint.Quality);
+        Assert.Equal(Unit.kWh, actualPoint.Unit);
+        Assert.Equal(date, actualPoint.Created.ToDateTimeOffset());
+    }
+
+    [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsNotExist_ThenReturnsEmptyList()
+    {
+        // Arrange
+        var date = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var request = new GetByPeriodRequest("123456789", date, date.AddDays(1));
+        var measurementRepositoryMock = new Mock<IMeasurementsRepository>();
+        measurementRepositoryMock
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<string>(), It.IsAny<Instant>(), It.IsAny<Instant>()))
+            .Returns(AsyncEnumerable.Empty<MeasurementResult>());
+        var sut = new MeasurementsHandler(measurementRepositoryMock.Object);
+
+        // Act
+        var actual = await sut.GetCurrentByPeriodAsync(request);
+
+        // Assert
+        Assert.Empty(actual.Points);
+    }
+
+    [Theory]
+    [InlineAutoData]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExist_ThenReturnsMeasurementsForPeriod(
         Mock<IMeasurementsRepository> measurementRepositoryMock)
