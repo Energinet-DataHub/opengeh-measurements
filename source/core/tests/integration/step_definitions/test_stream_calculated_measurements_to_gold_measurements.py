@@ -125,3 +125,11 @@ def _(spark: SparkSession, expected_metering_point_id, number_of_measurements_ro
         f"metering_point_id = '{expected_metering_point_id}'"
     )
     assert gold_measurements.count() == int(number_of_measurements_rows)
+
+
+@then(parsers.parse("{number_of_measurements_rows} measurements row(s) are available in the gold sap series table"))
+def _(spark: SparkSession, expected_metering_point_id, number_of_measurements_rows):
+    gold_measurements = spark.table(
+        f"{GoldSettings().gold_database_name}.{GoldTableNames.gold_measurements_sap_series}"
+    ).where(f"metering_point_id = '{expected_metering_point_id}'")
+    assert gold_measurements.count() == int(number_of_measurements_rows)
