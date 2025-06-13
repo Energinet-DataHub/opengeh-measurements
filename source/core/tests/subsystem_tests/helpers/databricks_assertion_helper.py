@@ -16,22 +16,20 @@ class DatabricksAssertionHelper:
 
     def assert_row_persisted(self, query, timeout: int = 60, poll_interval: int = 5) -> None:
         start_time = time.time()
-        print(f"Start time: {start_time}")  # noqa: T201
-        while (time.time() - start_time) < timeout:
-            print("Checking...")  # noqa: T201
+
+        while True:
+            if (time.time() - start_time) > timeout:
+                raise AssertionError(f"No row found for query: {query} after {timeout} seconds.")
+
             result = self.databricks_api_client.execute_statement(
                 warehouse_id=self.databricks_settings.warehouse_id, statement=query
             )
 
             count = self._extract_count_from_result(result)
-            print(f"Query: {query}, Count: {count}")  # noqa: T201
-
             if count > 0:
                 return
 
             time.sleep(poll_interval)
-
-        raise AssertionError(f"No row found for query: {query}, Count: {count} after {timeout} seconds.")
 
     def _extract_count_from_result(self, result: StatementResponse) -> int:
         if not result.result or not result.result.data_array:
