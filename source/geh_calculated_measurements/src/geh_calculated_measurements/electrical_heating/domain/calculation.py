@@ -2,12 +2,14 @@ from datetime import datetime
 
 import pyspark.sql.functions as F
 from geh_common.domain.types import MeteringPointType
+from geh_common.domain.types.quantity_quality import QuantityQuality
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 
 import geh_calculated_measurements.electrical_heating.domain.transformations as trans
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import CurrentMeasurements
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.common.domain.model import (
     CalculatedMeasurementsDaily,
 )
@@ -32,6 +34,9 @@ def execute(
 
     Returns the calculated electrical heating in UTC where the new value has changed.
     """
+    non_missing_measurements = current_measurements.df.filter(
+        F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value)
+    )
     # Join metering point periods and return them in local time and split by settlement month
     metering_point_periods = trans.get_joined_metering_point_periods_in_local_time(
         consumption_metering_point_periods, child_metering_points, time_zone, execution_start_datetime
@@ -39,7 +44,7 @@ def execute(
 
     # It's important that time series are aggregated hourly before converting to local time.
     # The reason is that when moving from DST to standard time, the same hour is duplicated in local time.
-    time_series_points_hourly = calculate_hourly_quantity(current_measurements.df)
+    time_series_points_hourly = calculate_hourly_quantity(non_missing_measurements)
 
     # Add observation time in local time
     time_series_points_hourly = time_series_points_hourly.select(
@@ -64,12 +69,12 @@ def execute(
         current_measurements.df, time_zone, [MeteringPointType.ELECTRICAL_HEATING]
     )
 
-    internal_calculated_measurements = convert_from_utc(internal_calculated_measurements.df, time_zone)
+    internal_calculated_measurements_local_time = convert_from_utc(internal_calculated_measurements.df, time_zone)
 
     old_electrical_heating = (
         old_electrical_heating.alias("external")
         .join(
-            internal_calculated_measurements.alias("internal"),
+            internal_calculated_measurements_local_time.alias("internal"),
             (F.col("external.metering_point_id") == F.col("internal.metering_point_id"))
             & (F.col("external.date") == F.col("internal.observation_time"))
             & (F.col("external.quantity") == F.col("internal.quantity")),

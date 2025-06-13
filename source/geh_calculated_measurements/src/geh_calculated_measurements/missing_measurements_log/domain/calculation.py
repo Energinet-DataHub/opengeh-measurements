@@ -29,13 +29,16 @@ def execute(
     period_start_datetime: datetime,
     period_end_datetime: datetime,
 ) -> MissingMeasurementsLog:
+    non_missing_measurements = current_measurements.df.filter(
+        F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value)
+    )
     metering_point_periods_df = _get_metering_point_periods_from_grid_areas(metering_point_periods.df, grid_area_codes)
 
     expected_measurement_counts = _get_expected_measurement_counts(
         metering_point_periods_df, time_zone, period_start_datetime, period_end_datetime
     )
     actual_measurement_counts = _get_actual_measurement_counts(
-        current_measurements, period_start_datetime, period_end_datetime, time_zone
+        non_missing_measurements, period_start_datetime, period_end_datetime, time_zone
     )
 
     missing_measurements = _get_missing_measurements(
@@ -117,14 +120,14 @@ def _get_expected_measurement_counts(
 
 
 def _get_actual_measurement_counts(
-    current_measurements: CurrentMeasurements,
+    current_measurements: DataFrame,
     period_start_datetime: datetime,
     period_end_datetime: datetime,
     time_zone: str,
 ) -> DataFrame:
     """Calculate the actual measurement counts grouped by metering point and date."""
     current_measurements_df = (
-        current_measurements.df.where(F.col(ContractColumnNames.observation_time) >= period_start_datetime)
+        current_measurements.where(F.col(ContractColumnNames.observation_time) >= period_start_datetime)
         .where(F.col(ContractColumnNames.observation_time) < period_end_datetime)
         .where(F.col(ContractColumnNames.quality) != QuantityQuality.MISSING.value)
     )

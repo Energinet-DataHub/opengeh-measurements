@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
-from geh_common.domain.types import MeteringPointType
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
@@ -97,6 +97,8 @@ def prepare_cenc_with_move_in(
 def _filter_relevant_time_series_points(time_series_points: CurrentMeasurements) -> DataFrame:
     """Filter time series points to include only supply_to_grid and consumption_from_grid."""
     return time_series_points.df.filter(
+        F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value)
+    ).filter(
         F.col(ContractColumnNames.metering_point_type).isin(
             MeteringPointType.SUPPLY_TO_GRID.value, MeteringPointType.CONSUMPTION_FROM_GRID.value
         )

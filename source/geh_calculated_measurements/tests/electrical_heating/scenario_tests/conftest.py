@@ -11,15 +11,11 @@ from pyspark.sql import functions as F
 from geh_calculated_measurements.common.application.model import CalculatedMeasurementsInternal
 from geh_calculated_measurements.common.domain import ContractColumnNames, CurrentMeasurements
 from geh_calculated_measurements.common.domain.model import CalculatedMeasurementsDaily
-from geh_calculated_measurements.common.infrastructure.current_measurements_repository import (
-    CurrentMeasurementsRepository,
-)
 from geh_calculated_measurements.electrical_heating.domain import (
     ChildMeteringPoints,
     ConsumptionMeteringPointPeriods,
     execute,
 )
-from tests import SPARK_CATALOG_NAME
 from tests.external_data_products import ExternalDataProducts
 
 
@@ -31,18 +27,11 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     scenario_path = str(Path(request.module.__file__).parent)
 
     # Read input data
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(
-            CurrentMeasurementsRepository,
-            "_read",
-            lambda _: read_csv(
-                spark,
-                f"{scenario_path}/when/measurements_gold/current_v1.csv",
-                ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
-            ),
-        )
-        repository = CurrentMeasurementsRepository(spark, SPARK_CATALOG_NAME)
-        current_measurements = repository.read_current_measurements().df
+    current_measurements = read_csv(
+        spark,
+        f"{scenario_path}/when/measurements_gold/current_v1.csv",
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
+    )
 
     calculated_measurements_path = f"{scenario_path}/when/calculated_measurements_internal/calculated_measurements.csv"
     if Path(calculated_measurements_path).exists():
