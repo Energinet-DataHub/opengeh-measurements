@@ -27,4 +27,6 @@ def _batch_operation(calculated_measurements: DataFrame, batch_id: int) -> None:
 
     if SAPStreamSettings().stream_calculated_to_sap_series:
         sap_series = sap_series_transformations.transform_calculated(calculated_measurements)
-        GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
+        GoldMeasurementsSAPSeriesRepository().append_if_not_exists(
+            sap_series, query_name=QueryNames.CALCULATED_TO_GOLD_SAP_SERIES
+        )
