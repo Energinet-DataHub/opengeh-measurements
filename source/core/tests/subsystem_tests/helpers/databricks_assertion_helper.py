@@ -16,7 +16,7 @@ class DatabricksAssertionHelper:
 
     def assert_row_persisted(self, query, timeout: int = 60, poll_interval: int = 5) -> None:
         start_time = time.time()
-        while time.time() - start_time < timeout:
+        while (time.time() - start_time) < timeout:
             result = self.databricks_api_client.execute_statement(
                 warehouse_id=self.databricks_settings.warehouse_id, statement=query
             )
