@@ -21,10 +21,7 @@ class CurrentMeasurementsRepository:
     database_name = current_v1.database_name
 
     def read_current_measurements(self) -> CurrentMeasurements:
-        df = self._read().filter(
-            (F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value))
-            & F.col(ContractColumnNames.quantity).isNotNull()
-        )
+        df = self._read().filter(F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value))
         assert_contract(df.schema, current_v1.schema)
         return CurrentMeasurements(df)
 
