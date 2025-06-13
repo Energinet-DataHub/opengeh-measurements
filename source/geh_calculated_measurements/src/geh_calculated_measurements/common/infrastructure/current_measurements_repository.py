@@ -1,7 +1,10 @@
 from geh_common.data_products.measurements_core.measurements_gold import current_v1
+from geh_common.domain.types.quantity_quality import QuantityQuality
 from geh_common.testing.dataframes import assert_contract
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.common.domain.model.current_measurements import CurrentMeasurements
 
 
@@ -18,7 +21,7 @@ class CurrentMeasurementsRepository:
     database_name = current_v1.database_name
 
     def read_current_measurements(self) -> CurrentMeasurements:
-        df = self._read()
+        df = self._read().filter(F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value))
         assert_contract(df.schema, current_v1.schema)
         return CurrentMeasurements(df)
 
