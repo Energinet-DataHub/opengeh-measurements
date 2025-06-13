@@ -31,8 +31,8 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     public async Task GetCurrentByPeriod_WhenCalled_ReturnsValidMeasurement()
     {
         // Arrange
-        var fromDateTimeOffset = DateTimeOffset.UtcNow;
-        var toDateTimeOffset = DateTimeOffset.UtcNow.AddDays(1);
+        var fromDateTimeOffset = MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset();
+        var toDateTimeOffset = MeasurementsClientFixture.TestObservationDate.PlusDays(1).ToUtcDateTimeOffset();
         var query = new GetByPeriodQuery(
             MeasurementsClientFixture.TestMeteringPointId,
             Instant.FromDateTimeOffset(fromDateTimeOffset),
@@ -49,8 +49,8 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
             Assert.Equal(Resolution.Hourly, point.Resolution);
             Assert.Equal(Unit.kWh, point.Unit);
             Assert.NotEqual(0, point.Order);
-            Assert.Equal(fromDateTimeOffset, point.PersistedTime);
-            Assert.Equal(toDateTimeOffset, point.RegistrationTime);
+            Assert.Equal("2025-01-17T03:40:55Z", point.PersistedTime.ToFormattedString());
+            Assert.Equal("2025-01-15T03:40:55Z", point.RegistrationTime.ToFormattedString());
         });
     }
 

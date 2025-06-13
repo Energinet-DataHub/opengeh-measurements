@@ -79,6 +79,67 @@ public class MeasurementsControllerTests
     }
 
     [Theory]
+    [AutoMoqData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var expected = CreateMeasurementResponse();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ReturnsAsync(expected);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetCurrentByPeriodAsync(request) as OkObjectResult)!.Value;
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ReturnsAsync(MeasurementsResponse.Create([]));
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetCurrentByPeriodAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsUnknownError_ThrowsException(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetCurrentByPeriodAsync(request));
+    }
+
+    [Theory]
     [AutoData]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExists_ReturnValidJson(
