@@ -5,6 +5,7 @@ using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moq;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
@@ -22,6 +23,8 @@ public class ClientExtensionsTests
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
+        var mockedAuthorizationHeaderProvider = new Mock<IAuthorizationHeaderProvider>();
+        services.AddSingleton(mockedAuthorizationHeaderProvider.Object);
         AddInMemoryConfiguration(services, configurations);
 
         // Act
@@ -58,25 +61,34 @@ public class ClientExtensionsTests
     }
 
     [Fact]
-    public void AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
+    public async Task AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
     {
         // Arrange
         var services = new ServiceCollection();
+        var expectedAuthenticationHeaderValueParameter = "Bearer some-token";
+        AuthenticationHeaderValue? actualAuthenticationHeaderValue = null;
         var configurations = new Dictionary<string, string?>
         {
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
         AddInMemoryConfiguration(services, configurations);
+        Func<IServiceProvider, Task<AuthenticationHeaderValue>> mockedAuthorizationHeaderProviderAsync = async _ =>
+        {
+            actualAuthenticationHeaderValue = new AuthenticationHeaderValue("Bearer", "some-token");
+            return await Task.FromResult(actualAuthenticationHeaderValue);
+        };
 
         // Act
-        services.AddMeasurementsClient(new B2CAuthorizationHeaderProvider());
+        services.AddMeasurementsClient(mockedAuthorizationHeaderProviderAsync);
 
         // Assert
-        var actual = services
-            .BuildServiceProvider()
-            .GetRequiredService<IMeasurementsClient>();
-        Assert.IsType<MeasurementsClient>(actual);
+        var serviceProvider = services.BuildServiceProvider();
+        var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+        var actual = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
+        await Assert.ThrowsAsync<HttpRequestException>(() => actual.GetAsync("https://localhost"));
+        Assert.NotNull(actualAuthenticationHeaderValue);
+        Assert.Equal(expectedAuthenticationHeaderValueParameter, actualAuthenticationHeaderValue.ToString());
     }
 
     private static void AddInMemoryConfiguration(IServiceCollection services, Dictionary<string, string?> configurations)
@@ -86,13 +98,5 @@ public class ClientExtensionsTests
             .Build();
 
         services.AddScoped<IConfiguration>(_ => configuration);
-    }
-
-    private class B2CAuthorizationHeaderProvider : IAuthorizationHeaderProvider
-    {
-        public AuthenticationHeaderValue CreateAuthorizationHeader(string scope)
-        {
-            return new AuthenticationHeaderValue("Bearer", "test-token");
-        }
     }
 }
