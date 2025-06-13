@@ -40,9 +40,9 @@ def _(kafka_fixture: KafkaFixture, test_data: TestData) -> None:
 
 @then("the measurement transaction is available in the Gold Layer")
 def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
-    gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id)
+    gold_layer_fixture.assert_measurement_persisted(test_data.orchestration_instance_id, poll_interval=120)
 
 
 @then("the measurement transaction is available in the SAP Series Gold table")
 def _(gold_layer_fixture: GoldLayerFixture, test_data: TestData) -> None:
-    gold_layer_fixture.assert_sap_series_persisted(test_data.metering_point_id)
+    gold_layer_fixture.assert_sap_series_persisted(test_data.metering_point_id, poll_interval=120)
