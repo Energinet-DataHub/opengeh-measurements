@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+﻿using System.Net.Http.Headers;
+using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
 using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
@@ -44,7 +45,7 @@ public static class ClientExtensions
     /// <summary>
     /// Register Measurement Client for use in the application using a custom authorization header provider.
     /// </summary>
-    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, CustomAuthorizationHandler customAuthorizationHandler)
+    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, Func<IServiceProvider, CustomAuthorizationHandler> customAuthorizationHandler)
     {
         services
             .AddOptions<MeasurementHttpClientOptions>()
@@ -57,8 +58,7 @@ public static class ClientExtensions
                 var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
                 httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             })
-            .AddHttpMessageHandler(() => customAuthorizationHandler);
-
+            .AddHttpMessageHandler(customAuthorizationHandler);
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 

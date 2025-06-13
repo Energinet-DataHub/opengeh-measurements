@@ -2,14 +2,12 @@
 
 namespace Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 
-public class CustomAuthorizationHandler(Func<Task<AuthenticationHeaderValue>> authenticationHeaderProvider)
+public class CustomAuthorizationHandler(AuthenticationHeaderValue authenticationHeaderValue)
     : DelegatingHandler
 {
     protected sealed override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var authenticationHeader = await authenticationHeaderProvider.Invoke().ConfigureAwait(false);
-        request.Headers.Authorization = authenticationHeader;
-
+        request.Headers.Authorization = authenticationHeaderValue;
         return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

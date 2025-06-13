@@ -1,10 +1,12 @@
 ﻿using System.Net.Http.Headers;
 using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
+using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moq;
 using Xunit.Categories;
 
 namespace Energinet.DataHub.Measurements.Client.UnitTests.Extensions;
@@ -22,8 +24,9 @@ public class ClientExtensionsTests
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
+        var mockedAuthorizationHeaderProvider = new Mock<IAuthorizationHeaderProvider>();
+        services.AddSingleton(mockedAuthorizationHeaderProvider.Object);
         AddInMemoryConfiguration(services, configurations);
-        services.AddTokenCredentialProvider();
 
         // Act
         services.AddMeasurementsClient();
@@ -63,6 +66,7 @@ public class ClientExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
+        var serviceProvider = services.BuildServiceProvider();
         var expectedAuthenticationHeaderValueParameter = "Bearer some-token";
         AuthenticationHeaderValue? actualAuthenticationHeaderValue = null;
         var configurations = new Dictionary<string, string?>
@@ -73,15 +77,14 @@ public class ClientExtensionsTests
         AddInMemoryConfiguration(services, configurations);
 
         // Act
-        services.AddMeasurementsClient(new CustomAuthorizationHandler(async () =>
+        services.AddMeasurementsClient(sp =>
         {
-            var authenticationHeaderValue = await MockedAuthenticationHeaderValue();
+            var authenticationHeaderValue = new AuthenticationHeaderValue("Bearer", "some-token");
             actualAuthenticationHeaderValue = authenticationHeaderValue;
-            return authenticationHeaderValue;
-        }));
+            return new CustomAuthorizationHandler(authenticationHeaderValue);
+        });
 
         // Assert
-        var serviceProvider = services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         var actual = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
         await Assert.ThrowsAsync<HttpRequestException>(() => actual.GetAsync("https://localhost"));
@@ -96,10 +99,5 @@ public class ClientExtensionsTests
             .Build();
 
         services.AddScoped<IConfiguration>(_ => configuration);
-    }
-
-    private static async Task<AuthenticationHeaderValue> MockedAuthenticationHeaderValue()
-    {
-        return await Task.FromResult(new AuthenticationHeaderValue("Bearer", "some-token"));
     }
 }
