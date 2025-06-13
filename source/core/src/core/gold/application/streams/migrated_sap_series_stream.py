@@ -29,4 +29,4 @@ def _batch_operation(batch_df: DataFrame, batch_id: int) -> None:
     bronze_migrated_as_silver = silver_migrations_transformations.transform(batch_df_filtered)
 
     sap_series = sap_series_transformations.transform(bronze_migrated_as_silver)
-    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series)
+    GoldMeasurementsSAPSeriesRepository().append_if_not_exists(sap_series, QueryNames.MIGRATIONS_TO_SAP_SERIES_GOLD)

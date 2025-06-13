@@ -64,4 +64,7 @@ def test__batch_operation__calls_expected_methods(spark, mocker: MockerFixture) 
     # Assert
     silver_mock_filter.assert_called_once_with(mock_migrated_transactions)
     silver_mock_transform.assert_called_once_with(mock_filtered)
-    series_sap_repo_mock.append_if_not_exists.assert_called_once()
+    series_sap_repo_mock.append_if_not_exists.assert_called_once_with(
+        transform_series_sap_mock.return_value,
+        sut.QueryNames.MIGRATIONS_TO_SAP_SERIES_GOLD,
+    )
