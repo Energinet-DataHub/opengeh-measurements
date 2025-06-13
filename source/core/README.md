@@ -18,4 +18,10 @@ See the [gold module](src/core/gold/README.md) for more information about the go
 
 ## Architecture
 
-![Measurements Core Architecture](./../../docs/core/images/measurements_core_architecture.drawio.svg)
+### Inbound Measurements
+
+![Measurements Core Architecture Inbound](./../../docs/core/images/inbound_measurements_core_architecture.drawio.svg)
+
+### Outbound Measurements
+
+![Measurements Core Architecture Outbound](./../../docs/core/images/outbound_measurements_core_architecture.drawio.svg)
