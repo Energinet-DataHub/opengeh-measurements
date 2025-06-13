@@ -1,5 +1,13 @@
 # Measurements.Client Release Notes
 
+## Version 8.6.0
+
+- Add alternative registration option for measurement client.
+
+## Version 8.5.0
+
+- Implement `GetCurrentByPeriodAsync`.
+
 ## Version 8.4.2
 
 - Refactor B2C authentication.

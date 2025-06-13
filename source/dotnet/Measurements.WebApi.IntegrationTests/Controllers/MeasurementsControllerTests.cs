@@ -153,18 +153,108 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
     }
 
     [Fact]
-    public async Task GetCurrentByPeriodAsync_WhenValid_ReturnsAcceptedButNotImplementedResponse()
+    public async Task GetCurrentByPeriodAsync_WhenMeteringPointExists_ReturnsValidMeasurements()
     {
         // Arrange
-        var from = Instant.FromUtc(2022, 3, 19, 23, 0, 0);
-        var to = Instant.FromUtc(2022, 3, 20, 23, 0, 0);
-        var url = CreateGetCurrentMeasurementsByPeriodUrl("123456789123456789", from, to);
+        const string meteringPointId = "123456789012345678";
+        var rows = new MeasurementsTableRowsBuilder()
+            .WithContinuousRowsForDate(meteringPointId, new LocalDate(2022, 3, 20))
+            .Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetCurrentMeasurementsByPeriodUrl(
+            meteringPointId, "2022-03-19T23:00:00Z", "2022-03-20T23:00:00Z");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+        var actual = await ParseResponseAsync<MeasurementsResponse>(actualResponse);
+
+        // Assert
+        Assert.Equal(24, actual.Points.Count);
+        foreach (var point in actual.Points)
+        {
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Resolution.Hourly, point.Resolution);
+            Assert.Equal("2022-03-24T23:00:00Z", point.Created.ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture));
+        }
+    }
+
+    [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenMeteringPointDoesNotExist_ReturnNotFoundStatus()
+    {
+        // Arrange
+        var url = CreateGetCurrentMeasurementsByPeriodUrl(
+            "987654321987654321", "2022-01-31T23:00:00Z", "2022-01-01T23:00:00Z");
 
         // Act
         var actualResponse = await fixture.Client.GetAsync(url);
 
         // Assert
-        Assert.Equal(HttpStatusCode.Accepted, actualResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, actualResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenInvalidMeteringPointId_ReturnBadRequest()
+    {
+        // Arrange
+        var url = CreateGetCurrentMeasurementsByPeriodUrl(
+            "invalid metering point id", "2022-01-31T23:00:00Z", "2022-01-01T23:00:00Z");
+
+        // Act
+        var actualResponse = await fixture.Client.GetAsync(url);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, actualResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementHasInvalidUnit_ReturnInternalServerError()
+    {
+        // Arrange
+        const string meteringPointId = "123456789012345678";
+        const string startDate = "2022-01-31T23:00:00Z";
+        const string endDate = "2022-02-01T23:00:00Z";
+        var invalidRow = new MeasurementTableRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime("2022-01-31T23:00:00Z")
+            .WithUnit("invalid unit")
+            .Build();
+        var rows = new MeasurementsTableRowsBuilder().WithRow(invalidRow).Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetCurrentMeasurementsByPeriodUrl(meteringPointId, startDate, endDate);
+
+        // Act
+        var actual = await fixture.Client.GetAsync(url);
+        var actualContent = await actual.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
+        Assert.Contains("An unknown error occured while handling request to the Measurements API. Try again later.", actualContent);
+    }
+
+    [Fact]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementHasInvalidResolution_ReturnInternalServerError()
+    {
+        // Arrange
+        const string meteringPointId = "123456789012345678";
+        const string startDate = "2022-01-31T23:00:00Z";
+        const string endDate = "2022-02-01T23:00:00Z";
+        var invalidRow = new MeasurementTableRowBuilder()
+            .WithMeteringPointId(meteringPointId)
+            .WithObservationTime("2022-01-31T23:00:00Z")
+            .WithResolution("invalid resolution")
+            .Build();
+        var rows = new MeasurementsTableRowsBuilder().WithRow(invalidRow).Build();
+        await fixture.InsertRowsAsync(rows);
+        var url = CreateGetCurrentMeasurementsByPeriodUrl(meteringPointId, startDate, endDate);
+
+        // Act
+        var actual = await fixture.Client.GetAsync(url);
+        var actualContent = await actual.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.InternalServerError, actual.StatusCode);
+        Assert.Contains("An unknown error occured while handling request to the Measurements API. Try again later.", actualContent);
     }
 
     [Fact]
@@ -557,7 +647,7 @@ public class MeasurementsControllerTests(WebApiFixture fixture) : IClassFixture<
         return $"{versionPrefix}/measurements/forPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }
 
-    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, Instant startDate, Instant endDate, string versionPrefix = "v5")
+    private static string CreateGetCurrentMeasurementsByPeriodUrl(string expectedMeteringPointId, string startDate, string endDate, string versionPrefix = "v5")
     {
         return $"{versionPrefix}/measurements/currentForPeriod?meteringPointId={expectedMeteringPointId}&startDate={startDate}&endDate={endDate}";
     }

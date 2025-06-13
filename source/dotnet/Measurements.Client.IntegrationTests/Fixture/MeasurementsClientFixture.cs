@@ -1,5 +1,4 @@
 ﻿using Energinet.DataHub.Core.App.Common.Extensions.Options;
-using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Core.Databricks.SqlStatementExecution;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Databricks;
@@ -85,7 +84,7 @@ public sealed class MeasurementsClientFixture : IAsyncLifetime
         return host;
     }
 
-    private static ServiceProvider BuildServiceProvider(IAuthorizationHeaderProvider? authorizationHeaderProvider = null)
+    private static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder()

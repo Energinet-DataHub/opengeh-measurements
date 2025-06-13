@@ -1,3 +1,3 @@
-metering_point_id;metering_point_type;date;quantity;settlement_type;#comment
-150000001500170201;net_consumption;2025-01-31T23:00:00Z;4.932;up_to_end_of_period;Case 1: move_in - use standard for customer without electrical heating value 1800/year (365) = 4.932
-150000001500170202;net_consumption;2025-01-31T23:00:00Z;15.342;up_to_end_of_period;Case 2: move_in - use standard for customer without electrical heating value 5600/year (365) = 15.342
+metering_point_id;date;quantity;settlement_type;#comment
+150000001500170201;2025-01-31T23:00:00Z;4.932;up_to_end_of_period;Case 1: move_in - use standard for customer without electrical heating value 1800/year (365) = 4.932
+150000001500170202;2025-01-31T23:00:00Z;15.342;up_to_end_of_period;Case 2: move_in - use standard for customer without electrical heating value 5600/year (365) = 15.342

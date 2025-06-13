@@ -24,11 +24,12 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     scenario_path = str(Path(request.module.__file__).parent)
 
     # Read input data
-    time_series_points = read_csv(
+    current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
         ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
+
     metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__capacity_settlement/metering_point_periods_v1.csv",
@@ -40,7 +41,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
 
     # Execute the logic
     calculation_output: CalculationOutput = execute(
-        CurrentMeasurements(time_series_points),
+        CurrentMeasurements(current_measurements),
         MeteringPointPeriods(metering_point_periods),
         scenario_parameters["calculation_month"],
         scenario_parameters["calculation_year"],

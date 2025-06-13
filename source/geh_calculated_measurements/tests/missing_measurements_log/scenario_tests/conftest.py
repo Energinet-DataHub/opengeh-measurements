@@ -29,6 +29,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
         ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
+
     metering_point_periods = read_csv(
         spark,
         f"{scenario_path}/when/electricity_market__missing_measurements_log/metering_point_periods_v1.csv",

@@ -15,6 +15,8 @@ class CalculatedMeasurementsRow:
     metering_point_id: str
     transaction_id: str
     transaction_creation_datetime: datetime
+    transaction_start_time: datetime
+    transaction_end_time: datetime
     metering_point_type: str
     observation_time: datetime
     quantity: Decimal
@@ -28,6 +30,8 @@ class CalculatedMeasurementsRowBuilder:
         metering_point_id: str = identifier_helper.create_random_metering_point_id(),
         transaction_id: str = "test_transaction_id",
         transaction_creation_datetime: datetime = datetime(2023, 1, 1, 12, 0, 0),
+        transaction_start_time: datetime = datetime(2023, 1, 1, 12, 0, 0),
+        transaction_end_time: datetime = datetime(2023, 1, 2, 12, 0, 0),
         metering_point_type: str = MeteringPointType.CAPACITY_SETTLEMENT.value,
         observation_time: datetime = datetime(2023, 1, 1, 12, 0, 0),
         quantity: Decimal = Decimal("123.45"),
@@ -38,6 +42,8 @@ class CalculatedMeasurementsRowBuilder:
             metering_point_id=metering_point_id,
             transaction_id=transaction_id,
             transaction_creation_datetime=transaction_creation_datetime,
+            transaction_start_time=transaction_start_time,
+            transaction_end_time=transaction_end_time,
             metering_point_type=metering_point_type,
             observation_time=observation_time,
             quantity=quantity,

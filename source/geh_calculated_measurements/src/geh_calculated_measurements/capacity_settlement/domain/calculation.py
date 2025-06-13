@@ -2,6 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
+from geh_common.domain.types.quantity_quality import QuantityQuality
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
 from pyspark.sql import DataFrame, Window
@@ -32,6 +33,10 @@ def execute(
     calculation_year: int,
     time_zone: str,
 ) -> CalculationOutput:
+    non_missing_measurements = current_measurements.df.filter(
+        F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value)
+    )
+
     metering_point_periods_with_selection_period = _add_selection_period_columns(
         metering_point_periods.df,
         calculation_month=calculation_month,
@@ -39,7 +44,7 @@ def execute(
         time_zone=time_zone,
     )
 
-    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(current_measurements.df)
+    time_series_points_hourly = _transform_quarterly_time_series_to_hourly(non_missing_measurements)
 
     grouping = [
         ContractColumnNames.metering_point_id,

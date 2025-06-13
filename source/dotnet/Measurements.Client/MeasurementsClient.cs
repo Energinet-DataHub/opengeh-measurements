@@ -7,13 +7,13 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using NodaTime;
-using HttpRequestException = System.Net.Http.HttpRequestException;
 
 namespace Energinet.DataHub.Measurements.Client;
 
 public class MeasurementsClient(
     IHttpClientFactory httpClientFactory,
-    IMeasurementsForDateResponseParser measurementsForDateResponseParser)
+    IMeasurementsForDateResponseParser measurementsForDateResponseParser,
+    IMeasurementsForPeriodResponseParser measurementsForPeriodResponseParser)
     : IMeasurementsClient
 {
     private const string CurrentApiVersion = "v5";
@@ -39,9 +39,12 @@ public class MeasurementsClient(
 
         var response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-        return new ReadOnlyCollection<MeasurementPointDto>(response.StatusCode == HttpStatusCode.Accepted
-            ? []
-            : throw new HttpRequestException($"Request failed with status code: {response.StatusCode}"));
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return new ReadOnlyCollection<MeasurementPointDto>([]);
+
+        var result = await measurementsForPeriodResponseParser.ParseResponseMessage(response, cancellationToken);
+
+        return result ?? throw new InvalidOperationException("The response was not successfully parsed.");
     }
 
     public async Task<IEnumerable<MeasurementAggregationByDateDto>> GetMonthlyAggregateByDateAsync(
@@ -93,8 +96,7 @@ public class MeasurementsClient(
         return await DeserializeMeasurementAggregationResponseStreamAsync<T>(stream, cancellationToken);
     }
 
-    private async Task<IEnumerable<T>
-    > DeserializeMeasurementAggregationResponseStreamAsync<T>(
+    private async Task<IEnumerable<T>> DeserializeMeasurementAggregationResponseStreamAsync<T>(
         Stream stream, CancellationToken cancellationToken)
     {
         var jsonDocument = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);

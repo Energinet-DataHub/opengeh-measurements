@@ -15,6 +15,12 @@ public interface IMeasurementsHandler
     Task<MeasurementsResponse> GetByPeriodAsync(GetByPeriodRequest getByPeriodRequest);
 
     /// <summary>
+    /// Get current measurements matching request attributes.
+    /// </summary>
+    /// <param name="getByPeriodRequest"></param>
+    Task<MeasurementsResponse> GetCurrentByPeriodAsync(GetByPeriodRequest getByPeriodRequest);
+
+    /// <summary>
     /// Get measurements aggregated by date matching request attributes.
     /// </summary>
     /// <param name="getAggregatedByDateRequest"></param>

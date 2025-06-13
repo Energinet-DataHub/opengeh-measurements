@@ -15,6 +15,7 @@ from geh_calculated_measurements.net_consumption_group_6.domain import (
     ConsumptionMeteringPointPeriods,
 )
 from geh_calculated_measurements.net_consumption_group_6.domain.calculations import execute_cnc_daily
+from tests.external_data_products import ExternalDataProducts
 
 
 @pytest.fixture(scope="module")
@@ -28,7 +29,7 @@ def test_cases(spark: SparkSession, request: pytest.FixtureRequest, dummy_loggin
     current_measurements = read_csv(
         spark,
         f"{scenario_path}/when/measurements_gold/current_v1.csv",
-        CurrentMeasurements.schema,
+        ExternalDataProducts.CURRENT_MEASUREMENTS.schema,
     )
 
     calculated_measurements = read_csv(
