@@ -16,12 +16,15 @@ class DatabricksAssertionHelper:
 
     def assert_row_persisted(self, query, timeout: int = 60, poll_interval: int = 5) -> None:
         start_time = time.time()
+        print(f"Start time: {start_time}")  # noqa: T201
         while (time.time() - start_time) < timeout:
+            print("Checking...")
             result = self.databricks_api_client.execute_statement(
                 warehouse_id=self.databricks_settings.warehouse_id, statement=query
             )
 
             count = self._extract_count_from_result(result)
+            print(f"Query: {query}, Count: {count}")
 
             if count > 0:
                 return
