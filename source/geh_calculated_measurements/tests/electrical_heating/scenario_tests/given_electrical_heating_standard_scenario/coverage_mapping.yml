@@ -2,3 +2,180 @@ notes: |
   ## PURPOSE
   Standard simple scenario demonstrating that energy is added to electrical heating MP when limit is not exceeded.
   Includes MP that crosses summer and wintertime transition.
+  ## DESIGN CONSIDERATIONS
+  CASE 0
+                          |2024
+                          |_____
+  Parent (E17) period:    |_____
+  Child (D14) period:     |_____
+  E17 Measurement data:     ++
+  Existing D14 data         +
+  New D14 data               +
+
+  CASE 1
+                          |2024
+                          |______________________________|
+  Parent (E17) period:    |______________________________...
+  Child (D14) period:     |______________________________|
+  E17 Measurement data:  ++                               +
+  Included:               _
+  Not included:          _                                _
+
+  CASE 2
+                                  |2024
+                                  |_____
+  Parent (E17) period:            |_____...
+  Child (D14) period:             |_____...
+  E17 Measurement data:             ++++
+  Existing (different) D14 data:    + ++
+  New D14 data                      ++++
+
+  CASE 3
+                                        |2024
+                                        |_____
+  Parent (E17) periods (new):           |___|__...
+  Child (D14) period:                   |______...
+  E17 Measurement data:                 +++++++
+  Existing D14 data (from old periods): +++++++
+  New D14 data:                           ++
+
+  CASE 4 (NSG2, no D15)                                                                                        |Today
+                                                                    |2024
+                                     |______________________________|______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Parent (E17) period 2:                                            |______________________________|
+  Children periods:                  |_____________________________________________________________|
+  E17 Measurement data:              +
+  Existing D14 data:                 +
+  Existing D14 data:                                                +
+  No new D14 data should be generated...
+
+  CASE 5 (NSG2, no D15)
+                                                                                                               |Today
+                                                                    |2024
+                                     |______________________________|______________________________|____________
+  Parent (E17) period 1:             |_____________________________________________________________|
+  Periods:                           |______________________________|______________________________|
+  Children periods:                  |_____________________________________________________________|
+  E17 Measurement data:              +
+  Existing D14 data:                 +
+  Existing D14 data:                                                +
+  No new D14 data should be generated...
+
+  CASE 6 (NSG2, no D15, but gains D15)
+                                                                                                               |Today
+                                                                    |2024
+                                     |______________________________|______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Parent (E17) period 2:                                            |________________________________________...
+  D14, D06, D07 periods:             |_______________________________________________________________________...
+  D15 period:                                                       |________________________________________...
+  E17 Measurement data:              +
+  D15 Measurement data:                                             +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
+
+
+
+  CASE 7 (NSG2, with D15)
+                                                                                |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Parent (E17) period 2:                                            |____________
+  Children periods:                  |___________________________________________
+  D15 Measurement data:              +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
+
+  CASE 8 (NSG2, with D15)
+                                                                                                                 |Today
+                                                                    |2024
+                                     |______________________________|______________________________|____________
+  Parent (E17) period 1:             |_______________________________________________________________________...
+  Periods:                           |______________________________|________________________________________...
+  Children periods:                  |_______________________________________________________________________...
+  D15 Measurement data:              +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
+
+  CASE 9 (NSG2, with D15)
+                                                                                |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Children periods:                  |______________________________|
+  D15 Measurement data:              +
+  Existing (end of period) D14 data: +
+  No new D14 data should be generated...
+
+  CASE 10 (NSG2, with D15)
+                                                                                |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |________________________________________...
+  Children periods:                  |________________________________________...
+  D15 Measurement data:              +
+  Existing (up to end) D14 data:     +
+  No new D14 data should be generated...
+
+  CASE 11 (NSG6 - smrd 2)
+                                                                    |smrd       |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |________________________________________...
+  Periods:                           |______________________________|____________
+  Children periods:                  |___________________________________________
+  D15 Measurement data:              +
+  Existing (end of period) D14 data: +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
+
+  CASE 12 (NSG6 - smrd 2)
+                                                                    |smrd       |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:             |______________________________|
+  Children periods:                  |______________________________|
+  D15 Measurement data:              +
+  Existing (end of period) D14 data: +
+  No new D14 data should be generated...
+
+  CASE 13 (NSG6 - smrd 2)
+                                                                    |smrd       |Today
+                                     |2024
+                                     |______________________________|____________
+  Parent (E17) period 1:                                            |_________...
+  Children periods:                                                 |_________...
+  D15 Measurement data:                                             +
+  Existing (up to end) D14 data:                                    +
+  No new D14 data should be generated...
+
+cases_tested:
+  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption =< period limit) THEN daily consumption in full should be added to electrical heating MP for the day"
+  "GIVEN (total period consumption < period limit) WHEN (daily consumption + total period consumption > period limit) THEN (period limit-total period consumption) should be added to electrical heating MP point for the day"
+  "WHEN (total period consumption => period limit) THEN 0 should be added to electrical heating MP for the day"
+  "GIVEN there is an observation time in measurements data input table WHEN quantity is null THEN we should treat the row with that observation_time as not existing"
+
+  "Period length and base period limit":
+    "GIVEN (period length = 1 year) WHEN there is no end-of-period THEN base period limit = 4000"
+    "GIVEN (period length < 1 year) WHEN the period is a non-leap-year period THEN base period limit = (# period days/365 * 4000)"
+    "GIVEN (period length < 1 year) WHEN the period is a leap-year period THEN base period limit = (# period days/366 * 4000)"
+    "Settlement Month IS NOT January (NSG6 only)"
+
+  "Results Filtering":
+    "GIVEN the calculated result is the same for that MP/day AND the previous calculation type (up-to-end OR end-of-period) was the same as this THEN we should NOT generate a result for that MP/day"
+
+  "Net Settlement Groups":
+    "Electrical heating without net settlement group"
+    "Electrical heating with net settlement group 2 - WITH net consumption MP"
+    "Electrical heating with net settlement group 2 - WITHOUT net consumption MP"
+    "Electrical heating with net settlement group 2 - Parent MP GAINS net consumption MP"
+    "Electrical heating with net settlement group 6"
+
+  "Settlement Group Calculation Type":
+    "UP TO END of period calculation"
+    "END OF PERIOD calculation"
