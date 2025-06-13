@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from geh_common.domain.types import MeteringPointResolution, MeteringPointType, OrchestrationType
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.testing import JobTestFixture
 from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
@@ -27,20 +28,13 @@ def seed_table(
 
 def get_metering_point_periods_statement(catalog_name: str, database_name: str) -> str:
     return f"""
-        INSERT INTO {catalog_name}.{database_name}.{missing_measurements_log_metering_point_periods_table_name} (
-            metering_point_id,
-            grid_area_code,
-            resolution,
-            period_from_date,
-            period_to_date
-        )
-        VALUES (
-            '{_METERING_POINT_ID}',
-            '{_GRID_AREA_CODE}',
-            '{MeteringPointResolution.HOUR.value}',
-            '{PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}',
-            '{PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}'
-        )
+        INSERT INTO {catalog_name}.{database_name}.{missing_measurements_log_metering_point_periods_table_name} BY NAME
+        SELECT
+            '{_METERING_POINT_ID}' as {ContractColumnNames.metering_point_id},
+            '{_GRID_AREA_CODE}' as {ContractColumnNames.grid_area_code},
+            '{MeteringPointResolution.HOUR.value}' as {ContractColumnNames.resolution},
+            '{PERIOD_START.strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_from_date},
+            '{PERIOD_END.strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_to_date}
     """
 
 
