@@ -4,12 +4,12 @@ from pytest_mock import MockerFixture
 import core.gold.infrastructure.repositories.measurements_sap_series_repository as sut
 from core.gold.domain.constants.streaming.query_names import QueryNames
 from core.gold.infrastructure.repositories.measurements_sap_series_repository import GoldMeasurementsSAPSeriesRepository
-from tests.helpers.builders.gold_sap_series_builder import GoldSAPSeriesBuilder
+from tests.helpers.builders.sap_series_builder import SAPSeriesBuilder
 
 
 def test__append_if_not_exists__when_silver_to_gold__calls_expected(spark: SparkSession, mocker: MockerFixture) -> None:
     # Arrange
-    gold_measurements = GoldSAPSeriesBuilder(spark).add_row().build()
+    gold_measurements = SAPSeriesBuilder(spark).add_row().build()
     mocked_delta_table_helper = mocker.patch(
         f"{sut.__name__}.delta_table_helper",
     )
@@ -46,7 +46,7 @@ def test__append_if_not_exists__when_migrations_to_gold__calls_expected(
     spark: SparkSession, mocker: MockerFixture
 ) -> None:
     # Arrange
-    gold_measurements = GoldSAPSeriesBuilder(spark).add_row().build()
+    gold_measurements = SAPSeriesBuilder(spark).add_row().build()
     mocked_delta_table_helper = mocker.patch(
         f"{sut.__name__}.delta_table_helper",
     )
@@ -85,7 +85,7 @@ def test__append_if_not_exists__when_calculated_to_gold__calls_expected(
     spark: SparkSession, mocker: MockerFixture
 ) -> None:
     # Arrange
-    gold_measurements = GoldSAPSeriesBuilder(spark).add_row().build()
+    gold_measurements = SAPSeriesBuilder(spark).add_row().build()
     mocked_delta_table_helper = mocker.patch(
         f"{sut.__name__}.delta_table_helper",
     )
