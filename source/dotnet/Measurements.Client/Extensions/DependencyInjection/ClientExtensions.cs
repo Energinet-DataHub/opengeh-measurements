@@ -45,7 +45,7 @@ public static class ClientExtensions
     /// <summary>
     /// Register Measurement Client for use in the application using a custom authorization header provider.
     /// </summary>
-    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, Func<IServiceProvider, CustomAuthorizationHandler> customAuthorizationHandler)
+    public static IServiceCollection AddMeasurementsClient(this IServiceCollection services, Func<IServiceProvider, AuthenticationHeaderValue> configureAuthorizationHeader)
     {
         services
             .AddOptions<MeasurementHttpClientOptions>()
@@ -57,8 +57,9 @@ public static class ClientExtensions
             {
                 var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
                 httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
-            })
-            .AddHttpMessageHandler(customAuthorizationHandler);
+                httpClient.DefaultRequestHeaders.Authorization = configureAuthorizationHeader(serviceProvider);
+            });
+
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
