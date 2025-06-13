@@ -8,6 +8,7 @@ from geh_common.domain.types import (
     QuantityQuality,
 )
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.testing import JobTestFixture
 from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
@@ -38,40 +39,25 @@ def _electricity_market_tables_statements(catalog_name: str, database_name: str)
     statements = []
     # Consumption
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{parent_table} (
-        metering_point_id,
-        net_settlement_group,
-        settlement_month,
-        period_from_date,
-        period_to_date
-    )
-    VALUES (
-        '{consumption_metering_point_id}',
-        NULL,
-        {1},
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        NULL
-    )
+    INSERT INTO {catalog_name}.{database_name}.{parent_table} BY NAME
+    SELECT
+        '{consumption_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        NULL as {ContractColumnNames.net_settlement_group},
+        {1} as {ContractColumnNames.settlement_month},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_from_date},
+        NULL as {ContractColumnNames.period_to_date}
     """)
 
     # Child
     statements.append(f"""
-    INSERT INTO {catalog_name}.{database_name}.{child_table} (
-        metering_point_id,
-        metering_point_type,
-        metering_point_sub_type,
-        parent_metering_point_id,
-        coupled_date,
-        uncoupled_date
-    )
-    VALUES (
-        '{child_metering_point_id}',
-        '{MeteringPointType.ELECTRICAL_HEATING.value}',
-        '{MeteringPointSubType.CALCULATED.value}',
-        '{consumption_metering_point_id}',
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}',
-        NULL
-    )
+    INSERT INTO {catalog_name}.{database_name}.{child_table} BY NAME
+    SELECT
+        '{child_metering_point_id}' as {ContractColumnNames.metering_point_id},
+        '{MeteringPointType.ELECTRICAL_HEATING.value}' as {ContractColumnNames.metering_point_type},
+        '{MeteringPointSubType.CALCULATED.value}' as {ContractColumnNames.metering_point_sub_type},
+        '{consumption_metering_point_id}' as {ContractColumnNames.parent_metering_point_id},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc)}' as {ContractColumnNames.coupled_date},
+        NULL as {ContractColumnNames.uncoupled_date}
     """)
 
     return statements

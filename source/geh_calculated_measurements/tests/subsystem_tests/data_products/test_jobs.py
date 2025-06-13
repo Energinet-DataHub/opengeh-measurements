@@ -9,6 +9,7 @@ from geh_common.databricks.databricks_api_client import DatabricksApiClient
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 from pyspark.sql import SparkSession
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from tests.internal_tables import InternalTables
 from tests.subsystem_tests.environment_configuration import EnvironmentConfiguration
 
@@ -41,20 +42,19 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
     metering_point_id = 170000030000000201
 
     seed_statement = f"""
-      INSERT INTO {config.catalog_name}.{database_name}.{table_name} VALUES
-      (
-        '{OrchestrationType.ELECTRICAL_HEATING.value}',
-        '{orchestration_instance_id}',
-        '{metering_point_id}',
-        '{uuid.uuid4()}', -- transaction_id
-        '{datetime.now(UTC)}', -- transaction_creation_datetime
-        '{datetime.now(UTC)}', -- transaction_start_time
-        '{datetime.now(UTC)}', -- transaction_end_time
-        '{MeteringPointType.ELECTRICAL_HEATING.value}',
-        '{datetime.now(UTC)}', -- observation_time - make sure this is the latest value as current_v1 only selects the latest
-        {quantity},
-        NULL -- settlement_type
-      )
+      INSERT INTO {config.catalog_name}.{database_name}.{table_name} BY NAME 
+      SELECT
+        '{OrchestrationType.ELECTRICAL_HEATING.value}' as {ContractColumnNames.orchestration_type},
+        '{orchestration_instance_id}' as {ContractColumnNames.orchestration_instance_id},
+        '{metering_point_id}' as {ContractColumnNames.metering_point_id},
+        '{uuid.uuid4()}' as {ContractColumnNames.transaction_id},
+        '{datetime.now(UTC)}' as {ContractColumnNames.transaction_creation_datetime},
+        '{MeteringPointType.ELECTRICAL_HEATING.value}' as {ContractColumnNames.metering_point_type},
+        '{datetime.now(UTC)}' as {ContractColumnNames.observation_time}, -- make sure this is the latest value as current_v1 only selects the latest
+        {quantity} as {ContractColumnNames.quantity},
+        NULL as {ContractColumnNames.settlement_type},
+        '{datetime.now(UTC)}' as {ContractColumnNames.transaction_start_time},
+        '{datetime.now(UTC)}' as {ContractColumnNames.transaction_end_time};
     """
     response_seed = databricks_api_client.execute_statement(statement=seed_statement, warehouse_id=config.warehouse_id)
     assert response_seed.result is not None
@@ -62,11 +62,11 @@ def test__calculated_measurements_v1__is_usable_for_core(spark: SparkSession) ->
 
     # Act
     assert_statement = f"""
-                  SELECT *
-                  FROM {config.catalog_name}.{current_v1.database_name}.{current_v1.view_name}
-                  WHERE metering_point_id = '{metering_point_id}' and quantity = {quantity}
-                  LIMIT 1
-                """
+      SELECT *
+      FROM {config.catalog_name}.{current_v1.database_name}.{current_v1.view_name}
+      WHERE {ContractColumnNames.metering_point_id} = '{metering_point_id}' and {ContractColumnNames.quantity} = {quantity}
+      LIMIT 1
+    """
     response = databricks_api_client.execute_statement(statement=assert_statement, warehouse_id=config.warehouse_id)
 
     # Assert
