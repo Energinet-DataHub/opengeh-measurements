@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
-from geh_common.domain.types import MeteringPointType
+from geh_common.domain.types import MeteringPointType, QuantityQuality
 from geh_common.pyspark.transformations import convert_from_utc, convert_to_utc
 from geh_common.telemetry import use_span
 from geh_common.testing.dataframes import testing
@@ -45,7 +45,9 @@ def cnc(
       - DataFrame with periods and their calculated net consumption (converted to UTC)
       - DataFrame with periods and their corresponding time series data (converted to UTC)
     """
-    current_measurements_df = current_measurements.df
+    current_measurements_df = current_measurements.df.filter(
+        F.col(ContractColumnNames.quality) != F.lit(QuantityQuality.MISSING.value)
+    )
     current_measurements_df = convert_from_utc(current_measurements_df, time_zone)
 
     filtered_time_series = _filter_and_aggregate_daily(current_measurements_df)
