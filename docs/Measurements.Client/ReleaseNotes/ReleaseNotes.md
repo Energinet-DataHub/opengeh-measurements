@@ -1,5 +1,9 @@
 # Measurements.Client Release Notes
 
+## Version 8.6.1
+
+- Fix missing dependency bug.
+
 ## Version 8.6.0
 
 - Add alternative registration option for measurement client.
