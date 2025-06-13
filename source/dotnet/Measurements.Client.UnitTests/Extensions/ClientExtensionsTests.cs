@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using Energinet.DataHub.Core.App.Common.Extensions.DependencyInjection;
 using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.Extensions.Options;
@@ -61,26 +62,34 @@ public class ClientExtensionsTests
     }
 
     [Fact]
-    public void AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
+    public async Task AddMeasurementsClient_WhenOptionsAreConfiguredAndB2CAuthorizationHeaderProviderIsRegistered_ThenClientsCanBeCreated()
     {
         // Arrange
         var services = new ServiceCollection();
-        var expectedAuthorizationHeaderValue = "Bearer some-token";
+        var expectedAuthenticationHeaderValueParameter = "Bearer some-token";
+        AuthenticationHeaderValue? actualAuthenticationHeaderValue = null;
         var configurations = new Dictionary<string, string?>
         {
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.BaseAddress)}"] = "https://localhost",
             [$"{MeasurementHttpClientOptions.SectionName}:{nameof(MeasurementHttpClientOptions.ApplicationIdUri)}"] = "https://management.azure.com",
         };
         AddInMemoryConfiguration(services, configurations);
+        Func<IServiceProvider, Task<AuthenticationHeaderValue>> mockedAuthorizationHeaderProviderAsync = async _ =>
+        {
+            actualAuthenticationHeaderValue = new AuthenticationHeaderValue("Bearer", "some-token");
+            return await Task.FromResult(actualAuthenticationHeaderValue);
+        };
 
         // Act
-        services.AddMeasurementsClient(_ => new AuthenticationHeaderValue("Bearer", "some-token"));
+        services.AddMeasurementsClient(mockedAuthorizationHeaderProviderAsync);
 
         // Assert
         var serviceProvider = services.BuildServiceProvider();
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         var actual = httpClientFactory.CreateClient(MeasurementsHttpClientNames.MeasurementsApi);
-        Assert.Equal(expectedAuthorizationHeaderValue, actual.DefaultRequestHeaders.Authorization!.ToString());
+        await Assert.ThrowsAsync<HttpRequestException>(() => actual.GetAsync("https://localhost"));
+        Assert.NotNull(actualAuthenticationHeaderValue);
+        Assert.Equal(expectedAuthenticationHeaderValueParameter, actualAuthenticationHeaderValue.ToString());
     }
 
     private static void AddInMemoryConfiguration(IServiceCollection services, Dictionary<string, string?> configurations)
