@@ -7,7 +7,7 @@ import "DecimalValue.proto";
 
 option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
 
-message PersistSubmittedTransaction {
+message PersistSubmittedTransactionV1 {
   string version = 1;
   string orchestration_instance_id = 2;
   OrchestrationType orchestration_type = 3;

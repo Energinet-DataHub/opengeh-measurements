@@ -3,7 +3,8 @@ from importlib.resources import files
 
 class _DescriptorFileNames:
     Brs021ForwardMeteredDataNotifyV1 = "Brs021ForwardMeteredDataNotifyV1.binpb"
-    PersistSubmittedTransaction = "PersistSubmittedTransaction.binpb"
+    PersistSubmittedTransactionV1 = "PersistSubmittedTransactionV1.binpb"
+    PersistSubmittedTransactionV2 = "PersistSubmittedTransactionV2.binpb"
     VersionMessage = "VersionMessage.binpb"
 
 
@@ -17,7 +18,14 @@ class DescriptorFilePaths:
             _DescriptorFileNames.Brs021ForwardMeteredDataNotifyV1
         )
     )
-    PersistSubmittedTransaction = str(
-        files(protobuf_path("PersistSubmittedTransaction")).joinpath(_DescriptorFileNames.PersistSubmittedTransaction)
+    PersistSubmittedTransactionV1 = str(
+        files(protobuf_path("PersistSubmittedTransactionV1")).joinpath(
+            _DescriptorFileNames.PersistSubmittedTransactionV1
+        )
+    )
+    PersistSubmittedTransactionV2 = str(
+        files(protobuf_path("PersistSubmittedTransactionV2")).joinpath(
+            _DescriptorFileNames.PersistSubmittedTransactionV2
+        )
     )
     VersionMessage = str(files(protobuf_path("VersionMessage")).joinpath(_DescriptorFileNames.VersionMessage))

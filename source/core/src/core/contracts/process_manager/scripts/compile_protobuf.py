@@ -38,6 +38,7 @@ def compile_protobuf_file(protobuf_file_name) -> None:
 
 
 compile_protobuf_file("Brs021ForwardMeteredDataNotifyV1")
-compile_protobuf_file("PersistSubmittedTransaction")
+compile_protobuf_file("PersistSubmittedTransactionV1")
+compile_protobuf_file("PersistSubmittedTransactionV2")
 compile_protobuf_file("VersionMessage")
 compile_protobuf_file("DecimalValue")
