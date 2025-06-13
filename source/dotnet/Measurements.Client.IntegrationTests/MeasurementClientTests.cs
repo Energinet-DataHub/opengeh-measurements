@@ -28,19 +28,30 @@ public class MeasurementClientTests(MeasurementsClientFixture fixture)
     }
 
     [Fact]
-    public async Task GetCurrentByPeriod_WhenCalled_ReturnsEmptyList()
+    public async Task GetCurrentByPeriod_WhenCalled_ReturnsValidMeasurement()
     {
         // Arrange
+        var fromDateTimeOffset = MeasurementsClientFixture.TestObservationDate.ToUtcDateTimeOffset();
+        var toDateTimeOffset = MeasurementsClientFixture.TestObservationDate.PlusDays(1).ToUtcDateTimeOffset();
         var query = new GetByPeriodQuery(
             MeasurementsClientFixture.TestMeteringPointId,
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
-            Instant.FromDateTimeOffset(DateTimeOffset.UtcNow.AddDays(1)));
+            Instant.FromDateTimeOffset(fromDateTimeOffset),
+            Instant.FromDateTimeOffset(toDateTimeOffset));
 
         var measurementsClient = fixture.ServiceProvider.GetRequiredService<IMeasurementsClient>();
-        var measurements = await measurementsClient.GetCurrentByPeriodAsync(query);
+        var actual = await measurementsClient.GetCurrentByPeriodAsync(query);
 
         // Assert
-        Assert.Empty(measurements);
+        Assert.Equal(24, actual.Count);
+        Assert.All(actual, point =>
+        {
+            Assert.Equal(Quality.Measured, point.Quality);
+            Assert.Equal(Resolution.Hourly, point.Resolution);
+            Assert.Equal(Unit.kWh, point.Unit);
+            Assert.NotEqual(0, point.Order);
+            Assert.Equal("2025-01-17T03:40:55Z", point.PersistedTime.ToFormattedString());
+            Assert.Equal("2025-01-15T03:40:55Z", point.RegistrationTime.ToFormattedString());
+        });
     }
 
     [Fact]

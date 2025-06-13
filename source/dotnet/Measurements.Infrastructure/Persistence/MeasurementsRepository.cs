@@ -23,6 +23,15 @@ public class MeasurementsRepository(
             yield return new MeasurementResult(row);
     }
 
+    public async IAsyncEnumerable<MeasurementResult> GetCurrentByPeriodAsync(string meteringPointId, Instant from, Instant to)
+    {
+        var statement = new GetCurrentByPeriodQuery(meteringPointId, from, to, databricksSchemaOptions.Value);
+        var rows = databricksSqlWarehouseQueryExecutor.ExecuteStatementAsync(statement, Format.ApacheArrow);
+
+        await foreach (var row in rows)
+            yield return new MeasurementResult(row);
+    }
+
     public async IAsyncEnumerable<AggregatedMeasurementsResult> GetAggregatedByDateAsync(string meteringPointId, YearMonth yearMonth)
     {
         var statement = new GetAggregatedByDateQuery(meteringPointId, yearMonth, databricksSchemaOptions.Value);

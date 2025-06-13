@@ -40,6 +40,7 @@ notes: |
   "Period is < 1 year"
   "Smrd is not 1"
   "Net consumption is clamped to 0 if sum(D06) >= sum(D07)"
+  "GIVEN there is a row in measurements data input table WHEN quantity is null THEN quantity should be treated as 0"
 
   "cnc calculation":
     "Calculation is cnc"
