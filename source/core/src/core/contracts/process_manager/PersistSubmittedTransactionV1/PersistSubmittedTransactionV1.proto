@@ -1,0 +1,89 @@
+﻿syntax = "proto3";
+
+package google.protobuf;
+
+import "google/protobuf/timestamp.proto";
+import "DecimalValue/DecimalValue.proto";
+
+option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
+
+message PersistSubmittedTransactionV1 {
+  string version = 1;
+  string orchestration_instance_id = 2;
+  OrchestrationType orchestration_type = 3;
+  string metering_point_id = 4;
+  string transaction_id = 5;
+  Timestamp transaction_creation_datetime = 6;
+  Timestamp start_datetime = 7;
+  Timestamp end_datetime = 8;
+  MeteringPointType metering_point_type = 9;
+  Unit unit = 10;
+  Resolution resolution = 11;
+  repeated Point points = 12;
+}
+
+message Point {
+  int32 position = 1;
+  DecimalValue quantity = 2;
+  Quality quality = 3;
+}
+
+enum OrchestrationType {
+  OT_UNSPECIFIED = 0;
+  OT_SUBMITTED_MEASURE_DATA = 1;
+}
+
+enum Quality {
+  Q_UNSPECIFIED = 0;
+  Q_MISSING = 1;
+  Q_ESTIMATED = 2;
+  Q_MEASURED = 3;
+  Q_CALCULATED = 4;
+}
+
+enum MeteringPointType {
+  MPT_UNSPECIFIED = 0;
+  MPT_CONSUMPTION = 1;
+  MPT_PRODUCTION = 2;
+  MPT_EXCHANGE = 3;
+  MPT_VE_PRODUCTION = 4;
+  MPT_ANALYSIS = 5;
+  MPT_NOT_USED = 6;
+  MPT_SURPLUS_PRODUCTION_GROUP_6 = 7;
+  MPT_NET_PRODUCTION = 8;
+  MPT_SUPPLY_TO_GRID = 9;
+  MPT_CONSUMPTION_FROM_GRID = 10;
+  MPT_WHOLESALE_SERVICES_INFORMATION = 11;
+  MPT_OWN_PRODUCTION = 12;
+  MPT_NET_FROM_GRID = 13;
+  MPT_NET_TO_GRID = 14;
+  MPT_TOTAL_CONSUMPTION = 15;
+  MPT_NET_LOSS_CORRECTION = 16;
+  MPT_ELECTRICAL_HEATING = 17;
+  MPT_NET_CONSUMPTION = 18;
+  MPT_OTHER_CONSUMPTION = 19;
+  MPT_OTHER_PRODUCTION = 20;
+  MPT_CAPACITY_SETTLEMENT = 21;
+  MPT_EXCHANGE_REACTIVE_ENERGY = 22;
+  MPT_COLLECTIVE_NET_PRODUCTION = 23;
+  MPT_COLLECTIVE_NET_CONSUMPTION = 24;
+  MPT_INTERNAL_USE = 25;
+}
+
+enum Unit {
+  U_UNSPECIFIED = 0;
+  U_KWH = 1;
+  U_KW = 2;
+  U_MW = 3;
+  U_MWH = 4;
+  U_TONNE = 5;
+  U_KVARH = 6;
+  U_MVAR = 7;
+}
+
+enum Resolution {
+  R_UNSPECIFIED = 0;
+  R_PT15M = 1;
+  R_PT1H = 2;
+  R_P1M = 3;
+}

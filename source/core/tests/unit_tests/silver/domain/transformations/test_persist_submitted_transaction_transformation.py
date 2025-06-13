@@ -9,9 +9,9 @@ from geh_common.domain.types.quantity_quality import QuantityQuality as GehCommo
 from geh_common.domain.types.quantity_unit import QuantityUnit as GehCommonUnit
 from pyspark.sql import SparkSession
 
-import core.silver.domain.transformations.persist_submitted_transaction_transformation as sut
-from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+import core.silver.domain.transformations.persist_submitted_transaction_transformationV1 as sut
+from core.contracts.process_manager.PersistSubmittedTransactionV1.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransactionV1.generated.PersistSubmittedTransactionV1_pb2 import (
     MeteringPointType,
     OrchestrationType,
     Quality,

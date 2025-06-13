@@ -6,7 +6,7 @@ import core.silver.entry_points as sut
 import tests.helpers.identifier_helper as identifier_helper
 import tests.helpers.table_helper as table_helper
 from core.bronze.infrastructure.config.table_names import TableNames as BronzeTableNames
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+from core.contracts.process_manager.PersistSubmittedTransactionV1.generated.PersistSubmittedTransactionV1_pb2 import (
     Quality,
     Resolution,
 )

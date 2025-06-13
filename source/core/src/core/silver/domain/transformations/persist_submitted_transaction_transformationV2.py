@@ -12,7 +12,7 @@ import core.utility.datetime_helper as datetime_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+from core.contracts.process_manager.PersistSubmittedTransactionV2.generated.PersistSubmittedTransactionV2_pb2 import (
     MeteringPointType,
     OrchestrationType,
     Quality,
@@ -104,11 +104,6 @@ def _align_metering_point_type() -> Column:
             GehCommonMeteringPointType.NOT_USED.value,
         )
         .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type)
-            == MeteringPointType.MPT_SURPLUS_PRODUCTION_GROUP_6,
-            GehCommonMeteringPointType.SURPLUS_PRODUCTION_GROUP_6.value,
-        )
-        .when(
             F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_NET_PRODUCTION,
             GehCommonMeteringPointType.NET_PRODUCTION.value,
         )
@@ -177,10 +172,6 @@ def _align_metering_point_type() -> Column:
             F.col(SilverMeasurementsColumnNames.metering_point_type)
             == MeteringPointType.MPT_COLLECTIVE_NET_CONSUMPTION,
             GehCommonMeteringPointType.COLLECTIVE_NET_CONSUMPTION.value,
-        )
-        .when(
-            F.col(SilverMeasurementsColumnNames.metering_point_type) == MeteringPointType.MPT_INTERNAL_USE,
-            GehCommonMeteringPointType.INTERNAL_USE.value,
         )
         .otherwise(F.col(SilverMeasurementsColumnNames.metering_point_type))
     )

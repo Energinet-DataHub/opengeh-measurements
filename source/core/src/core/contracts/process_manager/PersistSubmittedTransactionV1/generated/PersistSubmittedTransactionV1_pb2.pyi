@@ -1,16 +1,11 @@
-from collections.abc import Iterable as _Iterable
-from collections.abc import Mapping as _Mapping
-from typing import ClassVar as _ClassVar
-from typing import Optional as _Optional
-from typing import Union as _Union
-
-from google.protobuf import descriptor as _descriptor
-from google.protobuf import message as _message
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
+from DecimalValue import DecimalValue_pb2 as _DecimalValue_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
-
-import core.contracts.process_manager.PersistSubmittedTransaction.generated.DecimalValue_pb2 as _DecimalValue_pb2
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -73,7 +68,6 @@ class Resolution(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     R_PT15M: _ClassVar[Resolution]
     R_PT1H: _ClassVar[Resolution]
     R_P1M: _ClassVar[Resolution]
-
 OT_UNSPECIFIED: OrchestrationType
 OT_SUBMITTED_MEASURE_DATA: OrchestrationType
 Q_UNSPECIFIED: Quality
@@ -120,21 +114,8 @@ R_PT15M: Resolution
 R_PT1H: Resolution
 R_P1M: Resolution
 
-class PersistSubmittedTransaction(_message.Message):
-    __slots__ = (
-        "version",
-        "orchestration_instance_id",
-        "orchestration_type",
-        "metering_point_id",
-        "transaction_id",
-        "transaction_creation_datetime",
-        "start_datetime",
-        "end_datetime",
-        "metering_point_type",
-        "unit",
-        "resolution",
-        "points",
-    )
+class PersistSubmittedTransactionV1(_message.Message):
+    __slots__ = ("version", "orchestration_instance_id", "orchestration_type", "metering_point_id", "transaction_id", "transaction_creation_datetime", "start_datetime", "end_datetime", "metering_point_type", "unit", "resolution", "points")
     VERSION_FIELD_NUMBER: _ClassVar[int]
     ORCHESTRATION_INSTANCE_ID_FIELD_NUMBER: _ClassVar[int]
     ORCHESTRATION_TYPE_FIELD_NUMBER: _ClassVar[int]
@@ -159,21 +140,7 @@ class PersistSubmittedTransaction(_message.Message):
     unit: Unit
     resolution: Resolution
     points: _containers.RepeatedCompositeFieldContainer[Point]
-    def __init__(
-        self,
-        version: _Optional[str] = ...,
-        orchestration_instance_id: _Optional[str] = ...,
-        orchestration_type: _Optional[_Union[OrchestrationType, str]] = ...,
-        metering_point_id: _Optional[str] = ...,
-        transaction_id: _Optional[str] = ...,
-        transaction_creation_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
-        start_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
-        end_datetime: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
-        metering_point_type: _Optional[_Union[MeteringPointType, str]] = ...,
-        unit: _Optional[_Union[Unit, str]] = ...,
-        resolution: _Optional[_Union[Resolution, str]] = ...,
-        points: _Optional[_Iterable[_Union[Point, _Mapping]]] = ...,
-    ) -> None: ...
+    def __init__(self, version: _Optional[str] = ..., orchestration_instance_id: _Optional[str] = ..., orchestration_type: _Optional[_Union[OrchestrationType, str]] = ..., metering_point_id: _Optional[str] = ..., transaction_id: _Optional[str] = ..., transaction_creation_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., start_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_datetime: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metering_point_type: _Optional[_Union[MeteringPointType, str]] = ..., unit: _Optional[_Union[Unit, str]] = ..., resolution: _Optional[_Union[Resolution, str]] = ..., points: _Optional[_Iterable[_Union[Point, _Mapping]]] = ...) -> None: ...
 
 class Point(_message.Message):
     __slots__ = ("position", "quantity", "quality")
@@ -183,9 +150,4 @@ class Point(_message.Message):
     position: int
     quantity: _DecimalValue_pb2.DecimalValue
     quality: Quality
-    def __init__(
-        self,
-        position: _Optional[int] = ...,
-        quantity: _Optional[_Union[_DecimalValue_pb2.DecimalValue, _Mapping]] = ...,
-        quality: _Optional[_Union[Quality, str]] = ...,
-    ) -> None: ...
+    def __init__(self, position: _Optional[int] = ..., quantity: _Optional[_Union[_DecimalValue_pb2.DecimalValue, _Mapping]] = ..., quality: _Optional[_Union[Quality, str]] = ...) -> None: ...

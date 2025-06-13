@@ -1,12 +1,14 @@
 import geh_common.testing.dataframes.assert_schemas as assert_schemas
 from pyspark.sql import SparkSession
 
-import core.silver.infrastructure.protobuf.persist_submitted_transaction as sut
+import core.silver.infrastructure.protobuf.persist_submitted_transactionV1 as sut
 import tests.helpers.binary_helper as binary_helper
 from core.bronze.domain.constants.column_names.bronze_submitted_transactions_column_names import (
     ValueColumnNames,
 )
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import Quality
+from core.contracts.process_manager.PersistSubmittedTransactionV1.generated.PersistSubmittedTransactionV1_pb2 import (
+    Quality,
+)
 from tests.helpers.builders.submitted_transactions_builder import (
     PointsBuilder,
     SubmittedTransactionsBuilder,

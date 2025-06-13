@@ -36,7 +36,8 @@ def compile_proto_to_descriptor(proto_file, descriptor_file, proto_path="."):
     "protobuf_file_name",
     [
         "Brs021ForwardMeteredDataNotifyV1",
-        "PersistSubmittedTransaction",
+        "PersistSubmittedTransactionV1",
+        "PersistSubmittedTransactionV2",
         "VersionMessage",
     ],
 )
