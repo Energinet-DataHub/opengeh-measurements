@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from pyspark.sql import SparkSession
 from pytest_bdd import given, scenarios, then
 
@@ -9,11 +11,11 @@ from tests.subsystem_tests.fixtures.kafka_fixture import KafkaFixture
 scenarios("../features/transmission_of_measurements.feature")
 
 
+@dataclass
 class TestData:
-    def __init__(self, orchestration_instance_id: str, metering_point_id: str, value: str) -> None:
-        self.orchestration_instance_id = orchestration_instance_id
-        self.metering_point_id = metering_point_id
-        self.value = value
+    orchestration_instance_id: str
+    metering_point_id: str
+    value: str
 
 
 @given("a valid measurement transaction is enqueued in the Event Hub", target_fixture="test_data")
