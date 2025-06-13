@@ -28,7 +28,7 @@ class DatabricksAssertionHelper:
 
             time.sleep(poll_interval)
 
-        raise AssertionError(f"No row found for query: {query}")
+        raise AssertionError(f"No row found for query: {query}, Count: {count} after {timeout} seconds.")
 
     def _extract_count_from_result(self, result: StatementResponse) -> int:
         if not result.result or not result.result.data_array:
