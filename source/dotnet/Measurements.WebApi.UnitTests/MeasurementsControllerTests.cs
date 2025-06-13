@@ -79,6 +79,67 @@ public class MeasurementsControllerTests
     }
 
     [Theory]
+    [AutoMoqData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var expected = CreateMeasurementResponse();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ReturnsAsync(expected);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetCurrentByPeriodAsync(request) as OkObjectResult)!.Value;
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ReturnsAsync(MeasurementsResponse.Create([]));
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetCurrentByPeriodAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task GetCurrentByPeriodAsync_WhenMeasurementsUnknownError_ThrowsException(
+        GetByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetCurrentByPeriodAsync(It.IsAny<GetByPeriodRequest>()))
+            .ThrowsAsync(new Exception());
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(async () => await sut.GetCurrentByPeriodAsync(request));
+    }
+
+    [Theory]
     [AutoData]
     [Obsolete("Obsolete. Delete when API version 4.0 is removed.")]
     public async Task GetAggregatedByDateAsyncV4_WhenMeasurementsExists_ReturnValidJson(
@@ -459,6 +520,50 @@ public class MeasurementsControllerTests
         await Assert.ThrowsAsync<Exception>(async () => await sut.GetAggregatedByYearAsync(request));
     }
 
+    [Theory]
+    [AutoData]
+    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsExists_ReturnValidJson(
+        GetAggregatedByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        var response = CreateMeasurementsAggregatedByPeriodResponse(MeasurementsAggregatedByPeriodResponse.Create);
+        var expected = CreateExpectedMeasurementsAggregatedByPeriod();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByPeriodAsync(It.IsAny<GetAggregatedByPeriodRequest>()))
+            .ReturnsAsync(response);
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = (await sut.GetAggregatedByPeriodAsync(request) as OkObjectResult)!.Value!.ToString();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [AutoMoqData]
+    public async Task GetAggregatedByPeriodAsync_WhenMeasurementsDoNotExist_ReturnsNotFound(
+        GetAggregatedByPeriodRequest request,
+        Mock<IMeasurementsHandler> measurementsHandler,
+        Mock<ILogger<MeasurementsController>> logger)
+    {
+        // Arrange
+        var jsonSerializer = new JsonSerializer();
+        measurementsHandler
+            .Setup(x => x.GetAggregatedByPeriodAsync(It.IsAny<GetAggregatedByPeriodRequest>()))
+            .ReturnsAsync(MeasurementsAggregatedByPeriodResponse.Create([]));
+        var sut = new MeasurementsController(measurementsHandler.Object, logger.Object, jsonSerializer);
+
+        // Act
+        var actual = await sut.GetAggregatedByPeriodAsync(request);
+
+        // Assert
+        Assert.IsType<NotFoundObjectResult>(actual);
+    }
+
     private static MeasurementsResponse CreateMeasurementResponse()
     {
         var measurements = new List<MeasurementResult> { new(CreateMeasurementResult()) };
@@ -469,6 +574,13 @@ public class MeasurementsControllerTests
     private static T CreateMeasurementsAggregatedResponse<T>(Func<List<AggregatedMeasurementsResult>, T> create)
     {
         var measurements = new List<AggregatedMeasurementsResult> { new(CreateAggregatedMeasurementResult()) };
+        return create(measurements);
+    }
+
+    private static MeasurementsAggregatedByPeriodResponse CreateMeasurementsAggregatedByPeriodResponse(
+        Func<List<AggregatedByPeriodMeasurementsResult>, MeasurementsAggregatedByPeriodResponse> create)
+    {
+        var measurements = new List<AggregatedByPeriodMeasurementsResult> { new(CreateAggregatedByPeriodMeasurementResult()) };
         return create(measurements);
     }
 
@@ -502,6 +614,11 @@ public class MeasurementsControllerTests
         return """{"MeasurementAggregations":[{"Year":2023,"Quantity":42,"Unit":"kWh"}]}""";
     }
 
+    private static string CreateExpectedMeasurementsAggregatedByPeriod()
+    {
+        return """{"MeasurementAggregations":[{"MeteringPoint":{"Id":"123456789123456789"},"PointAggregationGroups":{"123456789123456789_2023-09_Hourly":{"From":"2023-09-01T22:00:00Z","To":"2023-09-30T21:00:00Z","Resolution":"Hourly","PointAggregations":[{"From":"2023-09-01T22:00:00Z","To":"2023-09-30T21:00:00Z","Quantity":42,"Quality":"Measured"}]}}}]}""";
+    }
+
     private static ExpandoObject CreateMeasurementResult()
     {
         var date = new DateTimeOffset(2023, 10, 15, 21, 0, 0, TimeSpan.Zero);
@@ -531,6 +648,22 @@ public class MeasurementsControllerTests
         raw.units = new[] { "kWh" };
         raw.point_count = 1;
         raw.observation_updates = 2;
+        return raw;
+    }
+
+    private static ExpandoObject CreateAggregatedByPeriodMeasurementResult()
+    {
+        var minDate = new DateTimeOffset(2023, 09, 01, 22, 0, 0, TimeSpan.Zero);
+        var maxDate = new DateTimeOffset(2023, 09, 30, 21, 0, 0, TimeSpan.Zero);
+
+        dynamic raw = new ExpandoObject();
+        raw.metering_point_id = "123456789123456789";
+        raw.aggregation_group_key = "2023-09";
+        raw.min_observation_time = minDate;
+        raw.max_observation_time = maxDate;
+        raw.aggregated_quantity = 42;
+        raw.qualities = new[] { "measured" };
+        raw.resolution = "PT1H";
         return raw;
     }
 }

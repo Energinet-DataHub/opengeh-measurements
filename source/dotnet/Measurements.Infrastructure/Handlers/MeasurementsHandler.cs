@@ -20,6 +20,15 @@ public class MeasurementsHandler(IMeasurementsRepository measurementsRepository)
         return MeasurementsResponse.Create(foundMeasurements);
     }
 
+    public async Task<MeasurementsResponse> GetCurrentByPeriodAsync(GetByPeriodRequest request)
+    {
+        var foundMeasurements = await measurementsRepository
+            .GetCurrentByPeriodAsync(request.MeteringPointId, request.StartDate.ToInstant(), request.EndDate.ToInstant())
+            .ToListAsync();
+
+        return MeasurementsResponse.Create(foundMeasurements);
+    }
+
     [Obsolete("Obsolete use GetAggregatedByDateAsync instead.")]
     public async Task<MeasurementsAggregatedByDateResponseV4> GetAggregatedByDateAsyncV4(GetAggregatedByDateRequest request)
     {

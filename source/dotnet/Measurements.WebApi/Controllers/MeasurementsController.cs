@@ -42,9 +42,22 @@ public class MeasurementsController(
     [MapToApiVersion(4.0)]
     [MapToApiVersion(5.0)]
     [HttpGet("currentForPeriod")]
-    public Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
+    public async Task<IActionResult> GetCurrentByPeriodAsync([FromQuery] GetByPeriodRequest request)
     {
-        return Task.FromResult<IActionResult>(Accepted("This endpoint is not implemented yet."));
+        var measurement = await measurementsHandler.GetCurrentByPeriodAsync(request);
+
+        if (measurement.Points.Count > 0)
+        {
+            return Ok(measurement);
+        }
+
+        logger.LogInformation(
+            "Measurements not found for metering point id {MeteringPointId} from {StartDate} to {EndDate}",
+            request.MeteringPointId.ToSanitizedString(),
+            request.StartDate.ToSanitizedString(),
+            request.EndDate.ToSanitizedString());
+
+        return NotFound("No measurements found for the specified period.");
     }
 
     [MapToApiVersion(4.0)]
