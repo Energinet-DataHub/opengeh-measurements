@@ -18,7 +18,7 @@ class DatabricksAssertionHelper:
         start_time = time.time()
         print(f"Executing query: {query}")  # noqa: T201
 
-        while time.time() - start_time < timeout:
+        while (time.time() - start_time) < timeout:
             print(f"{time.time() - start_time:.2f} seconds elapsed, waiting for query: {query}")  # noqa: T201
             print(f"Polling for query: {query}")  # noqa: T201
             result = self.databricks_api_client.execute_statement(
