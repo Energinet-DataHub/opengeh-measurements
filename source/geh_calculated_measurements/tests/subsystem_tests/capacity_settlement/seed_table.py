@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from geh_common.domain.types import MeteringPointType, OrchestrationType
 
+from geh_calculated_measurements.common.domain.column_names import ContractColumnNames
 from geh_calculated_measurements.testing import JobTestFixture
 from tests import CalculationType, create_random_metering_point_id
 from tests.subsystem_tests import seed_gold_table
@@ -32,20 +33,13 @@ def seed_electricity_market(job_fixture: JobTestFixture) -> None:
     database_name = job_fixture.config.electricity_market_internal_database_name
     capacity_settlement_table = "capacity_settlement_metering_point_periods"
 
-    statement = f"""INSERT INTO {catalog_name}.{database_name}.{capacity_settlement_table} (
-        metering_point_id,
-        period_from_date,
-        period_to_date,
-        child_metering_point_id,
-        child_period_from_date,
-        child_period_to_date
-    )
-    VALUES (
-        '{PARENT_METERING_POINT_ID}',
-        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        NULL,
-        '{CHILD_METERING_POINT_ID}',
-        '{datetime(2024, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        NULL
-    )"""
+    statement = f"""INSERT INTO {catalog_name}.{database_name}.{capacity_settlement_table} BY NAME
+    SELECT
+        '{PARENT_METERING_POINT_ID}' as {ContractColumnNames.metering_point_id},
+        '{datetime(2022, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.period_from_date},
+        NULL as {ContractColumnNames.period_to_date},
+        '{CHILD_METERING_POINT_ID}' as {ContractColumnNames.child_metering_point_id},
+        '{datetime(2024, 12, 31, 23, 0, 0, tzinfo=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}' as {ContractColumnNames.child_period_from_date},
+        NULL as {ContractColumnNames.child_period_to_date}
+    """
     job_fixture.execute_statement(statement)
