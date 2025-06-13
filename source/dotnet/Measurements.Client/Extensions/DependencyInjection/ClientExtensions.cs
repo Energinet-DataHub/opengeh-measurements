@@ -62,6 +62,7 @@ public static class ClientExtensions
             .AddHttpMessageHandler(sp => new AuthorizationConfigurationHandler(sp, customAuthorizationHandler));
 
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
+        services.AddScoped<IMeasurementsForPeriodResponseParser, MeasurementsForPeriodResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
         return services;
