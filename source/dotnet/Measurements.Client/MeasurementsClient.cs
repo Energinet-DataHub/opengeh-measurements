@@ -7,7 +7,6 @@ using Energinet.DataHub.Measurements.Client.Extensions;
 using Energinet.DataHub.Measurements.Client.Extensions.DependencyInjection;
 using Energinet.DataHub.Measurements.Client.ResponseParsers;
 using NodaTime;
-using HttpRequestException = System.Net.Http.HttpRequestException;
 
 namespace Energinet.DataHub.Measurements.Client;
 

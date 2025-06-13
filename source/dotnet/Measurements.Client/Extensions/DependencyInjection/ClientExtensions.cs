@@ -59,7 +59,7 @@ public static class ClientExtensions
                 var measurementHttpClientOptions = serviceProvider.GetRequiredService<IOptions<MeasurementHttpClientOptions>>().Value;
                 httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             })
-            .AddHttpMessageHandler(sp => new CustomAuthorizationHandler(sp, customAuthorizationHandler));
+            .AddHttpMessageHandler(sp => new AuthorizationConfigurationHandler(sp, customAuthorizationHandler));
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
