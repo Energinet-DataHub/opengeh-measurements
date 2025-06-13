@@ -60,6 +60,7 @@ public static class ClientExtensions
                 httpClient.BaseAddress = new Uri(measurementHttpClientOptions.BaseAddress);
             })
             .AddHttpMessageHandler(sp => new AuthorizationConfigurationHandler(sp, customAuthorizationHandler));
+
         services.AddScoped<IMeasurementsForDateResponseParser, MeasurementsForDateResponseParser>();
         services.AddScoped<IMeasurementsClient, MeasurementsClient>();
 
