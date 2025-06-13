@@ -3,7 +3,7 @@ syntax = "proto3";
 package google.protobuf;
 
 import "google/protobuf/timestamp.proto";
-import "../PersistSubmittedTransaction/DecimalValue.proto";
+import "DecimalValue.proto";
 
 option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
 
@@ -41,7 +41,7 @@ enum Quality {
   Q_CALCULATED = 4;
 }
 
-enum MeteringPointTypeV2 {
+enum MeteringPointType {
   MPT_UNSPECIFIED = 0;
   MPT_CONSUMPTION = 1;
   MPT_PRODUCTION = 2;

@@ -1,8 +1,11 @@
-from core.silver.application.persist_submitted_transaction.persist_submitted_transaction_protobuf import (
-    PersistSubmittedTransaction,
+from core.silver.application.persist_submitted_transaction.persist_submitted_transaction_protobufV1 import (
+    PersistSubmittedTransactionV1,
+)
+from core.silver.application.persist_submitted_transaction.persist_submitted_transaction_protobufV2 import (
+    PersistSubmittedTransactionV2,
 )
 
-protobuf_messages = [PersistSubmittedTransaction]
+protobuf_messages = [PersistSubmittedTransactionV1, PersistSubmittedTransactionV2]
 
 
 def get_versions() -> list[str]:

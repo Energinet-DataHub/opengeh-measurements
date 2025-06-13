@@ -26,7 +26,7 @@ def unpack(submitted_transactions) -> tuple[DataFrame, DataFrame]:
         from_protobuf(
             submitted_transactions.value,
             message_name,
-            descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
+            descFilePath=DescriptorFilePaths.PersistSubmittedTransactionV1,
             options=options,
         ).alias(alias_name),
         BronzeSubmittedTransactionsColumnNames.key,

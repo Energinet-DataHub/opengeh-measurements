@@ -11,8 +11,8 @@ from core.bronze.domain.constants.column_names.bronze_submitted_transactions_col
 )
 from core.bronze.domain.schemas.submitted_transactions import submitted_transactions_schema
 from core.contracts.process_manager.descriptor_paths import DescriptorFilePaths
-from core.contracts.process_manager.PersistSubmittedTransaction.decimal_value import DecimalValue
-from core.contracts.process_manager.PersistSubmittedTransaction.generated.PersistSubmittedTransaction_pb2 import (
+from core.contracts.process_manager.PersistSubmittedTransactionV1.decimal_value import DecimalValue
+from core.contracts.process_manager.PersistSubmittedTransactionV1.generated.PersistSubmittedTransactionV1_pb2 import (
     MeteringPointType,
     OrchestrationType,
     Quality,
@@ -155,7 +155,7 @@ class ValueBuilder:
             to_protobuf(
                 BronzeSubmittedTransactionsColumnNames.value,
                 "PersistSubmittedTransaction",
-                descFilePath=DescriptorFilePaths.PersistSubmittedTransaction,
+                descFilePath=DescriptorFilePaths.PersistSubmittedTransactionV1,
             ),
         )
 
