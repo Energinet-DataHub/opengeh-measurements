@@ -23,10 +23,10 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-import DecimalValue_pb2 as DecimalValue__pb2
+from DecimalValue import DecimalValue_pb2 as DecimalValue_dot_DecimalValue__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#PersistSubmittedTransactionV2.proto\x12\x0fgoogle.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x44\x65\x63imalValue.proto\"\xae\x04\n\x1dPersistSubmittedTransactionV2\x12\x0f\n\x07version\x18\x01 \x01(\t\x12!\n\x19orchestration_instance_id\x18\x02 \x01(\t\x12>\n\x12orchestration_type\x18\x03 \x01(\x0e\x32\".google.protobuf.OrchestrationType\x12\x19\n\x11metering_point_id\x18\x04 \x01(\t\x12\x16\n\x0etransaction_id\x18\x05 \x01(\t\x12\x41\n\x1dtransaction_creation_datetime\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x32\n\x0estart_datetime\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\x0c\x65nd_datetime\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12?\n\x13metering_point_type\x18\t \x01(\x0e\x32\".google.protobuf.MeteringPointType\x12#\n\x04unit\x18\n \x01(\x0e\x32\x15.google.protobuf.Unit\x12/\n\nresolution\x18\x0b \x01(\x0e\x32\x1b.google.protobuf.Resolution\x12&\n\x06points\x18\x0c \x03(\x0b\x32\x16.google.protobuf.Point\"u\n\x05Point\x12\x10\n\x08position\x18\x01 \x01(\x05\x12/\n\x08quantity\x18\x02 \x01(\x0b\x32\x1d.google.protobuf.DecimalValue\x12)\n\x07quality\x18\x03 \x01(\x0e\x32\x18.google.protobuf.Quality*F\n\x11OrchestrationType\x12\x12\n\x0eOT_UNSPECIFIED\x10\x00\x12\x1d\n\x19OT_SUBMITTED_MEASURE_DATA\x10\x01*^\n\x07Quality\x12\x11\n\rQ_UNSPECIFIED\x10\x00\x12\r\n\tQ_MISSING\x10\x01\x12\x0f\n\x0bQ_ESTIMATED\x10\x02\x12\x0e\n\nQ_MEASURED\x10\x03\x12\x10\n\x0cQ_CALCULATED\x10\x04*\x81\x05\n\x11MeteringPointType\x12\x13\n\x0fMPT_UNSPECIFIED\x10\x00\x12\x13\n\x0fMPT_CONSUMPTION\x10\x01\x12\x12\n\x0eMPT_PRODUCTION\x10\x02\x12\x10\n\x0cMPT_EXCHANGE\x10\x03\x12\x15\n\x11MPT_VE_PRODUCTION\x10\x04\x12\x10\n\x0cMPT_ANALYSIS\x10\x05\x12\x10\n\x0cMPT_NOT_USED\x10\x06\x12\x16\n\x12MPT_NET_PRODUCTION\x10\x08\x12\x16\n\x12MPT_SUPPLY_TO_GRID\x10\t\x12\x1d\n\x19MPT_CONSUMPTION_FROM_GRID\x10\n\x12&\n\"MPT_WHOLESALE_SERVICES_INFORMATION\x10\x0b\x12\x16\n\x12MPT_OWN_PRODUCTION\x10\x0c\x12\x15\n\x11MPT_NET_FROM_GRID\x10\r\x12\x13\n\x0fMPT_NET_TO_GRID\x10\x0e\x12\x19\n\x15MPT_TOTAL_CONSUMPTION\x10\x0f\x12\x1b\n\x17MPT_NET_LOSS_CORRECTION\x10\x10\x12\x1a\n\x16MPT_ELECTRICAL_HEATING\x10\x11\x12\x17\n\x13MPT_NET_CONSUMPTION\x10\x12\x12\x19\n\x15MPT_OTHER_CONSUMPTION\x10\x13\x12\x18\n\x14MPT_OTHER_PRODUCTION\x10\x14\x12\x1b\n\x17MPT_CAPACITY_SETTLEMENT\x10\x15\x12 \n\x1cMPT_EXCHANGE_REACTIVE_ENERGY\x10\x16\x12!\n\x1dMPT_COLLECTIVE_NET_PRODUCTION\x10\x17\x12\"\n\x1eMPT_COLLECTIVE_NET_CONSUMPTION\x10\x18*i\n\x04Unit\x12\x11\n\rU_UNSPECIFIED\x10\x00\x12\t\n\x05U_KWH\x10\x01\x12\x08\n\x04U_KW\x10\x02\x12\x08\n\x04U_MW\x10\x03\x12\t\n\x05U_MWH\x10\x04\x12\x0b\n\x07U_TONNE\x10\x05\x12\x0b\n\x07U_KVARH\x10\x06\x12\n\n\x06U_MVAR\x10\x07*C\n\nResolution\x12\x11\n\rR_UNSPECIFIED\x10\x00\x12\x0b\n\x07R_PT15M\x10\x01\x12\n\n\x06R_PT1H\x10\x02\x12\t\n\x05R_P1M\x10\x03\x42+\xaa\x02(Energinet.DataHub.Measurements.Contractsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#PersistSubmittedTransactionV2.proto\x12\x0fgoogle.protobuf\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1f\x44\x65\x63imalValue/DecimalValue.proto\"\xae\x04\n\x1dPersistSubmittedTransactionV2\x12\x0f\n\x07version\x18\x01 \x01(\t\x12!\n\x19orchestration_instance_id\x18\x02 \x01(\t\x12>\n\x12orchestration_type\x18\x03 \x01(\x0e\x32\".google.protobuf.OrchestrationType\x12\x19\n\x11metering_point_id\x18\x04 \x01(\t\x12\x16\n\x0etransaction_id\x18\x05 \x01(\t\x12\x41\n\x1dtransaction_creation_datetime\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x32\n\x0estart_datetime\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\x0c\x65nd_datetime\x18\x08 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12?\n\x13metering_point_type\x18\t \x01(\x0e\x32\".google.protobuf.MeteringPointType\x12#\n\x04unit\x18\n \x01(\x0e\x32\x15.google.protobuf.Unit\x12/\n\nresolution\x18\x0b \x01(\x0e\x32\x1b.google.protobuf.Resolution\x12&\n\x06points\x18\x0c \x03(\x0b\x32\x16.google.protobuf.Point\"u\n\x05Point\x12\x10\n\x08position\x18\x01 \x01(\x05\x12/\n\x08quantity\x18\x02 \x01(\x0b\x32\x1d.google.protobuf.DecimalValue\x12)\n\x07quality\x18\x03 \x01(\x0e\x32\x18.google.protobuf.Quality*F\n\x11OrchestrationType\x12\x12\n\x0eOT_UNSPECIFIED\x10\x00\x12\x1d\n\x19OT_SUBMITTED_MEASURE_DATA\x10\x01*^\n\x07Quality\x12\x11\n\rQ_UNSPECIFIED\x10\x00\x12\r\n\tQ_MISSING\x10\x01\x12\x0f\n\x0bQ_ESTIMATED\x10\x02\x12\x0e\n\nQ_MEASURED\x10\x03\x12\x10\n\x0cQ_CALCULATED\x10\x04*\x81\x05\n\x11MeteringPointType\x12\x13\n\x0fMPT_UNSPECIFIED\x10\x00\x12\x13\n\x0fMPT_CONSUMPTION\x10\x01\x12\x12\n\x0eMPT_PRODUCTION\x10\x02\x12\x10\n\x0cMPT_EXCHANGE\x10\x03\x12\x15\n\x11MPT_VE_PRODUCTION\x10\x04\x12\x10\n\x0cMPT_ANALYSIS\x10\x05\x12\x10\n\x0cMPT_NOT_USED\x10\x06\x12\x16\n\x12MPT_NET_PRODUCTION\x10\x08\x12\x16\n\x12MPT_SUPPLY_TO_GRID\x10\t\x12\x1d\n\x19MPT_CONSUMPTION_FROM_GRID\x10\n\x12&\n\"MPT_WHOLESALE_SERVICES_INFORMATION\x10\x0b\x12\x16\n\x12MPT_OWN_PRODUCTION\x10\x0c\x12\x15\n\x11MPT_NET_FROM_GRID\x10\r\x12\x13\n\x0fMPT_NET_TO_GRID\x10\x0e\x12\x19\n\x15MPT_TOTAL_CONSUMPTION\x10\x0f\x12\x1b\n\x17MPT_NET_LOSS_CORRECTION\x10\x10\x12\x1a\n\x16MPT_ELECTRICAL_HEATING\x10\x11\x12\x17\n\x13MPT_NET_CONSUMPTION\x10\x12\x12\x19\n\x15MPT_OTHER_CONSUMPTION\x10\x13\x12\x18\n\x14MPT_OTHER_PRODUCTION\x10\x14\x12\x1b\n\x17MPT_CAPACITY_SETTLEMENT\x10\x15\x12 \n\x1cMPT_EXCHANGE_REACTIVE_ENERGY\x10\x16\x12!\n\x1dMPT_COLLECTIVE_NET_PRODUCTION\x10\x17\x12\"\n\x1eMPT_COLLECTIVE_NET_CONSUMPTION\x10\x18*i\n\x04Unit\x12\x11\n\rU_UNSPECIFIED\x10\x00\x12\t\n\x05U_KWH\x10\x01\x12\x08\n\x04U_KW\x10\x02\x12\x08\n\x04U_MW\x10\x03\x12\t\n\x05U_MWH\x10\x04\x12\x0b\n\x07U_TONNE\x10\x05\x12\x0b\n\x07U_KVARH\x10\x06\x12\n\n\x06U_MVAR\x10\x07*C\n\nResolution\x12\x11\n\rR_UNSPECIFIED\x10\x00\x12\x0b\n\x07R_PT15M\x10\x01\x12\n\n\x06R_PT1H\x10\x02\x12\t\n\x05R_P1M\x10\x03\x42+\xaa\x02(Energinet.DataHub.Measurements.Contractsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,18 +34,18 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'PersistSubmittedTransaction
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\252\002(Energinet.DataHub.Measurements.Contracts'
-  _globals['_ORCHESTRATIONTYPE']._serialized_start=789
-  _globals['_ORCHESTRATIONTYPE']._serialized_end=859
-  _globals['_QUALITY']._serialized_start=861
-  _globals['_QUALITY']._serialized_end=955
-  _globals['_METERINGPOINTTYPE']._serialized_start=958
-  _globals['_METERINGPOINTTYPE']._serialized_end=1599
-  _globals['_UNIT']._serialized_start=1601
-  _globals['_UNIT']._serialized_end=1706
-  _globals['_RESOLUTION']._serialized_start=1708
-  _globals['_RESOLUTION']._serialized_end=1775
-  _globals['_PERSISTSUBMITTEDTRANSACTIONV2']._serialized_start=110
-  _globals['_PERSISTSUBMITTEDTRANSACTIONV2']._serialized_end=668
-  _globals['_POINT']._serialized_start=670
-  _globals['_POINT']._serialized_end=787
+  _globals['_ORCHESTRATIONTYPE']._serialized_start=802
+  _globals['_ORCHESTRATIONTYPE']._serialized_end=872
+  _globals['_QUALITY']._serialized_start=874
+  _globals['_QUALITY']._serialized_end=968
+  _globals['_METERINGPOINTTYPE']._serialized_start=971
+  _globals['_METERINGPOINTTYPE']._serialized_end=1612
+  _globals['_UNIT']._serialized_start=1614
+  _globals['_UNIT']._serialized_end=1719
+  _globals['_RESOLUTION']._serialized_start=1721
+  _globals['_RESOLUTION']._serialized_end=1788
+  _globals['_PERSISTSUBMITTEDTRANSACTIONV2']._serialized_start=123
+  _globals['_PERSISTSUBMITTEDTRANSACTIONV2']._serialized_end=681
+  _globals['_POINT']._serialized_start=683
+  _globals['_POINT']._serialized_end=800
 # @@protoc_insertion_point(module_scope)

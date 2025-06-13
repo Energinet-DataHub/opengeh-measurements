@@ -3,7 +3,7 @@
 package google.protobuf;
 
 import "google/protobuf/timestamp.proto";
-import "DecimalValue.proto";
+import "DecimalValue/DecimalValue.proto";
 
 option csharp_namespace = "Energinet.DataHub.Measurements.Contracts";
 

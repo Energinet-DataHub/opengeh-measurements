@@ -15,7 +15,8 @@ def compile_protobuf(proto_file, descriptor_file, proto_path):
         [
             "protoc",
             "--include_imports",  # Include imports in the descriptor
-            f"--proto_path={proto_path}",  # Set the directory containing .proto files
+            f"--proto_path={process_manager_path}",
+            f"--proto_path={proto_path}",
             f"--descriptor_set_out={descriptor_file}",
             f"--python_out={proto_path}/generated",  # Output directory for generated Python files
             f"--pyi_out={proto_path}/generated",  # Output directory for generated Python files
@@ -41,3 +42,4 @@ compile_protobuf_file("Brs021ForwardMeteredDataNotifyV1")
 compile_protobuf_file("PersistSubmittedTransactionV1")
 compile_protobuf_file("PersistSubmittedTransactionV2")
 compile_protobuf_file("VersionMessage")
+compile_protobuf_file("DecimalValue")
